@@ -3,7 +3,11 @@
 //------------------------------------------------------------------------------
 
 #if defined(__WIN32)
- #define UNICODE
+ #define  NTDDI_VERSION 0x05010000 // Windows XP
+ #define  WINVER        0x0501
+ #define _WIN32_WINNT   WINVER
+ #define _WIN32_IE      WINVER
+ #define  UNICODE
 
  #include <windows.h>
 //------------------------------------------------------------------------------

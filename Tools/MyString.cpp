@@ -8,7 +8,7 @@ STRING::STRING(){
  TheString[0] = 0;
 
  Changed          = false;
- TheWideString    = new wchar_t[1];
+ TheWideString    = new uwchar_t[1];
  TheWideString[0] = 0;
 }
 //------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ STRING& STRING::operator<< (char c){
 //------------------------------------------------------------------------------
 
 STRING& STRING::operator<< (wchar_t c){
- Append_UTF_32(c);
+ Append_UTF_32((uwchar_t)c);
 
  return *this;
 }
@@ -81,23 +81,25 @@ STRING& STRING::operator<< (const char* s){
 //------------------------------------------------------------------------------
 
 STRING& STRING::operator<< (const wchar_t* s){
+ uwchar_t* u = (uwchar_t*)s;
+
  unsigned UTF_32;
 
- for(int j = 0; s[j]; j++){
+ for(int j = 0; u[j]; j++){
   #if WCHAR_MAX < 0x10000 // UTF-16
    if(
-    ((s[j  ] & 0xFC00) == 0xD800) &&
-    ((s[j+1] & 0xFC00) == 0xDC00)
+    ((u[j  ] & 0xFC00) == 0xD800) &&
+    ((u[j+1] & 0xFC00) == 0xDC00)
    ){
-    UTF_32 =                   s[j++] & 0x3FF ;
-    UTF_32 = (UTF_32 << 10) | (s[j  ] & 0x3FF);
+    UTF_32 =                   u[j++] & 0x3FF ;
+    UTF_32 = (UTF_32 << 10) | (u[j  ] & 0x3FF);
     Append_UTF_32(UTF_32);
 
    }else{
-    Append_UTF_32(s[j]);
+    Append_UTF_32(u[j]);
    }
   #else // UTF-32
-   Append_UTF_32(s[j]);
+   Append_UTF_32(u[j]);
   #endif
  }
 
@@ -139,7 +141,7 @@ const char* STRING::String(){
 const wchar_t* STRING::WideString(){
  if(Changed){
   delete[] TheWideString;
-  TheWideString = new wchar_t[TheLength+1];
+  TheWideString = new uwchar_t[TheLength+1];
 
   unsigned c, w, t;
   unsigned UTF_32;
@@ -162,7 +164,7 @@ const wchar_t* STRING::WideString(){
  }
  Changed = false;
 
- return TheWideString;
+ return (wchar_t*)TheWideString;
 }
 //------------------------------------------------------------------------------
 

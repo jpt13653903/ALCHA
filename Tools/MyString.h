@@ -17,14 +17,21 @@
 #include <wchar.h>
 //------------------------------------------------------------------------------
 
+#if WCHAR_MIN < 0
+ #define uwchar_t unsigned wchar_t
+#else
+ #define uwchar_t wchar_t
+#endif
+//------------------------------------------------------------------------------
+
 class STRING{
  private:
   unsigned       Allocated; // In bytes
   unsigned       TheLength; // In bytes
   unsigned char* TheString; // UTF-8
 
-  bool     Changed;       // Signals that TheWideString must be rebuilt
-  wchar_t* TheWideString; // Local buffer for WideString()
+  bool      Changed;       // Signals that TheWideString must be rebuilt
+  uwchar_t* TheWideString; // Local buffer for WideString()
 
  public:
   STRING();
