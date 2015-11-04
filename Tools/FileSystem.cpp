@@ -64,6 +64,16 @@ bool FILE_SYSTEM::Write(const char* Filename, const char* Data, unsigned Size){
  if(!Filename   ) return false;
  if(!Filename[0]) return false;
 
+ // Create path
+ int j, q = 0;
+ STRING Path;
+ for(j = 0; Filename[j]; j++){
+  if(Filename[j] == '/' || Filename[j] == '\\'){
+   while(q < j) Path << Filename[q++];
+  }
+ }
+ CreatePath(Path.String());
+
  STRING LongPath;
 
  GetLongPath(Filename, LongPath);

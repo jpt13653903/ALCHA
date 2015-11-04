@@ -12,7 +12,7 @@ int main(int argc, char** argv){
  unsigned Size;
 
  if(!(Buffer = fs.Read("../main.cpp", &Size))) return -1;
- if(!fs.Write("../main -- Copy ιν γρεεκ.cpp", Buffer, Size)) return -2;
+ if(!fs.Write("../Testing/Path/Creation/main -- Copy ιν γρεεκ.cpp", Buffer, Size)) return -2;
 
  return 0;
 }
