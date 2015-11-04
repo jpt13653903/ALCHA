@@ -13,10 +13,11 @@ class FILE_SYSTEM{
 
  public:
   // UTF-8 name; returns null on error; null-terminates the buffer
-  char* Read (const char* Filename, unsigned* Filesize = 0);
+  char* Read(const char* Filename, unsigned* Filesize = 0);
 
   // UTF-8 name; also creates the path if it does not exist
-  bool Write(const char* Filename, const char* Data, unsigned Size);
+  // If Size is 0, Data is assumed to be null-terminated
+  bool Write(const char* Filename, const char* Data, unsigned Size = 0);
 };
 //------------------------------------------------------------------------------
 

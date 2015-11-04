@@ -28,7 +28,10 @@ bool FILE_SYSTEM::CreatePath(wchar_t* Path){
     return true;
    }
    CreatePath(Path);
-   if(!CreateDirectory(Path, 0)) return false;
+   if(!CreateDirectory(Path, 0)){
+    Path[b] = '\\';
+    return false;
+   }
   }
  Path[b] = '\\';
 
@@ -105,6 +108,11 @@ bool FILE_SYSTEM::Write(const char* Filename, const char* Data, unsigned Size){
   0
  );
  if(Handle == INVALID_HANDLE_VALUE) return false;
+
+ // Get size for null-terminated data
+ if(!Size){
+  for(Size = 0; Data[Size]; Size++);
+ }
 
  DWORD Actual;
  if(!WriteFile(Handle, Data, Size, &Actual, 0)){
