@@ -1,16 +1,35 @@
 #include "FileSystem.h"
 //------------------------------------------------------------------------------
 
-void FILE_SYSTEM::GetLongPath(const char* Path, STRING& LongPath){
+void FILE_SYSTEM::GetLongName(const char* Path, STRING& LongName){
  int j;
 
  // Extend the Path to use long names
- if(Path[1] == ':' && Path[2] == '\\') LongPath << "\\\\?\\";
+ if(Path[1] == ':' && Path[2] == '\\') LongName << "\\\\?\\";
 
  for(j = 0; Path[j]; j++){
-  if(Path[j] == '/') LongPath << '\\';
-  else               LongPath << Path[j];
+  if(Path[j] == '/') LongName << '\\';
+  else               LongName << Path[j];
  }
+}
+//------------------------------------------------------------------------------
+
+bool FILE_SYSTEM::CreatePath(wchar_t* Path){
+ int j, b = 0;
+ for(j = 0; Path[j]; j++){
+  if(Path[j] == '\\') b = j;
+ }
+ if(!b) return true;
+
+ Path[b] = 0;
+  if(!CreateDirectory(Path, 0)){
+   if(GetLastError() == ERROR_ALREADY_EXISTS) return true;
+   CreatePath(Path);
+   if(!CreateDirectory(Path, 0)) return false;
+  }
+ Path[b] = '\\';
+
+ return true;
 }
 //------------------------------------------------------------------------------
 
@@ -18,12 +37,12 @@ char* FILE_SYSTEM::Read(const char* Filename, unsigned* Filesize){
  if(!Filename   ) return 0;
  if(!Filename[0]) return 0;
 
- STRING LongPath;
+ STRING LongName;
 
- GetLongPath(Filename, LongPath);
+ GetLongName(Filename, LongName);
 
  HANDLE Handle = CreateFile(
-  LongPath.WideString(),
+  LongName.WideString(),
   GENERIC_READ,
   FILE_SHARE_READ,
   0,
@@ -64,22 +83,17 @@ bool FILE_SYSTEM::Write(const char* Filename, const char* Data, unsigned Size){
  if(!Filename   ) return false;
  if(!Filename[0]) return false;
 
+ STRING LongName;
+
+ GetLongName(Filename, LongName);
+
  // Create path
- int j, q = 0;
- STRING Path;
- for(j = 0; Filename[j]; j++){
-  if(Filename[j] == '/' || Filename[j] == '\\'){
-   while(q < j) Path << Filename[q++];
-  }
- }
- CreatePath(Path.String());
+ wchar_t* Path = (wchar_t*)LongName.WideString();
+ if(!CreatePath(Path)) return false;
 
- STRING LongPath;
-
- GetLongPath(Filename, LongPath);
-
+ // Write the file
  HANDLE Handle = CreateFile(
-  LongPath.WideString(),
+  LongName.WideString(),
   GENERIC_WRITE,
   0,
   0,
@@ -101,40 +115,3 @@ bool FILE_SYSTEM::Write(const char* Filename, const char* Data, unsigned Size){
  return true;
 }
 //------------------------------------------------------------------------------
-
-bool FILE_SYSTEM::CreatePath(const char* Path){
- if(!Path   ) return false;
- if(!Path[0]) return false;
-
- int    j;
- STRING LongPath;
-
- GetLongPath(Path, LongPath);
-
- // Create paths
- wchar_t* Paths = (wchar_t*)LongPath.WideString();
- if(!Paths || !Paths[0] || !Paths[1] || !Paths[2] || !Paths[3]) return false;
-
- j = 0;
- if(Paths[  0] == '\\' && Paths[  1] == '\\' && Paths[3] == '\\') j = 4;
- if(Paths[j+1] == ':'  && Paths[j+2] == '\\') j += 3;
- if(Paths[j  ] == '\\') j++;
-
- while(Paths[j]){
-  if(Paths[j] == '\\'){
-   Paths[j] = 0;
-    if(!CreateDirectory(Paths, 0)){
-     if(GetLastError() != ERROR_ALREADY_EXISTS) return false;
-    }
-   Paths[j] = '\\';
-  }
-  j++;
- }
- if(!CreateDirectory(Paths, 0)){
-  if(GetLastError() != ERROR_ALREADY_EXISTS) return false;
- }
- return true;
-}
-//------------------------------------------------------------------------------
-
-

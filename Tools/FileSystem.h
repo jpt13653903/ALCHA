@@ -8,7 +8,8 @@
 
 class FILE_SYSTEM{
  private:
-  void GetLongPath(const char* Path, STRING& LongPath);
+  void GetLongName(const char   * Path, STRING& LongPath);
+  bool CreatePath (      wchar_t* Path);
 
  public:
   // UTF-8 name; returns null on error; null-terminates the buffer
@@ -16,10 +17,6 @@ class FILE_SYSTEM{
 
   // UTF-8 name; also creates the path if it does not exist
   bool Write(const char* Filename, const char* Data, unsigned Size);
-
-  // Returns false on error, but true when it already exists
-  // Creates from the root up, so can create multiple levels in one go
-  bool CreatePath(const char* Path);
 };
 //------------------------------------------------------------------------------
 
