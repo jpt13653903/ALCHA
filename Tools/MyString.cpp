@@ -43,6 +43,13 @@ STRING& STRING::operator<< (char c){
 }
 //------------------------------------------------------------------------------
 
+STRING& STRING::operator<< (wchar_t c){
+ Append_UTF_32(c);
+
+ return *this;
+}
+//------------------------------------------------------------------------------
+
 void STRING::Append_UTF_32(unsigned c){
  int           j    = 0 ;
  unsigned char Head = 0x3F; // Active bits in the leading byte
@@ -73,44 +80,59 @@ STRING& STRING::operator<< (const char* s){
 }
 //------------------------------------------------------------------------------
 
-const char* STRING::String(){
- return (char*)TheString;
-}
-//------------------------------------------------------------------------------
-
-#if WCHAR_MAX > 0xFFFF // UTF-32
-STRING&        STRING::operator<< (      wchar_t  c){}
-STRING&        STRING::operator<< (const wchar_t* s){}
-const wchar_t* STRING::WideString (                ){}
-#error Functions not implemented
-//------------------------------------------------------------------------------
-
-#else // UTF-16
-STRING& STRING::operator<< (wchar_t c){
- Append_UTF_32(c);
-
- return *this;
-}
-//------------------------------------------------------------------------------
-
 STRING& STRING::operator<< (const wchar_t* s){
  unsigned UTF_32;
 
  for(int j = 0; s[j]; j++){
-  if(
-   ((s[j  ] & 0xFC00) == 0xD800) &&
-   ((s[j+1] & 0xFC00) == 0xDC00)
-  ){
-   UTF_32 =                   s[j++] & 0x3FF ;
-   UTF_32 = (UTF_32 << 10) | (s[j  ] & 0x3FF);
-   Append_UTF_32(UTF_32);
+  #if WCHAR_MAX < 0x10000 // UTF-16
+   if(
+    ((s[j  ] & 0xFC00) == 0xD800) &&
+    ((s[j+1] & 0xFC00) == 0xDC00)
+   ){
+    UTF_32 =                   s[j++] & 0x3FF ;
+    UTF_32 = (UTF_32 << 10) | (s[j  ] & 0x3FF);
+    Append_UTF_32(UTF_32);
 
-  }else{
+   }else{
+    Append_UTF_32(s[j]);
+   }
+  #else // UTF-32
    Append_UTF_32(s[j]);
-  }
+  #endif
  }
 
  return *this;
+}
+//------------------------------------------------------------------------------
+
+STRING& STRING::operator<< (STRING& s){
+ return operator<<(s.String());
+}
+//------------------------------------------------------------------------------
+
+STRING& STRING::operator<< (int i){
+ char s[0x100];
+ sprintf(s, "%d", i);
+ return operator<< (s);
+}
+//------------------------------------------------------------------------------
+
+STRING& STRING::operator<< (float f){
+ char s[0x100];
+ sprintf(s, "%g", f);
+ return operator<< (s);
+}
+//------------------------------------------------------------------------------
+
+STRING& STRING::operator<< (double d){
+ char s[0x100];
+ sprintf(s, "%lg", d);
+ return operator<< (s);
+}
+//------------------------------------------------------------------------------
+
+const char* STRING::String(){
+ return (char*)TheString;
 }
 //------------------------------------------------------------------------------
 
@@ -119,32 +141,36 @@ const wchar_t* STRING::WideString(){
   delete[] TheWideString;
   TheWideString = new wchar_t[TheLength+1];
 
-  unsigned c, w;
+  unsigned c, w, t;
   unsigned UTF_32;
 
   c = 0; w = 0;
   while(c < TheLength){
-   c += GetUTF_32(c, UTF_32);
-   if(UTF_32 > 0xFFFF){
-    TheWideString[w++] = 0xD800 | (UTF_32 >>    10);
-    TheWideString[w++] = 0xDC00 | (UTF_32 &  0x3FF);
-   }else{
+   UTF_32 = GetUTF_32(c, &t); c += t;
+   #if WCHAR_MAX < 0x10000 // UTF-16
+    if(UTF_32 > 0xFFFF){
+     TheWideString[w++] = 0xD800 | (UTF_32 >>    10);
+     TheWideString[w++] = 0xDC00 | (UTF_32 &  0x3FF);
+    }else{
+     TheWideString[w++] = UTF_32;
+    }
+   #else // UTF-32
     TheWideString[w++] = UTF_32;
-   }
+   #endif
   }
   TheWideString[w++] = 0;
  }
  Changed = false;
 
- return (wchar_t*)TheWideString;
+ return TheWideString;
 }
-#endif
 //------------------------------------------------------------------------------
 
-unsigned STRING::GetUTF_32(unsigned Index, unsigned& UTF_32){
+unsigned STRING::GetUTF_32(unsigned Index, unsigned* CodeLength){
        unsigned       j;
-       unsigned       Bits; // Valid bits
-       unsigned char  Lead; // The leading byte
+       unsigned       Bits;   // Valid bits
+       unsigned       UTF_32; // The result
+       unsigned char  Lead;   // The leading byte
  const unsigned char* s = TheString + Index;
 
  if((s[0] & 0xC0) == 0xC0){
@@ -155,20 +181,20 @@ unsigned STRING::GetUTF_32(unsigned Index, unsigned& UTF_32){
 
   while(Lead & 0x80){
    if((s[j] & 0xC0) != 0x80){ // Invalid code-word
-    UTF_32 = s[0];
-    return 1;
+    if(CodeLength) *CodeLength = 1;
+    return s[0];
    }
    Bits   = (Bits   << 5) |         0x1F ;
    UTF_32 = (UTF_32 << 6) | (s[j] & 0x3F);
    Lead <<= 1;
    j++;
   }
-  UTF_32 &= Bits;
-  return j;
+  if(CodeLength) *CodeLength = j;
+  return UTF_32 & Bits;
 
  }else{
-  UTF_32 = s[0];
-  return 1;
+  if(CodeLength) *CodeLength = 1;
+  return s[0];
  }
 }
 //------------------------------------------------------------------------------

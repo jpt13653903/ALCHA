@@ -22,8 +22,19 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add directory="Tools" />
+			<Add directory="Global" />
 		</Compiler>
+		<Unit filename="Global/OS_Header.h" />
+		<Unit filename="Resources/resource.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
+		<Unit filename="Tools/FileSystem.cpp" />
+		<Unit filename="Tools/FileSystem.h" />
+		<Unit filename="Tools/MyString.cpp" />
+		<Unit filename="Tools/MyString.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="main.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

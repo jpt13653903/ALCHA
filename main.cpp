@@ -2,7 +2,12 @@
 //------------------------------------------------------------------------------
 
 int main(int argc, char** argv){
- STRING s;
+ STRING s, q;
+ s << "Hello there\n";
+ q << s << "ανδ σομε γρεεκ\n";
+ q << 123 << '\n' << 123.456f << '\n' << 456.789 << '\n' << 123.456789;
+
+ MessageBox(0, q.WideString(), L"Info", MB_ICONINFORMATION);
 
  return 0;
 }

@@ -38,12 +38,17 @@ class STRING{
 
   STRING& operator<< (const char   * s);
   STRING& operator<< (const wchar_t* s);
+  STRING& operator<< (      STRING & s);
+
+  STRING& operator<< (int    i);
+  STRING& operator<< (float  f);
+  STRING& operator<< (double d);
 
   const char   *     String();
   const wchar_t* WideString();
 
-  // Index is in bytes; returns the UTF-8 code length
-  unsigned GetUTF_32(unsigned Index, unsigned& UTF_32);
+  // Index is in bytes
+  unsigned GetUTF_32(unsigned Index, unsigned* CodeLength = 0);
 };
 //------------------------------------------------------------------------------
 
