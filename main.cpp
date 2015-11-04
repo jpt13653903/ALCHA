@@ -2,15 +2,17 @@
 //------------------------------------------------------------------------------
 
 int main(int argc, char** argv){
- SetConsoleOutputCP(CP_UTF8); // UTF-8 console
+ #ifdef __WIN32
+  SetConsoleOutputCP(CP_UTF8); // UTF-8 console
+ #endif
 
- STRING s, q;
- s << "Hello there\n";
- q << s << L"ανδ σομε γρεεκ\n";
- q << 123 << '\n' << 123.456f << '\n' << 456.789 << '\n' << 123.456789;
+ FILE_SYSTEM fs;
 
- //MessageBox(0, q.WideString(), L"Info", MB_ICONINFORMATION);
- printf("%s\n", q.String());
+ char*    Buffer;
+ unsigned Size;
+
+ if(!(Buffer = fs.Read("../main.cpp", &Size))) return -1;
+ if(!fs.Write("../main -- Copy ιν γρεεκ.cpp", Buffer, Size)) return -2;
 
  return 0;
 }
