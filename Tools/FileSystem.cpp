@@ -23,7 +23,10 @@ bool FILE_SYSTEM::CreatePath(wchar_t* Path){
 
  Path[b] = 0;
   if(!CreateDirectory(Path, 0)){
-   if(GetLastError() == ERROR_ALREADY_EXISTS) return true;
+   if(GetLastError() == ERROR_ALREADY_EXISTS){
+    Path[b] = '\\';
+    return true;
+   }
    CreatePath(Path);
    if(!CreateDirectory(Path, 0)) return false;
   }
