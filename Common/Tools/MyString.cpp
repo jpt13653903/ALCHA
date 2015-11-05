@@ -133,6 +133,11 @@ STRING& STRING::operator<< (double d){
 }
 //------------------------------------------------------------------------------
 
+unsigned char STRING::operator[] (unsigned Index){
+ return TheString[Index];
+}
+//------------------------------------------------------------------------------
+
 const char* STRING::String(){
  return (char*)TheString;
 }
@@ -201,68 +206,13 @@ unsigned STRING::GetUTF_32(unsigned Index, unsigned* CodeLength){
 }
 //------------------------------------------------------------------------------
 
-bool STRING::IsSpace(unsigned Index, unsigned* CodeLength){
- unsigned UTF_32 = GetUTF_32(Index, CodeLength);
+void STRING::UseMem(char* s){
+ delete TheString;
 
- switch(UTF_32){
-  case 0x0009: // Character Tabulation
-  case 0x0020: // Space
-  case 0x00A0: // No-break Space
-  case 0x1680: // Ogham Space Mark
-  case 0x2000: // En Quad
-  case 0x2001: // Em Quad
-  case 0x2002: // En Space
-  case 0x2003: // Em Space
-  case 0x2004: // Three-per-em Space
-  case 0x2005: // Four-per-em Space
-  case 0x2006: // Six-per-em Space
-  case 0x2007: // Figure Space
-  case 0x2008: // Punctuation Space
-  case 0x2009: // Thin Space
-  case 0x200A: // Hair Space
-  case 0x202F: // Narrow No-break Space
-  case 0x205F: // Medium Mathematical Space
-  case 0x3000: // Ideographic Space
+ for(TheLength = 0; s[TheLength]; TheLength++);
 
-  case 0x180E: // Mongolian Vowel Separator
-  case 0x200B: // Zero Width Space
-  case 0x200C: // Zero Width Non-joiner
-  case 0x200D: // Zero Width Joiner
-  case 0x2060: // Word Joiner
-  case 0xFEFF: // Zero Width Non-breaking Space
-   return true;
-
-  default:
-   return false;
- }
- return false;
-}
-//------------------------------------------------------------------------------
-
-bool STRING::IsNewline(unsigned Index, unsigned* CodeLength){
- if(TheString[Index] == '\r' && TheString[Index+1] == '\n'){
-  if(CodeLength) *CodeLength = 2;
-  return true;
- }
- if(TheString[Index] == '\n' && TheString[Index+1] == '\r'){
-  if(CodeLength) *CodeLength = 2;
-  return true;
- }
- unsigned UTF_32 = GetUTF_32(Index, CodeLength);
-
- switch(UTF_32){
-  case 0x000A: // Line Feed
-  case 0x000B: // Vertical Tab
-  case 0x000C: // Form Feed
-  case 0x000D: // Carriage Return
-  case 0x0085: // Next Line
-  case 0x2028: // Line Separator
-  case 0x2029: // Paragraph Separator
-   return true;
-
-  default:
-   return false;
- }
- return false;
+ Changed   = true;
+ TheString = (unsigned char*)s;
+ Allocated = TheLength+1;
 }
 //------------------------------------------------------------------------------

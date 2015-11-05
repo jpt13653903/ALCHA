@@ -1,0 +1,30 @@
+Testing the scanner            
+ςιτη σομε γρεεκ ψηαραψτερσ τηροςν ιν.   \           
+      
+And some numbers:         \  
+    ABC\
+123.456_16.8
+-0x9AFCp+5_24
+0b1001'1010'1011'0101'1010'1000
+0x'''9''''A''''B''''5''''A''''8
+\\
+
+Hello\    
+     \
+     \
+\     
+\     
+\     
+\    
+   \    
+   \
+
+// This is a comment
+
+/* This
+is a 
+multi-
+line
+comment */
+
+

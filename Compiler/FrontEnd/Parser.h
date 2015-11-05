@@ -1,8 +1,8 @@
-#ifndef PreProcessor_h
-#define PreProcessor_h
+#ifndef Parser_h
+#define Parser_h
 //------------------------------------------------------------------------------
 
-#include "Lexer.h"
+#include "PreProcessor.h"
 //------------------------------------------------------------------------------
 
 #endif

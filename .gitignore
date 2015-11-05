@@ -1,3 +1,4 @@
+*.swp
 Compiler/bin/*
 Compiler/obj/*
 Linker/bin/*
