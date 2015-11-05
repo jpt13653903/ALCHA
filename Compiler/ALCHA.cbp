@@ -23,17 +23,27 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
-			<Add directory="Tools" />
-			<Add directory="Global" />
+			<Add directory="../Common/Tools" />
+			<Add directory="../Common/Global" />
+			<Add directory="FrontEnd" />
+			<Add directory="BackEnd" />
 		</Compiler>
-		<Unit filename="Global/OS_Header.h" />
-		<Unit filename="Resources/resource.rc">
+		<Unit filename="../Common/Global/OS_Header.h" />
+		<Unit filename="../Common/Resources/resource.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
-		<Unit filename="Tools/FileSystem.cpp" />
-		<Unit filename="Tools/FileSystem.h" />
-		<Unit filename="Tools/MyString.cpp" />
-		<Unit filename="Tools/MyString.h" />
+		<Unit filename="../Common/Tools/FileSystem.cpp" />
+		<Unit filename="../Common/Tools/FileSystem.h" />
+		<Unit filename="../Common/Tools/MyString.cpp" />
+		<Unit filename="../Common/Tools/MyString.h" />
+		<Unit filename="BackEnd/Altera.cpp" />
+		<Unit filename="BackEnd/Altera.h" />
+		<Unit filename="FrontEnd/Lexer.cpp" />
+		<Unit filename="FrontEnd/Lexer.h" />
+		<Unit filename="FrontEnd/PreProcessor.cpp" />
+		<Unit filename="FrontEnd/PreProcessor.h" />
+		<Unit filename="FrontEnd/Scanner.cpp" />
+		<Unit filename="FrontEnd/Scanner.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="main.h" />
 		<Extensions>

@@ -239,7 +239,7 @@ bool STRING::IsSpace(unsigned Index, unsigned* CodeLength){
 }
 //------------------------------------------------------------------------------
 
-bool STRING::IsNewLine(unsigned Index, unsigned* CodeLength){
+bool STRING::IsNewline(unsigned Index, unsigned* CodeLength){
  if(TheString[Index] == '\r' && TheString[Index+1] == '\n'){
   if(CodeLength) *CodeLength = 2;
   return true;

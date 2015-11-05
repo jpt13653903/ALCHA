@@ -1,3 +1,5 @@
-bin/*
-obj/*
+Compiler/bin/*
+Compiler/obj/*
+Linker/bin/*
+Linker/obj/*
 

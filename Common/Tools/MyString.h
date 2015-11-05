@@ -57,7 +57,7 @@ class STRING{
   // Index is in bytes
   unsigned GetUTF_32(unsigned Index, unsigned* CodeLength = 0);
   bool     IsSpace  (unsigned Index, unsigned* CodeLength = 0);
-  bool     IsNewLine(unsigned Index, unsigned* CodeLength = 0);
+  bool     IsNewline(unsigned Index, unsigned* CodeLength = 0);
 };
 //------------------------------------------------------------------------------
 
