@@ -31,11 +31,12 @@ int main(int argc, char** argv){
  if(!Scanner.Open("../../Test Cases\\FrontEnd\\Scanner.alc")) return -1;
 
  STRING s;
- SCANNER::TOKEN Token;
+ SCANNER::TOKEN* Token;
 
- while(Scanner.GetToken(Token)){
-  printf("%05d: ", Token.Line);
-  switch(Token.Type){
+ Token = Scanner.GetDirective();
+ while(Token){
+  printf("%05d: ", Token->Line);
+  switch(Token->Type){
    case SCANNER::tSpace:
     printf("Space\n");
     break;
@@ -45,35 +46,35 @@ int main(int argc, char** argv){
     break;
 
    case SCANNER::tComment:
-    printf("Comment:   \"%s\"\n", Token.Token.String());
+    printf("Comment:   \"%s\"\n", Token->Token.String());
     break;
 
    case SCANNER::tDirective:
-    printf("Directive: \"%s\"\n", Token.Token.String());
+    printf("Directive: \"%s\"\n", Token->Token.String());
     break;
 
    case SCANNER::tIdentifier:
-    printf("Identifier: \"%s\"\n", Token.Token.String());
+    printf("Identifier: \"%s\"\n", Token->Token.String());
     break;
 
    case SCANNER::tNumber:
-    printf("Number:     \"%s\"\n", Token.Token.String());
+    printf("Number:     \"%s\"\n", Token->Token.String());
     break;
 
    case SCANNER::tCharacter:
-    printf("Character:  \"%s\"\n", Token.Token.String());
+    printf("Character:  \"%s\"\n", Token->Token.String());
     break;
 
    case SCANNER::tString:
-    printf("String:     \"%s\"\n", Token.Token.String());
+    printf("String:     \"%s\"\n", Token->Token.String());
     break;
 
    case SCANNER::tPunctuator:
-    printf("Punctuator: \"%s\"\n", Token.Token.String());
+    printf("Punctuator: \"%s\"\n", Token->Token.String());
     break;
 
    case SCANNER::tOther:
-    printf("Other:      \"%s\"\n", Token.Token.String());
+    printf("Other:      \"%s\"\n", Token->Token.String());
     break;
 
    case SCANNER::tEOF:
@@ -81,9 +82,11 @@ int main(int argc, char** argv){
     break;
 
    default:
-    printf("Unknown:    \"%s\"\n", Token.Token.String());
+    printf("Unknown:    \"%s\"\n", Token->Token.String());
     break;
   }
+  delete Token;
+  Token = Scanner.GetDirective();
  }
 
  return 0;

@@ -58,11 +58,16 @@ class SCANNER{
    TYPE   Type;
    STRING Token;
    int    Line;
+   TOKEN* Next;
+
+   TOKEN();
   };
 
  private: // General private members
-  bool error;
-  void Error(const char* Message);
+  bool   error;
+  STRING Filename;
+
+  void  Error(const char* Message);
 
  private: // Phase 1 members
   struct CHAR{
@@ -104,7 +109,10 @@ class SCANNER{
 
   bool Open(const char* Filename);
 
-  bool GetToken(TOKEN& Token);
+  // Allocates memory and return a new token; null on error or end-of-file
+  TOKEN* GetToken    ();
+  TOKEN* GetDirective(); // Scans through the code to find the next directive:
+                         // used to implement skipping over #if bodies
 };
 //------------------------------------------------------------------------------
 

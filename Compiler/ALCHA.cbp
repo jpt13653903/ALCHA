@@ -38,8 +38,6 @@
 		<Unit filename="../Common/Tools/MyString.h" />
 		<Unit filename="BackEnd/Altera.cpp" />
 		<Unit filename="BackEnd/Altera.h" />
-		<Unit filename="FrontEnd/Lexer.cpp" />
-		<Unit filename="FrontEnd/Lexer.h" />
 		<Unit filename="FrontEnd/Parser.cpp" />
 		<Unit filename="FrontEnd/Parser.h" />
 		<Unit filename="FrontEnd/PreProcessor.cpp" />

@@ -21,6 +21,13 @@
 #include "Scanner.h"
 //------------------------------------------------------------------------------
 
+SCANNER::TOKEN::TOKEN(){
+ Type  = tOther;
+ Line  = 0;
+ Next  = 0;
+}
+//------------------------------------------------------------------------------
+
 SCANNER::SCANNER(){
  Line          = 1;
  Index         = 0;
@@ -35,7 +42,7 @@ SCANNER::~SCANNER(){
 
 void SCANNER::Error(const char* Message){
  error = true;
- printf("Error on line %05d: %s\n", Char.Line, Message);
+ printf("Line %05d of %s\n  Error: %s", Char.Line, Filename.String(), Message);
 }
 //------------------------------------------------------------------------------
 
@@ -136,6 +143,9 @@ bool SCANNER::Open(const char* Filename){
  Line  = 1;
  Index = 0;
  error = false;
+
+ this->Filename.Clear();
+ this->Filename << Filename;
 
  char* TempBuffer = fs.Read(Filename);
  if(!TempBuffer){
@@ -249,6 +259,7 @@ inline bool SCANNER::NonDigit(){
  return (Char.Char[0] >= 'a' && Char.Char[0] <= 'z') ||
         (Char.Char[0] >= 'A' && Char.Char[0] <= 'Z') ||
         (Char.Char[0] == '_' ) ||
+        (Char.Char[0] == '\\') ||
         (Char.Char[0] >= 0x80);
 }
 //------------------------------------------------------------------------------
@@ -597,74 +608,112 @@ bool SCANNER::Punctuator(STRING& Token){
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::GetToken(TOKEN& Token){
- if(Char.Type == tEOF) return false;
+SCANNER::TOKEN* SCANNER::GetToken(){
+ TOKEN* Token = new TOKEN;
 
- Token.Token.Clear();
- Token.Type = tOther;
- Token.Line = Char.Line;
+ Token->Line = Char.Line;
+
+ if(error || Char.Type == tEOF){
+  delete Token;
+  return 0;
+ }
 
  if(PrevIsNewline && Char.Char[0] == '#'){
   GetChar();
   while(Char.Type == tSpace) GetChar();
-  Identifier(Token.Token);
-  Token.Type = tDirective;
-  return true;
+  Identifier(Token->Token);
+  Token->Type = tDirective;
+  return Token;
  }
  PrevIsNewline = false;
 
  if(Char.Type == tNewline){
-  Token.Type = tNewline;
+  Token->Type = tNewline;
   while(Char.Type == tNewline){ // Concatenate newlines
    GetChar();
    while(Char.Type == tSpace) GetChar(); // Remove leading spaces
   }
   PrevIsNewline = true;
-  return Char.Type != tEOF;
+  if(Char.Type == tEOF){
+   delete Token;
+   return 0;
+  }
+  return Token;
  }
 
  if(Char.Type == tSpace){
-  Token.Type = tSpace;
+  Token->Type = tSpace;
   while(Char.Type == tSpace) GetChar(); // Concatenate spaces
-  return Char.Type != tEOF;
+  if(Char.Type == tEOF){
+   delete Token;
+   return 0;
+  }
+  return Token;
  }
 
- if(Identifier(Token.Token)){
-  Token.Type = tIdentifier;
-  return true;
+ if(Identifier(Token->Token)){
+  Token->Type = tIdentifier;
+  return Token;
  }
 
- if(Character(Token.Token)){
-  Token.Type = tCharacter;
-  return true;
+ if(Character(Token->Token)){
+  Token->Type = tCharacter;
+  return Token;
  }
- if(String(Token.Token)){
-  Token.Type = tString;
-  return true;
+ if(String(Token->Token)){
+  Token->Type = tString;
+  return Token;
  }
 
  // These start with what could potentially be a punctuator, so don't move them
- if(Number(Token.Token)){
-  Token.Type = tNumber;
-  return true;
+ if(Number(Token->Token)){
+  Token->Type = tNumber;
+  return Token;
  }
- if(Comment(Token.Token)){
-  Token.Type = tComment;
-  return true;
+ if(Comment(Token->Token)){
+  Token->Type = tComment;
+  return Token;
  }
 
  // Don't move this: it's placement as the last one is important
- if(Punctuator(Token.Token)){
-  Token.Type = tPunctuator;
-  return true;
+ if(Punctuator(Token->Token)){
+  Token->Type = tPunctuator;
+  return Token;
  }
 
  if(Char.Type != tEOF){
-  Token.Token << (char*)Char.Char;
-  Token.Type = tOther;
+  Token->Token << (char*)Char.Char;
+  Token->Type = tOther;
   GetChar();
-  return true;
+  return Token;
  }
- return false;
+ delete Token;
+ return 0;
+}
+//------------------------------------------------------------------------------
+
+SCANNER::TOKEN* SCANNER::GetDirective(){
+ TOKEN* Token = new TOKEN;
+
+ while(!error && Char.Type != tEOF){
+  if(PrevIsNewline && Char.Char[0] == '#'){
+   Token->Line = Char.Line;
+   GetChar();
+   while(Char.Type == tSpace) GetChar();
+   Identifier(Token->Token);
+   Token->Type = tDirective;
+   return Token;
+  }
+  if(Char.Type == tNewline){
+   GetChar();
+   while(Char.Type == tSpace) GetChar();
+   PrevIsNewline = true;
+  }else{
+   GetChar();
+   PrevIsNewline = false;
+  }
+ }
+ delete Token;
+ return 0;
 }
 //------------------------------------------------------------------------------

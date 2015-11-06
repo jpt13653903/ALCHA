@@ -27,6 +27,7 @@ Hello\
 'Ω'
       
 Base.Member();
+Identifier\with\structure\and\u0837\stuff
 
 a = b/c;
        
