@@ -41,15 +41,14 @@
 class SCANNER{
  public: // Public types
   enum TYPE{
-   tSpace,
+   tSpace,     // Used in CHAR only
    tNewline,
-   tComment,
    tDirective, // Newline {Space} "#" {Space} Identifier; store only ident.
    tIdentifier,
    tNumber,
    tCharacter,
    tString,
-   tPunctuator,
+   tOperator,
    tOther,
    tEOF,
   };
@@ -58,7 +57,9 @@ class SCANNER{
    TYPE   Type;
    STRING Token;
    int    Line;
-   TOKEN* Next;
+   bool   PrecedingSpace; // Token preceded by comment, space or newline
+   STRING Comment;        // Concatenation of any preceding comments
+   TOKEN* Next;           // Used when storing macro bodies
 
    TOKEN();
   };
@@ -73,7 +74,7 @@ class SCANNER{
   struct CHAR{
    unsigned char Char[4]; // UTF-8 string
    int           Line;
-   TYPE          Type;
+   TYPE          Type; // tSpace, tNewline, tOther or tEOF
   } Char;
 
   FILE_SYSTEM fs;
@@ -101,18 +102,18 @@ class SCANNER{
   bool Comment   (STRING& Token);
   bool Character (STRING& Token);
   bool Identifier(STRING& Token);
-  bool Punctuator(STRING& Token);
+  bool Operator  (STRING& Token);
 
  public: // Public interface
   SCANNER();
- ~SCANNER();
 
   bool Open(const char* Filename);
 
-  // Allocates memory and return a new token; null on error or end-of-file
-  TOKEN* GetToken    ();
-  TOKEN* GetDirective(); // Scans through the code to find the next directive:
-                         // used to implement skipping over #if bodies
+  bool GetToken(TOKEN* Token);
+
+  // Scans through the code to find the next directive: used to implement
+  // skipping over #if bodies
+  bool GetDirective(TOKEN* Token);
 };
 //------------------------------------------------------------------------------
 

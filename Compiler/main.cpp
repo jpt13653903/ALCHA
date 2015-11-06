@@ -31,50 +31,41 @@ int main(int argc, char** argv){
  if(!Scanner.Open("../../Test Cases\\FrontEnd\\Scanner.alc")) return -1;
 
  STRING s;
- SCANNER::TOKEN* Token;
+ SCANNER::TOKEN Token;
 
- Token = Scanner.GetDirective();
- while(Token){
-  printf("%05d: ", Token->Line);
-  switch(Token->Type){
-   case SCANNER::tSpace:
-    printf("Space\n");
-    break;
-
+ while(Scanner.GetToken(&Token)){
+  printf("%05d: ", Token.Line);
+  switch(Token.Type){
    case SCANNER::tNewline:
-    printf("Newline\n");
-    break;
-
-   case SCANNER::tComment:
-    printf("Comment:   \"%s\"\n", Token->Token.String());
+    printf("Newline");
     break;
 
    case SCANNER::tDirective:
-    printf("Directive: \"%s\"\n", Token->Token.String());
+    printf("Directive: \"%s\"", Token.Token.String());
     break;
 
    case SCANNER::tIdentifier:
-    printf("Identifier: \"%s\"\n", Token->Token.String());
+    printf("Identifier: \"%s\"", Token.Token.String());
     break;
 
    case SCANNER::tNumber:
-    printf("Number:     \"%s\"\n", Token->Token.String());
+    printf("Number:     \"%s\"", Token.Token.String());
     break;
 
    case SCANNER::tCharacter:
-    printf("Character:  \"%s\"\n", Token->Token.String());
+    printf("Character:  \"%s\"", Token.Token.String());
     break;
 
    case SCANNER::tString:
-    printf("String:     \"%s\"\n", Token->Token.String());
+    printf("String:     \"%s\"", Token.Token.String());
     break;
 
-   case SCANNER::tPunctuator:
-    printf("Punctuator: \"%s\"\n", Token->Token.String());
+   case SCANNER::tOperator:
+    printf("Operator: \"%s\"", Token.Token.String());
     break;
 
    case SCANNER::tOther:
-    printf("Other:      \"%s\"\n", Token->Token.String());
+    printf("Other:      \"%s\"", Token.Token.String());
     break;
 
    case SCANNER::tEOF:
@@ -82,11 +73,16 @@ int main(int argc, char** argv){
     break;
 
    default:
-    printf("Unknown:    \"%s\"\n", Token->Token.String());
+    printf("Unknown:    \"%s\"", Token.Token.String());
     break;
   }
-  delete Token;
-  Token = Scanner.GetDirective();
+  if(Token.Comment.Length()){
+   printf(" Associated comment: %s", Token.Comment.String());
+  }
+  if(Token.PrecedingSpace){
+   printf(" (with space)");
+  }
+  printf("\n");
  }
 
  return 0;

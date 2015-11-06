@@ -34,13 +34,17 @@ a = b/c;
 // This is a comment
   #  include "Some Header File"
 
-  #  include "Some Header File"
+ /*Comment before directive*/ #  include "Some Header File"
 
 /* This
 is a 
 multi-
 line
 comment */
+// And some more comments
+/* And */ // Some more...
+ # define Parametrised(a, b, c)
+#define non_parametrised (a, b, c)
 
 { } [ ] # ## ( )
 <: :> <% %> %: %:%: ; : ...

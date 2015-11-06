@@ -22,9 +22,9 @@
 //------------------------------------------------------------------------------
 
 SCANNER::TOKEN::TOKEN(){
- Type  = tOther;
- Line  = 0;
- Next  = 0;
+ Type = tOther;
+ Line = 0;
+ Next = 0;
 }
 //------------------------------------------------------------------------------
 
@@ -33,10 +33,6 @@ SCANNER::SCANNER(){
  Index         = 0;
  error         = false;
  PrevIsNewline = true;
-}
-//------------------------------------------------------------------------------
-
-SCANNER::~SCANNER(){
 }
 //------------------------------------------------------------------------------
 
@@ -340,7 +336,6 @@ bool SCANNER::Comment(STRING& Token){
    if(Char.Type == tNewline){
     Token << (char*)Char.Char;
     GetChar();
-    while(Char.Type == tSpace) GetChar(); // Remove leading spaces
     PrevIsNewline = true;
     return true;
    }
@@ -391,7 +386,7 @@ bool SCANNER::String(STRING& Token){
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::Punctuator(STRING& Token){
+bool SCANNER::Operator(STRING& Token){
  // At this point, Token could contain '.' or '/' from Number() or Comment()
  if(Token[0] == '.') return true;
  if(Token[0] == '/'){
@@ -608,112 +603,132 @@ bool SCANNER::Punctuator(STRING& Token){
 }
 //------------------------------------------------------------------------------
 
-SCANNER::TOKEN* SCANNER::GetToken(){
- TOKEN* Token = new TOKEN;
+bool SCANNER::GetToken(TOKEN* Token){
+ Token->Comment.Clear();
+ Token->PrecedingSpace = PrevIsNewline;
 
- Token->Line = Char.Line;
-
- if(error || Char.Type == tEOF){
-  delete Token;
-  return 0;
- }
-
- if(PrevIsNewline && Char.Char[0] == '#'){
-  GetChar();
-  while(Char.Type == tSpace) GetChar();
-  Identifier(Token->Token);
-  Token->Type = tDirective;
-  return Token;
- }
- PrevIsNewline = false;
-
- if(Char.Type == tNewline){
-  Token->Type = tNewline;
-  while(Char.Type == tNewline){ // Concatenate newlines
-   GetChar();
-   while(Char.Type == tSpace) GetChar(); // Remove leading spaces
-  }
-  PrevIsNewline = true;
-  if(Char.Type == tEOF){
-   delete Token;
-   return 0;
-  }
-  return Token;
- }
-
- if(Char.Type == tSpace){
-  Token->Type = tSpace;
-  while(Char.Type == tSpace) GetChar(); // Concatenate spaces
-  if(Char.Type == tEOF){
-   delete Token;
-   return 0;
-  }
-  return Token;
- }
-
- if(Identifier(Token->Token)){
-  Token->Type = tIdentifier;
-  return Token;
- }
-
- if(Character(Token->Token)){
-  Token->Type = tCharacter;
-  return Token;
- }
- if(String(Token->Token)){
-  Token->Type = tString;
-  return Token;
- }
-
- // These start with what could potentially be a punctuator, so don't move them
- if(Number(Token->Token)){
-  Token->Type = tNumber;
-  return Token;
- }
- if(Comment(Token->Token)){
-  Token->Type = tComment;
-  return Token;
- }
-
- // Don't move this: it's placement as the last one is important
- if(Punctuator(Token->Token)){
-  Token->Type = tPunctuator;
-  return Token;
- }
-
- if(Char.Type != tEOF){
-  Token->Token << (char*)Char.Char;
-  Token->Type = tOther;
-  GetChar();
-  return Token;
- }
- delete Token;
- return 0;
-}
-//------------------------------------------------------------------------------
-
-SCANNER::TOKEN* SCANNER::GetDirective(){
- TOKEN* Token = new TOKEN;
-
+ // Ignore spaces and comments (but keep comments...)
  while(!error && Char.Type != tEOF){
+  Token->Token.Clear();
+  Token->Line = Char.Line;
+
   if(PrevIsNewline && Char.Char[0] == '#'){
-   Token->Line = Char.Line;
    GetChar();
    while(Char.Type == tSpace) GetChar();
    Identifier(Token->Token);
-   Token->Type = tDirective;
-   return Token;
+   Token->Type   = tDirective;
+   PrevIsNewline = false;
+   return true;
   }
+
   if(Char.Type == tNewline){
-   GetChar();
-   while(Char.Type == tSpace) GetChar();
-   PrevIsNewline = true;
-  }else{
+   Token->Type = tNewline;
+   while(Char.Type == tNewline){ // Concatenate newlines
+    GetChar();
+    while(Char.Type == tSpace) GetChar(); // Remove leading spaces
+   }
+   PrevIsNewline         = true;
+   Token->PrecedingSpace = true;
+   return Char.Type != tEOF;
+  }
+
+  if(Char.Type == tSpace){
+   while(Char.Type == tSpace) GetChar(); // Concatenate spaces
+   Token->PrecedingSpace = true;
+   continue; // Restart token scan
+  }
+
+  if(Identifier(Token->Token)){
+   Token->Type   = tIdentifier;
+   PrevIsNewline = false;
+   return true;
+  }
+
+  if(Character(Token->Token)){
+   Token->Type   = tCharacter;
+   PrevIsNewline = false;
+   return true;
+  }
+  if(String(Token->Token)){
+   Token->Type   = tString;
+   PrevIsNewline = false;
+   return true;
+  }
+
+  // These start with what could potentially be a punctuator, so don't move them
+  if(Number(Token->Token)){
+   Token->Type   = tNumber;
+   PrevIsNewline = false;
+   return true;
+  }
+  if(Comment(Token->Token)){
+   Token->Comment << Token->Token;
+   Token->PrecedingSpace = true;
+   continue; // Restart token scan
+  }
+
+  // Don't move this: it's placement as the last one is important
+  if(Operator(Token->Token)){
+   Token->Type   = tOperator;
+   PrevIsNewline = false;
+   return true;
+  }
+
+  if(Char.Type != tEOF){
+   Token->Token << (char*)Char.Char;
+   Token->Type = tOther;
    GetChar();
    PrevIsNewline = false;
+   return true;
   }
  }
- delete Token;
- return 0;
+ Token->Type = tEOF;
+ return false;
+}
+//------------------------------------------------------------------------------
+
+bool SCANNER::GetDirective(TOKEN* Token){
+ Token->Comment.Clear();
+ Token->PrecedingSpace = false;
+
+ // Ignore spaces and comments (but keep comments...)
+ while(!error && Char.Type != tEOF){
+  Token->Token.Clear();
+  Token->Line = Char.Line;
+
+  if(PrevIsNewline && Char.Char[0] == '#'){
+   GetChar();
+   while(Char.Type == tSpace) GetChar();
+   Identifier(Token->Token);
+   Token->Type   = tDirective;
+   PrevIsNewline = false;
+   return true;
+  }
+
+  if(Char.Type == tNewline){
+   Token->Type = tNewline;
+   while(Char.Type == tNewline){ // Concatenate newlines
+    GetChar();
+    while(Char.Type == tSpace) GetChar(); // Remove leading spaces
+   }
+   PrevIsNewline = true;
+   continue;
+  }
+
+  if(Char.Type == tSpace){
+   while(Char.Type == tSpace) GetChar(); // Concatenate spaces
+   continue; // Restart token scan
+  }
+
+  // These start with what could potentially be a punctuator, so don't move them
+  if(Comment(Token->Token)){
+   continue; // Restart token scan
+  }
+
+  PrevIsNewline = false;
+  GetChar();
+ }
+ Token->Type = tEOF;
+ return false;
 }
 //------------------------------------------------------------------------------
