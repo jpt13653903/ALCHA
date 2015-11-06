@@ -57,6 +57,8 @@ class STRING{
   STRING();
  ~STRING();
 
+  void Clear();
+
   unsigned Length(); // In bytes
 
   STRING& operator<<   (char     c);

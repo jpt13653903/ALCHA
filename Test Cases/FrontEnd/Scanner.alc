@@ -7,6 +7,10 @@ And some numbers:         \
 -0x9AFCp+5_24
 0b1001'1010'1011'0101'1010'1000
 0x'''9''''A''''B''''5''''A''''8
+
+Or different style numbers:
+- 0x1B_A8.27_CE`16.16
+
 \\
 
 Hello\    
@@ -18,8 +22,18 @@ Hello\
 \    
    \    
    \
+    
+"A string \" with escaped \" stuff"
+'Ω'
+      
+Base.Member();
 
+a = b/c;
+       
 // This is a comment
+  #  include "Some Header File"
+
+  #  include "Some Header File"
 
 /* This
 is a 
@@ -27,4 +41,13 @@ multi-
 line
 comment */
 
+{ } [ ] # ## ( )
+<: :> <% %> %: %:%: ; : ...
+new delete ? :: . .*
++ - * / % ^ & | ~
+! = < > += -= *= /= %=
+^= &= |= << >> >>= <<= == !=
+<= >= && || ++ -- , ->* ->
+and and_eq bitand bitor compl not not_eq
+or or_eq xor xor_eq
 

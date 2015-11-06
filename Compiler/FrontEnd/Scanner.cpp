@@ -22,12 +22,20 @@
 //------------------------------------------------------------------------------
 
 SCANNER::SCANNER(){
- Line  = 1;
- Index = 0;
+ Line          = 1;
+ Index         = 0;
+ error         = false;
+ PrevIsNewline = true;
 }
 //------------------------------------------------------------------------------
 
 SCANNER::~SCANNER(){
+}
+//------------------------------------------------------------------------------
+
+void SCANNER::Error(const char* Message){
+ error = true;
+ printf("Error on line %05d: %s\n", Char.Line, Message);
 }
 //------------------------------------------------------------------------------
 
@@ -127,45 +135,75 @@ int SCANNER::Newline(){
 bool SCANNER::Open(const char* Filename){
  Line  = 1;
  Index = 0;
+ error = false;
 
  char* TempBuffer = fs.Read(Filename);
- if(!TempBuffer) return false;
+ if(!TempBuffer){
+  printf("Error reading file: %s\n", Filename);
+  return false;
+ }
 
  Buffer.UseMem(TempBuffer);
 
+ // Read the first character and remove leading spaces from the first line
+ GetChar();
+ while(Char.Type == tSpace) GetChar();
+
+ PrevIsNewline = true;
  return true;
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::Get(CHAR& Char){
+bool SCANNER::GetChar(){
  int e, s, n, j;
 
- if(Index >= Buffer.Length()) return false;
+ e = s = n = 0;
+
+ Char.Char[0] = 0;
+
+ if(error || Index >= Buffer.Length()){
+  Char.Type = tEOF;
+  return false;
+ }
+
+ // Prevent checking for trailing spaces if the previous character is a
+ // non-trailing space
+ if(Char.Type == tSpace){
+  s = Space();
+  if(s){
+   for(j = 0; j < s; j++) Char.Char[j] = Buffer[Index++];
+   Char.Char[j] = 0;
+   Char.Line    = Line;
+   Char.Type    = tSpace;
+   return true;
+  }
+ }
 
  // Check for trailing spaces and escaped newlines
  while(Index < Buffer.Length()){
   if(Buffer[Index] == '\\') e = 1;
   else                      e = 0;
-
   Index += e;
-  s = Spaces();
-  Index += s;
-  n = Newline();
-  Index -= s;
-  Index -= e;
 
-  if(!e || !n) break;
+  s = Spaces (); Index += s;
+  n = Newline(); Index += n;
 
-  Line  ++;
-  Index += e+s+n;
+  if(!e || !n){
+   Index -= e+s+n;
+   break;
+  }
+  Line++;
  }
- if(Index >= Buffer.Length()) return false;
+ if(Index >= Buffer.Length()){
+  Char.Type = tEOF;
+  return false;
+ }
 
  if(e){
   Char.Char[0] = Buffer[Index++];
   Char.Char[1] = 0;
   Char.Line    = Line;
-  Char.Type    = tByte;
+  Char.Type    = tOther;
   return true;
  }
 
@@ -190,7 +228,443 @@ bool SCANNER::Get(CHAR& Char){
  Char.Char[0] = Buffer[Index++];
  Char.Char[1] = 0;
  Char.Line    = Line;
- Char.Type    = tByte;
+ Char.Type    = tOther;
  return true;
+}
+//------------------------------------------------------------------------------
+
+inline bool SCANNER::Digit(){
+ return (Char.Char[0] >= '0' && Char.Char[0] <= '9');
+}
+//------------------------------------------------------------------------------
+
+inline bool SCANNER::HexDigit(){
+ return (Char.Char[0] >= '0' && Char.Char[0] <= '9') ||
+        (Char.Char[0] >= 'a' && Char.Char[0] <= 'f') ||
+        (Char.Char[0] >= 'A' && Char.Char[0] <= 'F');
+}
+//------------------------------------------------------------------------------
+
+inline bool SCANNER::NonDigit(){
+ return (Char.Char[0] >= 'a' && Char.Char[0] <= 'z') ||
+        (Char.Char[0] >= 'A' && Char.Char[0] <= 'Z') ||
+        (Char.Char[0] == '_' ) ||
+        (Char.Char[0] >= 0x80);
+}
+//------------------------------------------------------------------------------
+
+bool SCANNER::Identifier(STRING& Token){
+ if(!NonDigit()) return false;
+ Token << (char*)Char.Char;
+ GetChar();
+
+ while(Char.Type == tOther && (Digit() || NonDigit())){
+  Token << (char*)Char.Char;
+  GetChar();
+ }
+ return true;
+}
+//------------------------------------------------------------------------------
+
+// (Digit | ("." Digit)) {
+//  Digit | NonDigit | "." | "_" | "'" |
+//  (("e" | "E" | "p" | "P") ("+" | "-"))
+// }
+bool SCANNER::Number(STRING& Token){
+ if(Token.Length()) return false;
+
+ if(Char.Char[0] == '.'){
+  Token << (char*)Char.Char;
+  GetChar();
+ }
+ if(!Digit()) return false;
+ Token << (char*)Char.Char;
+ GetChar();
+
+ bool Exponent = false;
+ while(Char.Type == tOther && (
+  Digit   ()           ||
+  NonDigit()           ||
+  Char.Char[0] == '.'  ||
+  Char.Char[0] == '_'  ||
+  Char.Char[0] == '\'' ||
+  (Exponent && (Char.Char[0] == '+' || Char.Char[0] == '-'))
+ )){
+  if(
+   Char.Char[0] == 'e' || Char.Char[0] == 'E' ||
+   Char.Char[0] == 'p' || Char.Char[0] == 'P'
+  ){
+   Exponent = true;
+  }else{
+   Exponent = false;
+  }
+  Token << (char*)Char.Char;
+  GetChar();
+ }
+ return true;
+}
+//------------------------------------------------------------------------------
+
+bool SCANNER::Comment(STRING& Token){
+ if(Token.Length()) return false;
+
+ if(Char.Char[0] != '/') return false;
+ Token << (char*)Char.Char;
+ GetChar();
+
+ if(Char.Char[0] != '/' && Char.Char[0] != '*') return false;
+ Token << (char*)Char.Char;
+
+ bool PrevIsStar = false; // Used to terminate multiline comments
+ bool Multiline  = Char.Char[0] == '*';
+
+ while(GetChar()){
+  if(Multiline){
+   if(PrevIsStar && Char.Char[0] == '/'){
+    Token << (char*)Char.Char;
+    GetChar();
+    return true;
+   }
+  }else{
+   if(Char.Type == tNewline){
+    Token << (char*)Char.Char;
+    GetChar();
+    while(Char.Type == tSpace) GetChar(); // Remove leading spaces
+    PrevIsNewline = true;
+    return true;
+   }
+  }
+  Token << (char*)Char.Char;
+  PrevIsStar = Char.Char[0] == '*';
+ }
+ Error("Incomplete Comment");
+ return false;
+}
+//------------------------------------------------------------------------------
+
+bool SCANNER::Character(STRING& Token){
+ if(Char.Char[0] != '\'') return false;
+
+ while(GetChar()){
+  if(Char.Char[0] == '\\'){
+   Token << (char*)Char.Char;
+   GetChar();
+
+  }else if(Char.Char[0] == '\''){
+   GetChar();
+   return true;
+  }
+  Token << (char*)Char.Char;
+ }
+ Error("Incomplete Character");
+ return false;
+}
+//------------------------------------------------------------------------------
+
+bool SCANNER::String(STRING& Token){
+ if(Char.Char[0] != '"') return false;
+
+ while(GetChar()){
+  if(Char.Char[0] == '\\'){
+   Token << (char*)Char.Char;
+   GetChar();
+
+  }else if(Char.Char[0] == '"'){
+   GetChar();
+   return true;
+  }
+  Token << (char*)Char.Char;
+ }
+ Error("Incomplete String");
+ return false;
+}
+//------------------------------------------------------------------------------
+
+bool SCANNER::Punctuator(STRING& Token){
+ // At this point, Token could contain '.' or '/' from Number() or Comment()
+ if(Token[0] == '.') return true;
+ if(Token[0] == '/'){
+  if(Char.Char[0] == '='){
+   Token << '=';
+   GetChar();
+  }
+  return true;
+ }
+ if(Token.Length()) return false;
+
+ if(Char.Char[0] == '{'){
+  Token << '{';
+  GetChar();
+  return true;
+ }
+ if(Char.Char[0] == '}'){
+  Token << '}';
+  GetChar();
+  return true;
+ }
+ if(Char.Char[0] == '['){
+  Token << '[';
+  GetChar();
+  return true;
+ }
+ if(Char.Char[0] == ']'){
+  Token << ']';
+  GetChar();
+  return true;
+ }
+ if(Char.Char[0] == '('){
+  Token << '(';
+  GetChar();
+  return true;
+ }
+ if(Char.Char[0] == ')'){
+  Token << ')';
+  GetChar();
+  return true;
+ }
+ if(Char.Char[0] == '#'){
+  Token << '#';
+  GetChar();
+  if(Char.Char[0] == '#'){
+   Token << '#';
+   GetChar();
+  }
+  return true;
+ }
+ if(Char.Char[0] == ';'){
+  Token << ';';
+  GetChar();
+  return true;
+ }
+ if(Char.Char[0] == ','){
+  Token << ',';
+  GetChar();
+  return true;
+ }
+ if(Char.Char[0] == ':'){
+  Token << ':';
+  GetChar();
+  if(Char.Char[0] == ':'){
+   Token << ':';
+   GetChar();
+  }
+  return true;
+ }
+ if(Char.Char[0] == '?'){
+  Token << '?';
+  GetChar();
+  return true;
+ }
+ if(Char.Char[0] == '+'){
+  Token << '+';
+  GetChar();
+  if(Char.Char[0] == '+'){
+   Token << '+';
+   GetChar();
+  }else if(Char.Char[0] == '='){
+   Token << '=';
+   GetChar();
+  }
+  return true;
+ }
+ if(Char.Char[0] == '-'){
+  Token << '-';
+  GetChar();
+  if(Char.Char[0] == '-'){
+   Token << '-';
+   GetChar();
+  }else if(Char.Char[0] == '>'){
+   Token << '>';
+   GetChar();
+  }else if(Char.Char[0] == '='){
+   Token << '=';
+   GetChar();
+  }
+  return true;
+ }
+ if(Char.Char[0] == '*'){
+  Token << '*';
+  GetChar();
+  if(Char.Char[0] == '='){
+   Token << '=';
+   GetChar();
+  }
+  return true;
+ }
+ if(Char.Char[0] == '%'){
+  Token << '%';
+  GetChar();
+  if(Char.Char[0] == '='){
+   Token << '=';
+   GetChar();
+  }
+  return true;
+ }
+ if(Char.Char[0] == '^'){
+  Token << '^';
+  GetChar();
+  if(Char.Char[0] == '='){
+   Token << '=';
+   GetChar();
+  }
+  return true;
+ }
+ if(Char.Char[0] == '&'){
+  Token << '&';
+  GetChar();
+  if(Char.Char[0] == '&'){
+   Token << '&';
+   GetChar();
+  }else if(Char.Char[0] == '='){
+   Token << '=';
+   GetChar();
+  }
+  return true;
+ }
+ if(Char.Char[0] == '|'){
+  Token << '|';
+  GetChar();
+  if(Char.Char[0] == '|'){
+   Token << '|';
+   GetChar();
+  }else if(Char.Char[0] == '='){
+   Token << '=';
+   GetChar();
+  }
+  return true;
+ }
+ if(Char.Char[0] == '~'){
+  Token << '~';
+  GetChar();
+  return true;
+ }
+ if(Char.Char[0] == '`'){
+  Token << '`';
+  GetChar();
+  return true;
+ }
+ if(Char.Char[0] == '!'){
+  Token << '!';
+  GetChar();
+  if(Char.Char[0] == '='){
+   Token << '=';
+   GetChar();
+  }
+  return true;
+ }
+ if(Char.Char[0] == '='){
+  Token << '=';
+  GetChar();
+  if(Char.Char[0] == '='){
+   Token << '=';
+   GetChar();
+  }
+  return true;
+ }
+ if(Char.Char[0] == '<'){
+  Token << '<';
+  GetChar();
+  if(Char.Char[0] == '<'){
+   Token << '<';
+   GetChar();
+   if(Char.Char[0] == '='){
+    Token << '=';
+    GetChar();
+   }
+  }else if(Char.Char[0] == '='){
+   Token << '=';
+   GetChar();
+  }
+  return true;
+ }
+ if(Char.Char[0] == '>'){
+  Token << '>';
+  GetChar();
+  if(Char.Char[0] == '>'){
+   Token << '>';
+   GetChar();
+   if(Char.Char[0] == '='){
+    Token << '=';
+    GetChar();
+   }
+  }else if(Char.Char[0] == '='){
+   Token << '=';
+   GetChar();
+  }
+  return true;
+ }
+ return false;
+}
+//------------------------------------------------------------------------------
+
+bool SCANNER::GetToken(TOKEN& Token){
+ if(Char.Type == tEOF) return false;
+
+ Token.Token.Clear();
+ Token.Type = tOther;
+ Token.Line = Char.Line;
+
+ if(PrevIsNewline && Char.Char[0] == '#'){
+  GetChar();
+  while(Char.Type == tSpace) GetChar();
+  Identifier(Token.Token);
+  Token.Type = tDirective;
+  return true;
+ }
+ PrevIsNewline = false;
+
+ if(Char.Type == tNewline){
+  Token.Type = tNewline;
+  while(Char.Type == tNewline){ // Concatenate newlines
+   GetChar();
+   while(Char.Type == tSpace) GetChar(); // Remove leading spaces
+  }
+  PrevIsNewline = true;
+  return Char.Type != tEOF;
+ }
+
+ if(Char.Type == tSpace){
+  Token.Type = tSpace;
+  while(Char.Type == tSpace) GetChar(); // Concatenate spaces
+  return Char.Type != tEOF;
+ }
+
+ if(Identifier(Token.Token)){
+  Token.Type = tIdentifier;
+  return true;
+ }
+
+ if(Character(Token.Token)){
+  Token.Type = tCharacter;
+  return true;
+ }
+ if(String(Token.Token)){
+  Token.Type = tString;
+  return true;
+ }
+
+ // These start with what could potentially be a punctuator, so don't move them
+ if(Number(Token.Token)){
+  Token.Type = tNumber;
+  return true;
+ }
+ if(Comment(Token.Token)){
+  Token.Type = tComment;
+  return true;
+ }
+
+ // Don't move this: it's placement as the last one is important
+ if(Punctuator(Token.Token)){
+  Token.Type = tPunctuator;
+  return true;
+ }
+
+ if(Char.Type != tEOF){
+  Token.Token << (char*)Char.Char;
+  Token.Type = tOther;
+  GetChar();
+  return true;
+ }
+ return false;
 }
 //------------------------------------------------------------------------------
