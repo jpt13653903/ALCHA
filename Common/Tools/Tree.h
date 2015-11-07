@@ -18,54 +18,53 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-/** Runs the following phases:
-1) Run the preprocessor
-   - Include files
-   - Expand macros
-   - Handle #if blocks
-   - etc.
-2) Translate escape sequences in strings
-3) Remove new-lines (the comment of the newline is concatenated with the
-   comment of the next pp-token)
-4) Concatenate adjacent strings (the associated comments are also concatenated)
-5) Translate pp-tokens to tokens
+/**
+ An implementation of Left-Leaning Red-Black Tree, as described by
+ Robert Sedgewick, Department of Computer Science, Princeton University,
+ Princeton, NJ 08544
 */
 //------------------------------------------------------------------------------
 
-#ifndef PreProcessor_h
-#define PreProcessor_h
+#ifndef Tree_h
+#define Tree_h
 //------------------------------------------------------------------------------
 
-#include "Scanner.h"
-#include "Keyword.h"
+struct TREE_NODE{
+ bool       Red;
+ TREE_NODE* Left;
+ TREE_NODE* Right;
+
+          TREE_NODE();
+ virtual ~TREE_NODE();
+
+ // Returns <0 for Left < Right; 0 for Equal; >0 for Left > Right
+ virtual int Compare(TREE_NODE* Right) = 0;
+};
 //------------------------------------------------------------------------------
 
-class PREPROCESSOR{
- public: // Public types
-  enum TYPE{
-   tIdentifier,
-   tKeyword,
-   tLiteral, // Character; float; fixed-point; integer; etc...
-   tOperator,
-   tString,
-  };
-
-  struct TOKEN{
-   TYPE Type;
-   STRING String;  // Identifier; String; Comment
-   STRING Comment; // Concatenation of preceding comments
-//   OPERATOR Operator;
-
-  };
-
+class TREE{
  private:
-  SCANNER::TOKEN* ppTokens; // Linked list
+  TREE_NODE* Root;
+
+  inline bool       IsRed(TREE_NODE* N);
+  inline TREE_NODE* FixUp(TREE_NODE* N);
+
+  // Insert functions
+  TREE_NODE* Insert     (TREE_NODE* N, TREE_NODE* Data);
+  TREE_NODE* RotateLeft (TREE_NODE* N);
+  TREE_NODE* RotateRight(TREE_NODE* N);
+  void       FlipColours(TREE_NODE* N);
+
+  // Find function
+  TREE_NODE* Find(TREE_NODE* N, TREE_NODE* Key);
 
  public:
-  PREPROCESSOR();
- ~PREPROCESSOR();
+           TREE();
+  virtual ~TREE();
 
-  bool Open(const char* Filename); // Also runs through the stages 1 to 3
+  void       Insert(TREE_NODE* Data);
+  TREE_NODE* Find  (TREE_NODE* Key);
+  void       Clear ();
 };
 //------------------------------------------------------------------------------
 

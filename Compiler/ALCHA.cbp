@@ -36,8 +36,14 @@
 		<Unit filename="../Common/Tools/FileSystem.h" />
 		<Unit filename="../Common/Tools/MyString.cpp" />
 		<Unit filename="../Common/Tools/MyString.h" />
+		<Unit filename="../Common/Tools/Tree.cpp" />
+		<Unit filename="../Common/Tools/Tree.h" />
 		<Unit filename="BackEnd/Altera.cpp" />
 		<Unit filename="BackEnd/Altera.h" />
+		<Unit filename="FrontEnd/Keyword.cpp" />
+		<Unit filename="FrontEnd/Keyword.h" />
+		<Unit filename="FrontEnd/Operator.cpp" />
+		<Unit filename="FrontEnd/Operator.h" />
 		<Unit filename="FrontEnd/Parser.cpp" />
 		<Unit filename="FrontEnd/Parser.h" />
 		<Unit filename="FrontEnd/PreProcessor.cpp" />

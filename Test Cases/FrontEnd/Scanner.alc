@@ -46,7 +46,7 @@ comment */
  # define Parametrised(a, b, c)
 #define non_parametrised (a, b, c)
 
-{ } [ ] # ## ( )
+{ } [ ] # ## ( ) <[ ]>
 <: :> <% %> %: %:%: ; : ...
 new delete ? :: . .*
 + - * / % ^ & | ~

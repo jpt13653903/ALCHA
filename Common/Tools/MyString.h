@@ -84,6 +84,14 @@ class STRING{
   // Deletes the current buffer and uses the given buffer instead.
   // Simply uses the pointer -- it does not copy the data.
   void UseMem(char* s);
+
+  // Returns:
+  //  0 when equal
+  // -1 when left is a substring of right
+  //  1 when right is a substring of left
+  // -2 when left is smaller than right
+  //  2 when left is greater than right
+  int Compare(STRING& Right);
 };
 //------------------------------------------------------------------------------
 

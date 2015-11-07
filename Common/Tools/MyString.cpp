@@ -243,3 +243,16 @@ void STRING::UseMem(char* s){
  Allocated = TheLength+1;
 }
 //------------------------------------------------------------------------------
+
+int STRING::Compare(STRING& Right){
+ unsigned j;
+
+ for(j = 0; TheString[j] && Right[j]; j++){
+  if(TheString[j] < Right[j]) return -2;
+  if(TheString[j] > Right[j]) return  2;
+ }
+ if(TheString[j] < Right[j]) return -1;
+ if(TheString[j] > Right[j]) return  1;
+ return 0;
+}
+//------------------------------------------------------------------------------
