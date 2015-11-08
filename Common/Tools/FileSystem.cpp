@@ -25,7 +25,7 @@ void FILE_SYSTEM::GetLongName(const char* Path, STRING& LongName){
  int j;
 
  // Extend the Path to use long names
- if(Path[1] == ':' && Path[2] == '\\') LongName << "\\\\?\\";
+ if(Path[1] == ':' && Path[2] == '\\') LongName = "\\\\?\\";
 
  for(j = 0; Path[j]; j++){
   if(Path[j] == '/') LongName << '\\';

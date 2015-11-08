@@ -51,6 +51,27 @@ unsigned STRING::Length(){
 }
 //------------------------------------------------------------------------------
 
+STRING& STRING::operator= (const char* s){
+ Clear();
+ operator<< (s);
+ return *this;
+}
+//------------------------------------------------------------------------------
+
+STRING& STRING::operator= (const wchar_t* s){
+ Clear();
+ operator<< (s);
+ return *this;
+}
+//------------------------------------------------------------------------------
+
+STRING& STRING::operator= (STRING& s){
+ Clear();
+ operator<< (s);
+ return *this;
+}
+//------------------------------------------------------------------------------
+
 STRING& STRING::operator<< (char c){
  Changed = true;
 

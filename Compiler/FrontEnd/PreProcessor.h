@@ -45,27 +45,49 @@ class PREPROCESSOR{
   enum TYPE{
    tIdentifier,
    tKeyword,
-   tLiteral, // Character; float; fixed-point; integer; etc...
    tOperator,
    tString,
+   tFixedPoint, // Includes integers and character literals
+   tFloat,       // Normal 80-bit floating point
+   tEOF
+  };
+
+  struct FIXED_POINT{
+   unsigned  IntegerBits;
+   unsigned  FractionBits; // 0 => integer
+   unsigned* Bits; // As many elements as the number of bits require, stored
+                   // in little-endian
+   FIXED_POINT();
+  ~FIXED_POINT();
+
+   bool Init(unsigned IntegerBits, unsigned FractionBits);
   };
 
   struct TOKEN{
-   TYPE Type;
-   STRING String;  // Identifier; String; Comment
-   STRING Comment; // Concatenation of preceding comments
-//   OPERATOR Operator;
-
+   TYPE        Type;
+   int         Line;
+   STRING      String;  // Identifier; String
+   STRING      Comment; // Concatenation of preceding comments
+   FIXED_POINT FixedPoint;
+   union{
+    OPERATOR_CODE Operator;
+    KEYWORD_CODE  Keyword;
+    long double   Float;
+   };
   };
 
  private:
-  SCANNER::TOKEN* ppTokens; // Linked list
+  KEYWORD  Keywords;
+  SCANNER* Scanner; // The scanner of the current file
+  SCANNER::TOKEN ppToken;
 
  public:
   PREPROCESSOR();
  ~PREPROCESSOR();
 
-  bool Open(const char* Filename); // Also runs through the stages 1 to 3
+  bool Open(const char* Filename);
+
+  bool GetToken(TOKEN* Token);
 };
 //------------------------------------------------------------------------------
 

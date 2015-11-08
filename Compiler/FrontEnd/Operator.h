@@ -26,7 +26,7 @@
 #include "MyString.h"
 //------------------------------------------------------------------------------
 
-enum OPERATOR_VALUE{
+enum OPERATOR_CODE{
  oUnknown = 0,
 
  oDirective       , // #
@@ -95,8 +95,10 @@ enum OPERATOR_VALUE{
 //------------------------------------------------------------------------------
 
 struct OPERATOR_NODE: public TREE_NODE{
-  OPERATOR_VALUE Value;
-  STRING         Operator; // Key
+  OPERATOR_CODE Code;
+  STRING        Operator; // Key
+
+  OPERATOR_NODE* Next; // Linked list used for reverse lookup
 
   OPERATOR_NODE();
  ~OPERATOR_NODE(){}
@@ -107,17 +109,22 @@ struct OPERATOR_NODE: public TREE_NODE{
 
 class OPERATOR: protected TREE{
  private:
-  void Add(OPERATOR_VALUE Value, const char* Operator);
+  OPERATOR_NODE* List; // Linked list used for reverse lookup
+
+  void Add(OPERATOR_CODE Code, const char* Operator);
 
  public:
   OPERATOR();
  ~OPERATOR(){}
 
-  int GetCode(const char* Operator);
+  OPERATOR_CODE GetCode(const char* Operator); // O(log(N))
+
+  // Reverse look-up: used to display errors; runs in O(N)
+  bool GetName(OPERATOR_CODE Code, STRING& Operator);
 };
 //------------------------------------------------------------------------------
 
-extern OPERATOR Operator;
+extern OPERATOR Operators;
 //------------------------------------------------------------------------------
 
 #endif

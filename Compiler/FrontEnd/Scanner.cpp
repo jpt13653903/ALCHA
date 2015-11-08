@@ -140,8 +140,7 @@ bool SCANNER::Open(const char* Filename){
  Index = 0;
  error = false;
 
- this->Filename.Clear();
- this->Filename << Filename;
+ this->Filename = Filename;
 
  char* TempBuffer = fs.Read(Filename);
  if(!TempBuffer){
@@ -151,9 +150,8 @@ bool SCANNER::Open(const char* Filename){
 
  Buffer.UseMem(TempBuffer);
 
- // Read the first character and remove leading spaces from the first line
+ // Read the first character
  GetChar();
- while(Char.Type == tSpace) GetChar();
 
  PrevIsNewline = true;
  return true;
@@ -262,7 +260,7 @@ inline bool SCANNER::NonDigit(){
 
 bool SCANNER::Identifier(STRING& Token){
  if(!NonDigit()) return false;
- Token << (char*)Char.Char;
+ Token = (char*)Char.Char;
  GetChar();
 
  while(Char.Type == tOther && (Digit() || NonDigit())){
@@ -316,7 +314,7 @@ bool SCANNER::Comment(STRING& Token){
  if(Token.Length()) return false;
 
  if(Char.Char[0] != '/') return false;
- Token << (char*)Char.Char;
+ Token = (char*)Char.Char;
  GetChar();
 
  if(Char.Char[0] != '/' && Char.Char[0] != '*') return false;
@@ -391,14 +389,14 @@ bool SCANNER::Operator(STRING& Token){
 
  // At this point, Token could contain '.' or '/' from Number() or Comment()
  if(Token.Length()){
+  if(!Operators.GetCode(Token.String())) return false;
   Test << Token;
-  if(!::Operator.GetCode(Test.String())) return false;
  }
 
  // All operators start with valid operators, so use this fact to advantage
  while(Char.Type != tEOF){
   Test << (char*)Char.Char;
-  if(!::Operator.GetCode(Test.String())) return Token.Length();
+  if(!Operators.GetCode(Test.String())) return Token.Length();
   Token << (char*)Char.Char;
   GetChar();
  }
@@ -478,8 +476,8 @@ bool SCANNER::GetToken(TOKEN* Token){
   }
 
   if(Char.Type != tEOF){
-   Token->Token << (char*)Char.Char;
-   Token->Type = tOther;
+   Token->Token = (char*)Char.Char;
+   Token->Type  = tOther;
    GetChar();
    PrevIsNewline = false;
    return true;

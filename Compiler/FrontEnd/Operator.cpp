@@ -21,11 +21,11 @@
 #include "Operator.h"
 //------------------------------------------------------------------------------
 
-OPERATOR Operator;
+OPERATOR Operators;
 //------------------------------------------------------------------------------
 
 OPERATOR_NODE::OPERATOR_NODE(){
- Value = oUnknown;
+ Code = oUnknown;
 }
 //------------------------------------------------------------------------------
 
@@ -34,11 +34,13 @@ int OPERATOR_NODE::Compare(TREE_NODE* Right){
 }
 //------------------------------------------------------------------------------
 
-// When adding operators, make sure that all operators starts with valid
+// When adding operators, make sure that all operators start with valid
 // operators.  For instance, when adding !@#$% as an operator, make sure that
 // !, !@, !@# and !@#$ are added as well.  The scanner depends on this.
 
 OPERATOR::OPERATOR(){
+ List = 0;
+
  Add(oDirective       , "#"  );
  Add(oTokenConcatenate, "##" );
  Add(oBegin           , "{"  );
@@ -93,21 +95,38 @@ OPERATOR::OPERATOR(){
 }
 //------------------------------------------------------------------------------
 
-void OPERATOR::Add(OPERATOR_VALUE Value, const char* Operator){
+void OPERATOR::Add(OPERATOR_CODE Code, const char* Operator){
  OPERATOR_NODE* N = new OPERATOR_NODE;
- N->Value = Value;
- N->Operator << Operator;
+ N->Code     = Code;
+ N->Operator = Operator;
  Insert(N);
+
+ // Build reverse lookup list
+ N->Next = List;
+ List    = N;
 }
 //------------------------------------------------------------------------------
 
-int OPERATOR::GetCode(const char* Operator){
+OPERATOR_CODE OPERATOR::GetCode(const char* Operator){
  OPERATOR_NODE Key;
- Key.Operator << Operator;
+ Key.Operator = Operator;
 
  OPERATOR_NODE* N = (OPERATOR_NODE*)Find(&Key);
 
- if(N) return N->Value;
- else  return 0;
+ if(N) return N->Code;
+ else  return oUnknown;
+}
+//------------------------------------------------------------------------------
+
+bool OPERATOR::GetName(OPERATOR_CODE Code, STRING& Operator){
+ OPERATOR_NODE* N = List;
+ while(N){
+  if(N->Code == Code){
+   Operator = N->Operator;
+   return true;
+  }
+  N = N->Next;
+ }
+ return false;
 }
 //------------------------------------------------------------------------------

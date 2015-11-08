@@ -26,7 +26,7 @@
 #include "MyString.h"
 //------------------------------------------------------------------------------
 
-enum KEYWORD_VALUE{
+enum KEYWORD_CODE{
  kUnknown = 0,
 
  // Inherited from C++
@@ -95,8 +95,10 @@ enum KEYWORD_VALUE{
 //------------------------------------------------------------------------------
 
 struct KEYWORD_NODE: public TREE_NODE{
-  KEYWORD_VALUE Value;
-  STRING        Identifier; // Key
+  KEYWORD_CODE Code;
+  STRING       Identifier; // Key
+
+  KEYWORD_NODE* Next; // Linked list used for reverse lookup
 
   KEYWORD_NODE();
  ~KEYWORD_NODE(){}
@@ -107,13 +109,18 @@ struct KEYWORD_NODE: public TREE_NODE{
 
 class KEYWORD: protected TREE{
  private:
-  void Add(KEYWORD_VALUE Value, const char* Identifier);
+  KEYWORD_NODE* List; // Linked list used for reverse lookup
+
+  void Add(KEYWORD_CODE Code, const char* Identifier);
 
  public:
   KEYWORD();
  ~KEYWORD(){}
 
-  int GetCode(const char* Identifier);
+  KEYWORD_CODE GetCode(const char* Identifier); // O(log(N))
+
+  // Reverse look-up: used to display errors; runs in O(N)
+  bool GetName(KEYWORD_CODE Code, STRING& Identifier);
 };
 //------------------------------------------------------------------------------
 

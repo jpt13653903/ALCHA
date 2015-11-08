@@ -61,6 +61,10 @@ class STRING{
 
   unsigned Length(); // In bytes
 
+  STRING& operator= (const char   * s);
+  STRING& operator= (const wchar_t* s);
+  STRING& operator= (      STRING & s);
+
   STRING& operator<<   (char     c);
   STRING& operator<<   (wchar_t  c);
   void    Append_UTF_32(unsigned c);

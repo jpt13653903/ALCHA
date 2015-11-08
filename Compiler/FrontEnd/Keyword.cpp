@@ -22,7 +22,7 @@
 //------------------------------------------------------------------------------
 
 KEYWORD_NODE::KEYWORD_NODE(){
- Value = kUnknown;
+ Code = kUnknown;
 }
 //------------------------------------------------------------------------------
 
@@ -32,6 +32,8 @@ int KEYWORD_NODE::Compare(TREE_NODE* Right){
 //------------------------------------------------------------------------------
 
 KEYWORD::KEYWORD(){
+ List = 0;
+
  Add(kContinue , "continue" );
  Add(kTrue     , "true"     );
  Add(kGoto     , "goto"     );
@@ -72,44 +74,61 @@ KEYWORD::KEYWORD(){
  Add(kFor      , "for"      );
  Add(kPublic   , "public"   );
 
- Add(kPin          , "pin"          );
- Add(kPinGroup     , "pinGroup"     );
- Add(kPinArray     , "pinArray"     );
- Add(kBus          , "bus"          );
- Add(kClock        , "clock"        );
- Add(kReset        , "reset"        );
- Add(kTask         , "task"         );
- Add(kClockEnable  , "clockEnable"  );
- Add(kLoop         , "loop"         );
- Add(kPipe         , "pipe"         );
- Add(kString       , "string"       );
- Add(kParam        , "param"        );
- Add(kScript       , "script"       );
- Add(kRtl          , "rtl"          );
- Add(kIn           , "in"           );
- Add(kOut          , "out"          );
- Add(kExternalSetup, "externalSetup");
- Add(kExternalHold , "externalHold" );
- Add(kExternalDelay, "externalDelay");
- Add(kTarget       , "target"       );
+ Add(kPin          , "pin"           );
+ Add(kPinGroup     , "pin_group"     );
+ Add(kPinArray     , "pin_array"     );
+ Add(kBus          , "bus"           );
+ Add(kClock        , "clock"         );
+ Add(kReset        , "reset"         );
+ Add(kTask         , "task"          );
+ Add(kClockEnable  , "clock_enable"  );
+ Add(kLoop         , "loop"          );
+ Add(kPipe         , "pipe"          );
+ Add(kString       , "string"        );
+ Add(kParam        , "param"         );
+ Add(kScript       , "script"        );
+ Add(kRtl          , "rtl"           );
+ Add(kIn           , "in"            );
+ Add(kOut          , "out"           );
+ Add(kExternalSetup, "external_setup");
+ Add(kExternalHold , "external_hold" );
+ Add(kExternalDelay, "external_delay");
+ Add(kTarget       , "target"        );
 }
 //------------------------------------------------------------------------------
 
-void KEYWORD::Add(KEYWORD_VALUE Value, const char* Identifier){
+void KEYWORD::Add(KEYWORD_CODE Code, const char* Identifier){
  KEYWORD_NODE* N = new KEYWORD_NODE;
- N->Value = Value;
- N->Identifier << Identifier;
+ N->Code       = Code;
+ N->Identifier = Identifier;
  Insert(N);
+
+ // Build reverse lookup list
+ N->Next = List;
+ List    = N;
 }
 //------------------------------------------------------------------------------
 
-int KEYWORD::GetCode(const char* Identifier){
+KEYWORD_CODE KEYWORD::GetCode(const char* Identifier){
  KEYWORD_NODE Key;
- Key.Identifier << Identifier;
+ Key.Identifier = Identifier;
 
  KEYWORD_NODE* N = (KEYWORD_NODE*)Find(&Key);
 
- if(N) return N->Value;
- else  return 0;
+ if(N) return N->Code;
+ else  return kUnknown;
+}
+//------------------------------------------------------------------------------
+
+bool KEYWORD::GetName(KEYWORD_CODE Code, STRING& Identifier){
+ KEYWORD_NODE* N = List;
+ while(N){
+  if(N->Code == Code){
+   Identifier = N->Identifier;
+   return true;
+  }
+  N = N->Next;
+ }
+ return false;
 }
 //------------------------------------------------------------------------------

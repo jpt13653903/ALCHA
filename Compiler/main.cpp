@@ -26,61 +26,53 @@ int main(int argc, char** argv){
   SetConsoleOutputCP(CP_UTF8); // UTF-8 console
  #endif
 
- SCANNER Scanner;
+ PREPROCESSOR Processor;
 
- if(!Scanner.Open("../../Test Cases\\FrontEnd\\Scanner.alc")) return -1;
+ if(!Processor.Open("../../Test Cases\\FrontEnd\\Scanner.alc")) return -1;
 
  STRING s;
- SCANNER::TOKEN Token;
+ KEYWORD Keywords;
+ PREPROCESSOR::TOKEN Token;
 
- while(Scanner.GetToken(&Token)){
+ while(Processor.GetToken(&Token)){
   printf("%05d: ", Token.Line);
   switch(Token.Type){
-   case SCANNER::tNewline:
-    printf("Newline");
+   case PREPROCESSOR::tIdentifier:
+    printf("Identifier:  \"%s\"", Token.String.String());
     break;
 
-   case SCANNER::tDirective:
-    printf("Directive: \"%s\"", Token.Token.String());
+   case PREPROCESSOR::tKeyword:
+    Keywords.GetName(Token.Keyword, s);
+    printf("Keyword %2d:  \"%s\"", Token.Keyword, s.String());
     break;
 
-   case SCANNER::tIdentifier:
-    printf("Identifier: \"%s\"", Token.Token.String());
+   case PREPROCESSOR::tOperator:
+    Operators.GetName(Token.Operator, s);
+    printf("Operator %2d: \"%s\"", Token.Operator, s.String());
     break;
 
-   case SCANNER::tNumber:
-    printf("Number:     \"%s\"", Token.Token.String());
+   case PREPROCESSOR::tString:
+    printf("String:      \"%s\"", Token.String.String());
     break;
 
-   case SCANNER::tCharacter:
-    printf("Character:  \"%s\"", Token.Token.String());
+   case PREPROCESSOR::tFixedPoint:
+    printf("Fixed-point");
     break;
 
-   case SCANNER::tString:
-    printf("String:     \"%s\"", Token.Token.String());
+   case PREPROCESSOR::tFloat:
+    printf("Float:       %lg", (double)Token.Float);
     break;
 
-   case SCANNER::tOperator:
-    printf("Operator: \"%s\"", Token.Token.String());
-    break;
-
-   case SCANNER::tOther:
-    printf("Other:      \"%s\"", Token.Token.String());
-    break;
-
-   case SCANNER::tEOF:
+   case PREPROCESSOR::tEOF:
     printf("End of file\n");
     break;
 
    default:
-    printf("Unknown:    \"%s\"", Token.Token.String());
+    printf("Unknown:     \"%s\"", Token.String.String());
     break;
   }
   if(Token.Comment.Length()){
    printf(" Associated comment: %s", Token.Comment.String());
-  }
-  if(Token.PrecedingSpace){
-   printf(" (with space)");
   }
   printf("\n");
  }
