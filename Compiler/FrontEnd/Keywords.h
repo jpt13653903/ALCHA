@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Keyword_h
-#define Keyword_h
+#ifndef Keywords_h
+#define Keywords_h
 //------------------------------------------------------------------------------
 
 #include "Tree.h"
@@ -107,15 +107,15 @@ struct KEYWORD_NODE: public TREE_NODE{
 };
 //------------------------------------------------------------------------------
 
-class KEYWORD: protected TREE{
+class KEYWORDS: protected TREE{
  private:
   KEYWORD_NODE* List; // Linked list used for reverse lookup
 
   void Add(KEYWORD_CODE Code, const char* Identifier);
 
  public:
-  KEYWORD();
- ~KEYWORD(){}
+  KEYWORDS();
+ ~KEYWORDS(){}
 
   KEYWORD_CODE GetCode(const char* Identifier); // O(log(N))
 

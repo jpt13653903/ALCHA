@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Operator_h
-#define Operator_h
+#ifndef Operators_h
+#define Operators_h
 //------------------------------------------------------------------------------
 
 #include "Tree.h"
@@ -81,7 +81,6 @@ enum OPERATOR_CODE{
  oDecrement       , // --
 
  // Unused?
- oGrave, // `
  oArrow, // ->
 
  // Aliases
@@ -107,15 +106,15 @@ struct OPERATOR_NODE: public TREE_NODE{
 };
 //------------------------------------------------------------------------------
 
-class OPERATOR: protected TREE{
+class OPERATORS: protected TREE{
  private:
   OPERATOR_NODE* List; // Linked list used for reverse lookup
 
   void Add(OPERATOR_CODE Code, const char* Operator);
 
  public:
-  OPERATOR();
- ~OPERATOR(){}
+  OPERATORS();
+ ~OPERATORS(){}
 
   OPERATOR_CODE GetCode(const char* Operator); // O(log(N))
 
@@ -124,7 +123,7 @@ class OPERATOR: protected TREE{
 };
 //------------------------------------------------------------------------------
 
-extern OPERATOR Operators;
+extern OPERATORS Operators;
 //------------------------------------------------------------------------------
 
 #endif

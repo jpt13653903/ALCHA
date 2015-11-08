@@ -26,56 +26,11 @@ int main(int argc, char** argv){
   SetConsoleOutputCP(CP_UTF8); // UTF-8 console
  #endif
 
- PREPROCESSOR Processor;
-
- if(!Processor.Open("../../Test Cases\\FrontEnd\\Scanner.alc")) return -1;
-
- STRING s;
- KEYWORD Keywords;
- PREPROCESSOR::TOKEN Token;
-
- while(Processor.GetToken(&Token)){
-  printf("%05d: ", Token.Line);
-  switch(Token.Type){
-   case PREPROCESSOR::tIdentifier:
-    printf("Identifier:  \"%s\"", Token.String.String());
-    break;
-
-   case PREPROCESSOR::tKeyword:
-    Keywords.GetName(Token.Keyword, s);
-    printf("Keyword %2d:  \"%s\"", Token.Keyword, s.String());
-    break;
-
-   case PREPROCESSOR::tOperator:
-    Operators.GetName(Token.Operator, s);
-    printf("Operator %2d: \"%s\"", Token.Operator, s.String());
-    break;
-
-   case PREPROCESSOR::tString:
-    printf("String:      \"%s\"", Token.String.String());
-    break;
-
-   case PREPROCESSOR::tFixedPoint:
-    printf("Fixed-point");
-    break;
-
-   case PREPROCESSOR::tFloat:
-    printf("Float:       %lg", (double)Token.Float);
-    break;
-
-   case PREPROCESSOR::tEOF:
-    printf("End of file\n");
-    break;
-
-   default:
-    printf("Unknown:     \"%s\"", Token.String.String());
-    break;
-  }
-  if(Token.Comment.Length()){
-   printf(" Associated comment: %s", Token.Comment.String());
-  }
-  printf("\n");
- }
+ PARSER Parser;
+ if(!Parser.Run("../../Test Cases\\FrontEnd\\Scanner.alc")) return -1;
+// if(!Parser.Run("../../Test Cases\\Target\\Cyclone V GX Starter Kit.h")){
+//  return -1;
+// }
 
  return 0;
 }

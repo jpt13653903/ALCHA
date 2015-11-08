@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Keyword.h"
+#include "Keywords.h"
 //------------------------------------------------------------------------------
 
 KEYWORD_NODE::KEYWORD_NODE(){
@@ -31,7 +31,7 @@ int KEYWORD_NODE::Compare(TREE_NODE* Right){
 }
 //------------------------------------------------------------------------------
 
-KEYWORD::KEYWORD(){
+KEYWORDS::KEYWORDS(){
  List = 0;
 
  Add(kContinue , "continue" );
@@ -97,7 +97,7 @@ KEYWORD::KEYWORD(){
 }
 //------------------------------------------------------------------------------
 
-void KEYWORD::Add(KEYWORD_CODE Code, const char* Identifier){
+void KEYWORDS::Add(KEYWORD_CODE Code, const char* Identifier){
  KEYWORD_NODE* N = new KEYWORD_NODE;
  N->Code       = Code;
  N->Identifier = Identifier;
@@ -109,7 +109,7 @@ void KEYWORD::Add(KEYWORD_CODE Code, const char* Identifier){
 }
 //------------------------------------------------------------------------------
 
-KEYWORD_CODE KEYWORD::GetCode(const char* Identifier){
+KEYWORD_CODE KEYWORDS::GetCode(const char* Identifier){
  KEYWORD_NODE Key;
  Key.Identifier = Identifier;
 
@@ -120,7 +120,7 @@ KEYWORD_CODE KEYWORD::GetCode(const char* Identifier){
 }
 //------------------------------------------------------------------------------
 
-bool KEYWORD::GetName(KEYWORD_CODE Code, STRING& Identifier){
+bool KEYWORDS::GetName(KEYWORD_CODE Code, STRING& Identifier){
  KEYWORD_NODE* N = List;
  while(N){
   if(N->Code == Code){

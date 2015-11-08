@@ -18,22 +18,21 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Parser_h
-#define Parser_h
+#ifndef Target_h
+#define Target_h
 //------------------------------------------------------------------------------
 
-#include "PreProcessor.h"
+#include "Object.h"
 //------------------------------------------------------------------------------
 
-class PARSER{
- private:
-  PREPROCESSOR Preprocessor;
+struct TARGET: public OBJECT{
+ // Physical attributes
+ STRING Vendor;
+ STRING Series;
+ STRING Device;
+ STRING Board;
 
- public:
-  PARSER();
- ~PARSER();
-
-  bool Run(const char* Filename);
+ TARGET();
 };
 //------------------------------------------------------------------------------
 

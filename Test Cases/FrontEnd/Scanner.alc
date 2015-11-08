@@ -3,13 +3,13 @@ Testing the scanner
       
 And some numbers:         \  
     ABC\
-123.456_16.8
--0x9AFCp+5_24
+123.456 `16.8
+-0x9AFCp+5`24
 0b1001'1010'1011'0101'1010'1000
 0x'''9''''A''''B''''5''''A''''8
 
 Or different style numbers:
-- 0x1B_A8.27_CE`16.16
+- 0x1B_A8.27_CE `16.16
 
 \\
 
@@ -24,15 +24,22 @@ Hello\
    \
     
 "A string \" with escaped \" stuff"
-'Ω'
-      
+'Ω''\n'
+
+'\x17Fa'
+'\u1234'
+'\U12DEAF34'
+'\172'
+
 Base.Member();
 Identifier\with\structure\and\u0837\stuff
 
 a = b/c;
-       
+      
+"This string "       
 // This is a comment
   #  include "Some Header File"
+"should be concatenated with this one"
 
  /*Comment before directive*/ #  include "Some Header File"
 
@@ -49,7 +56,7 @@ comment */
 { } [ ] # ## ( ) <[ ]>
 <: :> <% %> %: %:%: ; : ...
 new delete ? :: . .*
-+ - * / % ^ & | ~
++ - * / % ^ & | ~ `
 ! = < > += -= *= /= %=
 ^= &= |= << >> >>= <<= == !=
 <= >= && || ++ -- , ->* ->

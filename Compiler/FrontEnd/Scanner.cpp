@@ -271,10 +271,10 @@ bool SCANNER::Identifier(STRING& Token){
 }
 //------------------------------------------------------------------------------
 
-// (Digit | ("." Digit)) {
-//  Digit | NonDigit | "." | "_" | "'" |
-//  (("e" | "E" | "p" | "P") ("+" | "-"))
-// }
+// Number = (Digit | ("." Digit)) {
+//  Digit | NonDigit | "." | "_" | "'"
+//  (("e" | "E" | "p" | "P") ["+" | "-"])
+// };
 bool SCANNER::Number(STRING& Token){
  if(Token.Length()) return false;
 
@@ -288,11 +288,11 @@ bool SCANNER::Number(STRING& Token){
 
  bool Exponent = false;
  while(Char.Type == tOther && (
-  Digit   ()           ||
-  NonDigit()           ||
-  Char.Char[0] == '.'  ||
-  Char.Char[0] == '_'  ||
-  Char.Char[0] == '\'' ||
+  Digit   ()               ||
+  NonDigit()               ||
+  Char.Char[0] == '.'      ||
+  Char.Char[0] == '_'      ||
+  Char.Char[0] == '\''     ||
   (Exponent && (Char.Char[0] == '+' || Char.Char[0] == '-'))
  )){
   if(
@@ -303,6 +303,27 @@ bool SCANNER::Number(STRING& Token){
   }else{
    Exponent = false;
   }
+  Token << (char*)Char.Char;
+  GetChar();
+ }
+ return true;
+}
+//------------------------------------------------------------------------------
+
+// FixedPointCast = "`" {Digit | ("." ["-"])};
+bool SCANNER::FixedPointCast(STRING& Token){
+ if(Char.Char[0] != '`') return false;
+ Token << (char*)Char.Char;
+ GetChar();
+
+ bool Period = false;
+ while(Char.Type == tOther && (
+  Digit()             ||
+  Char.Char[0] == '.' ||
+  (Period && (Char.Char[0] == '-'))
+ )){
+  if(Char.Char[0] == '.') Period = true;
+  else                    Period = false;
   Token << (char*)Char.Char;
   GetChar();
  }
@@ -341,7 +362,7 @@ bool SCANNER::Comment(STRING& Token){
   Token << (char*)Char.Char;
   PrevIsStar = Char.Char[0] == '*';
  }
- Error("Incomplete Comment");
+ Error("Incomplete comment");
  return false;
 }
 //------------------------------------------------------------------------------
@@ -360,7 +381,7 @@ bool SCANNER::Character(STRING& Token){
   }
   Token << (char*)Char.Char;
  }
- Error("Incomplete Character");
+ Error("Incomplete character");
  return false;
 }
 //------------------------------------------------------------------------------
@@ -379,7 +400,7 @@ bool SCANNER::String(STRING& Token){
   }
   Token << (char*)Char.Char;
  }
- Error("Incomplete String");
+ Error("Incomplete string");
  return false;
 }
 //------------------------------------------------------------------------------
@@ -452,6 +473,11 @@ bool SCANNER::GetToken(TOKEN* Token){
   }
   if(String(Token->Token)){
    Token->Type   = tString;
+   PrevIsNewline = false;
+   return true;
+  }
+  if(FixedPointCast(Token->Token)){
+   Token->Type   = tFixedPointCast;
    PrevIsNewline = false;
    return true;
   }

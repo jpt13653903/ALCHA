@@ -18,10 +18,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Operator.h"
+#include "Operators.h"
 //------------------------------------------------------------------------------
 
-OPERATOR Operators;
+OPERATORS Operators;
 //------------------------------------------------------------------------------
 
 OPERATOR_NODE::OPERATOR_NODE(){
@@ -38,7 +38,7 @@ int OPERATOR_NODE::Compare(TREE_NODE* Right){
 // operators.  For instance, when adding !@#$% as an operator, make sure that
 // !, !@, !@# and !@#$ are added as well.  The scanner depends on this.
 
-OPERATOR::OPERATOR(){
+OPERATORS::OPERATORS(){
  List = 0;
 
  Add(oDirective       , "#"  );
@@ -90,12 +90,11 @@ OPERATOR::OPERATOR(){
  Add(oOr              , "||" );
  Add(oIncrement       , "++" );
  Add(oDecrement       , "--" );
- Add(oGrave           , "`"  );
  Add(oArrow           , "->" );
 }
 //------------------------------------------------------------------------------
 
-void OPERATOR::Add(OPERATOR_CODE Code, const char* Operator){
+void OPERATORS::Add(OPERATOR_CODE Code, const char* Operator){
  OPERATOR_NODE* N = new OPERATOR_NODE;
  N->Code     = Code;
  N->Operator = Operator;
@@ -107,7 +106,7 @@ void OPERATOR::Add(OPERATOR_CODE Code, const char* Operator){
 }
 //------------------------------------------------------------------------------
 
-OPERATOR_CODE OPERATOR::GetCode(const char* Operator){
+OPERATOR_CODE OPERATORS::GetCode(const char* Operator){
  OPERATOR_NODE Key;
  Key.Operator = Operator;
 
@@ -118,7 +117,7 @@ OPERATOR_CODE OPERATOR::GetCode(const char* Operator){
 }
 //------------------------------------------------------------------------------
 
-bool OPERATOR::GetName(OPERATOR_CODE Code, STRING& Operator){
+bool OPERATORS::GetName(OPERATOR_CODE Code, STRING& Operator){
  OPERATOR_NODE* N = List;
  while(N){
   if(N->Code == Code){

@@ -22,9 +22,9 @@
 //------------------------------------------------------------------------------
 
 PREPROCESSOR::FIXED_POINT::FIXED_POINT(){
- IntegerBits  = 0;
- FractionBits = 0;
- Bits         = 0;
+ BitCount = 0;
+ Exponent = 0;
+ Bits     = 0;
 }
 //------------------------------------------------------------------------------
 
@@ -34,23 +34,28 @@ PREPROCESSOR::FIXED_POINT::~FIXED_POINT(){
 //------------------------------------------------------------------------------
 
 bool PREPROCESSOR::FIXED_POINT::Init(
- unsigned IntegerBits,
- unsigned FractionBits
+ int IntegerBits,
+ int FractionBits
 ){
- this->IntegerBits  = IntegerBits;
- this->FractionBits = FractionBits;
+ if(Bits) delete[] Bits;
 
- unsigned TotalBits = IntegerBits + FractionBits;
- if(TotalBits & 0x1F) TotalBits = (TotalBits >> 5) + 1;
- else                 TotalBits = (TotalBits >> 5);
+ BitCount = IntegerBits;
+ if(FractionBits > 0) BitCount += FractionBits;
 
- Bits = new unsigned[TotalBits];
+ Exponent = -FractionBits;
+
+ int ArrayLength;
+ if(BitCount & 0x1F) ArrayLength = (BitCount >> 5) + 1;
+ else                ArrayLength = (BitCount >> 5);
+
+ Bits = new unsigned[ArrayLength];
 
  return Bits;
 }
 //------------------------------------------------------------------------------
 
 PREPROCESSOR::PREPROCESSOR(){
+ error   = false;
  Scanner = new SCANNER;
 }
 //------------------------------------------------------------------------------
@@ -60,18 +65,138 @@ PREPROCESSOR::~PREPROCESSOR(){
 }
 //------------------------------------------------------------------------------
 
+void PREPROCESSOR::Error(const char* Message){
+ error = true;
+ printf(
+  "Line %05d of %s\n  Error: %s",
+  ppToken.Line,
+  Filename.String(),
+  Message
+ );
+}
+//------------------------------------------------------------------------------
+
 bool PREPROCESSOR::Open(const char* Filename){
- if(!Scanner->Open(Filename));
+ if(!Scanner->Open(Filename)) return false;
+
+ error = false;
+
+ this->Filename = Filename;
 
  Scanner->GetToken(&ppToken);
  return true;
 }
 //------------------------------------------------------------------------------
 
-bool PREPROCESSOR::GetToken(TOKEN* Token){
- Token->Comment.Clear();
+bool PREPROCESSOR::TranslateEscapes(){
+ int      j, u;
+ STRING   Result;
+ unsigned UTF_32 = 0;
 
- while(ppToken.Type != SCANNER::tEOF){
+ for(j = 0; ppToken.Token[j]; j++){
+  if(ppToken.Token[j] == '\\'){
+   j++;
+   switch(ppToken.Token[j]){
+    case 'n' : Result << '\n'; break;
+    case 't' : Result << '\t'; break;
+    case 'v' : Result << '\v'; break;
+    case 'b' : Result << '\b'; break;
+    case 'r' : Result << '\r'; break;
+    case 'f' : Result << '\f'; break;
+    case 'a' : Result << '\a'; break;
+    case '\\': Result << '\\'; break;
+    case '?' : Result << '\?'; break;
+    case '\'': Result << '\''; break;
+    case '"' : Result << '\"'; break;
+
+    case 'x' : // Hexadecimal number
+     j++;
+     for(u = 0; u < 8; u++, j++){
+      if(ppToken.Token[j] >= '0' && ppToken.Token[j] <= '9'){
+       UTF_32 = UTF_32*0x10 + (ppToken.Token[j] - '0');
+      }else if(ppToken.Token[j] >= 'a' && ppToken.Token[j] <='f'){
+       UTF_32 = UTF_32*0x10 + (ppToken.Token[j] - 'a' + 0xA);
+      }else if(ppToken.Token[j] >= 'A' && ppToken.Token[j] <='F'){
+       UTF_32 = UTF_32*0x10 + (ppToken.Token[j] - 'A' + 0xA);
+      }else{
+       break;
+      }
+     }
+     if(!u){
+      Error("Incomplete \\x code");
+      return false;
+     }
+     j--;
+     Result.Append_UTF_32(UTF_32);
+     break;
+
+    case 'u' : // 16-bit Unicode
+     j++;
+     for(u = 0; u < 4; u++, j++){
+      if(ppToken.Token[j] >= '0' && ppToken.Token[j] <= '9'){
+       UTF_32 = UTF_32*0x10 + (ppToken.Token[j] - '0');
+      }else if(ppToken.Token[j] >= 'a' && ppToken.Token[j] <='f'){
+       UTF_32 = UTF_32*0x10 + (ppToken.Token[j] - 'a' + 0xA);
+      }else if(ppToken.Token[j] >= 'A' && ppToken.Token[j] <='F'){
+       UTF_32 = UTF_32*0x10 + (ppToken.Token[j] - 'A' + 0xA);
+      }else{
+       Error("Incomplete \\u code");
+       return false;
+      }
+     }
+     j--;
+     Result.Append_UTF_32(UTF_32);
+     break;
+
+    case 'U' : // 32-bit Unicode
+     j++;
+     for(u = 0; u < 8; u++, j++){
+      if(ppToken.Token[j] >= '0' && ppToken.Token[j] <= '9'){
+       UTF_32 = UTF_32*0x10 + (ppToken.Token[j] - '0');
+      }else if(ppToken.Token[j] >= 'a' && ppToken.Token[j] <='f'){
+       UTF_32 = UTF_32*0x10 + (ppToken.Token[j] - 'a' + 0xA);
+      }else if(ppToken.Token[j] >= 'A' && ppToken.Token[j] <='F'){
+       UTF_32 = UTF_32*0x10 + (ppToken.Token[j] - 'A' + 0xA);
+      }else{
+       Error("Incomplete \\U code");
+       return false;
+      }
+     }
+     j--;
+     Result.Append_UTF_32(UTF_32);
+     break;
+
+    default: // Could be an octal number...
+     for(u = 0; u < 11; u++, j++){
+      if(ppToken.Token[j] >= '0' && ppToken.Token[j] <= '7'){
+       UTF_32 = UTF_32*8 + (ppToken.Token[j] - '0');
+      }else{
+       break;
+      }
+     }
+     if(!u){
+      Error("Unknown escape sequence");
+      return false;
+     }
+     j--;
+     Result.Append_UTF_32(UTF_32);
+     break;
+   }
+  }else{
+   Result << ppToken.Token[j];
+  }
+ }
+ ppToken.Token = Result;
+ return true;
+}
+//------------------------------------------------------------------------------
+
+bool PREPROCESSOR::GetToken(TOKEN* Token){
+ Token->String .Clear();
+ Token->Comment.Clear();
+ Token->Type = tEOF;
+
+ while(!error && ppToken.Type != SCANNER::tEOF){
   Token->Line    =  ppToken.Line;
   Token->Comment << ppToken.Comment;
 
@@ -81,6 +206,7 @@ bool PREPROCESSOR::GetToken(TOKEN* Token){
   }
 
   if(ppToken.Type == SCANNER::tDirective){
+   /// @todo Run directives (and macro expansion) in a Get_ppToken() function
    while(Scanner->GetToken(&ppToken)){ // Just ignore them for now...
     if(ppToken.Type == SCANNER::tNewline){
      Scanner->GetToken(&ppToken);
@@ -89,6 +215,15 @@ bool PREPROCESSOR::GetToken(TOKEN* Token){
    }
    continue;
   }
+
+  if(ppToken.Type == SCANNER::tString){
+   if(!TranslateEscapes()) break;
+   Token->Type   =  tString;
+   Token->String << ppToken.Token;
+   Scanner->GetToken(&ppToken);
+   continue;
+  }
+  if(Token->Type == tString) return true;
 
   if(ppToken.Type == SCANNER::tIdentifier){
    Token->Keyword = Keywords.GetCode(ppToken.Token.String());
@@ -101,26 +236,39 @@ bool PREPROCESSOR::GetToken(TOKEN* Token){
    Scanner->GetToken(&ppToken);
    return true;
   }
+
   if(ppToken.Type == SCANNER::tNumber){
    /// @todo Scan numbers properly
+   /// @todo Remember to look for operator oFixedPointCast so that the correct
+   ///       fixed-point format is used.
    Token->Type  = tFloat;
    Token->Float = atof(ppToken.Token.String());
    Scanner->GetToken(&ppToken);
    return true;
   }
+
+  if(ppToken.Type == SCANNER::tFixedPointCast){
+   /// @todo (convert properly: to Token->FixedPoint)
+   Token->Type  = tFixedPointCast;
+   Token->Float = atof(ppToken.Token.String()+1);
+   Scanner->GetToken(&ppToken);
+   return true;
+  }
+
   if(ppToken.Type == SCANNER::tCharacter){
+   unsigned CodeLength;
+   if(!TranslateEscapes()) break;
+   Token->FixedPoint.Init(32, 0);
+   Token->FixedPoint.Bits[0] = ppToken.Token.GetUTF_32(0, &CodeLength);
+   if(CodeLength < ppToken.Token.Length()){
+    Error("Character too long");
+    break;
+   }
    Token->Type = tFixedPoint;
    Scanner->GetToken(&ppToken);
    return true;
   }
-  if(ppToken.Type == SCANNER::tString){
-   /// @todo Concatenate strings.  Remember that there could be directives and newlines between strings...
-   ///       Maybe add another level of processing?  A function to get the next ppToken (like in SCANNER)?
-   Token->Type   = tString;
-   Token->String = ppToken.Token;
-   Scanner->GetToken(&ppToken);
-   return true;
-  }
+
   if(ppToken.Type == SCANNER::tOperator){
    Token->Operator = Operators.GetCode(ppToken.Token.String());
    if(Token->Operator){
@@ -128,11 +276,11 @@ bool PREPROCESSOR::GetToken(TOKEN* Token){
     Scanner->GetToken(&ppToken);
     return true;
    }
-   printf("Error: unknown operator\n"); /// @todo Use better error handling (copy from SCANNER)
+   Error("Unknown operator");
    break;
   }
   if(ppToken.Type == SCANNER::tOther){
-   printf("Error: invalid token\n"); /// @todo Use better error handling (copy from SCANNER)
+   Error("Invalid token");
    break;
   }
  }

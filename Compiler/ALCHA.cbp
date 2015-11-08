@@ -41,10 +41,10 @@
 		<Unit filename="../Common/Tools/Tree.h" />
 		<Unit filename="BackEnd/Altera.cpp" />
 		<Unit filename="BackEnd/Altera.h" />
-		<Unit filename="FrontEnd/Keyword.cpp" />
-		<Unit filename="FrontEnd/Keyword.h" />
-		<Unit filename="FrontEnd/Operator.cpp" />
-		<Unit filename="FrontEnd/Operator.h" />
+		<Unit filename="FrontEnd/Keywords.cpp" />
+		<Unit filename="FrontEnd/Keywords.h" />
+		<Unit filename="FrontEnd/Operators.cpp" />
+		<Unit filename="FrontEnd/Operators.h" />
 		<Unit filename="FrontEnd/Parser.cpp" />
 		<Unit filename="FrontEnd/Parser.h" />
 		<Unit filename="FrontEnd/PreProcessor.cpp" />
@@ -55,6 +55,8 @@
 		<Unit filename="Objects/Object.h" />
 		<Unit filename="Objects/Pin.cpp" />
 		<Unit filename="Objects/Pin.h" />
+		<Unit filename="Objects/Target.cpp" />
+		<Unit filename="Objects/Target.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="main.h" />
 		<Extensions>

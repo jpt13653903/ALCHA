@@ -35,7 +35,7 @@
 #define Scanner_h
 //------------------------------------------------------------------------------
 
-#include "Operator.h"
+#include "Operators.h"
 #include "FileSystem.h"
 //------------------------------------------------------------------------------
 
@@ -47,6 +47,7 @@ class SCANNER{
    tDirective, // Newline {Space} "#" {Space} Identifier; store only ident.
    tIdentifier,
    tNumber,
+   tFixedPointCast,
    tCharacter,
    tString,
    tOperator,
@@ -69,7 +70,7 @@ class SCANNER{
   bool   error;
   STRING Filename;
 
-  void  Error(const char* Message);
+  void Error(const char* Message);
 
  private: // Phase 1 members
   struct CHAR{
@@ -98,12 +99,13 @@ class SCANNER{
   inline bool HexDigit();
   inline bool NonDigit();
 
-  bool Number    (STRING& Token);
-  bool String    (STRING& Token);
-  bool Comment   (STRING& Token);
-  bool Character (STRING& Token);
-  bool Identifier(STRING& Token);
-  bool Operator  (STRING& Token);
+  bool Number        (STRING& Token);
+  bool FixedPointCast(STRING& Token);
+  bool String        (STRING& Token);
+  bool Comment       (STRING& Token);
+  bool Character     (STRING& Token);
+  bool Identifier    (STRING& Token);
+  bool Operator      (STRING& Token);
 
  public: // Public interface
   SCANNER();

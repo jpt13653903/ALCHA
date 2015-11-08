@@ -91,6 +91,12 @@ STRING& STRING::operator<< (char c){
 }
 //------------------------------------------------------------------------------
 
+STRING& STRING::operator<< (unsigned char c){
+ operator<< ((char)c);
+ return *this;
+}
+//------------------------------------------------------------------------------
+
 STRING& STRING::operator<< (wchar_t c){
  Append_UTF_32((uwchar_t)c);
 

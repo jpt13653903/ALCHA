@@ -37,7 +37,7 @@
 //------------------------------------------------------------------------------
 
 #include "Scanner.h"
-#include "Keyword.h"
+#include "Keywords.h"
 //------------------------------------------------------------------------------
 
 class PREPROCESSOR{
@@ -47,20 +47,21 @@ class PREPROCESSOR{
    tKeyword,
    tOperator,
    tString,
-   tFixedPoint, // Includes integers and character literals
-   tFloat,       // Normal 80-bit floating point
+   tFixedPoint,     // Includes integers and character literals
+   tFixedPointCast, // Specifies fixed-point format
+   tFloat,          // Normal 80-bit floating point
    tEOF
   };
 
   struct FIXED_POINT{
-   unsigned  IntegerBits;
-   unsigned  FractionBits; // 0 => integer
-   unsigned* Bits; // As many elements as the number of bits require, stored
-                   // in little-endian
+   int       BitCount; // Total number of bits
+   int       Exponent; // Binary exponent
+   unsigned* Bits;     // As many elements as the number of bits require,
+                       // stored in little-endian
    FIXED_POINT();
   ~FIXED_POINT();
 
-   bool Init(unsigned IntegerBits, unsigned FractionBits);
+   bool Init(int IntegerBits, int FractionBits);
   };
 
   struct TOKEN{
@@ -77,9 +78,17 @@ class PREPROCESSOR{
   };
 
  private:
-  KEYWORD  Keywords;
+  bool   error;
+  STRING Filename;
+
+  void Error(const char* Message);
+
+ private:
+  KEYWORDS Keywords;
   SCANNER* Scanner; // The scanner of the current file
   SCANNER::TOKEN ppToken;
+
+  bool TranslateEscapes();
 
  public:
   PREPROCESSOR();

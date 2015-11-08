@@ -65,9 +65,10 @@ class STRING{
   STRING& operator= (const wchar_t* s);
   STRING& operator= (      STRING & s);
 
-  STRING& operator<<   (char     c);
-  STRING& operator<<   (wchar_t  c);
-  void    Append_UTF_32(unsigned c);
+  STRING& operator<<   (char          c);
+  STRING& operator<<   (unsigned char c);
+  STRING& operator<<   (wchar_t       c);
+  void    Append_UTF_32(unsigned      c);
 
   STRING& operator<< (const char   * s);
   STRING& operator<< (const wchar_t* s);
