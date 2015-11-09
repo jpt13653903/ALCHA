@@ -63,21 +63,21 @@
 	"Operators.h"
 	"FileSystem.h"
 
-1447001068 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\preprocessor.cpp
+1447072349 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\preprocessor.cpp
 	"PreProcessor.h"
 
-1447000114 c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\preprocessor.h
+1447071342 c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\preprocessor.h
+	"Number.h"
 	"Scanner.h"
 	"Keywords.h"
 
-1447001027 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\parser.cpp
+1447070876 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\parser.cpp
 	"Parser.h"
-	<math.h>
 
 1446988976 c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\parser.h
 	"PreProcessor.h"
 
-1447001170 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\scanner.cpp
+1447079218 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\scanner.cpp
 	"Scanner.h"
 
 1446988975 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\main.cpp
@@ -140,4 +140,9 @@
 
 1446981561 c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\objects\target.h
 	"Object.h"
+
+1447071629 c:\jpt\projects\15\1509 - alcha\codeblocks\common\tools\number.h
+
+1447072659 source:c:\jpt\projects\15\1509 - alcha\codeblocks\common\tools\number.cpp
+	"Number.h"
 

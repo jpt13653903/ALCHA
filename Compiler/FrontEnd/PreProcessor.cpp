@@ -21,39 +21,6 @@
 #include "PreProcessor.h"
 //------------------------------------------------------------------------------
 
-PREPROCESSOR::FIXED_POINT::FIXED_POINT(){
- BitCount = 0;
- Exponent = 0;
- Bits     = 0;
-}
-//------------------------------------------------------------------------------
-
-PREPROCESSOR::FIXED_POINT::~FIXED_POINT(){
- if(Bits) delete[] Bits;
-}
-//------------------------------------------------------------------------------
-
-bool PREPROCESSOR::FIXED_POINT::Init(
- int IntegerBits,
- int FractionBits
-){
- if(Bits) delete[] Bits;
-
- BitCount = IntegerBits;
- if(FractionBits > 0) BitCount += FractionBits;
-
- Exponent = -FractionBits;
-
- int ArrayLength;
- if(BitCount & 0x1F) ArrayLength = (BitCount >> 5) + 1;
- else                ArrayLength = (BitCount >> 5);
-
- Bits = new unsigned[ArrayLength];
-
- return Bits;
-}
-//------------------------------------------------------------------------------
-
 PREPROCESSOR::PREPROCESSOR(){
  error   = false;
  Scanner = new SCANNER;
@@ -191,6 +158,341 @@ bool PREPROCESSOR::TranslateEscapes(){
 }
 //------------------------------------------------------------------------------
 
+bool PREPROCESSOR::TranslateHex(NUMBER& Number){
+ const char* Buffer = ppToken.Token.String() + 2;
+
+ Number = 0;
+
+ while(*Buffer){
+  if(*Buffer == '.') break;
+  if(*Buffer == 'p' || *Buffer == 'P') break;
+
+  if      (*Buffer >=  '0' && *Buffer <= '9'){
+   Number *= 0x10;
+   Number.AddToNumerator(*Buffer - '0');
+  }else if(*Buffer >=  'a' && *Buffer <= 'f'){
+   Number *= 0x10;
+   Number.AddToNumerator(*Buffer - 'a' + 0xA);
+  }else if(*Buffer >=  'A' && *Buffer <= 'F'){
+   Number *= 0x10;
+   Number.AddToNumerator(*Buffer - 'A' + 0xA);
+  }else{
+   Error("Invalid number format");
+   return false;
+  }
+  Buffer++;
+ }
+
+ if(*Buffer == '.'){
+  Buffer++;
+  while(*Buffer){
+   if(*Buffer == 'p' || *Buffer == 'P') break;
+
+   if      (*Buffer >=  '0' && *Buffer <= '9'){
+    Number *= 0x10;
+    Number /= 0x10;
+    Number.AddToNumerator(*Buffer - '0');
+   }else if(*Buffer >=  'a' && *Buffer <= 'f'){
+    Number *= 0x10;
+    Number /= 0x10;
+    Number.AddToNumerator(*Buffer - 'a' + 0xA);
+   }else if(*Buffer >=  'A' && *Buffer <= 'F'){
+    Number *= 0x10;
+    Number /= 0x10;
+    Number.AddToNumerator(*Buffer - 'A' + 0xA);
+   }else{
+    Error("Invalid number format");
+    return false;
+   }
+   Buffer++;
+  }
+ }
+
+ bool NegExponent = false;
+ int  Exponent    = 0;
+ if(*Buffer == 'p' || *Buffer == 'P'){
+  Buffer++;
+  if(*Buffer == '+'){
+   Buffer++;
+  }else if(*Buffer == '-'){
+   NegExponent = true;
+   Buffer++;
+  }
+  while(*Buffer){
+   if(*Buffer <  '0' || *Buffer >  '9'){
+    Error("Invalid number format");
+    return false;
+   }
+   Exponent = 10*Exponent + (*Buffer - '0');
+   Buffer++;
+  }
+ }
+ if(NegExponent) Exponent *= -1;
+
+ while(Exponent > 0){
+  Number *= 2;
+  Exponent--;
+ }
+ while(Exponent < 0){
+  Number /= 2;
+  Exponent++;
+ }
+ return true;
+}
+//------------------------------------------------------------------------------
+
+bool PREPROCESSOR::TranslateOctal(NUMBER& Number){
+ const char* Buffer = ppToken.Token.String() + 2;
+
+ Number = 0;
+
+ while(*Buffer){
+  if(*Buffer == '.') break;
+  if(*Buffer == 'p' || *Buffer == 'P') break;
+  if(*Buffer <  '0' || *Buffer >  '7'){
+   Error("Invalid number format");
+   return false;
+  }
+  Number *= 8;
+  Number.AddToNumerator(*Buffer - '0');
+  Buffer++;
+ }
+
+ if(*Buffer == '.'){
+  Buffer++;
+  while(*Buffer){
+   if(*Buffer == 'p' || *Buffer == 'P') break;
+   if(*Buffer <  '0' || *Buffer >  '7'){
+    Error("Invalid number format");
+    return false;
+   }
+   Number *= 8; // Increases numerator
+   Number /= 8; // Increases denominator
+   Number.AddToNumerator(*Buffer - '0');
+   Buffer++;
+  }
+ }
+
+ bool NegExponent = false;
+ int  Exponent    = 0;
+ if(*Buffer == 'p' || *Buffer == 'P'){
+  Buffer++;
+  if(*Buffer == '+'){
+   Buffer++;
+  }else if(*Buffer == '-'){
+   NegExponent = true;
+   Buffer++;
+  }
+  while(*Buffer){
+   if(*Buffer <  '0' || *Buffer >  '9'){
+    Error("Invalid number format");
+    return false;
+   }
+   Exponent = 10*Exponent + (*Buffer - '0');
+   Buffer++;
+  }
+ }
+ if(NegExponent) Exponent *= -1;
+
+ while(Exponent > 0){
+  Number *= 2;
+  Exponent--;
+ }
+ while(Exponent < 0){
+  Number /= 2;
+  Exponent++;
+ }
+ return true;
+}
+//------------------------------------------------------------------------------
+
+bool PREPROCESSOR::TranslateBinary(NUMBER& Number){
+ const char* Buffer = ppToken.Token.String() + 2;
+
+ Number = 0;
+
+ while(*Buffer){
+  if(*Buffer == '.') break;
+  if(*Buffer == 'p' || *Buffer == 'P') break;
+  if(*Buffer <  '0' || *Buffer >  '1'){
+   Error("Invalid number format");
+   return false;
+  }
+  Number *= 2;
+  Number.AddToNumerator(*Buffer - '0');
+  Buffer++;
+ }
+
+ if(*Buffer == '.'){
+  Buffer++;
+  while(*Buffer){
+   if(*Buffer == 'p' || *Buffer == 'P') break;
+   if(*Buffer <  '0' || *Buffer >  '1'){
+    Error("Invalid number format");
+    return false;
+   }
+   Number *= 2; // Increases numerator
+   Number /= 2; // Increases denominator
+   Number.AddToNumerator(*Buffer - '0');
+   Buffer++;
+  }
+ }
+
+ bool NegExponent = false;
+ int  Exponent    = 0;
+ if(*Buffer == 'p' || *Buffer == 'P'){
+  Buffer++;
+  if(*Buffer == '+'){
+   Buffer++;
+  }else if(*Buffer == '-'){
+   NegExponent = true;
+   Buffer++;
+  }
+  while(*Buffer){
+   if(*Buffer <  '0' || *Buffer >  '9'){
+    Error("Invalid number format");
+    return false;
+   }
+   Exponent = 10*Exponent + (*Buffer - '0');
+   Buffer++;
+  }
+ }
+ if(NegExponent) Exponent *= -1;
+
+ while(Exponent > 0){
+  Number *= 2;
+  Exponent--;
+ }
+ while(Exponent < 0){
+  Number /= 2;
+  Exponent++;
+ }
+ return true;
+}
+//------------------------------------------------------------------------------
+
+bool PREPROCESSOR::TranslateDecimal(NUMBER& Number){
+ const char* Buffer = ppToken.Token.String();
+
+ Number = 0;
+
+ while(*Buffer){
+  if(*Buffer == '.') break;
+  if(*Buffer == 'e' || *Buffer == 'E') break;
+  if(*Buffer <  '0' || *Buffer >  '9'){
+   Error("Invalid number format");
+   return false;
+  }
+  Number *= 10;
+  Number.AddToNumerator(*Buffer - '0');
+  Buffer++;
+ }
+
+ if(*Buffer == '.'){
+  Buffer++;
+  while(*Buffer){
+   if(*Buffer == 'e' || *Buffer == 'E') break;
+   if(*Buffer <  '0' || *Buffer >  '9'){
+    Error("Invalid number format");
+    return false;
+   }
+   Number *= 10; // Increases numerator
+   Number /= 10; // Increases denominator
+   Number.AddToNumerator(*Buffer - '0');
+   Buffer++;
+  }
+ }
+
+ bool NegExponent = false;
+ int  Exponent    = 0;
+ if(*Buffer == 'e' || *Buffer == 'E'){
+  Buffer++;
+  if(*Buffer == '+'){
+   Buffer++;
+  }else if(*Buffer == '-'){
+   NegExponent = true;
+   Buffer++;
+  }
+  while(*Buffer){
+   if(*Buffer <  '0' || *Buffer >  '9'){
+    Error("Invalid number format");
+    return false;
+   }
+   Exponent = 10*Exponent + (*Buffer - '0');
+   Buffer++;
+  }
+ }
+ if(NegExponent) Exponent *= -1;
+
+ while(Exponent > 0){
+  Number *= 10;
+  Exponent--;
+ }
+ while(Exponent < 0){
+  Number /= 10;
+  Exponent++;
+ }
+ return true;
+}
+//------------------------------------------------------------------------------
+
+bool PREPROCESSOR::TranslateNumber(NUMBER& Number){
+ const char* Buffer = ppToken.Token.String();
+
+ if(Buffer[0] == '0'){
+  switch(Buffer[1]){
+   case 'x': return TranslateHex    (Number);
+   case 'o': return TranslateOctal  (Number);
+   case 'b': return TranslateBinary (Number);
+   default : return TranslateDecimal(Number);
+  }
+ }
+ return TranslateDecimal(Number);
+}
+//------------------------------------------------------------------------------
+
+bool PREPROCESSOR::TranslateFixedPointCast(TOKEN* Token){
+ const char* Buffer = ppToken.Token.String();
+
+ int  Integer  = 0;
+ int  Fraction = 0;
+ bool FractionSign = false;
+
+ if(*Buffer != '`') return false;
+ Buffer++;
+ while(*Buffer){
+  if(*Buffer == '.') break;
+  if(*Buffer < '0' || *Buffer > '9'){
+   Error("Invalid fixed-point cast");
+   return false;
+  }
+  Integer = 10*Integer + (*Buffer - '0');
+  Buffer++;
+ }
+
+ if(*Buffer == '.'){
+  Buffer++;
+  if(*Buffer == '-'){
+   FractionSign = true;
+   Buffer++;
+  }
+  while(*Buffer){
+   if(*Buffer < '0' || *Buffer > '9'){
+    Error("Invalid fixed-point cast");
+    return false;
+   }
+   Fraction = 10*Fraction + (*Buffer - '0');
+   Buffer++;
+  }
+  if(FractionSign) Fraction *= -1;
+ }
+ Token->FixedPointFormat.IntegerBits  = Integer;
+ Token->FixedPointFormat.FractionBits = Fraction;
+
+ return true;
+}
+//------------------------------------------------------------------------------
+
 bool PREPROCESSOR::GetToken(TOKEN* Token){
  Token->String .Clear();
  Token->Comment.Clear();
@@ -238,19 +540,15 @@ bool PREPROCESSOR::GetToken(TOKEN* Token){
   }
 
   if(ppToken.Type == SCANNER::tNumber){
-   /// @todo Scan numbers properly
-   /// @todo Remember to look for operator oFixedPointCast so that the correct
-   ///       fixed-point format is used.
-   Token->Type  = tFloat;
-   Token->Float = atof(ppToken.Token.String());
+   if(!TranslateNumber(Token->Number)) break;
+   Token->Type  = tNumber;
    Scanner->GetToken(&ppToken);
    return true;
   }
 
   if(ppToken.Type == SCANNER::tFixedPointCast){
-   /// @todo (convert properly: to Token->FixedPoint)
+   if(!TranslateFixedPointCast(Token)) break;
    Token->Type  = tFixedPointCast;
-   Token->Float = atof(ppToken.Token.String()+1);
    Scanner->GetToken(&ppToken);
    return true;
   }
@@ -258,13 +556,12 @@ bool PREPROCESSOR::GetToken(TOKEN* Token){
   if(ppToken.Type == SCANNER::tCharacter){
    unsigned CodeLength;
    if(!TranslateEscapes()) break;
-   Token->FixedPoint.Init(32, 0);
-   Token->FixedPoint.Bits[0] = ppToken.Token.GetUTF_32(0, &CodeLength);
+   Token->Number = ppToken.Token.GetUTF_32(0, &CodeLength);
    if(CodeLength < ppToken.Token.Length()){
     Error("Character too long");
     break;
    }
-   Token->Type = tFixedPoint;
+   Token->Type = tNumber;
    Scanner->GetToken(&ppToken);
    return true;
   }

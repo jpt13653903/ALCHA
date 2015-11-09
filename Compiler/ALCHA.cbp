@@ -37,6 +37,8 @@
 		<Unit filename="../Common/Tools/FileSystem.h" />
 		<Unit filename="../Common/Tools/MyString.cpp" />
 		<Unit filename="../Common/Tools/MyString.h" />
+		<Unit filename="../Common/Tools/Number.cpp" />
+		<Unit filename="../Common/Tools/Number.h" />
 		<Unit filename="../Common/Tools/Tree.cpp" />
 		<Unit filename="../Common/Tools/Tree.h" />
 		<Unit filename="BackEnd/Altera.cpp" />

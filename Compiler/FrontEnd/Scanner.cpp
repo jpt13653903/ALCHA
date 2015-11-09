@@ -275,6 +275,8 @@ bool SCANNER::Identifier(STRING& Token){
 //  Digit | NonDigit | "." | "_" | "'"
 //  (("e" | "E" | "p" | "P") ["+" | "-"])
 // };
+// Underscore and quote are removed
+
 bool SCANNER::Number(STRING& Token){
  if(Token.Length()) return false;
 
@@ -303,7 +305,7 @@ bool SCANNER::Number(STRING& Token){
   }else{
    Exponent = false;
   }
-  Token << (char*)Char.Char;
+  if(Char.Char[0] != '\'' && Char.Char[0] != '_') Token << (char*)Char.Char;
   GetChar();
  }
  return true;

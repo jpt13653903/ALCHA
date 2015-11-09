@@ -29,51 +29,6 @@ PARSER::~PARSER(){
 }
 //------------------------------------------------------------------------------
 
-#include <math.h>
-void DisplayFixedPoint(PREPROCESSOR::FIXED_POINT& FP){
- long double d = 0;
- int j;
- long double p = powl(2.0, FP.Exponent);
- for(j = 0; 32*j < FP.BitCount; j++){
-  d += FP.Bits[j] * p;
-  p *= 0x1p32;
- }
-
- int f;
- if(FP.Exponent < 0) f = ceil(log10(powl(2.0, -FP.Exponent)))+2;
- else                f = 0;
-
- char format[0x100];
- sprintf(format, "%%.%dlf `%%d.%%d", f);
-
- char s[0x100];
- sprintf(
-  s,
-  format,
-  (double)d,
-  FP.BitCount + (FP.Exponent < 0 ? FP.Exponent : 0),
-  -FP.Exponent
- );
-
- int dp;
- for(dp = 0; s[dp] && s[dp] != '.' && s[dp] != ' '; dp++);
-
- for(j = 0; s[j]; j++){
-  if(s[j] == ' '){
-   printf("%s", s+j);
-   break;
-  }
-
-  if(j && j < dp){
-   if((dp - j) % 3 == 0) printf("_");
-  }else if(j > dp+1){
-   if((j - dp - 1) % 3 == 0) printf("_");
-  }
-  printf("%c", s[j]);
- }
-}
-//------------------------------------------------------------------------------
-
 bool PARSER::Run(const char* Filename){
  if(!Preprocessor.Open(Filename)) return false;
 
@@ -106,16 +61,16 @@ bool PARSER::Run(const char* Filename){
     printf("String:      \"%s\"", Token.String.String());
     break;
 
-   case PREPROCESSOR::tFixedPoint:
-    printf("Fixed-point: "); DisplayFixedPoint(Token.FixedPoint);
+   case PREPROCESSOR::tNumber:
+    printf("Number:      %.15lg", (double)Token.Number.FloatingPoint());
     break;
 
    case PREPROCESSOR::tFixedPointCast:
-    printf("Fixed-point cast: %lg", (double)Token.Float);
-    break;
-
-   case PREPROCESSOR::tFloat:
-    printf("Float:       %lg", (double)Token.Float);
+    printf(
+     "Fixed-point cast: `%d.%d",
+     Token.FixedPointFormat.IntegerBits,
+     Token.FixedPointFormat.FractionBits
+    );
     break;
 
    case PREPROCESSOR::tEOF:

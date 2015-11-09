@@ -36,6 +36,7 @@
 #define PreProcessor_h
 //------------------------------------------------------------------------------
 
+#include "Number.h"
 #include "Scanner.h"
 #include "Keywords.h"
 //------------------------------------------------------------------------------
@@ -47,33 +48,24 @@ class PREPROCESSOR{
    tKeyword,
    tOperator,
    tString,
-   tFixedPoint,     // Includes integers and character literals
+   tNumber,
    tFixedPointCast, // Specifies fixed-point format
-   tFloat,          // Normal 80-bit floating point
    tEOF
   };
 
-  struct FIXED_POINT{
-   int       BitCount; // Total number of bits
-   int       Exponent; // Binary exponent
-   unsigned* Bits;     // As many elements as the number of bits require,
-                       // stored in little-endian
-   FIXED_POINT();
-  ~FIXED_POINT();
-
-   bool Init(int IntegerBits, int FractionBits);
-  };
-
   struct TOKEN{
-   TYPE        Type;
-   int         Line;
-   STRING      String;  // Identifier; String
-   STRING      Comment; // Concatenation of preceding comments
-   FIXED_POINT FixedPoint;
+   TYPE   Type;
+   int    Line;
+   STRING String;  // Identifier; String
+   STRING Comment; // Concatenation of preceding comments
+   NUMBER Number;
    union{
     OPERATOR_CODE Operator;
     KEYWORD_CODE  Keyword;
-    long double   Float;
+    struct{
+     int IntegerBits;
+     int FractionBits;
+    } FixedPointFormat; // Used for tFixedPointCast
    };
   };
 
@@ -88,7 +80,14 @@ class PREPROCESSOR{
   SCANNER* Scanner; // The scanner of the current file
   SCANNER::TOKEN ppToken;
 
-  bool TranslateEscapes();
+  bool TranslateHex    (NUMBER& Number);
+  bool TranslateOctal  (NUMBER& Number);
+  bool TranslateBinary (NUMBER& Number);
+  bool TranslateDecimal(NUMBER& Number);
+
+  bool TranslateEscapes       ();
+  bool TranslateNumber        (NUMBER& Number);
+  bool TranslateFixedPointCast(TOKEN * Token );
 
  public:
   PREPROCESSOR();
