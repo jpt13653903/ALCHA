@@ -100,7 +100,7 @@ pin_group SFLASH{
 }
 //------------------------------------------------------------------------------
 
-pin_array<direction = "out", current = "16 mA"> USER_LED{
+pin_array<direction = "out", current = "16 mA", standard = "LVTTL"> USER_LED{
  pin[1]<number = "M2" >;
  pin[2]<number = "N1" >;
  pin[3]<number = "R2" >;
@@ -132,62 +132,62 @@ pin_array<direction = "in"> AIN{
 }
 //------------------------------------------------------------------------------
 
-pin_array EG_P{
- pin[ 1]<number = "C1" >;
- pin[ 2]<number = "D2" >;
- pin[ 3]<number = "D1" >;
- pin[ 4]<number = "D3" >;
- pin[ 5]<number = "E1" >;
- pin[ 6]<number = "F2" >;
- pin[ 7]<number = "F1" >;
- pin[ 8]<number = "G1" >;
- pin[ 9]<number = "H1" >;
- pin[10]<number = "J1" >;
- pin[11]<number = "K2" >;
- pin[12]<number = "L2" >;
- pin[13]<number = "N2" >;
- pin[14]<number = "P3" >;
- pin[15]<number = "P1" >;
- pin[16]<number = "R3" >;
- pin[17]<number = "T2" >;
- pin[18]<number = "R4" >;
- pin[19]<number = "T5" >;
- pin[20]<number = "Y1" >;
- pin[21]<number = "Y2" >;
- pin[22]<number = "AA1">;
- pin[23]<number = "AA2">;
- pin[24]<number = "Y3" >;
- pin[25]<number = "Y4" >;
- pin[26]<number = "AB6">;
- pin[27]<number = "AB7">;
- pin[28]<number = "AA8">;
- pin[29]<number = "AB8">;
- pin[35]<number = "E11">;
- pin[36]<number = "E10">;
- pin[37]<number = "D9" >;
- pin[38]<number = "E9" >;
- pin[39]<number = "E8" >;
- pin[40]<number = "D8" >;
- pin[41]<number = "E6" >;
- pin[42]<number = "D7" >;
- pin[43]<number = "C8" >;
- pin[44]<number = "C7" >;
- pin[45]<number = "D6" >;
- pin[46]<number = "C6" >;
- pin[47]<number = "D5" >;
- pin[48]<number = "C5" >;
- pin[49]<number = "C4" >;
- pin[50]<number = "H11">;
- pin[51]<number = "J10">;
- pin[52]<number = "M9" >;
- pin[53]<number = "M8" >;
- pin[54]<number = "N9" >;
- pin[55]<number = "N8" >;
- pin[56]<number = "N5" >;
- pin[57]<number = "N4" >;
- pin[58]<number = "N3" >;
- pin[59]<number = "P5" >;
- pin[60]<number = "P4" >;
+pin_group EG{ // Incomplete array
+ pin<number = "C1" >_P1;
+ pin<number = "D2" >_P2;
+ pin<number = "D1" >_P3;
+ pin<number = "D3" >_P4;
+ pin<number = "E1" >_P5;
+ pin<number = "F2" >_P6;
+ pin<number = "F1" >_P7;
+ pin<number = "G1" >_P8;
+ pin<number = "H1" >_P9;
+ pin<number = "J1" >_P10;
+ pin<number = "K2" >_P11;
+ pin<number = "L2" >_P12;
+ pin<number = "N2" >_P13;
+ pin<number = "P3" >_P14;
+ pin<number = "P1" >_P15;
+ pin<number = "R3" >_P16;
+ pin<number = "T2" >_P17;
+ pin<number = "R4" >_P18;
+ pin<number = "T5" >_P19;
+ pin<number = "Y1" >_P20;
+ pin<number = "Y2" >_P21;
+ pin<number = "AA1">_P22;
+ pin<number = "AA2">_P23;
+ pin<number = "Y3" >_P24;
+ pin<number = "Y4" >_P25;
+ pin<number = "AB6">_P26;
+ pin<number = "AB7">_P27;
+ pin<number = "AA8">_P28;
+ pin<number = "AB8">_P29;
+ pin<number = "E11">_P35;
+ pin<number = "E10">_P36;
+ pin<number = "D9" >_P37;
+ pin<number = "E9" >_P38;
+ pin<number = "E8" >_P39;
+ pin<number = "D8" >_P40;
+ pin<number = "E6" >_P41;
+ pin<number = "D7" >_P42;
+ pin<number = "C8" >_P43;
+ pin<number = "C7" >_P44;
+ pin<number = "D6" >_P45;
+ pin<number = "C6" >_P46;
+ pin<number = "D5" >_P47;
+ pin<number = "C5" >_P48;
+ pin<number = "C4" >_P49;
+ pin<number = "H11">_P50;
+ pin<number = "J10">_P51;
+ pin<number = "M9" >_P52;
+ pin<number = "M8" >_P53;
+ pin<number = "N9" >_P54;
+ pin<number = "N8" >_P55;
+ pin<number = "N5" >_P56;
+ pin<number = "N4" >_P57;
+ pin<number = "N3" >_P58;
+ pin<number = "P5" >_P59;
+ pin<number = "P4" >_P60;
 }
 pin<number = "R5"> EXP_PRESENT;
 pin<number = "C2"> RESET_EXPn;

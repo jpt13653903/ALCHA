@@ -35,6 +35,9 @@ int main(int argc, char** argv){
   return -1;
  }
 
+ ALTERA Altera;
+ if(!Altera.WriteProject("../../Test Cases/Output", "Testing")) return -2;
+
  return 0;
 }
 //------------------------------------------------------------------------------

@@ -618,8 +618,10 @@ bool PARSER::Pin(
   return false;
  }
 
+ bool Existing = true;
  PIN* Pin = Pins.FindName(Name.String());
  if(!Pin){
+  Existing = false;
   Pin = new PIN(Name.String());
   Pins.Insert(Pin);
  }
@@ -628,25 +630,25 @@ bool PARSER::Pin(
  ApplyPinAttributes(Pin, List);
  if(List) delete List;
 
- if(Pin->ArrayDepth || Pin->Index){
-  Error("Editing attributes of a pin with array indices");
+ if(Existing && (Array || Pin->ArrayDepth || Pin->Indices)){
+  Error("Redeclaration of array pin");
   return false;
  }
 
  int j;
  if(Array){
   Pin->ArrayDepth = ParentArrayDepth+1;
-  Pin->Index      = new int[Pin->ArrayDepth];
+  Pin->Indices    = new int[Pin->ArrayDepth];
   for(j = 0; j < ParentArrayDepth; j++){
-   Pin->Index[j] = ParentIndex[j];
+   Pin->Indices[j] = ParentIndex[j];
   }
-  Pin->Index[j] = Index;
+  Pin->Indices[j] = Index;
  }
 
  fprintf(File, "Pin: %s", Pin->Name.String());
  if(Pin->ArrayDepth){
   for(j = 0; j < Pin->ArrayDepth; j++){
-   fprintf(File, "[%d]", Pin->Index[j]);
+   fprintf(File, "[%d]", Pin->Indices[j]);
   }
  }
  fprintf(File, "\n");

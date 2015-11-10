@@ -86,7 +86,12 @@ pin_array<direction = "in", voltage = "1.2 V"> SW{
  pin[9]<number = "AE19">;
 }
 
-pin_group<direction = "out", voltage = "2.5 V", current = "16 mA"> LED{
+pin_group<
+ direction = "out", 
+ voltage   = "2.5 V", 
+ current   = "16 mA", 
+ standard  = "LVTTL"
+> LED{
  pin_array R{
   pin[0]<number = "F7" >;
   pin[1]<number = "F6" >;
@@ -111,7 +116,7 @@ pin_group<direction = "out", voltage = "2.5 V", current = "16 mA"> LED{
  }
 }
 
-pin_array<direction = "out", current = "16 mA"> HEX{
+pin_array<direction = "out", current = "16 mA", standard = "LVTTL"> HEX{
  pin_array[0]<voltage = "1.2 V"> {
   pin[0]<number = "V19">;
   pin[1]<number = "V18">;

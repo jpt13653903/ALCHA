@@ -6,9 +6,9 @@ PINS Pins;
 
 PIN::PIN(const char* Name): OBJECT(otPin, Name){
  ArrayDepth = 0;
- Index      = 0;
+ Indices    = 0;
 
- Standard  = "CMOS";
+ Standard  = "LVCMOS";
  Voltage   = 3.3;
  Current   = 0.0;
 
@@ -24,7 +24,7 @@ PIN::PIN(const char* Name): OBJECT(otPin, Name){
 //------------------------------------------------------------------------------
 
 PIN::~PIN(){
- if(Index) delete[] Index;
+ if(Indices) delete[] Indices;
 }
 //------------------------------------------------------------------------------
 
@@ -36,8 +36,8 @@ int PIN::Compare(TREE_NODE* Right){
 
  int j;
  for(j = 0; j < ArrayDepth && j < right->ArrayDepth; j++){
-  if(Index[j] < right->Index[j]) return -1;
-  if(Index[j] > right->Index[j]) return  1;
+  if(Indices[j] < right->Indices[j]) return -1;
+  if(Indices[j] > right->Indices[j]) return  1;
  }
  if(ArrayDepth < right->ArrayDepth) return -1;
  if(ArrayDepth > right->ArrayDepth) return  1;

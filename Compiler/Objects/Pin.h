@@ -34,7 +34,7 @@
 
 struct PIN: public OBJECT{
  int  ArrayDepth;
- int* Index;
+ int* Indices;
 
  STRING Standard;  // The logic standard: CMOS, TTL, HSUL, etc.
  STRING Number;    // Physical pin number
