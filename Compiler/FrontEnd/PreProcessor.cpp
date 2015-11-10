@@ -541,6 +541,7 @@ bool PREPROCESSOR::GetToken(TOKEN* Token){
 
   if(ppToken.Type == SCANNER::tNumber){
    if(!TranslateNumber(Token->Number)) break;
+   Token->Number.Simplify();
    Token->Type  = tNumber;
    Scanner->GetToken(&ppToken);
    return true;

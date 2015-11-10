@@ -40,16 +40,25 @@ class NUMBER{
   unsigned* Numerator;
   unsigned* Denominator;
 
+  bool Simplify(unsigned u); // Try to simplify by division by u/u
+
  public:
   NUMBER();
  ~NUMBER();
 
+  // Operators
   void operator= (int      i);
   void operator= (unsigned u);
 
+  bool operator== (int      i);
+  bool operator== (unsigned u);
+
+  void Simplify(); // Only the first 10 primes are tested
+
+  // Low-level control of the components (does not simplify)
   void MultiplyNumerator  (unsigned u);
   void MultiplyDenominator(unsigned u);
-  void AddToNumerator     (unsigned u); // Ignores what the denominator is
+  void AddToNumerator     (unsigned u);
 
   void        Display();
   long double FloatingPoint();

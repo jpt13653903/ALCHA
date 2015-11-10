@@ -68,6 +68,75 @@ void NUMBER::operator= (unsigned u){
 }
 //------------------------------------------------------------------------------
 
+bool NUMBER::operator== (int i){
+ if(i < 0){
+  if(!Negative) return false;
+  i = -i;
+ }else{
+  if( Negative) return false;
+ }
+
+ // Create a number n with it's numerator equal to this denominator
+ NUMBER n;
+ n.NumLength = DenLength;
+
+ delete[] n.Numerator;
+ n.Numerator = new unsigned[DenLength];
+
+ int j;
+ for(j = 0; j < DenLength; j++){
+  n.Numerator[j] = Denominator[j];
+ }
+
+ // Now multiply this new number by i
+ n.MultiplyNumerator((unsigned)i);
+
+ // And compare the numerators
+ for(j = 0; j < NumLength && j < n.NumLength; j++){
+  if(Numerator[j] != n.Numerator[j]) return false;
+ }
+ for(; j < NumLength; j++){
+  if(Numerator[j]) return false;
+ }
+ for(; j < n.NumLength; j++){
+  if(n.Numerator[j]) return false;
+ }
+ return true;
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator== (unsigned u){
+ if(Negative) return false;
+
+ // Create a number n with it's numerator equal to this denominator
+ NUMBER n;
+ n.NumLength = DenLength;
+
+ delete[] n.Numerator;
+ n.Numerator = new unsigned[DenLength];
+
+ int j;
+ for(j = 0; j < DenLength; j++){
+  n.Numerator[j] = Denominator[j];
+ }
+
+ // Now multiply this new number by u
+ n.MultiplyNumerator(u);
+
+ // And compare the numerators
+ for(j = 0; j < NumLength && j < n.NumLength; j++){
+  if(Numerator[j] != n.Numerator[j]) return false;
+ }
+ for(; j < NumLength; j++){
+  if(Numerator[j]) return false;
+ }
+ for(; j < n.NumLength; j++){
+  if(n.Numerator[j]) return false;
+ }
+ return true;
+}
+//------------------------------------------------------------------------------
+
 void NUMBER::MultiplyNumerator(unsigned u){
  if(u == 0){
   operator= (0);
@@ -174,6 +243,8 @@ void NUMBER::MultiplyDenominator(unsigned u){
 //------------------------------------------------------------------------------
 
 void NUMBER::AddToNumerator(unsigned u){
+ if(u == 0) return;
+
  int j;
 
  if(
@@ -221,5 +292,67 @@ long double NUMBER::FloatingPoint(){
 
  if(Negative) return -Num / Den;
  else         return  Num / Den;
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::Simplify(unsigned u){
+ int j;
+
+ unsigned* Num = new unsigned[NumLength];
+ unsigned* Den = new unsigned[DenLength];
+
+ uint64_t i64 = 0;
+ for(j = NumLength-1; j >= 0; j--){
+  i64    = (i64 << 32) + Numerator[j];
+  Num[j] = i64 / u;
+  i64   -= (uint64_t)Num[j] * u;
+ }
+ if(i64) return false; // There is a remainder
+
+ i64 = 0;
+ for(j = DenLength-1; j >= 0; j--){
+  i64    = (i64 << 32) + Denominator[j];
+  Den[j] = i64 / u;
+  i64   -= (uint64_t)Den[j] * u;
+ }
+ if(i64) return false; // There is a remainder
+
+ // Remove leading zeros
+ for(j = NumLength-1; j > 0 && !Num[j]; j--);
+ j++;
+ if(j != NumLength){
+  NumLength = j;
+  delete[] Numerator;
+  Numerator = new unsigned[NumLength];
+ }
+ for(j = DenLength-1; j > 0 && !Den[j]; j--);
+ j++;
+ if(j != DenLength){
+  DenLength = j;
+  delete[] Denominator;
+  Denominator = new unsigned[DenLength];
+ }
+
+ // Copy the answer
+ for(j = NumLength-1; j >= 0; j--) Numerator  [j] = Num[j];
+ for(j = DenLength-1; j >= 0; j--) Denominator[j] = Den[j];
+
+ return true;
+}
+//------------------------------------------------------------------------------
+
+void NUMBER::Simplify(){
+ while(Simplify( 2));
+ while(Simplify( 3));
+ while(Simplify( 5));
+ while(Simplify( 7));
+ while(Simplify(11));
+ while(Simplify(13));
+ while(Simplify(17));
+ while(Simplify(19));
+ while(Simplify(23));
+ while(Simplify(29));
+
+ if(Denominator[0]) Simplify(Denominator[0]);
 }
 //------------------------------------------------------------------------------
