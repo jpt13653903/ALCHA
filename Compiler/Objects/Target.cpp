@@ -1,6 +1,15 @@
 #include "Target.h"
 //------------------------------------------------------------------------------
 
-TARGET::TARGET(): OBJECT(otTarget){
+TARGETS Targets;
+//------------------------------------------------------------------------------
+
+TARGET::TARGET(const char* Name): OBJECT(otTarget, Name){
+}
+//------------------------------------------------------------------------------
+
+TARGET* TARGETS::FindName(const char* Name){
+ OBJECT Key(otTarget, Name);
+ return (TARGET*)Find(&Key);
 }
 //------------------------------------------------------------------------------

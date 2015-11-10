@@ -38,7 +38,12 @@ SCANNER::SCANNER(){
 
 void SCANNER::Error(const char* Message){
  error = true;
- printf("Line %05d of %s\n  Error: %s", Char.Line, Filename.String(), Message);
+ printf(
+  "Line %05d of %s\n  Error: %s\n",
+  Char.Line,
+  Filename.String(),
+  Message
+ );
 }
 //------------------------------------------------------------------------------
 

@@ -41,11 +41,11 @@
 1446754129 c:\jpt\projects\15\1509 - alcha\codeblocks\common\global\os_header.h
 	<windows.h>
 
-1446996304 c:\jpt\projects\15\1509 - alcha\codeblocks\common\tools\mystring.h
+1447165305 c:\jpt\projects\15\1509 - alcha\codeblocks\common\tools\mystring.h
 	<stdio.h>
 	<wchar.h>
 
-1446996484 source:c:\jpt\projects\15\1509 - alcha\codeblocks\common\tools\mystring.cpp
+1447166366 source:c:\jpt\projects\15\1509 - alcha\codeblocks\common\tools\mystring.cpp
 	"MyString.h"
 
 1446754087 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\backend\altera.cpp
@@ -63,24 +63,27 @@
 	"Operators.h"
 	"FileSystem.h"
 
-1447155626 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\preprocessor.cpp
+1447166589 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\preprocessor.cpp
 	"PreProcessor.h"
 
-1447071342 c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\preprocessor.h
+1447160340 c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\preprocessor.h
 	"Number.h"
 	"Scanner.h"
 	"Keywords.h"
 
-1447150000 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\parser.cpp
+1447176412 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\parser.cpp
 	"Parser.h"
 
-1446988976 c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\parser.h
+1447175701 c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\parser.h
+	<math.h>
+	"Pin.h"
+	"Target.h"
 	"PreProcessor.h"
 
-1447079218 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\scanner.cpp
+1447166589 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\scanner.cpp
 	"Scanner.h"
 
-1447155652 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\main.cpp
+1447159987 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\main.cpp
 	"main.h"
 
 1446754123 c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\main.h
@@ -105,17 +108,17 @@
 	"Tree.h"
 	"MyString.h"
 
-1446970180 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\objects\object.cpp
+1447163884 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\objects\object.cpp
 	"Object.h"
 
-1446981804 c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\objects\object.h
+1447174642 c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\objects\object.h
 	"Tree.h"
 	"MyString.h"
 
-1446970198 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\objects\pin.cpp
+1447175252 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\objects\pin.cpp
 	"Pin.h"
 
-1446967644 c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\objects\pin.h
+1447175055 c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\objects\pin.h
 	"Object.h"
 
 1446754129 c:\jpt\projects\15\1509 - alcha\codeblocks\common\os_header.h
@@ -131,20 +134,20 @@
 1447001302 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\operators.cpp
 	"Operators.h"
 
-1447001299 c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\operators.h
+1447162293 c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\frontend\operators.h
 	"Tree.h"
 	"MyString.h"
 
-1446981561 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\objects\target.cpp
+1447164059 source:c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\objects\target.cpp
 	"Target.h"
 
-1446981561 c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\objects\target.h
+1447163884 c:\jpt\projects\15\1509 - alcha\codeblocks\compiler\objects\target.h
 	"Object.h"
 
-1447155857 c:\jpt\projects\15\1509 - alcha\codeblocks\common\tools\number.h
+1447173147 c:\jpt\projects\15\1509 - alcha\codeblocks\common\tools\number.h
 	<stdio.h>
 	<stdint.h>
 
-1447155717 source:c:\jpt\projects\15\1509 - alcha\codeblocks\common\tools\number.cpp
+1447173238 source:c:\jpt\projects\15\1509 - alcha\codeblocks\common\tools\number.cpp
 	"Number.h"
 

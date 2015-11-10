@@ -84,12 +84,13 @@ enum OPERATOR_CODE{
  oArrow, // ->
 
  // Aliases
- oStartParameters = oStartGroup, // (
- oEndParameters   = oEndGroup  , // )
- oTo              = oElse      , // :
- oStar            = oMultiply  , // *
- oBeginAttributes = oLess      , // <
- oEndAttributes   = oGreater     // >
+ oStartParameters = oStartGroup  , // (
+ oEndParameters   = oEndGroup    , // )
+ oTo              = oElse        , // :
+ oStar            = oMultiply    , // *
+ oBeginAttributes = oLess        , // <
+ oEndAttributes   = oGreater     , // >
+ oComma           = oEndStatement  // ,
 };
 //------------------------------------------------------------------------------
 

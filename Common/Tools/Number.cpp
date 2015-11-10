@@ -273,10 +273,10 @@ void NUMBER::Display(){
  int j;
 
  if(Negative) printf("-");
- printf("0x");
- for(j = NumLength-1; j >= 0; j--) printf("%08X", Numerator  [j]);
- printf("/0x");
- for(j = DenLength-1; j >= 0; j--) printf("%08X", Denominator[j]);
+ printf("0x%X", Numerator[NumLength-1]);
+ for(j = NumLength-2; j >= 0; j--) printf("%08X", Numerator[j]);
+ printf("/0x%X", Denominator[DenLength-1]);
+ for(j = DenLength-2; j >= 0; j--) printf("%08X", Denominator[j]);
 
  printf(" ~ %.18lg", (double)FloatingPoint());
 }
@@ -354,5 +354,14 @@ void NUMBER::Simplify(){
  while(Simplify(29));
 
  if(Denominator[0]) Simplify(Denominator[0]);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::IsInteger32(){
+ Simplify();
+ if(NumLength > 1 || DenLength > 1) return false;
+ if(Denominator[0] != 1) return false;
+ if(Negative) return Numerator[0] <= 0x80000000;
+ else         return Numerator[0] <= 0x7FFFFFFF;
 }
 //------------------------------------------------------------------------------

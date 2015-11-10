@@ -32,8 +32,14 @@ struct TARGET: public OBJECT{
  STRING Device;
  STRING Board;
 
- TARGET();
+ TARGET(const char* Name);
 };
+//------------------------------------------------------------------------------
+
+struct TARGETS: public TREE{
+ TARGET* FindName(const char* Name);
+};
+extern TARGETS Targets;
 //------------------------------------------------------------------------------
 
 #endif

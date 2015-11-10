@@ -22,14 +22,69 @@
 #define Parser_h
 //------------------------------------------------------------------------------
 
+#include <math.h>
+//------------------------------------------------------------------------------
+
+#include "Pin.h"
+#include "Target.h"
 #include "PreProcessor.h"
 //------------------------------------------------------------------------------
 
 class PARSER{
  private:
+  struct ATTRIBUTE_LIST{
+   STRING Property;
+   STRING Value;
+
+   ATTRIBUTE_LIST* Next;
+
+   ATTRIBUTE_LIST();
+  ~ATTRIBUTE_LIST();
+  };
+
+  KEYWORDS Keywords;
+
   PREPROCESSOR Preprocessor;
+  PREPROCESSOR::TOKEN Token;
+
+  inline bool GetToken();
+
+  void DisplayToken();
+
+  bool error;
+  void Error  (const char* Message);
+  void Warning(const char* Message);
+
+  bool            PropertyValuePair(STRING& Property, STRING& Value);
+  ATTRIBUTE_LIST* AttributeList();
+
+  double GetFloatValue(STRING& Value, STRING* Unit = 0);
+
+  bool Target();
+
+  bool GetPinIndex(int& Index);
+
+  bool PinGroup(ATTRIBUTE_LIST* ParentList = 0, STRING* ParentName = 0);
+  bool PinArray(
+   ATTRIBUTE_LIST* ParentList       = 0,
+   STRING        * ParentName       = 0,
+   bool            Array            = false,
+   int             ParentArrayDepth = 0,
+   int*            ParentIndex      = 0
+  );
+  bool Pin(
+   ATTRIBUTE_LIST* ParentList       = 0,
+   STRING        * ParentName       = 0,
+   bool            Array            = false,
+   int             ParentArrayDepth = 0,
+   int*            ParentIndex      = 0
+  );
+
+  void ApplyPinAttributes(PIN* Pin, ATTRIBUTE_LIST* List);
 
  public:
+FILE* File;
+
   PARSER();
  ~PARSER();
 

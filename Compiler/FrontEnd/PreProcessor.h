@@ -56,6 +56,8 @@ class PREPROCESSOR{
   struct TOKEN{
    TYPE   Type;
    int    Line;
+   STRING File;
+
    STRING String;  // Identifier; String
    STRING Comment; // Concatenation of preceding comments
    NUMBER Number;

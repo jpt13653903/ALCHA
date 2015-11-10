@@ -41,8 +41,10 @@ struct OBJECT: public TREE_NODE{
  OBJECT_TYPE Type;
  STRING      Name;
 
-          OBJECT(OBJECT_TYPE Type);
+          OBJECT(OBJECT_TYPE Type, const char* Name);
  virtual ~OBJECT(){}
+
+ virtual int Compare(TREE_NODE* Right);
 };
 //------------------------------------------------------------------------------
 

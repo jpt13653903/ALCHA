@@ -272,6 +272,11 @@ void STRING::UseMem(char* s){
 //------------------------------------------------------------------------------
 
 int STRING::Compare(STRING& Right){
+ return Compare(Right.String());
+}
+//------------------------------------------------------------------------------
+
+int STRING::Compare(const char* Right){
  unsigned j;
 
  for(j = 0; TheString[j] && Right[j]; j++){

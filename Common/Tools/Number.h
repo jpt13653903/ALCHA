@@ -62,6 +62,9 @@ class NUMBER{
 
   void        Display();
   long double FloatingPoint();
+
+  bool IsInteger32(); // Returns true if number is an integer and
+                      // in the range -0x80000000 -> 0x7FFFFFFF
 };
 //------------------------------------------------------------------------------
 

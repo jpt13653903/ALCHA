@@ -97,6 +97,7 @@ class STRING{
   // -2 when left is smaller than right
   //  2 when left is greater than right
   int Compare(STRING& Right);
+  int Compare(const char* Right);
 };
 //------------------------------------------------------------------------------
 

@@ -35,7 +35,7 @@ PREPROCESSOR::~PREPROCESSOR(){
 void PREPROCESSOR::Error(const char* Message){
  error = true;
  printf(
-  "Line %05d of %s\n  Error: %s",
+  "Line %05d of %s\n  Error: %s\n",
   ppToken.Line,
   Filename.String(),
   Message
@@ -499,6 +499,7 @@ bool PREPROCESSOR::GetToken(TOKEN* Token){
  Token->Type = tEOF;
 
  while(!error && ppToken.Type != SCANNER::tEOF){
+  Token->File    =  Filename;
   Token->Line    =  ppToken.Line;
   Token->Comment << ppToken.Comment;
 
