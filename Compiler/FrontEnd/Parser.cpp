@@ -63,7 +63,7 @@ void PARSER::Warning(const char* Message){
 
 bool PARSER::GetToken(){
  if(!Preprocessor.GetToken(&Token)) return false;
- DisplayToken();
+// DisplayToken();
  return true;
 }
 //------------------------------------------------------------------------------
@@ -429,7 +429,7 @@ bool PARSER::PinArray(
 
  STRING Name;
  if(ParentName) Name << *ParentName;
- if(Token.Type == PREPROCESSOR::tIdentifier){
+ if(!Array && Token.Type == PREPROCESSOR::tIdentifier){
   Name << Token.String;
   GetToken();
  }
@@ -598,7 +598,7 @@ bool PARSER::Pin(
 
  STRING Name;
  if(ParentName) Name << *ParentName;
- if(Token.Type == PREPROCESSOR::tIdentifier){
+ if(!Array && Token.Type == PREPROCESSOR::tIdentifier){
   Name << Token.String;
   GetToken();
  }

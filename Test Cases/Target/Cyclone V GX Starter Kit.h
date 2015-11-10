@@ -12,8 +12,6 @@ target<
  device = "5CGXFC5C6F27C7N",
  board  = "Cyclone V GX Starter Kit"
 > MyTarget;
-
-target MyTarget;
 //------------------------------------------------------------------------------
 
 /* 

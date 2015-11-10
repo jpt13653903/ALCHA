@@ -28,7 +28,10 @@ int main(int argc, char** argv){
 
  PARSER Parser;
 // if(!Parser.Run("../../Test Cases\\FrontEnd\\Scanner.alc")) return -1;
- if(!Parser.Run("../../Test Cases\\Target\\Cyclone V GX Starter Kit.h")){
+// if(!Parser.Run("../../Test Cases\\Target\\Cyclone V GX Starter Kit.h")){
+//  return -1;
+// }
+ if(!Parser.Run("../../Test Cases\\Target\\BeMicro Max 10.h")){
   return -1;
  }
 
