@@ -168,13 +168,13 @@ bool PREPROCESSOR::TranslateHex(NUMBER& Number){
   if(*Buffer == 'p' || *Buffer == 'P') break;
 
   if      (*Buffer >=  '0' && *Buffer <= '9'){
-   Number *= 0x10;
+   Number.MultiplyNumerator(0x10);
    Number.AddToNumerator(*Buffer - '0');
   }else if(*Buffer >=  'a' && *Buffer <= 'f'){
-   Number *= 0x10;
+   Number.MultiplyNumerator(0x10);
    Number.AddToNumerator(*Buffer - 'a' + 0xA);
   }else if(*Buffer >=  'A' && *Buffer <= 'F'){
-   Number *= 0x10;
+   Number.MultiplyNumerator(0x10);
    Number.AddToNumerator(*Buffer - 'A' + 0xA);
   }else{
    Error("Invalid number format");
@@ -189,16 +189,16 @@ bool PREPROCESSOR::TranslateHex(NUMBER& Number){
    if(*Buffer == 'p' || *Buffer == 'P') break;
 
    if      (*Buffer >=  '0' && *Buffer <= '9'){
-    Number *= 0x10;
-    Number /= 0x10;
+    Number.MultiplyNumerator  (0x10);
+    Number.MultiplyDenominator(0x10);
     Number.AddToNumerator(*Buffer - '0');
    }else if(*Buffer >=  'a' && *Buffer <= 'f'){
-    Number *= 0x10;
-    Number /= 0x10;
+    Number.MultiplyNumerator  (0x10);
+    Number.MultiplyDenominator(0x10);
     Number.AddToNumerator(*Buffer - 'a' + 0xA);
    }else if(*Buffer >=  'A' && *Buffer <= 'F'){
-    Number *= 0x10;
-    Number /= 0x10;
+    Number.MultiplyNumerator  (0x10);
+    Number.MultiplyDenominator(0x10);
     Number.AddToNumerator(*Buffer - 'A' + 0xA);
    }else{
     Error("Invalid number format");
@@ -230,11 +230,11 @@ bool PREPROCESSOR::TranslateHex(NUMBER& Number){
  if(NegExponent) Exponent *= -1;
 
  while(Exponent > 0){
-  Number *= 2;
+  Number.MultiplyNumerator(2);
   Exponent--;
  }
  while(Exponent < 0){
-  Number /= 2;
+  Number.MultiplyDenominator(2);
   Exponent++;
  }
  return true;
@@ -253,7 +253,7 @@ bool PREPROCESSOR::TranslateOctal(NUMBER& Number){
    Error("Invalid number format");
    return false;
   }
-  Number *= 8;
+  Number.MultiplyNumerator(8);
   Number.AddToNumerator(*Buffer - '0');
   Buffer++;
  }
@@ -266,8 +266,8 @@ bool PREPROCESSOR::TranslateOctal(NUMBER& Number){
     Error("Invalid number format");
     return false;
    }
-   Number *= 8; // Increases numerator
-   Number /= 8; // Increases denominator
+   Number.MultiplyNumerator  (8);
+   Number.MultiplyDenominator(8);
    Number.AddToNumerator(*Buffer - '0');
    Buffer++;
   }
@@ -295,11 +295,11 @@ bool PREPROCESSOR::TranslateOctal(NUMBER& Number){
  if(NegExponent) Exponent *= -1;
 
  while(Exponent > 0){
-  Number *= 2;
+  Number.MultiplyNumerator(2);
   Exponent--;
  }
  while(Exponent < 0){
-  Number /= 2;
+  Number.MultiplyDenominator(2);
   Exponent++;
  }
  return true;
@@ -318,7 +318,7 @@ bool PREPROCESSOR::TranslateBinary(NUMBER& Number){
    Error("Invalid number format");
    return false;
   }
-  Number *= 2;
+  Number.MultiplyNumerator(2);
   Number.AddToNumerator(*Buffer - '0');
   Buffer++;
  }
@@ -331,8 +331,8 @@ bool PREPROCESSOR::TranslateBinary(NUMBER& Number){
     Error("Invalid number format");
     return false;
    }
-   Number *= 2; // Increases numerator
-   Number /= 2; // Increases denominator
+   Number.MultiplyNumerator  (2);
+   Number.MultiplyDenominator(2);
    Number.AddToNumerator(*Buffer - '0');
    Buffer++;
   }
@@ -360,11 +360,11 @@ bool PREPROCESSOR::TranslateBinary(NUMBER& Number){
  if(NegExponent) Exponent *= -1;
 
  while(Exponent > 0){
-  Number *= 2;
+  Number.MultiplyNumerator(2);
   Exponent--;
  }
  while(Exponent < 0){
-  Number /= 2;
+  Number.MultiplyDenominator(2);
   Exponent++;
  }
  return true;
@@ -383,7 +383,7 @@ bool PREPROCESSOR::TranslateDecimal(NUMBER& Number){
    Error("Invalid number format");
    return false;
   }
-  Number *= 10;
+  Number.MultiplyNumerator(10);
   Number.AddToNumerator(*Buffer - '0');
   Buffer++;
  }
@@ -396,8 +396,8 @@ bool PREPROCESSOR::TranslateDecimal(NUMBER& Number){
     Error("Invalid number format");
     return false;
    }
-   Number *= 10; // Increases numerator
-   Number /= 10; // Increases denominator
+   Number.MultiplyNumerator  (10);
+   Number.MultiplyDenominator(10);
    Number.AddToNumerator(*Buffer - '0');
    Buffer++;
   }
@@ -425,11 +425,11 @@ bool PREPROCESSOR::TranslateDecimal(NUMBER& Number){
  if(NegExponent) Exponent *= -1;
 
  while(Exponent > 0){
-  Number *= 10;
+  Number.MultiplyNumerator(10);
   Exponent--;
  }
  while(Exponent < 0){
-  Number /= 10;
+  Number.MultiplyDenominator(10);
   Exponent++;
  }
  return true;

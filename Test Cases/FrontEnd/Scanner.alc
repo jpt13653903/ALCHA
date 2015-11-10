@@ -66,4 +66,7 @@ or or_eq xor xor_eq
 
 pin pin_group pin_array target for loop while unsigned signed
 
+1234567890987654321
+.1234567890987654321
+1234567890987654321.1234567890987654321
 

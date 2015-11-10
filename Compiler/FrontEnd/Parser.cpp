@@ -62,12 +62,12 @@ bool PARSER::Run(const char* Filename){
     break;
 
    case PREPROCESSOR::tNumber:
-    printf("Number:      %.15lg", (double)Token.Number.FloatingPoint());
+    printf("Number:      ");
+    Token.Number.Display() ;
     break;
 
    case PREPROCESSOR::tFixedPointCast:
-    printf(
-     "Fixed-point cast: `%d.%d",
+    printf("Fixed-point: `%d.%d",
      Token.FixedPointFormat.IntegerBits,
      Token.FixedPointFormat.FractionBits
     );

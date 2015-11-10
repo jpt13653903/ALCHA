@@ -1,49 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Release" />
-	<File name="BackEnd\Altera.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="31" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="FrontEnd\PreProcessor.cpp" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="14263" topLine="485" />
-		</Cursor>
-	</File>
-	<File name="FrontEnd\Scanner.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1802" topLine="37" />
-		</Cursor>
-	</File>
-	<File name="main.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1123" topLine="13" />
-		</Cursor>
-	</File>
-	<File name="Objects\Object.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1309" topLine="25" />
-		</Cursor>
-	</File>
-	<File name="..\Common\Tools\Number.cpp" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1761" topLine="68" />
-		</Cursor>
-	</File>
-	<File name="Objects\Object.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="239" topLine="0" />
-		</Cursor>
-	</File>
 	<File name="Objects\Pin.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="1578" topLine="26" />
 		</Cursor>
 	</File>
-	<File name="FrontEnd\Parser.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="Objects\Target.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2068" topLine="49" />
+			<Cursor1 position="133" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="FrontEnd\Operators.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3262" topLine="80" />
+		</Cursor>
+	</File>
+	<File name="FrontEnd\Keywords.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2473" topLine="80" />
+		</Cursor>
+	</File>
+	<File name="FrontEnd\Scanner.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="9035" topLine="314" />
 		</Cursor>
 	</File>
 	<File name="FrontEnd\PreProcessor.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -51,29 +31,14 @@
 			<Cursor1 position="2546" topLine="74" />
 		</Cursor>
 	</File>
-	<File name="..\Common\Tools\FileSystem.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="Objects\Object.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="517" topLine="0" />
+			<Cursor1 position="1309" topLine="25" />
 		</Cursor>
 	</File>
-	<File name="FrontEnd\Scanner.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\Common\Resources\resource.rc" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="8690" topLine="292" />
-		</Cursor>
-	</File>
-	<File name="FrontEnd\Keywords.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="920" topLine="71" />
-		</Cursor>
-	</File>
-	<File name="..\Common\Tools\Number.h" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1641" topLine="27" />
-		</Cursor>
-	</File>
-	<File name="..\Common\Tools\MyString.cpp" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2745" topLine="74" />
+			<Cursor1 position="202" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="Objects\Target.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -81,19 +46,34 @@
 			<Cursor1 position="1221" topLine="15" />
 		</Cursor>
 	</File>
+	<File name="..\Common\Tools\MyString.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2431" topLine="61" />
+		</Cursor>
+	</File>
+	<File name="..\Common\Tools\MyString.cpp" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2745" topLine="74" />
+		</Cursor>
+	</File>
+	<File name="FrontEnd\Parser.cpp" open="1" top="1" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2303" topLine="58" />
+		</Cursor>
+	</File>
 	<File name="..\Common\Tools\FileSystem.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="1250" topLine="15" />
 		</Cursor>
 	</File>
-	<File name="FrontEnd\Parser.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\Common\Tools\Number.h" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1212" topLine="16" />
+			<Cursor1 position="1641" topLine="27" />
 		</Cursor>
 	</File>
-	<File name="..\Common\Tools\MyString.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\Common\Tools\Number.cpp" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2431" topLine="61" />
+			<Cursor1 position="1761" topLine="68" />
 		</Cursor>
 	</File>
 	<File name="BackEnd\Altera.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -106,9 +86,14 @@
 			<Cursor1 position="3837" topLine="118" />
 		</Cursor>
 	</File>
-	<File name="Objects\Pin.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="BackEnd\Altera.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="125" topLine="0" />
+			<Cursor1 position="31" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="main.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1287" topLine="13" />
 		</Cursor>
 	</File>
 	<File name="FrontEnd\Operators.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -116,19 +101,9 @@
 			<Cursor1 position="2434" topLine="68" />
 		</Cursor>
 	</File>
-	<File name="FrontEnd\Keywords.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\Common\Tools\FileSystem.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2473" topLine="80" />
-		</Cursor>
-	</File>
-	<File name="Objects\Target.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="133" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\Common\Tools\Tree.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2118" topLine="48" />
+			<Cursor1 position="517" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="main.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -136,14 +111,39 @@
 			<Cursor1 position="131" topLine="5" />
 		</Cursor>
 	</File>
-	<File name="FrontEnd\Operators.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="FrontEnd\Keywords.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3262" topLine="80" />
+			<Cursor1 position="920" topLine="71" />
 		</Cursor>
 	</File>
-	<File name="..\Common\Resources\resource.rc" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="FrontEnd\Parser.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="202" topLine="0" />
+			<Cursor1 position="1212" topLine="16" />
+		</Cursor>
+	</File>
+	<File name="FrontEnd\PreProcessor.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="13803" topLine="497" />
+		</Cursor>
+	</File>
+	<File name="..\Common\Tools\Tree.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2118" topLine="48" />
+		</Cursor>
+	</File>
+	<File name="FrontEnd\Scanner.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1810" topLine="37" />
+		</Cursor>
+	</File>
+	<File name="Objects\Object.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="239" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="Objects\Pin.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="125" topLine="0" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

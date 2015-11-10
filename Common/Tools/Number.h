@@ -27,6 +27,10 @@
 #define Number_h
 //------------------------------------------------------------------------------
 
+#include <stdio.h>
+#include <stdint.h>
+//------------------------------------------------------------------------------
+
 class NUMBER{
  private:
   int NumLength; // Number of 32-bit words
@@ -43,11 +47,11 @@ class NUMBER{
   void operator= (int      i);
   void operator= (unsigned u);
 
-  void operator*= (unsigned u); // Multiplies the numerator only
-  void operator/= (unsigned u); // Multiplies the denominator only
+  void MultiplyNumerator  (unsigned u);
+  void MultiplyDenominator(unsigned u);
+  void AddToNumerator     (unsigned u); // Ignores what the denominator is
 
-  void AddToNumerator(unsigned u); // Ignores what the denominator is
-
+  void        Display();
   long double FloatingPoint();
 };
 //------------------------------------------------------------------------------
