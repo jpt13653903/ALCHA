@@ -23,20 +23,35 @@
 
 int main(int argc, char** argv){
  #ifdef __WIN32
+  // UTF-8 Console encoding
   SetConsoleOutputCP(CP_UTF8); // UTF-8 console
+  // Read the current console size
+  CONSOLE_SCREEN_BUFFER_INFO Info;
+  GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &Info);
+  // Make the console buffer as many lines as the system will allow
+  Info.dwSize.Y = 0x7FFF;
+  while(
+   !SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), Info.dwSize)
+  ) Info.dwSize.Y--;
  #endif
 
  PARSER Parser;
 // if(!Parser.Run("../../Test Cases\\FrontEnd\\Scanner.alc")) return -1;
-// if(!Parser.Run("../../Test Cases\\Target\\Cyclone V GX Starter Kit.h")){
+// if(!Parser.Run("../../Test Cases\\Target\\Cyclone V GX Starter Kit.ah")){
 //  return -1;
 // }
- if(!Parser.Run("../../Test Cases\\Target\\BeMicro Max 10.h")){
+// if(!Parser.Run("../../Test Cases\\Target\\BeMicro Max 10.ah")){
+//  return -1;
+// }
+// if(!Parser.Run("../../Test Cases\\Target\\Minimal BeMicro Max 10.ah")){
+//  return -1;
+// }
+ if(!Parser.Run("../../Test Cases/Buttons to LEDs/main.alc")){
   return -1;
  }
 
- ALTERA Altera;
- if(!Altera.WriteProject("../../Test Cases/Output", "Testing")) return -2;
+// ALTERA Altera;
+// if(!Altera.WriteProject("../../Test Cases/Output", "Testing")) return -2;
 
  return 0;
 }

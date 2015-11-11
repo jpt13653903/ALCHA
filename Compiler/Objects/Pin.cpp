@@ -32,7 +32,7 @@ int PIN::Compare(TREE_NODE* Right){
  PIN* right = (PIN*)Right;
 
  int Result = Name.Compare(right->Name);
- if(!Result) return Result;
+ if(Result) return Result;
 
  int j;
  for(j = 0; j < ArrayDepth && j < right->ArrayDepth; j++){
@@ -45,8 +45,15 @@ int PIN::Compare(TREE_NODE* Right){
 }
 //------------------------------------------------------------------------------
 
-PIN* PINS::FindName(const char* Name){
- OBJECT Key(otPin, Name);
- return (PIN*)Find(&Key);
+PIN* PINS::FindName(const char* Name, int ArrayDepth, int* Indices){
+ PIN Key(Name);
+ Key.ArrayDepth = ArrayDepth;
+ Key.Indices    = Indices;
+
+ PIN* Result = (PIN*)Find(&Key);
+
+ Key.Indices = 0; // Prevent premature deletion
+
+ return Result;
 }
 //------------------------------------------------------------------------------

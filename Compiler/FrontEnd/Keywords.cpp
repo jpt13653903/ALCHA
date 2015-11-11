@@ -77,14 +77,10 @@ KEYWORDS::KEYWORDS(){
  Add(kPin          , "pin"           );
  Add(kPinGroup     , "pin_group"     );
  Add(kPinArray     , "pin_array"     );
- Add(kBus          , "bus"           );
  Add(kClock        , "clock"         );
- Add(kReset        , "reset"         );
  Add(kTask         , "task"          );
- Add(kClockEnable  , "clock_enable"  );
  Add(kLoop         , "loop"          );
  Add(kPipe         , "pipe"          );
- Add(kString       , "string"        );
  Add(kParam        , "param"         );
  Add(kScript       , "script"        );
  Add(kRtl          , "rtl"           );

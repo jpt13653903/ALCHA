@@ -67,9 +67,7 @@ class SCANNER{
   };
 
  private: // General private members
-  bool   error;
-  STRING Filename;
-
+  bool error;
   void Error(const char* Message);
 
  private: // Phase 1 members
@@ -110,7 +108,8 @@ class SCANNER{
  public: // Public interface
   SCANNER();
 
-  bool Open(const char* Filename);
+  STRING Filename; // Read-only
+  bool   Open(const char* Filename);
 
   bool GetToken(TOKEN* Token);
 

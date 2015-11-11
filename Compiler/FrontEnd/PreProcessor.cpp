@@ -21,14 +21,30 @@
 #include "PreProcessor.h"
 //------------------------------------------------------------------------------
 
-PREPROCESSOR::PREPROCESSOR(){
- error   = false;
+PREPROCESSOR::STACK::STACK(){
  Scanner = new SCANNER;
+ Next    = 0;
+}
+//------------------------------------------------------------------------------
+
+PREPROCESSOR::STACK::~STACK(){
+ delete Scanner;
+}
+//------------------------------------------------------------------------------
+
+PREPROCESSOR::PREPROCESSOR(){
+ error = false;
+ Stack = 0;
 }
 //------------------------------------------------------------------------------
 
 PREPROCESSOR::~PREPROCESSOR(){
- delete Scanner;
+ STACK* Temp;
+ while(Stack){
+  Temp  = Stack;
+  Stack = Stack->Next;
+  delete Temp;
+ }
 }
 //------------------------------------------------------------------------------
 
@@ -37,20 +53,35 @@ void PREPROCESSOR::Error(const char* Message){
  printf(
   "Line %05d of %s\n  Error: %s\n",
   ppToken.Line,
-  Filename.String(),
+  Stack->Scanner->Filename.String(),
   Message
  );
 }
 //------------------------------------------------------------------------------
 
 bool PREPROCESSOR::Open(const char* Filename){
- if(!Scanner->Open(Filename)) return false;
+ STACK* Temp;
+ while(Stack){
+  Temp  = Stack;
+  Stack = Stack->Next;
+  delete Temp;
+ }
+
+ Stack = new STACK;
+
+ if(!Stack->Scanner->Open(Filename)) return false;
+
+ Path.Clear();
+ int j, q = 0;
+ for(j = 0; Filename[j]; j++){
+  if(Filename[j] == '\\' || Filename[j] == '/'){
+   for(; q < j; q++) Path << Filename[q];
+  }
+ }
 
  error = false;
 
- this->Filename = Filename;
-
- Scanner->GetToken(&ppToken);
+ GetPPToken();
  return true;
 }
 //------------------------------------------------------------------------------
@@ -493,37 +524,85 @@ bool PREPROCESSOR::TranslateFixedPointCast(TOKEN* Token){
 }
 //------------------------------------------------------------------------------
 
+/// @todo For macro expansion, add another layer above this one to translate
+///       macros
+bool PREPROCESSOR::GetPPToken(){
+ Stack->Scanner->GetToken(&ppToken);
+
+ while(!error){
+  if(ppToken.Type == SCANNER::tEOF){
+   if(Stack->Next){
+    STACK* Temp = Stack;
+    Stack = Stack->Next;
+    delete Temp;
+    Stack->Scanner->GetToken(&ppToken);
+    if(ppToken.Type != SCANNER::tNewline){
+     Error("Newline expected");
+     break;
+    }
+
+   }else{
+    break;
+   }
+
+  }else if(ppToken.Type == SCANNER::tNewline){
+   Stack->Scanner->GetToken(&ppToken);
+
+  }else if(ppToken.Type == SCANNER::tDirective){
+   if(!ppToken.Token.Compare("include")){
+    Stack->Scanner->GetToken(&ppToken);
+    if(ppToken.Type != SCANNER::tString) break;
+
+    STRING Filename;
+    Filename << Path << "/" << ppToken.Token;
+
+    STACK* Temp = new STACK;
+    Temp->Next = Stack;
+    Stack      = Temp;
+
+    if(!Stack->Scanner->Open(Filename.String())) return false;
+    GetPPToken();
+
+   }else{ // Ignore the directive line
+    /// @todo Run directives (and macro expansion) in a Get_ppToken() function
+    while(Stack->Scanner->GetToken(&ppToken)){ // Just ignore them for now...
+     if(ppToken.Type == SCANNER::tNewline){
+      Stack->Scanner->GetToken(&ppToken);
+      break;
+     }
+    }
+   }
+
+  }else if(ppToken.Type == SCANNER::tIdentifier){
+   /// @todo Run macro-expansion
+   return !error && ppToken.Type != SCANNER::tEOF;
+
+  }else{
+   return !error && ppToken.Type != SCANNER::tEOF;
+  }
+ }
+ ppToken.Type = SCANNER::tEOF;
+ return false;
+}
+//------------------------------------------------------------------------------
+
 bool PREPROCESSOR::GetToken(TOKEN* Token){
  Token->String .Clear();
  Token->Comment.Clear();
  Token->Type = tEOF;
 
+ if(!Stack) return false;
+
  while(!error && ppToken.Type != SCANNER::tEOF){
-  Token->File    =  Filename;
+  Token->File    =  Stack->Scanner->Filename;
   Token->Line    =  ppToken.Line;
   Token->Comment << ppToken.Comment;
-
-  if(ppToken.Type == SCANNER::tNewline){
-   Scanner->GetToken(&ppToken);
-   continue;
-  }
-
-  if(ppToken.Type == SCANNER::tDirective){
-   /// @todo Run directives (and macro expansion) in a Get_ppToken() function
-   while(Scanner->GetToken(&ppToken)){ // Just ignore them for now...
-    if(ppToken.Type == SCANNER::tNewline){
-     Scanner->GetToken(&ppToken);
-     break;
-    }
-   }
-   continue;
-  }
 
   if(ppToken.Type == SCANNER::tString){
    if(!TranslateEscapes()) break;
    Token->Type   =  tString;
    Token->String << ppToken.Token;
-   Scanner->GetToken(&ppToken);
+   GetPPToken();
    continue;
   }
   if(Token->Type == tString) return true;
@@ -536,7 +615,7 @@ bool PREPROCESSOR::GetToken(TOKEN* Token){
     Token->Type   = tIdentifier;
     Token->String = ppToken.Token;
    }
-   Scanner->GetToken(&ppToken);
+   GetPPToken();
    return true;
   }
 
@@ -544,14 +623,14 @@ bool PREPROCESSOR::GetToken(TOKEN* Token){
    if(!TranslateNumber(Token->Number)) break;
    Token->Number.Simplify();
    Token->Type  = tNumber;
-   Scanner->GetToken(&ppToken);
+   GetPPToken();
    return true;
   }
 
   if(ppToken.Type == SCANNER::tFixedPointCast){
    if(!TranslateFixedPointCast(Token)) break;
    Token->Type  = tFixedPointCast;
-   Scanner->GetToken(&ppToken);
+   GetPPToken();
    return true;
   }
 
@@ -564,7 +643,7 @@ bool PREPROCESSOR::GetToken(TOKEN* Token){
     break;
    }
    Token->Type = tNumber;
-   Scanner->GetToken(&ppToken);
+   GetPPToken();
    return true;
   }
 
@@ -572,7 +651,7 @@ bool PREPROCESSOR::GetToken(TOKEN* Token){
    Token->Operator = Operators.GetCode(ppToken.Token.String());
    if(Token->Operator){
     Token->Type = tOperator;
-    Scanner->GetToken(&ppToken);
+    GetPPToken();
     return true;
    }
    Error("Unknown operator");

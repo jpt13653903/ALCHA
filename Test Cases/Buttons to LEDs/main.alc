@@ -1,0 +1,5 @@
+#include "../Target/Minimal BeMicro Max 10.ah"
+
+// Global assignment
+LED := Button:Button;
+

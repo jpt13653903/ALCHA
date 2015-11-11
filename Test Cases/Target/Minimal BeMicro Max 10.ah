@@ -1,0 +1,46 @@
+// Minimalistic platform descriptor for the BeMicro Max 10
+//------------------------------------------------------------------------------
+
+#ifndef Platform_h
+#define Platform_h
+//------------------------------------------------------------------------------
+
+// Target
+target<
+ vendor = "Altera",
+ series = "MAX 10",
+ device = "10M08DAF484C8GES",
+ board  = "BeMicro Max 10"
+>;
+//------------------------------------------------------------------------------
+
+pin_array<direction = "out", current = "8 mA", standard = "LVTTL"> USER_LED{
+ pin[1]<number = "M2" >;
+ pin[2]<number = "N1" >;
+ pin[3]<number = "R2" >;
+ pin[4]<number = "T1" >;
+ pin[5]<number = "V4" >;
+ pin[6]<number = "T6" >;
+ pin[7]<number = "AB4">;
+ pin[8]<number = "AA5">;
+}
+#define LED USER_LED
+//------------------------------------------------------------------------------
+
+pin_array<direction = "in"> SW{
+ pin[1]<number = "M1" >;
+ pin[2]<number = "R1" >;
+ pin[3]<number = "V5" >;
+ pin[4]<number = "AB5">;
+}
+#define Button SW
+//------------------------------------------------------------------------------
+
+pin<direction = "in", frequency = "50 MHz", number = "N14"> SYS_CLK;
+pin<direction = "in",                       number = "N15"> USER_CLK;
+#define Clk SYS_CLK
+//------------------------------------------------------------------------------
+
+#endif
+//------------------------------------------------------------------------------
+

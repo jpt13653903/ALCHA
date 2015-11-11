@@ -63,7 +63,7 @@ void PARSER::Warning(const char* Message){
 
 bool PARSER::GetToken(){
  if(!Preprocessor.GetToken(&Token)) return false;
-// DisplayToken();
+ DisplayToken();
  return true;
 }
 //------------------------------------------------------------------------------
@@ -209,15 +209,7 @@ bool PARSER::Target(){
   return false;
  }
 
- if(Token.Type != PREPROCESSOR::tIdentifier){
-  Error("Identifier expected");
-  if(List) delete List;
-  return false;
- }
- STRING Name;
- Name = Token.String;
  if(
-  !GetToken() ||
   (Token.Type     != PREPROCESSOR::tOperator) ||
   (Token.Operator != oEndState              )
  ){
@@ -226,20 +218,13 @@ bool PARSER::Target(){
   return false;
  }
 
- TARGET* Target = Targets.FindName(Name.String());
- if(!Target){
-  Target = new TARGET(Name.String());
-  Targets.Insert(Target);
- }
-
  // Update attributes
-
  ATTRIBUTE_LIST* Temp = List;
  while(Temp){
-  if     (!Temp->Property.Compare("vendor")) Target->Vendor = Temp->Value;
-  else if(!Temp->Property.Compare("series")) Target->Series = Temp->Value;
-  else if(!Temp->Property.Compare("device")) Target->Device = Temp->Value;
-  else if(!Temp->Property.Compare("board" )) Target->Board  = Temp->Value;
+  if     (!Temp->Property.Compare("vendor")) ::Target.Vendor = Temp->Value;
+  else if(!Temp->Property.Compare("series")) ::Target.Series = Temp->Value;
+  else if(!Temp->Property.Compare("device")) ::Target.Device = Temp->Value;
+  else if(!Temp->Property.Compare("board" )) ::Target.Board  = Temp->Value;
   else Warning("Unknown target attribute");
   Temp = Temp->Next;
  }
@@ -618,32 +603,31 @@ bool PARSER::Pin(
   return false;
  }
 
- bool Existing = true;
- PIN* Pin = Pins.FindName(Name.String());
+ int  j;
+ int  ArrayDepth = 0;
+ int* Indices    = 0;
+ if(Array){
+  ArrayDepth = ParentArrayDepth+1;
+  Indices    = new int[ArrayDepth];
+  for(j = 0; j < ParentArrayDepth; j++){
+   Indices[j] = ParentIndex[j];
+  }
+  Indices[j] = Index;
+ }
+
+ PIN* Pin = Pins.FindName(Name.String(), ArrayDepth, Indices);
  if(!Pin){
-  Existing = false;
   Pin = new PIN(Name.String());
+  Pin->ArrayDepth = ArrayDepth;
+  Pin->Indices    = Indices;
   Pins.Insert(Pin);
+ }else{
+  if(Indices) delete[] Indices;
  }
 
  ApplyPinAttributes(Pin, ParentList);
  ApplyPinAttributes(Pin, List);
  if(List) delete List;
-
- if(Existing && (Array || Pin->ArrayDepth || Pin->Indices)){
-  Error("Redeclaration of array pin");
-  return false;
- }
-
- int j;
- if(Array){
-  Pin->ArrayDepth = ParentArrayDepth+1;
-  Pin->Indices    = new int[Pin->ArrayDepth];
-  for(j = 0; j < ParentArrayDepth; j++){
-   Pin->Indices[j] = ParentIndex[j];
-  }
-  Pin->Indices[j] = Index;
- }
 
  fprintf(File, "Pin: %s", Pin->Name.String());
  if(Pin->ArrayDepth){

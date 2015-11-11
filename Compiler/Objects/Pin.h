@@ -60,7 +60,7 @@ struct PIN: public OBJECT{
 //------------------------------------------------------------------------------
 
 struct PINS: public TREE{
- PIN* FindName(const char* Name);
+ PIN* FindName(const char* Name, int ArrayDepth, int* Indices);
 };
 extern PINS Pins;
 //------------------------------------------------------------------------------

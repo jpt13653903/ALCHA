@@ -1,4 +1,4 @@
-// Platform descriptor for the Cyclone V GX Starter Kit
+// Platform descriptor for the BeMicro Max 10
 //------------------------------------------------------------------------------
 
 #ifndef Platform_h
@@ -11,7 +11,7 @@ target<
  series = "MAX 10",
  device = "10M08DAF484C8GES",
  board  = "BeMicro Max 10"
-> MyTarget;
+>;
 //------------------------------------------------------------------------------
 
 pin_group ADXL362{
@@ -100,7 +100,7 @@ pin_group SFLASH{
 }
 //------------------------------------------------------------------------------
 
-pin_array<direction = "out", current = "16 mA", standard = "LVTTL"> USER_LED{
+pin_array<direction = "out", current = "8 mA", standard = "LVTTL"> USER_LED{
  pin[1]<number = "M2" >;
  pin[2]<number = "N1" >;
  pin[3]<number = "R2" >;

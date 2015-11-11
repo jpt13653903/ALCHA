@@ -61,8 +61,8 @@ PROJECT_REVISION = \"" << Name << "\"\n\
 
  STRING QSF;
  QSF << "\
-set_global_assignment -name FAMILY \"MAX 10\"\n\
-set_global_assignment -name DEVICE 10M08DAF484C8GES\n\
+set_global_assignment -name FAMILY \"" << Target.Series << "\"\n\
+set_global_assignment -name DEVICE " << Target.Device << "\n\
 set_global_assignment -name TOP_LEVEL_ENTITY " << Name << "\n\
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 15.0.0\n\
 set_global_assignment -name PROJECT_CREATION_TIME_DATE \"" <<
@@ -97,6 +97,8 @@ set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS \"HALF SIGNAL SWING\"
 set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005\n\
 set_global_assignment -name VERILOG_SHOW_LMF_MAPPING_MESSAGES OFF\n\
 set_global_assignment -name INTERNAL_FLASH_UPDATE_MODE \"SINGLE COMP IMAGE\"\n\
+#-------------------------------------------------------------------------------\n\
+\n\
 set_location_assignment PIN_AB5 -to Button[4]\n\
 set_location_assignment PIN_V5 -to Button[3]\n\
 set_location_assignment PIN_R1 -to Button[2]\n\
@@ -118,17 +120,24 @@ set_instance_assignment -name IO_STANDARD \"3.3-V LVTTL\" -to LED[5]\n\
 set_instance_assignment -name IO_STANDARD \"3.3-V LVTTL\" -to LED[4]\n\
 set_instance_assignment -name IO_STANDARD \"3.3-V LVTTL\" -to LED[3]\n\
 set_instance_assignment -name IO_STANDARD \"3.3-V LVTTL\" -to LED[2]\n\
-set_instance_assignment -name CURRENT_STRENGTH_NEW \"MAXIMUM CURRENT\" -to LED[8]\n\
-set_instance_assignment -name CURRENT_STRENGTH_NEW \"MAXIMUM CURRENT\" -to LED[7]\n\
-set_instance_assignment -name CURRENT_STRENGTH_NEW \"MAXIMUM CURRENT\" -to LED[6]\n\
-set_instance_assignment -name CURRENT_STRENGTH_NEW \"MAXIMUM CURRENT\" -to LED[5]\n\
-set_instance_assignment -name CURRENT_STRENGTH_NEW \"MAXIMUM CURRENT\" -to LED[4]\n\
-set_instance_assignment -name CURRENT_STRENGTH_NEW \"MAXIMUM CURRENT\" -to LED[3]\n\
-set_instance_assignment -name CURRENT_STRENGTH_NEW \"MAXIMUM CURRENT\" -to LED[2]\n\
-set_instance_assignment -name CURRENT_STRENGTH_NEW \"MAXIMUM CURRENT\" -to LED[1]\n\
+set_instance_assignment -name CURRENT_STRENGTH_NEW \"8mA\" -to LED[8]\n\
+set_instance_assignment -name CURRENT_STRENGTH_NEW \"8mA\" -to LED[7]\n\
+set_instance_assignment -name CURRENT_STRENGTH_NEW \"8mA\" -to LED[6]\n\
+set_instance_assignment -name CURRENT_STRENGTH_NEW \"8mA\" -to LED[5]\n\
+set_instance_assignment -name CURRENT_STRENGTH_NEW \"8mA\" -to LED[4]\n\
+set_instance_assignment -name CURRENT_STRENGTH_NEW \"8mA\" -to LED[3]\n\
+set_instance_assignment -name CURRENT_STRENGTH_NEW \"8mA\" -to LED[2]\n\
+set_instance_assignment -name CURRENT_STRENGTH_NEW \"8mA\" -to LED[1]\n\
+\n\
+set_instance_assignment -name IO_STANDARD LVDS -to LVDS_TX_P[0]\n\
+set_location_assignment PIN_V17 -to LVDS_TX_P[0]\n\
+set_location_assignment PIN_W17 -to LVDS_TX_P[0](n)\n\
+#-------------------------------------------------------------------------------\n\
+\n\
 set_global_assignment -name SDC_FILE " << Name << ".sdc\n\
 set_global_assignment -name CDF_FILE " << Name << ".cdf\n\
 set_global_assignment -name VERILOG_FILE " << Name << ".v\n\
+#-------------------------------------------------------------------------------\n\
  ";
 
  STRING SDC;
@@ -167,7 +176,7 @@ JedecChain;\n\
 	DefaultMfr(6E);\n\
 \n\
 	P ActionCode(Cfg)\n\
-		Device PartName(10M08DAF484ES) Path(\"output_files/\") File(\"" << Name << ".sof\") MfrSpec(OpMask(1));\n\
+		Device PartName(" << Target.Device << ") Path(\"output_files/\") File(\"" << Name << ".sof\") MfrSpec(OpMask(1));\n\
 \n\
 ChainEnd;\n\
 \n\
@@ -179,14 +188,16 @@ AlteraEnd\n\
  STRING V;
  V << "\
 module " << Name << "(\n\
- input       Clk,    // N14 = 50 MHz\n\
+ input       Clk,       // N14 = 50 MHz\n\
+ output [0:0]LVDS_TX_P, // LVDS: V17-W17\n\
 \n\
- input  [4:1]Button, // AB5  V5 R1 M1\n\
- output [8:1]LED     // AA5 AB4 T6 V4 T1 R2 N1 M2\n\
+ input  [4:1]Button,    // AB5  V5 R1 M1\n\
+ output [8:1]LED        // AA5 AB4 T6 V4 T1 R2 N1 M2\n\
 );\n\
 //------------------------------------------------------------------------------\n\
 \n\
-assign LED = {Button, Button};\n\
+assign LED       = {Button, Button};\n\
+assign LVDS_TX_P = Clk;\n\
 //------------------------------------------------------------------------------\n\
 \n\
 endmodule\n\

@@ -72,15 +72,24 @@ class PREPROCESSOR{
   };
 
  private:
-  bool   error;
-  STRING Filename;
-
+  bool error;
   void Error(const char* Message);
 
  private:
+  STRING Path;
+
+  struct STACK{
+   SCANNER* Scanner; // The scanner of the current file
+   STACK  * Next;
+
+   STACK();
+  ~STACK();
+  }* Stack;
+
   KEYWORDS Keywords;
-  SCANNER* Scanner; // The scanner of the current file
-  SCANNER::TOKEN ppToken;
+  SCANNER::TOKEN ppToken; // The current token
+
+  bool GetPPToken(); // Also runs directives
 
   bool TranslateHex    (NUMBER& Number);
   bool TranslateOctal  (NUMBER& Number);

@@ -25,21 +25,18 @@
 #include "Object.h"
 //------------------------------------------------------------------------------
 
-struct TARGET: public OBJECT{
+struct TARGET{
  // Physical attributes
  STRING Vendor;
  STRING Series;
  STRING Device;
  STRING Board;
 
- TARGET(const char* Name);
+ TARGET();
 };
 //------------------------------------------------------------------------------
 
-struct TARGETS: public TREE{
- TARGET* FindName(const char* Name);
-};
-extern TARGETS Targets;
+extern TARGET Target;
 //------------------------------------------------------------------------------
 
 #endif

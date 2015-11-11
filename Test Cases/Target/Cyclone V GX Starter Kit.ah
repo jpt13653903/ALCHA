@@ -8,10 +8,10 @@
 // Target
 target<
  vendor = "Altera",
- series = "Cyclone V GX",
- device = "5CGXFC5C6F27C7N",
+ series = "Cyclone V",
+ device = "5CGXFC5C6F27C7",
  board  = "Cyclone V GX Starter Kit"
-> MyTarget;
+>;
 //------------------------------------------------------------------------------
 
 /* 

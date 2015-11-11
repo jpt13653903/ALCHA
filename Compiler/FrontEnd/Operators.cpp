@@ -47,8 +47,8 @@ OPERATORS::OPERATORS(){
  Add(oEnd             , "}"  );
  Add(oStartSlice      , "["  );
  Add(oEndSlice        , "]"  );
- Add(oStartBitSlice   , "<[" );
- Add(oEndBitSlice     , "]>" );
+ Add(oStartArraySlice , "[[" );
+ Add(oEndArraySlice   , "]]" );
  Add(oStartGroup      , "("  );
  Add(oEndGroup        , ")"  );
  Add(oEndState        , ";"  );
@@ -68,6 +68,7 @@ OPERATORS::OPERATORS(){
  Add(oBitNot          , "~"  );
  Add(oNot             , "!"  );
  Add(oAssign          , "="  );
+ Add(oRawAssign       , ":=" );
  Add(oLess            , "<"  );
  Add(oGreater         , ">"  );
  Add(oPlusAssign      , "+=" );

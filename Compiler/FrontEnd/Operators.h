@@ -36,8 +36,8 @@ enum OPERATOR_CODE{
  oEnd             , // }
  oStartSlice      , // [
  oEndSlice        , // ]
- oStartBitSlice   , // <[
- oEndBitSlice     , // ]>
+ oStartArraySlice , // [[
+ oEndArraySlice   , // ]]
  oStartGroup      , // (
  oEndGroup        , // )
  oEndState        , // ;
@@ -57,6 +57,7 @@ enum OPERATOR_CODE{
  oBitNot          , // ~
  oNot             , // !
  oAssign          , // =
+ oRawAssign       , // :=
  oLess            , // <
  oGreater         , // >
  oPlusAssign      , // +=
