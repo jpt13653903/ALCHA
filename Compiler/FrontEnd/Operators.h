@@ -80,9 +80,11 @@ enum OPERATOR_CODE{
  oOr              , // ||
  oIncrement       , // ++
  oDecrement       , // --
+ oEllipses        , // ...
 
  // Unused?
- oArrow, // ->
+ oArrow , // ->
+ oUnused, // ..
 
  // Aliases
  oStartParameters = oStartGroup  , // (

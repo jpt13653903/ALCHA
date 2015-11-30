@@ -78,16 +78,20 @@ class PREPROCESSOR{
  private:
   STRING Path;
 
-  struct STACK{
-   SCANNER* Scanner; // The scanner of the current file
-   STACK  * Next;
+  /// @todo Keep track of stack depth and limit (for circular inclusion)
+  ///       Or check for filename in the list and prevent circular inclusion
+  ///       - No: the user might want to include the same file twice with
+  ///         different parameters.
+  struct SCANNER_STACK{
+   SCANNER      * Scanner; // The scanner of the current file
+   SCANNER_STACK* Next;
 
-   STACK();
-  ~STACK();
-  }* Stack;
+   SCANNER_STACK();
+  ~SCANNER_STACK();
+  }* Scanner_Stack;
 
   KEYWORDS Keywords;
-  SCANNER::TOKEN ppToken; // The current token
+  SCANNER::PP_TOKEN ppToken; // The current pp-token
 
   bool GetPPToken(); // Also runs directives
 
@@ -96,7 +100,7 @@ class PREPROCESSOR{
   bool TranslateBinary (NUMBER& Number);
   bool TranslateDecimal(NUMBER& Number);
 
-  bool TranslateEscapes       ();
+  bool TranslateEscapes       (STRING& Result);
   bool TranslateNumber        (NUMBER& Number);
   bool TranslateFixedPointCast(TOKEN * Token );
 

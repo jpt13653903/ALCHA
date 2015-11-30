@@ -28,7 +28,12 @@
 			<Add directory="FrontEnd" />
 			<Add directory="BackEnd" />
 			<Add directory="Objects" />
+			<Add directory="Libraries/gmp/include" />
 		</Compiler>
+		<Linker>
+			<Add library="libgmp" />
+			<Add directory="Libraries/gmp/lib" />
+		</Linker>
 		<Unit filename="../Common/OS_Header.h" />
 		<Unit filename="../Common/Resources/resource.rc">
 			<Option compilerVar="WINDRES" />

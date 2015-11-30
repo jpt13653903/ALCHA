@@ -35,6 +35,16 @@ int main(int argc, char** argv){
   ) Info.dwSize.Y--;
  #endif
 
+ mpq_t MyFraction;
+ mpq_init(MyFraction);
+ mpq_set_ui(MyFraction, 57, 912);
+ mpq_canonicalize(MyFraction);
+ char* String = mpq_get_str(0, 10, MyFraction);
+ printf("MyFraction = %s\n", String);
+ free(String);
+ mpq_clear(MyFraction);
+ return 0;
+
  PARSER Parser;
 // if(!Parser.Run("../../Test Cases\\FrontEnd\\Scanner.alc")) return -1;
 // if(!Parser.Run("../../Test Cases\\Target\\Cyclone V GX Starter Kit.ah")){
@@ -43,12 +53,12 @@ int main(int argc, char** argv){
 // if(!Parser.Run("../../Test Cases\\Target\\BeMicro Max 10.ah")){
 //  return -1;
 // }
-// if(!Parser.Run("../../Test Cases\\Target\\Minimal BeMicro Max 10.ah")){
-//  return -1;
-// }
- if(!Parser.Run("../../Test Cases/Buttons to LEDs/main.alc")){
+ if(!Parser.Run("../../Test Cases\\Target\\Minimal BeMicro Max 10.ah")){
   return -1;
  }
+// if(!Parser.Run("../../Test Cases/Buttons to LEDs/main.alc")){
+//  return -1;
+// }
 
 // ALTERA Altera;
 // if(!Altera.WriteProject("../../Test Cases/Output", "Testing")) return -2;

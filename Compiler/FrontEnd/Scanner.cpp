@@ -21,7 +21,7 @@
 #include "Scanner.h"
 //------------------------------------------------------------------------------
 
-SCANNER::TOKEN::TOKEN(){
+SCANNER::PP_TOKEN::PP_TOKEN(){
  Type = tOther;
  Line = 0;
  Next = 0;
@@ -263,13 +263,13 @@ inline bool SCANNER::NonDigit(){
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::Identifier(STRING& Token){
+bool SCANNER::Identifier(STRING& Body){
  if(!NonDigit()) return false;
- Token = (char*)Char.Char;
+ Body = (char*)Char.Char;
  GetChar();
 
  while(Char.Type == tOther && (Digit() || NonDigit())){
-  Token << (char*)Char.Char;
+  Body << (char*)Char.Char;
   GetChar();
  }
  return true;
@@ -277,20 +277,20 @@ bool SCANNER::Identifier(STRING& Token){
 //------------------------------------------------------------------------------
 
 // Number = (Digit | ("." Digit)) {
-//  Digit | NonDigit | "." | "_" | "'"
+//  Digit | NonDigit | "." | "_" | "'" |
 //  (("e" | "E" | "p" | "P") ["+" | "-"])
 // };
 // Underscore and quote are removed
 
-bool SCANNER::Number(STRING& Token){
- if(Token.Length()) return false;
+bool SCANNER::Number(STRING& Body){
+ if(Body.Length()) return false;
 
  if(Char.Char[0] == '.'){
-  Token << (char*)Char.Char;
+  Body << (char*)Char.Char;
   GetChar();
  }
  if(!Digit()) return false;
- Token << (char*)Char.Char;
+ Body << (char*)Char.Char;
  GetChar();
 
  bool Exponent = false;
@@ -310,7 +310,7 @@ bool SCANNER::Number(STRING& Token){
   }else{
    Exponent = false;
   }
-  if(Char.Char[0] != '\'' && Char.Char[0] != '_') Token << (char*)Char.Char;
+  if(Char.Char[0] != '\'' && Char.Char[0] != '_') Body << (char*)Char.Char;
   GetChar();
  }
  return true;
@@ -318,9 +318,9 @@ bool SCANNER::Number(STRING& Token){
 //------------------------------------------------------------------------------
 
 // FixedPointCast = "`" {Digit | ("." ["-"])};
-bool SCANNER::FixedPointCast(STRING& Token){
+bool SCANNER::FixedPointCast(STRING& Body){
  if(Char.Char[0] != '`') return false;
- Token << (char*)Char.Char;
+ Body << (char*)Char.Char;
  GetChar();
 
  bool Period = false;
@@ -331,22 +331,22 @@ bool SCANNER::FixedPointCast(STRING& Token){
  )){
   if(Char.Char[0] == '.') Period = true;
   else                    Period = false;
-  Token << (char*)Char.Char;
+  Body << (char*)Char.Char;
   GetChar();
  }
  return true;
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::Comment(STRING& Token){
- if(Token.Length()) return false;
+bool SCANNER::Comment(STRING& Body){
+ if(Body.Length()) return false;
 
  if(Char.Char[0] != '/') return false;
- Token = (char*)Char.Char;
+ Body = (char*)Char.Char;
  GetChar();
 
  if(Char.Char[0] != '/' && Char.Char[0] != '*') return false;
- Token << (char*)Char.Char;
+ Body << (char*)Char.Char;
 
  bool PrevIsStar = false; // Used to terminate multiline comments
  bool Multiline  = Char.Char[0] == '*';
@@ -354,19 +354,19 @@ bool SCANNER::Comment(STRING& Token){
  while(GetChar()){
   if(Multiline){
    if(PrevIsStar && Char.Char[0] == '/'){
-    Token << (char*)Char.Char;
+    Body << (char*)Char.Char;
     GetChar();
     return true;
    }
   }else{
    if(Char.Type == tNewline){
-    Token << (char*)Char.Char;
+    Body << (char*)Char.Char;
     GetChar();
     PrevIsNewline = true;
     return true;
    }
   }
-  Token << (char*)Char.Char;
+  Body << (char*)Char.Char;
   PrevIsStar = Char.Char[0] == '*';
  }
  Error("Incomplete comment");
@@ -374,173 +374,173 @@ bool SCANNER::Comment(STRING& Token){
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::Character(STRING& Token){
+bool SCANNER::Character(STRING& Body){
  if(Char.Char[0] != '\'') return false;
 
  while(GetChar()){
   if(Char.Char[0] == '\\'){
-   Token << (char*)Char.Char;
+   Body << (char*)Char.Char;
    GetChar();
 
   }else if(Char.Char[0] == '\''){
    GetChar();
    return true;
   }
-  Token << (char*)Char.Char;
+  Body << (char*)Char.Char;
  }
  Error("Incomplete character");
  return false;
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::String(STRING& Token){
+bool SCANNER::String(STRING& Body){
  if(Char.Char[0] != '"') return false;
 
  while(GetChar()){
   if(Char.Char[0] == '\\'){
-   Token << (char*)Char.Char;
+   Body << (char*)Char.Char;
    GetChar();
 
   }else if(Char.Char[0] == '"'){
    GetChar();
    return true;
   }
-  Token << (char*)Char.Char;
+  Body << (char*)Char.Char;
  }
  Error("Incomplete string");
  return false;
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::Operator(STRING& Token){
+bool SCANNER::Operator(STRING& Body){
  STRING Test;
 
- // At this point, Token could contain '.' or '/' from Number() or Comment()
- if(Token.Length()){
-  if(!Operators.GetCode(Token.String())) return false;
-  Test << Token;
+ // At this point, Body could contain '.' or '/' from Number() or Comment()
+ if(Body.Length()){
+  if(!Operators.GetCode(Body.String())) return false;
+  Test << Body;
  }
 
  // All operators start with valid operators, so use this fact to advantage
  while(Char.Type != tEOF){
   Test << (char*)Char.Char;
-  if(!Operators.GetCode(Test.String())) return Token.Length();
-  Token << (char*)Char.Char;
+  if(!Operators.GetCode(Test.String())) return Body.Length();
+  Body << (char*)Char.Char;
   GetChar();
  }
- return Token.Length();
+ return Body.Length();
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::GetToken(TOKEN* Token){
- Token->Comment.Clear();
- Token->PrecedingSpace = PrevIsNewline;
+bool SCANNER::GetToken(PP_TOKEN* ppToken){
+ ppToken->Comment.Clear();
+ ppToken->PrecedingSpace = PrevIsNewline;
 
  // Ignore spaces and comments (but keep comments...)
  while(!error && Char.Type != tEOF){
-  Token->Token.Clear();
-  Token->Line = Char.Line;
+  ppToken->Body.Clear();
+  ppToken->Line = Char.Line;
 
   if(PrevIsNewline && Char.Char[0] == '#'){
    GetChar();
    while(Char.Type == tSpace) GetChar();
-   Identifier(Token->Token);
-   Token->Type   = tDirective;
+   Identifier(ppToken->Body);
+   ppToken->Type = tDirective;
    PrevIsNewline = false;
    return true;
   }
 
   if(Char.Type == tNewline){
-   Token->Type = tNewline;
+   ppToken->Type = tNewline;
    while(Char.Type == tNewline){ // Concatenate newlines
     GetChar();
     while(Char.Type == tSpace) GetChar(); // Remove leading spaces
    }
-   PrevIsNewline         = true;
-   Token->PrecedingSpace = true;
+   PrevIsNewline           = true;
+   ppToken->PrecedingSpace = true;
    return Char.Type != tEOF;
   }
 
   if(Char.Type == tSpace){
    while(Char.Type == tSpace) GetChar(); // Concatenate spaces
-   Token->PrecedingSpace = true;
+   ppToken->PrecedingSpace = true;
    continue; // Restart token scan
   }
 
-  if(Identifier(Token->Token)){
-   Token->Type   = tIdentifier;
+  if(Identifier(ppToken->Body)){
+   ppToken->Type = tIdentifier;
    PrevIsNewline = false;
    return true;
   }
 
-  if(Character(Token->Token)){
-   Token->Type   = tCharacter;
+  if(Character(ppToken->Body)){
+   ppToken->Type = tCharacter;
    PrevIsNewline = false;
    return true;
   }
-  if(String(Token->Token)){
-   Token->Type   = tString;
+  if(String(ppToken->Body)){
+   ppToken->Type = tString;
    PrevIsNewline = false;
    return true;
   }
-  if(FixedPointCast(Token->Token)){
-   Token->Type   = tFixedPointCast;
+  if(FixedPointCast(ppToken->Body)){
+   ppToken->Type = tFixedPointCast;
    PrevIsNewline = false;
    return true;
   }
 
   // These start with what could potentially be a punctuator, so don't move them
-  if(Number(Token->Token)){
-   Token->Type   = tNumber;
+  if(Number(ppToken->Body)){
+   ppToken->Type = tNumber;
    PrevIsNewline = false;
    return true;
   }
-  if(Comment(Token->Token)){
-   Token->Comment << Token->Token;
-   Token->PrecedingSpace = true;
+  if(Comment(ppToken->Body)){
+   ppToken->Comment << ppToken->Body;
+   ppToken->PrecedingSpace = true;
    continue; // Restart token scan
   }
 
   // Don't move this: it's placement as the last one is important
-  if(Operator(Token->Token)){
-   Token->Type   = tOperator;
+  if(Operator(ppToken->Body)){
+   ppToken->Type = tOperator;
    PrevIsNewline = false;
    return true;
   }
 
   if(Char.Type != tEOF){
-   Token->Token = (char*)Char.Char;
-   Token->Type  = tOther;
+   ppToken->Body = (char*)Char.Char;
+   ppToken->Type = tOther;
    GetChar();
    PrevIsNewline = false;
    return true;
   }
  }
- Token->Type = tEOF;
+ ppToken->Type = tEOF;
  return false;
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::GetDirective(TOKEN* Token){
- Token->Comment.Clear();
- Token->PrecedingSpace = false;
+bool SCANNER::GetDirective(PP_TOKEN* ppToken){
+ ppToken->Comment.Clear();
+ ppToken->PrecedingSpace = false;
 
  // Ignore spaces and comments (but keep comments...)
  while(!error && Char.Type != tEOF){
-  Token->Token.Clear();
-  Token->Line = Char.Line;
+  ppToken->Body.Clear();
+  ppToken->Line = Char.Line;
 
   if(PrevIsNewline && Char.Char[0] == '#'){
    GetChar();
    while(Char.Type == tSpace) GetChar();
-   Identifier(Token->Token);
-   Token->Type   = tDirective;
+   Identifier(ppToken->Body);
+   ppToken->Type = tDirective;
    PrevIsNewline = false;
    return true;
   }
 
   if(Char.Type == tNewline){
-   Token->Type = tNewline;
+   ppToken->Type = tNewline;
    while(Char.Type == tNewline){ // Concatenate newlines
     GetChar();
     while(Char.Type == tSpace) GetChar(); // Remove leading spaces
@@ -554,15 +554,14 @@ bool SCANNER::GetDirective(TOKEN* Token){
    continue; // Restart token scan
   }
 
-  // These start with what could potentially be a punctuator, so don't move them
-  if(Comment(Token->Token)){
+  if(Comment(ppToken->Body)){
    continue; // Restart token scan
   }
 
   PrevIsNewline = false;
   GetChar();
  }
- Token->Type = tEOF;
+ ppToken->Type = tEOF;
  return false;
 }
 //------------------------------------------------------------------------------

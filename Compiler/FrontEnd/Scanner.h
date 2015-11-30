@@ -55,15 +55,15 @@ class SCANNER{
    tEOF,
   };
 
-  struct TOKEN{ // Preprocessing token
-   TYPE   Type;
-   STRING Token;
-   int    Line;
-   bool   PrecedingSpace; // Token preceded by comment, space or newline
-   STRING Comment;        // Concatenation of any preceding comments
-   TOKEN* Next;           // Used when storing macro bodies
+  struct PP_TOKEN{ // Preprocessing token
+   TYPE      Type;
+   STRING    Body;
+   int       Line;
+   bool      PrecedingSpace; // Token preceded by comment, space or newline
+   STRING    Comment;        // Concatenation of any preceding comments
+   PP_TOKEN* Next;           // Used when storing macro bodies
 
-   TOKEN();
+   PP_TOKEN();
   };
 
  private: // General private members
@@ -97,13 +97,13 @@ class SCANNER{
   inline bool HexDigit();
   inline bool NonDigit();
 
-  bool Number        (STRING& Token);
-  bool FixedPointCast(STRING& Token);
-  bool String        (STRING& Token);
-  bool Comment       (STRING& Token);
-  bool Character     (STRING& Token);
-  bool Identifier    (STRING& Token);
-  bool Operator      (STRING& Token);
+  bool Number        (STRING& Body);
+  bool FixedPointCast(STRING& Body);
+  bool String        (STRING& Body);
+  bool Comment       (STRING& Body);
+  bool Character     (STRING& Body);
+  bool Identifier    (STRING& Body);
+  bool Operator      (STRING& Body);
 
  public: // Public interface
   SCANNER();
@@ -111,11 +111,11 @@ class SCANNER{
   STRING Filename; // Read-only
   bool   Open(const char* Filename);
 
-  bool GetToken(TOKEN* Token);
+  bool GetToken(PP_TOKEN* ppToken);
 
   // Scans through the code to find the next directive: used to implement
   // skipping over #if bodies
-  bool GetDirective(TOKEN* Token);
+  bool GetDirective(PP_TOKEN* ppToken);
 };
 //------------------------------------------------------------------------------
 

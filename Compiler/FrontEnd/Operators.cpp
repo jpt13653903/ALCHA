@@ -92,6 +92,8 @@ OPERATORS::OPERATORS(){
  Add(oIncrement       , "++" );
  Add(oDecrement       , "--" );
  Add(oArrow           , "->" );
+ Add(oUnused          , ".." );
+ Add(oEllipses        , "..." );
 }
 //------------------------------------------------------------------------------
 

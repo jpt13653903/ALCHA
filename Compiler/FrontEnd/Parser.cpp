@@ -71,7 +71,7 @@ bool PARSER::GetToken(){
 void PARSER::DisplayToken(){
  STRING s;
 
- printf("%05d: ", Token.Line);
+ printf("%10s -- %05d: ", Token.File.String(), Token.Line);
  switch(Token.Type){
   case PREPROCESSOR::tIdentifier:
    printf("Identifier:  \"%s\"", Token.String.String());

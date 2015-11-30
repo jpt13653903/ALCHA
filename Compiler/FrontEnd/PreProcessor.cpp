@@ -21,28 +21,28 @@
 #include "PreProcessor.h"
 //------------------------------------------------------------------------------
 
-PREPROCESSOR::STACK::STACK(){
+PREPROCESSOR::SCANNER_STACK::SCANNER_STACK(){
  Scanner = new SCANNER;
  Next    = 0;
 }
 //------------------------------------------------------------------------------
 
-PREPROCESSOR::STACK::~STACK(){
+PREPROCESSOR::SCANNER_STACK::~SCANNER_STACK(){
  delete Scanner;
 }
 //------------------------------------------------------------------------------
 
 PREPROCESSOR::PREPROCESSOR(){
- error = false;
- Stack = 0;
+ error         = false;
+ Scanner_Stack = 0;
 }
 //------------------------------------------------------------------------------
 
 PREPROCESSOR::~PREPROCESSOR(){
- STACK* Temp;
- while(Stack){
-  Temp  = Stack;
-  Stack = Stack->Next;
+ SCANNER_STACK* Temp;
+ while(Scanner_Stack){
+  Temp          = Scanner_Stack;
+  Scanner_Stack = Scanner_Stack->Next;
   delete Temp;
  }
 }
@@ -53,23 +53,23 @@ void PREPROCESSOR::Error(const char* Message){
  printf(
   "Line %05d of %s\n  Error: %s\n",
   ppToken.Line,
-  Stack->Scanner->Filename.String(),
+  Scanner_Stack->Scanner->Filename.String(),
   Message
  );
 }
 //------------------------------------------------------------------------------
 
 bool PREPROCESSOR::Open(const char* Filename){
- STACK* Temp;
- while(Stack){
-  Temp  = Stack;
-  Stack = Stack->Next;
+ SCANNER_STACK* Temp;
+ while(Scanner_Stack){
+  Temp          = Scanner_Stack;
+  Scanner_Stack = Scanner_Stack->Next;
   delete Temp;
  }
 
- Stack = new STACK;
+ Scanner_Stack = new SCANNER_STACK;
 
- if(!Stack->Scanner->Open(Filename)) return false;
+ if(!Scanner_Stack->Scanner->Open(Filename)) return false;
 
  Path.Clear();
  int j, q = 0;
@@ -86,15 +86,16 @@ bool PREPROCESSOR::Open(const char* Filename){
 }
 //------------------------------------------------------------------------------
 
-bool PREPROCESSOR::TranslateEscapes(){
+bool PREPROCESSOR::TranslateEscapes(STRING& Result){
  int      j, u;
- STRING   Result;
  unsigned UTF_32 = 0;
 
- for(j = 0; ppToken.Token[j]; j++){
-  if(ppToken.Token[j] == '\\'){
+ Result.Clear();
+
+ for(j = 0; ppToken.Body[j]; j++){
+  if(ppToken.Body[j] == '\\'){
    j++;
-   switch(ppToken.Token[j]){
+   switch(ppToken.Body[j]){
     case 'n' : Result << '\n'; break;
     case 't' : Result << '\t'; break;
     case 'v' : Result << '\v'; break;
@@ -110,12 +111,12 @@ bool PREPROCESSOR::TranslateEscapes(){
     case 'x' : // Hexadecimal number
      j++;
      for(u = 0; u < 8; u++, j++){
-      if(ppToken.Token[j] >= '0' && ppToken.Token[j] <= '9'){
-       UTF_32 = UTF_32*0x10 + (ppToken.Token[j] - '0');
-      }else if(ppToken.Token[j] >= 'a' && ppToken.Token[j] <='f'){
-       UTF_32 = UTF_32*0x10 + (ppToken.Token[j] - 'a' + 0xA);
-      }else if(ppToken.Token[j] >= 'A' && ppToken.Token[j] <='F'){
-       UTF_32 = UTF_32*0x10 + (ppToken.Token[j] - 'A' + 0xA);
+      if(ppToken.Body[j] >= '0' && ppToken.Body[j] <= '9'){
+       UTF_32 = UTF_32*0x10 + (ppToken.Body[j] - '0');
+      }else if(ppToken.Body[j] >= 'a' && ppToken.Body[j] <='f'){
+       UTF_32 = UTF_32*0x10 + (ppToken.Body[j] - 'a' + 0xA);
+      }else if(ppToken.Body[j] >= 'A' && ppToken.Body[j] <='F'){
+       UTF_32 = UTF_32*0x10 + (ppToken.Body[j] - 'A' + 0xA);
       }else{
        break;
       }
@@ -131,12 +132,12 @@ bool PREPROCESSOR::TranslateEscapes(){
     case 'u' : // 16-bit Unicode
      j++;
      for(u = 0; u < 4; u++, j++){
-      if(ppToken.Token[j] >= '0' && ppToken.Token[j] <= '9'){
-       UTF_32 = UTF_32*0x10 + (ppToken.Token[j] - '0');
-      }else if(ppToken.Token[j] >= 'a' && ppToken.Token[j] <='f'){
-       UTF_32 = UTF_32*0x10 + (ppToken.Token[j] - 'a' + 0xA);
-      }else if(ppToken.Token[j] >= 'A' && ppToken.Token[j] <='F'){
-       UTF_32 = UTF_32*0x10 + (ppToken.Token[j] - 'A' + 0xA);
+      if(ppToken.Body[j] >= '0' && ppToken.Body[j] <= '9'){
+       UTF_32 = UTF_32*0x10 + (ppToken.Body[j] - '0');
+      }else if(ppToken.Body[j] >= 'a' && ppToken.Body[j] <='f'){
+       UTF_32 = UTF_32*0x10 + (ppToken.Body[j] - 'a' + 0xA);
+      }else if(ppToken.Body[j] >= 'A' && ppToken.Body[j] <='F'){
+       UTF_32 = UTF_32*0x10 + (ppToken.Body[j] - 'A' + 0xA);
       }else{
        Error("Incomplete \\u code");
        return false;
@@ -149,12 +150,12 @@ bool PREPROCESSOR::TranslateEscapes(){
     case 'U' : // 32-bit Unicode
      j++;
      for(u = 0; u < 8; u++, j++){
-      if(ppToken.Token[j] >= '0' && ppToken.Token[j] <= '9'){
-       UTF_32 = UTF_32*0x10 + (ppToken.Token[j] - '0');
-      }else if(ppToken.Token[j] >= 'a' && ppToken.Token[j] <='f'){
-       UTF_32 = UTF_32*0x10 + (ppToken.Token[j] - 'a' + 0xA);
-      }else if(ppToken.Token[j] >= 'A' && ppToken.Token[j] <='F'){
-       UTF_32 = UTF_32*0x10 + (ppToken.Token[j] - 'A' + 0xA);
+      if(ppToken.Body[j] >= '0' && ppToken.Body[j] <= '9'){
+       UTF_32 = UTF_32*0x10 + (ppToken.Body[j] - '0');
+      }else if(ppToken.Body[j] >= 'a' && ppToken.Body[j] <='f'){
+       UTF_32 = UTF_32*0x10 + (ppToken.Body[j] - 'a' + 0xA);
+      }else if(ppToken.Body[j] >= 'A' && ppToken.Body[j] <='F'){
+       UTF_32 = UTF_32*0x10 + (ppToken.Body[j] - 'A' + 0xA);
       }else{
        Error("Incomplete \\U code");
        return false;
@@ -166,8 +167,8 @@ bool PREPROCESSOR::TranslateEscapes(){
 
     default: // Could be an octal number...
      for(u = 0; u < 11; u++, j++){
-      if(ppToken.Token[j] >= '0' && ppToken.Token[j] <= '7'){
-       UTF_32 = UTF_32*8 + (ppToken.Token[j] - '0');
+      if(ppToken.Body[j] >= '0' && ppToken.Body[j] <= '7'){
+       UTF_32 = UTF_32*8 + (ppToken.Body[j] - '0');
       }else{
        break;
       }
@@ -181,16 +182,15 @@ bool PREPROCESSOR::TranslateEscapes(){
      break;
    }
   }else{
-   Result << ppToken.Token[j];
+   Result << ppToken.Body[j];
   }
  }
- ppToken.Token = Result;
  return true;
 }
 //------------------------------------------------------------------------------
 
 bool PREPROCESSOR::TranslateHex(NUMBER& Number){
- const char* Buffer = ppToken.Token.String() + 2;
+ const char* Buffer = ppToken.Body.String() + 2;
 
  Number = 0;
 
@@ -273,7 +273,7 @@ bool PREPROCESSOR::TranslateHex(NUMBER& Number){
 //------------------------------------------------------------------------------
 
 bool PREPROCESSOR::TranslateOctal(NUMBER& Number){
- const char* Buffer = ppToken.Token.String() + 2;
+ const char* Buffer = ppToken.Body.String() + 2;
 
  Number = 0;
 
@@ -338,7 +338,7 @@ bool PREPROCESSOR::TranslateOctal(NUMBER& Number){
 //------------------------------------------------------------------------------
 
 bool PREPROCESSOR::TranslateBinary(NUMBER& Number){
- const char* Buffer = ppToken.Token.String() + 2;
+ const char* Buffer = ppToken.Body.String() + 2;
 
  Number = 0;
 
@@ -403,7 +403,7 @@ bool PREPROCESSOR::TranslateBinary(NUMBER& Number){
 //------------------------------------------------------------------------------
 
 bool PREPROCESSOR::TranslateDecimal(NUMBER& Number){
- const char* Buffer = ppToken.Token.String();
+ const char* Buffer = ppToken.Body.String();
 
  Number = 0;
 
@@ -468,7 +468,7 @@ bool PREPROCESSOR::TranslateDecimal(NUMBER& Number){
 //------------------------------------------------------------------------------
 
 bool PREPROCESSOR::TranslateNumber(NUMBER& Number){
- const char* Buffer = ppToken.Token.String();
+ const char* Buffer = ppToken.Body.String();
 
  if(Buffer[0] == '0'){
   switch(Buffer[1]){
@@ -483,7 +483,7 @@ bool PREPROCESSOR::TranslateNumber(NUMBER& Number){
 //------------------------------------------------------------------------------
 
 bool PREPROCESSOR::TranslateFixedPointCast(TOKEN* Token){
- const char* Buffer = ppToken.Token.String();
+ const char* Buffer = ppToken.Body.String();
 
  int  Integer  = 0;
  int  Fraction = 0;
@@ -527,47 +527,47 @@ bool PREPROCESSOR::TranslateFixedPointCast(TOKEN* Token){
 /// @todo For macro expansion, add another layer above this one to translate
 ///       macros
 bool PREPROCESSOR::GetPPToken(){
- Stack->Scanner->GetToken(&ppToken);
+ Scanner_Stack->Scanner->GetToken(&ppToken);
 
  while(!error){
   if(ppToken.Type == SCANNER::tEOF){
-   if(Stack->Next){
-    STACK* Temp = Stack;
-    Stack = Stack->Next;
+   if(Scanner_Stack->Next){
+    SCANNER_STACK* Temp = Scanner_Stack;
+    Scanner_Stack       = Scanner_Stack->Next;
     delete Temp;
-    Stack->Scanner->GetToken(&ppToken);
+
+    Scanner_Stack->Scanner->GetToken(&ppToken);
     if(ppToken.Type != SCANNER::tNewline){
      Error("Newline expected");
      break;
     }
-
    }else{
     break;
    }
 
   }else if(ppToken.Type == SCANNER::tNewline){
-   Stack->Scanner->GetToken(&ppToken);
+   Scanner_Stack->Scanner->GetToken(&ppToken);
 
   }else if(ppToken.Type == SCANNER::tDirective){
-   if(!ppToken.Token.Compare("include")){
-    Stack->Scanner->GetToken(&ppToken);
+   if(!ppToken.Body.Compare("include")){
+    Scanner_Stack->Scanner->GetToken(&ppToken);
     if(ppToken.Type != SCANNER::tString) break;
 
     STRING Filename;
-    Filename << Path << "/" << ppToken.Token;
+    Filename << Path << "/" << ppToken.Body;
 
-    STACK* Temp = new STACK;
-    Temp->Next = Stack;
-    Stack      = Temp;
+    SCANNER_STACK* Temp = new SCANNER_STACK;
+    Temp->Next          = Scanner_Stack;
+    Scanner_Stack       = Temp;
 
-    if(!Stack->Scanner->Open(Filename.String())) return false;
+    if(!Scanner_Stack->Scanner->Open(Filename.String())) return false;
     GetPPToken();
 
    }else{ // Ignore the directive line
     /// @todo Run directives (and macro expansion) in a Get_ppToken() function
-    while(Stack->Scanner->GetToken(&ppToken)){ // Just ignore them for now...
+    while(Scanner_Stack->Scanner->GetToken(&ppToken)){ // Just ignore them for now...
      if(ppToken.Type == SCANNER::tNewline){
-      Stack->Scanner->GetToken(&ppToken);
+      Scanner_Stack->Scanner->GetToken(&ppToken);
       break;
      }
     }
@@ -587,33 +587,35 @@ bool PREPROCESSOR::GetPPToken(){
 //------------------------------------------------------------------------------
 
 bool PREPROCESSOR::GetToken(TOKEN* Token){
+ STRING Translated;
+
  Token->String .Clear();
  Token->Comment.Clear();
  Token->Type = tEOF;
 
- if(!Stack) return false;
+ if(!Scanner_Stack) return false;
 
  while(!error && ppToken.Type != SCANNER::tEOF){
-  Token->File    =  Stack->Scanner->Filename;
+  Token->File    =  Scanner_Stack->Scanner->Filename;
   Token->Line    =  ppToken.Line;
   Token->Comment << ppToken.Comment;
 
   if(ppToken.Type == SCANNER::tString){
-   if(!TranslateEscapes()) break;
+   if(!TranslateEscapes(Translated)) break;
    Token->Type   =  tString;
-   Token->String << ppToken.Token;
+   Token->String << Translated;
    GetPPToken();
    continue;
   }
   if(Token->Type == tString) return true;
 
   if(ppToken.Type == SCANNER::tIdentifier){
-   Token->Keyword = Keywords.GetCode(ppToken.Token.String());
+   Token->Keyword = Keywords.GetCode(ppToken.Body.String());
    if(Token->Keyword){
     Token->Type = tKeyword;
    }else{
     Token->Type   = tIdentifier;
-    Token->String = ppToken.Token;
+    Token->String = ppToken.Body;
    }
    GetPPToken();
    return true;
@@ -636,9 +638,9 @@ bool PREPROCESSOR::GetToken(TOKEN* Token){
 
   if(ppToken.Type == SCANNER::tCharacter){
    unsigned CodeLength;
-   if(!TranslateEscapes()) break;
-   Token->Number = ppToken.Token.GetUTF_32(0, &CodeLength);
-   if(CodeLength < ppToken.Token.Length()){
+   if(!TranslateEscapes(Translated)) break;
+   Token->Number = Translated.GetUTF_32(0, &CodeLength);
+   if(CodeLength < Translated.Length()){
     Error("Character too long");
     break;
    }
@@ -648,7 +650,7 @@ bool PREPROCESSOR::GetToken(TOKEN* Token){
   }
 
   if(ppToken.Type == SCANNER::tOperator){
-   Token->Operator = Operators.GetCode(ppToken.Token.String());
+   Token->Operator = Operators.GetCode(ppToken.Body.String());
    if(Token->Operator){
     Token->Type = tOperator;
     GetPPToken();
