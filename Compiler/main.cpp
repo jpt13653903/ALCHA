@@ -35,6 +35,7 @@ int main(int argc, char** argv){
   ) Info.dwSize.Y--;
  #endif
 
+ // Testing GMP ----------------------------------------------------------------
  mpq_t MyFraction;
  mpq_init(MyFraction);
  mpq_set_ui(MyFraction, 57, 912);
@@ -43,7 +44,45 @@ int main(int argc, char** argv){
  printf("MyFraction = %s\n", String);
  free(String);
  mpq_clear(MyFraction);
+
+ // Testing FFTW ---------------------------------------------------------------
+ int N = 256;
+ fftw_complex *in, *out;
+ fftw_plan p;
+
+ in  = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
+ out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
+ p   = fftw_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+
+ fftw_execute(p); /* repeat as needed */
+
+ fftw_destroy_plan(p);
+ fftw_free(in);
+ fftw_free(out);
+
+ // Testing MPFR ---------------------------------------------------------------
+ mpfr_t s, c;
+ mpfr_init2(s, 256);
+ mpfr_init2(c, 256);
+
+ mpfr_set_d(s, 355./113./3., MPFR_RNDN); // 60 deg
+ mpfr_sin_cos(s, c, s, MPFR_RNDN);
+
+ mpfr_exp_t e;
+
+ String = mpfr_get_str(0, &e, 10, 0, s, MPFR_RNDN);
+ printf("sin(60 deg) = 0.%s x10^%d\n", String, (int)e);
+ mpfr_free_str(String);
+
+ String = mpfr_get_str(0, &e, 10, 0, c, MPFR_RNDN);
+ printf("cos(60 deg) = 0.%s x10^%d\n", String, (int)e);
+ mpfr_free_str(String);
+
+ mpfr_clear(s);
+ mpfr_clear(c);
+
  return 0;
+ // Done Testing ---------------------------------------------------------------
 
  PARSER Parser;
 // if(!Parser.Run("../../Test Cases\\FrontEnd\\Scanner.alc")) return -1;

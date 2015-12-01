@@ -28,11 +28,13 @@
 			<Add directory="FrontEnd" />
 			<Add directory="BackEnd" />
 			<Add directory="Objects" />
-			<Add directory="Libraries/gmp/include" />
+			<Add directory="Libraries/include" />
 		</Compiler>
 		<Linker>
-			<Add library="libgmp" />
-			<Add directory="Libraries/gmp/lib" />
+			<Add library="fftw3" />
+			<Add library="mpfr" />
+			<Add library="gmp" />
+			<Add directory="Libraries/lib" />
 		</Linker>
 		<Unit filename="../Common/OS_Header.h" />
 		<Unit filename="../Common/Resources/resource.rc">
