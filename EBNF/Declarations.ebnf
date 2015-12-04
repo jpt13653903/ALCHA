@@ -1,0 +1,157 @@
+(* This needs refinement: Some things are exclusively outside constructs,
+   such as HDL *)
+Module       = {ImportStatement | Declarations};
+Declarations = Statement | Declaration | Construct};
+
+Statement = [ScriptAssignment | Assignment] ("," | ";");
+(* Comma separates assignments in the same state, whereas Semicolon
+   starts a new state *)
+
+ImportStatement = "import" FileName ["as" Namespace];
+FileName        = String;
+Namespace       = Identifier;
+(*----------------------------------------------------------------------------*)
+
+Assignment       = ? See Expressions.ebnf ?;
+ScriptAssignment = ScriptVar "=" ScriptExpression;
+(*----------------------------------------------------------------------------*)
+
+Declaration = 
+ Target         |
+ PinDeclaration |
+
+ ScriptVarDeclaration |
+ ScriptDeclaration    |
+
+ VariableDeclaration |
+ FunctionDeclaration |
+ 
+ ClassDeclaration;
+(*----------------------------------------------------------------------------*)
+
+Construct = 
+ Target |
+ Pin    | PinGroup | PinArray |
+ Clock  |
+ Task   | Pipe | RTL |
+ HDL    ;
+(*----------------------------------------------------------------------------*)
+
+Target = "target" [AttributeList] ";";
+(*----------------------------------------------------------------------------*)
+
+(* 
+ Pins inherit properties and names down the tree.  The leaf of the tree (the
+ actual pin) has to have a valid identifier.
+*)
+(*
+ Pins can be defined without attributes, and attributes added later
+*)
+Pin      = "pin"       [AttributeList] [Identifier];
+PinGroup = "pin_group" [AttributeList] [Identifier] "{" {Pin | PinGroup | PinArray} "}";
+PinArray = "pin_array" [AttributeList] [Identifier] "{" {ArrayPin | ArrayPinArray} "}";
+
+ArrayPinArray = "pin_array" PinIndex [AttributeList] "{" {ArrayPin | ArrayPinArray} "}";
+ArrayPin      = "pin"       PinIndex [AttributeList] ";";
+
+PinIndex = "[" Integer "]";
+(*----------------------------------------------------------------------------*)
+
+AttributeList = "<" [PropertyValuePair {"," PropertyValuePair}] ">";
+
+PropertyValuePair = Property "=" Value;
+Property          = Identifier;
+Value             = '"' ? Property-defined value format ? '"';
+(* Values are in strings to make preprocessing easier *)
+(*----------------------------------------------------------------------------*)
+
+Clock = "clock" [AttributeList] Identifier;
+(* Example: clock<Base = "Main_Clk", Frequency = "15 MHz"> MyClock; *)
+
+Task = "task" ["<" TheClock ["," TheReset ["," TheEnable]] ">"] "{" {Declarations} "}";
+Pipe = "pipe" ["<" TheClock ["," TheReset ["," TheEnable]] ">"] "{" {Declarations} "}";
+RTL  = "rtl"  ["<" TheClock ["," TheReset ["," TheEnable]] ">"] "{" {Declarations} "}";
+(* The clock definitions are optional only when nested *)
+(*----------------------------------------------------------------------------*)
+
+HDL = "hdl" AttributeList Identifier "{" Declarations "}";
+
+(* Example:
+ hdl<files = "RS232.v, RS232_Rx.v, RS232_Tx.v"> RS232{
+  in  unsigned`1 nReset;
+  in  clock      Clk;
+
+  in  unsigned`8 TxData;
+  in  unsigned`1 Send;
+  out unsigned`1 Busy;
+
+  out unsigned`1 DataReady;
+  out unsigned`8 RxData;
+  in  unsigned`1 Ack;
+  
+  out unsigned`1 Tx;
+  in  unsigned`1 Rx;
+ 
+  param unsigned CountBits =  5; // Default parameters for 50 MHz clock
+  param unsigned Count0_5  =  8; // f_Clk / BAUD / 2
+  param unsigned Count1    = 17; // f_Clk / BAUD
+  param unsigned Count1_5  = 25; // f_Clk / BAUD * 1.5
+
+  script RS232(clock Clock, unsigned BAUD){
+   Clk    = Clock;
+   nReset = !Reset;
+   
+   Count0_5  = round(Clock.Frequency / BAUD / 2);
+   Count1    = round(Clock.Frequency / BAUD);
+   Count1_5  = round(Clock.Frequency / BAUD / 1.5);
+   CountBits = log2(Count1_5);
+  }
+ }
+
+ RS232 MyUART{Clk_50_MHz, 9600};
+*)
+(*----------------------------------------------------------------------------*)
+
+ScriptVar = ["export"] "param" ("int" | "rat" | ("float" [FixedPointCast])) Identifier {ArraySpecifier};
+(* 
+ - "int" is a standard 32-bit C-style int
+ - "rat" is an arbitrary precision rational
+ - "float" is a long double by default, but can be extended by means of 
+   a fixed-point cast to the required binary digits in the mantissa:
+   float`256 is a 256-bit precision float
+*)
+(*----------------------------------------------------------------------------*)
+
+Declaration  = ["export"] [Direction] TypeName [AttributeList] Identifier {ArraySpecifier};
+Direction    = "in" | "out"; (* Default is bidirectional *)
+TypeName     = (("signed" | "unsigned") [FixedPointCast]) | "bool" | Identifier;
+(* 
+ - By default, variables compile to registers and wires
+ - "param" variables are script variables that are evaluated at compile-time
+ - "const" variables are constants at both compile-time and run-time
+*)
+ArraySpecifier = "[" Integer "]"; (* 0-indexed *)
+(*----------------------------------------------------------------------------*)
+
+Function             = ["export"] ["script"] (TypeName | "void") [AttributeList] (Identifier | ("operator" Operator)) ParameterDeclaration (";" | FunctionBody);
+ParameterDeclaration = "(" [TypeName Identifier {"," TypeName Identifier}] ")";
+FunctionBody         = "{" {Statement} "}";
+(*
+ - The parameter declaration is part of the name: just like in C++
+*)
+(*----------------------------------------------------------------------------*)
+
+class<location = "whatnot"> MyClass{
+ Stuff
+}
+
+MyClass<location = "wherever"> MyInstance{Parameter1, Parameter2};
+
+out unsigned`8.3<external_setup = "3.5 ns", external_hold = "1.5 ns"> MySignal;
+pin<external_setup = "5 ns", external_hold = "5 ns"> SD_CMD; (* Extends the attributes *)
+
+rtl<Clk, Reset, Clk_En>{
+ 
+}
+
+

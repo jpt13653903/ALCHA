@@ -1,8 +1,11 @@
 *.swp
 *.log
-Compiler/bin/*
-Compiler/obj/*
-Linker/bin/*
-Linker/obj/*
-Test\ Cases/Output/*
+*.zip
+.txt
+*.png
+*.jpg
+CodeBlocks/bin/*
+CodeBlocks/obj/*
+InkScape/*
+Notes.txt
 

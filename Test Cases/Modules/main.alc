@@ -1,0 +1,13 @@
+#define LED    USER_LED
+#define Button SW
+
+import "BeMicro Max 10"; // Imports straight into the global namespace
+
+// Global straight (bit-wise) assignment, using concatenation
+LED := Button:Button;
+//------------------------------------------------------------------------------
+
+// Or (alternatively) with a namespace:
+import "BeMicro Max 10" as FPGA;
+FPGA.LED := FPGA.Button:FPGA.Button;
+

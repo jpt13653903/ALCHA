@@ -1,0 +1,71 @@
+set_global_assignment -name FAMILY "MAX 10"
+set_global_assignment -name DEVICE 10M08DAF484C8GES
+set_global_assignment -name TOP_LEVEL_ENTITY Testing
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION 15.0.0
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "10:25:51  November 11, 2015"
+set_global_assignment -name LAST_QUARTUS_VERSION 15.0.0
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
+set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 256
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVCMOS"
+set_global_assignment -name RESERVE_ALL_UNUSED_PINS_WEAK_PULLUP "AS INPUT TRI-STATED WITH WEAK PULL-UP"
+set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
+set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_global_assignment -name ENABLE_OCT_DONE OFF
+set_global_assignment -name EXTERNAL_FLASH_FALLBACK_ADDRESS 00000000
+set_global_assignment -name USE_CONFIGURATION_DEVICE OFF
+set_global_assignment -name CRC_ERROR_OPEN_DRAIN OFF
+set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS "HALF VCCIO" -rise
+set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS "HALF VCCIO" -fall
+set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -rise
+set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -fall
+set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005
+set_global_assignment -name VERILOG_SHOW_LMF_MAPPING_MESSAGES OFF
+set_global_assignment -name INTERNAL_FLASH_UPDATE_MODE "SINGLE COMP IMAGE"
+#-------------------------------------------------------------------------------
+
+set_location_assignment PIN_AB5 -to Button[4]
+set_location_assignment PIN_V5 -to Button[3]
+set_location_assignment PIN_R1 -to Button[2]
+set_location_assignment PIN_M1 -to Button[1]
+set_location_assignment PIN_N14 -to Clk
+set_location_assignment PIN_AA5 -to LED[8]
+set_location_assignment PIN_AB4 -to LED[7]
+set_location_assignment PIN_T6 -to LED[6]
+set_location_assignment PIN_V4 -to LED[5]
+set_location_assignment PIN_T1 -to LED[4]
+set_location_assignment PIN_R2 -to LED[3]
+set_location_assignment PIN_N1 -to LED[2]
+set_location_assignment PIN_M2 -to LED[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[8]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to LED[2]
+set_instance_assignment -name CURRENT_STRENGTH_NEW "8mA" -to LED[8]
+set_instance_assignment -name CURRENT_STRENGTH_NEW "8mA" -to LED[7]
+set_instance_assignment -name CURRENT_STRENGTH_NEW "8mA" -to LED[6]
+set_instance_assignment -name CURRENT_STRENGTH_NEW "8mA" -to LED[5]
+set_instance_assignment -name CURRENT_STRENGTH_NEW "8mA" -to LED[4]
+set_instance_assignment -name CURRENT_STRENGTH_NEW "8mA" -to LED[3]
+set_instance_assignment -name CURRENT_STRENGTH_NEW "8mA" -to LED[2]
+set_instance_assignment -name CURRENT_STRENGTH_NEW "8mA" -to LED[1]
+
+set_instance_assignment -name IO_STANDARD LVDS -to LVDS_TX_P[0]
+set_location_assignment PIN_V17 -to LVDS_TX_P[0]
+set_location_assignment PIN_W17 -to LVDS_TX_P[0](n)
+#-------------------------------------------------------------------------------
+
+set_global_assignment -name SDC_FILE Testing.sdc
+set_global_assignment -name CDF_FILE Testing.cdf
+set_global_assignment -name VERILOG_FILE Testing.v
+#-------------------------------------------------------------------------------
+ 

@@ -1,0 +1,52 @@
+Assignment = Concatenation AssignmentOperator Conditional;
+
+AssignmentOperator = 
+  ":=" | (* Assign without bit-weight (straight assign) *)
+   "=" | (* Assign, but take fixed-point format into account *)
+  "*=" | (* Multiply and assign *)
+  "/=" | (* Divide and assign *)
+  "%=" | (* Modulus and assign *)
+  "+=" | (* Add and assign *)
+  "-=" | (* Subtract and assign *)
+ "<<=" | (* Shift left and assign *)
+ ">>=" | (* Shift right and assign *)
+  "&=" | (* Bitwise AND and assign *)
+  "^=" | (* Bitwise XOR and assign *)
+  "|=" ; (* Bitwise OR and assign *)
+
+Conditional    = LogicalOR      [ "?" Cast ":" Cast];
+LogicalOR      = LogicalAND     { "||"                      LogicalAND    };
+LogicalAND     = BitwiseOR      { "&&"                      BitwiseOR     };
+BitwiseOR      = BitwiseXOR     { "|"                       BitwiseXOR    };
+BitwiseXOR     = BitwiseAND     { "^"                       BitwiseAND    };
+BitwiseAND     = Equality       { "&"                       Equality      };
+Equality       = Relational     {("==" | "!=")              Relational    };
+Relational     = Shift          {("<"  | ">" | "<=" | ">=") Shift         };
+Shift          = Additive       {("<<" | ">>")              Additive      };
+Additive       = Multiplicative {("+"  | "-" )              Multiplicative};
+Multiplicative = Concatenation  {("*"  | "/" | "%")         Concatenation };
+Concatenation  = Replication    { ":"                       Replication   };
+Replication    = Cast           [ "\"                       Primary       ];
+
+Cast  = Unary [FixedPointCast];
+Unary = {"+" | "-" | "!" | "~" | "&" | "|" | "^"} PostFix;
+
+PostFix = Primary {
+       SliceSpecifier     | 
+       BitSliceSpecifier  |
+ ("."  Identifier       ) | (* Member specifier *)
+ ("::" Identifier       ) | (* Namespace specifier *)
+ ("(" [ArgumentList] ")") | (* Also used for type-casting: like GLSL *)
+ "++"                     |
+ "--"
+};
+
+SliceSpecifier    = "[[" SliceRange {"," SliceRange} "]]"; (* Array slices *)
+BitSliceSpecifier = "["  SliceRange {"," SliceRange}  "]"; (* Bit slices *)
+SliceRange        = Conditional ["->" Conditional];
+
+ArgumentList = Conditional {"," Conditional};
+
+Primary = Identifier | Constant | ("(" Conditional ")");
+(*----------------------------------------------------------------------------*)
+

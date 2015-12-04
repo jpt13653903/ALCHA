@@ -23,8 +23,8 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
-			<Add directory="../Common" />
-			<Add directory="../Common/Tools" />
+			<Add directory="Global" />
+			<Add directory="Tools" />
 			<Add directory="FrontEnd" />
 			<Add directory="BackEnd" />
 			<Add directory="Objects" />
@@ -36,18 +36,6 @@
 			<Add library="gmp" />
 			<Add directory="Libraries/lib" />
 		</Linker>
-		<Unit filename="../Common/OS_Header.h" />
-		<Unit filename="../Common/Resources/resource.rc">
-			<Option compilerVar="WINDRES" />
-		</Unit>
-		<Unit filename="../Common/Tools/FileSystem.cpp" />
-		<Unit filename="../Common/Tools/FileSystem.h" />
-		<Unit filename="../Common/Tools/MyString.cpp" />
-		<Unit filename="../Common/Tools/MyString.h" />
-		<Unit filename="../Common/Tools/Number.cpp" />
-		<Unit filename="../Common/Tools/Number.h" />
-		<Unit filename="../Common/Tools/Tree.cpp" />
-		<Unit filename="../Common/Tools/Tree.h" />
 		<Unit filename="BackEnd/Altera.cpp" />
 		<Unit filename="BackEnd/Altera.h" />
 		<Unit filename="FrontEnd/Keywords.cpp" />
@@ -60,12 +48,24 @@
 		<Unit filename="FrontEnd/PreProcessor.h" />
 		<Unit filename="FrontEnd/Scanner.cpp" />
 		<Unit filename="FrontEnd/Scanner.h" />
+		<Unit filename="Global/OS_Header.h" />
 		<Unit filename="Objects/Object.cpp" />
 		<Unit filename="Objects/Object.h" />
 		<Unit filename="Objects/Pin.cpp" />
 		<Unit filename="Objects/Pin.h" />
 		<Unit filename="Objects/Target.cpp" />
 		<Unit filename="Objects/Target.h" />
+		<Unit filename="Resources/resource.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
+		<Unit filename="Tools/FileSystem.cpp" />
+		<Unit filename="Tools/FileSystem.h" />
+		<Unit filename="Tools/MyString.cpp" />
+		<Unit filename="Tools/MyString.h" />
+		<Unit filename="Tools/Number.cpp" />
+		<Unit filename="Tools/Number.h" />
+		<Unit filename="Tools/Tree.cpp" />
+		<Unit filename="Tools/Tree.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="main.h" />
 		<Extensions>

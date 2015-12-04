@@ -1,0 +1,42 @@
+(*
+ The preprocessor implements the following phases:
+  1) Evaluate directives (include files, define macros, handle #if blocks, etc)
+  2) Expand macros
+  3) Translate escape sequences in character and string constants
+  4) Remove new-lines (comments embedded in new-line tokens are concatenated
+     with the comments embedded in the next token)
+  5) Concatenate adjacent strings
+  6) Translate preprocessing tokens to processing tokens
+
+  Unless redefined here, the definition is the same as in Scanner.ebnf
+*)
+(*----------------------------------------------------------------------------*)
+
+Token = Keyword | Identifier | Operator | String | Number | FixedPointCast;
+(*----------------------------------------------------------------------------*)
+
+Keyword = "continue"      | "true"           | "goto"     | "default"        |
+          "if"            | "return"         | "typedef"  | "inline"         |
+          "short"         | "bool"           | "do"       | "int"            |
+          "signed"        | "break"          | "double"   | "long"           |
+          "sizeof"        | "union"          | "case"     | "static"         |
+          "unsigned"      | "else"           | "char"     | "enum"           |
+          "virtual"       | "struct"         | "void"     | "switch"         |
+          "class"         | "extern"         | "operator" | "const"          |
+          "false"         | "private"        | "while"    | "float"          |
+          "protected"     | "for"            | "public"   | "pin"            |
+          "pin_group"     | "pin_array"      | "clock"    | "task"           |
+          "loop"          | "pipe"           | "param"    | "script"         |
+          "rtl"           | "in"             | "out"      | "external_setup" |
+          "external_hold" | "external_delay" | "target"   ;
+
+Number = Binary | Octal | Decimal | Hexadecimal | Character;
+
+Binary      = "0b" {"0" | "1" } ["." {"0" | "1" }] [("p" | "P") ["+" | "-"] {Digit}];
+Octal       = "0o" {OctalDigit} ["." {OctalDigit}] [("p" | "P") ["+" | "-"] {Digit}];
+Hexadecimal = "0x" {HexDigit  } ["." {HexDigit  }] [("p" | "P") ["+" | "-"] {Digit}];
+Decimal     =      {Digit     } ["." {Digit     }] [("e" | "E") ["+" | "-"] {Digit}];
+
+FixedPointCast = "`" {Digit} ["." ["-"] {Digit}];
+(*----------------------------------------------------------------------------*)
+
