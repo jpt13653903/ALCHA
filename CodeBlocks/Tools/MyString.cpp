@@ -187,6 +187,13 @@ STRING& STRING::operator<< (double d){
 }
 //------------------------------------------------------------------------------
 
+STRING& STRING::Hex(unsigned i){
+ char s[0x100];
+ sprintf(s, "%X", i);
+ return operator<< (s);
+}
+//------------------------------------------------------------------------------
+
 unsigned char STRING::operator[] (unsigned Index){
  return TheString[Index];
 }

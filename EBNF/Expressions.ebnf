@@ -34,15 +34,14 @@ Unary = {"+" | "-" | "!" | "~" | "&" | "|" | "^"} PostFix;
 PostFix = Primary {
        SliceSpecifier     | 
        BitSliceSpecifier  |
- ("."  Identifier       ) | (* Member specifier *)
- ("::" Identifier       ) | (* Namespace specifier *)
+ ("."  Identifier       ) | (* Member and Namespace specifier *)
  ("(" [ArgumentList] ")") | (* Also used for type-casting: like GLSL *)
  "++"                     |
  "--"
 };
 
-SliceSpecifier    = "[[" SliceRange {"," SliceRange} "]]"; (* Array slices *)
-BitSliceSpecifier = "["  SliceRange {"," SliceRange}  "]"; (* Bit slices *)
+SliceSpecifier    = "[[" SliceRange "]]"; (* Array slices *)
+BitSliceSpecifier = "["  SliceRange  "]"; (* Bit slices *)
 SliceRange        = Conditional ["->" Conditional];
 
 ArgumentList = Conditional {"," Conditional};

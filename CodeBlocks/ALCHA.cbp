@@ -28,6 +28,7 @@
 			<Add directory="FrontEnd" />
 			<Add directory="BackEnd" />
 			<Add directory="Objects" />
+			<Add directory="DataStructures" />
 			<Add directory="Libraries/include" />
 		</Compiler>
 		<Linker>
@@ -38,6 +39,22 @@
 		</Linker>
 		<Unit filename="BackEnd/Altera.cpp" />
 		<Unit filename="BackEnd/Altera.h" />
+		<Unit filename="BackEnd/ClockTree.cpp" />
+		<Unit filename="BackEnd/ClockTree.h" />
+		<Unit filename="BackEnd/HDL.cpp" />
+		<Unit filename="BackEnd/HDL.h" />
+		<Unit filename="BackEnd/MemoryTable.cpp" />
+		<Unit filename="BackEnd/MemoryTable.h" />
+		<Unit filename="BackEnd/PinTable.cpp" />
+		<Unit filename="BackEnd/PinTable.h" />
+		<Unit filename="BackEnd/TimingSpec.cpp" />
+		<Unit filename="BackEnd/TimingSpec.h" />
+		<Unit filename="DataStructures/AST.cpp" />
+		<Unit filename="DataStructures/AST.h" />
+		<Unit filename="DataStructures/Tree.cpp" />
+		<Unit filename="DataStructures/Tree.h" />
+		<Unit filename="DataStructures/TypeDef.cpp" />
+		<Unit filename="DataStructures/TypeDef.h" />
 		<Unit filename="FrontEnd/Keywords.cpp" />
 		<Unit filename="FrontEnd/Keywords.h" />
 		<Unit filename="FrontEnd/Operators.cpp" />
@@ -64,8 +81,6 @@
 		<Unit filename="Tools/MyString.h" />
 		<Unit filename="Tools/Number.cpp" />
 		<Unit filename="Tools/Number.h" />
-		<Unit filename="Tools/Tree.cpp" />
-		<Unit filename="Tools/Tree.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="main.h" />
 		<Extensions>

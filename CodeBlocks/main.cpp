@@ -35,72 +35,71 @@ int main(int argc, char** argv){
   ) Info.dwSize.Y--;
  #endif
 
- // Testing GMP ----------------------------------------------------------------
- mpq_t MyFraction;
- mpq_init(MyFraction);
- mpq_set_ui(MyFraction, 57, 912);
- mpq_canonicalize(MyFraction);
- char* String = mpq_get_str(0, 10, MyFraction);
- printf("MyFraction = %s\n", String);
- free(String);
- mpq_clear(MyFraction);
+ SetCurrentDirectory(L"C:\\JPT\\Projects\\15\\1509 - ALCHA\\Test Cases\\Output");
 
- // Testing FFTW ---------------------------------------------------------------
- int N = 256;
- fftw_complex *in, *out;
- fftw_plan p;
+ hdl.Toplevel->Name = "Testing";
 
- in  = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
- out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
- p   = fftw_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+ HDL::MODULE* Module = hdl.Toplevel->Modules = new HDL::MODULE("Testing");
 
- fftw_execute(p); /* repeat as needed */
+ HDL::SIGNAL* Port;
+ Port = Module->Signals = new HDL::SIGNAL("Clk");
+ Port->Port      = true;
+ Port->Direction = HDL::SIGNAL::Input;
 
- fftw_destroy_plan(p);
- fftw_free(in);
- fftw_free(out);
+ Port = Port->Next = new HDL::SIGNAL("LVDS_TX_P");
+ Port->Port        = true;
+ Port->Direction   = HDL::SIGNAL::Output;
+ Port->Vector      = true;
+ Port->VectorStart = 0;
+ Port->VectorEnd   = 0;
 
- // Testing MPFR ---------------------------------------------------------------
- mpfr_t s, c;
- mpfr_init2(s, 256);
- mpfr_init2(c, 256);
+ Port = Port->Next = new HDL::SIGNAL("Button");
+ Port->Port        = true;
+ Port->Direction   = HDL::SIGNAL::Input;
+ Port->Vector      = true;
+ Port->VectorStart = 4;
+ Port->VectorEnd   = 1;
 
- mpfr_set_d(s, 355./113./3., MPFR_RNDN); // 60 deg
- mpfr_sin_cos(s, c, s, MPFR_RNDN);
+ Port = Port->Next = new HDL::SIGNAL("LED");
+ Port->Port        = true;
+ Port->Direction   = HDL::SIGNAL::Output;
+ Port->Vector      = true;
+ Port->VectorStart = 8;
+ Port->VectorEnd   = 1;
 
- mpfr_exp_t e;
+ HDL::AST* ast = Module->Statements = new HDL::AST;
+ ast->Operator = HDL::AST::Assign;
+ ast->Child1   = new HDL::AST;
+ ast->Child1->Operator = HDL::AST::Identifier;
+ ast->Child1->Name     = "LED";
+ ast->Child2 = new HDL::AST;
+ ast->Child2->Operator      = HDL::AST::Replicate;
+ ast->Child2->ConstantValue = 2;
+ ast->Child2->Child1        = new HDL::AST;
+ ast->Child2->Child1->Operator = HDL::AST::Identifier;
+ ast->Child2->Child1->Name     = "Button";
 
- String = mpfr_get_str(0, &e, 10, 0, s, MPFR_RNDN);
- printf("sin(60 deg) = 0.%s x10^%d\n", String, (int)e);
- mpfr_free_str(String);
+ ast = ast->Next = new HDL::AST;
+ ast->Operator = HDL::AST::Assign;
+ ast->Child1 = new HDL::AST;
+ ast->Child1->Operator = HDL::AST::Identifier;
+ ast->Child1->Name     = "LVDS_TX_P";
+ ast->Child2 = new HDL::AST;
+ ast->Child2->Operator = HDL::AST::Identifier;
+ ast->Child2->Name     = "Clk";
 
- String = mpfr_get_str(0, &e, 10, 0, c, MPFR_RNDN);
- printf("cos(60 deg) = 0.%s x10^%d\n", String, (int)e);
- mpfr_free_str(String);
+ ast = ast->Next = new HDL::AST;
+ ast->Operator = HDL::AST::Assign;
+ ast->Child1 = new HDL::AST;
+ ast->Child1->Operator = HDL::AST::Identifier;
+ ast->Child1->Name     = "Testing";
+ ast->Child2 = new HDL::AST;
+ ast->Child2->Operator = HDL::AST::Constant;
+ ast->Child2->ConstantLength = 16;
+ ast->Child2->ConstantValue  = 0xABCD;
 
- mpfr_clear(s);
- mpfr_clear(c);
-
- return 0;
- // Done Testing ---------------------------------------------------------------
-
- PARSER Parser;
-// if(!Parser.Run("../../Test Cases\\FrontEnd\\Scanner.alc")) return -1;
-// if(!Parser.Run("../../Test Cases\\Target\\Cyclone V GX Starter Kit.ah")){
-//  return -1;
-// }
-// if(!Parser.Run("../../Test Cases\\Target\\BeMicro Max 10.ah")){
-//  return -1;
-// }
- if(!Parser.Run("../../Test Cases\\Target\\Minimal BeMicro Max 10.ah")){
-  return -1;
- }
-// if(!Parser.Run("../../Test Cases/Buttons to LEDs/main.alc")){
-//  return -1;
-// }
-
-// ALTERA Altera;
-// if(!Altera.WriteProject("../../Test Cases/Output", "Testing")) return -2;
+ ALTERA Altera;
+ if(!Altera.WriteProject()) return -2;
 
  return 0;
 }

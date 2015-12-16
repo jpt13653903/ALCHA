@@ -78,6 +78,8 @@ class STRING{
   STRING& operator<< (float  f);
   STRING& operator<< (double d);
 
+  STRING& Hex(unsigned i);
+
   unsigned char operator[] (unsigned Index);
 
   const char   *     String();

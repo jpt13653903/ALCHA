@@ -75,41 +75,6 @@ RTL  = "rtl"  ["<" TheClock ["," TheReset ["," TheEnable]] ">"] "{" {Declaration
 (*----------------------------------------------------------------------------*)
 
 HDL = "hdl" AttributeList Identifier "{" Declarations "}";
-
-(* Example:
- hdl<files = "RS232.v, RS232_Rx.v, RS232_Tx.v"> RS232{
-  in  unsigned`1 nReset;
-  in  clock      Clk;
-
-  in  unsigned`8 TxData;
-  in  unsigned`1 Send;
-  out unsigned`1 Busy;
-
-  out unsigned`1 DataReady;
-  out unsigned`8 RxData;
-  in  unsigned`1 Ack;
-  
-  out unsigned`1 Tx;
-  in  unsigned`1 Rx;
- 
-  param unsigned CountBits =  5; // Default parameters for 50 MHz clock
-  param unsigned Count0_5  =  8; // f_Clk / BAUD / 2
-  param unsigned Count1    = 17; // f_Clk / BAUD
-  param unsigned Count1_5  = 25; // f_Clk / BAUD * 1.5
-
-  script RS232(clock Clock, unsigned BAUD){
-   Clk    = Clock;
-   nReset = !Reset;
-   
-   Count0_5  = round(Clock.Frequency / BAUD / 2);
-   Count1    = round(Clock.Frequency / BAUD);
-   Count1_5  = round(Clock.Frequency / BAUD / 1.5);
-   CountBits = log2(Count1_5);
-  }
- }
-
- RS232 MyUART{Clk_50_MHz, 9600};
-*)
 (*----------------------------------------------------------------------------*)
 
 ScriptVar = ["export"] "param" ("int" | "rat" | ("float" [FixedPointCast])) Identifier {ArraySpecifier};

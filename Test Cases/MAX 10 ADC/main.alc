@@ -1,0 +1,84 @@
+#define Clk    SYS_CLK
+#define Button SW
+#define LED    USER_LED
+
+import "BeMicro Max 10";
+//------------------------------------------------------------------------------
+
+clock<Frequency = "10 MHz", Location = "PLL_1"> ADC_Clk(Clk);
+// Clock_10M has a "locked" property, which is the PLL "locked" wire
+//------------------------------------------------------------------------------
+
+import "MAX10_ADC";
+
+MAX10_ADC ADC;
+
+ADC.adc_pll_clock_clk     = ADC_Clk;
+ADC.adc_pll_locked_export = ADC_Clk.Locked;
+
+ADC.clock_clk             = Clk;
+ADC.reset_sink_reset_n    = ADC_Clk.Locked;
+
+task(Clk, !ADC_Clk.Locked){
+ ADC.command_valid         = 1,
+ ADC.command_channel       = 4, // Photo resistor
+ ADC.command_startofpacket = 1;
+
+ loop{
+  if(ADC.command_ready){
+   ADC.command_startofpacket = 0,
+
+   if(ADC.command_channel == 4) ADC.command_channel = 12,
+   else                         ADC.command_channel =  4,
+  }
+
+  if(ADC.response_valid){
+   switch(ADC.response_channel){
+    case  4: ADC_Photo   <= ADC.response_data, break;
+    case 12: ADC_Thermal <= ADC.response_data, break;
+    default: break;
+   }
+  }
+ }
+}
+//------------------------------------------------------------------------------
+
+unsigned`12 ADC_Photo;
+unsigned`12 ADC_Thermal;
+
+unsigned`8  PWM;
+
+     if(ADC_Photo[[11:8]] < 0x1) PWM = 0x03;
+else if(ADC_Photo[[11:8]] < 0x2) PWM = 0x04;
+else if(ADC_Photo[[11:8]] < 0x3) PWM = 0x05;
+else if(ADC_Photo[[11:8]] < 0x4) PWM = 0x07;
+else if(ADC_Photo[[11:8]] < 0x5) PWM = 0x09;
+else if(ADC_Photo[[11:8]] < 0x6) PWM = 0x0D;
+else if(ADC_Photo[[11:8]] < 0x7) PWM = 0x11;
+else if(ADC_Photo[[11:8]] < 0x8) PWM = 0x17;
+else if(ADC_Photo[[11:8]] < 0x9) PWM = 0x1F;
+else if(ADC_Photo[[11:8]] < 0xA) PWM = 0x2A;
+else if(ADC_Photo[[11:8]] < 0xB) PWM = 0x39;
+else if(ADC_Photo[[11:8]] < 0xC) PWM = 0x4D;
+else if(ADC_Photo[[11:8]] < 0xD) PWM = 0x68;
+else if(ADC_Photo[[11:8]] < 0xE) PWM = 0x8C;
+else if(ADC_Photo[[11:8]] < 0xF) PWM = 0xBD;
+else                             PWM = 0xFF;
+//------------------------------------------------------------------------------
+
+unsigned`1  PWM_out;
+
+unsigned`16 Count;
+rtl(Clk){
+ PWM_out = (Count >> 8) < PWM,
+ Count++;
+}
+
+if(PWM_out){
+ if(~&Button) LED := Button:Button;
+ else         LED := ~ADC_Photo >> 4;
+}else{
+ LED := 0xFF;
+}
+//------------------------------------------------------------------------------
+

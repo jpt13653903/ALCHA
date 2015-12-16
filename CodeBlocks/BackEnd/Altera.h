@@ -25,6 +25,7 @@
 #include <time.h>
 //------------------------------------------------------------------------------
 
+#include "HDL.h"
 #include "Pin.h"
 #include "Target.h"
 #include "FileSystem.h"
@@ -32,7 +33,7 @@
 
 class ALTERA{
  public:
-  bool WriteProject(const char* Path, const char* Name);
+  bool WriteProject();
 };
 //------------------------------------------------------------------------------
 

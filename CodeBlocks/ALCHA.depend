@@ -1,9 +1,10 @@
 # depslib dependency file v1.0
-1447192434 source:c:\jpt\projects\15\1509 - alcha\codeblocks\backend\altera.cpp
+1450265869 source:c:\jpt\projects\15\1509 - alcha\codeblocks\backend\altera.cpp
 	"Altera.h"
 
-1447188205 c:\jpt\projects\15\1509 - alcha\codeblocks\backend\altera.h
+1450263033 c:\jpt\projects\15\1509 - alcha\codeblocks\backend\altera.h
 	<time.h>
+	"HDL.h"
 	"Pin.h"
 	"Target.h"
 	"FileSystem.h"
@@ -17,7 +18,7 @@
 
 1446889717 c:\jpt\projects\15\1509 - alcha\codeblocks\tools\tree.h
 
-1447165305 c:\jpt\projects\15\1509 - alcha\codeblocks\tools\mystring.h
+1450270255 c:\jpt\projects\15\1509 - alcha\codeblocks\tools\mystring.h
 	<stdio.h>
 	<wchar.h>
 
@@ -80,7 +81,7 @@
 1448537689 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\scanner.cpp
 	"Scanner.h"
 
-1448995815 source:c:\jpt\projects\15\1509 - alcha\codeblocks\main.cpp
+1450270608 source:c:\jpt\projects\15\1509 - alcha\codeblocks\main.cpp
 	"main.h"
 
 1448986342 c:\jpt\projects\15\1509 - alcha\codeblocks\main.h
@@ -111,7 +112,7 @@
 1446968246 source:c:\jpt\projects\15\1509 - alcha\codeblocks\tools\filesystem.cpp
 	"FileSystem.h"
 
-1447166366 source:c:\jpt\projects\15\1509 - alcha\codeblocks\tools\mystring.cpp
+1450270255 source:c:\jpt\projects\15\1509 - alcha\codeblocks\tools\mystring.cpp
 	"MyString.h"
 
 1447173238 source:c:\jpt\projects\15\1509 - alcha\codeblocks\tools\number.cpp
@@ -119,4 +120,49 @@
 
 1446889332 source:c:\jpt\projects\15\1509 - alcha\codeblocks\tools\tree.cpp
 	"Tree.h"
+
+1446889717 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\tree.h
+
+1449438579 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast.cpp
+	"AST.h"
+
+1449742450 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast.h
+	"mpfr.h"
+
+1446889332 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\tree.cpp
+	"Tree.h"
+
+1450272968 c:\jpt\projects\15\1509 - alcha\codeblocks\backend\hdl.h
+	"MyString.h"
+	"FileSystem.h"
+
+1449440835 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\typedef.cpp
+	"TypeDef.h"
+
+1449742491 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\typedef.h
+	"MyString.h"
+
+1450127241 source:c:\jpt\projects\15\1509 - alcha\codeblocks\backend\clocktree.cpp
+	"ClockTree.h"
+
+1450185521 c:\jpt\projects\15\1509 - alcha\codeblocks\backend\clocktree.h
+
+1450270567 source:c:\jpt\projects\15\1509 - alcha\codeblocks\backend\hdl.cpp
+	"HDL.h"
+
+1450180917 source:c:\jpt\projects\15\1509 - alcha\codeblocks\backend\memorytable.cpp
+	"MemoryTable.h"
+
+1450262821 c:\jpt\projects\15\1509 - alcha\codeblocks\backend\memorytable.h
+	"gmp.h"
+
+1450127241 source:c:\jpt\projects\15\1509 - alcha\codeblocks\backend\pintable.cpp
+	"PinTable.h"
+
+1450180917 c:\jpt\projects\15\1509 - alcha\codeblocks\backend\pintable.h
+
+1450127241 source:c:\jpt\projects\15\1509 - alcha\codeblocks\backend\timingspec.cpp
+	"TimingSpec.h"
+
+1450208835 c:\jpt\projects\15\1509 - alcha\codeblocks\backend\timingspec.h
 

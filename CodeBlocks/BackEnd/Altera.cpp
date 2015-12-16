@@ -21,7 +21,7 @@
 #include "Altera.h"
 //------------------------------------------------------------------------------
 
-bool ALTERA::WriteProject(const char* Path, const char* Name){
+bool ALTERA::WriteProject(){
  FILE_SYSTEM fs;
 
  time_t rawtime; time(&rawtime);
@@ -56,14 +56,14 @@ time->tm_year + 1900 <<
 \n\
 # Revisions\n\
 \n\
-PROJECT_REVISION = \"" << Name << "\"\n\
+PROJECT_REVISION = \"" << hdl.Toplevel->Name << "\"\n\
  ";
 
  STRING QSF;
  QSF << "\
 set_global_assignment -name FAMILY \"" << Target.Series << "\"\n\
 set_global_assignment -name DEVICE " << Target.Device << "\n\
-set_global_assignment -name TOP_LEVEL_ENTITY " << Name << "\n\
+set_global_assignment -name TOP_LEVEL_ENTITY " << hdl.Toplevel->Name << "\n\
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 15.0.0\n\
 set_global_assignment -name PROJECT_CREATION_TIME_DATE \"" <<
 time->tm_hour << ":" <<
@@ -134,9 +134,9 @@ set_location_assignment PIN_V17 -to LVDS_TX_P[0]\n\
 set_location_assignment PIN_W17 -to LVDS_TX_P[0](n)\n\
 #-------------------------------------------------------------------------------\n\
 \n\
-set_global_assignment -name SDC_FILE " << Name << ".sdc\n\
-set_global_assignment -name CDF_FILE " << Name << ".cdf\n\
-set_global_assignment -name VERILOG_FILE " << Name << ".v\n\
+set_global_assignment -name SDC_FILE " << hdl.Toplevel->Name << ".sdc\n\
+set_global_assignment -name CDF_FILE " << hdl.Toplevel->Name << ".cdf\n\
+set_global_assignment -name VERILOG_FILE " << hdl.Toplevel->Name << ".v\n\
 #-------------------------------------------------------------------------------\n\
  ";
 
@@ -176,7 +176,7 @@ JedecChain;\n\
 	DefaultMfr(6E);\n\
 \n\
 	P ActionCode(Cfg)\n\
-		Device PartName(" << Target.Device << ") Path(\"output_files/\") File(\"" << Name << ".sof\") MfrSpec(OpMask(1));\n\
+		Device PartName(" << Target.Device << ") Path(\"output_files/\") File(\"" << hdl.Toplevel->Name << ".sof\") MfrSpec(OpMask(1));\n\
 \n\
 ChainEnd;\n\
 \n\
@@ -185,43 +185,22 @@ AlteraBegin;\n\
 AlteraEnd\n\
  ";
 
- STRING V;
- V << "\
-module " << Name << "(\n\
- input       Clk,       // N14 = 50 MHz\n\
- output [0:0]LVDS_TX_P, // LVDS: V17-W17\n\
-\n\
- input  [4:1]Button,    // AB5  V5 R1 M1\n\
- output [8:1]LED        // AA5 AB4 T6 V4 T1 R2 N1 M2\n\
-);\n\
-//------------------------------------------------------------------------------\n\
-\n\
-assign LED       = {Button, Button};\n\
-assign LVDS_TX_P = Clk;\n\
-//------------------------------------------------------------------------------\n\
-\n\
-endmodule\n\
-//------------------------------------------------------------------------------\n\
- ";
-
  STRING Filename;
- Filename << Path << '\\' << Name << ".qpf";
+ Filename << hdl.Toplevel->Name << ".qpf";
  if(!fs.Write(Filename.String(), QPF.String(), QPF.Length())) return false;
 
  Filename.Clear();
- Filename << Path << '\\' << Name << ".qsf";
+ Filename << hdl.Toplevel->Name << ".qsf";
  if(!fs.Write(Filename.String(), QSF.String(), QSF.Length())) return false;
 
  Filename.Clear();
- Filename << Path << '\\' << Name << ".sdc";
+ Filename << hdl.Toplevel->Name << ".sdc";
  if(!fs.Write(Filename.String(), SDC.String(), SDC.Length())) return false;
 
- Filename.Clear();
- Filename << Path << '\\' << Name << ".v";
- if(!fs.Write(Filename.String(), V.String(), V.Length())) return false;
+ if(!hdl.Toplevel->Write()) return false;
 
  Filename.Clear();
- Filename << Path << '\\' << Name << ".cdf";
+ Filename << hdl.Toplevel->Name << ".cdf";
  if(!fs.Write(Filename.String(), CDF.String(), CDF.Length())) return false;
 
  return true;
