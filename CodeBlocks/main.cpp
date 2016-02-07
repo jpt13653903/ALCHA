@@ -37,9 +37,14 @@ int main(int argc, char** argv){
 
  SetCurrentDirectory(L"C:\\JPT\\Projects\\15\\1509 - ALCHA\\Test Cases\\Output");
 
- hdl.Toplevel->Name = "Testing";
+ Target.Vendor = "Altera";
+ Target.Series = "MAX 10";
+ Target.Device = "10M08DAF484C8GES";
+ Target.Board  = "BeMicro Max 10";
 
- HDL::MODULE* Module = hdl.Toplevel->Modules = new HDL::MODULE("Testing");
+ hdl.Files = new HDL::FILE("Testing");
+
+ HDL::MODULE* Module = hdl.Files->Modules = new HDL::MODULE("Testing");
 
  HDL::SIGNAL* Port;
  Port = Module->Signals = new HDL::SIGNAL("Clk");

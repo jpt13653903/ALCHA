@@ -109,24 +109,21 @@ struct HDL{
    Constant
   } Operator;
 
-  // Some have 3 children, others have one child, where the child is a linked
-  // list.  For instance, the case statement has two children:
-  // 1) A linked list of cases,
-  // 2) The default case
   AST* Child1;
   AST* Child2;
   AST* Child3;
-  AST* Next; // Sibling in case of a linked list
+  AST* Next; // Next node in the linked list
 
   STRING Name;
-  int    ConstantValue;
+  int    ConstantValue; /// @todo Change to mpz_t
   int    ConstantLength;
 
   AST(); // Initialises to constant 32'd0, with no siblings or children
  ~AST(); // Also deletes siblings and children
 
-  void WriteGroup(STRING& Buffer);
-  void Write     (STRING& Buffer);
+  void WriteIndent(STRING& Buffer);
+  void WriteGroup (STRING& Buffer);
+  void Write      (STRING& Buffer);
  };
 
  struct INSTANCE{ // Sub-circuit instance
@@ -164,16 +161,20 @@ struct HDL{
   STRING  Name; // File name with relative path
   MODULE* Modules; // Linked list of modules
 
+  FILE* Next;
+
   FILE(const char* Name);
- ~FILE(); // Also deletes modules
+ ~FILE(); // Also deletes modules and the rest of the file list
 
   bool Write();
  };
 
- FILE* Toplevel;
+ FILE* Files; // Linked list of files; the first one is the top-level file
 
  HDL();
 ~HDL(); // Deletes everything
+
+ bool Write();
 };
 //------------------------------------------------------------------------------
 

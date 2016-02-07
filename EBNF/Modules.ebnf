@@ -1,0 +1,62 @@
+Module = {GlobalStatement};
+
+GlobalStatement =
+ ImportStatement    | 
+ SignalDefinition   |
+ AtributeGroup      |
+ VariableDefinition | 
+ FunctionDefinition |
+ ClassDefinition    |
+ ClassInstantiation |
+ CombinationalAssignment |
+ RTL_Structure |
+ FSM_Structure ;
+(*----------------------------------------------------------------------------*)
+
+ImportStatement = "import" Filename ["as" Identifier] ";";
+Filename        = String;
+(*----------------------------------------------------------------------------*)
+
+SignalDefinition = {SignalModifier} ((("pin" | "sig") [FixedPointCast]) | "clock") [AttributeList] Identifier {ArraySizeSpecifier} [Initialiser] ";";
+SignalModifier     = "in" | "out" | "signed";
+ArraySizeSpecifier = "[" Integer "]";
+
+AttributeList      = "<" [AttributeValuePair {"," AttributeValuePair}] ">";
+AttributeValuePair = Attribute "=" AttributeValue;
+Attribute          = Identifier;
+AttributeValue     = '"' ? Attribute-defined value format ? '"';
+(* When specifying attributes for arrays and vectors, use a comma-separated list 
+   in the Value: first the vector bits (LSb to MSb) of the first element, then 
+   the vector bits of the second element, etc.  For higher dimension arrays, 
+   follow the same sequence.  If only one value is given, it is assumed that
+   all the elements get the same value. *)
+(*----------------------------------------------------------------------------*)
+
+(* Children inherit the attributes from the group.  When Identifier is present,
+   the signals fall under a named namespace. *)
+AttributeGroup = "group" [AttributeList] [Identifier] "{" {SignalDefinition | AttributeGroup} "}";
+(*----------------------------------------------------------------------------*)
+
+VariableDefinition = ("byte" | "char" | "int" | "rat" | (("float" | "complex") [FloatSizeSpecifier])) Identifier {ArraySizeSpecifier} [Initialiser] ";";
+FloatSizeSpecifier = "`" Integer; (* Specifies mantissa bits *)
+(* byte and char are unsigned, the rest are signed *)
+(*----------------------------------------------------------------------------*)
+
+FunctionDefinition = ;
+(*----------------------------------------------------------------------------*)
+
+ClassDefinition = ;
+(*----------------------------------------------------------------------------*)
+
+ClassInstantiation = ;
+(*----------------------------------------------------------------------------*)
+
+CombinationalAssignment = ;
+(*----------------------------------------------------------------------------*)
+
+RTL_Structure = ;
+(*----------------------------------------------------------------------------*)
+
+FSM_Structure = ;
+(*----------------------------------------------------------------------------*)
+

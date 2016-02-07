@@ -91,7 +91,7 @@ HDL::AST::~AST(){
 }
 //------------------------------------------------------------------------------
 
-void HDL::AST::WriteIndent(Buffer){
+void HDL::AST::WriteIndent(STRING& Buffer){
  int j;
  for(j = 0; j < Indent; j++) Buffer << " ";
 }
@@ -123,11 +123,6 @@ void HDL::AST::Write(STRING& Buffer){
  switch(Operator){
   case Assign:
    Buffer << "assign ";
-   Child1->Write(Buffer);
-   Buffer << " = ";
-   Child2->Write(Buffer);
-   Buffer << ";\n";
-   break;
 
   case BlockAssign:
    Child1->Write(Buffer);
@@ -147,7 +142,7 @@ void HDL::AST::Write(STRING& Buffer){
    Child1->Write(Buffer); // The variable to slice
    Buffer << "[";
    Child2->Write(Buffer);
-   if(Child2){
+   if(Child3){
     Buffer << ":";
     Child3->Write(Buffer);
    }
@@ -228,7 +223,7 @@ void HDL::AST::Write(STRING& Buffer){
   case Multiply:
    Buffer << "(";
    Child1->Write(Buffer);
-   Buffer << "*";
+   Buffer << " * ";
    Child2->Write(Buffer);
    Buffer << ")";
    break;
@@ -236,7 +231,7 @@ void HDL::AST::Write(STRING& Buffer){
   case Divide:
    Buffer << "(";
    Child1->Write(Buffer);
-   Buffer << "/";
+   Buffer << " / ";
    Child2->Write(Buffer);
    Buffer << ")";
    break;
@@ -244,7 +239,7 @@ void HDL::AST::Write(STRING& Buffer){
   case Modulus:
    Buffer << "(";
    Child1->Write(Buffer);
-   Buffer << "%";
+   Buffer << " % ";
    Child2->Write(Buffer);
    Buffer << ")";
    break;
@@ -252,7 +247,7 @@ void HDL::AST::Write(STRING& Buffer){
   case Add:
    Buffer << "(";
    Child1->Write(Buffer);
-   Buffer << "+";
+   Buffer << " + ";
    Child2->Write(Buffer);
    Buffer << ")";
    break;
@@ -260,7 +255,7 @@ void HDL::AST::Write(STRING& Buffer){
   case Subtract:
    Buffer << "(";
    Child1->Write(Buffer);
-   Buffer << "-";
+   Buffer << " - ";
    Child2->Write(Buffer);
    Buffer << ")";
    break;
@@ -268,7 +263,7 @@ void HDL::AST::Write(STRING& Buffer){
   case ShiftLeft:
    Buffer << "(";
    Child1->Write(Buffer);
-   Buffer << "<<";
+   Buffer << " << ";
    Child2->Write(Buffer);
    Buffer << ")";
    break;
@@ -276,7 +271,7 @@ void HDL::AST::Write(STRING& Buffer){
   case ShiftRight:
    Buffer << "(";
    Child1->Write(Buffer);
-   Buffer << ">>";
+   Buffer << " >> ";
    Child2->Write(Buffer);
    Buffer << ")";
    break;
@@ -284,7 +279,7 @@ void HDL::AST::Write(STRING& Buffer){
   case Greater:
    Buffer << "(";
    Child1->Write(Buffer);
-   Buffer << ">";
+   Buffer << " > ";
    Child2->Write(Buffer);
    Buffer << ")";
    break;
@@ -292,7 +287,7 @@ void HDL::AST::Write(STRING& Buffer){
   case Greater_Equal:
    Buffer << "(";
    Child1->Write(Buffer);
-   Buffer << ">=";
+   Buffer << " >= ";
    Child2->Write(Buffer);
    Buffer << ")";
    break;
@@ -300,7 +295,7 @@ void HDL::AST::Write(STRING& Buffer){
   case Less:
    Buffer << "(";
    Child1->Write(Buffer);
-   Buffer << "<";
+   Buffer << " < ";
    Child2->Write(Buffer);
    Buffer << ")";
    break;
@@ -308,7 +303,7 @@ void HDL::AST::Write(STRING& Buffer){
   case Less_Equal:
    Buffer << "(";
    Child1->Write(Buffer);
-   Buffer << "<=";
+   Buffer << " <= ";
    Child2->Write(Buffer);
    Buffer << ")";
    break;
@@ -316,7 +311,7 @@ void HDL::AST::Write(STRING& Buffer){
   case Equal:
    Buffer << "(";
    Child1->Write(Buffer);
-   Buffer << "==";
+   Buffer << " == ";
    Child2->Write(Buffer);
    Buffer << ")";
    break;
@@ -324,7 +319,7 @@ void HDL::AST::Write(STRING& Buffer){
   case Not_Equal:
    Buffer << "(";
    Child1->Write(Buffer);
-   Buffer << "!=";
+   Buffer << " != ";
    Child2->Write(Buffer);
    Buffer << ")";
    break;
@@ -332,7 +327,7 @@ void HDL::AST::Write(STRING& Buffer){
   case Bitwise_AND:
    Buffer << "(";
    Child1->Write(Buffer);
-   Buffer << "&";
+   Buffer << " & ";
    Child2->Write(Buffer);
    Buffer << ")";
    break;
@@ -340,7 +335,7 @@ void HDL::AST::Write(STRING& Buffer){
   case Bitwise_XOR:
    Buffer << "(";
    Child1->Write(Buffer);
-   Buffer << "^";
+   Buffer << " ^ ";
    Child2->Write(Buffer);
    Buffer << ")";
    break;
@@ -348,7 +343,7 @@ void HDL::AST::Write(STRING& Buffer){
   case Bitwise_XNOR:
    Buffer << "(";
    Child1->Write(Buffer);
-   Buffer << "~^";
+   Buffer << " ~^ ";
    Child2->Write(Buffer);
    Buffer << ")";
    break;
@@ -356,7 +351,7 @@ void HDL::AST::Write(STRING& Buffer){
   case Bitwise_OR:
    Buffer << "(";
    Child1->Write(Buffer);
-   Buffer << "|";
+   Buffer << " | ";
    Child2->Write(Buffer);
    Buffer << ")";
    break;
@@ -364,7 +359,7 @@ void HDL::AST::Write(STRING& Buffer){
   case Logical_AND:
    Buffer << "(";
    Child1->Write(Buffer);
-   Buffer << "&&";
+   Buffer << " && ";
    Child2->Write(Buffer);
    Buffer << ")";
    break;
@@ -372,7 +367,7 @@ void HDL::AST::Write(STRING& Buffer){
   case Logical_OR:
    Buffer << "(";
    Child1->Write(Buffer);
-   Buffer << "||";
+   Buffer << " || ";
    Child2->Write(Buffer);
    Buffer << ")";
    break;
@@ -380,9 +375,9 @@ void HDL::AST::Write(STRING& Buffer){
   case Conditional:
    Buffer << "(";
    Child1->Write(Buffer);
-   Buffer << "?";
+   Buffer << " ? ";
    Child2->Write(Buffer);
-   Buffer << ":";
+   Buffer << " : ";
    Child3->Write(Buffer);
    Buffer << ")";
    break;
@@ -511,12 +506,12 @@ void HDL::MODULE::Write(STRING& Buffer){
 
  if(Parameters){
   Buffer << " #(\n ";
-  PARAMETER* Temp = Parameters;
-  while(Temp){
-   Buffer << Temp->Name << " = " << Temp->Value;
-   Temp = Temp->Next;
-   if(Temp) Buffer << ",\n ";
-   else     Buffer << "\n";
+  PARAMETER* Parameter = Parameters;
+  while(Parameter){
+   Buffer << Parameter->Name << " = " << Parameter->Value;
+   Parameter = Parameter->Next;
+   if(Parameter) Buffer << ",\n ";
+   else          Buffer << "\n";
   }
   Buffer << ")";
  }
@@ -599,11 +594,13 @@ void HDL::MODULE::Write(STRING& Buffer){
 HDL::FILE::FILE(const char* Name){
  this->Name = Name;
  Modules = 0;
+ Next    = 0;
 }
 //------------------------------------------------------------------------------
 
 HDL::FILE::~FILE(){
  if(Modules) delete Modules;
+ if(Next   ) delete Next;
 }
 //------------------------------------------------------------------------------
 
@@ -612,24 +609,35 @@ bool HDL::FILE::Write(){
 
  Indent = 0;
 
- MODULE* Temp = Modules;
- while(Temp){
-  Temp->Write(Buffer);
-  Temp = Temp->Next;
+ MODULE* Module = Modules;
+ while(Module){
+  Module->Write(Buffer);
+  Module = Module->Next;
  }
 
- /// @todo Add ".v" extension
+ STRING Filename;
+ Filename << Name << ".v";
  FILE_SYSTEM fs;
- return fs.Write(Name.String(), Buffer.String(), Buffer.Length());
+ return fs.Write(Filename.String(), Buffer.String(), Buffer.Length());
 }
 //------------------------------------------------------------------------------
 
 HDL::HDL(){
- Toplevel = new FILE("");
+ Files = 0;
 }
 //------------------------------------------------------------------------------
 
 HDL::~HDL(){
- delete Toplevel;
+ if(Files) delete Files;
+}
+//------------------------------------------------------------------------------
+
+bool HDL::Write(){
+ FILE* File = Files;
+ while(File){
+  if(!File->Write()) return false;
+  File = File->Next;
+ }
+ return true;
 }
 //------------------------------------------------------------------------------

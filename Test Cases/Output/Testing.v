@@ -1,16 +1,16 @@
 module Testing(
- input       Clk,       // N14 = 50 MHz
- output [0:0]LVDS_TX_P, // LVDS: V17-W17
-
- input  [4:1]Button,    // AB5  V5 R1 M1
- output [8:1]LED        // AA5 AB4 T6 V4 T1 R2 N1 M2
+ input  Clk,
+ output [0:0]LVDS_TX_P,
+ input  [4:1]Button,
+ output [8:1]LED
 );
 //------------------------------------------------------------------------------
 
-assign LED       = {Button, Button};
+assign LED = {2{Button}};
 assign LVDS_TX_P = Clk;
+assign Testing = 16'hABCD;
 //------------------------------------------------------------------------------
 
 endmodule
 //------------------------------------------------------------------------------
- 
+

@@ -5,6 +5,7 @@
 /// @todo Need a name?  Or does this and the symbol table point to each other?
 
 /// @todo Remember to use "set_clock_groups" for unrelated clocks
+
 struct CLOCK_TREE{
   enum TYPE{
    Pin,   // Root level of the tree

@@ -5,6 +5,13 @@
 #include "gmp.h"
 //------------------------------------------------------------------------------
 
+/** @todo Is this required in the back-end?  Or can it be directly in the HDL?
+          If it is not in the back-end, how to include the .mif (or other
+          memory initialisation) file?
+          - This must be generic - maybe similar to HDL.h, but for memory
+            initialisation instead?
+*/
+
 // This is much more complicated... Implement later...
 // For now, internal only is sufficient.
 struct MEMORY_TABLE{

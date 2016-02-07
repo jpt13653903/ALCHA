@@ -45,8 +45,6 @@
 		<Unit filename="BackEnd/HDL.h" />
 		<Unit filename="BackEnd/MemoryTable.cpp" />
 		<Unit filename="BackEnd/MemoryTable.h" />
-		<Unit filename="BackEnd/PinTable.cpp" />
-		<Unit filename="BackEnd/PinTable.h" />
 		<Unit filename="BackEnd/TimingSpec.cpp" />
 		<Unit filename="BackEnd/TimingSpec.h" />
 		<Unit filename="DataStructures/AST.cpp" />

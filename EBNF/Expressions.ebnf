@@ -1,3 +1,7 @@
+(* NOTE:
+- Remember to implement sets -- see ICIT 2016 article for details.
+*)
+
 Assignment = Concatenation AssignmentOperator Conditional;
 
 AssignmentOperator = 
