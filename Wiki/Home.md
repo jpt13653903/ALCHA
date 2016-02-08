@@ -13,7 +13,14 @@ ALCHA is aimed at unifying the various aspects of FPGA firmware design (RTL desi
 ALCHA is designed to be as portable, concise and expressive as possible, without the loss of low-level control. It provides a development platform that promises reduced development time and maintenance effort.
 
 # 2. Definitions
-## 2.1 Target Descriptor
+## 2.1 Identifiers
+Non-digits in ALCHA are defined as any character in the ranges 'a' to 'z', 'A' to 'Z' and any Unicode character above U+80, as long as it is not a white-space or newline character, as well as the '\_' character.
+
+Digits in ALCHA are defined as any character in the range '0' to '9'.
+
+Identifiers start with a non-digit, which may then be followed with any digit or non-digit.
+
+## 2.2 Target Descriptor
 Every ALCHA design must have a target descriptor.  There are two types: simulation and project.  A simulation target indicates a waveform database of all the pins in the design.  A project target indicates a vendor-specific project, including the project file, design constraints and HDL source.
 
 To specify a target, the *target* keyword is used, as follows:
@@ -48,24 +55,24 @@ After definition, the target attributes can be accessed by means of the *target*
 
 In order to promote portability, the attribute values should be standardised within a developer community.
 
-## 2.2 Signals
-### 2.2.1 Definition
-Signals relate to physical wires and / or registers on the FPGA.  They are specified by means of the *sig* keyword.  If no format is specified, a signal is a single-bit unsigned integer, which also represents a boolean.  The format is specified by means of a "fixed-point cast" using the "`" (grave accent / back-tick) operator.  An optional *signed* modifier can be used to define 2's compliment signed numbers.  Some examples are shown below:
+## 2.3 Signals
+### 2.3.1 Definition
+Signals relate to physical wires and / or registers on the FPGA.  They are specified by means of the *sig* keyword.  If no format is specified, a signal is a single-bit unsigned integer, which also represents a boolean.  The format is specified by means of a "fixed-point cast" using the "'" (grave accent / back-tick) operator.  An optional *signed* modifier can be used to define 2's compliment signed numbers.  Some examples are shown below:
 
     :::C++
     sig          a; // Single-bit unsigned integer
-    sig`8        b; // 8-bit unsigned integer
-    signed sig`8 c; // 8-bit signed integer
+    sig'8        b; // 8-bit unsigned integer
+    signed sig'8 c; // 8-bit signed integer
 
-    sig`4.4      d; // 8-bit unsigned fixed point with 4 integer bits
+    sig'4'4      d; // 8-bit unsigned fixed point with 4 integer bits
                     // and 4 fraction bits
-    sig`4.-4     e; // 4-bit integer where the least significant bit
+    sig'4'-4     e; // 4-bit integer where the least significant bit
                     // represents 16 and the most significant bit 128.
-    sig`-4.4     f; // 4-bit fixed-point where the least significant bit
+    sig'-4'4     f; // 4-bit fixed-point where the least significant bit
                     // represents 2ˆ(-8) and the most significant 2ˆ(-5).
-    sig`-4.-4    g; // Illegal: both cannot be negative.
+    sig'-4'-4    g; // Illegal: both cannot be negative.
 
-### 2.2.2 Attributes
+### 2.3.2 Attributes
 Signals take optional attributes, which are summarised in the table below:
 
 Attribute     | Default | Description
@@ -78,18 +85,18 @@ input\_clock  | None    | Specifies the clock used for external delay constraint
 min\_delay    | 0       | Specifies the minimum output delay of an external register, in relation to "clock"
 max\_delay    | 0       | Specifies the maximum output delay of an external register, in relation to "clock"
 
-### 2.2.3 Timing Constraints
+### 2.3.3 Timing Constraints
 As indicated in the table above, signal attributes can be used to specify external peripheral timing requirements.  These timing attributes are specified as if there are no PCB or trace delays.  When the signal is connected to a pin, the trace delays and pin capacitance specified by the pin attributes are used in conjunction with the signal timing attributes to calculate the appropriate external timing constraints.  An example is provided below:
 
     :::C++
     // PCB trace delays in the pin definitions:
-    pin`4<voltage   = "3.3 V" , capacitance = "10 pf",
+    pin'4<voltage   = "3.3 V" , capacitance = "10 pf",
           min_delay = "500 ps", max_delay   =  "1 ns"
           number    = "U7, T7, V8, T8"> SD_DAT;
 
     // Peripheral specifications in the driver class:
-    sig`4< input_clock = "!Clock", max_delay = "14 ns"          > Data_in;
-    sig`4<output_clock =  "Clock", setup = "5 ns", hold = "5 ns"> Data_out;
+    sig'4< input_clock = "!Clock", max_delay = "14 ns"          > Data_in;
+    sig'4<output_clock =  "Clock", setup = "5 ns", hold = "5 ns"> Data_out;
 
     // Assign the signals to the pin
     Data_in = SD_DAT;
@@ -97,11 +104,11 @@ As indicated in the table above, signal attributes can be used to specify extern
 
 External delays are always referenced to a clock, even if the external delay is purely combinational.  This is so that the timing constraints are compatible with the Synopsis Design Constraints format, which is the industry-preferred standard.
 
-### 2.2.4 Bus Connections
+### 2.3.4 Bus Connections
 ALCHA does not support high-impedance signals directly.  Pins can be set to high-impedance by disabling the driver (see the Pins section for details).  In order to emulate a bus that has a set of tri-state drivers, the signals should be gated through AND gates and then combined through an OR gate to drive the bus.
 
-## 2.3 Pins
-### 2.3.1 Definition
+## 2.4 Pins
+### 2.4.1 Definition
 Pins in ALCHA are specified by means of the *pin* keyword.  Pins can have various attributes.  A short example is presented below:
 
     :::C++
@@ -111,7 +118,7 @@ Pins in ALCHA are specified by means of the *pin* keyword.  Pins can have variou
 
 If the *in* or *out* keyword is absent, the pin is bidirectional.
 
-### 2.3.2 Attributes
+### 2.4.2 Attributes
 The table below summarises pin attributes and their default values:
 
 Attribute   | Default | Description
@@ -128,18 +135,18 @@ jitter      | 0       | In the case of a clock input, the clock jitter.
 
 The unit is important when specifying attributes.  If the unit is absent, a compilation error occurs.  Any SI unit prefix is valid, including *T*, *G*, *M*, *k*, *m*, *u*, *μ*, *n*, *p* and *f*.
 
-### 2.3.3 Pin Vectors
+### 2.4.3 Pin Vectors
 When specifying pin locations for bit-vectors or pin arrays, the *location* attribute contains a comma-separated list of pins.  Pin locations are specified most-significant bit first, as follows:
 
     :::C++
-    out pin`8<location = "H9, H8, B6, A5, E9, D8, K6, L7"> LED;
+    out pin'8<location = "H9, H8, B6, A5, E9, D8, K6, L7"> LED;
 
 Pin arrays are handled in similar fashion.  The first (0-index) pin location(s) are specified first, then the next (1-index), etc.  All the locations are comma-separated.
 
-### 2.3.4 High-impedance Pins
+### 2.4.4 High-impedance Pins
 Output and bidirectional pins have a built-in *enable* property, which represents the "driver-enable" wire.  Output pin drivers are enabled by default, whereas bidirectional pin drivers are disabled by default.
 
-## 2.4 Groups
+## 2.5 Groups
 Often there are attributes that applies to many objects.  In this case, the definitions can be grouped.  All child definitions inherit the attributes of the group.  When a child definition includes an attribute that is already defined in the group, the child definition takes precedence.  Below is an example of a named group for pin definitions.
 
     :::C++
@@ -147,7 +154,7 @@ Often there are attributes that applies to many objects.  In this case, the defi
           min_delay = "500 ps", max_delay = "1 ns"> SD{
      out pin  <location = "AB6"           > CLK;
          pin  <location = "W8"            > CMD;
-         pin`4<location = "U7, T7, V8, T8"> DAT;
+         pin'4<location = "U7, T7, V8, T8"> DAT;
     }
 
 In this case, the pins that are actually defined are "SD.CLK", "SD.CMD" and "SD.DAT".  The group can also be anonymous, as given below:
@@ -160,28 +167,35 @@ In this case, the pins that are actually defined are "SD.CLK", "SD.CMD" and "SD.
 
 Signals, class instances, derived clocks, etc. can be grouped in similar fashion.
 
-## 2.5 Classes
-### 2.5.1 Definition and Inheritance
+## 2.6 Classes
+### 2.6.1 Definition and Inheritance
 ALCHA supports a simple class structure that has a single constructor form.  The body of the class is the constructor.  Classes can also inherit from other classes, as presented in the example below:
 
     :::C++
-    class Multiplier(sig`8 A, sig`8 B){
-     sig`16 Y = A * B;
+    class Multiplier(sig'8 A, sig'8 B){
+     sig'16 Y = A * B;
     }
-    pin`8  A, B;
-    pin`16 Y;
-    Multiplier MyMultiplier(A, B);
+    pin'8  A, B;
+    pin'16 Y;
+    Multiplier(A, B) MyMultiplier;
     Y = MyMultiplier.Y;
 
-    class MultiplyAdd(sig`8 A, sig`8 B, sig`8 C): Multiplier(A, B){
+    class MultiplyAdd(sig'8 A, sig'8 B, sig'8 C): Multiplier(A, B){
      Y += C; // This is evaluated after the constructor of Multiplier
     }
-    pin`8  x, y, z;
-    pin`16 w;
-    MultiplyAdd MyMultiplyAdd(x, y, z);
+    pin'8  x, y, z;
+    pin'16 w;
+    MultiplyAdd(x, y, z) MyMultiplyAdd;
     w = MyMultiplyAdd.Y;
 
-### 2.5.2 Attributes
+The constructor parameters is part of the class name, so class inheritance can be used to implement multiple constructors, as follows:
+
+class Base(int N){
+ sig'N x;
+};
+class Base: Base(8){} // Define a default constructor for class Base
+
+### 2.6.2 Attributes
 Whenever a class is instantiated, the instance can be assigned various attributes (in similar fashion to signals and pins).  A typical attribute that might be assigned is the *location*, which indicates where on the FPGA the class instance should be placed.  The exact details of this has not been finalised yet, but it is envisioned that the developer can define a rectangle in normalised coordinates, similar to the example below:
 
     :::C++
@@ -190,16 +204,17 @@ Whenever a class is instantiated, the instance can be assigned various attribute
     }
     SomeModule<location = "(0.1, 0.3)->(0.8, 0.5)"> TheInstance;
 
-## 2.6 Literals
-ALCHA literals are all stored as infinite-precision rational numbers (by means of the [GNU MP library](https://gmplib.org/)). An imaginary literal can be specified by using either a "j" or "i" postfix.  Literals can be binary ("0b" prefix), octal ("0o" prefix), hexadecimal ("0x" prefix) or decimal (no prefix).  Decimal numbers have an optional decimal exponent by means of an "e" postfix.  Binary, octal and hexadecimal numbers have an optional binary exponent by means of a "p" postfix.  All literals can be cast to a fixed-point format by means of the "`" operator.  Within numerical literals, the underscore character ("\_") is ignored.  Below are some examples:
+## 2.7 Literals
+ALCHA literals are all stored as infinite-precision rational numbers (by means of the [GNU MP library](https://gmplib.org/)). An imaginary literal can be specified by using either a "j" or "i" postfix.  Literals can be binary ("0b" prefix), octal ("0o" prefix), hexadecimal ("0x" prefix) or decimal (no prefix).  Decimal numbers have an optional decimal exponent by means of an "e" postfix.  Binary, octal, decimal and hexadecimal numbers have an optional binary exponent by means of a "p" postfix.  All literals can be cast to a fixed-point format by means of the "'" operator.  Within numerical literals, the underscore character ("\_") is ignored.  Character literals are string literals with only one character.  Below are some examples:
 
     :::C++
     123.456      // decimal constant
-    123.456`8.8  // Decimal constant of fixed-point 8.8 type
+    123.456'8'8  // Decimal constant of fixed-point 8.8 type
     0b101.0101   // Binary constant
     0o123.456    // Octal constant
     0xABC.DEF    // Hexadecimal constant
     123_456_e7   // Decimal constant with decimal exponent (10ˆ7)
+    123_456_p7   // Decimal constant with binary exponent (2^7)
     0x123_ABC_p7 // Hexadecimal constant with binary exponent (2ˆ7)
     7.3 + 8.9j   // Decimal complex constant
     'Ω'          // Unicode character constant
@@ -220,12 +235,12 @@ Sequence    | Character
 \\'         | Single quotation mark (\\x27)
 \\"         | Double quotation mark (\\x22)
 \\?         | Question mark (\\x3F)
-\\nnn       | 3-digit octal Unicode
+\\nnn       | up to 11-digit octal Unicode
 \\xHH       | 2-digit hexadecimal Unicode
 \\uHHHH     | 4-digit hexadecimal Unicode
 \\UHHHHHHHH | 8-digit hexadecimal Unicode
 
-## 2.7 Import and Name-space
+## 2.8 Import and Name-space
 Conceptually, ALCHA processes the source as a whole. It is convenient, however, to break the source into a hierarchical structure of files, as presented in the figure below.  In the context of ALCHA, a "module" refers to a source file, rather than an HDL module. An ALCHA module might or might not compile to a corresponding HDL module, depending on the source contents.
 
 <center>[[img src=ProgrammingModel.svg alt=ProgrammingModel.svg]]</center>
@@ -243,8 +258,8 @@ This name-space model allows the developer to define an environment in a parent 
 Specifying the class instance, or name-space, can become tedious. Instead, the developer can temporarily push a name-space onto the name-space stack by means of a special syntax, as shown below. The A.{ construct pushes the A name-space onto the stack, whereas the B.{ construct pushes the B name-space. The closing curly braces pop the name-spaces from the stack.
 
     :::C++
-    class S1{sig`8 r, g, b, a;}
-    class S2{sig`8 x, y, z, w;}
+    class S1{sig'8 r, g, b, a;}
+    class S2{sig'8 x, y, z, w;}
     S1 A;
     S2 B;
 
@@ -275,8 +290,8 @@ Group | (...)    | Grouping
 Post-fix | A++ | Increment after use
          | A-- | Decrement after use
 ||
-Cast | A ` N   | Casts A to an N-bit integer
-     | A ` N.M | Casts A to an N.M-bit fixed-point
+Cast | A ' N   | Casts A to an N-bit integer
+     | A ' N'M | Casts A to an N.M-bit fixed-point
 ||
 Range | A -> B     | Builds an array of elements from A to B, inclusive
       | A -> B # C | Builds an array of elements from A to B, in steps of C
@@ -350,18 +365,18 @@ When describing FPGA firmware it is often necessary to use a signal before a val
 
     :::C++
     class Adder(int N){ // Parametrisation is presented in the scripting section
-     in  sig`N A, B;
-     out sig`N Y;
+     in  sig'N A, B;
+     out sig'N Y;
      Y = A + B;
     }
-    Adder MyAdder(8); // Instance of an 8-bit adder.  This statement also evaluates "Y = A + B"
-    sig`8 x, y, z;
+    Adder(8) MyAdder; // Instance of an 8-bit adder.  This statement also evaluates "Y = A + B"
+    sig'8 x, y, z;
     MyAdder.A = x; // These assignments assign values to A and B after use
     MyAdder.B = y;
     // Now the adder is complete.
 
 
-    sig`8 Counter;
+    sig'8 Counter;
     UserClk = (Counter == 125); // "Counter" has no value yet
     rtl(CPUClock){
      if(UserClk) Counter  = 0;
@@ -371,7 +386,7 @@ When describing FPGA firmware it is often necessary to use a signal before a val
 Internally, ALCHA implements the blocking nature of combinational assignments by using a copy of the source expression-tree, rather that the source signal itself.  When that source has no expression-tree yet, a reference to the signal is used instead.  A simplified example is presented below:
 
     :::C++
-    sig`8 A, B, C, D;
+    sig'8 A, B, C, D;
     A = C;
     B = 5 * D;
     C = B + 7;
@@ -385,7 +400,7 @@ Internally, ALCHA implements the blocking nature of combinational assignments by
 It is possible to create circular references, which is illegal.  This is illustrated below:
 
     :::C++
-    sig`8 A, B, C;
+    sig'8 A, B, C;
     A = C;
     B = 5 * C;
     C = B + 7;
@@ -400,7 +415,7 @@ This only applies to combinational circuits.  Clocked structures are evaluated a
 An important consequence of this mechanism is that the developer must keep the dependencies in mind.  This is illustrated below:
 
     :::C++
-    sig`A, B, C, D, E;
+    sig'A, B, C, D, E;
     A  = C;
     B  = 5 * D;
     C  = B + 7;
@@ -477,14 +492,14 @@ ALCHA only supports fixed-length arrays.  Arrays can be defined with any number 
 Each new dimension is defined by means of a positive integer in square brackets, representing the number of elements in that dimension.  An example is presented below:
 
     :::C++
-    sig`8 A[16]; // A 16-element array of 8-bit unsigned integers
-    sig`8 B[3][4][5]; // A 3-dimensional array of 8-bit unsigned integers
+    sig'8 A[16]; // A 16-element array of 8-bit unsigned integers
+    sig'8 B[3][4][5]; // A 3-dimensional array of 8-bit unsigned integers
 
 ## 4.2 Slices
 Array elements can be addressed by means of slices.  The bits are modelled as the deepest dimension, with indices equal to the power-of-two representation of that bit.  The element indices are zero-based.  A colon (":") can be used to indicate "all elements".  Any bit-slice removes the fixed-point format.  The result of a bit-slice is always an unsigned integer with as many bits as in the slice.  Some examples are presented below:
 
     :::C++
-    sig`16.8 A[16];
+    sig'16'8 A[16];
     A[5]                 // Element 5 of A (the 6th element).
     A[:][15:0]           // All the elements of A, but only the integer bits
     A[3, 7, 2][-1:-8]    // Elements 3, 7 and 2 of A (in that order), and only the fraction bits
@@ -496,7 +511,7 @@ Array elements can be addressed by means of slices.  The bits are modelled as th
 The indices can also be specified by means of an integer array, as follows:
 
     :::C++
-    sig`8 A[16];
+    sig'8 A[16];
     int   B[5] = @{4, 2, 7, 1, 12};
     A[B] // Elements 4, 2, 7, 1 and 12 of A, in that order
     A[B, 0->15] // Elements 4, 2, 7, 1, 12 and 0 to 15 of A
@@ -515,11 +530,11 @@ Array literals are useful for vectorised operations.  There are many forms, whic
 Array slices can be used in vectorised statements.  Vectorised operations apply the operation to each element of the array as if it was specified separately for each element.  This works for scalar functions as well.  Below are some examples:
 
     :::C++
-    sig`8 Add(sig`8 A, sig`8 B){
+    sig'8 Add(sig'8 A, sig'8 B){
      return A + B;
     }
 
-    sig`8 A[16], B[16], Y[16];
+    sig'8 A[16], B[16], Y[16];
     Y = A + B;     // Perform an element-wise addition
     Y = Add(A, B); // Equivalent to the addition above
 
@@ -565,8 +580,8 @@ Some examples of clock definitions are presented below:
     CPUGated = CPUGate & CPUClock;
 
     // Define a user-defined synchronous clock-enble type clock
-    sig`5 UserClk_Limit; // Controled externally
-    sig`5 UserClk_Counter;
+    sig'5 UserClk_Limit; // Controled externally
+    sig'5 UserClk_Counter;
     UserClk = (UserClk_Counter == UserClk_Limit);
     rtl(CPUClock){
      if(UserClk) UserClk_Counter  = 0;
@@ -574,7 +589,7 @@ Some examples of clock definitions are presented below:
     }
 
     // Use the RTC clock in a state machine
-    sig`6 Seconds;
+    sig'6 Seconds;
     fsm(RTC){
      loop{
       Seconds++;
@@ -649,7 +664,7 @@ All clocks (including clock pins) have a *frequency* member (of type *rat*) that
      rat Count = Clk.Frequency * 20e-3 - 1; // 20 ms dead-time
      int N     = ceil(log2(Count));
 
-     sig`N Counter;
+     sig'N Counter;
 
      fsm(Clk){
       loop{
@@ -671,7 +686,7 @@ Most HDL designers are familiar with RTL design.  In ALCHA, the *rtl* construct 
 
     sig A, B;
 
-    sig`27 Count;
+    sig'27 Count;
 
     rtl(Clk){
      if(Reset) Count = 0;
@@ -710,7 +725,7 @@ Each statement within an *fsm* construct that ends in a comma (","), is consider
     in pin<frequency = "50 MHz"> Clk;
     in pin                       Reset;
 
-    sig`8 A, B, C;
+    sig'8 A, B, C;
 
     B = 123;
 
@@ -765,8 +780,8 @@ The ALCHA *if* and *while* statements follow the same syntax as in C.  The state
 The *for* loop is used to iterate through elements in an array, as follows:
 
     :::C++
-    sig`8  x;
-    sig`10 A;
+    sig'8  x;
+    sig'10 A;
 
     fsm(Clk){
      for(x in 0->200){
@@ -843,10 +858,10 @@ ALCHA provides a procedural programming model for combinational circuits, as wel
 Functions in ALCHA are defined in similar fashion as C, as illustrated in the example below.  The function name is used as a temporary signal (or variable) for the return value.
 
     :::C++
-    sig`8 Add(sig`8 A, sig`8 B){
+    sig'8 Add(sig'8 A, sig'8 B){
      return A + B; // This is short-hand for "Add = A + B; return;"
     }
-    sig`8 x, y, z;
+    sig'8 x, y, z;
     z = Add(x, y);
 
 Combinational functions can be called from anywhere, including the bodies of clocked structures.  Functions can also be called in vectorised form, which is especially useful when combined with array slicing.  The adder above can be called as follows:
@@ -876,21 +891,21 @@ Arrays and scalars can be mixed in the call, as follows:
 If the function takes an array as a parameter, the same rules apply.  The function can be called with a higher-dimension array, as follows:
 
     :::C++
-    sig`18 Dot(sig`8 A[4], sig`8 B[4]){
+    sig'18 Dot(sig'8 A[4], sig'8 B[4]){
      Dot  = A[1] * B[1];
      Dot += A[2] * B[2];
      Dot += A[3] * B[3];
      Dot += A[4] * B[4];
      return;
     }
-    sig`18 Y[16];
-    sig`8  A[4][16], B[4][16];
+    sig'18 Y[16];
+    sig'8  A[4][16], B[4][16];
     Y = Dot(A, B);
 
 To return an array, the function name should be defined as an array, as follows:
 
     :::C++
-    signed sig`16.8 Mult[4][4](signed sig`16.8 A[4][4], signed sig`16.8 B[4][4]){
+    signed sig'16'8 Mult[4][4](signed sig'16'8 A[4][4], signed sig'16'8 B[4][4]){
      int i, j, k;
      for(i in 0->3){
       for(j in 0->3){
@@ -916,8 +931,8 @@ The combinational code is evaluated during the calling state, after which the fu
 A return statement in the embedded state machine will cause the target signal to be assigned, and the next state to be loaded from the temporarily-stored state register.  To illustrate this process, consider the following ALCHA (and its corresponding Verilog) code:
 
     :::C++
-    sig`4 BitCount(sig`8 A){
-     sig`3 x;
+    sig'4 BitCount(sig'8 A){
+     sig'3 x;
      BitCount = 0;
 
      fsm{
@@ -928,7 +943,7 @@ A return statement in the embedded state machine will cause the target signal to
      }
     }
 
-    sig`8 A, B;
+    sig'8 A, B;
 
     fsm(Clk, Reset){
      A = 123;
@@ -1007,8 +1022,8 @@ Operator overloading is handled in similar fashion to C.  It can be used to defi
 
     :::C++
     class Complex{
-     sig`8.8 x = 0;
-     sig`8.8 y = 0;
+     sig'8'8 x = 0;
+     sig'8'8 y = 0;
 
      Complex operator+(complex C){
       Complex r;
@@ -1016,7 +1031,7 @@ Operator overloading is handled in similar fashion to C.  It can be used to defi
       r.y = y + imag(C);
       return r;
      }
-     Complex operator+(sig`8.8 X){
+     Complex operator+(sig'8'8 X){
       Complex r;
       r.x = x + X;
       r.y = y;
@@ -1047,7 +1062,7 @@ rat     | Infinite precision signed rational numbers ([GNU MP](https://gmplib.or
 float   | Arbitrary precision floating point ([GNU MPFR](http://www.mpfr.org/))
 complex | Arbitrary precision complex floating point ([GNU MPFR](http://www.mpfr.org/))
 
-The *float* and *complex* keywords can optionally be followed by the "`" operator and an integer, which specifies the number of bits in the mantissa.  The exponent is limited to 32-bit by the MPFR library.  If no format is specified, double-precision is used.
+The *float* and *complex* keywords can optionally be followed by the "'" operator and an integer, which specifies the number of bits in the mantissa.  The exponent is limited to 32-bit by the MPFR library.  If no format is specified, double-precision is used.
 
 ## 7.2 Flow Control
 *If* statements and *while* loops use the same syntax as C.  The grammar of *case* statements have not been finalised yet.  *For* and *loop* loops use the same syntax as described in the finite state machine section.
@@ -1143,12 +1158,12 @@ Megafunctions and other external HDL modules can be imported into the ALCHA proj
      in sig nReset;
      in sig Clk;
     
-     in  sig`8 TxData;
+     in  sig'8 TxData;
      in  sig   Send;
      out sig   Busy;
     
      out sig   DataReady;
-     out sig`8 RxData;
+     out sig'8 RxData;
      in  sig   Ack;
       
      out sig Tx;
@@ -1170,7 +1185,7 @@ Megafunctions and other external HDL modules can be imported into the ALCHA proj
     out pin                       RS232_Tx;
     in  pin                       RS232_Rx;
 
-    RS232 MyUART(Clk, Reset, 9600);
+    RS232(Clk, Reset, 9600) MyUART;
     RS232_Tx = MyUART.Tx;
     MyUART.Rx = RS232_Rx;
 

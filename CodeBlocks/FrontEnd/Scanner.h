@@ -56,14 +56,12 @@ class SCANNER{
   bool BlockComment();
   void WhiteSpace  (); // Ignores spaces, new-lines and comments
 
-  bool Digit   ();
-  bool HexDigit(unsigned* Digit);
+  bool Digit   (); // Returns true on decimal digit
   bool NonDigit();
 
-  unsigned GetExponent(bool * Sign );
-  bool     Binary     (TOKEN* Token);
-  bool     Octal      (TOKEN* Token);
-  bool     Hexadecimal(TOKEN* Token);
+  bool     GetDigit   (unsigned* Digit, unsigned Base);
+  unsigned GetExponent(bool    * Sign);
+  bool     GetNumber  (TOKEN   * Token, unsigned Base);
 
   bool Identifier(TOKEN* Token);
   bool Operator  (TOKEN* Token);

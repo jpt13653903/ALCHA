@@ -35,7 +35,8 @@
 
 class NUMBER{
  private:
-  mpq_t x;
+  mpq_t Real;
+  mpq_t Imag;
 
  public:
   NUMBER();
@@ -48,7 +49,10 @@ class NUMBER{
   void operator= (unsigned u);
   void operator= (double   d);
 
-  double FloatingPoint();
+  void Mul(double r, double i);
+
+  double GetReal();
+  double GetImag();
 
   void Display();
 };

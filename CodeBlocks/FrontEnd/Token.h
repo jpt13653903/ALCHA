@@ -58,6 +58,9 @@ struct TOKEN{
   For,
   While,
   Loop,
+  Switch,
+  Case,
+  Default,
 
   Import,
   As,

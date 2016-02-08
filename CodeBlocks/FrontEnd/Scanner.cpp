@@ -87,6 +87,9 @@ SCANNER::SCANNER(){
   Keywords.Add("for"    , TOKEN::For    );
   Keywords.Add("while"  , TOKEN::While  );
   Keywords.Add("loop"   , TOKEN::Loop   );
+  Keywords.Add("switch" , TOKEN::Switch );
+  Keywords.Add("case"   , TOKEN::Case   );
+  Keywords.Add("default", TOKEN::Default);
   Keywords.Add("import" , TOKEN::Import );
   Keywords.Add("as"     , TOKEN::As     );
 
@@ -267,23 +270,6 @@ bool SCANNER::Digit(){
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::HexDigit(unsigned* Digit){
- if(Buffer[Index] >= '0' && Buffer[Index] <= '9'){
-  *Digit = Buffer[Index] - '0';
-  return true;
- }
- if(Buffer[Index] >= 'a' && Buffer[Index] <= 'f'){
-  *Digit = Buffer[Index] - 'a' + 0xA;
-  return true;
- }
- if(Buffer[Index] >= 'A' && Buffer[Index] <= 'F'){
-  *Digit = Buffer[Index] - 'A' + 0xA;
-  return true;
- }
- return false;
-}
-//------------------------------------------------------------------------------
-
 bool SCANNER::NonDigit(){
  int Count;
  if(Buffer[Index] >= 0x80){
@@ -325,6 +311,23 @@ bool SCANNER::Operator(TOKEN* Token){
 }
 //------------------------------------------------------------------------------
 
+bool SCANNER::GetDigit(unsigned* Digit, unsigned Base){
+ if(Buffer[Index] >= '0' && Buffer[Index] <= '9'){
+  *Digit = Buffer[Index] - '0';
+  return *Digit < Base;
+ }
+ if(Buffer[Index] >= 'A' && Buffer[Index] <= 'Z'){
+  *Digit = Buffer[Index] - 'A' + 0xA;
+  return *Digit < Base;
+ }
+ if(Buffer[Index] >= 'a' && Buffer[Index] <= 'z'){
+  *Digit = Buffer[Index] - 'a' + 0xA;
+  return *Digit < Base;
+ }
+ return false;
+}
+//------------------------------------------------------------------------------
+
 unsigned SCANNER::GetExponent(bool* Sign){
  unsigned Exponent = 0;
 
@@ -350,123 +353,11 @@ unsigned SCANNER::GetExponent(bool* Sign){
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::Binary(TOKEN* Token){
- Index += 2; // Skip over the "0b"
-
- while(Buffer[Index] == '_') Index++;
- if((Buffer[Index] < '0' || Buffer[Index] > '1') && Buffer[Index] != '.'){
-  Error("Illegal literal format");
-  return false;
- }
-
- mpz_t num, den, exp;
- mpz_init_set_ui(num, 0);
- mpz_init_set_ui(den, 1);
- mpz_init_set_ui(exp, 0);
-
- while(Buffer[Index]){
-  while(Buffer[Index] == '_') Index++;
-
-  if(Buffer[Index] < '0' || Buffer[Index] > '1') break;
-
-  mpz_mul_ui(num, num, 2);
-  mpz_add_ui(num, num, Buffer[Index++] - '0');
- }
-
- if(Buffer[Index] == '.'){
-  Index++;
-  while(Buffer[Index]){
-   while(Buffer[Index] == '_') Index++;
-
-   if(Buffer[Index] < '0' || Buffer[Index] > '1') break;
-
-   mpz_mul_ui(num, num, 2);
-   mpz_mul_ui(den, den, 2);
-   mpz_add_ui(num, num, Buffer[Index++] - '0');
-  }
- }
-
- bool     Sign     = false;
- unsigned Exponent = 0;
-
- if(Buffer[Index] == 'p' || Buffer[Index] == 'P') Exponent = GetExponent(&Sign);
-
- mpz_ui_pow_ui(exp, 2, Exponent);
- if(Sign) mpz_mul(den, den, exp);
- else     mpz_mul(num, num, exp);
-
- Token->Value.Set(num, den);
-
- mpz_clear(num);
- mpz_clear(den);
- mpz_clear(exp);
-
- return true;
-}
-//------------------------------------------------------------------------------
-
-bool SCANNER::Octal(TOKEN* Token){
- Index += 2; // Skip over the "0o"
-
- while(Buffer[Index] == '_') Index++;
- if((Buffer[Index] < '0' || Buffer[Index] > '7') && Buffer[Index] != '.'){
-  Error("Illegal literal format");
-  return false;
- }
-
- mpz_t num, den, exp;
- mpz_init_set_ui(num, 0);
- mpz_init_set_ui(den, 1);
- mpz_init_set_ui(exp, 0);
-
- while(Buffer[Index]){
-  while(Buffer[Index] == '_') Index++;
-
-  if(Buffer[Index] < '0' || Buffer[Index] > '7') break;
-
-  mpz_mul_ui(num, num, 8);
-  mpz_add_ui(num, num, Buffer[Index++] - '0');
- }
-
- if(Buffer[Index] == '.'){
-  Index++;
-  while(Buffer[Index]){
-   while(Buffer[Index] == '_') Index++;
-
-   if(Buffer[Index] < '0' || Buffer[Index] > '7') break;
-
-   mpz_mul_ui(num, num, 8);
-   mpz_mul_ui(den, den, 8);
-   mpz_add_ui(num, num, Buffer[Index++] - '0');
-  }
- }
-
- bool     Sign     = false;
- unsigned Exponent = 0;
-
- if(Buffer[Index] == 'p' || Buffer[Index] == 'P') Exponent = GetExponent(&Sign);
-
- mpz_ui_pow_ui(exp, 2, Exponent);
- if(Sign) mpz_mul(den, den, exp);
- else     mpz_mul(num, num, exp);
-
- Token->Value.Set(num, den);
-
- mpz_clear(num);
- mpz_clear(den);
- mpz_clear(exp);
-
- return true;
-}
-//------------------------------------------------------------------------------
-
-bool SCANNER::Hexadecimal(TOKEN* Token){
+bool SCANNER::GetNumber(TOKEN* Token, unsigned Base){
  unsigned Digit;
 
- Index += 2; // Skip over the "0x"
-
  while(Buffer[Index] == '_') Index++;
- if(!HexDigit(&Digit) && Buffer[Index] != '.'){
+ if(!GetDigit(&Digit, Base) && Buffer[Index] != '.'){
   Error("Illegal literal format");
   return false;
  }
@@ -479,9 +370,9 @@ bool SCANNER::Hexadecimal(TOKEN* Token){
  while(Buffer[Index]){
   while(Buffer[Index] == '_') Index++;
 
-  if(!HexDigit(&Digit)) break;
+  if(!GetDigit(&Digit, Base)) break;
 
-  mpz_mul_ui(num, num, 16);
+  mpz_mul_ui(num, num, Base);
   mpz_add_ui(num, num, Digit);
   Index++;
  }
@@ -491,10 +382,10 @@ bool SCANNER::Hexadecimal(TOKEN* Token){
   while(Buffer[Index]){
    while(Buffer[Index] == '_') Index++;
 
-   if(!HexDigit(&Digit)) break;
+   if(!GetDigit(&Digit, Base)) break;
 
-   mpz_mul_ui(num, num, 16);
-   mpz_mul_ui(den, den, 16);
+   mpz_mul_ui(num, num, Base);
+   mpz_mul_ui(den, den, Base);
    mpz_add_ui(num, num, Digit);
    Index++;
   }
@@ -503,13 +394,25 @@ bool SCANNER::Hexadecimal(TOKEN* Token){
  bool     Sign     = false;
  unsigned Exponent = 0;
 
- if(Buffer[Index] == 'p' || Buffer[Index] == 'P') Exponent = GetExponent(&Sign);
+ if(Base == 10 && (Buffer[Index] == 'e' || Buffer[Index] == 'E')){
+  Exponent = GetExponent(&Sign);
+  mpz_ui_pow_ui(exp, 10, Exponent);
 
- mpz_ui_pow_ui(exp, 2, Exponent);
+ }else if(Buffer[Index] == 'p' || Buffer[Index] == 'P'){
+  Exponent = GetExponent(&Sign);
+  mpz_ui_pow_ui(exp, 2, Exponent);
+ }
+
  if(Sign) mpz_mul(den, den, exp);
  else     mpz_mul(num, num, exp);
 
  Token->Value.Set(num, den);
+
+ if(Buffer[Index] == 'i' || Buffer[Index] == 'j'){
+  Index++;
+  while(Buffer[Index] == '_') Index++;
+  Token->Value.Mul(0, 1);
+ }
 
  mpz_clear(num);
  mpz_clear(den);
@@ -520,65 +423,22 @@ bool SCANNER::Hexadecimal(TOKEN* Token){
 //------------------------------------------------------------------------------
 
 bool SCANNER::Literal(TOKEN* Token){
+ Token->Type = TOKEN::Literal;
+
  if(
-  !Digit() &&
+  (                        Buffer[Index  ] < '0' || Buffer[Index  ] > '9') &&
   (Buffer[Index] != '.' || Buffer[Index+1] < '0' || Buffer[Index+1] > '9')
  ) return false;
 
- Token->Type = TOKEN::Literal;
-
  if(Buffer[Index] == '0'){
   switch(Buffer[Index+1]){
-   case 'b': return Binary     (Token);
-   case 'o': return Octal      (Token);
-   case 'x': return Hexadecimal(Token);
+   case 'b': Index += 2; return GetNumber(Token,  2);
+   case 'o': Index += 2; return GetNumber(Token,  8);
+   case 'x': Index += 2; return GetNumber(Token, 16);
    default : break;
   }
  }
-
- mpz_t num, den, exp;
- mpz_init_set_ui(num, 0);
- mpz_init_set_ui(den, 1);
- mpz_init_set_ui(exp, 0);
-
- while(Buffer[Index]){
-  while(Buffer[Index] == '_') Index++;
-
-  if(Buffer[Index] < '0' || Buffer[Index] > '9') break;
-
-  mpz_mul_ui(num, num, 10);
-  mpz_add_ui(num, num, Buffer[Index++] - '0');
- }
-
- if(Buffer[Index] == '.'){
-  Index++;
-  while(Buffer[Index]){
-   while(Buffer[Index] == '_') Index++;
-
-   if(Buffer[Index] < '0' || Buffer[Index] > '9') break;
-
-   mpz_mul_ui(num, num, 10);
-   mpz_mul_ui(den, den, 10);
-   mpz_add_ui(num, num, Buffer[Index++] - '0');
-  }
- }
-
- bool     Sign     = false;
- unsigned Exponent = 0;
-
- if(Buffer[Index] == 'e' || Buffer[Index] == 'E') Exponent = GetExponent(&Sign);
-
- mpz_ui_pow_ui(exp, 10, Exponent);
- if(Sign) mpz_mul(den, den, exp);
- else     mpz_mul(num, num, exp);
-
- Token->Value.Set(num, den);
-
- mpz_clear(num);
- mpz_clear(den);
- mpz_clear(exp);
-
- return true;
+ return GetNumber(Token, 10);
 }
 //------------------------------------------------------------------------------
 
@@ -616,7 +476,7 @@ bool SCANNER::String(TOKEN* Token){
      Index++;
      UTF_32 = 0;
      for(j = 0; j < 2; j++){
-      if(!HexDigit(&Digit)){
+      if(!GetDigit(&Digit, 16)){
        Error("Invalid \\x code");
        return false;
       }
@@ -630,7 +490,7 @@ bool SCANNER::String(TOKEN* Token){
      Index++;
      UTF_32 = 0;
      for(j = 0; j < 4; j++){
-      if(!HexDigit(&Digit)){
+      if(!GetDigit(&Digit, 16)){
        Error("Invalid \\u code");
        return false;
       }
@@ -644,7 +504,7 @@ bool SCANNER::String(TOKEN* Token){
      Index++;
      UTF_32 = 0;
      for(j = 0; j < 8; j++){
-      if(!HexDigit(&Digit)){
+      if(!GetDigit(&Digit, 16)){
        Error("Invalid \\U code");
        return false;
       }
