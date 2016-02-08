@@ -4,7 +4,7 @@
 PINS Pins;
 //------------------------------------------------------------------------------
 
-PIN::PIN(const char* Name): OBJECT(otPin, Name){
+PIN::PIN(const byte* Name): OBJECT(otPin, Name){
  ArrayDepth = 0;
  Indices    = 0;
 
@@ -45,7 +45,7 @@ int PIN::Compare(TREE_NODE* Right){
 }
 //------------------------------------------------------------------------------
 
-PIN* PINS::FindName(const char* Name, int ArrayDepth, int* Indices){
+PIN* PINS::FindName(const byte* Name, int ArrayDepth, int* Indices){
  PIN Key(Name);
  Key.ArrayDepth = ArrayDepth;
  Key.Indices    = Indices;

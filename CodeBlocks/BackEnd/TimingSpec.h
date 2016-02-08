@@ -17,6 +17,7 @@
 //------------------------------------------------------------------------------
 
 #include "gmp.h"
+#include "MyString.h"
 //------------------------------------------------------------------------------
 
 struct TIMING_SPEC{
@@ -63,7 +64,7 @@ struct TIMING_SPEC{
 
   mpq_t Minimum;
   mpq_t Maximum;
-  
+
   ABSOLUTE* Next; // Also deletes the rest of the list
  };
 
@@ -72,7 +73,7 @@ struct TIMING_SPEC{
   STRING      To;
   unsigned    Cycles;
   MULTICYCLE* Next; // Also deletes the rest of the list
- }
+ };
 
  // Linked lists:
  CLOCK*      Clocks;

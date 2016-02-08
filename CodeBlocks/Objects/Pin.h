@@ -52,7 +52,7 @@ struct PIN: public OBJECT{
  double Phase;     // Clock phase [degrees]
  double Jitter;    // Clock peak-to-peak jitter [s]
 
-  PIN(const char* Name);
+  PIN(const byte* Name);
  ~PIN();
 
  int Compare(TREE_NODE* Right);
@@ -60,7 +60,7 @@ struct PIN: public OBJECT{
 //------------------------------------------------------------------------------
 
 struct PINS: public TREE{
- PIN* FindName(const char* Name, int ArrayDepth, int* Indices);
+ PIN* FindName(const byte* Name, int ArrayDepth, int* Indices);
 };
 extern PINS Pins;
 //------------------------------------------------------------------------------

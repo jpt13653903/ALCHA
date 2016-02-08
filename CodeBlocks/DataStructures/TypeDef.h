@@ -14,7 +14,7 @@ struct SYMBOL{
 
  SYMBOL* Next; // Linked list used for parameters
 
- SYMBOL(const char* Name, TYPE_DEF* Type);
+ SYMBOL(const byte* Name, TYPE_DEF* Type);
 ~SYMBOL();
 };
 //------------------------------------------------------------------------------

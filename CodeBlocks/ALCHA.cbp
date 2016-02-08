@@ -49,20 +49,18 @@
 		<Unit filename="BackEnd/TimingSpec.h" />
 		<Unit filename="DataStructures/AST.cpp" />
 		<Unit filename="DataStructures/AST.h" />
-		<Unit filename="DataStructures/Tree.cpp" />
-		<Unit filename="DataStructures/Tree.h" />
 		<Unit filename="DataStructures/TypeDef.cpp" />
 		<Unit filename="DataStructures/TypeDef.h" />
-		<Unit filename="FrontEnd/Keywords.cpp" />
-		<Unit filename="FrontEnd/Keywords.h" />
-		<Unit filename="FrontEnd/Operators.cpp" />
-		<Unit filename="FrontEnd/Operators.h" />
 		<Unit filename="FrontEnd/Parser.cpp" />
 		<Unit filename="FrontEnd/Parser.h" />
 		<Unit filename="FrontEnd/PreProcessor.cpp" />
 		<Unit filename="FrontEnd/PreProcessor.h" />
 		<Unit filename="FrontEnd/Scanner.cpp" />
 		<Unit filename="FrontEnd/Scanner.h" />
+		<Unit filename="FrontEnd/Token.cpp" />
+		<Unit filename="FrontEnd/Token.h" />
+		<Unit filename="FrontEnd/TokenTree.cpp" />
+		<Unit filename="FrontEnd/TokenTree.h" />
 		<Unit filename="Global/OS_Header.h" />
 		<Unit filename="Objects/Object.cpp" />
 		<Unit filename="Objects/Object.h" />
@@ -79,6 +77,8 @@
 		<Unit filename="Tools/MyString.h" />
 		<Unit filename="Tools/Number.cpp" />
 		<Unit filename="Tools/Number.h" />
+		<Unit filename="Tools/Tree.cpp" />
+		<Unit filename="Tools/Tree.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="main.h" />
 		<Extensions>

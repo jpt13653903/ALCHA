@@ -38,79 +38,78 @@
 
 #include "Number.h"
 #include "Scanner.h"
-#include "Keywords.h"
 //------------------------------------------------------------------------------
 
 class PREPROCESSOR{
- public: // Public types
-  enum TYPE{
-   tIdentifier,
-   tKeyword,
-   tOperator,
-   tString,
-   tNumber,
-   tFixedPointCast, // Specifies fixed-point format
-   tEOF
-  };
-
-  struct TOKEN{
-   TYPE   Type;
-   int    Line;
-   STRING File;
-
-   STRING String;  // Identifier; String
-   STRING Comment; // Concatenation of preceding comments
-   NUMBER Number;
-   union{
-    OPERATOR_CODE Operator;
-    KEYWORD_CODE  Keyword;
-    struct{
-     int IntegerBits;
-     int FractionBits;
-    } FixedPointFormat; // Used for tFixedPointCast
-   };
-  };
-
- private:
-  bool error;
-  void Error(const char* Message);
-
- private:
-  STRING Path;
-
-  /// @todo Keep track of stack depth and limit (for circular inclusion)
-  ///       Or check for filename in the list and prevent circular inclusion
-  ///       - No: the user might want to include the same file twice with
-  ///         different parameters.
-  struct SCANNER_STACK{
-   SCANNER      * Scanner; // The scanner of the current file
-   SCANNER_STACK* Next;
-
-   SCANNER_STACK();
-  ~SCANNER_STACK();
-  }* Scanner_Stack;
-
-  KEYWORDS Keywords;
-  SCANNER::PP_TOKEN ppToken; // The current pp-token
-
-  bool GetPPToken(); // Also runs directives
-
-  bool TranslateHex    (NUMBER& Number);
-  bool TranslateOctal  (NUMBER& Number);
-  bool TranslateBinary (NUMBER& Number);
-  bool TranslateDecimal(NUMBER& Number);
-
-  bool TranslateEscapes       (STRING& Result);
-  bool TranslateNumber        (NUMBER& Number);
-  bool TranslateFixedPointCast(TOKEN * Token );
-
- public:
-  PREPROCESSOR();
- ~PREPROCESSOR();
-
-  bool Open(const char* Filename);
-
-  bool GetToken(TOKEN* Token);
+// public: // Public types
+//  enum TYPE{
+//   tIdentifier,
+//   tKeyword,
+//   tOperator,
+//   tString,
+//   tNumber,
+//   tFixedPointCast, // Specifies fixed-point format
+//   tEOF
+//  };
+//
+//  struct TOKEN{
+//   TYPE   Type;
+//   int    Line;
+//   STRING File;
+//
+//   STRING String;  // Identifier; String
+//   STRING Comment; // Concatenation of preceding comments
+//   NUMBER Number;
+//   union{
+//    OPERATOR_CODE Operator;
+//    KEYWORD_CODE  Keyword;
+//    struct{
+//     int IntegerBits;
+//     int FractionBits;
+//    } FixedPointFormat; // Used for tFixedPointCast
+//   };
+//  };
+//
+// private:
+//  bool error;
+//  void Error(const char* Message);
+//
+// private:
+//  STRING Path;
+//
+//  /// @todo Keep track of stack depth and limit (for circular inclusion)
+//  ///       Or check for filename in the list and prevent circular inclusion
+//  ///       - No: the user might want to include the same file twice with
+//  ///         different parameters.
+//  struct SCANNER_STACK{
+//   SCANNER      * Scanner; // The scanner of the current file
+//   SCANNER_STACK* Next;
+//
+//   SCANNER_STACK();
+//  ~SCANNER_STACK();
+//  }* Scanner_Stack;
+//
+//  KEYWORDS Keywords;
+//  SCANNER::PP_TOKEN ppToken; // The current pp-token
+//
+//  bool GetPPToken(); // Also runs directives
+//
+//  bool TranslateHex    (NUMBER& Number);
+//  bool TranslateOctal  (NUMBER& Number);
+//  bool TranslateBinary (NUMBER& Number);
+//  bool TranslateDecimal(NUMBER& Number);
+//
+//  bool TranslateEscapes       (STRING& Result);
+//  bool TranslateNumber        (NUMBER& Number);
+//  bool TranslateFixedPointCast(TOKEN * Token );
+//
+// public:
+//  PREPROCESSOR();
+// ~PREPROCESSOR();
+//
+//  bool Open(const char* Filename);
+//
+//  bool GetToken(TOKEN* Token);
 };
 //------------------------------------------------------------------------------
 

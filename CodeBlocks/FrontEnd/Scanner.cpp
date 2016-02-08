@@ -21,18 +21,144 @@
 #include "Scanner.h"
 //------------------------------------------------------------------------------
 
-SCANNER::PP_TOKEN::PP_TOKEN(){
- Type = tOther;
- Line = 0;
- Next = 0;
-}
+static bool Initialised = false;
+
+static TOKEN_TREE Spaces;
+static TOKEN_TREE Keywords;
+static TOKEN_TREE Operators;
 //------------------------------------------------------------------------------
 
 SCANNER::SCANNER(){
- Line          = 1;
- Index         = 0;
- error         = false;
- PrevIsNewline = true;
+ if(!Initialised){
+  Initialised = true;
+
+  Spaces.Add("\x20"        , TOKEN::Space); // U+0020: Space
+  Spaces.Add("\x09"        , TOKEN::Space); // U+0009: Character Tabulation
+  Spaces.Add("\xA0"        , TOKEN::Space); // U+00A0: No-break Space
+  Spaces.Add("\xC2\xA0"    , TOKEN::Space); // U+00A0: No-break Space
+  Spaces.Add("\xE1\x9A\x80", TOKEN::Space); // U+1680: Ogham Space Mark
+  Spaces.Add("\xE1\xA0\x8E", TOKEN::Space); // U+180E: Mongolian Vowel Separator
+  Spaces.Add("\xE2\x80\x80", TOKEN::Space); // U+2000: En Quad
+  Spaces.Add("\xE2\x80\x81", TOKEN::Space); // U+2001: Em Quad
+  Spaces.Add("\xE2\x80\x82", TOKEN::Space); // U+2002: En Space
+  Spaces.Add("\xE2\x80\x83", TOKEN::Space); // U+2003: Em Space
+  Spaces.Add("\xE2\x80\x84", TOKEN::Space); // U+2004: Three-per-em Space
+  Spaces.Add("\xE2\x80\x85", TOKEN::Space); // U+2005: Four-per-em Space
+  Spaces.Add("\xE2\x80\x86", TOKEN::Space); // U+2006: Six-per-em Space
+  Spaces.Add("\xE2\x80\x87", TOKEN::Space); // U+2007: Figure Space
+  Spaces.Add("\xE2\x80\x88", TOKEN::Space); // U+2008: Punctuation Space
+  Spaces.Add("\xE2\x80\x89", TOKEN::Space); // U+2009: Thin Space
+  Spaces.Add("\xE2\x80\x8A", TOKEN::Space); // U+200A: Hair Space
+  Spaces.Add("\xE2\x80\xAF", TOKEN::Space); // U+202F: Narrow No-break Space
+  Spaces.Add("\xE2\x80\x8B", TOKEN::Space); // U+200B: Zero Width Space
+  Spaces.Add("\xE2\x80\x8C", TOKEN::Space); // U+200C: Zero Width Non-joiner
+  Spaces.Add("\xE2\x80\x8D", TOKEN::Space); // U+200D: Zero Width Joiner
+  Spaces.Add("\x81\x9F"    , TOKEN::Space); // U+205F: Medium Mathematical Space
+  Spaces.Add("\x81\xA0"    , TOKEN::Space); // U+2060: Word Joiner
+  Spaces.Add("\xE3\x80\x80", TOKEN::Space); // U+3000: Ideographic Space
+  Spaces.Add("\xEF\xBB\xBF", TOKEN::Space); // U+FEFF: Zero Width Non-breaking Space
+
+  Spaces.Add("\n"          , TOKEN::Newline);
+  Spaces.Add("\r"          , TOKEN::Newline);
+  Spaces.Add("\r\n"        , TOKEN::Newline);
+  Spaces.Add("\n\r"        , TOKEN::Newline);
+  Spaces.Add("\x0B"        , TOKEN::Newline); // Vertical Tab
+  Spaces.Add("\x0C"        , TOKEN::Newline); // Form Feed
+  Spaces.Add("\x85"        , TOKEN::Newline); // Next Line (NEL)
+  Spaces.Add("\xC2\x85"    , TOKEN::Newline); // U+85: NEL
+  Spaces.Add("\xE2\x80\xA8", TOKEN::Newline); // U+2028: Line Separator
+  Spaces.Add("\xE2\x80\xA9", TOKEN::Newline); // U+2029: Paragraph Separator
+
+  Keywords.Add("target" , TOKEN::Target );
+  Keywords.Add("pin"    , TOKEN::Pin    );
+  Keywords.Add("sig"    , TOKEN::Sig    );
+  Keywords.Add("clk"    , TOKEN::Clk    );
+  Keywords.Add("int"    , TOKEN::Int    );
+  Keywords.Add("rat"    , TOKEN::Rat    );
+  Keywords.Add("float"  , TOKEN::Float  );
+  Keywords.Add("complex", TOKEN::Complex);
+  Keywords.Add("in"     , TOKEN::In     );
+  Keywords.Add("out"    , TOKEN::Out    );
+  Keywords.Add("signed" , TOKEN::Signed );
+  Keywords.Add("group"  , TOKEN::Group  );
+  Keywords.Add("class"  , TOKEN::Class  );
+  Keywords.Add("if"     , TOKEN::If     );
+  Keywords.Add("else"   , TOKEN::Else   );
+  Keywords.Add("for"    , TOKEN::For    );
+  Keywords.Add("while"  , TOKEN::While  );
+  Keywords.Add("loop"   , TOKEN::Loop   );
+  Keywords.Add("import" , TOKEN::Import );
+  Keywords.Add("as"     , TOKEN::As     );
+
+  Operators.Add("++" , TOKEN::Increment         );
+  Operators.Add("--" , TOKEN::Decrement         );
+  Operators.Add("'"  , TOKEN::FP_Cast           );
+  Operators.Add("->" , TOKEN::To                );
+  Operators.Add("#"  , TOKEN::Hash              );
+  Operators.Add("."  , TOKEN::Dot               );
+  Operators.Add(".{" , TOKEN::Dot_Curly         );
+  Operators.Add( "&" , TOKEN::Bit_AND           );
+  Operators.Add("~&" , TOKEN::Bit_NAND          );
+  Operators.Add( "|" , TOKEN::Bit_OR            );
+  Operators.Add("~|" , TOKEN::Bit_NOR           );
+  Operators.Add( "^" , TOKEN::Bit_XOR           );
+  Operators.Add("~^" , TOKEN::Bit_XNOR          );
+  Operators.Add("~"  , TOKEN::Bit_NOT           );
+  Operators.Add(":"  , TOKEN::Bit_Concatenate   );
+  Operators.Add("\\" , TOKEN::Bit_Repeat        );
+  Operators.Add("@{" , TOKEN::Array_Concatenate );
+  Operators.Add("+"  , TOKEN::Add               );
+  Operators.Add("-"  , TOKEN::Subtract          );
+  Operators.Add("*"  , TOKEN::Multiply          );
+  Operators.Add("/"  , TOKEN::Divide            );
+  Operators.Add("%"  , TOKEN::Modulus           );
+  Operators.Add("<<" , TOKEN::Shift_Left        );
+  Operators.Add(">>" , TOKEN::Shift_Right       );
+  Operators.Add("<"  , TOKEN::Less              );
+  Operators.Add(">"  , TOKEN::Greater           );
+  Operators.Add("<=" , TOKEN::Less_Equal        );
+  Operators.Add(">=" , TOKEN::Greater_Equal     );
+  Operators.Add("==" , TOKEN::Equal             );
+  Operators.Add("!=" , TOKEN::Not_Equal         );
+  Operators.Add("!"  , TOKEN::Logical_NOT       );
+  Operators.Add("&&" , TOKEN::Logical_AND       );
+  Operators.Add("||" , TOKEN::Logical_OR        );
+  Operators.Add("?"  , TOKEN::Conditional       );
+  Operators.Add(  "=", TOKEN::Assign            );
+  Operators.Add( ":=", TOKEN::Raw_Assign        );
+  Operators.Add( "@=", TOKEN::Append_Assign     );
+  Operators.Add( "+=", TOKEN::Add_Assign        );
+  Operators.Add( "-=", TOKEN::Subtract_Assign   );
+  Operators.Add( "*=", TOKEN::Multiply_Assign   );
+  Operators.Add( "/=", TOKEN::Divide_Assign     );
+  Operators.Add( "&=", TOKEN::AND_Assign        );
+  Operators.Add( "|=", TOKEN::OR_Assign         );
+  Operators.Add( "^=", TOKEN::XOR_Assign        );
+  Operators.Add("<<=", TOKEN::Shift_Left_Assign );
+  Operators.Add(">>=", TOKEN::Shift_Right_Assign);
+  Operators.Add("("  , TOKEN::OpenRound         );
+  Operators.Add(")"  , TOKEN::CloseRound        );
+  Operators.Add("["  , TOKEN::OpenSquare        );
+  Operators.Add("]"  , TOKEN::CloseSquare       );
+  Operators.Add("{"  , TOKEN::OpenCurly         );
+  Operators.Add("}"  , TOKEN::CloseCurly        );
+  Operators.Add(","  , TOKEN::Comma             );
+  Operators.Add(";"  , TOKEN::Semicolon         );
+
+  Spaces   .Balance();
+  Keywords .Balance();
+  Operators.Balance();
+ }
+
+ Line   = 1;
+ Index  = 0;
+ error  = false;
+ Buffer = 0;
+}
+//------------------------------------------------------------------------------
+
+SCANNER::~SCANNER(){
+ if(Buffer) delete[] Buffer;
 }
 //------------------------------------------------------------------------------
 
@@ -40,528 +166,545 @@ void SCANNER::Error(const char* Message){
  error = true;
  printf(
   "Line %05d of %s\n  Error: %s\n",
-  Char.Line,
+  Line,
   Filename.String(),
   Message
  );
 }
 //------------------------------------------------------------------------------
 
-int SCANNER::Space(){
- if(Buffer[Index] == 0x20) return 1; // U+0020: Space
- if(Buffer[Index] == 0x09) return 1; // U+0009: Character Tabulation
- if(Buffer[Index] == 0xA0) return 1; // U+00A0: No-break Space
- if(
-  Buffer[Index  ] == 0xC2 &&
-  Buffer[Index+1] == 0xA0
- ) return 2; // U+00A0: No-break Space
- if(Buffer[Index] == 0xE1){
-  if(
-   Buffer[Index+1] == 0x9A &&
-   Buffer[Index+2] == 0x80
-  ) return 3; // U+1680: Ogham Space Mark
-  if(
-   Buffer[Index+1] == 0xA0 &&
-   Buffer[Index+2] == 0x8E
-  ) return 3; // U+180E: Mongolian Vowel Separator
- }
- if(Buffer[Index] == 0xE2){
-  if(Buffer[Index+1] == 0x80){
-   if(Buffer[Index+2] == 0x80) return 3; // U+2000: En Quad
-   if(Buffer[Index+2] == 0x81) return 3; // U+2001: Em Quad
-   if(Buffer[Index+2] == 0x82) return 3; // U+2002: En Space
-   if(Buffer[Index+2] == 0x83) return 3; // U+2003: Em Space
-   if(Buffer[Index+2] == 0x84) return 3; // U+2004: Three-per-em Space
-   if(Buffer[Index+2] == 0x85) return 3; // U+2005: Four-per-em Space
-   if(Buffer[Index+2] == 0x86) return 3; // U+2006: Six-per-em Space
-   if(Buffer[Index+2] == 0x87) return 3; // U+2007: Figure Space
-   if(Buffer[Index+2] == 0x88) return 3; // U+2008: Punctuation Space
-   if(Buffer[Index+2] == 0x89) return 3; // U+2009: Thin Space
-   if(Buffer[Index+2] == 0x8A) return 3; // U+200A: Hair Space
-   if(Buffer[Index+2] == 0xAF) return 3; // U+202F: Narrow No-break Space
-   if(Buffer[Index+2] == 0x8B) return 3; // U+200B: Zero Width Space
-   if(Buffer[Index+2] == 0x8C) return 3; // U+200C: Zero Width Non-joiner
-   if(Buffer[Index+2] == 0x8D) return 3; // U+200D: Zero Width Joiner
+bool SCANNER::LineComment(){
+ int Count;
+
+ if(Buffer[Index] != '/' || Buffer[Index+1] != '/') return false;
+ Index += 2;
+
+ while(Buffer[Index]){
+  if(Spaces.Match(Buffer+Index, &Count) == TOKEN::Newline){
+   Line  ++;
+   Index += Count;
+   return true;
   }
-  if(Buffer[Index+1] == 0x81){
-   if(Buffer[Index+2] == 0x9F) return 3; // U+205F: Medium Mathematical Space
-   if(Buffer[Index+2] == 0xA0) return 3; // U+2060: Word Joiner
+
+  if(Count) Index += Count;
+  else      Index ++;
+ }
+ Error("Incomplete line comment");
+ return false;
+}
+//------------------------------------------------------------------------------
+
+bool SCANNER::BlockComment(){
+ int Count;
+
+ if(Buffer[Index] != '/' || Buffer[Index+1] != '*') return false;
+ Index += 2;
+
+ while(Buffer[Index]){
+  if(Buffer[Index] == '*' && Buffer[Index+1] == '/'){
+   Index += 2;
+   return true;
+  }
+  if(Spaces.Match(Buffer+Index, &Count) == TOKEN::Newline){
+   Line  ++;
+   Index += Count;
+  }else{
+   Index++;
   }
  }
- if(
-  Buffer[Index  ] == 0xE3 &&
-  Buffer[Index+1] == 0x80 &&
-  Buffer[Index+2] == 0x80
- ) return 3; // U+3000: Ideographic Space
- if(
-  Buffer[Index  ] == 0xEF &&
-  Buffer[Index+1] == 0xBB &&
-  Buffer[Index+2] == 0xBF
- ) return 3; // U+FEFF: Zero Width Non-breaking Space
-
- return 0;
+ Error("Incomplete block comment");
+ return false;
 }
 //------------------------------------------------------------------------------
 
-int SCANNER::Spaces(){
- int Prev = Index;
+void SCANNER::WhiteSpace(){
+ TOKEN::TYPE Type;
+ int         Count;
 
- int i = Space();
- while(i){
-  Index += i;
-  i = Space();
+ while(Buffer[Index]){
+  while(LineComment() || BlockComment());
+
+  Type = Spaces.Match(Buffer+Index, &Count);
+  switch(Type){
+   case TOKEN::Space:
+    Index += Count;
+    break;
+
+   case TOKEN::Newline:
+    Line++;
+    Index += Count;
+    break;
+
+   default: return;
+  }
  }
-
- int Result = Index - Prev;
- Index = Prev;
- return Result;
 }
 //------------------------------------------------------------------------------
 
-int SCANNER::Newline(){
- if(Buffer[Index] == 0x0D){
-  if(Buffer[Index+1] == 0x0A) return 2; // \r\n
-  else                        return 1; // \r
- }
- if(Buffer[Index] == 0x0A){
-  if(Buffer[Index+1] == 0x0D) return 2; // \n\r
-  else                        return 1; // \n
- }
- if(Buffer[Index] == 0x0B) return 1; // Vertical Tab
- if(Buffer[Index] == 0x0C) return 1; // Form Feed
- if(Buffer[Index] == 0x85) return 1; // Next Line (NEL)
- if(Buffer[Index] == 0xC2 && Buffer[Index+1] == 0x85) return 2; // U+85: NEL
- if(Buffer[Index] == 0xE2 && Buffer[Index+1] == 0x80){
-  if(Buffer[Index+2] == 0xA8) return 3; // U+2028: Line Separator
-  if(Buffer[Index+2] == 0xA9) return 3; // U+2029: Paragraph Separator
- }
+bool SCANNER::Open(const byte* Filename){
+ FILE_SYSTEM fs;
 
- return 0;
-}
-//------------------------------------------------------------------------------
-
-bool SCANNER::Open(const char* Filename){
  Line  = 1;
  Index = 0;
  error = false;
 
+ if(Buffer) delete[] Buffer;
+
  this->Filename = Filename;
 
- char* TempBuffer = fs.Read(Filename);
- if(!TempBuffer){
+ Buffer = (byte*)fs.Read(Filename);
+ if(!Buffer){
   printf("Error reading file: %s\n", Filename);
   return false;
  }
 
- Buffer.UseMem(TempBuffer);
-
- // Read the first character
- GetChar();
-
- PrevIsNewline = true;
  return true;
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::GetChar(){
- int e, s, n, j;
+bool SCANNER::Digit(){
+ return (Buffer[Index] >= '0' && Buffer[Index] <= '9');
+}
+//------------------------------------------------------------------------------
 
- e = s = n = 0;
-
- Char.Char[0] = 0;
-
- if(error || Index >= Buffer.Length()){
-  Char.Type = tEOF;
-  return false;
- }
-
- // Prevent checking for trailing spaces if the previous character is a
- // non-trailing space
- if(Char.Type == tSpace){
-  s = Space();
-  if(s){
-   for(j = 0; j < s; j++) Char.Char[j] = Buffer[Index++];
-   Char.Char[j] = 0;
-   Char.Line    = Line;
-   Char.Type    = tSpace;
-   return true;
-  }
- }
-
- // Check for trailing spaces and escaped newlines
- while(Index < Buffer.Length()){
-  if(Buffer[Index] == '\\') e = 1;
-  else                      e = 0;
-  Index += e;
-
-  s = Spaces (); Index += s;
-  n = Newline(); Index += n;
-
-  if(!e || !n){
-   Index -= e+s+n;
-   break;
-  }
-  Line++;
- }
- if(Index >= Buffer.Length()){
-  Char.Type = tEOF;
-  return false;
- }
-
- if(e){
-  Char.Char[0] = Buffer[Index++];
-  Char.Char[1] = 0;
-  Char.Line    = Line;
-  Char.Type    = tOther;
+bool SCANNER::HexDigit(unsigned* Digit){
+ if(Buffer[Index] >= '0' && Buffer[Index] <= '9'){
+  *Digit = Buffer[Index] - '0';
   return true;
  }
-
- if(n){
-  Index += s; // Ignore trailing spaces
-  for(j = 0; j < n; j++) Char.Char[j] = Buffer[Index++];
-  Char.Char[j] = 0;
-  Char.Line    = Line++;
-  Char.Type    = tNewline;
+ if(Buffer[Index] >= 'a' && Buffer[Index] <= 'f'){
+  *Digit = Buffer[Index] - 'a' + 0xA;
   return true;
  }
-
- if(s){
-  s = Space();
-  for(j = 0; j < s; j++) Char.Char[j] = Buffer[Index++];
-  Char.Char[j] = 0;
-  Char.Line    = Line;
-  Char.Type    = tSpace;
+ if(Buffer[Index] >= 'A' && Buffer[Index] <= 'F'){
+  *Digit = Buffer[Index] - 'A' + 0xA;
   return true;
  }
-
- Char.Char[0] = Buffer[Index++];
- Char.Char[1] = 0;
- Char.Line    = Line;
- Char.Type    = tOther;
- return true;
+ return false;
 }
 //------------------------------------------------------------------------------
 
-inline bool SCANNER::Digit(){
- return (Char.Char[0] >= '0' && Char.Char[0] <= '9');
+bool SCANNER::NonDigit(){
+ int Count;
+ if(Buffer[Index] >= 0x80){
+  if(Spaces.Match(Buffer+Index, &Count)) return false;
+ }
+
+ return (Buffer[Index] >= 'a' && Buffer[Index] <= 'z' ) ||
+        (Buffer[Index] >= 'A' && Buffer[Index] <= 'Z' ) ||
+        (Buffer[Index] == '_' || Buffer[Index] >= 0x80);
 }
 //------------------------------------------------------------------------------
 
-inline bool SCANNER::HexDigit(){
- return (Char.Char[0] >= '0' && Char.Char[0] <= '9') ||
-        (Char.Char[0] >= 'a' && Char.Char[0] <= 'f') ||
-        (Char.Char[0] >= 'A' && Char.Char[0] <= 'F');
-}
-//------------------------------------------------------------------------------
-
-inline bool SCANNER::NonDigit(){
- return (Char.Char[0] >= 'a' && Char.Char[0] <= 'z') ||
-        (Char.Char[0] >= 'A' && Char.Char[0] <= 'Z') ||
-        (Char.Char[0] == '_' ) ||
-        (Char.Char[0] == '\\') ||
-        (Char.Char[0] >= 0x80);
-}
-//------------------------------------------------------------------------------
-
-bool SCANNER::Identifier(STRING& Body){
+bool SCANNER::Identifier(TOKEN* Token){
  if(!NonDigit()) return false;
- Body = (char*)Char.Char;
- GetChar();
 
- while(Char.Type == tOther && (Digit() || NonDigit())){
-  Body << (char*)Char.Char;
-  GetChar();
+ Token->Data << Buffer[Index++];
+ while(Buffer[Index]){
+  if(!Digit() && !NonDigit()) break;
+  Token->Data << Buffer[Index++];
  }
+ Token->Type = Keywords.Find(Token->Data.String());
+ if(!Token->Type) Token->Type = TOKEN::Identifier;
  return true;
 }
 //------------------------------------------------------------------------------
 
-// Number = (Digit | ("." Digit)) {
-//  Digit | NonDigit | "." | "_" | "'" |
-//  (("e" | "E" | "p" | "P") ["+" | "-"])
-// };
-// Underscore and quote are removed
+bool SCANNER::Operator(TOKEN* Token){
+ int Count;
 
-bool SCANNER::Number(STRING& Body){
- if(Body.Length()) return false;
-
- if(Char.Char[0] == '.'){
-  Body << (char*)Char.Char;
-  GetChar();
- }
- if(!Digit()) return false;
- Body << (char*)Char.Char;
- GetChar();
-
- bool Exponent = false;
- while(Char.Type == tOther && (
-  Digit   ()               ||
-  NonDigit()               ||
-  Char.Char[0] == '.'      ||
-  Char.Char[0] == '_'      ||
-  Char.Char[0] == '\''     ||
-  (Exponent && (Char.Char[0] == '+' || Char.Char[0] == '-'))
- )){
-  if(
-   Char.Char[0] == 'e' || Char.Char[0] == 'E' ||
-   Char.Char[0] == 'p' || Char.Char[0] == 'P'
-  ){
-   Exponent = true;
-  }else{
-   Exponent = false;
+ Token->Type = Operators.Match(Buffer+Index, &Count);
+ if(Count){
+  while(Count){
+   Token->Data << Buffer[Index++];
+   Count--;
   }
-  if(Char.Char[0] != '\'' && Char.Char[0] != '_') Body << (char*)Char.Char;
-  GetChar();
+  return true;
  }
- return true;
-}
-//------------------------------------------------------------------------------
-
-// FixedPointCast = "`" {Digit | ("." ["-"])};
-bool SCANNER::FixedPointCast(STRING& Body){
- if(Char.Char[0] != '`') return false;
- Body << (char*)Char.Char;
- GetChar();
-
- bool Period = false;
- while(Char.Type == tOther && (
-  Digit()             ||
-  Char.Char[0] == '.' ||
-  (Period && (Char.Char[0] == '-'))
- )){
-  if(Char.Char[0] == '.') Period = true;
-  else                    Period = false;
-  Body << (char*)Char.Char;
-  GetChar();
- }
- return true;
-}
-//------------------------------------------------------------------------------
-
-bool SCANNER::Comment(STRING& Body){
- if(Body.Length()) return false;
-
- if(Char.Char[0] != '/') return false;
- Body = (char*)Char.Char;
- GetChar();
-
- if(Char.Char[0] != '/' && Char.Char[0] != '*') return false;
- Body << (char*)Char.Char;
-
- bool PrevIsStar = false; // Used to terminate multiline comments
- bool Multiline  = Char.Char[0] == '*';
-
- while(GetChar()){
-  if(Multiline){
-   if(PrevIsStar && Char.Char[0] == '/'){
-    Body << (char*)Char.Char;
-    GetChar();
-    return true;
-   }
-  }else{
-   if(Char.Type == tNewline){
-    Body << (char*)Char.Char;
-    GetChar();
-    PrevIsNewline = true;
-    return true;
-   }
-  }
-  Body << (char*)Char.Char;
-  PrevIsStar = Char.Char[0] == '*';
- }
- Error("Incomplete comment");
  return false;
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::Character(STRING& Body){
- if(Char.Char[0] != '\'') return false;
+unsigned SCANNER::GetExponent(bool* Sign){
+ unsigned Exponent = 0;
 
- while(GetChar()){
-  if(Char.Char[0] == '\\'){
-   Body << (char*)Char.Char;
-   GetChar();
+ Index++;
+ while(Buffer[Index] == '_') Index++;
 
-  }else if(Char.Char[0] == '\''){
-   GetChar();
-   return true;
-  }
-  Body << (char*)Char.Char;
+ *Sign = false;
+ if(Buffer[Index] == '-'){
+  *Sign = true;
+  Index++;
+ }else if(Buffer[Index] == '+'){
+  Index++;
  }
- Error("Incomplete character");
- return false;
+
+ while(Buffer[Index]){
+  while(Buffer[Index] == '_') Index++;
+
+  if(Buffer[Index] < '0' || Buffer[Index] > '9') break;
+
+  Exponent = 10*Exponent + Buffer[Index++] - '0';
+ }
+ return Exponent;
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::String(STRING& Body){
- if(Char.Char[0] != '"') return false;
+bool SCANNER::Binary(TOKEN* Token){
+ Index += 2; // Skip over the "0b"
 
- while(GetChar()){
-  if(Char.Char[0] == '\\'){
-   Body << (char*)Char.Char;
-   GetChar();
+ while(Buffer[Index] == '_') Index++;
+ if((Buffer[Index] < '0' || Buffer[Index] > '1') && Buffer[Index] != '.'){
+  Error("Illegal literal format");
+  return false;
+ }
 
-  }else if(Char.Char[0] == '"'){
-   GetChar();
+ mpz_t num, den, exp;
+ mpz_init_set_ui(num, 0);
+ mpz_init_set_ui(den, 1);
+ mpz_init_set_ui(exp, 0);
+
+ while(Buffer[Index]){
+  while(Buffer[Index] == '_') Index++;
+
+  if(Buffer[Index] < '0' || Buffer[Index] > '1') break;
+
+  mpz_mul_ui(num, num, 2);
+  mpz_add_ui(num, num, Buffer[Index++] - '0');
+ }
+
+ if(Buffer[Index] == '.'){
+  Index++;
+  while(Buffer[Index]){
+   while(Buffer[Index] == '_') Index++;
+
+   if(Buffer[Index] < '0' || Buffer[Index] > '1') break;
+
+   mpz_mul_ui(num, num, 2);
+   mpz_mul_ui(den, den, 2);
+   mpz_add_ui(num, num, Buffer[Index++] - '0');
+  }
+ }
+
+ bool     Sign     = false;
+ unsigned Exponent = 0;
+
+ if(Buffer[Index] == 'p' || Buffer[Index] == 'P') Exponent = GetExponent(&Sign);
+
+ mpz_ui_pow_ui(exp, 2, Exponent);
+ if(Sign) mpz_mul(den, den, exp);
+ else     mpz_mul(num, num, exp);
+
+ Token->Value.Set(num, den);
+
+ mpz_clear(num);
+ mpz_clear(den);
+ mpz_clear(exp);
+
+ return true;
+}
+//------------------------------------------------------------------------------
+
+bool SCANNER::Octal(TOKEN* Token){
+ Index += 2; // Skip over the "0o"
+
+ while(Buffer[Index] == '_') Index++;
+ if((Buffer[Index] < '0' || Buffer[Index] > '7') && Buffer[Index] != '.'){
+  Error("Illegal literal format");
+  return false;
+ }
+
+ mpz_t num, den, exp;
+ mpz_init_set_ui(num, 0);
+ mpz_init_set_ui(den, 1);
+ mpz_init_set_ui(exp, 0);
+
+ while(Buffer[Index]){
+  while(Buffer[Index] == '_') Index++;
+
+  if(Buffer[Index] < '0' || Buffer[Index] > '7') break;
+
+  mpz_mul_ui(num, num, 8);
+  mpz_add_ui(num, num, Buffer[Index++] - '0');
+ }
+
+ if(Buffer[Index] == '.'){
+  Index++;
+  while(Buffer[Index]){
+   while(Buffer[Index] == '_') Index++;
+
+   if(Buffer[Index] < '0' || Buffer[Index] > '7') break;
+
+   mpz_mul_ui(num, num, 8);
+   mpz_mul_ui(den, den, 8);
+   mpz_add_ui(num, num, Buffer[Index++] - '0');
+  }
+ }
+
+ bool     Sign     = false;
+ unsigned Exponent = 0;
+
+ if(Buffer[Index] == 'p' || Buffer[Index] == 'P') Exponent = GetExponent(&Sign);
+
+ mpz_ui_pow_ui(exp, 2, Exponent);
+ if(Sign) mpz_mul(den, den, exp);
+ else     mpz_mul(num, num, exp);
+
+ Token->Value.Set(num, den);
+
+ mpz_clear(num);
+ mpz_clear(den);
+ mpz_clear(exp);
+
+ return true;
+}
+//------------------------------------------------------------------------------
+
+bool SCANNER::Hexadecimal(TOKEN* Token){
+ unsigned Digit;
+
+ Index += 2; // Skip over the "0x"
+
+ while(Buffer[Index] == '_') Index++;
+ if(!HexDigit(&Digit) && Buffer[Index] != '.'){
+  Error("Illegal literal format");
+  return false;
+ }
+
+ mpz_t num, den, exp;
+ mpz_init_set_ui(num, 0);
+ mpz_init_set_ui(den, 1);
+ mpz_init_set_ui(exp, 0);
+
+ while(Buffer[Index]){
+  while(Buffer[Index] == '_') Index++;
+
+  if(!HexDigit(&Digit)) break;
+
+  mpz_mul_ui(num, num, 16);
+  mpz_add_ui(num, num, Digit);
+  Index++;
+ }
+
+ if(Buffer[Index] == '.'){
+  Index++;
+  while(Buffer[Index]){
+   while(Buffer[Index] == '_') Index++;
+
+   if(!HexDigit(&Digit)) break;
+
+   mpz_mul_ui(num, num, 16);
+   mpz_mul_ui(den, den, 16);
+   mpz_add_ui(num, num, Digit);
+   Index++;
+  }
+ }
+
+ bool     Sign     = false;
+ unsigned Exponent = 0;
+
+ if(Buffer[Index] == 'p' || Buffer[Index] == 'P') Exponent = GetExponent(&Sign);
+
+ mpz_ui_pow_ui(exp, 2, Exponent);
+ if(Sign) mpz_mul(den, den, exp);
+ else     mpz_mul(num, num, exp);
+
+ Token->Value.Set(num, den);
+
+ mpz_clear(num);
+ mpz_clear(den);
+ mpz_clear(exp);
+
+ return true;
+}
+//------------------------------------------------------------------------------
+
+bool SCANNER::Literal(TOKEN* Token){
+ if(
+  !Digit() &&
+  (Buffer[Index] != '.' || Buffer[Index+1] < '0' || Buffer[Index+1] > '9')
+ ) return false;
+
+ Token->Type = TOKEN::Literal;
+
+ if(Buffer[Index] == '0'){
+  switch(Buffer[Index+1]){
+   case 'b': return Binary     (Token);
+   case 'o': return Octal      (Token);
+   case 'x': return Hexadecimal(Token);
+   default : break;
+  }
+ }
+
+ mpz_t num, den, exp;
+ mpz_init_set_ui(num, 0);
+ mpz_init_set_ui(den, 1);
+ mpz_init_set_ui(exp, 0);
+
+ while(Buffer[Index]){
+  while(Buffer[Index] == '_') Index++;
+
+  if(Buffer[Index] < '0' || Buffer[Index] > '9') break;
+
+  mpz_mul_ui(num, num, 10);
+  mpz_add_ui(num, num, Buffer[Index++] - '0');
+ }
+
+ if(Buffer[Index] == '.'){
+  Index++;
+  while(Buffer[Index]){
+   while(Buffer[Index] == '_') Index++;
+
+   if(Buffer[Index] < '0' || Buffer[Index] > '9') break;
+
+   mpz_mul_ui(num, num, 10);
+   mpz_mul_ui(den, den, 10);
+   mpz_add_ui(num, num, Buffer[Index++] - '0');
+  }
+ }
+
+ bool     Sign     = false;
+ unsigned Exponent = 0;
+
+ if(Buffer[Index] == 'e' || Buffer[Index] == 'E') Exponent = GetExponent(&Sign);
+
+ mpz_ui_pow_ui(exp, 10, Exponent);
+ if(Sign) mpz_mul(den, den, exp);
+ else     mpz_mul(num, num, exp);
+
+ Token->Value.Set(num, den);
+
+ mpz_clear(num);
+ mpz_clear(den);
+ mpz_clear(exp);
+
+ return true;
+}
+//------------------------------------------------------------------------------
+
+bool SCANNER::String(TOKEN* Token){
+ int j;
+ unsigned Digit, UTF_32;
+
+ if(Buffer[Index] != '"') return false;
+
+ Token->Type = TOKEN::String;
+
+ Index++;
+
+ while(Buffer[Index]){
+  if(Buffer[Index] == '"'){
+   Index++;
    return true;
   }
-  Body << (char*)Char.Char;
+  if(Buffer[Index] == '\\'){
+   Index++;
+   switch(Buffer[Index]){
+    case 'n' : Token->Data << '\n'; Index++; break;
+    case 't' : Token->Data << '\t'; Index++; break;
+    case 'v' : Token->Data << '\v'; Index++; break;
+    case 'b' : Token->Data << '\b'; Index++; break;
+    case 'r' : Token->Data << '\r'; Index++; break;
+    case 'f' : Token->Data << '\f'; Index++; break;
+    case 'a' : Token->Data << '\a'; Index++; break;
+    case '\\': Token->Data << '\\'; Index++; break;
+    case '?' : Token->Data << '\?'; Index++; break;
+    case '\'': Token->Data << '\''; Index++; break;
+    case '"' : Token->Data << '\"'; Index++; break;
+
+    case 'x' : // Hexadecimal number
+     Index++;
+     UTF_32 = 0;
+     for(j = 0; j < 2; j++){
+      if(!HexDigit(&Digit)){
+       Error("Invalid \\x code");
+       return false;
+      }
+      UTF_32 = UTF_32*0x10 + Digit;
+      Index++;
+     }
+     Token->Data.Append_UTF_32(UTF_32);
+     break;
+
+    case 'u' : // 16-bit Unicode
+     Index++;
+     UTF_32 = 0;
+     for(j = 0; j < 4; j++){
+      if(!HexDigit(&Digit)){
+       Error("Invalid \\u code");
+       return false;
+      }
+      UTF_32 = UTF_32*0x10 + Digit;
+      Index++;
+     }
+     Token->Data.Append_UTF_32(UTF_32);
+     break;
+
+    case 'U' : // 32-bit Unicode
+     Index++;
+     UTF_32 = 0;
+     for(j = 0; j < 8; j++){
+      if(!HexDigit(&Digit)){
+       Error("Invalid \\U code");
+       return false;
+      }
+      UTF_32 = UTF_32*0x10 + Digit;
+      Index++;
+     }
+     Token->Data.Append_UTF_32(UTF_32);
+     break;
+
+    default: // Could be an octal number...
+     UTF_32 = 0;
+     for(j = 0; j < 11; j++){
+      if(Buffer[Index] < '0' || Buffer[Index] > '7'){
+       if(j) break;
+       Error("Invalid escape sequence");
+       return false;
+      }
+      UTF_32 = UTF_32*8 + Buffer[Index++] - '0';
+     }
+     Token->Data.Append_UTF_32(UTF_32);
+     break;
+   }
+  }else{
+   if(Spaces.Match(Buffer+Index, &j) == TOKEN::Newline){
+    Line++;
+    while(j){
+     Token->Data << Buffer[Index++];
+     j--;
+    }
+   }else{
+    Token->Data << Buffer[Index++];
+   }
+  }
  }
  Error("Incomplete string");
  return false;
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::Operator(STRING& Body){
- STRING Test;
+bool SCANNER::GetToken(TOKEN* Token){
+ if(!Buffer[Index]) return false;
+ if(error) return false;
 
- // At this point, Body could contain '.' or '/' from Number() or Comment()
- if(Body.Length()){
-  if(!Operators.GetCode(Body.String())) return false;
-  Test << Body;
- }
+ WhiteSpace();
 
- // All operators start with valid operators, so use this fact to advantage
- while(Char.Type != tEOF){
-  Test << (char*)Char.Char;
-  if(!Operators.GetCode(Test.String())) return Body.Length();
-  Body << (char*)Char.Char;
-  GetChar();
- }
- return Body.Length();
-}
-//------------------------------------------------------------------------------
+ Token->Line = Line;
+ Token->Type = TOKEN::Unknown;
+ Token->Data.Clear();
 
-bool SCANNER::GetToken(PP_TOKEN* ppToken){
- ppToken->Comment.Clear();
- ppToken->PrecedingSpace = PrevIsNewline;
-
- // Ignore spaces and comments (but keep comments...)
- while(!error && Char.Type != tEOF){
-  ppToken->Body.Clear();
-  ppToken->Line = Char.Line;
-
-  if(PrevIsNewline && Char.Char[0] == '#'){
-   GetChar();
-   while(Char.Type == tSpace) GetChar();
-   Identifier(ppToken->Body);
-   ppToken->Type = tDirective;
-   PrevIsNewline = false;
-   return true;
-  }
-
-  if(Char.Type == tNewline){
-   ppToken->Type = tNewline;
-   while(Char.Type == tNewline){ // Concatenate newlines
-    GetChar();
-    while(Char.Type == tSpace) GetChar(); // Remove leading spaces
-   }
-   PrevIsNewline           = true;
-   ppToken->PrecedingSpace = true;
-   return Char.Type != tEOF;
-  }
-
-  if(Char.Type == tSpace){
-   while(Char.Type == tSpace) GetChar(); // Concatenate spaces
-   ppToken->PrecedingSpace = true;
-   continue; // Restart token scan
-  }
-
-  if(Identifier(ppToken->Body)){
-   ppToken->Type = tIdentifier;
-   PrevIsNewline = false;
-   return true;
-  }
-
-  if(Character(ppToken->Body)){
-   ppToken->Type = tCharacter;
-   PrevIsNewline = false;
-   return true;
-  }
-  if(String(ppToken->Body)){
-   ppToken->Type = tString;
-   PrevIsNewline = false;
-   return true;
-  }
-  if(FixedPointCast(ppToken->Body)){
-   ppToken->Type = tFixedPointCast;
-   PrevIsNewline = false;
-   return true;
-  }
-
-  // These start with what could potentially be a punctuator, so don't move them
-  if(Number(ppToken->Body)){
-   ppToken->Type = tNumber;
-   PrevIsNewline = false;
-   return true;
-  }
-  if(Comment(ppToken->Body)){
-   ppToken->Comment << ppToken->Body;
-   ppToken->PrecedingSpace = true;
-   continue; // Restart token scan
-  }
-
-  // Don't move this: it's placement as the last one is important
-  if(Operator(ppToken->Body)){
-   ppToken->Type = tOperator;
-   PrevIsNewline = false;
-   return true;
-  }
-
-  if(Char.Type != tEOF){
-   ppToken->Body = (char*)Char.Char;
-   ppToken->Type = tOther;
-   GetChar();
-   PrevIsNewline = false;
-   return true;
+ if(String(Token)){ // This is the least expensive match
+  while(Buffer[Index]){
+   WhiteSpace();
+   if(!String(Token)) return !error;
   }
  }
- ppToken->Type = tEOF;
- return false;
-}
-//------------------------------------------------------------------------------
 
-bool SCANNER::GetDirective(PP_TOKEN* ppToken){
- ppToken->Comment.Clear();
- ppToken->PrecedingSpace = false;
+ if(Literal   (Token)) return true;
+ if(Identifier(Token)) return true;
+ if(Operator  (Token)) return true; // This is the most expensive match
 
- // Ignore spaces and comments (but keep comments...)
- while(!error && Char.Type != tEOF){
-  ppToken->Body.Clear();
-  ppToken->Line = Char.Line;
-
-  if(PrevIsNewline && Char.Char[0] == '#'){
-   GetChar();
-   while(Char.Type == tSpace) GetChar();
-   Identifier(ppToken->Body);
-   ppToken->Type = tDirective;
-   PrevIsNewline = false;
-   return true;
-  }
-
-  if(Char.Type == tNewline){
-   ppToken->Type = tNewline;
-   while(Char.Type == tNewline){ // Concatenate newlines
-    GetChar();
-    while(Char.Type == tSpace) GetChar(); // Remove leading spaces
-   }
-   PrevIsNewline = true;
-   continue;
-  }
-
-  if(Char.Type == tSpace){
-   while(Char.Type == tSpace) GetChar(); // Concatenate spaces
-   continue; // Restart token scan
-  }
-
-  if(Comment(ppToken->Body)){
-   continue; // Restart token scan
-  }
-
-  PrevIsNewline = false;
-  GetChar();
- }
- ppToken->Type = tEOF;
  return false;
 }
 //------------------------------------------------------------------------------

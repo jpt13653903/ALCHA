@@ -35,76 +35,92 @@ int main(int argc, char** argv){
   ) Info.dwSize.Y--;
  #endif
 
- SetCurrentDirectory(L"C:\\JPT\\Projects\\15\\1509 - ALCHA\\Test Cases\\Output");
+ SetCurrentDirectory(L"C:\\JPT\\Projects\\15\\1509 - ALCHA\\Test Cases\\FrontEnd");
 
- Target.Vendor = "Altera";
- Target.Series = "MAX 10";
- Target.Device = "10M08DAF484C8GES";
- Target.Board  = "BeMicro Max 10";
+ SCANNER Scanner;
+ if(!Scanner.Open((byte*)"Scanner.alc")) return -1;
 
- hdl.Files = new HDL::FILE("Testing");
+ TOKEN Token;
+ while(Scanner.GetToken(&Token)){
+  printf("%d: %d = ", Token.Line, Token.Type);
+  if(Token.Type == TOKEN::Literal){
+   Token.Value.Display();
+  }else{
+   printf("%s", Token.Data.String());
+  }
+  printf("\n");
+ }
 
- HDL::MODULE* Module = hdl.Files->Modules = new HDL::MODULE("Testing");
-
- HDL::SIGNAL* Port;
- Port = Module->Signals = new HDL::SIGNAL("Clk");
- Port->Port      = true;
- Port->Direction = HDL::SIGNAL::Input;
-
- Port = Port->Next = new HDL::SIGNAL("LVDS_TX_P");
- Port->Port        = true;
- Port->Direction   = HDL::SIGNAL::Output;
- Port->Vector      = true;
- Port->VectorStart = 0;
- Port->VectorEnd   = 0;
-
- Port = Port->Next = new HDL::SIGNAL("Button");
- Port->Port        = true;
- Port->Direction   = HDL::SIGNAL::Input;
- Port->Vector      = true;
- Port->VectorStart = 4;
- Port->VectorEnd   = 1;
-
- Port = Port->Next = new HDL::SIGNAL("LED");
- Port->Port        = true;
- Port->Direction   = HDL::SIGNAL::Output;
- Port->Vector      = true;
- Port->VectorStart = 8;
- Port->VectorEnd   = 1;
-
- HDL::AST* ast = Module->Statements = new HDL::AST;
- ast->Operator = HDL::AST::Assign;
- ast->Child1   = new HDL::AST;
- ast->Child1->Operator = HDL::AST::Identifier;
- ast->Child1->Name     = "LED";
- ast->Child2 = new HDL::AST;
- ast->Child2->Operator      = HDL::AST::Replicate;
- ast->Child2->ConstantValue = 2;
- ast->Child2->Child1        = new HDL::AST;
- ast->Child2->Child1->Operator = HDL::AST::Identifier;
- ast->Child2->Child1->Name     = "Button";
-
- ast = ast->Next = new HDL::AST;
- ast->Operator = HDL::AST::Assign;
- ast->Child1 = new HDL::AST;
- ast->Child1->Operator = HDL::AST::Identifier;
- ast->Child1->Name     = "LVDS_TX_P";
- ast->Child2 = new HDL::AST;
- ast->Child2->Operator = HDL::AST::Identifier;
- ast->Child2->Name     = "Clk";
-
- ast = ast->Next = new HDL::AST;
- ast->Operator = HDL::AST::Assign;
- ast->Child1 = new HDL::AST;
- ast->Child1->Operator = HDL::AST::Identifier;
- ast->Child1->Name     = "Testing";
- ast->Child2 = new HDL::AST;
- ast->Child2->Operator = HDL::AST::Constant;
- ast->Child2->ConstantLength = 16;
- ast->Child2->ConstantValue  = 0xABCD;
-
- ALTERA Altera;
- if(!Altera.WriteProject()) return -2;
+// SetCurrentDirectory(L"C:\\JPT\\Projects\\15\\1509 - ALCHA\\Test Cases\\Output");
+//
+// Target.Vendor = "Altera";
+// Target.Series = "MAX 10";
+// Target.Device = "10M08DAF484C8GES";
+// Target.Board  = "BeMicro Max 10";
+//
+// hdl.Files = new HDL::FILE("Testing");
+//
+// HDL::MODULE* Module = hdl.Files->Modules = new HDL::MODULE("Testing");
+//
+// HDL::SIGNAL* Port;
+// Port = Module->Signals = new HDL::SIGNAL("Clk");
+// Port->Port      = true;
+// Port->Direction = HDL::SIGNAL::Input;
+//
+// Port = Port->Next = new HDL::SIGNAL("LVDS_TX_P");
+// Port->Port        = true;
+// Port->Direction   = HDL::SIGNAL::Output;
+// Port->Vector      = true;
+// Port->VectorStart = 0;
+// Port->VectorEnd   = 0;
+//
+// Port = Port->Next = new HDL::SIGNAL("Button");
+// Port->Port        = true;
+// Port->Direction   = HDL::SIGNAL::Input;
+// Port->Vector      = true;
+// Port->VectorStart = 4;
+// Port->VectorEnd   = 1;
+//
+// Port = Port->Next = new HDL::SIGNAL("LED");
+// Port->Port        = true;
+// Port->Direction   = HDL::SIGNAL::Output;
+// Port->Vector      = true;
+// Port->VectorStart = 8;
+// Port->VectorEnd   = 1;
+//
+// HDL::AST* ast = Module->Statements = new HDL::AST;
+// ast->Operator = HDL::AST::Assign;
+// ast->Child1   = new HDL::AST;
+// ast->Child1->Operator = HDL::AST::Identifier;
+// ast->Child1->Name     = "LED";
+// ast->Child2 = new HDL::AST;
+// ast->Child2->Operator      = HDL::AST::Replicate;
+// ast->Child2->ConstantValue = 2;
+// ast->Child2->Child1        = new HDL::AST;
+// ast->Child2->Child1->Operator = HDL::AST::Identifier;
+// ast->Child2->Child1->Name     = "Button";
+//
+// ast = ast->Next = new HDL::AST;
+// ast->Operator = HDL::AST::Assign;
+// ast->Child1 = new HDL::AST;
+// ast->Child1->Operator = HDL::AST::Identifier;
+// ast->Child1->Name     = "LVDS_TX_P";
+// ast->Child2 = new HDL::AST;
+// ast->Child2->Operator = HDL::AST::Identifier;
+// ast->Child2->Name     = "Clk";
+//
+// ast = ast->Next = new HDL::AST;
+// ast->Operator = HDL::AST::Assign;
+// ast->Child1 = new HDL::AST;
+// ast->Child1->Operator = HDL::AST::Identifier;
+// ast->Child1->Name     = "Testing";
+// ast->Child2 = new HDL::AST;
+// ast->Child2->Operator = HDL::AST::Constant;
+// ast->Child2->ConstantLength = 16;
+// ast->Child2->ConstantValue  = 0xABCD;
+//
+// ALTERA Altera;
+// if(!Altera.WriteProject()) return -2;
 
  return 0;
 }

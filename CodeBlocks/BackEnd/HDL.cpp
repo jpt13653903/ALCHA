@@ -7,7 +7,7 @@ HDL hdl;
 static int Indent = 0;
 //------------------------------------------------------------------------------
 
-HDL::PARAMETER::PARAMETER(const char* Name, const char* Value){
+HDL::PARAMETER::PARAMETER(const byte* Name, const byte* Value){
  this->Name  = Name;
  this->Value = Value;
 
@@ -20,7 +20,7 @@ HDL::PARAMETER::~PARAMETER(){
 }
 //------------------------------------------------------------------------------
 
-HDL::SIGNAL::SIGNAL(const char* Name){
+HDL::SIGNAL::SIGNAL(const byte* Name){
  this->Name = Name;
 
  Port            = false;
@@ -481,7 +481,7 @@ HDL::INSTANCE::~INSTANCE(){
 }
 //------------------------------------------------------------------------------
 
-HDL::MODULE::MODULE(const char* Name){
+HDL::MODULE::MODULE(const byte* Name){
  this->Name = Name;
 
  Parameters = 0;
@@ -591,7 +591,7 @@ void HDL::MODULE::Write(STRING& Buffer){
 }
 //------------------------------------------------------------------------------
 
-HDL::FILE::FILE(const char* Name){
+HDL::FILE::FILE(const byte* Name){
  this->Name = Name;
  Modules = 0;
  Next    = 0;

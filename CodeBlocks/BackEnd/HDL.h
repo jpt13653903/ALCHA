@@ -13,7 +13,7 @@ struct HDL{
 
   PARAMETER* Next;
 
-  PARAMETER(const char* Name, const char* Value);
+  PARAMETER(const byte* Name, const byte* Value);
  ~PARAMETER(); // Also deletes the rest of the list
  };
 
@@ -38,7 +38,7 @@ struct HDL{
 
   SIGNAL* Next;
 
-  SIGNAL(const char* Name);
+  SIGNAL(const byte* Name);
  ~SIGNAL(); // Also deletes the rest of the list
 
   void Write(STRING& Buffer);
@@ -151,7 +151,7 @@ struct HDL{
 
   MODULE* Next;
 
-  MODULE(const char* Name);
+  MODULE(const byte* Name);
  ~MODULE(); // Also deletes the rest of the list
 
   void Write(STRING& Buffer);
@@ -163,7 +163,7 @@ struct HDL{
 
   FILE* Next;
 
-  FILE(const char* Name);
+  FILE(const byte* Name);
  ~FILE(); // Also deletes modules and the rest of the file list
 
   bool Write();

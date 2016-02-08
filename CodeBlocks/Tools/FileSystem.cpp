@@ -21,7 +21,7 @@
 #include "FileSystem.h"
 //------------------------------------------------------------------------------
 
-void FILE_SYSTEM::GetLongName(const char* Path, STRING& LongName){
+void FILE_SYSTEM::GetLongName(const byte* Path, STRING& LongName){
  int j;
 
  // Extend the Path to use long names
@@ -59,7 +59,7 @@ bool FILE_SYSTEM::CreatePath(wchar_t* Path){
 }
 //------------------------------------------------------------------------------
 
-char* FILE_SYSTEM::Read(const char* Filename, unsigned* Filesize){
+byte* FILE_SYSTEM::Read(const byte* Filename, unsigned* Filesize){
  if(!Filename   ) return 0;
  if(!Filename[0]) return 0;
 
@@ -79,7 +79,7 @@ char* FILE_SYSTEM::Read(const char* Filename, unsigned* Filesize){
  if(Handle == INVALID_HANDLE_VALUE) return 0;
 
  DWORD Size = GetFileSize(Handle, 0);
- char* Buffer = new char[Size+1];
+ byte* Buffer = new byte[Size+1];
  if(!Buffer){
   CloseHandle(Handle);
   return 0;
@@ -105,7 +105,7 @@ char* FILE_SYSTEM::Read(const char* Filename, unsigned* Filesize){
 }
 //------------------------------------------------------------------------------
 
-bool FILE_SYSTEM::Write(const char* Filename, const char* Data, unsigned Size){
+bool FILE_SYSTEM::Write(const byte* Filename, const byte* Data, unsigned Size){
  if(!Filename   ) return false;
  if(!Filename[0]) return false;
 

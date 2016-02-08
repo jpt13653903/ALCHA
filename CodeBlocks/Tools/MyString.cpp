@@ -24,7 +24,7 @@
 STRING::STRING(){
  Allocated    = 4;
  TheLength    = 0;
- TheString    = new unsigned char[Allocated];
+ TheString    = new byte[Allocated];
  TheString[0] = 0;
 
  Changed          = false;
@@ -53,6 +53,13 @@ unsigned STRING::Length(){
 
 STRING& STRING::operator= (const char* s){
  Clear();
+ operator<< ((byte*)s);
+ return *this;
+}
+//------------------------------------------------------------------------------
+
+STRING& STRING::operator= (const byte* s){
+ Clear();
  operator<< (s);
  return *this;
 }
@@ -73,13 +80,19 @@ STRING& STRING::operator= (STRING& s){
 //------------------------------------------------------------------------------
 
 STRING& STRING::operator<< (char c){
+ operator<< ((byte)c);
+ return *this;
+}
+//------------------------------------------------------------------------------
+
+STRING& STRING::operator<< (byte c){
  Changed = true;
 
  TheString[TheLength++] = c;
 
  if(TheLength == Allocated){
   Allocated <<= 1;
-  unsigned char* Temp = new unsigned char[Allocated];
+  byte* Temp = new byte[Allocated];
   for(unsigned j = 0; j < TheLength; j++) Temp[j] = TheString[j];
   delete[] TheString;
   TheString = Temp;
@@ -87,12 +100,6 @@ STRING& STRING::operator<< (char c){
 
  TheString[TheLength] = 0;
 
- return *this;
-}
-//------------------------------------------------------------------------------
-
-STRING& STRING::operator<< (unsigned char c){
- operator<< ((char)c);
  return *this;
 }
 //------------------------------------------------------------------------------
@@ -106,12 +113,12 @@ STRING& STRING::operator<< (wchar_t c){
 
 void STRING::Append_UTF_32(unsigned c){
  int           j    = 0 ;
- unsigned char Head = 0x3F; // Active bits in the leading byte
- unsigned char Lead = 0x80; // Leading byte
- unsigned char Cont[6];     // Continuation bytes
+ byte Head = 0x3F; // Active bits in the leading byte
+ byte Lead = 0x80; // Leading byte
+ byte Cont[6];     // Continuation bytes
 
  if(c < 0x80){
-  operator<<((char)c);
+  operator<<((byte)c);
 
  }else{
   while(c > Head){ // Doesn't fit in the leading byte
@@ -121,13 +128,20 @@ void STRING::Append_UTF_32(unsigned c){
    c     >>= 6;
    j++;
   }
-  operator<<((char)(Lead | c));
-  for(j--; j >= 0; j--) operator<<((char)(Cont[j]));
+  operator<<((byte)(Lead | c));
+  for(j--; j >= 0; j--) operator<<((byte)(Cont[j]));
  }
 }
 //------------------------------------------------------------------------------
 
 STRING& STRING::operator<< (const char* s){
+ for(int j = 0; s[j]; j++) operator<<((byte)s[j]);
+
+ return *this;
+}
+//------------------------------------------------------------------------------
+
+STRING& STRING::operator<< (const byte* s){
  for(int j = 0; s[j]; j++) operator<<(s[j]);
 
  return *this;
@@ -169,38 +183,38 @@ STRING& STRING::operator<< (STRING& s){
 STRING& STRING::operator<< (int i){
  char s[0x100];
  sprintf(s, "%d", i);
- return operator<< (s);
+ return operator<< ((byte*)s);
 }
 //------------------------------------------------------------------------------
 
 STRING& STRING::operator<< (float f){
  char s[0x100];
  sprintf(s, "%g", f);
- return operator<< (s);
+ return operator<< ((byte*)s);
 }
 //------------------------------------------------------------------------------
 
 STRING& STRING::operator<< (double d){
  char s[0x100];
  sprintf(s, "%lg", d);
- return operator<< (s);
+ return operator<< ((byte*)s);
 }
 //------------------------------------------------------------------------------
 
 STRING& STRING::Hex(unsigned i){
  char s[0x100];
  sprintf(s, "%X", i);
- return operator<< (s);
+ return operator<< ((byte*)s);
 }
 //------------------------------------------------------------------------------
 
-unsigned char STRING::operator[] (unsigned Index){
+byte STRING::operator[] (unsigned Index){
  return TheString[Index];
 }
 //------------------------------------------------------------------------------
 
-const char* STRING::String(){
- return (char*)TheString;
+const byte* STRING::String(){
+ return (byte*)TheString;
 }
 //------------------------------------------------------------------------------
 
@@ -238,8 +252,8 @@ unsigned STRING::GetUTF_32(unsigned Index, unsigned* CodeLength){
        unsigned       j;
        unsigned       Bits;   // Valid bits
        unsigned       UTF_32; // The result
-       unsigned char  Lead;   // The leading byte
- const unsigned char* s = TheString + Index;
+       byte  Lead;   // The leading byte
+ const byte* s = TheString + Index;
 
  if((s[0] & 0xC0) == 0xC0){
   j      = 1;
@@ -267,13 +281,13 @@ unsigned STRING::GetUTF_32(unsigned Index, unsigned* CodeLength){
 }
 //------------------------------------------------------------------------------
 
-void STRING::UseMem(char* s){
+void STRING::UseMem(byte* s){
  delete TheString;
 
  for(TheLength = 0; s[TheLength]; TheLength++);
 
  Changed   = true;
- TheString = (unsigned char*)s;
+ TheString = (byte*)s;
  Allocated = TheLength+1;
 }
 //------------------------------------------------------------------------------
@@ -284,14 +298,19 @@ int STRING::Compare(STRING& Right){
 //------------------------------------------------------------------------------
 
 int STRING::Compare(const char* Right){
+ return Compare((byte*)Right);
+}
+//------------------------------------------------------------------------------
+
+int STRING::Compare(const byte* Right){
  unsigned j;
 
  for(j = 0; TheString[j] && Right[j]; j++){
-  if(TheString[j] < Right[j]) return -2;
-  if(TheString[j] > Right[j]) return  2;
+  if(TheString[j] < (byte)Right[j]) return -2;
+  if(TheString[j] > (byte)Right[j]) return  2;
  }
- if(TheString[j] < Right[j]) return -1;
- if(TheString[j] > Right[j]) return  1;
+ if(TheString[j] < (byte)Right[j]) return -1;
+ if(TheString[j] > (byte)Right[j]) return  1;
  return 0;
 }
 //------------------------------------------------------------------------------

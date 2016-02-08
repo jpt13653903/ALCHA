@@ -1,16 +1,18 @@
-Testing the scanner            
+Testing the scanner for while if            
 ςιτη σομε γρεεκ ψηαραψτερσ τηροςν ιν.   \           
       
 And some numbers:         \  
     ABC\
-123.456 `16.8
--0x9AFCp+5`24
-0b1001'1010'1011'0101'1010'1000
-0x'''9''''A''''B''''5''''A''''8
+
+0b1001_1010_1011_0101_1010_1000p-6
+0x___9____A____B____5____A____8p-6
+
+123.456 '16'8
+-0x9AFCp+5'24
 0o673517p-7
 
 Or different style numbers:
-- 0x1B_A8.27_CE `16.16
+- 0x1B_A8.27_CE '16'16
 
 \\
 
@@ -25,12 +27,12 @@ Hello\
    \
     
 "A string \" with escaped \" stuff"
-'Ω''\n'
+"Ω""\n";
 
-'\x17Fa'
-'\u1234'
-'\U12DEAF34'
-'\172'
+"\x37Fa";
+"\u1234";
+"\U12DEAF34";
+"\172";
 
 Base.Member();
 Identifier\with\structure\and\u0837\stuff
@@ -57,7 +59,7 @@ comment */
 { } [ ] # ## ( ) <[ ]>
 <: :> <% %> %: %:%: ; : ...
 new delete ? :: . .*
-+ - * / % ^ & | ~ `
++ - * / % ^ & | ~ 'g
 ! = < > += -= *= /= %=
 ^= &= |= << >> >>= <<= == !=
 <= >= && || ++ -- , ->* ->

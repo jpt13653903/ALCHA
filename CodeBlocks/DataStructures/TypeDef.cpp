@@ -1,7 +1,7 @@
 #include "TypeDef.h"
 //------------------------------------------------------------------------------
 
-SYMBOL::SYMBOL(const char* Name, TYPE_DEF* Type){
+SYMBOL::SYMBOL(const byte* Name, TYPE_DEF* Type){
  this->Name << Name;
  this->Type = Type;
        Next = 0;

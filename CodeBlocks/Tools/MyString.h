@@ -37,6 +37,9 @@
 #include <wchar.h>
 //------------------------------------------------------------------------------
 
+typedef unsigned char byte;
+
+// Make uwchar_t portable between Windows and Linux systems
 #if WCHAR_MIN < 0
  #define uwchar_t unsigned wchar_t
 #else
@@ -46,9 +49,9 @@
 
 class STRING{
  private:
-  unsigned       Allocated; // In bytes
-  unsigned       TheLength; // In bytes
-  unsigned char* TheString; // UTF-8
+  unsigned Allocated; // In bytes
+  unsigned TheLength; // In bytes
+  byte*    TheString; // UTF-8
 
   bool      Changed;       // Signals that TheWideString must be rebuilt
   uwchar_t* TheWideString; // Local buffer for WideString()
@@ -62,15 +65,17 @@ class STRING{
   unsigned Length(); // In bytes
 
   STRING& operator= (const char   * s);
+  STRING& operator= (const byte   * s);
   STRING& operator= (const wchar_t* s);
   STRING& operator= (      STRING & s);
 
-  STRING& operator<<   (char          c);
-  STRING& operator<<   (unsigned char c);
-  STRING& operator<<   (wchar_t       c);
-  void    Append_UTF_32(unsigned      c);
+  STRING& operator<<   (char     c);
+  STRING& operator<<   (byte     c);
+  STRING& operator<<   (wchar_t  c);
+  void    Append_UTF_32(unsigned c);
 
   STRING& operator<< (const char   * s);
+  STRING& operator<< (const byte   * s);
   STRING& operator<< (const wchar_t* s);
   STRING& operator<< (      STRING & s);
 
@@ -80,17 +85,17 @@ class STRING{
 
   STRING& Hex(unsigned i);
 
-  unsigned char operator[] (unsigned Index);
+  byte operator[] (unsigned Index);
 
-  const char   *     String();
-  const wchar_t* WideString();
+  const byte   *     String(); // Internal memory management: do not delete
+  const wchar_t* WideString(); // Internal memory management: do not delete
 
-  // Index is in bytes
+  // Index is in bytes, not characters
   unsigned GetUTF_32(unsigned Index, unsigned* CodeLength = 0);
 
   // Deletes the current buffer and uses the given buffer instead.
   // Simply uses the pointer -- it does not copy the data.
-  void UseMem(char* s);
+  void UseMem(byte* s);
 
   // Returns:
   //  0 when equal
@@ -98,8 +103,9 @@ class STRING{
   //  1 when right is a substring of left
   // -2 when left is smaller than right
   //  2 when left is greater than right
-  int Compare(STRING& Right);
+  int Compare(STRING&     Right);
   int Compare(const char* Right);
+  int Compare(const byte* Right);
 };
 //------------------------------------------------------------------------------
 

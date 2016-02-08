@@ -18,41 +18,56 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-/**
- Class wrapper for GNU MP rational numbers
-*/
+/** This is a binary search tree to optimise the scanner.  It facilitates the
+    greedy match operation.  The tree is only balanced once, so something like
+    a red-black tree is not required. */
 //------------------------------------------------------------------------------
 
-#ifndef Number_h
-#define Number_h
+#ifndef TokenTree_h
+#define TokenTree_h
 //------------------------------------------------------------------------------
 
-#include <stdlib.h>
+#include "Token.h"
 //------------------------------------------------------------------------------
 
-#include "gmp.h"
-//------------------------------------------------------------------------------
-
-class NUMBER{
+class TOKEN_TREE{
  private:
-  mpq_t x;
+  struct NODE{
+   STRING      Pattern; // The characters
+   TOKEN::TYPE Type;
+
+   NODE* Left;
+   NODE* Right;
+
+   NODE(const byte* Pattern, TOKEN::TYPE Type);
+  ~NODE();
+  };
+
+  NODE* Root;
+
+  // Balancing functions
+  void Compress(int Count);
+
+  // Finds the node with the longest match to pattern
+  NODE* Match(NODE* Node, const byte* Pattern, int* Count);
 
  public:
-  NUMBER();
- ~NUMBER();
+  TOKEN_TREE();
+ ~TOKEN_TREE();
 
-  void Set(mpz_t Numerator, mpz_t Denominator);
+  // Add all the items, then balance it once.  Do not add more items after.
+  void Add(const char* Pattern, TOKEN::TYPE Type);
+  void Balance();
 
-  // Operators
-  void operator= (int      i);
-  void operator= (unsigned u);
-  void operator= (double   d);
+  // Finds the longest match and returns the token type and character count
+  // Also checks for Identifier, Literal and String starting sequences
+  TOKEN::TYPE Match(const byte* Pattern, int* Count);
 
-  double FloatingPoint();
-
-  void Display();
+  // Finds an exact match only
+  TOKEN::TYPE Find(const byte* Pattern);
 };
 //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------
+

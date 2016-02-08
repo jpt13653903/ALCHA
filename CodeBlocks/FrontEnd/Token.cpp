@@ -18,41 +18,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-/**
- Class wrapper for GNU MP rational numbers
-*/
+#include "Token.h"
 //------------------------------------------------------------------------------
 
-#ifndef Number_h
-#define Number_h
+TOKEN::TOKEN(){
+ Line = 0;
+ Type = Unknown;
+}
 //------------------------------------------------------------------------------
 
-#include <stdlib.h>
-//------------------------------------------------------------------------------
-
-#include "gmp.h"
-//------------------------------------------------------------------------------
-
-class NUMBER{
- private:
-  mpq_t x;
-
- public:
-  NUMBER();
- ~NUMBER();
-
-  void Set(mpz_t Numerator, mpz_t Denominator);
-
-  // Operators
-  void operator= (int      i);
-  void operator= (unsigned u);
-  void operator= (double   d);
-
-  double FloatingPoint();
-
-  void Display();
-};
-//------------------------------------------------------------------------------
-
-#endif
-//------------------------------------------------------------------------------

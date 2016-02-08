@@ -1,7 +1,7 @@
 #include "Object.h"
 //------------------------------------------------------------------------------
 
-OBJECT::OBJECT(OBJECT_TYPE Type, const char* Name){
+OBJECT::OBJECT(OBJECT_TYPE Type, const byte* Name){
  this->Type = Type;
  this->Name = Name;
 }
