@@ -42,11 +42,10 @@ int main(int argc, char** argv){
 
  TOKEN Token;
  while(Scanner.GetToken(&Token)){
-  printf("%d: %d = ", Token.Line, Token.Type);
+  printf("%d: %d = %s", Token.Line, Token.Type, Token.Data.String());
   if(Token.Type == TOKEN::Literal){
+   printf(" = ");
    Token.Value.Display();
-  }else{
-   printf("%s", Token.Data.String());
   }
   printf("\n");
  }

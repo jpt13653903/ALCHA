@@ -1,4 +1,4 @@
-Testing the scanner for while if            
+tar Testing the scanner for while if            
 ςιτη σομε γρεεκ ψηαραψτερσ τηροςν ιν.   \           
       
 And some numbers:         \  
@@ -56,17 +56,21 @@ comment */
  # define Parametrised(a, b, c)
 #define non_parametrised (a, b, c)
 
-{ } [ ] # ## ( ) <[ ]>
-<: :> <% %> %: %:%: ; : ...
-new delete ? :: . .*
-+ - * / % ^ & | ~ 'g
-! = < > += -= *= /= %=
-^= &= |= << >> >>= <<= == !=
-<= >= && || ++ -- , ->* ->
-and and_eq bitand bitor compl not not_eq
-or or_eq xor xor_eq
+// Testing the token tree Find function...
+tarp9ub3f
+tar
+target823
 
-pin pin_group pin_array target for loop while unsigned signed
+target pin sig clk int rat float complex in out signed group 
+class if else for while loop switch case default import as
+
+// Testing the token tree Match function
+++---=-=-====---=-=-=-=-+++++
+@{
+}
+
+++ -- ' -> # .  .{ & ~& | ~| ^ ~^ ~ : \ @{ + - * / % << >> < > <= >= == !=
+!  && || ?  = := @= += -= *= /= &= |= ^= <<= >>= () [ ] { } , ;
 
 1234567890987654321
 .1234567890987654321

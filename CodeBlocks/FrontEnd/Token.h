@@ -31,7 +31,7 @@ struct TOKEN{
   Unknown = 0, // also used to designate errors, etc.
 
   // White-space ...............................................................
-  Space,
+  Space,   // These are only used in the scanner
   Newline,
 
   // Keywords ..................................................................
@@ -145,9 +145,9 @@ struct TOKEN{
   Negate     = Subtract // -
  } Type;
 
- int    Line; // The line number
- STRING Data; // Identifier name or String contents -- UTF-8
- NUMBER Value;
+ int    Line;  // The line number
+ STRING Data;  // The string contents; otherwise the original token characters
+ NUMBER Value; // Literal value
 
  TOKEN();
 };

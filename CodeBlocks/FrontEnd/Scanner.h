@@ -60,7 +60,7 @@ class SCANNER{
   bool NonDigit();
 
   bool     GetDigit   (unsigned* Digit, unsigned Base);
-  unsigned GetExponent(bool    * Sign);
+  unsigned GetExponent(bool    * Sign , TOKEN* Token);
   bool     GetNumber  (TOKEN   * Token, unsigned Base);
 
   bool Identifier(TOKEN* Token);

@@ -328,26 +328,27 @@ bool SCANNER::GetDigit(unsigned* Digit, unsigned Base){
 }
 //------------------------------------------------------------------------------
 
-unsigned SCANNER::GetExponent(bool* Sign){
+unsigned SCANNER::GetExponent(bool* Sign, TOKEN* Token){
  unsigned Exponent = 0;
 
- Index++;
- while(Buffer[Index] == '_') Index++;
+ Token->Data << Buffer[Index++];
+ while(Buffer[Index] == '_') Token->Data << Buffer[Index++];
 
  *Sign = false;
  if(Buffer[Index] == '-'){
   *Sign = true;
-  Index++;
+  Token->Data << Buffer[Index++];
  }else if(Buffer[Index] == '+'){
-  Index++;
+  Token->Data << Buffer[Index++];
  }
 
  while(Buffer[Index]){
-  while(Buffer[Index] == '_') Index++;
+  while(Buffer[Index] == '_') Token->Data << Buffer[Index++];
 
   if(Buffer[Index] < '0' || Buffer[Index] > '9') break;
 
-  Exponent = 10*Exponent + Buffer[Index++] - '0';
+  Exponent = 10*Exponent + Buffer[Index] - '0';
+  Token->Data << Buffer[Index++];
  }
  return Exponent;
 }
@@ -356,7 +357,7 @@ unsigned SCANNER::GetExponent(bool* Sign){
 bool SCANNER::GetNumber(TOKEN* Token, unsigned Base){
  unsigned Digit;
 
- while(Buffer[Index] == '_') Index++;
+ while(Buffer[Index] == '_') Token->Data << Buffer[Index++];
  if(!GetDigit(&Digit, Base) && Buffer[Index] != '.'){
   Error("Illegal literal format");
   return false;
@@ -365,29 +366,29 @@ bool SCANNER::GetNumber(TOKEN* Token, unsigned Base){
  mpz_t num, den, exp;
  mpz_init_set_ui(num, 0);
  mpz_init_set_ui(den, 1);
- mpz_init_set_ui(exp, 0);
+ mpz_init_set_ui(exp, 1);
 
  while(Buffer[Index]){
-  while(Buffer[Index] == '_') Index++;
+  while(Buffer[Index] == '_') Token->Data << Buffer[Index++];
 
   if(!GetDigit(&Digit, Base)) break;
 
   mpz_mul_ui(num, num, Base);
   mpz_add_ui(num, num, Digit);
-  Index++;
+  Token->Data << Buffer[Index++];
  }
 
  if(Buffer[Index] == '.'){
-  Index++;
+  Token->Data << Buffer[Index++];
   while(Buffer[Index]){
-   while(Buffer[Index] == '_') Index++;
+   while(Buffer[Index] == '_') Token->Data << Buffer[Index++];
 
    if(!GetDigit(&Digit, Base)) break;
 
    mpz_mul_ui(num, num, Base);
    mpz_mul_ui(den, den, Base);
    mpz_add_ui(num, num, Digit);
-   Index++;
+   Token->Data << Buffer[Index++];
   }
  }
 
@@ -395,11 +396,11 @@ bool SCANNER::GetNumber(TOKEN* Token, unsigned Base){
  unsigned Exponent = 0;
 
  if(Base == 10 && (Buffer[Index] == 'e' || Buffer[Index] == 'E')){
-  Exponent = GetExponent(&Sign);
+  Exponent = GetExponent(&Sign, Token);
   mpz_ui_pow_ui(exp, 10, Exponent);
 
  }else if(Buffer[Index] == 'p' || Buffer[Index] == 'P'){
-  Exponent = GetExponent(&Sign);
+  Exponent = GetExponent(&Sign, Token);
   mpz_ui_pow_ui(exp, 2, Exponent);
  }
 
@@ -409,8 +410,8 @@ bool SCANNER::GetNumber(TOKEN* Token, unsigned Base){
  Token->Value.Set(num, den);
 
  if(Buffer[Index] == 'i' || Buffer[Index] == 'j'){
-  Index++;
-  while(Buffer[Index] == '_') Index++;
+  Token->Data << Buffer[Index++];
+  while(Buffer[Index] == '_') Token->Data << Buffer[Index++];
   Token->Value.Mul(0, 1);
  }
 
@@ -432,9 +433,21 @@ bool SCANNER::Literal(TOKEN* Token){
 
  if(Buffer[Index] == '0'){
   switch(Buffer[Index+1]){
-   case 'b': Index += 2; return GetNumber(Token,  2);
-   case 'o': Index += 2; return GetNumber(Token,  8);
-   case 'x': Index += 2; return GetNumber(Token, 16);
+   case 'b':
+    Token->Data << Buffer[Index++];
+    Token->Data << Buffer[Index++];
+    return GetNumber(Token, 2);
+
+   case 'o':
+    Token->Data << Buffer[Index++];
+    Token->Data << Buffer[Index++];
+    return GetNumber(Token, 8);
+
+   case 'x':
+    Token->Data << Buffer[Index++];
+    Token->Data << Buffer[Index++];
+    return GetNumber(Token, 16);
+
    default : break;
   }
  }
@@ -565,6 +578,11 @@ bool SCANNER::GetToken(TOKEN* Token){
  if(Identifier(Token)) return true;
  if(Operator  (Token)) return true; // This is the most expensive match
 
+ if(Buffer[Index]){
+  char s[0x100];
+  sprintf(s, "Unknown token near \"%.5s\"", Buffer+Index);
+  Error(s);
+ }
  return false;
 }
 //------------------------------------------------------------------------------

@@ -18,9 +18,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-/** This is a binary search tree to optimise the scanner.  It facilitates the
-    greedy match operation.  The tree is only balanced once, so something like
-    a red-black tree is not required. */
+/**
+This is a binary search tree to optimise the scanner.  It facilitates the
+greedy match operation.  The tree is only balanced once, so something like
+a red-black tree is not required.
+
+It consists of a balanced BST of the first character, each containing a
+balanced sub-tree of the next character, etc. */
 //------------------------------------------------------------------------------
 
 #ifndef TokenTree_h
@@ -33,23 +37,26 @@
 class TOKEN_TREE{
  private:
   struct NODE{
-   STRING      Pattern; // The characters
-   TOKEN::TYPE Type;
+   byte        Char; // The character at the current depth
+   TOKEN::TYPE Type; // Unknown => this is not a valid entry
 
    NODE* Left;
    NODE* Right;
 
-   NODE(const byte* Pattern, TOKEN::TYPE Type);
+   NODE* Next; // Sub-tree of the next character
+
+   NODE(byte Char);
   ~NODE();
   };
 
   NODE* Root;
 
-  // Balancing functions
-  void Compress(int Count);
+  NODE* Add(NODE* Root, const byte* Pattern, TOKEN::TYPE Type);
 
-  // Finds the node with the longest match to pattern
-  NODE* Match(NODE* Node, const byte* Pattern, int* Count);
+  // Balancing functions
+  NODE* Balance   (NODE* Root);
+  NODE* Compress  (NODE* Root, int Count);
+  void  SubBalance(NODE* Node);
 
  public:
   TOKEN_TREE();
@@ -60,7 +67,6 @@ class TOKEN_TREE{
   void Balance();
 
   // Finds the longest match and returns the token type and character count
-  // Also checks for Identifier, Literal and String starting sequences
   TOKEN::TYPE Match(const byte* Pattern, int* Count);
 
   // Finds an exact match only
