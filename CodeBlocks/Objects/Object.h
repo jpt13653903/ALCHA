@@ -18,33 +18,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-/**
- This is the base class for ALCHA objects.
-*/
-//------------------------------------------------------------------------------
-
 #ifndef Object_h
 #define Object_h
 //------------------------------------------------------------------------------
 
-#include "Tree.h"
-#include "MyString.h"
-//------------------------------------------------------------------------------
-
-enum OBJECT_TYPE{
- otPin,
- otTarget,
-};
-//------------------------------------------------------------------------------
-
-struct OBJECT: public TREE_NODE{
- OBJECT_TYPE Type;
- STRING      Name;
-
-          OBJECT(OBJECT_TYPE Type, const byte* Name);
- virtual ~OBJECT(){}
-
- virtual int Compare(TREE_NODE* Right);
+class OBJECT{
 };
 //------------------------------------------------------------------------------
 

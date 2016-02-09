@@ -46,12 +46,12 @@ TOKEN_TREE::~TOKEN_TREE(){
 }
 //------------------------------------------------------------------------------
 
-void TOKEN_TREE::Add(const char* Pattern, TOKEN::TYPE Type){
- Root = Add(Root, (byte*)Pattern, Type);
+void TOKEN_TREE::Insert(const char* Pattern, TOKEN::TYPE Type){
+ Root = Insert(Root, (byte*)Pattern, Type);
 }
 //------------------------------------------------------------------------------
 
-TOKEN_TREE::NODE* TOKEN_TREE::Add(
+TOKEN_TREE::NODE* TOKEN_TREE::Insert(
  NODE*       Root,
  const byte* Pattern,
  TOKEN::TYPE Type
@@ -68,7 +68,7 @@ TOKEN_TREE::NODE* TOKEN_TREE::Add(
   if(*Pattern < Temp->Char){
    Node        = new NODE(*Pattern);
    Node->Right = Temp;
-   if(Pattern[1]) Node->Next = Add(Node->Next, Pattern+1, Type);
+   if(Pattern[1]) Node->Next = Insert(Node->Next, Pattern+1, Type);
    else           Node->Type = Type;
    if(Prev) Prev->Right = Node;
    else     Root        = Node;
@@ -80,7 +80,7 @@ TOKEN_TREE::NODE* TOKEN_TREE::Add(
 
   }else{
    if(Pattern[1]){
-    Temp->Next = Add(Temp->Next, Pattern+1, Type);
+    Temp->Next = Insert(Temp->Next, Pattern+1, Type);
    }else{
     if(Temp->Type) printf("Duplicate token entry: ...%s = %d\n", Pattern, Type);
     else           Temp->Type = Type;
@@ -89,7 +89,7 @@ TOKEN_TREE::NODE* TOKEN_TREE::Add(
   }
  }
  Node = new NODE(*Pattern);
- if(Pattern[1]) Node->Next = Add(Node->Next, Pattern+1, Type);
+ if(Pattern[1]) Node->Next = Insert(Node->Next, Pattern+1, Type);
  else           Node->Type = Type;
  if(Prev) Prev->Right = Node;
  else     Root        = Node;

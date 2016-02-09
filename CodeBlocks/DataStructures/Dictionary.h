@@ -18,26 +18,59 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Target_h
-#define Target_h
+/**
+This is a dictionary to store arbitrary data with a string ID.  It is based
+on a left-leaning red-black tree, as described by Robert Sedgewick,
+Department of Computer Science, Princeton University, Princeton, NJ 08544     */
 //------------------------------------------------------------------------------
 
-#include "MyString.h"
+#ifndef Dictionary_h
+#define Dictionary_h
 //------------------------------------------------------------------------------
 
-struct TARGET{
- // Physical attributes
- STRING Vendor;
- STRING Series;
- STRING Device;
- STRING Board;
+#include "Global.h"
+//------------------------------------------------------------------------------
 
- TARGET();
+typedef void (*DICTIONARY_ACTION)(const byte* Name, void* Data);
+//------------------------------------------------------------------------------
+
+class DICTIONARY{
+ private:
+  struct NODE{
+   bool  Red;
+
+   byte* Name; // This memory is internally managed
+   void* Data; // This is arbitrary data and not deleted by this structure
+
+   NODE* Left;
+   NODE* Right;
+
+   NODE(const byte* Name, void* Data);
+  ~NODE();
+  };
+
+  NODE* Root;
+
+  bool  IsRed      (NODE* Node);
+  void  ColourFlip (NODE* Node);
+  NODE* RotateLeft (NODE* Node);
+  NODE* RotateRight(NODE* Node);
+
+  NODE* Insert(NODE* Node, const byte* Name, void* Data);
+  void  Action(NODE* Node, DICTIONARY_ACTION Function);
+
+ public:
+  DICTIONARY();
+ ~DICTIONARY();
+
+  void  Insert(const byte* Name, void* Data);
+  void* Find  (const byte* Name);
+
+  // This calls the given function for every node, in order
+  void Action(DICTIONARY_ACTION Function);
 };
-//------------------------------------------------------------------------------
-
-extern TARGET Target;
 //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------
+

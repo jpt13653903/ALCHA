@@ -37,14 +37,7 @@
 #include <wchar.h>
 //------------------------------------------------------------------------------
 
-typedef unsigned char byte;
-
-// Make uwchar_t portable between Windows and Linux systems
-#if WCHAR_MIN < 0
- #define uwchar_t unsigned wchar_t
-#else
- #define uwchar_t wchar_t
-#endif
+#include "Global.h"
 //------------------------------------------------------------------------------
 
 class STRING{

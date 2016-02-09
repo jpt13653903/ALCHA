@@ -69,6 +69,8 @@ class SCANNER{
   bool String    (TOKEN* Token);
 
  public: // Public interface
+  SCANNER* Next; // The parser uses a linked list of scanners
+
   SCANNER();
  ~SCANNER();
 

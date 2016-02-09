@@ -9,21 +9,20 @@
 	"Target.h"
 	"FileSystem.h"
 
-1454912986 c:\jpt\projects\15\1509 - alcha\codeblocks\objects\pin.h
+1455042216 c:\jpt\projects\15\1509 - alcha\codeblocks\objects\pin.h
 	"Object.h"
 
-1454912953 c:\jpt\projects\15\1509 - alcha\codeblocks\objects\object.h
-	"Tree.h"
-	"MyString.h"
+1455042138 c:\jpt\projects\15\1509 - alcha\codeblocks\objects\object.h
 
-1446889717 c:\jpt\projects\15\1509 - alcha\codeblocks\tools\tree.h
+1455036332 c:\jpt\projects\15\1509 - alcha\codeblocks\tools\tree.h
 
-1454913440 c:\jpt\projects\15\1509 - alcha\codeblocks\tools\mystring.h
+1455038745 c:\jpt\projects\15\1509 - alcha\codeblocks\tools\mystring.h
 	<stdio.h>
 	<wchar.h>
+	"Global.h"
 
-1447190355 c:\jpt\projects\15\1509 - alcha\codeblocks\objects\target.h
-	"Object.h"
+1455042253 c:\jpt\projects\15\1509 - alcha\codeblocks\objects\target.h
+	"MyString.h"
 
 1454912515 c:\jpt\projects\15\1509 - alcha\codeblocks\tools\filesystem.h
 	"OS_Header.h"
@@ -46,14 +45,12 @@
 	"Tree.h"
 	"MyString.h"
 
-1454911889 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\parser.cpp
+1455033703 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\parser.cpp
 	"Parser.h"
 
-1454874027 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\parser.h
-	<math.h>
-	"Pin.h"
-	"Target.h"
-	"PreProcessor.h"
+1455038618 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\parser.h
+	"Scanner.h"
+	"Dictionary.h"
 
 1454874010 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\preprocessor.h
 	"Number.h"
@@ -69,7 +66,7 @@
 	<stddef.h>
 	<limits.h>
 
-1455011257 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\scanner.h
+1455028243 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\scanner.h
 	"Token.h"
 	"Number.h"
 	"TokenTree.h"
@@ -78,10 +75,10 @@
 1454911896 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\preprocessor.cpp
 	"PreProcessor.h"
 
-1455011977 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\scanner.cpp
+1455033551 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\scanner.cpp
 	"Scanner.h"
 
-1455010928 source:c:\jpt\projects\15\1509 - alcha\codeblocks\main.cpp
+1455041329 source:c:\jpt\projects\15\1509 - alcha\codeblocks\main.cpp
 	"main.h"
 
 1454839524 c:\jpt\projects\15\1509 - alcha\codeblocks\main.h
@@ -95,10 +92,10 @@
 1448984536 c:\jpt\projects\15\1509 - alcha\codeblocks\libraries\include\mpfr.h
 	<gmp.h>
 
-1454911953 source:c:\jpt\projects\15\1509 - alcha\codeblocks\objects\object.cpp
+1455042138 source:c:\jpt\projects\15\1509 - alcha\codeblocks\objects\object.cpp
 	"Object.h"
 
-1454911944 source:c:\jpt\projects\15\1509 - alcha\codeblocks\objects\pin.cpp
+1455042231 source:c:\jpt\projects\15\1509 - alcha\codeblocks\objects\pin.cpp
 	"Pin.h"
 
 1454911960 source:c:\jpt\projects\15\1509 - alcha\codeblocks\objects\target.cpp
@@ -121,10 +118,10 @@
 
 1446889717 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\tree.h
 
-1454911949 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast.cpp
+1455035959 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast.cpp
 	"AST.h"
 
-1449742450 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast.h
+1455035959 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast.h
 	"mpfr.h"
 
 1454911931 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\tree.cpp
@@ -134,10 +131,10 @@
 	"MyString.h"
 	"FileSystem.h"
 
-1454911957 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\typedef.cpp
+1455035959 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\typedef.cpp
 	"TypeDef.h"
 
-1454912883 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\typedef.h
+1455035959 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\typedef.h
 	"MyString.h"
 
 1450127241 source:c:\jpt\projects\15\1509 - alcha\codeblocks\backend\clocktree.cpp
@@ -173,9 +170,17 @@
 1454928469 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\token.cpp
 	"Token.h"
 
-1455011878 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\tokentree.h
+1455036199 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\tokentree.h
 	"Token.h"
 
-1455011955 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\tokentree.cpp
+1455033566 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\tokentree.cpp
 	"TokenTree.h"
+
+1455038745 c:\jpt\projects\15\1509 - alcha\codeblocks\global\global.h
+
+1455041355 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\dictionary.cpp
+	"Dictionary.h"
+
+1455042050 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\dictionary.h
+	"Global.h"
 

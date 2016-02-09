@@ -21,6 +21,11 @@
 #include "main.h"
 //------------------------------------------------------------------------------
 
+void Display(const byte* Name, void* Data){
+ printf("Node = %s: %d\n", Name, (int)Data);
+}
+//------------------------------------------------------------------------------
+
 int main(int argc, char** argv){
  #ifdef __WIN32
   // UTF-8 Console encoding
@@ -37,18 +42,23 @@ int main(int argc, char** argv){
 
  SetCurrentDirectory(L"C:\\JPT\\Projects\\15\\1509 - ALCHA\\Test Cases\\FrontEnd");
 
- SCANNER Scanner;
- if(!Scanner.Open((byte*)"Scanner.alc")) return -1;
-
- TOKEN Token;
- while(Scanner.GetToken(&Token)){
-  printf("%d: %d = %s", Token.Line, Token.Type, Token.Data.String());
-  if(Token.Type == TOKEN::Literal){
-   printf(" = ");
-   Token.Value.Display();
-  }
-  printf("\n");
+ int j;
+ DICTIONARY d;
+ byte s[2] = {0, 0};
+ for(j = 0; j < 100; j++){
+  s[0] = j + 'A';
+  d.Insert(s, (void*)j);
  }
+
+ for(j = 99; j >= 0; j--){
+  s[0] = j + 'A';
+  printf("%s, %d\n", s, (int)d.Find(s));
+ }
+
+ d.Action(Display);
+
+// PARSER Parser;
+// if(!Parser.Run((byte*)"Parser.alc")) return -1;
 
 // SetCurrentDirectory(L"C:\\JPT\\Projects\\15\\1509 - ALCHA\\Test Cases\\Output");
 //

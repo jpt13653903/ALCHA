@@ -1,0 +1,13 @@
+// Target definition
+target<
+ Type = "Simulation",
+ Time = "1 ms"
+>;
+
+// Target query
+if(target.Type == "Simulation"){
+ x = 3;
+}else{
+ x = 5;
+}
+

@@ -18,54 +18,18 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-/**
- An implementation of Left-Leaning Red-Black Tree, as described by
- Robert Sedgewick, Department of Computer Science, Princeton University,
- Princeton, NJ 08544
-*/
+#ifndef Global_h
+#define Global_h
 //------------------------------------------------------------------------------
 
-#ifndef Tree_h
-#define Tree_h
-//------------------------------------------------------------------------------
+typedef unsigned char byte;
 
-struct TREE_NODE{
- bool       Red;
- TREE_NODE* Left;
- TREE_NODE* Right;
-
-          TREE_NODE();
- virtual ~TREE_NODE();
-
- // Returns <0 for Left < Right; 0 for Equal; >0 for Left > Right
- virtual int Compare(TREE_NODE* Right) = 0;
-};
-//------------------------------------------------------------------------------
-
-class TREE{
- private:
-  TREE_NODE* Root;
-
-  inline bool       IsRed(TREE_NODE* N);
-  inline TREE_NODE* FixUp(TREE_NODE* N);
-
-  // Insert functions
-  TREE_NODE* Insert     (TREE_NODE* N, TREE_NODE* Data);
-  TREE_NODE* RotateLeft (TREE_NODE* N);
-  TREE_NODE* RotateRight(TREE_NODE* N);
-  void       FlipColours(TREE_NODE* N);
-
-  // Find function
-  TREE_NODE* Find(TREE_NODE* N, TREE_NODE* Key);
-
- public:
-           TREE();
-  virtual ~TREE();
-
-  void       Insert(TREE_NODE* Data);
-  TREE_NODE* Find  (TREE_NODE* Key);
-  void       Clear ();
-};
+// Make uwchar_t portable between Windows and Linux systems
+#if WCHAR_MIN < 0
+ #define uwchar_t unsigned wchar_t
+#else
+ #define uwchar_t wchar_t
+#endif
 //------------------------------------------------------------------------------
 
 #endif

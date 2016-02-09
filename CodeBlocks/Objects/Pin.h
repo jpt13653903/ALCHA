@@ -33,36 +33,30 @@
 //------------------------------------------------------------------------------
 
 struct PIN: public OBJECT{
- int  ArrayDepth;
- int* Indices;
-
- STRING Standard;  // The logic standard: CMOS, TTL, HSUL, etc.
- STRING Number;    // Physical pin number
- STRING Pair;      // Physical pin number of negative of the differential pair
-
- enum{Output, Input, Bidirectional} Direction;
-
- double Voltage;   // Nominal logic standard voltage [V]
- double Current;   // Nominal pin drive strength [A] (0 => use bank default)
-
- double MinDelay;  // Physical minimum external trace delay [s] (default = 0)
- double MaxDelay;  // Physical maximum external trace delay [s] (default = 0)
-
- double Frequency; // Input frequency of a clock pin [Hz] (0 if not clock pin)
- double Phase;     // Clock phase [degrees]
- double Jitter;    // Clock peak-to-peak jitter [s]
-
-  PIN(const byte* Name);
- ~PIN();
-
- int Compare(TREE_NODE* Right);
+// int  ArrayDepth;
+// int* Indices;
+//
+// STRING Standard;  // The logic standard: CMOS, TTL, HSUL, etc.
+// STRING Number;    // Physical pin number
+// STRING Pair;      // Physical pin number of negative of the differential pair
+//
+// enum{Output, Input, Bidirectional} Direction;
+//
+// double Voltage;   // Nominal logic standard voltage [V]
+// double Current;   // Nominal pin drive strength [A] (0 => use bank default)
+//
+// double MinDelay;  // Physical minimum external trace delay [s] (default = 0)
+// double MaxDelay;  // Physical maximum external trace delay [s] (default = 0)
+//
+// double Frequency; // Input frequency of a clock pin [Hz] (0 if not clock pin)
+// double Phase;     // Clock phase [degrees]
+// double Jitter;    // Clock peak-to-peak jitter [s]
+//
+//  PIN(const byte* Name);
+// ~PIN();
+//
+// int Compare(TREE_NODE* Right);
 };
-//------------------------------------------------------------------------------
-
-struct PINS: public TREE{
- PIN* FindName(const byte* Name, int ArrayDepth, int* Indices);
-};
-extern PINS Pins;
 //------------------------------------------------------------------------------
 
 #endif

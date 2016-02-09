@@ -24,7 +24,7 @@ greedy match operation.  The tree is only balanced once, so something like
 a red-black tree is not required.
 
 It consists of a balanced BST of the first character, each containing a
-balanced sub-tree of the next character, etc. */
+balanced sub-tree of the next character, etc.                                 */
 //------------------------------------------------------------------------------
 
 #ifndef TokenTree_h
@@ -51,7 +51,7 @@ class TOKEN_TREE{
 
   NODE* Root;
 
-  NODE* Add(NODE* Root, const byte* Pattern, TOKEN::TYPE Type);
+  NODE* Insert(NODE* Root, const byte* Pattern, TOKEN::TYPE Type);
 
   // Balancing functions
   NODE* Balance   (NODE* Root);
@@ -62,8 +62,8 @@ class TOKEN_TREE{
   TOKEN_TREE();
  ~TOKEN_TREE();
 
-  // Add all the items, then balance it once.  Do not add more items after.
-  void Add(const char* Pattern, TOKEN::TYPE Type);
+  // Insert all the items, then balance it once.  Do not add more items after.
+  void Insert (const char* Pattern, TOKEN::TYPE Type);
   void Balance();
 
   // Finds the longest match and returns the token type and character count

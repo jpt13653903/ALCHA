@@ -32,127 +32,128 @@ SCANNER::SCANNER(){
  if(!Initialised){
   Initialised = true;
 
-  Spaces.Add("\x20"        , TOKEN::Space); // U+0020: Space
-  Spaces.Add("\x09"        , TOKEN::Space); // U+0009: Character Tabulation
-  Spaces.Add("\xA0"        , TOKEN::Space); // U+00A0: No-break Space
-  Spaces.Add("\xC2\xA0"    , TOKEN::Space); // U+00A0: No-break Space
-  Spaces.Add("\xE1\x9A\x80", TOKEN::Space); // U+1680: Ogham Space Mark
-  Spaces.Add("\xE1\xA0\x8E", TOKEN::Space); // U+180E: Mongolian Vowel Separator
-  Spaces.Add("\xE2\x80\x80", TOKEN::Space); // U+2000: En Quad
-  Spaces.Add("\xE2\x80\x81", TOKEN::Space); // U+2001: Em Quad
-  Spaces.Add("\xE2\x80\x82", TOKEN::Space); // U+2002: En Space
-  Spaces.Add("\xE2\x80\x83", TOKEN::Space); // U+2003: Em Space
-  Spaces.Add("\xE2\x80\x84", TOKEN::Space); // U+2004: Three-per-em Space
-  Spaces.Add("\xE2\x80\x85", TOKEN::Space); // U+2005: Four-per-em Space
-  Spaces.Add("\xE2\x80\x86", TOKEN::Space); // U+2006: Six-per-em Space
-  Spaces.Add("\xE2\x80\x87", TOKEN::Space); // U+2007: Figure Space
-  Spaces.Add("\xE2\x80\x88", TOKEN::Space); // U+2008: Punctuation Space
-  Spaces.Add("\xE2\x80\x89", TOKEN::Space); // U+2009: Thin Space
-  Spaces.Add("\xE2\x80\x8A", TOKEN::Space); // U+200A: Hair Space
-  Spaces.Add("\xE2\x80\xAF", TOKEN::Space); // U+202F: Narrow No-break Space
-  Spaces.Add("\xE2\x80\x8B", TOKEN::Space); // U+200B: Zero Width Space
-  Spaces.Add("\xE2\x80\x8C", TOKEN::Space); // U+200C: Zero Width Non-joiner
-  Spaces.Add("\xE2\x80\x8D", TOKEN::Space); // U+200D: Zero Width Joiner
-  Spaces.Add("\x81\x9F"    , TOKEN::Space); // U+205F: Medium Mathematical Space
-  Spaces.Add("\x81\xA0"    , TOKEN::Space); // U+2060: Word Joiner
-  Spaces.Add("\xE3\x80\x80", TOKEN::Space); // U+3000: Ideographic Space
-  Spaces.Add("\xEF\xBB\xBF", TOKEN::Space); // U+FEFF: Zero Width Non-breaking Space
+  Spaces.Insert("\x20"        , TOKEN::Space); // U+0020: Space
+  Spaces.Insert("\x09"        , TOKEN::Space); // U+0009: Character Tabulation
+  Spaces.Insert("\xA0"        , TOKEN::Space); // U+00A0: No-break Space
+  Spaces.Insert("\xC2\xA0"    , TOKEN::Space); // U+00A0: No-break Space
+  Spaces.Insert("\xE1\x9A\x80", TOKEN::Space); // U+1680: Ogham Space Mark
+  Spaces.Insert("\xE1\xA0\x8E", TOKEN::Space); // U+180E: Mongolian Vowel Separator
+  Spaces.Insert("\xE2\x80\x80", TOKEN::Space); // U+2000: En Quad
+  Spaces.Insert("\xE2\x80\x81", TOKEN::Space); // U+2001: Em Quad
+  Spaces.Insert("\xE2\x80\x82", TOKEN::Space); // U+2002: En Space
+  Spaces.Insert("\xE2\x80\x83", TOKEN::Space); // U+2003: Em Space
+  Spaces.Insert("\xE2\x80\x84", TOKEN::Space); // U+2004: Three-per-em Space
+  Spaces.Insert("\xE2\x80\x85", TOKEN::Space); // U+2005: Four-per-em Space
+  Spaces.Insert("\xE2\x80\x86", TOKEN::Space); // U+2006: Six-per-em Space
+  Spaces.Insert("\xE2\x80\x87", TOKEN::Space); // U+2007: Figure Space
+  Spaces.Insert("\xE2\x80\x88", TOKEN::Space); // U+2008: Punctuation Space
+  Spaces.Insert("\xE2\x80\x89", TOKEN::Space); // U+2009: Thin Space
+  Spaces.Insert("\xE2\x80\x8A", TOKEN::Space); // U+200A: Hair Space
+  Spaces.Insert("\xE2\x80\xAF", TOKEN::Space); // U+202F: Narrow No-break Space
+  Spaces.Insert("\xE2\x80\x8B", TOKEN::Space); // U+200B: Zero Width Space
+  Spaces.Insert("\xE2\x80\x8C", TOKEN::Space); // U+200C: Zero Width Non-joiner
+  Spaces.Insert("\xE2\x80\x8D", TOKEN::Space); // U+200D: Zero Width Joiner
+  Spaces.Insert("\x81\x9F"    , TOKEN::Space); // U+205F: Medium Mathematical Space
+  Spaces.Insert("\x81\xA0"    , TOKEN::Space); // U+2060: Word Joiner
+  Spaces.Insert("\xE3\x80\x80", TOKEN::Space); // U+3000: Ideographic Space
+  Spaces.Insert("\xEF\xBB\xBF", TOKEN::Space); // U+FEFF: Zero Width Non-breaking Space
 
-  Spaces.Add("\n"          , TOKEN::Newline);
-  Spaces.Add("\r"          , TOKEN::Newline);
-  Spaces.Add("\r\n"        , TOKEN::Newline);
-  Spaces.Add("\n\r"        , TOKEN::Newline);
-  Spaces.Add("\x0B"        , TOKEN::Newline); // Vertical Tab
-  Spaces.Add("\x0C"        , TOKEN::Newline); // Form Feed
-  Spaces.Add("\x85"        , TOKEN::Newline); // Next Line (NEL)
-  Spaces.Add("\xC2\x85"    , TOKEN::Newline); // U+85: NEL
-  Spaces.Add("\xE2\x80\xA8", TOKEN::Newline); // U+2028: Line Separator
-  Spaces.Add("\xE2\x80\xA9", TOKEN::Newline); // U+2029: Paragraph Separator
+  Spaces.Insert("\n"          , TOKEN::Newline);
+  Spaces.Insert("\r"          , TOKEN::Newline);
+  Spaces.Insert("\r\n"        , TOKEN::Newline);
+  Spaces.Insert("\n\r"        , TOKEN::Newline);
+  Spaces.Insert("\x0B"        , TOKEN::Newline); // Vertical Tab
+  Spaces.Insert("\x0C"        , TOKEN::Newline); // Form Feed
+  Spaces.Insert("\x85"        , TOKEN::Newline); // Next Line (NEL)
+  Spaces.Insert("\xC2\x85"    , TOKEN::Newline); // U+0085: NEL
+  Spaces.Insert("\xE2\x80\xA8", TOKEN::Newline); // U+2028: Line Separator
+  Spaces.Insert("\xE2\x80\xA9", TOKEN::Newline); // U+2029: Paragraph Separator
 
-  Keywords.Add("target" , TOKEN::Target );
-  Keywords.Add("pin"    , TOKEN::Pin    );
-  Keywords.Add("sig"    , TOKEN::Sig    );
-  Keywords.Add("clk"    , TOKEN::Clk    );
-  Keywords.Add("int"    , TOKEN::Int    );
-  Keywords.Add("rat"    , TOKEN::Rat    );
-  Keywords.Add("float"  , TOKEN::Float  );
-  Keywords.Add("complex", TOKEN::Complex);
-  Keywords.Add("in"     , TOKEN::In     );
-  Keywords.Add("out"    , TOKEN::Out    );
-  Keywords.Add("signed" , TOKEN::Signed );
-  Keywords.Add("group"  , TOKEN::Group  );
-  Keywords.Add("class"  , TOKEN::Class  );
-  Keywords.Add("if"     , TOKEN::If     );
-  Keywords.Add("else"   , TOKEN::Else   );
-  Keywords.Add("for"    , TOKEN::For    );
-  Keywords.Add("while"  , TOKEN::While  );
-  Keywords.Add("loop"   , TOKEN::Loop   );
-  Keywords.Add("switch" , TOKEN::Switch );
-  Keywords.Add("case"   , TOKEN::Case   );
-  Keywords.Add("default", TOKEN::Default);
-  Keywords.Add("import" , TOKEN::Import );
-  Keywords.Add("as"     , TOKEN::As     );
+  Keywords.Insert("target" , TOKEN::Target );
+  Keywords.Insert("pin"    , TOKEN::Pin    );
+  Keywords.Insert("sig"    , TOKEN::Sig    );
+  Keywords.Insert("clk"    , TOKEN::Clk    );
+  Keywords.Insert("int"    , TOKEN::Int    );
+  Keywords.Insert("rat"    , TOKEN::Rat    );
+  Keywords.Insert("float"  , TOKEN::Float  );
+  Keywords.Insert("complex", TOKEN::Complex);
+  Keywords.Insert("in"     , TOKEN::In     );
+  Keywords.Insert("out"    , TOKEN::Out    );
+  Keywords.Insert("signed" , TOKEN::Signed );
+  Keywords.Insert("group"  , TOKEN::Group  );
+  Keywords.Insert("class"  , TOKEN::Class  );
+  Keywords.Insert("if"     , TOKEN::If     );
+  Keywords.Insert("else"   , TOKEN::Else   );
+  Keywords.Insert("for"    , TOKEN::For    );
+  Keywords.Insert("while"  , TOKEN::While  );
+  Keywords.Insert("loop"   , TOKEN::Loop   );
+  Keywords.Insert("switch" , TOKEN::Switch );
+  Keywords.Insert("case"   , TOKEN::Case   );
+  Keywords.Insert("default", TOKEN::Default);
+  Keywords.Insert("import" , TOKEN::Import );
+  Keywords.Insert("as"     , TOKEN::As     );
 
-  Operators.Add("++" , TOKEN::Increment         );
-  Operators.Add("--" , TOKEN::Decrement         );
-  Operators.Add("'"  , TOKEN::FP_Cast           );
-  Operators.Add("->" , TOKEN::To                );
-  Operators.Add("#"  , TOKEN::Hash              );
-  Operators.Add("."  , TOKEN::Dot               );
-  Operators.Add(".{" , TOKEN::Dot_Curly         );
-  Operators.Add( "&" , TOKEN::Bit_AND           );
-  Operators.Add("~&" , TOKEN::Bit_NAND          );
-  Operators.Add( "|" , TOKEN::Bit_OR            );
-  Operators.Add("~|" , TOKEN::Bit_NOR           );
-  Operators.Add( "^" , TOKEN::Bit_XOR           );
-  Operators.Add("~^" , TOKEN::Bit_XNOR          );
-  Operators.Add("~"  , TOKEN::Bit_NOT           );
-  Operators.Add(":"  , TOKEN::Bit_Concatenate   );
-  Operators.Add("\\" , TOKEN::Bit_Repeat        );
-  Operators.Add("@{" , TOKEN::Array_Concatenate );
-  Operators.Add("+"  , TOKEN::Add               );
-  Operators.Add("-"  , TOKEN::Subtract          );
-  Operators.Add("*"  , TOKEN::Multiply          );
-  Operators.Add("/"  , TOKEN::Divide            );
-  Operators.Add("%"  , TOKEN::Modulus           );
-  Operators.Add("<<" , TOKEN::Shift_Left        );
-  Operators.Add(">>" , TOKEN::Shift_Right       );
-  Operators.Add("<"  , TOKEN::Less              );
-  Operators.Add(">"  , TOKEN::Greater           );
-  Operators.Add("<=" , TOKEN::Less_Equal        );
-  Operators.Add(">=" , TOKEN::Greater_Equal     );
-  Operators.Add("==" , TOKEN::Equal             );
-  Operators.Add("!=" , TOKEN::Not_Equal         );
-  Operators.Add("!"  , TOKEN::Logical_NOT       );
-  Operators.Add("&&" , TOKEN::Logical_AND       );
-  Operators.Add("||" , TOKEN::Logical_OR        );
-  Operators.Add("?"  , TOKEN::Conditional       );
-  Operators.Add(  "=", TOKEN::Assign            );
-  Operators.Add( ":=", TOKEN::Raw_Assign        );
-  Operators.Add( "@=", TOKEN::Append_Assign     );
-  Operators.Add( "+=", TOKEN::Add_Assign        );
-  Operators.Add( "-=", TOKEN::Subtract_Assign   );
-  Operators.Add( "*=", TOKEN::Multiply_Assign   );
-  Operators.Add( "/=", TOKEN::Divide_Assign     );
-  Operators.Add( "&=", TOKEN::AND_Assign        );
-  Operators.Add( "|=", TOKEN::OR_Assign         );
-  Operators.Add( "^=", TOKEN::XOR_Assign        );
-  Operators.Add("<<=", TOKEN::Shift_Left_Assign );
-  Operators.Add(">>=", TOKEN::Shift_Right_Assign);
-  Operators.Add("("  , TOKEN::OpenRound         );
-  Operators.Add(")"  , TOKEN::CloseRound        );
-  Operators.Add("["  , TOKEN::OpenSquare        );
-  Operators.Add("]"  , TOKEN::CloseSquare       );
-  Operators.Add("{"  , TOKEN::OpenCurly         );
-  Operators.Add("}"  , TOKEN::CloseCurly        );
-  Operators.Add(","  , TOKEN::Comma             );
-  Operators.Add(";"  , TOKEN::Semicolon         );
+  Operators.Insert("++" , TOKEN::Increment         );
+  Operators.Insert("--" , TOKEN::Decrement         );
+  Operators.Insert("'"  , TOKEN::FP_Cast           );
+  Operators.Insert("->" , TOKEN::To                );
+  Operators.Insert("#"  , TOKEN::Hash              );
+  Operators.Insert("."  , TOKEN::Dot               );
+  Operators.Insert(".{" , TOKEN::Dot_Curly         );
+  Operators.Insert( "&" , TOKEN::Bit_AND           );
+  Operators.Insert("~&" , TOKEN::Bit_NAND          );
+  Operators.Insert( "|" , TOKEN::Bit_OR            );
+  Operators.Insert("~|" , TOKEN::Bit_NOR           );
+  Operators.Insert( "^" , TOKEN::Bit_XOR           );
+  Operators.Insert("~^" , TOKEN::Bit_XNOR          );
+  Operators.Insert("~"  , TOKEN::Bit_NOT           );
+  Operators.Insert(":"  , TOKEN::Bit_Concatenate   );
+  Operators.Insert("\\" , TOKEN::Bit_Repeat        );
+  Operators.Insert("@{" , TOKEN::Array_Concatenate );
+  Operators.Insert("+"  , TOKEN::Add               );
+  Operators.Insert("-"  , TOKEN::Subtract          );
+  Operators.Insert("*"  , TOKEN::Multiply          );
+  Operators.Insert("/"  , TOKEN::Divide            );
+  Operators.Insert("%"  , TOKEN::Modulus           );
+  Operators.Insert("<<" , TOKEN::Shift_Left        );
+  Operators.Insert(">>" , TOKEN::Shift_Right       );
+  Operators.Insert("<"  , TOKEN::Less              );
+  Operators.Insert(">"  , TOKEN::Greater           );
+  Operators.Insert("<=" , TOKEN::Less_Equal        );
+  Operators.Insert(">=" , TOKEN::Greater_Equal     );
+  Operators.Insert("==" , TOKEN::Equal             );
+  Operators.Insert("!=" , TOKEN::Not_Equal         );
+  Operators.Insert("!"  , TOKEN::Logical_NOT       );
+  Operators.Insert("&&" , TOKEN::Logical_AND       );
+  Operators.Insert("||" , TOKEN::Logical_OR        );
+  Operators.Insert("?"  , TOKEN::Conditional       );
+  Operators.Insert(  "=", TOKEN::Assign            );
+  Operators.Insert( ":=", TOKEN::Raw_Assign        );
+  Operators.Insert( "@=", TOKEN::Append_Assign     );
+  Operators.Insert( "+=", TOKEN::Add_Assign        );
+  Operators.Insert( "-=", TOKEN::Subtract_Assign   );
+  Operators.Insert( "*=", TOKEN::Multiply_Assign   );
+  Operators.Insert( "/=", TOKEN::Divide_Assign     );
+  Operators.Insert( "&=", TOKEN::AND_Assign        );
+  Operators.Insert( "|=", TOKEN::OR_Assign         );
+  Operators.Insert( "^=", TOKEN::XOR_Assign        );
+  Operators.Insert("<<=", TOKEN::Shift_Left_Assign );
+  Operators.Insert(">>=", TOKEN::Shift_Right_Assign);
+  Operators.Insert("("  , TOKEN::OpenRound         );
+  Operators.Insert(")"  , TOKEN::CloseRound        );
+  Operators.Insert("["  , TOKEN::OpenSquare        );
+  Operators.Insert("]"  , TOKEN::CloseSquare       );
+  Operators.Insert("{"  , TOKEN::OpenCurly         );
+  Operators.Insert("}"  , TOKEN::CloseCurly        );
+  Operators.Insert(","  , TOKEN::Comma             );
+  Operators.Insert(";"  , TOKEN::Semicolon         );
 
   Spaces   .Balance();
   Keywords .Balance();
   Operators.Balance();
  }
 
+ Next   = 0;
  Line   = 1;
  Index  = 0;
  error  = false;
@@ -241,27 +242,6 @@ void SCANNER::WhiteSpace(){
    default: return;
   }
  }
-}
-//------------------------------------------------------------------------------
-
-bool SCANNER::Open(const byte* Filename){
- FILE_SYSTEM fs;
-
- Line  = 1;
- Index = 0;
- error = false;
-
- if(Buffer) delete[] Buffer;
-
- this->Filename = Filename;
-
- Buffer = (byte*)fs.Read(Filename);
- if(!Buffer){
-  printf("Error reading file: %s\n", Filename);
-  return false;
- }
-
- return true;
 }
 //------------------------------------------------------------------------------
 
@@ -557,9 +537,30 @@ bool SCANNER::String(TOKEN* Token){
 }
 //------------------------------------------------------------------------------
 
+bool SCANNER::Open(const byte* Filename){
+ FILE_SYSTEM fs;
+
+ error = false;
+
+ if(Buffer) delete[] Buffer;
+
+ this->Filename = Filename;
+
+ Buffer = (byte*)fs.Read(Filename);
+ if(!Buffer){
+  printf("Error reading file: %s\n", Filename);
+  return false;
+ }
+
+ return true;
+}
+//------------------------------------------------------------------------------
+
 bool SCANNER::GetToken(TOKEN* Token){
+ Token->Type = TOKEN::Unknown;
+
  if(!Buffer[Index]) return false;
- if(error) return false;
+ if( error        ) return false;
 
  WhiteSpace();
 
@@ -583,6 +584,7 @@ bool SCANNER::GetToken(TOKEN* Token){
   sprintf(s, "Unknown token near \"%.5s\"", Buffer+Index);
   Error(s);
  }
+ Token->Type = TOKEN::Unknown;
  return false;
 }
 //------------------------------------------------------------------------------
