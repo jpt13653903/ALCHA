@@ -18,22 +18,59 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Global_h
-#define Global_h
+#include "AST_Expression.h"
 //------------------------------------------------------------------------------
 
-#define Verbose
+AST_Expression::AST_Expression(int Line, EXPRESSION_TYPE ExpressionType):
+AST_Base(Line){
+ this->Type           = Expression;
+ this->ExpressionType = ExpressionType;
+
+ Name  = 0;
+ Value = 0;
+
+ Left = Right = 0;
+}
 //------------------------------------------------------------------------------
 
-typedef unsigned char byte;
+AST_Expression::~AST_Expression(){
+ if(Name ) delete Name;
+ if(Value) delete Value;
 
-// Make uwchar_t portable between Windows and Linux systems
-#if WCHAR_MIN < 0
- #define uwchar_t unsigned wchar_t
-#else
- #define uwchar_t wchar_t
-#endif
+ if(Left ) delete Left;
+ if(Right) delete Right;
+}
 //------------------------------------------------------------------------------
 
-#endif
+void AST_Expression::Display(){
+ if(Left){
+  if(Left->Left || Left->Right) printf("(");
+  Left->Display();
+  if(Left->Left || Left->Right) printf(")");
+ }
+
+ switch(ExpressionType){
+  case Dot: printf("."); break;
+
+  case Identifier:
+   if(Name) printf("%s", Name->String());
+   else     printf("(Identifier node has no name)");
+   break;
+
+  case Literal:
+   if(Value) Value->Display();
+   else      printf("(Literal node has no value)");
+   break;
+
+  default: printf("(Unknown expression type)");
+ }
+
+ if(Right){
+  if(Right->Left || Right->Right) printf("(");
+  Right->Display();
+  if(Right->Left || Right->Right) printf(")");
+ }
+
+ if(Next) printf("\nIllegal \"Next\" on Expression\n");
+}
 //------------------------------------------------------------------------------

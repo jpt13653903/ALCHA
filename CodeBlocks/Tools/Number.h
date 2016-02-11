@@ -40,6 +40,10 @@ class NUMBER{
 
  public:
   NUMBER();
+  NUMBER(int      i);
+  NUMBER(unsigned u);
+  NUMBER(double   d);
+  NUMBER(NUMBER&  n);
  ~NUMBER();
 
   void Set(mpz_t Numerator, mpz_t Denominator);
@@ -48,6 +52,7 @@ class NUMBER{
   void operator= (int      i);
   void operator= (unsigned u);
   void operator= (double   d);
+  void operator= (NUMBER&  n);
 
   void Mul(double r, double i);
 

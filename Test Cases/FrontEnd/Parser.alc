@@ -4,10 +4,57 @@ target<
  Time = "1 ms"
 >;
 
+sig x;
+pin<location = "AB11"> y, z, w;
+
+pin<Attrib = "xyz"> y[1], z[1][2], w[1][2][3];
+
+in pin<frequency = "50 MHz", location = "C8" > Clk;
+   clk<frequency = "10 MHz", type     = "PLL"> CPU_Clk;
+
+out pin'3<location = "A, B, C"> Output;
+
+sig       ' 8    X;
+signed sig'(3,9) Y[A][A.B][A.B.C][8];
+
+int         A, B, C;
+rat         D[]; // Dynamic array;
+float  '80  E;
+complex'120 F;
+
+// Class instance
+/*
+Class Instance;
+Namaspace.Class Instance;
+Class<Attribute = "Value"> Instance;
+Class() Instance;
+Class(A, B, C) Instance;
+Class<Attribute = "Value">(Parameter) Instance;
+Class(A, B, C) A, B, C[5], D[6][9];
+Class Function(){}
+Class Function(int A, rat B){}
+*/
+
+// Namespace Push
+/*
+A.{B.{}}
+A.B.C.{
+}
+*/
+
+// Function definition
+/*
+sig'8 Func(){}
+sig`8 Func(int x, rat y, sig'8 A, B, C, Class X){}
+sig`8 Func[7](int x, rat y, sig'8 A, B, C, Class X){}
+*/
+
 // Target query
+/*
 if(target.Type == "Simulation"){
  x = 3;
 }else{
  x = 5;
 }
+*/
 

@@ -18,22 +18,39 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Global_h
-#define Global_h
+#ifndef AST_h
+#define AST_h
 //------------------------------------------------------------------------------
 
-#define Verbose
+#include "MyString.h"
+#include "Dictionary.h"
 //------------------------------------------------------------------------------
 
-typedef unsigned char byte;
+struct AST_Base{ // The base type for AST nodes
+ enum TYPE{
+  TargetDefinition,
+  Definition, // pin, sig, clk, int, rat, float, complex and class instance
+  Expression
+ } Type;
 
-// Make uwchar_t portable between Windows and Linux systems
-#if WCHAR_MIN < 0
- #define uwchar_t unsigned wchar_t
-#else
- #define uwchar_t wchar_t
+ int       Line;
+ AST_Base* Next; // Next sibling
+
+          AST_Base(int Line);
+ virtual ~AST_Base(); // Also deletes the rest of the linked list
+
+ virtual void Display() = 0;
+};
+//------------------------------------------------------------------------------
+
+void* AttributesOnDuplicate(const byte* Name, void* Old, void* New);
+void  AttributesDisplay    (const byte* Name, void* Data);
+void  AtributesDeleteData  (const byte* Name, void* Data);
+//------------------------------------------------------------------------------
+
+extern AST_Base* AST; // The global AST root
+//------------------------------------------------------------------------------
+
 #endif
 //------------------------------------------------------------------------------
 
-#endif
-//------------------------------------------------------------------------------

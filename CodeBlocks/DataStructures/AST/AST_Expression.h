@@ -18,22 +18,36 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Global_h
-#define Global_h
+#ifndef AST_Expression_h
+#define AST_Expression_h
 //------------------------------------------------------------------------------
 
-#define Verbose
+#include "AST.h"
+#include "Number.h"
 //------------------------------------------------------------------------------
 
-typedef unsigned char byte;
+struct AST_Expression: public AST_Base{
+  enum EXPRESSION_TYPE{
+   Dot,
+   Identifier,
+   Literal
+  } ExpressionType;
 
-// Make uwchar_t portable between Windows and Linux systems
-#if WCHAR_MIN < 0
- #define uwchar_t unsigned wchar_t
-#else
- #define uwchar_t wchar_t
+  // Pointers so that not all expression nodes have instances, wasting space
+  STRING* Name;
+  NUMBER* Value;
+
+  // Left and Right operands
+  AST_Expression* Left;
+  AST_Expression* Right;
+
+  AST_Expression(int Line, EXPRESSION_TYPE ExpressionType);
+ ~AST_Expression();
+
+  void Display();
+};
+//------------------------------------------------------------------------------
+
 #endif
 //------------------------------------------------------------------------------
 
-#endif
-//------------------------------------------------------------------------------

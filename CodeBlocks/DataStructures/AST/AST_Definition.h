@@ -18,21 +18,53 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Global_h
-#define Global_h
+#ifndef AST_Definition_h
+#define AST_Definition_h
 //------------------------------------------------------------------------------
 
-#define Verbose
+#include "AST_Expression.h"
 //------------------------------------------------------------------------------
 
-typedef unsigned char byte;
+struct AST_Definition: public AST_Base{
+  enum DEFINITION_TYPE{
+   Pin, Sig, Clk,
+   Int, Rat, Float, Complex
+  } DefinitionType;
 
-// Make uwchar_t portable between Windows and Linux systems
-#if WCHAR_MIN < 0
- #define uwchar_t unsigned wchar_t
-#else
- #define uwchar_t wchar_t
-#endif
+  struct ARRAY{
+   AST_Expression* Size;
+   ARRAY         * Next;
+
+   ARRAY();
+  ~ARRAY();
+  };
+
+  struct IDENTIFIER{
+   STRING Identifier;
+   ARRAY* Array; // Null when this is a scalar
+
+   IDENTIFIER* Next;
+
+   IDENTIFIER();
+  ~IDENTIFIER();
+  };
+
+  enum DIRECTION{Bidirectional = 0, In, Out} Direction;
+  bool Signed;
+
+  // Expressions for fixed-point casts
+  AST_Expression* IntegerBits;
+  AST_Expression* FractionBits;
+
+  DICTIONARY Attributes;
+
+  IDENTIFIER* Identifiers;
+
+  AST_Definition(int Line, DEFINITION_TYPE DefinitionType);
+ ~AST_Definition();
+
+  void Display();
+};
 //------------------------------------------------------------------------------
 
 #endif

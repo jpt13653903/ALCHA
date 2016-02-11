@@ -448,7 +448,13 @@ bool SCANNER::String(TOKEN* Token){
  while(Buffer[Index]){
   if(Buffer[Index] == '"'){
    Index++;
-   return true;
+   WhiteSpace();
+   if(Buffer[Index] == '"'){ // Concatenate the next string
+    Index++;
+    continue;
+   }else{
+    return true;
+   }
   }
   if(Buffer[Index] == '\\'){
    Index++;
@@ -557,7 +563,9 @@ bool SCANNER::Open(const byte* Filename){
 //------------------------------------------------------------------------------
 
 bool SCANNER::GetToken(TOKEN* Token){
+ Token->Line = Line;
  Token->Type = TOKEN::Unknown;
+ Token->Data.Clear();
 
  if(!Buffer[Index]) return false;
  if( error        ) return false;
@@ -565,16 +573,8 @@ bool SCANNER::GetToken(TOKEN* Token){
  WhiteSpace();
 
  Token->Line = Line;
- Token->Type = TOKEN::Unknown;
- Token->Data.Clear();
 
- if(String(Token)){ // This is the least expensive match
-  while(Buffer[Index]){
-   WhiteSpace();
-   if(!String(Token)) return !error;
-  }
- }
-
+ if(String    (Token)) return true; // This is the least expensive match
  if(Literal   (Token)) return true;
  if(Identifier(Token)) return true;
  if(Operator  (Token)) return true; // This is the most expensive match

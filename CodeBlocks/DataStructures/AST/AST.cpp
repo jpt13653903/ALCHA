@@ -18,22 +18,43 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Global_h
-#define Global_h
+#include "AST.h"
 //------------------------------------------------------------------------------
 
-#define Verbose
+AST_Base* AST = 0;
 //------------------------------------------------------------------------------
 
-typedef unsigned char byte;
-
-// Make uwchar_t portable between Windows and Linux systems
-#if WCHAR_MIN < 0
- #define uwchar_t unsigned wchar_t
-#else
- #define uwchar_t wchar_t
-#endif
+void* AttributesOnDuplicate(const byte* Name, void* Old, void* New){
+ delete (STRING*)Old;
+ return New;
+}
 //------------------------------------------------------------------------------
 
-#endif
+void AttributesDisplay(const byte* Name, void* Data){
+ STRING* Value = (STRING*)Data;
+ printf(" - %s = \"%s\"\n", Name, Value->String());
+}
+//------------------------------------------------------------------------------
+
+void AtributesDeleteData(const byte* Name, void* Data){
+ delete (STRING*)Data;
+}
+//------------------------------------------------------------------------------
+
+AST_Base::AST_Base(int Line){
+ this->Line = Line;
+ this->Next = 0;
+}
+//------------------------------------------------------------------------------
+
+AST_Base::~AST_Base(){
+ // The list might be too long for a recursive formulation.
+ AST_Base* Temp;
+ while(Next){
+  Temp       = Next;
+  Next       = Next->Next;
+  Temp->Next = 0;
+  delete Temp;
+ }
+}
 //------------------------------------------------------------------------------

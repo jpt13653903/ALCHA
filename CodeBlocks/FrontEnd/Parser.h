@@ -24,6 +24,9 @@
 
 #include "Scanner.h"
 #include "Dictionary.h"
+
+#include "AST_Definition.h"
+#include "AST_TargetDefinition.h"
 //------------------------------------------------------------------------------
 
 class PARSER{
@@ -31,21 +34,31 @@ class PARSER{
   bool error;
   void Error(const char* Message);
 
-  TOKEN    Token;   // The current token
-  SCANNER* Scanner; // The scanner (linked-list based stack)
+  TOKEN    Token;    // The current token
+  SCANNER* Scanner;  // The scanner (linked-list based stack)
 
   void GetToken();
 
-  bool AttributeAssignment();
-  bool AttributeList      ();
+  bool AttributeAssignment(DICTIONARY* Attributes);
+  bool AttributeList      (DICTIONARY* Attributes);
 
-  bool TargetDefinition();
+  AST_Expression* Literal      ();
+  AST_Expression* Identifier   ();
+  AST_Expression* DotExpression();
+  AST_Expression* Primary      ();
+  AST_Expression* Expression   ();
+
+  AST_Definition::ARRAY* ArrayDefinition();
+  AST_Definition*        IdentifierList (AST_Definition* Node);
+
+  AST_TargetDefinition* TargetDefinition();
+  AST_Definition      * Definition();
 
  public:
   PARSER();
  ~PARSER();
 
-  bool Run(const byte* Filename);
+  AST_Base* Run(const byte* Filename);
 };
 //------------------------------------------------------------------------------
 

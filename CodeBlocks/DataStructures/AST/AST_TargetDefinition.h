@@ -18,22 +18,23 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Global_h
-#define Global_h
+#ifndef AST_TargetDefinition_h
+#define AST_TargetDefinition_h
 //------------------------------------------------------------------------------
 
-#define Verbose
+#include "AST.h"
 //------------------------------------------------------------------------------
 
-typedef unsigned char byte;
+struct AST_TargetDefinition: public AST_Base{
+  DICTIONARY Attributes;
 
-// Make uwchar_t portable between Windows and Linux systems
-#if WCHAR_MIN < 0
- #define uwchar_t unsigned wchar_t
-#else
- #define uwchar_t wchar_t
+  AST_TargetDefinition(int Line);
+ ~AST_TargetDefinition();
+
+  void Display();
+};
+//------------------------------------------------------------------------------
+
 #endif
 //------------------------------------------------------------------------------
 
-#endif
-//------------------------------------------------------------------------------

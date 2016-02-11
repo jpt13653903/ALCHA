@@ -33,6 +33,62 @@ STRING::STRING(){
 }
 //------------------------------------------------------------------------------
 
+STRING::STRING(const char* s){
+ Allocated    = 4;
+ TheLength    = 0;
+ TheString    = new byte[Allocated];
+ TheString[0] = 0;
+
+ Changed          = false;
+ TheWideString    = new uwchar_t[1];
+ TheWideString[0] = 0;
+
+ operator<< ((byte*)s);
+}
+//------------------------------------------------------------------------------
+
+STRING::STRING(const byte* s){
+ Allocated    = 4;
+ TheLength    = 0;
+ TheString    = new byte[Allocated];
+ TheString[0] = 0;
+
+ Changed          = false;
+ TheWideString    = new uwchar_t[1];
+ TheWideString[0] = 0;
+
+ operator<< (s);
+}
+//------------------------------------------------------------------------------
+
+STRING::STRING(const wchar_t* s){
+ Allocated    = 4;
+ TheLength    = 0;
+ TheString    = new byte[Allocated];
+ TheString[0] = 0;
+
+ Changed          = false;
+ TheWideString    = new uwchar_t[1];
+ TheWideString[0] = 0;
+
+ operator<< (s);
+}
+//------------------------------------------------------------------------------
+
+STRING::STRING(STRING& s){
+ Allocated    = 4;
+ TheLength    = 0;
+ TheString    = new byte[Allocated];
+ TheString[0] = 0;
+
+ Changed          = false;
+ TheWideString    = new uwchar_t[1];
+ TheWideString[0] = 0;
+
+ operator<< (s);
+}
+//------------------------------------------------------------------------------
+
 STRING::~STRING(){
  delete[] TheString;
  delete[] TheWideString;

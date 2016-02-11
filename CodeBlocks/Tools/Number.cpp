@@ -27,6 +27,34 @@ NUMBER::NUMBER(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER::NUMBER(int i){
+ mpq_init(Real);
+ mpq_init(Imag);
+ operator= (i);
+}
+//------------------------------------------------------------------------------
+
+NUMBER::NUMBER(unsigned u){
+ mpq_init(Real);
+ mpq_init(Imag);
+ operator= (u);
+}
+//------------------------------------------------------------------------------
+
+NUMBER::NUMBER(double d){
+ mpq_init(Real);
+ mpq_init(Imag);
+ operator= (d);
+}
+//------------------------------------------------------------------------------
+
+NUMBER::NUMBER(NUMBER& n){
+ mpq_init(Real);
+ mpq_init(Imag);
+ operator= (n);
+}
+//------------------------------------------------------------------------------
+
 NUMBER::~NUMBER(){
  mpq_clear(Real);
  mpq_clear(Imag);
@@ -57,6 +85,12 @@ void NUMBER::operator= (unsigned u){
 void NUMBER::operator= (double d){
  mpq_set_d (Real, d);
  mpq_set_ui(Imag, 0, 1);
+}
+//------------------------------------------------------------------------------
+
+void NUMBER::operator= (NUMBER& n){
+ mpq_set(Real, n.Real);
+ mpq_set(Imag, n.Imag);
 }
 //------------------------------------------------------------------------------
 

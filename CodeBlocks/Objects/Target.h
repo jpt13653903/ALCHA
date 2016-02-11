@@ -27,6 +27,7 @@
 
 struct TARGET{
  // Physical attributes
+ STRING Type;
  STRING Vendor;
  STRING Series;
  STRING Device;

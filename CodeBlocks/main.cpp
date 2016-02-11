@@ -21,11 +21,6 @@
 #include "main.h"
 //------------------------------------------------------------------------------
 
-void Display(const byte* Name, void* Data){
- printf("Node = %s: %d\n", Name, (int)Data);
-}
-//------------------------------------------------------------------------------
-
 int main(int argc, char** argv){
  #ifdef __WIN32
   // UTF-8 Console encoding
@@ -42,95 +37,14 @@ int main(int argc, char** argv){
 
  SetCurrentDirectory(L"C:\\JPT\\Projects\\15\\1509 - ALCHA\\Test Cases\\FrontEnd");
 
- int j;
- DICTIONARY d;
- byte s[2] = {0, 0};
- for(j = 0; j < 100; j++){
-  s[0] = j + 'A';
-  d.Insert(s, (void*)j);
- }
+ PARSER Parser;
+ AST = Parser.Run((byte*)"Parser.alc");
+ if(!AST) return -1;
 
- for(j = 99; j >= 0; j--){
-  s[0] = j + 'A';
-  printf("%s, %d\n", s, (int)d.Find(s));
- }
-
- d.Action(Display);
-
-// PARSER Parser;
-// if(!Parser.Run((byte*)"Parser.alc")) return -1;
-
-// SetCurrentDirectory(L"C:\\JPT\\Projects\\15\\1509 - ALCHA\\Test Cases\\Output");
-//
-// Target.Vendor = "Altera";
-// Target.Series = "MAX 10";
-// Target.Device = "10M08DAF484C8GES";
-// Target.Board  = "BeMicro Max 10";
-//
-// hdl.Files = new HDL::FILE("Testing");
-//
-// HDL::MODULE* Module = hdl.Files->Modules = new HDL::MODULE("Testing");
-//
-// HDL::SIGNAL* Port;
-// Port = Module->Signals = new HDL::SIGNAL("Clk");
-// Port->Port      = true;
-// Port->Direction = HDL::SIGNAL::Input;
-//
-// Port = Port->Next = new HDL::SIGNAL("LVDS_TX_P");
-// Port->Port        = true;
-// Port->Direction   = HDL::SIGNAL::Output;
-// Port->Vector      = true;
-// Port->VectorStart = 0;
-// Port->VectorEnd   = 0;
-//
-// Port = Port->Next = new HDL::SIGNAL("Button");
-// Port->Port        = true;
-// Port->Direction   = HDL::SIGNAL::Input;
-// Port->Vector      = true;
-// Port->VectorStart = 4;
-// Port->VectorEnd   = 1;
-//
-// Port = Port->Next = new HDL::SIGNAL("LED");
-// Port->Port        = true;
-// Port->Direction   = HDL::SIGNAL::Output;
-// Port->Vector      = true;
-// Port->VectorStart = 8;
-// Port->VectorEnd   = 1;
-//
-// HDL::AST* ast = Module->Statements = new HDL::AST;
-// ast->Operator = HDL::AST::Assign;
-// ast->Child1   = new HDL::AST;
-// ast->Child1->Operator = HDL::AST::Identifier;
-// ast->Child1->Name     = "LED";
-// ast->Child2 = new HDL::AST;
-// ast->Child2->Operator      = HDL::AST::Replicate;
-// ast->Child2->ConstantValue = 2;
-// ast->Child2->Child1        = new HDL::AST;
-// ast->Child2->Child1->Operator = HDL::AST::Identifier;
-// ast->Child2->Child1->Name     = "Button";
-//
-// ast = ast->Next = new HDL::AST;
-// ast->Operator = HDL::AST::Assign;
-// ast->Child1 = new HDL::AST;
-// ast->Child1->Operator = HDL::AST::Identifier;
-// ast->Child1->Name     = "LVDS_TX_P";
-// ast->Child2 = new HDL::AST;
-// ast->Child2->Operator = HDL::AST::Identifier;
-// ast->Child2->Name     = "Clk";
-//
-// ast = ast->Next = new HDL::AST;
-// ast->Operator = HDL::AST::Assign;
-// ast->Child1 = new HDL::AST;
-// ast->Child1->Operator = HDL::AST::Identifier;
-// ast->Child1->Name     = "Testing";
-// ast->Child2 = new HDL::AST;
-// ast->Child2->Operator = HDL::AST::Constant;
-// ast->Child2->ConstantLength = 16;
-// ast->Child2->ConstantValue  = 0xABCD;
-//
 // ALTERA Altera;
 // if(!Altera.WriteProject()) return -2;
 
+ if(AST) delete AST;
  return 0;
 }
 //------------------------------------------------------------------------------

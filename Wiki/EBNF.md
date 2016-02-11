@@ -1,3 +1,5 @@
+[TOC]
+
 # EBNF
 In the case of ambiguity, the first match is valid.  Although every effort has been made to make this EBNF as accurate as possible, the actual implementation may differ in subtle ways.
 
@@ -53,4 +55,13 @@ The scanner reads UTF-8 formatted files.  The UTF-8 formatting is retained, even
     Digit    = "0".."9";
     NonDigit = "a".."z" | "A".."Z" | "_" | (? Any Unicode >= U+80 ? -Space -Newline);
 
+## Parser
+The parser takes tokens from the scanner and builds an abstract syntax tree.  Nothing is evaluated at this point, not even definitions.
+
+    :::EBNF
+    AST = {TargetDefenition | (* under construction... *)}
+
+    TargetDefenition    = "target" AttributeList ";";
+    AttributeList       = "<" AttributeAssignment {, AttributeAssignment} ">";
+    AttributeAssignment = Identifier "=" String;
 

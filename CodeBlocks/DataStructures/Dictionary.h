@@ -31,7 +31,8 @@ Department of Computer Science, Princeton University, Princeton, NJ 08544     */
 #include "Global.h"
 //------------------------------------------------------------------------------
 
-typedef void (*DICTIONARY_ACTION)(const byte* Name, void* Data);
+typedef void  (*DICTIONARY_ACTION   )(const byte* Name, void* Data);
+typedef void* (*DICTIONARY_DUPLICATE)(const byte* Name, void* Old, void* New);
 //------------------------------------------------------------------------------
 
 class DICTIONARY{
@@ -39,8 +40,8 @@ class DICTIONARY{
   struct NODE{
    bool  Red;
 
-   byte* Name; // This memory is internally managed
-   void* Data; // This is arbitrary data and not deleted by this structure
+   byte* Name; ///< This memory is internally managed
+   void* Data; ///< This is arbitrary data and not deleted by this structure
 
    NODE* Left;
    NODE* Right;
@@ -62,6 +63,11 @@ class DICTIONARY{
  public:
   DICTIONARY();
  ~DICTIONARY();
+
+  // Callback function called upon duplicate insert.  The return value must
+  // be the data that must be stored at that location.  The default behaviour
+  // is to update to the new data.
+  DICTIONARY_DUPLICATE OnDuplicate;
 
   void  Insert(const byte* Name, void* Data);
   void* Find  (const byte* Name);

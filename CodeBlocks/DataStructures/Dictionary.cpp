@@ -21,6 +21,11 @@
 #include "Dictionary.h"
 //------------------------------------------------------------------------------
 
+void* DefaultOnDuplicate(const byte* Name, void* Old, void* New){
+ return New;
+}
+//------------------------------------------------------------------------------
+
 DICTIONARY::NODE::NODE(const byte* Name, void* Data){
  Red  = true;
  Left = Right = 0;
@@ -44,7 +49,8 @@ DICTIONARY::NODE::~NODE(){
 //------------------------------------------------------------------------------
 
 DICTIONARY::DICTIONARY(){
- Root = 0;
+ Root        = 0;
+ OnDuplicate = DefaultOnDuplicate;
 }
 //------------------------------------------------------------------------------
 
@@ -105,7 +111,10 @@ DICTIONARY::NODE* DICTIONARY::Insert(NODE* Node, const byte* Name, void* Data){
    break;
   }
  }
- if(Name[j] == Node->Name[j]) return Node; // Duplicates are ignored
+ if(Name[j] == Node->Name[j]){
+  Node->Data = OnDuplicate(Name, Node->Data, Data);
+  return Node;
+ }
 
  if(IsRed(Node->Right) && !IsRed(Node->Left      )) Node = RotateLeft (Node);
  if(IsRed(Node->Left ) &&  IsRed(Node->Left->Left)) Node = RotateRight(Node);

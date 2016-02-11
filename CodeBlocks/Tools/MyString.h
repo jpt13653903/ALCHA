@@ -51,6 +51,12 @@ class STRING{
 
  public:
   STRING();
+
+  STRING(const char   * s);
+  STRING(const byte   * s);
+  STRING(const wchar_t* s);
+  STRING(      STRING & s);
+
  ~STRING();
 
   void Clear();

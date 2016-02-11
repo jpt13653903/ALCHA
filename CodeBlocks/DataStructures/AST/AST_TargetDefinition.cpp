@@ -18,28 +18,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "AST.h"
+#include "AST_TargetDefinition.h"
 //------------------------------------------------------------------------------
 
-AST::AST(){
- Children = 0;
- Next     = 0;
+AST_TargetDefinition::AST_TargetDefinition(int Line):
+AST_Base(Line){
+ Type = TargetDefinition;
+
+ Attributes.OnDuplicate = AttributesOnDuplicate;
 }
 //------------------------------------------------------------------------------
 
-AST::~AST(){
- if(Children) delete Children;
- if(Next    ) delete Next;
+AST_TargetDefinition::~AST_TargetDefinition(){
+ Attributes.Action(AtributesDeleteData);
 }
 //------------------------------------------------------------------------------
 
-AST_Constant::AST_Constant(){
- mpq_init(Value);
+void AST_TargetDefinition::Display(){
+ printf("\nLine %d -- Target Definition:\n Attributes:\n", Line);
+ Attributes.Action(AttributesDisplay);
+
+ if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
-
-AST_Constant::~AST_Constant(){
- mpq_clear(Value);
-}
-//------------------------------------------------------------------------------
-
