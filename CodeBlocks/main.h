@@ -24,6 +24,7 @@
 
 #include "Parser.h"
 #include "Altera.h"
+#include "IdentifierTree.h"
 //------------------------------------------------------------------------------
 
 #endif

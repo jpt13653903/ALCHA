@@ -70,6 +70,7 @@ SCANNER::SCANNER(){
   Spaces.Insert("\xE2\x80\xA9", TOKEN::Newline); // U+2029: Paragraph Separator
 
   Keywords.Insert("target" , TOKEN::Target );
+  Keywords.Insert("void"   , TOKEN::Void   );
   Keywords.Insert("pin"    , TOKEN::Pin    );
   Keywords.Insert("sig"    , TOKEN::Sig    );
   Keywords.Insert("clk"    , TOKEN::Clk    );
@@ -97,7 +98,7 @@ SCANNER::SCANNER(){
   Operators.Insert("--" , TOKEN::Decrement         );
   Operators.Insert("'"  , TOKEN::FP_Cast           );
   Operators.Insert("->" , TOKEN::To                );
-  Operators.Insert("#"  , TOKEN::Hash              );
+  Operators.Insert("#"  , TOKEN::Step              );
   Operators.Insert("."  , TOKEN::Dot               );
   Operators.Insert(".{" , TOKEN::Dot_Curly         );
   Operators.Insert( "&" , TOKEN::Bit_AND           );
@@ -107,7 +108,6 @@ SCANNER::SCANNER(){
   Operators.Insert( "^" , TOKEN::Bit_XOR           );
   Operators.Insert("~^" , TOKEN::Bit_XNOR          );
   Operators.Insert("~"  , TOKEN::Bit_NOT           );
-  Operators.Insert(":"  , TOKEN::Bit_Concatenate   );
   Operators.Insert("\\" , TOKEN::Bit_Repeat        );
   Operators.Insert("@{" , TOKEN::Array_Concatenate );
   Operators.Insert("+"  , TOKEN::Add               );
@@ -134,6 +134,7 @@ SCANNER::SCANNER(){
   Operators.Insert( "-=", TOKEN::Subtract_Assign   );
   Operators.Insert( "*=", TOKEN::Multiply_Assign   );
   Operators.Insert( "/=", TOKEN::Divide_Assign     );
+  Operators.Insert( "%=", TOKEN::Modulus_Assign    );
   Operators.Insert( "&=", TOKEN::AND_Assign        );
   Operators.Insert( "|=", TOKEN::OR_Assign         );
   Operators.Insert( "^=", TOKEN::XOR_Assign        );
@@ -146,6 +147,7 @@ SCANNER::SCANNER(){
   Operators.Insert("{"  , TOKEN::OpenCurly         );
   Operators.Insert("}"  , TOKEN::CloseCurly        );
   Operators.Insert(","  , TOKEN::Comma             );
+  Operators.Insert(":"  , TOKEN::Colon             );
   Operators.Insert(";"  , TOKEN::Semicolon         );
 
   Spaces   .Balance();
@@ -271,7 +273,10 @@ bool SCANNER::Identifier(TOKEN* Token){
   Token->Data << Buffer[Index++];
  }
  Token->Type = Keywords.Find(Token->Data.String());
- if(!Token->Type) Token->Type = TOKEN::Identifier;
+ if(!Token->Type){
+  Token->ID   = IdentifierTree.GetID(Token->Data.String());
+  Token->Type = TOKEN::Identifier;
+ }
  return true;
 }
 //------------------------------------------------------------------------------
@@ -564,6 +569,7 @@ bool SCANNER::Open(const byte* Filename){
 
 bool SCANNER::GetToken(TOKEN* Token){
  Token->Line = Line;
+ Token->ID   = 0;
  Token->Type = TOKEN::Unknown;
  Token->Data.Clear();
 

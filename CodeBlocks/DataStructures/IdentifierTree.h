@@ -18,62 +18,56 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Definition_h
-#define AST_Definition_h
+/**
+This is a global tree that reduces memory usage on storing identifiers.  The
+same memory is reused, rather than creating new instances.
+
+It is based on a left-leaning red-black tree, as described by Robert Sedgewick,
+Department of Computer Science, Princeton University, Princeton, NJ 08544     */
 //------------------------------------------------------------------------------
 
-#include "AST_Expression.h"
+#ifndef IdentifierTree_h
+#define IdentifierTree_h
 //------------------------------------------------------------------------------
 
-struct AST_Definition: public AST_Base{
-  enum DEFINITION_TYPE{
-   Void = 0, // Used for functions that do not return a value
-   Pin, Sig, Clk,
-   Int, Rat, Float, Complex,
-   ClassInstance
-  } DefinitionType;
-  AST_Expression* ClassName; // For class instances
+#include "Global.h"
+//------------------------------------------------------------------------------
 
-  struct ARRAY{
-   AST_Expression* Size;
-   ARRAY         * Next;
+class IDENTIFIER_TREE{
+ private:
+  struct NODE{
+   bool  Red;
 
-   ARRAY();
-  ~ARRAY();
+   byte* Name;
+
+   NODE* Left;
+   NODE* Right;
+
+   NODE(const byte* Name);
+  ~NODE();
   };
 
-  struct IDENTIFIER{
-   byte * Identifier; // ID obtained via IdentifierTree
-   ARRAY* Array;      // Null when this is a scalar
+  NODE* Root;
 
-   // These are used for function definitions.
-   bool            Function; // True when this is a function definition
-   AST_Expression* Parameters; // List of identifiers (calls are duck-typed)
-   AST_Base      * FunctionBody;
+  bool  IsRed      (NODE* Node);
+  void  ColourFlip (NODE* Node);
+  NODE* RotateLeft (NODE* Node);
+  NODE* RotateRight(NODE* Node);
 
-   IDENTIFIER* Next;
+  byte* Find  (            const byte* Name);
+  NODE* Insert(NODE* Node, const byte* Name);
 
-   IDENTIFIER();
-  ~IDENTIFIER();
-  };
+ public:
+  IDENTIFIER_TREE();
+ ~IDENTIFIER_TREE();
 
-  enum DIRECTION{Bidirectional = 0, In, Out} Direction;
-  bool Signed;
-
-  // Expressions for fixed-point casts
-  AST_Expression* IntegerBits;
-  AST_Expression* FractionBits;
-
-  DICTIONARY Attributes;
-
-  IDENTIFIER* Identifiers;
-
-  AST_Definition(int Line, DEFINITION_TYPE DefinitionType);
- ~AST_Definition();
-
-  void Display();
+  byte* GetID(const byte* Name);
 };
+//------------------------------------------------------------------------------
+
+extern IDENTIFIER_TREE IdentifierTree;
 //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------
+

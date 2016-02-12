@@ -26,6 +26,7 @@
 #include "Dictionary.h"
 
 #include "AST_Definition.h"
+#include "AST_Assignment.h"
 #include "AST_TargetDefinition.h"
 //------------------------------------------------------------------------------
 
@@ -42,17 +43,43 @@ class PARSER{
   bool AttributeAssignment(DICTIONARY* Attributes);
   bool AttributeList      (DICTIONARY* Attributes);
 
-  AST_Expression* Literal      ();
-  AST_Expression* Identifier   ();
-  AST_Expression* DotExpression();
-  AST_Expression* Primary      ();
-  AST_Expression* Expression   ();
+  AST_Expression* String    ();
+  AST_Expression* Literal   ();
+  AST_Expression* Identifier();
 
-  AST_Definition::ARRAY* ArrayDefinition();
-  AST_Definition*        IdentifierList (AST_Definition* Node);
+  AST_Expression* ParameterList();
+  AST_Expression* SliceList    ();
+
+  AST_Expression* Primary       ();
+  AST_Expression* Postfix       ();
+  AST_Expression* Array         ();
+  AST_Expression* Unary         ();
+  AST_Expression* Reduction     ();
+  AST_Expression* Cast          ();
+  AST_Expression* Concatenation ();
+  AST_Expression* Replication   ();
+  AST_Expression* Multiplicative();
+  AST_Expression* Additive      ();
+  AST_Expression* Shift         ();
+  AST_Expression* Relational    ();
+  AST_Expression* Equality      ();
+  AST_Expression* BitwiseAND    ();
+  AST_Expression* BitwiseXOR    ();
+  AST_Expression* BitwiseOR     ();
+  AST_Expression* LogicalAND    ();
+  AST_Expression* LogicalOR     ();
+  AST_Expression* Expression    (); // AKA Conditional
+
+  AST_Definition::ARRAY     * ArrayDefinition ();
+  AST_Definition::IDENTIFIER* IdentifierList  ();
+  AST_Expression            * DefParameterList(); // Define function parameters
 
   AST_TargetDefinition* TargetDefinition();
   AST_Definition      * Definition();
+  AST_Base            * Other();
+
+  AST_Base* Statement (); // Used for single-statement cases
+  AST_Base* Statements(); // Used for statement blocks / groups
 
  public:
   PARSER();

@@ -6,6 +6,8 @@
 
 /// @todo Remember to use "set_clock_groups" for unrelated clocks
 
+/// @todo Add an "Internal" clock type for gated, multiplexed and ripple clocks
+
 struct CLOCK_TREE{
   enum TYPE{
    Pin,   // Root level of the tree

@@ -23,30 +23,50 @@ float  '80  E;
 complex'120 F;
 
 // Class instance
-/*
 Class Instance;
-Namaspace.Class Instance;
+Class() Instance;
+Namespace.Class Instance;
+Namespace.Class() Instance;
+
+// Function call
+Func();
+Class.Func();
+Namespace.Class.Func();
+
+// These are illegal
+Namespace.Class.Func() = 5;
+
+/*
 Class<Attribute = "Value"> Instance;
 Class() Instance;
-Class(A, B, C) Instance;
-Class<Attribute = "Value">(Parameter) Instance;
-Class(A, B, C) A, B, C[5], D[6][9];
-Class Function(){}
-Class Function(int A, rat B){}
-*/
+Namespace.Class(A, B, C.B(), 8.2) Instance;
+Class(Parameter)<Attribute = "Value"> Instance;
+Class(A, B(x, y(), z), C) A, B, C[5], D[6][9];
 
+// Function definition
+Class Function(){}
+Class Function(A, B){}
+sig'8 Func(){}
+sig'8 Func(x, y, A, B, C, X){}
+sig'8 Func[7](x, y, A, B, C, X){
+ x <<= y(B);
+}
+void Func(x){}
+
+Namespace.Func(Calling, Function);
+Namespace.Func(Calling, Function);
+
+// LHS Expression
+@{A, B, C} = D;
+A:B:C = D;
+A.B.C = D;
+A.B[5->7].C = D;
+*/
 // Namespace Push
 /*
 A.{B.{}}
 A.B.C.{
 }
-*/
-
-// Function definition
-/*
-sig'8 Func(){}
-sig`8 Func(int x, rat y, sig'8 A, B, C, Class X){}
-sig`8 Func[7](int x, rat y, sig'8 A, B, C, Class X){}
 */
 
 // Target query

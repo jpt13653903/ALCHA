@@ -6,7 +6,6 @@ In the case of ambiguity, the first match is valid.  Although every effort has b
 ## Scanner
 The scanner reads UTF-8 formatted files.  The UTF-8 formatting is retained, even though the input stream is searched for Unicode space and newline characters.  At this stage, white-space and comments are ignored, adjacent strings are concatenated and escape sequences within strings are evaluated.
 
-
     :::EBNF
     (* Other than token separation, WhiteSpace is ignored *)
     WhiteSpace   = Space | Newline | LineComment | BlockComment;
@@ -27,12 +26,13 @@ The scanner reads UTF-8 formatted files.  The UTF-8 formatting is retained, even
                | "class"  | "if"      | "else" | "for"    | "while"  | "loop" 
                | "switch" | "default" | "case" | "import" | "as";
     Identifier = (NonDigit {Digit | NonDigit}) -Keyword; 
-    Operator   = "++"  | "--" | "'"  | "->" | "#"  | "."  | ".{" | "&"  | "~&" 
-               | "|"   | "~|" | "^"  | "~^" | "~"  | ":"  | "\"  | "@{" | "+" 
-               | "-"   | "*"  | "/"  | "%"  | "<<" | ">>" | "<"  | ">"  | "<=" 
-               | ">="  | "==" | "!=" | "!"  | "&&" | "||" | "?"  | "="  | ":=" 
-               | "@="  | "+=" | "-=" | "*=" | "/=" | "&=" | "|=" | "^=" | "<<=" 
-               | ">>=" | "("  | ")"  | "["  | "]"  | "{"  | "}"  | ","  | ";";
+    Operator   = "++"  | "--"  | "'"  | "->" | "#"  | "."  | ".{" | "&"  | "~&" 
+               | "|"   | "~|"  | "^"  | "~^" | "~"  | ":"  | "\"  | "@{" | "+" 
+               | "-"   | "*"   | "/"  | "%"  | "<<" | ">>" | "<"  | ">"  | "<=" 
+               | ">="  | "=="  | "!=" | "!"  | "&&" | "||" | "?"  | "="  | ":=" 
+               | "@="  | "+="  | "-=" | "*=" | "/=" | "%=" | "&=" | "|=" | "^=" 
+               | "<<=" | ">>=" | "("  | ")"  | "["  | "]"  | "{"  | "}"  
+               | ","   | ";";
 
     String         = '"' {EscapeSequence | Byte} '"' [String];
     EscapeSequence = "\n" | "\t" | "\v" | "\b" | "\r" | "\f" 

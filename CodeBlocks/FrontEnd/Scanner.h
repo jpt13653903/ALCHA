@@ -41,6 +41,7 @@ Tokens:
 #include "Number.h"
 #include "TokenTree.h"
 #include "FileSystem.h"
+#include "IdentifierTree.h"
 //------------------------------------------------------------------------------
 
 class SCANNER{

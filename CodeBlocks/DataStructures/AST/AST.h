@@ -30,7 +30,8 @@ struct AST_Base{ // The base type for AST nodes
  enum TYPE{
   TargetDefinition,
   Definition, // pin, sig, clk, int, rat, float, complex and class instance
-  Expression
+  Expression,
+  Assignment
  } Type;
 
  int       Line;

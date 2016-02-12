@@ -37,6 +37,7 @@ struct TOKEN{
   // Keywords ..................................................................
   Target,
 
+  Void,
   Pin,
   Sig,
   Clk,
@@ -70,7 +71,7 @@ struct TOKEN{
   Decrement, // --
   FP_Cast,   // '
   To,        // ->
-  Hash,      // #
+  Step,      // #
   Dot,       // .
   Dot_Curly, // .{
 
@@ -82,7 +83,6 @@ struct TOKEN{
   Bit_XNOR, // ~^
   Bit_NOT,  // ~
 
-  Bit_Concatenate,   // :
   Bit_Repeat,        // \                                                      "
   Array_Concatenate, // @{
 
@@ -115,6 +115,7 @@ struct TOKEN{
   Subtract_Assign,    //  -=
   Multiply_Assign,    //  *=
   Divide_Assign,      //  /=
+  Modulus_Assign,     //  %=
   AND_Assign,         //  &=
   OR_Assign,          //  |=
   XOR_Assign,         //  ^=
@@ -132,6 +133,7 @@ struct TOKEN{
   CloseCurly,  // }
 
   Comma,       // ,
+  Colon,       // :
   Semicolon,   // ;
 
   // Other types ...............................................................
@@ -140,12 +142,15 @@ struct TOKEN{
   String,
 
   // Aliases ...................................................................
-  OpenAngle  = Less,    // <
-  CloseAngle = Greater, // >
-  Negate     = Subtract // -
+  OpenAngle       = Less,     // <
+  CloseAngle      = Greater,  // >
+  Negate          = Subtract, // -
+  SliceAll        = Colon,    // :
+  Bit_Concatenate = Colon
  } Type;
 
  int    Line;  // The line number
+ byte*  ID;    // The identifier ID
  STRING Data;  // The string contents; otherwise the original token characters
  NUMBER Value; // Literal value
 

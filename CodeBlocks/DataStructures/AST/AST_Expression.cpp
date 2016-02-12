@@ -26,16 +26,17 @@ AST_Base(Line){
  this->Type           = Expression;
  this->ExpressionType = ExpressionType;
 
- Name  = 0;
- Value = 0;
+ Name     = 0;
+ Value    = 0;
+ StrValue = 0;
 
  Left = Right = 0;
 }
 //------------------------------------------------------------------------------
 
 AST_Expression::~AST_Expression(){
- if(Name ) delete Name;
- if(Value) delete Value;
+ if(Value   ) delete Value;
+ if(StrValue) delete StrValue;
 
  if(Left ) delete Left;
  if(Right) delete Right;
@@ -50,11 +51,9 @@ void AST_Expression::Display(){
  }
 
  switch(ExpressionType){
-  case Dot: printf("."); break;
-
-  case Identifier:
-   if(Name) printf("%s", Name->String());
-   else     printf("(Identifier node has no name)");
+  case String:
+   if(StrValue) printf("%s", StrValue->String());
+   else         printf("(String literal node has no value)");
    break;
 
   case Literal:
@@ -62,15 +61,78 @@ void AST_Expression::Display(){
    else      printf("(Literal node has no value)");
    break;
 
-  default: printf("(Unknown expression type)");
+  case Identifier:
+   if(Name) printf("%s", Name);
+   else     printf("(Identifier node has no name)");
+   break;
+
+  case FunctionCall    : printf("{call}"); break;
+  case ArrayConcatenate: printf("@"    ); break;
+
+  case Slice   : printf("{slice}"); break;
+  case SliceAll: printf("{all}"  ); break;
+
+  case Dot: printf("."); break;
+
+  case Increment: printf("++ "); break;
+  case Decrement: printf("-- "); break;
+
+  case Range: printf("->"); break;
+
+  case Negate : printf(" -"); break;
+  case Bit_NOT: printf(" ~"); break;
+
+  case AND_Reduce : printf( " &"); break;
+  case NAND_Reduce: printf(" ~&"); break;
+  case OR_Reduce  : printf( " |"); break;
+  case NOR_Reduce : printf(" ~|"); break;
+  case XOR_Reduce : printf( " ^"); break;
+  case XNOR_Reduce: printf(" ~^"); break;
+  case Logical_NOT: printf( " !"); break;
+
+  case FP_Cast: printf(" {format} "); break;
+
+  case Concatenate: printf(" {concat} "); break;
+  case Replicate  : printf(" {rep} "); break;
+
+  case Multiply: printf(" * " ); break;
+  case Divide  : printf(" / " ); break;
+  case Modulus : printf(" %% "); break;
+  case Add     : printf(" + " ); break;
+  case Subtract: printf(" - " ); break;
+
+  case Shift_Left : printf(" << "); break;
+  case Shift_Right: printf(" >> "); break;
+
+  case Less         : printf(" < " ); break;
+  case Greater      : printf(" > " ); break;
+  case Less_Equal   : printf(" <= "); break;
+  case Greater_Equal: printf(" >= "); break;
+  case Equal        : printf(" == "); break;
+  case Not_Equal    : printf(" != "); break;
+
+  case Bit_AND : printf( " & "); break;
+  case Bit_NAND: printf(" ~& "); break;
+  case Bit_OR  : printf( " | "); break;
+  case Bit_NOR : printf(" ~| "); break;
+  case Bit_XOR : printf( " ^ "); break;
+  case Bit_XNOR: printf(" ~^ "); break;
+
+  case Logical_AND: printf(" && "); break;
+  case Logical_OR : printf(" || "); break;
+
+  default: printf("(Unknown expression type: %d)", ExpressionType);
  }
 
  if(Right){
-  if(Right->Left || Right->Right) printf("(");
+  if(Right->Left || Right->Right || Right->Next) printf("(");
   Right->Display();
-  if(Right->Left || Right->Right) printf(")");
+  if(Right->Left || Right->Right || Right->Next) printf(")");
  }
 
- if(Next) printf("\nIllegal \"Next\" on Expression\n");
+ if(Next){
+  printf(", ");
+  Next->Display();
+ }
 }
 //------------------------------------------------------------------------------

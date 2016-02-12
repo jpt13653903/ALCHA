@@ -18,15 +18,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Dictionary.h"
+#include "IdentifierTree.h"
 //------------------------------------------------------------------------------
 
-void* DefaultOnDuplicate(const byte* Name, void* Old, void* New){
- return New;
-}
+IDENTIFIER_TREE IdentifierTree;
 //------------------------------------------------------------------------------
 
-DICTIONARY::NODE::NODE(const byte* Name, void* Data){
+IDENTIFIER_TREE::NODE::NODE(const byte* Name){
  Red  = true;
  Left = Right = 0;
 
@@ -35,12 +33,10 @@ DICTIONARY::NODE::NODE(const byte* Name, void* Data){
  this->Name = new byte[j+1];
  for(j = 0; Name[j]; j++) this->Name[j] = Name[j];
  this->Name[j] = 0;
-
- this->Data = Data;
 }
 //------------------------------------------------------------------------------
 
-DICTIONARY::NODE::~NODE(){
+IDENTIFIER_TREE::NODE::~NODE(){
  delete[] Name;
 
  if(Left ) delete Left;
@@ -48,31 +44,30 @@ DICTIONARY::NODE::~NODE(){
 }
 //------------------------------------------------------------------------------
 
-DICTIONARY::DICTIONARY(){
- Root        = 0;
- OnDuplicate = DefaultOnDuplicate;
+IDENTIFIER_TREE::IDENTIFIER_TREE(){
+ Root = 0;
 }
 //------------------------------------------------------------------------------
 
-DICTIONARY::~DICTIONARY(){
+IDENTIFIER_TREE::~IDENTIFIER_TREE(){
  if(Root) delete Root;
 }
 //------------------------------------------------------------------------------
 
-bool DICTIONARY::IsRed(NODE* Node){
+bool IDENTIFIER_TREE::IsRed(NODE* Node){
  if(!Node) return false;
  return Node->Red;
 }
 //------------------------------------------------------------------------------
 
-void DICTIONARY::ColourFlip(NODE* Node){
+void IDENTIFIER_TREE::ColourFlip(NODE* Node){
  Node       ->Red = !Node       ->Red;
  Node->Left ->Red = !Node->Left ->Red;
  Node->Right->Red = !Node->Right->Red;
 }
 //------------------------------------------------------------------------------
 
-DICTIONARY::NODE* DICTIONARY::RotateLeft(NODE* Node){
+IDENTIFIER_TREE::NODE* IDENTIFIER_TREE::RotateLeft(NODE* Node){
  NODE* Temp  = Node->Right;
  Node->Right = Temp->Left;
  Temp->Left  = Node;
@@ -82,7 +77,7 @@ DICTIONARY::NODE* DICTIONARY::RotateLeft(NODE* Node){
 }
 //------------------------------------------------------------------------------
 
-DICTIONARY::NODE* DICTIONARY::RotateRight(NODE* Node){
+IDENTIFIER_TREE::NODE* IDENTIFIER_TREE::RotateRight(NODE* Node){
  NODE* Temp  = Node->Left;
  Node->Left  = Temp->Right;
  Temp->Right = Node;
@@ -92,43 +87,17 @@ DICTIONARY::NODE* DICTIONARY::RotateRight(NODE* Node){
 }
 //------------------------------------------------------------------------------
 
-void DICTIONARY::Insert(const byte* Name, void* Data){
- Root = Insert(Root, Name, Data);
+byte* IDENTIFIER_TREE::GetID(const byte* Name){
+ byte* ID = Find(Name);
+ if(!ID){
+  Root = Insert(Root, Name);
+  ID   = Find  (Name);
+ }
+ return ID;
 }
 //------------------------------------------------------------------------------
 
-DICTIONARY::NODE* DICTIONARY::Insert(NODE* Node, const byte* Name, void* Data){
- if(!Node) return new NODE(Name, Data);
-
- int j;
- for(j = 0; Name[j]; j++){
-  if(Name[j] < Node->Name[j]){
-   Node->Left = Insert(Node->Left, Name, Data);
-   break;
-
-  }else if(Name[j] > Node->Name[j]){
-   Node->Right = Insert(Node->Right, Name, Data);
-   break;
-  }
- }
- if(!Name[j]){
-  if(!Node->Name[j]){
-   Node->Data = OnDuplicate(Name, Node->Data, Data);
-   return Node;
-  }else{
-   Node->Left = Insert(Node->Left, Name, Data);
-  }
- }
-
- if(IsRed(Node->Right) && !IsRed(Node->Left      )) Node = RotateLeft (Node);
- if(IsRed(Node->Left ) &&  IsRed(Node->Left->Left)) Node = RotateRight(Node);
- if(IsRed(Node->Left ) &&  IsRed(Node->Right     ))        ColourFlip (Node);
-
- return Node;
-}
-//------------------------------------------------------------------------------
-
-void* DICTIONARY::Find(const byte* Name){
+byte* IDENTIFIER_TREE::Find(const byte* Name){
  int   j;
  NODE* Node = Root;
 
@@ -151,7 +120,7 @@ void* DICTIONARY::Find(const byte* Name){
     }
    }
    if(!Name[j]){
-    if(!Node->Name[j]) return Node->Data;
+    if(!Node->Name[j]) return Node->Name;
     else               Node = Node->Left;
    }
   }
@@ -160,14 +129,29 @@ void* DICTIONARY::Find(const byte* Name){
 }
 //------------------------------------------------------------------------------
 
-void DICTIONARY::Action(DICTIONARY_ACTION Function){
- if(Root) Action(Root, Function);
-}
-//------------------------------------------------------------------------------
+IDENTIFIER_TREE::NODE* IDENTIFIER_TREE::Insert(NODE* Node, const byte* Name){
+ if(!Node) return new NODE(Name);
 
-void DICTIONARY::Action(NODE* Node, DICTIONARY_ACTION Function){
- if(Node->Left ) Action(Node->Left , Function);
- Function(Node->Name, Node->Data);
- if(Node->Right) Action(Node->Right, Function);
+ int j;
+ for(j = 0; Name[j]; j++){
+  if(Name[j] < Node->Name[j]){
+   Node->Left = Insert(Node->Left, Name);
+   break;
+
+  }else if(Name[j] > Node->Name[j]){
+   Node->Right = Insert(Node->Right, Name);
+   break;
+  }
+ }
+ if(!Name[j]){
+  if(!Node->Name[j]) return Node; // Duplicate
+  else               Node->Left = Insert(Node->Left, Name);
+ }
+
+ if(IsRed(Node->Right) && !IsRed(Node->Left      )) Node = RotateLeft (Node);
+ if(IsRed(Node->Left ) &&  IsRed(Node->Left->Left)) Node = RotateRight(Node);
+ if(IsRed(Node->Left ) &&  IsRed(Node->Right     ))        ColourFlip (Node);
+
+ return Node;
 }
 //------------------------------------------------------------------------------

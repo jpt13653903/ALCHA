@@ -28,14 +28,69 @@
 
 struct AST_Expression: public AST_Base{
   enum EXPRESSION_TYPE{
-   Dot,
+   String,
+   Literal,
    Identifier,
-   Literal
+
+   FunctionCall, // Left is the function name; right is the parameter list
+   Slice,
+   Dot,
+   SliceAll,
+   ArrayConcatenate,
+   Range, // Left = from; Right = to; Right->Next = step
+
+   Increment, // If child is on the left, post-increment
+   Decrement,  // If child is on the left, post-increment
+
+   Negate,
+   Bit_NOT,
+
+   AND_Reduce,
+   NAND_Reduce,
+   OR_Reduce,
+   NOR_Reduce,
+   XOR_Reduce,
+   XNOR_Reduce,
+   Logical_NOT,
+
+   FP_Cast,
+
+   Concatenate,
+   Replicate,
+
+   Multiply,
+   Divide,
+   Modulus,
+
+   Add,
+   Subtract,
+
+   Shift_Left,
+   Shift_Right,
+
+   Less,
+   Greater,
+   Less_Equal,
+   Greater_Equal,
+
+   Equal,
+   Not_Equal,
+
+   Bit_AND,
+   Bit_NAND,
+   Bit_OR,
+   Bit_NOR,
+   Bit_XOR,
+   Bit_XNOR,
+
+   Logical_AND,
+   Logical_OR
   } ExpressionType;
 
   // Pointers so that not all expression nodes have instances, wasting space
-  STRING* Name;
-  NUMBER* Value;
+  byte  * Name;     // ID obtained from IdentifierTree
+  NUMBER* Value;    // Only used for numerical literals
+  STRING* StrValue; // Only used for string literals
 
   // Left and Right operands
   AST_Expression* Left;

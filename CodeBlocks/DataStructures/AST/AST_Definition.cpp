@@ -34,14 +34,22 @@ AST_Definition::ARRAY::~ARRAY(){
 //------------------------------------------------------------------------------
 
 AST_Definition::IDENTIFIER::IDENTIFIER(){
- Array = 0;
- Next  = 0;
+ Identifier = 0;
+ Array      = 0;
+ Next       = 0;
+
+ Function     = false;
+ Parameters   = 0;
+ FunctionBody = 0;
 }
 //------------------------------------------------------------------------------
 
 AST_Definition::IDENTIFIER::~IDENTIFIER(){
  if(Array) delete Array;
  if(Next ) delete Next;
+
+ if(Parameters  ) delete Parameters;
+ if(FunctionBody) delete FunctionBody;
 }
 //------------------------------------------------------------------------------
 
@@ -53,6 +61,7 @@ AST_Base(Line){
  Signed    = false;
  Direction = Bidirectional;
 
+ ClassName    = 0;
  IntegerBits  = 0;
  FractionBits = 0;
 
@@ -61,6 +70,7 @@ AST_Base(Line){
 //------------------------------------------------------------------------------
 
 AST_Definition::~AST_Definition(){
+ if(ClassName   ) delete ClassName;
  if(IntegerBits ) delete IntegerBits;
  if(FractionBits) delete FractionBits;
 
@@ -69,17 +79,26 @@ AST_Definition::~AST_Definition(){
 //------------------------------------------------------------------------------
 
 void AST_Definition::Display(){
- printf("\nLine %d -- ", Line);
+ printf("\nLine %d -- Definition (", Line);
 
  switch(DefinitionType){
-  case Pin    : printf("Pin definition:\n"); break;
-  case Sig    : printf("Signal definition:\n"); break;
-  case Clk    : printf("Clock definition:\n"); break;
-  case Int    : printf("Integer definition:\n"); break;
-  case Rat    : printf("Rational definition:\n"); break;
-  case Float  : printf("Float definition:\n"); break;
-  case Complex: printf("Complex definition:\n"); break;
-  default     : printf("Invalid definition type:\n"); break;
+  case Void   : printf("Void):\n"    ); break;
+  case Pin    : printf("Pin):\n"     ); break;
+  case Sig    : printf("Signal):\n"  ); break;
+  case Clk    : printf("Clock):\n"   ); break;
+  case Int    : printf("Integer):\n" ); break;
+  case Rat    : printf("Rational):\n"); break;
+  case Float  : printf("Float):\n"   ); break;
+  case Complex: printf("Complex):\n" ); break;
+
+  case ClassInstance:
+   printf("Class instance definition (");
+   if(ClassName) ClassName->Display();
+   else          printf("Class instance with no class name");
+   printf("):\n");
+   break;
+
+  default: printf("Invalid definition type:\n");
  }
 
  printf(" Direction = ");
@@ -110,11 +129,11 @@ void AST_Definition::Display(){
  printf(" Attributes:\n");
  Attributes.Action(AttributesDisplay);
 
- printf(" Identifier:\n");
+ printf(" Identifiers:\n");
  IDENTIFIER* Identifier = Identifiers;
  ARRAY     * Array;
  while(Identifier){
-  printf(" - %s", Identifier->Identifier.String());
+  printf(" - %s", Identifier->Identifier);
   Array = Identifier->Array;
   while(Array){
    printf("[");
@@ -122,6 +141,15 @@ void AST_Definition::Display(){
    printf("]");
    Array = Array->Next;
   }
+
+  if(Identifier->Function){
+   printf(" -- function:\n  Parameters: (");
+   if(Identifier->Parameters) Identifier->Parameters->Display();
+   printf(")\n  Body:{\n");
+   if(Identifier->FunctionBody) Identifier->FunctionBody->Display();
+   printf("  }\n");
+  }
+
   printf("\n");
   Identifier = Identifier->Next;
  }

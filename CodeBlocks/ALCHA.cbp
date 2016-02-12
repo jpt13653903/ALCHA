@@ -50,6 +50,8 @@
 		<Unit filename="BackEnd/TimingSpec.h" />
 		<Unit filename="DataStructures/AST/AST.cpp" />
 		<Unit filename="DataStructures/AST/AST.h" />
+		<Unit filename="DataStructures/AST/AST_Assignment.cpp" />
+		<Unit filename="DataStructures/AST/AST_Assignment.h" />
 		<Unit filename="DataStructures/AST/AST_Definition.cpp" />
 		<Unit filename="DataStructures/AST/AST_Definition.h" />
 		<Unit filename="DataStructures/AST/AST_Expression.cpp" />
@@ -58,6 +60,8 @@
 		<Unit filename="DataStructures/AST/AST_TargetDefinition.h" />
 		<Unit filename="DataStructures/Dictionary.cpp" />
 		<Unit filename="DataStructures/Dictionary.h" />
+		<Unit filename="DataStructures/IdentifierTree.cpp" />
+		<Unit filename="DataStructures/IdentifierTree.h" />
 		<Unit filename="DataStructures/TypeDef.cpp" />
 		<Unit filename="DataStructures/TypeDef.h" />
 		<Unit filename="FrontEnd/Parser.cpp" />

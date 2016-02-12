@@ -64,13 +64,13 @@ Signals relate to physical wires and / or registers on the FPGA.  They are speci
     sig'8        b; // 8-bit unsigned integer
     signed sig'8 c; // 8-bit signed integer
 
-    sig'4'4      d; // 8-bit unsigned fixed point with 4 integer bits
+    sig'(4,4)    d; // 8-bit unsigned fixed point with 4 integer bits
                     // and 4 fraction bits
-    sig'4'-4     e; // 4-bit integer where the least significant bit
+    sig'(4,-4)   e; // 4-bit integer where the least significant bit
                     // represents 16 and the most significant bit 128.
-    sig'-4'4     f; // 4-bit fixed-point where the least significant bit
+    sig'(-4,4)   f; // 4-bit fixed-point where the least significant bit
                     // represents 2ˆ(-8) and the most significant 2ˆ(-5).
-    sig'-4'-4    g; // Illegal: both cannot be negative.
+    sig'(-4,-4)  g; // Illegal: both cannot be negative.
 
 ### 2.3.2 Attributes
 Signals take optional attributes, which are summarised in the table below:
@@ -209,7 +209,7 @@ ALCHA literals are all stored as infinite-precision rational numbers (by means o
 
     :::C++
     123.456      // decimal constant
-    123.456'8'8  // Decimal constant of fixed-point 8.8 type
+    123.456'(8,8)  // Decimal constant of fixed-point 8.8 type
     0b101.0101   // Binary constant
     0o123.456    // Octal constant
     0xABC.DEF    // Hexadecimal constant
@@ -217,7 +217,7 @@ ALCHA literals are all stored as infinite-precision rational numbers (by means o
     123_456_p7   // Decimal constant with binary exponent (2^7)
     0x123_ABC_p7 // Hexadecimal constant with binary exponent (2ˆ7)
     7.3 + 8.9j   // Decimal complex constant
-    'Ω'          // Unicode character constant
+    "Ω"          // Unicode character constant
     "ABC αβγ"    // Unicode string literal (character array)
 
 Certain non-printable characters can be used, within character and string literals, by means of escaping.  ALCHA escape sequences are the same as C escape sequences.  The following table provides a summary:
@@ -290,8 +290,8 @@ Group | (...)    | Grouping
 Post-fix | A++ | Increment after use
          | A-- | Decrement after use
 ||
-Cast | A ' N   | Casts A to an N-bit integer
-     | A ' N'M | Casts A to an N.M-bit fixed-point
+Cast | A ' N    | Casts A to an N-bit integer
+     | A '(N,M) | Casts A to an N.M-bit fixed-point
 ||
 Range | A -> B     | Builds an array of elements from A to B, inclusive
       | A -> B # C | Builds an array of elements from A to B, in steps of C
@@ -348,6 +348,7 @@ Assignment | A  = B      | Normal assign (automatically casts to the target fixe
            | A -= B      | Subtract and assign (normal assign)
            | A \*= B     | Multiply and assign (normal assign)
            | A /= B      | Divide and assign (normal assign)
+           | A %= B      | Modulus and assign (normal assign)
            | A &= B      | Bit-wise AND and assign (raw assign)
            | A &#124;= B | Bit-wise OR and assign (raw assign)
            | A ^= B      | Bit-wise XOR and assign (raw assign)
@@ -415,7 +416,7 @@ This only applies to combinational circuits.  Clocked structures are evaluated a
 An important consequence of this mechanism is that the developer must keep the dependencies in mind.  This is illustrated below:
 
     :::C++
-    sig'A, B, C, D, E;
+    sig'8 A, B, C, D, E;
     A  = C;
     B  = 5 * D;
     C  = B + 7;
@@ -499,7 +500,7 @@ Each new dimension is defined by means of a positive integer in square brackets,
 Array elements can be addressed by means of slices.  The bits are modelled as the deepest dimension, with indices equal to the power-of-two representation of that bit.  The element indices are zero-based.  A colon (":") can be used to indicate "all elements".  Any bit-slice removes the fixed-point format.  The result of a bit-slice is always an unsigned integer with as many bits as in the slice.  Some examples are presented below:
 
     :::C++
-    sig'16'8 A[16];
+    sig'(16,8) A[16];
     A[5]                 // Element 5 of A (the 6th element).
     A[:][15:0]           // All the elements of A, but only the integer bits
     A[3, 7, 2][-1:-8]    // Elements 3, 7 and 2 of A (in that order), and only the fraction bits
@@ -905,7 +906,7 @@ If the function takes an array as a parameter, the same rules apply.  The functi
 To return an array, the function name should be defined as an array, as follows:
 
     :::C++
-    signed sig'16'8 Mult[4][4](signed sig'16'8 A[4][4], signed sig'16'8 B[4][4]){
+    signed sig'(16,8) Mult[4][4](signed sig'(16,8) A[4][4], signed sig'(16,8) B[4][4]){
      int i, j, k;
      for(i in 0->3){
       for(j in 0->3){
@@ -1022,8 +1023,8 @@ Operator overloading is handled in similar fashion to C.  It can be used to defi
 
     :::C++
     class Complex{
-     sig'8'8 x = 0;
-     sig'8'8 y = 0;
+     sig'(8,8) x = 0;
+     sig'(8,8) y = 0;
 
      Complex operator+(complex C){
       Complex r;
@@ -1031,7 +1032,7 @@ Operator overloading is handled in similar fashion to C.  It can be used to defi
       r.y = y + imag(C);
       return r;
      }
-     Complex operator+(sig'8'8 X){
+     Complex operator+(sig'(8,8) X){
       Complex r;
       r.x = x + X;
       r.y = y;

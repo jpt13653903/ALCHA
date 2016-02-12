@@ -2,54 +2,59 @@
 - Remember to implement sets -- see ICIT 2016 article for details.
 *)
 
-Assignment = Concatenation AssignmentOperator Conditional;
+Assignment = LHS_Expression AssignmentOperator Expression;
+
+LHS_Expression = Concatenation;
+Expression     = Conditional;
 
 AssignmentOperator = 
-  ":=" | (* Assign without bit-weight (straight assign) *)
    "=" | (* Assign, but take fixed-point format into account *)
+  ":=" | (* Assign without bit-weight (straight assign) *)
+  "@=" | (* Assign without bit-weight (straight assign) *)
+  "+=" | (* Add and assign *)
+  "-=" | (* Subtract and assign *)
   "*=" | (* Multiply and assign *)
   "/=" | (* Divide and assign *)
   "%=" | (* Modulus and assign *)
-  "+=" | (* Add and assign *)
-  "-=" | (* Subtract and assign *)
- "<<=" | (* Shift left and assign *)
- ">>=" | (* Shift right and assign *)
   "&=" | (* Bitwise AND and assign *)
+  "|=" | (* Bitwise OR and assign *)
   "^=" | (* Bitwise XOR and assign *)
-  "|=" ; (* Bitwise OR and assign *)
+ "<<=" | (* Shift left and assign *)
+ ">>=" ; (* Shift right and assign *)
 
-Conditional    = LogicalOR      [ "?" Cast ":" Cast];
+Conditional    = LogicalOR      [ "?" Primary ":" Primary];
 LogicalOR      = LogicalAND     { "||"                      LogicalAND    };
 LogicalAND     = BitwiseOR      { "&&"                      BitwiseOR     };
-BitwiseOR      = BitwiseXOR     { "|"                       BitwiseXOR    };
-BitwiseXOR     = BitwiseAND     { "^"                       BitwiseAND    };
-BitwiseAND     = Equality       { "&"                       Equality      };
+BitwiseOR      = BitwiseXOR     {("|"  | "~|")              BitwiseXOR    };
+BitwiseXOR     = BitwiseAND     {("^"  | "~^")              BitwiseAND    };
+BitwiseAND     = Equality       {("&"  | "~&")              Equality      };
 Equality       = Relational     {("==" | "!=")              Relational    };
 Relational     = Shift          {("<"  | ">" | "<=" | ">=") Shift         };
 Shift          = Additive       {("<<" | ">>")              Additive      };
 Additive       = Multiplicative {("+"  | "-" )              Multiplicative};
-Multiplicative = Concatenation  {("*"  | "/" | "%")         Concatenation };
-Concatenation  = Replication    { ":"                       Replication   };
-Replication    = Cast           [ "\"                       Primary       ];
+Multiplicative = Replication    {("*"  | "/" | "%")         Replication};
 
-Cast  = Unary [FixedPointCast];
-Unary = {"+" | "-" | "!" | "~" | "&" | "|" | "^"} PostFix;
+Replication   = Concatenation ["\" Primary];
+Concatenation = Cast {":" Cast};
 
-PostFix = Primary {
-       SliceSpecifier     | 
-       BitSliceSpecifier  |
- ("."  Identifier       ) | (* Member and Namespace specifier *)
- ("(" [ArgumentList] ")") | (* Also used for type-casting: like GLSL *)
- "++"                     |
- "--"
-};
+Cast       = Reduction ["'" (Identifier | Literal | ("(" Primary ["," Primary] ")"))];
+Reduction  = ["&" | "~&" | "|" | "~|" | "^" | "~^" | "!"] Unary;
+Unary      = {"-" | "~"} Array;
 
-SliceSpecifier    = "[[" SliceRange "]]"; (* Array slices *)
-BitSliceSpecifier = "["  SliceRange  "]"; (* Bit slices *)
-SliceRange        = Conditional ["->" Conditional];
+Array = ("@{" Expression {"," Expression} "}")
+      | (Postfix ["->" Postfix ["#" Postfix]]);
 
-ArgumentList = Conditional {"," Conditional};
+Postfix = Primary {
+           "["  SliceList      "]" | (* Slice *)
+           "(" [ParameterList] ")" | (* Function call *)
+           "."  Identifier         | (* Member reference *)
+           "++"                    | (* Increment *)
+           "--"                      (* Decrement *)
+          };
 
-Primary = Identifier | Constant | ("(" Conditional ")");
+Primary = Identifier | Literal | String | ("(" Expression ")");
+
+ParameterList = Expression {"," Expression};
+SliceList     = ":" | (Array {"," Array});
 (*----------------------------------------------------------------------------*)
 

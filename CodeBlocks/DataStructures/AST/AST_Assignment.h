@@ -18,58 +18,36 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Definition_h
-#define AST_Definition_h
+#ifndef AST_Assignment_h
+#define AST_Assignment_h
 //------------------------------------------------------------------------------
 
 #include "AST_Expression.h"
 //------------------------------------------------------------------------------
 
-struct AST_Definition: public AST_Base{
-  enum DEFINITION_TYPE{
-   Void = 0, // Used for functions that do not return a value
-   Pin, Sig, Clk,
-   Int, Rat, Float, Complex,
-   ClassInstance
-  } DefinitionType;
-  AST_Expression* ClassName; // For class instances
+struct AST_Assignment: public AST_Base{
+  enum ASSIGNMENT_TYPE{
+   Assign,             //   =
+   Raw_Assign,         //  :=
+   Append_Assign,      //  @=
+   Add_Assign,         //  +=
+   Subtract_Assign,    //  -=
+   Multiply_Assign,    //  *=
+   Divide_Assign,      //  /=
+   Modulus_Assign,     //  %=
+   AND_Assign,         //  &=
+   OR_Assign,          //  |=
+   XOR_Assign,         //  ^=
+   Shift_Left_Assign,  // <<=
+   Shift_Right_Assign  // >>=
+  } AssignmentType;
 
-  struct ARRAY{
-   AST_Expression* Size;
-   ARRAY         * Next;
+  // Left and Right operands
+  AST_Expression* Left;
+  AST_Expression* Right;
 
-   ARRAY();
-  ~ARRAY();
-  };
-
-  struct IDENTIFIER{
-   byte * Identifier; // ID obtained via IdentifierTree
-   ARRAY* Array;      // Null when this is a scalar
-
-   // These are used for function definitions.
-   bool            Function; // True when this is a function definition
-   AST_Expression* Parameters; // List of identifiers (calls are duck-typed)
-   AST_Base      * FunctionBody;
-
-   IDENTIFIER* Next;
-
-   IDENTIFIER();
-  ~IDENTIFIER();
-  };
-
-  enum DIRECTION{Bidirectional = 0, In, Out} Direction;
-  bool Signed;
-
-  // Expressions for fixed-point casts
-  AST_Expression* IntegerBits;
-  AST_Expression* FractionBits;
-
-  DICTIONARY Attributes;
-
-  IDENTIFIER* Identifiers;
-
-  AST_Definition(int Line, DEFINITION_TYPE DefinitionType);
- ~AST_Definition();
+  AST_Assignment(int Line, ASSIGNMENT_TYPE AssignmentType);
+ ~AST_Assignment();
 
   void Display();
 };
@@ -77,3 +55,4 @@ struct AST_Definition: public AST_Base{
 
 #endif
 //------------------------------------------------------------------------------
+
