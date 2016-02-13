@@ -122,6 +122,12 @@ void NUMBER::Mul(double r, double i){
 }
 //------------------------------------------------------------------------------
 
+bool NUMBER::IsInt(){
+ // Imag == 0 && Real.Denominator == 1
+ return !mpq_cmp_ui(Imag, 0, 1) && !mpz_cmp_ui(mpq_denref(Real), 1);
+}
+//------------------------------------------------------------------------------
+
 double NUMBER::GetReal(){
  return mpq_get_d(Real);
 }
@@ -133,15 +139,17 @@ double NUMBER::GetImag(){
 //------------------------------------------------------------------------------
 
 void NUMBER::Display(){
- char* s = mpq_get_str(0, 10, Real);
+ bool   r = mpq_cmp_ui(Real, 0, 1);
+ bool   i = mpq_cmp_ui(Imag, 0, 1);
 
- printf("%s (~%.18lg)", s, mpq_get_d(Real));
- free(s);
+ char* sr = mpq_get_str(0, 10, Real);
+ char* si = mpq_get_str(0, 10, Imag);
 
- if(mpq_cmp_ui(Imag, 0, 1)){
-  s = mpq_get_str(0, 10, Imag);
-  printf(" + %sj (~%.18lgj)", s, mpq_get_d(Imag));
-  free(s);
- }
+ double dr = mpq_get_d(Real);
+ double di = mpq_get_d(Imag);
+
+ if(r && i) printf("(%s+%sj) (~(%.18lg+%.18lgj))", sr, si, dr, di);
+ else if(i) printf("%sj (~%.18lgj)", si, di);
+ else       printf("%s (~%.18lg)"  , sr, dr);
 }
 //------------------------------------------------------------------------------

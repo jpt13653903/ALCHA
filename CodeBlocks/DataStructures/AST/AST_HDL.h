@@ -18,49 +18,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_h
-#define AST_h
+#ifndef AST_HDL_h
+#define AST_HDL_h
 //------------------------------------------------------------------------------
 
-#include "MyString.h"
-#include "Dictionary.h"
+#include "AST_Assignment.h"
+#include "AST_Definition.h"
 //------------------------------------------------------------------------------
 
-struct AST_Base{ // The base type for AST nodes
- enum TYPE{
-  Fence, // Empty statement, but also "next-cycle" specifier in FSMs
-  TargetDefinition,
-  ClassDefinition,
-  Definition, // pin, sig, clk, int, rat, float, complex and class instance
-  Expression,
-  Assignment,
-  NamespacePush,
-  IfStatement,
-  ForLoop,
-  LoopLoop,
-  WhileLoop,
-  Switch,
-  RTL,
-  FSM,
-  HDL
- } Type;
+struct AST_HDL: public AST_Base{
+  byte*           Identifier;
+  AST_Expression* Files; // Only string constants are allowed
+  AST_Assignment* Parameters;
+  AST_Definition* Ports;
 
- int       Line;
- AST_Base* Next; // Next sibling
+  AST_HDL(int Line);
+ ~AST_HDL();
 
-          AST_Base(int Line);
- virtual ~AST_Base(); // Also deletes the rest of the linked list
-
- virtual void Display() = 0;
+  void Display();
 };
-//------------------------------------------------------------------------------
-
-void* AttributesOnDuplicate(const byte* Name, void* Old, void* New);
-void  AttributesDisplay    (const byte* Name, void* Data);
-void  AtributesDeleteData  (const byte* Name, void* Data);
-//------------------------------------------------------------------------------
-
-extern AST_Base* AST; // The global AST root
 //------------------------------------------------------------------------------
 
 #endif

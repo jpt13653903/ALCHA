@@ -1,0 +1,38 @@
+StatementBlock = Statement | ("{" [Statements] "}");
+
+Statements = Statement {Statement};
+Statement  = TargetDefinition | ClassDefinition | Definition 
+           | IfStatement | ForLoop | WhileLoop  | LoopLoop | Switch 
+           | RTL | FSM | HDL | Other | ";";
+
+IfStatement = "if" "(" Expression() ")" StatementBlock ["else" StatementBlock];
+              
+ForLoop = "for" "(" Identifier "in" Array ")" 
+          StatementBlock;
+
+(* For while loops, Expression must evaluate to a boolean *)
+WhileLoop = "while" "(" Expression ")" StatementBlock);
+
+(* For loop loops, Expression must evaluate to an integer *)
+LoopLoop = "loop" ["(" Expression ")"] StatementBlock);
+
+Switch = "switch" "(" Expression ")" "{" 
+          {"case" "(" ParameterList ")" StatementBlock}
+          ["default"                    StatementBlock]
+         "}";
+
+(* The first parameter must evaluate to a clock signal.  If the RTL is inside
+   a function, the clock is inherited from the calling state machine. *)
+RTL = "rtl" ["(" [ParameterList] ")"] StatementBlock;
+
+(* The first parameter must evaluate to a clock signal and the second parameter 
+   to a reset signal.  If the FSM is inside a function, the parameters are
+   inherited from the calling state machine. *)
+FSM = "fsm" ["(" [ParameterList] ")"] StatementBlock;
+
+(* The strings form a list of file names to include in the project, the 
+   Assignments form a list of HDL parameter assignments and the Definitions 
+   are port definitions. *)
+HDL = "hdl" "(" String {"," String} ")" Identifier ["(" {Assignment} ")"] 
+            "{" {Definition} "}";
+

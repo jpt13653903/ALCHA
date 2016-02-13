@@ -22,21 +22,32 @@ rat         D[]; // Dynamic array;
 float  '80  E;
 complex'120 F;
 
+void X(){}
+
 // Class instance
 Class Instance;
 Class() Instance;
 Namespace.Class Instance;
-Namespace.Class() Instance;
+Namespace.Class(Z+7, 5->8#2, sin(x)) Instance;
 
 // Function call
 Func();
 Class.Func();
 Namespace.Class.Func();
 
-// These are illegal
-Namespace.Class.Func() = 5;
+// RHS expression testing...
+A  =  (x+y)*z?A:(B:C:5'3:9);
+A +=  A.B[5].C(5->3, 7->2#-1);
+A *=  A + B++ - C--;
+A %=  7 << &A.B(7).C[5].D % 3;
+A /=  A:B'(3,(7+4)):C\(8+C);
+A @=  @{A, B+C, D*F, 8->77#2};
+A <<= A[:][5->3, 7][:][5, 2, 9, A];
 
-/*
+// These are illegal
+// Namespace.Class.Func() = 5;
+// Namespace().Class Instance;
+
 Class<Attribute = "Value"> Instance;
 Class() Instance;
 Namespace.Class(A, B, C.B(), 8.2) Instance;
@@ -54,27 +65,121 @@ sig'8 Func[7](x, y, A, B, C, X){
 void Func(x){}
 
 Namespace.Func(Calling, Function);
-Namespace.Func(Calling, Function);
 
 // LHS Expression
 @{A, B, C} = D;
 A:B:C = D;
 A.B.C = D;
 A.B[5->7].C = D;
-*/
+
+x = fft(Z+7+8i, Hanning, 1024);
+
 // Namespace Push
-/*
 A.{B.{}}
 A.B.C.{
+ Some Stuff;
+ A = Z * 4;
 }
-*/
 
 // Target query
-/*
-if(target.Type == "Simulation"){
+if(Target.Type == "Simulation"){
  x = 3;
 }else{
  x = 5;
 }
-*/
+
+if(x+2 == 7-1) print("x");
+else           print("z");
+
+if(x);
+if(y) A();
+if(z) B(); else C();
+
+for(j in 5->7){
+ Do Something;
+}
+for(x in @{5, 7, 1});
+
+while(x == 3) y++;
+while(1){
+ Stuff();
+ x = 7;
+}
+
+loop(7) x--;
+loop{
+ Do  = Stuff;
+ And = more + stuff;
+}
+
+switch(A){
+ case(B, C, D){
+  // if A is equal to B, C or D, do this
+  x = 3;
+ }
+ case(E){
+  // if A is equal to E, do this
+  y = 4;
+ }
+ default{
+  // otherwise do this
+  z = 5;
+ }
+}
+
+rtl{
+ x = 4;
+ y = 5;
+}
+rtl(Clk) Count++;
+
+fsm{
+ x = 4;
+ y = 5;
+}
+fsm(Clk, Reset) Count++;
+
+hdl("Library/RS232.v", "Library/RS232_Rx.v", "Library/RS232_Tx.v") RS232_V(
+ CountBits =  5; // Parameters 
+ Count0_5  =  8; 
+ Count1    = 17; 
+ Count1_5  = 25;
+){
+ in sig nReset;
+ in sig Clk;
+
+ in  sig'8 TxData;
+ in  sig   Send;
+ out sig   Busy;
+
+ out sig   DataReady;
+ out sig'8 RxData;
+ in  sig   Ack;
+
+ out sig Tx;
+ in  sig Rx;
+}
+
+class X{
+ sig Y;
+}
+
+class P: X{
+ sig A;
+}
+
+class X(Z){
+ sig Y;
+}
+
+class P(A): X(B){
+ sig C;
+}
+
+class<Attribute1 = "Value1", A2 = "V2"> Child(A, B, C): Parent(5->7, B.C(), X^Y*Z){
+ sig'(8,16) A, B, C;
+ A  = 3;
+ B  = 5 + A;
+ C := A * B;
+}
 

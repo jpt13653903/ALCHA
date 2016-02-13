@@ -1,11 +1,4 @@
-(* NOTE:
-- Remember to implement sets -- see ICIT 2016 article for details.
-*)
-
-Assignment = LHS_Expression AssignmentOperator Expression;
-
-LHS_Expression = Concatenation;
-Expression     = Conditional;
+Assignment = Concatenation AssignmentOperator Expression ";";
 
 AssignmentOperator = 
    "=" | (* Assign, but take fixed-point format into account *)
@@ -21,8 +14,9 @@ AssignmentOperator =
   "^=" | (* Bitwise XOR and assign *)
  "<<=" | (* Shift left and assign *)
  ">>=" ; (* Shift right and assign *)
+(*----------------------------------------------------------------------------*)
 
-Conditional    = LogicalOR      [ "?" Primary ":" Primary];
+Expression     = LogicalOR      [ "?" Primary ":" Primary];
 LogicalOR      = LogicalAND     { "||"                      LogicalAND    };
 LogicalAND     = BitwiseOR      { "&&"                      BitwiseOR     };
 BitwiseOR      = BitwiseXOR     {("|"  | "~|")              BitwiseXOR    };
@@ -32,18 +26,19 @@ Equality       = Relational     {("==" | "!=")              Relational    };
 Relational     = Shift          {("<"  | ">" | "<=" | ">=") Shift         };
 Shift          = Additive       {("<<" | ">>")              Additive      };
 Additive       = Multiplicative {("+"  | "-" )              Multiplicative};
-Multiplicative = Replication    {("*"  | "/" | "%")         Replication};
+Multiplicative = Replication    {("*"  | "/" | "%")         Replication   };
 
 Replication   = Concatenation ["\" Primary];
 Concatenation = Cast {":" Cast};
 
-Cast       = Reduction ["'" (Identifier | Literal | ("(" Primary ["," Primary] ")"))];
-Reduction  = ["&" | "~&" | "|" | "~|" | "^" | "~^" | "!"] Unary;
-Unary      = {"-" | "~"} Array;
+Cast       = Reduction [FP_Cast];
+FP_Cast    = "'" (Identifier | Literal | ("(" Primary ["," Primary] ")"));
+Reduction  = ["&" | "~&" | "|" | "~|" | "^" | "~^" | "!"] Array;
 
 Array = ("@{" Expression {"," Expression} "}")
-      | (Postfix ["->" Postfix ["#" Postfix]]);
+      | (Unary ["->" Unary ["#" Unary]]);
 
+Unary   = {"-" | "~"} Postfix;
 Postfix = Primary {
            "["  SliceList      "]" | (* Slice *)
            "(" [ParameterList] ")" | (* Function call *)
@@ -54,7 +49,7 @@ Postfix = Primary {
 
 Primary = Identifier | Literal | String | ("(" Expression ")");
 
-ParameterList = Expression {"," Expression};
 SliceList     = ":" | (Array {"," Array});
+ParameterList = Expression {"," Expression};
 (*----------------------------------------------------------------------------*)
 

@@ -84,7 +84,9 @@ struct AST_Expression: public AST_Base{
    Bit_XNOR,
 
    Logical_AND,
-   Logical_OR
+   Logical_OR,
+
+   Conditional
   } ExpressionType;
 
   // Pointers so that not all expression nodes have instances, wasting space

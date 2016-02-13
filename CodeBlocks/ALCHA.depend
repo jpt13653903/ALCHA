@@ -45,21 +45,32 @@
 	"Tree.h"
 	"MyString.h"
 
-1455310913 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\parser.cpp
+1455374713 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\parser.cpp
 	"Parser.h"
 
-1455307761 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\parser.h
+1455373915 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\parser.h
 	"Scanner.h"
 	"Dictionary.h"
+	"AST_RTL.h"
+	"AST_FSM.h"
+	"AST_HDL.h"
+	"AST_Fence.h"
+	"AST_Switch.h"
+	"AST_ForLoop.h"
+	"AST_LoopLoop.h"
+	"AST_WhileLoop.h"
 	"AST_Definition.h"
 	"AST_Assignment.h"
+	"AST_IfStatement.h"
+	"AST_NamespacePush.h"
+	"AST_ClassDefinition.h"
 	"AST_TargetDefinition.h"
 
 1454874010 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\preprocessor.h
 	"Number.h"
 	"Scanner.h"
 
-1455225104 c:\jpt\projects\15\1509 - alcha\codeblocks\tools\number.h
+1455360874 c:\jpt\projects\15\1509 - alcha\codeblocks\tools\number.h
 	<stdlib.h>
 	"gmp.h"
 
@@ -79,7 +90,7 @@
 1454911896 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\preprocessor.cpp
 	"PreProcessor.h"
 
-1455311016 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\scanner.cpp
+1455372370 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\scanner.cpp
 	"Scanner.h"
 
 1455298849 source:c:\jpt\projects\15\1509 - alcha\codeblocks\main.cpp
@@ -115,7 +126,7 @@
 1455186722 source:c:\jpt\projects\15\1509 - alcha\codeblocks\tools\mystring.cpp
 	"MyString.h"
 
-1455225100 source:c:\jpt\projects\15\1509 - alcha\codeblocks\tools\number.cpp
+1455360874 source:c:\jpt\projects\15\1509 - alcha\codeblocks\tools\number.cpp
 	"Number.h"
 
 1454911931 source:c:\jpt\projects\15\1509 - alcha\codeblocks\tools\tree.cpp
@@ -169,7 +180,7 @@
 	"gmp.h"
 	"MyString.h"
 
-1455310661 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\token.h
+1455372370 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\token.h
 	"Number.h"
 	"MyString.h"
 
@@ -193,7 +204,7 @@
 1455224025 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast.cpp
 	"AST.h"
 
-1455274387 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast.h
+1455373915 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast.h
 	"MyString.h"
 	"Dictionary.h"
 
@@ -203,11 +214,11 @@
 1455197820 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_fixedpointcast.h
 	"AST_Expression.h"
 
-1455311010 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_expression.h
+1455347973 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_expression.h
 	"AST.h"
 	"Number.h"
 
-1455308397 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_expression.cpp
+1455371243 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_expression.cpp
 	"AST_Expression.h"
 
 1455199645 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_pinsigdefinition.cpp
@@ -222,16 +233,16 @@
 1455224097 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_targetdefinition.h
 	"AST.h"
 
-1455299321 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_definition.cpp
+1455347435 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_definition.cpp
 	"AST_Definition.h"
 
-1455299314 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_definition.h
+1455347126 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_definition.h
 	"AST_Expression.h"
 
 1455287712 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_assignment.h
 	"AST_Expression.h"
 
-1455287845 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_assignment.cpp
+1455364211 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_assignment.cpp
 	"AST_Assignment.h"
 
 1455300166 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\identifiertree.cpp
@@ -239,4 +250,71 @@
 
 1455297779 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\identifiertree.h
 	"Global.h"
+
+1455362323 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_namespacepush.cpp
+	"AST_NamespacePush.h"
+
+1455362948 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_namespacepush.h
+	"AST_Expression.h"
+
+1455362968 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_ifstatement.h
+	"AST_Expression.h"
+
+1455363999 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_fence.cpp
+	"AST_Fence.h"
+
+1455364003 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_fence.h
+	"AST.h"
+
+1455365458 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_ifstatement.cpp
+	"AST_IfStatement.h"
+
+1455364842 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_forloop.h
+	"AST_Expression.h"
+
+1455365458 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_forloop.cpp
+	"AST_ForLoop.h"
+
+1455365458 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_whileloop.cpp
+	"AST_WhileLoop.h"
+
+1455365384 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_whileloop.h
+	"AST_Expression.h"
+
+1455366180 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_looploop.h
+	"AST_Expression.h"
+
+1455366180 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_looploop.cpp
+	"AST_LoopLoop.h"
+
+1455368361 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_switch.h
+	"AST_Expression.h"
+
+1455368568 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_switch.cpp
+	"AST_Switch.h"
+
+1455370493 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_rtl.h
+	"AST_Expression.h"
+
+1455370493 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_fsm.h
+	"AST_Expression.h"
+
+1455372234 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_hdl.h
+	"AST_Assignment.h"
+	"AST_Definition.h"
+
+1455372543 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_fsm.cpp
+	"AST_FSM.h"
+
+1455372685 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_hdl.cpp
+	"AST_HDL.h"
+
+1455370484 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_rtl.cpp
+	"AST_RTL.h"
+
+1455373750 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_classdefinition.h
+	"AST_Expression.h"
+
+1455374851 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_classdefinition.cpp
+	"AST_ClassDefinition.h"
 

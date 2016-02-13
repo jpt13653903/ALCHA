@@ -61,8 +61,7 @@ struct AST_Definition: public AST_Base{
   bool Signed;
 
   // Expressions for fixed-point casts
-  AST_Expression* IntegerBits;
-  AST_Expression* FractionBits;
+  AST_Expression* Format; // The "Right" of the fixed-point cast
 
   DICTIONARY Attributes;
 

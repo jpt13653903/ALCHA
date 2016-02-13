@@ -18,51 +18,57 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_h
-#define AST_h
+#include "AST_Switch.h"
 //------------------------------------------------------------------------------
 
-#include "MyString.h"
-#include "Dictionary.h"
+AST_Switch::CASE::CASE(){
+ Next        = 0;
+ Statements  = 0;
+ Expressions = 0;
+}
 //------------------------------------------------------------------------------
 
-struct AST_Base{ // The base type for AST nodes
- enum TYPE{
-  Fence, // Empty statement, but also "next-cycle" specifier in FSMs
-  TargetDefinition,
-  ClassDefinition,
-  Definition, // pin, sig, clk, int, rat, float, complex and class instance
-  Expression,
-  Assignment,
-  NamespacePush,
-  IfStatement,
-  ForLoop,
-  LoopLoop,
-  WhileLoop,
-  Switch,
-  RTL,
-  FSM,
-  HDL
- } Type;
-
- int       Line;
- AST_Base* Next; // Next sibling
-
-          AST_Base(int Line);
- virtual ~AST_Base(); // Also deletes the rest of the linked list
-
- virtual void Display() = 0;
-};
+AST_Switch::CASE::~CASE(){
+ if(Next       ) delete Next;
+ if(Statements ) delete Statements;
+ if(Expressions) delete Expressions;
+}
 //------------------------------------------------------------------------------
 
-void* AttributesOnDuplicate(const byte* Name, void* Old, void* New);
-void  AttributesDisplay    (const byte* Name, void* Data);
-void  AtributesDeleteData  (const byte* Name, void* Data);
+AST_Switch::AST_Switch(int Line): AST_Base(Line){
+ this->Type = Switch;
+
+ Cases      = 0;
+ Default    = 0;
+ Expression = 0;
+}
 //------------------------------------------------------------------------------
 
-extern AST_Base* AST; // The global AST root
+AST_Switch::~AST_Switch(){
+ if(Cases     ) delete Cases;
+ if(Default   ) delete Default;
+ if(Expression) delete Expression;
+}
 //------------------------------------------------------------------------------
 
-#endif
-//------------------------------------------------------------------------------
+void AST_Switch::Display(){
+ printf("\nLine %d -- switch(", Line);
+  if(Expression) Expression->Display();
+ printf("){\n");
+  CASE* Temp = Cases;
+  while(Temp){
+   printf(" case(");
+    if(Temp->Expressions) Temp->Expressions->Display();
+   printf("){\n");
+    if(Temp->Statements) Temp->Statements->Display();
+   printf(" }\n");
+   Temp = Temp->Next;
+  }
+  printf(" default{\n");
+   if(Default) Default->Display();
+  printf(" }\n");
+ printf("}\n");
 
+ if(Next) Next->Display();
+}
+//------------------------------------------------------------------------------

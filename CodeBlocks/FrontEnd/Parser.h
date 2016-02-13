@@ -25,8 +25,19 @@
 #include "Scanner.h"
 #include "Dictionary.h"
 
+#include "AST_RTL.h"
+#include "AST_FSM.h"
+#include "AST_HDL.h"
+#include "AST_Fence.h"
+#include "AST_Switch.h"
+#include "AST_ForLoop.h"
+#include "AST_LoopLoop.h"
+#include "AST_WhileLoop.h"
 #include "AST_Definition.h"
 #include "AST_Assignment.h"
+#include "AST_IfStatement.h"
+#include "AST_NamespacePush.h"
+#include "AST_ClassDefinition.h"
 #include "AST_TargetDefinition.h"
 //------------------------------------------------------------------------------
 
@@ -52,9 +63,10 @@ class PARSER{
 
   AST_Expression* Primary       ();
   AST_Expression* Postfix       ();
-  AST_Expression* Array         ();
   AST_Expression* Unary         ();
+  AST_Expression* Array         ();
   AST_Expression* Reduction     ();
+  AST_Expression* FP_Cast       (AST_Expression* Node);
   AST_Expression* Cast          ();
   AST_Expression* Concatenation ();
   AST_Expression* Replication   ();
@@ -74,12 +86,26 @@ class PARSER{
   AST_Definition::IDENTIFIER* IdentifierList  ();
   AST_Expression            * DefParameterList(); // Define function parameters
 
-  AST_TargetDefinition* TargetDefinition();
-  AST_Definition      * Definition();
-  AST_Base            * Other();
+  bool ValidNamespaceSpecifier(AST_Expression* Node); // Used by Other()
+  bool ValidTypeSpecifier     (AST_Expression* Node); // Used by Other()
+  bool ValidLHS               (AST_Expression* Node); // Used by Other()
 
-  AST_Base* Statement (); // Used for single-statement cases
-  AST_Base* Statements(); // Used for statement blocks / groups
+  AST_TargetDefinition* TargetDefinition();
+  AST_ClassDefinition * ClassDefinition();
+  AST_IfStatement     * IfStatement();
+  AST_Definition      * Definition();
+  AST_WhileLoop       * WhileLoop();
+  AST_LoopLoop        * LoopLoop();
+  AST_ForLoop         * ForLoop();
+  AST_Switch          * Switch();
+  AST_Base            * Other();
+  AST_RTL             * RTL();
+  AST_FSM             * FSM();
+  AST_HDL             * HDL();
+
+  AST_Base* Statement     ();
+  AST_Base* Statements    ();
+  AST_Base* StatementBlock();
 
  public:
   PARSER();

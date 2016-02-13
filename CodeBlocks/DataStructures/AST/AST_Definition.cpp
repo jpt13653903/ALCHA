@@ -61,18 +61,16 @@ AST_Base(Line){
  Signed    = false;
  Direction = Bidirectional;
 
- ClassName    = 0;
- IntegerBits  = 0;
- FractionBits = 0;
+ ClassName = 0;
+ Format    = 0;
 
  Attributes.OnDuplicate = AttributesOnDuplicate;
 }
 //------------------------------------------------------------------------------
 
 AST_Definition::~AST_Definition(){
- if(ClassName   ) delete ClassName;
- if(IntegerBits ) delete IntegerBits;
- if(FractionBits) delete FractionBits;
+ if(ClassName) delete ClassName;
+ if(Format   ) delete Format;
 
  Attributes.Action(AtributesDeleteData);
 }
@@ -111,19 +109,12 @@ void AST_Definition::Display(){
  printf(" Format:\n");
  if(Signed) printf("  Signed\n");
  else       printf("  Unsigned\n");
- printf("  Integer bits  = ");
- if(IntegerBits){
-  IntegerBits->Display();
+ printf("  Format = ");
+ if(Format){
+  Format->Display();
   printf("\n");
  }else{
-  printf("1\n");
- }
- printf("  Fraction bits = ");
- if(FractionBits){
-  FractionBits->Display();
-  printf("\n");
- }else{
-  printf("0\n");
+  printf("1-bit\n");
  }
 
  printf(" Attributes:\n");

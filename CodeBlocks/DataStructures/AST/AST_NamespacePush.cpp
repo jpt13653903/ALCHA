@@ -18,51 +18,36 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_h
-#define AST_h
+#include "AST_NamespacePush.h"
 //------------------------------------------------------------------------------
 
-#include "MyString.h"
-#include "Dictionary.h"
+AST_NamespacePush::AST_NamespacePush(int Line): AST_Base(Line){
+ this->Type = NamespacePush;
+
+ Namespace  = 0;
+ Statements = 0;
+}
 //------------------------------------------------------------------------------
 
-struct AST_Base{ // The base type for AST nodes
- enum TYPE{
-  Fence, // Empty statement, but also "next-cycle" specifier in FSMs
-  TargetDefinition,
-  ClassDefinition,
-  Definition, // pin, sig, clk, int, rat, float, complex and class instance
-  Expression,
-  Assignment,
-  NamespacePush,
-  IfStatement,
-  ForLoop,
-  LoopLoop,
-  WhileLoop,
-  Switch,
-  RTL,
-  FSM,
-  HDL
- } Type;
-
- int       Line;
- AST_Base* Next; // Next sibling
-
-          AST_Base(int Line);
- virtual ~AST_Base(); // Also deletes the rest of the linked list
-
- virtual void Display() = 0;
-};
+AST_NamespacePush::~AST_NamespacePush(){
+ if(Namespace ) delete Namespace;
+ if(Statements) delete Statements;
+}
 //------------------------------------------------------------------------------
 
-void* AttributesOnDuplicate(const byte* Name, void* Old, void* New);
-void  AttributesDisplay    (const byte* Name, void* Data);
-void  AtributesDeleteData  (const byte* Name, void* Data);
-//------------------------------------------------------------------------------
+void AST_NamespacePush::Display(){
+ printf("\nLine %d -- NamespacePush:\n ", Line);
 
-extern AST_Base* AST; // The global AST root
-//------------------------------------------------------------------------------
+ if(Namespace){
+  if(Namespace->Left || Namespace->Right) printf("(");
+  Namespace->Display();
+  if(Namespace->Left || Namespace->Right) printf(")");
+ }
 
-#endif
-//------------------------------------------------------------------------------
+ printf(".{\n");
+  if(Statements) Statements->Display();
+ printf("}\n");
 
+ if(Next) Next->Display();
+}
+//------------------------------------------------------------------------------

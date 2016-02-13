@@ -66,6 +66,10 @@ struct TOKEN{
   Import,
   As,
 
+  RTL,
+  FSM,
+  HDL,
+
   // Operators .................................................................
   Increment, // ++
   Decrement, // --

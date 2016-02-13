@@ -37,7 +37,7 @@ AST_Assignment::~AST_Assignment(){
 //------------------------------------------------------------------------------
 
 void AST_Assignment::Display(){
- printf("\nLine %d -- Assignment:\n ", Line);
+ printf("\nLine %d -- Assignment: ", Line);
 
  if(Left){
   if(Left->Left || Left->Right) printf("(");

@@ -52,7 +52,7 @@ void AST_Expression::Display(){
 
  switch(ExpressionType){
   case String:
-   if(StrValue) printf("%s", StrValue->String());
+   if(StrValue) printf("\"%s\"", StrValue->String());
    else         printf("(String literal node has no value)");
    break;
 
@@ -66,8 +66,8 @@ void AST_Expression::Display(){
    else     printf("(Identifier node has no name)");
    break;
 
-  case FunctionCall    : printf("{call}"); break;
-  case ArrayConcatenate: printf("@"    ); break;
+  case FunctionCall    : printf("{call}" ); break;
+  case ArrayConcatenate: printf("{array}"); break;
 
   case Slice   : printf("{slice}"); break;
   case SliceAll: printf("{all}"  ); break;
@@ -92,8 +92,8 @@ void AST_Expression::Display(){
 
   case FP_Cast: printf(" {format} "); break;
 
-  case Concatenate: printf(" {concat} "); break;
-  case Replicate  : printf(" {rep} "); break;
+  case Concatenate: printf(":"    ); break;
+  case Replicate  : printf("{rep}"); break;
 
   case Multiply: printf(" * " ); break;
   case Divide  : printf(" / " ); break;
@@ -120,6 +120,8 @@ void AST_Expression::Display(){
 
   case Logical_AND: printf(" && "); break;
   case Logical_OR : printf(" || "); break;
+
+  case Conditional : printf(" ? "); break;
 
   default: printf("(Unknown expression type: %d)", ExpressionType);
  }

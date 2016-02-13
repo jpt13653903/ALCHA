@@ -93,6 +93,9 @@ SCANNER::SCANNER(){
   Keywords.Insert("default", TOKEN::Default);
   Keywords.Insert("import" , TOKEN::Import );
   Keywords.Insert("as"     , TOKEN::As     );
+  Keywords.Insert("rtl"    , TOKEN::RTL    );
+  Keywords.Insert("fsm"    , TOKEN::FSM    );
+  Keywords.Insert("hdl"    , TOKEN::HDL    );
 
   Operators.Insert("++" , TOKEN::Increment         );
   Operators.Insert("--" , TOKEN::Decrement         );

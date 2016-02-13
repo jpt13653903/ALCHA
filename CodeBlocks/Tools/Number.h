@@ -56,6 +56,8 @@ class NUMBER{
 
   void Mul(double r, double i);
 
+  bool IsInt();
+
   double GetReal();
   double GetImag();
 

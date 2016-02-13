@@ -1,68 +1,69 @@
-(*
- The scanner implements the following phases:
-  1) Remove trailing spaces
-  2) Escape new-lines
-  3) Remove leading spaces that are outside strings and comments
-  4) Concatenate spaces that are outside strings and comments
-  5) Concatenate new-lines that are outside strings and comments
-  6) Convert character streams to preprocessing tokens as per this grammar
-
-  Comments are stored as part of the token that immediately follows the comment.
-
-  The scanner can also ignore the grammar and scan directly to the next
-  directive.  This is used to implement #if statements that return "false".
-*)
+(* 
+The source file is scanned in UTF-8.  Any Unicode character checks are 
+performed in UTF-8.  Strings and identifiers are stored, internally, in 
+UTF-8.  This is in order to preserve encoding details which might influence 
+file access on some Linux systems *)
 (*----------------------------------------------------------------------------*)
 
-PreprocessingToken = Directive | Newline        | Identifier | 
-                     Number    | FixedPointCast | Character  | 
-                     String    | Operator       | Other      | EOF;
+(* Other than token separation, WhiteSpace is ignored *)
+WhiteSpace = Space | Newline | LineComment | BlockComment;
+
+Space   = ? U+0020 ? | ? U+0009 ? | ? U+00A0 ? | ? U+1680 ? | ? U+180E ? 
+        | ? U+2000 ? | ? U+2001 ? | ? U+2002 ? | ? U+2003 ? | ? U+2004 ? 
+        | ? U+2005 ? | ? U+2006 ? | ? U+2007 ? | ? U+2008 ? | ? U+2009 ? 
+        | ? U+200A ? | ? U+202F ? | ? U+200B ? | ? U+200C ? | ? U+200D ? 
+        | ? U+205F ? | ? U+2060 ? | ? U+3000 ? | ? U+FEFF ? ;
+Newline = ? U+0A U+0D ? | ? U+0D U+0A ? | ? U+0A ? | ? U+0D ? | ? U+0B ? 
+        | ? U+0C ? | ? U+85 ? | ? U+2028 ? | ? U+2029 ? ;
+       
+LineComment  = "//" {? Any byte sequence ? -Newline} Newline;
+BlockComment = "/*" {? Any byte sequence ? -"*/"} "*/";
+Byte         = ? Any input byte that does not belong to anything else ?;
 (*----------------------------------------------------------------------------*)
 
-Directive = "#" Identifier; (* "#" must be the first character on the line *)
+Token      = String | Literal | Keyword | Identifier | Operator;
 
-Identifier = NonDigit {Digit | NonDigit};
+Keyword    = "target" | "void"   | "pin"     | "sig"  | "clk"    | "int"    
+           | "rat"    | "float"  | "complex" | "in"   | "out"    | "signed" 
+           | "group"  | "class"  | "if"      | "else" | "for"    | "while"  
+           | "loop"   | "switch" | "default" | "case" | "import" | "as"
+           | "rtl"    | "fsm"    | "hdl";
 
-Number = (Digit | ("." Digit)) {
-          Digit | NonDigit | 
-          "." | "_" | "'" | (* Underscores and quotes are removed *)
-          (("e" | "E" | "p" | "P") ["+" | "-"])
-         };
+Operator   = "++"  | "--"  | "'"  | "->" | "#"  | "."  | ".{" | "&"  | "~&" 
+           | "|"   | "~|"  | "^"  | "~^" | "~"  | ":"  | "\"  | "@{" | "+" 
+           | "-"   | "*"   | "/"  | "%"  | "<<" | ">>" | "<"  | ">"  | "<=" 
+           | ">="  | "=="  | "!=" | "!"  | "&&" | "||" | "?"  | "="  | ":=" 
+           | "@="  | "+="  | "-=" | "*=" | "/=" | "%=" | "&=" | "|=" | "^=" 
+           | "<<=" | ">>=" | "("  | ")"  | "["  | "]"  | "{"  | "}"  
+           | ","   | ";"   ;
 
-FixedPointCast = "`" {Digit | ("." ["-"])};
+Literal        = ("0b" Binary) | ("0o" Octal) | ("0x" Hexadecimal) | Decimal;
 
-Character = "'" {("\" Unicode) | (Unicode - "'")} "'";
-String    = '"' {("\" Unicode) | (Unicode - '"')} '"';
-Comment   = ("//" {Unicode - Newline} NewLine) |
-            ("/*" {Unicode - "*/"} "*/");
-Unicode   = ? Any Unicode character ?;
+Identifier     = (NonDigit {D | NonDigit}) -Keyword; 
 
-Operator = "#"   | "##"  | "{"   | "}"   | "["   | "]"   | "[["  | "]]"  |
-           "("   | ")"   | ";"   | ","   | "?"   | ":"   | "::"  | "."   |
-           "+"   | "-"   | "*"   | "/"   | "%"   | "^"   | "&"   | "|"   |
-           "~"   | "!"   | "="   | ":="  | "<"   | ">"   | "+="  | "-="  |
-           "*="  | "/="  | "%="  | "^="  | "&="  | "|="  | "<<"  | ">>"  |
-           "<<=" | ">>=" | "=="  | "!="  | "<="  | ">="  | "&&"  | "||"  |
-           "++"  | "--"  | "->"  | ".."  | "..." ;
+String         = '"' {EscapeSequence | (Byte - '"')} '"' [String];
+
+EscapeSequence = "\n" | "\t" | "\v" | "\b" | "\r" | "\f" 
+               | "\a" | "\\" | "\?" | "\'" | '\"' 
+               | ("\x" H H) | ("\u" H H H H) | ("\U" H H H H H H H H)
+               | ("\" O {O});
+
+(* Either the left of the ".", or the right of the "." must have a digit *)
+(* Within literals, the "_" character is ignored *)
+Binary      = {B} ["." {B}] [("p" | "P"            ) Exponent] ["i" | "j"];
+Octal       = {O} ["." {O}] [("p" | "P"            ) Exponent] ["i" | "j"];
+Hexadecimal = {H} ["." {H}] [("p" | "P"            ) Exponent] ["i" | "j"];
+Decimal     = {D} ["." {D}] [("p" | "P" | "e" | "E") Exponent] ["i" | "j"];
+Exponent    = ["-" | "+"] {D};
 (*----------------------------------------------------------------------------*)
 
-Digit    = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
-HexDigit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" |
-           "a" | "b" | "c" | "d" | "e" | "f" |
-           "A" | "B" | "C" | "D" | "E" | "F" ;
-NonDigit = "_" | "\" | 
-           ? "a" to "z" ? | 
-           ? "A" to "Z" ? | 
-           ? Any Unicode character larger than or equal to U+80 ? ;
+B = "0" | "1";
+O = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7";
+D = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+H = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" 
+  | "a" | "b" | "c" | "d" | "e" | "f" | "A" | "B" | "C" | "D" | "E" | "F"; 
 
-NewLine = (? U+0D ? ? U+0A ?) | (? U+0A ? ? U+0D ?) |
-           ? U+000A ? | ? U+000B ? | ? U+000C ? | ? U+000D ? | 
-           ? U+0085 ? | ? U+2028 ? | ? U+2029 ? ;
-
-Space = ? U+0020 ? | ? U+0009 ? | ? U+00A0 ? | ? U+1680 ? | 
-        ? U+180E ? | ? U+2000 ? | ? U+2001 ? | ? U+2002 ? | ? U+2003 ? | 
-        ? U+2004 ? | ? U+2005 ? | ? U+2006 ? | ? U+2007 ? | ? U+2008 ? | 
-        ? U+2009 ? | ? U+200A ? | ? U+202F ? | ? U+200B ? | ? U+200C ? | 
-        ? U+200D ? | ? U+205F ? | ? U+2060 ? | ? U+3000 ? | ? U+FEFF ? ;
+NonDigit = ?"a".."z"? | ?"A".."Z"? | "_" 
+         | (? Any Unicode >= U+80 ? -Space -Newline);
 (*----------------------------------------------------------------------------*)
 

@@ -18,49 +18,29 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_h
-#define AST_h
+#ifndef AST_ClassDefinition_h
+#define AST_ClassDefinition_h
 //------------------------------------------------------------------------------
 
-#include "MyString.h"
-#include "Dictionary.h"
+#include "AST_Expression.h"
 //------------------------------------------------------------------------------
 
-struct AST_Base{ // The base type for AST nodes
- enum TYPE{
-  Fence, // Empty statement, but also "next-cycle" specifier in FSMs
-  TargetDefinition,
-  ClassDefinition,
-  Definition, // pin, sig, clk, int, rat, float, complex and class instance
-  Expression,
-  Assignment,
-  NamespacePush,
-  IfStatement,
-  ForLoop,
-  LoopLoop,
-  WhileLoop,
-  Switch,
-  RTL,
-  FSM,
-  HDL
- } Type;
+struct AST_ClassDefinition: public AST_Base{
+  DICTIONARY Attributes;
 
- int       Line;
- AST_Base* Next; // Next sibling
+  byte          * Identifier;
+  AST_Expression* Parameters; // Constructor parameters
 
-          AST_Base(int Line);
- virtual ~AST_Base(); // Also deletes the rest of the linked list
+  byte          * Parent;           // This class inherits from Parent
+  AST_Expression* ParentParameters; // Parent constructor call
 
- virtual void Display() = 0;
+  AST_Base* Body;
+
+  AST_ClassDefinition(int Line);
+ ~AST_ClassDefinition();
+
+  void Display();
 };
-//------------------------------------------------------------------------------
-
-void* AttributesOnDuplicate(const byte* Name, void* Old, void* New);
-void  AttributesDisplay    (const byte* Name, void* Data);
-void  AtributesDeleteData  (const byte* Name, void* Data);
-//------------------------------------------------------------------------------
-
-extern AST_Base* AST; // The global AST root
 //------------------------------------------------------------------------------
 
 #endif
