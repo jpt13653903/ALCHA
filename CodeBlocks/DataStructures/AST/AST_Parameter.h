@@ -18,57 +18,27 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Definition_h
-#define AST_Definition_h
+#ifndef AST_Parameter_h
+#define AST_Parameter_h
 //------------------------------------------------------------------------------
 
-#include "AST_Parameter.h"
+#include "AST_Expression.h"
 //------------------------------------------------------------------------------
 
-struct AST_Definition: public AST_Base{
+struct AST_Parameter: public AST_Base{
   enum DEFINITION_TYPE{
-   Void, Auto, // Used for functions only
+   Auto,
    Pin, Sig, Clk,
    Int, Rat, Float, Complex,
    ClassInstance
   } DefinitionType;
   AST_Expression* ClassName; // For class instances
 
-  struct ARRAY{
-   AST_Expression* Size;
-   ARRAY         * Next;
+  int   ArrayDimensions;
+  byte* Identifier;
 
-   ARRAY();
-  ~ARRAY();
-  };
-
-  struct IDENTIFIER{
-   byte * Identifier; // ID obtained via IdentifierTree
-   ARRAY* Array;      // Null when this is a scalar
-
-   // These are used for function definitions.
-   bool           Function; // True when this is a function definition
-   AST_Parameter* Parameters; // List of identifiers (calls are duck-typed)
-   AST_Base     * FunctionBody;
-
-   IDENTIFIER* Next;
-
-   IDENTIFIER();
-  ~IDENTIFIER();
-  };
-
-  enum DIRECTION{Bidirectional = 0, In, Out} Direction;
-  bool Signed;
-
-  // Expressions for fixed-point casts
-  AST_Expression* Format; // The "Right" of the fixed-point cast
-
-  DICTIONARY Attributes;
-
-  IDENTIFIER* Identifiers;
-
-  AST_Definition(int Line, DEFINITION_TYPE DefinitionType);
- ~AST_Definition();
+  AST_Parameter(int Line, DEFINITION_TYPE DefinitionType);
+ ~AST_Parameter();
 
   void Display();
 };

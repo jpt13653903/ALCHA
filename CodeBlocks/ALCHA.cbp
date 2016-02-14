@@ -74,6 +74,8 @@
 		<Unit filename="DataStructures/AST/AST_LoopLoop.h" />
 		<Unit filename="DataStructures/AST/AST_NamespacePush.cpp" />
 		<Unit filename="DataStructures/AST/AST_NamespacePush.h" />
+		<Unit filename="DataStructures/AST/AST_Parameter.cpp" />
+		<Unit filename="DataStructures/AST/AST_Parameter.h" />
 		<Unit filename="DataStructures/AST/AST_RTL.cpp" />
 		<Unit filename="DataStructures/AST/AST_RTL.h" />
 		<Unit filename="DataStructures/AST/AST_Switch.cpp" />
@@ -88,6 +90,7 @@
 		<Unit filename="DataStructures/IdentifierTree.h" />
 		<Unit filename="DataStructures/TypeDef.cpp" />
 		<Unit filename="DataStructures/TypeDef.h" />
+		<Unit filename="FrontEnd/CharacterNames.h" />
 		<Unit filename="FrontEnd/Parser.cpp" />
 		<Unit filename="FrontEnd/Parser.h" />
 		<Unit filename="FrontEnd/Scanner.cpp" />

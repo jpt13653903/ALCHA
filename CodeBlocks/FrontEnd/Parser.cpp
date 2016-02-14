@@ -275,32 +275,6 @@ AST_Expression* PARSER::ParameterList(){
 }
 //------------------------------------------------------------------------------
 
-AST_Expression* PARSER::SliceList(){
- if(Token.Type == TOKEN::SliceAll){
-  GetToken();
-  return new AST_Expression(Token.Line, AST_Expression::SliceAll);
- }
-
- AST_Expression* Head;
- AST_Expression* Node;
-
- Head = Node = Array();
- if(!Node) return 0;
-
- while(Token.Type == TOKEN::Comma){
-  GetToken();
-  Node->Next = Array();
-  Node       = (AST_Expression*)Node->Next;
-  if(!Node){
-   Error("Array expected");
-   delete Head;
-   return 0;
-  }
- }
- return Head;
-}
-//------------------------------------------------------------------------------
-
 AST_Expression* PARSER::Primary(){
  AST_Expression* Node;
 
@@ -341,14 +315,8 @@ AST_Expression* PARSER::Postfix(){
    GetToken();
 
    Temp->Left  = Node;
-   Temp->Right = SliceList();
+   Temp->Right = Array();
    Node = Temp;
-
-   if(!Node->Right){
-    Error("Slice list expected");
-    delete Node;
-    return 0;
-   }
 
    if(Token.Type != TOKEN::CloseSquare){
     Error("] expected");
@@ -444,33 +412,10 @@ AST_Expression* PARSER::Unary(){
 }
 //------------------------------------------------------------------------------
 
-AST_Expression* PARSER::Array(){
+AST_Expression* PARSER::Range(){
  AST_Expression* Node;
  AST_Expression* Temp;
 
- if(Token.Type == TOKEN::Array_Concatenate){
-  Node = new AST_Expression(Token.Line, AST_Expression::ArrayConcatenate);
-  GetToken();
-
-  Temp = Node->Right = Expression();
-  while(Temp){
-   if(Token.Type == TOKEN::CloseCurly){
-    GetToken();
-    return Node;
-   }
-   if(Token.Type != TOKEN::Comma){
-    Error("Comma expected");
-    delete Node;
-    return 0;
-   }
-   GetToken();
-   Temp->Next = Expression();
-   Temp = (AST_Expression*)Temp->Next;
-  }
-  Error("Incomplete array concatenation");
-  delete Node;
-  return 0;
- }
  Node = Unary();
  if(!Node) return 0;
 
@@ -542,14 +487,14 @@ AST_Expression* PARSER::Reduction(){
    break;
  }
  if(Node){
-  Node->Right = Array();
+  Node->Right = Range();
   if(!Node->Right){
-   Error("Array expected");
+   Error("Range expected");
    delete Node;
    return 0;
   }
  }else{
-  Node = Array();
+  Node = Range();
  }
  return Node;
 }
@@ -659,11 +604,42 @@ AST_Expression* PARSER::Replication(){
 }
 //------------------------------------------------------------------------------
 
-AST_Expression* PARSER::Multiplicative(){
+AST_Expression* PARSER::Array(){
  AST_Expression* Temp;
  AST_Expression* Node;
 
  Node = Replication();
+ if(!Node) return 0;
+
+ while(Token.Type){
+  switch(Token.Type){
+   case TOKEN::Array_Concatenate:
+    Temp = new AST_Expression(Token.Line, AST_Expression::ArrayConcatenate);
+    break;
+   default:
+    return Node;
+  }
+  GetToken();
+
+  Temp->Left = Node;
+  Node = Temp;
+
+  Node->Right = Replication();
+  if(!Node->Right){
+   Error("Replication expected");
+   delete Node;
+   return 0;
+  }
+ }
+ return Node;
+}
+//------------------------------------------------------------------------------
+
+AST_Expression* PARSER::Multiplicative(){
+ AST_Expression* Temp;
+ AST_Expression* Node;
+
+ Node = Array();
  if(!Node) return 0;
 
  while(Token.Type){
@@ -685,9 +661,9 @@ AST_Expression* PARSER::Multiplicative(){
   Temp->Left = Node;
   Node = Temp;
 
-  Node->Right = Replication();
+  Node->Right = Array();
   if(!Node->Right){
-   Error("Replication expected");
+   Error("Array expected");
    delete Node;
    return 0;
   }
@@ -1016,9 +992,9 @@ AST_Expression* PARSER::Expression(){
   Temp->Left = Node;
   Node = Temp;
 
-  Node->Right = Primary();
+  Node->Right = Cast();
   if(!Node->Right){
-   Error("Primary expected");
+   Error("Cast expected");
    delete Node;
    return 0;
   }
@@ -1030,9 +1006,9 @@ AST_Expression* PARSER::Expression(){
   }
   GetToken();
 
-  Node->Right->Next = Primary();
+  Node->Right->Next = Cast();
   if(!Node->Right->Next){
-   Error("Primary expected");
+   Error("Cast expected");
    delete Node;
    return 0;
   }
@@ -1061,19 +1037,92 @@ AST_Definition::ARRAY* PARSER::ArrayDefinition(){
 }
 //------------------------------------------------------------------------------
 
-AST_Expression* PARSER::DefParameterList(){
- AST_Expression* Head;
- AST_Expression* Node;
+AST_Parameter* PARSER::DefParameter(){
+ AST_Parameter* Node;
 
- Head = Node = Identifier();
+ switch(Token.Type){
+  case TOKEN::Pin:
+   Node = new AST_Parameter(Token.Line, AST_Parameter::Pin); GetToken();
+   break;
+  case TOKEN::Sig:
+   Node = new AST_Parameter(Token.Line, AST_Parameter::Sig); GetToken();
+   break;
+  case TOKEN::Clk:
+   Node = new AST_Parameter(Token.Line, AST_Parameter::Clk); GetToken();
+   break;
+  case TOKEN::Int:
+   Node = new AST_Parameter(Token.Line, AST_Parameter::Int); GetToken();
+   break;
+  case TOKEN::Rat:
+   Node = new AST_Parameter(Token.Line, AST_Parameter::Rat); GetToken();
+   break;
+  case TOKEN::Float:
+   Node = new AST_Parameter(Token.Line, AST_Parameter::Float); GetToken();
+   break;
+  case TOKEN::Complex:
+   Node = new AST_Parameter(Token.Line, AST_Parameter::Complex); GetToken();
+   break;
+  case TOKEN::Identifier:
+   Node = new AST_Parameter(Token.Line, AST_Parameter::ClassInstance);
+   Node->ClassName = Postfix();
+   if(!ValidNamespaceSpecifier(Node->ClassName)){
+    Error("Invalid class name specifier");
+    delete Node;
+    return 0;
+   }
+   break;
+
+  default:
+   return 0;
+ }
+
+ if(Token.Type == TOKEN::Identifier){
+  Node->Identifier = Token.ID;
+  GetToken();
+
+ }else{
+  if(
+   Node->ClassName &&
+   Node->ClassName->ExpressionType == AST_Expression::Identifier
+  ){
+   Node->Identifier = Node->ClassName->Name;
+   delete Node->ClassName;
+   Node->ClassName      = 0;
+   Node->DefinitionType = AST_Parameter::Auto;
+
+  }else{
+   Error("Identifier expected");
+   delete Node;
+   return 0;
+  }
+ }
+ while(Token.Type == TOKEN::OpenSquare){
+  GetToken();
+  if(Token.Type != TOKEN::CloseSquare){
+   Error("] expected");
+   delete Node;
+   return 0;
+  }
+  GetToken();
+  Node->ArrayDimensions++;
+ }
+ return Node;
+}
+//------------------------------------------------------------------------------
+
+AST_Parameter* PARSER::DefParameterList(){
+ AST_Parameter* Head;
+ AST_Parameter* Node;
+
+ Head = Node = DefParameter();
  if(!Node) return 0;
 
  while(Token.Type == TOKEN::Comma){
   GetToken();
-  Node->Next = Identifier();
-  Node       = (AST_Expression*)Node->Next;
+  Node->Next = DefParameter();
+  Node       = (AST_Parameter*)Node->Next;
   if(!Node){
-   Error("Identifier expected");
+   Error("DefParameter expected");
    delete Head;
    return 0;
   }
@@ -1188,6 +1237,8 @@ AST_Definition* PARSER::Definition(){
  switch(Token.Type){
   case TOKEN::Void:
    Node = new AST_Definition(Token.Line, AST_Definition::Void); break;
+  case TOKEN::Auto:
+   Node = new AST_Definition(Token.Line, AST_Definition::Auto); break;
   case TOKEN::Pin:
    Node = new AST_Definition(Token.Line, AST_Definition::Pin); break;
   case TOKEN::Sig:
@@ -1217,6 +1268,11 @@ AST_Definition* PARSER::Definition(){
    delete Node;
    return 0;
   }
+  if(Node->DefinitionType == AST_Definition::Auto){
+   Error("Auto cannot have a format");
+   delete Node;
+   return 0;
+  }
 
   AST_Expression* Temp = Node->Format;
   Node->Format = Temp->Right;
@@ -1236,9 +1292,15 @@ AST_Definition* PARSER::Definition(){
   delete Node;
   return 0;
  }
- if(Node->DefinitionType == AST_Definition::Void){
+ if(
+  Node->DefinitionType == AST_Definition::Void ||
+  Node->DefinitionType == AST_Definition::Auto
+ ){
   if(!Node->Identifiers->Function){
-   Error("Only functions can have \"void\" type");
+   Error(
+    "Only functions can have \"void\" or \"auto\" types.\n         "
+    "For auto variables and signals, don't declare them at all."
+   );
   }
  }
  return Node;
@@ -1328,7 +1390,7 @@ bool PARSER::ValidLHS(AST_Expression* Node){
 //------------------------------------------------------------------------------
 
 AST_Base* PARSER::Other(){
- AST_Expression* Expr = Concatenation();
+ AST_Expression* Expr = Array();
  if(!Expr) return 0;
 
  if(Token.Type == TOKEN::Semicolon){

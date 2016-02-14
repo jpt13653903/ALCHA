@@ -38,6 +38,7 @@ struct TOKEN{
   Target,
 
   Void,
+  Auto,
   Pin,
   Sig,
   Clk,
@@ -51,7 +52,6 @@ struct TOKEN{
   Out,
   Signed,
 
-  Group,
   Class,
 
   If,
@@ -75,7 +75,7 @@ struct TOKEN{
   Decrement, // --
   FP_Cast,   // '
   To,        // ->
-  Step,      // #
+  Step,      // @
   Dot,       // .
   Dot_Curly, // .{
 
@@ -87,8 +87,7 @@ struct TOKEN{
   Bit_XNOR, // ~^
   Bit_NOT,  // ~
 
-  Bit_Repeat,        // \                                                      "
-  Array_Concatenate, // @{
+  Bit_Repeat, // \                                                             "
 
   Add,      // +
   Subtract, // -
@@ -146,11 +145,12 @@ struct TOKEN{
   String,
 
   // Aliases ...................................................................
-  OpenAngle       = Less,     // <
-  CloseAngle      = Greater,  // >
-  Negate          = Subtract, // -
-  SliceAll        = Colon,    // :
-  Bit_Concatenate = Colon
+  OpenAngle         = Less,     // <
+  CloseAngle        = Greater,  // >
+  Negate            = Subtract, // -
+  Bit_Concatenate   = Colon,    // :
+  Array_Concatenate = Bit_NOT   // ~
+
  } Type;
 
  int    Line;  // The line number

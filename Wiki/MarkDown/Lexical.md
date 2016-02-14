@@ -1,0 +1,57 @@
+[[include repo=doccode path=MarkDown/Header.md]]
+
+[TOC]
+
+# Lexical
+
+The scanner reads UTF-8 formatted files.  The UTF-8 formatting is retained, even though the input stream is searched for Unicode space and newline characters.  At this stage, white-space and comments are ignored, adjacent strings are concatenated and escape sequences within strings are evaluated.  The lexical EBNF is presented below:
+
+[[include repo=doccode path=EBNF/Scanner.ebnf]]
+
+## Literals
+ALCHA literals are all stored as infinite-precision rational numbers (by means of the [GNU MP library](https://gmplib.org/)). An imaginary literal can be specified by using either a `j` or `i` postfix.  Literals can be binary (`0b` prefix), octal (`0o` prefix), hexadecimal (`0x` prefix) or decimal (no prefix).  Decimal numbers have an optional decimal exponent by means of an `e` postfix.  Binary, octal, decimal and hexadecimal numbers have an optional binary exponent by means of a `p` postfix.  All literals can be cast to a fixed-point format by means of the `'` operator.  Within numerical literals, the underscore character (`_`) is ignored.  Character literals are string literals with only one character.  Below are some examples:
+
+    :::C++
+    123.456      // decimal constant
+    123.456'(8,8)  // Decimal constant of fixed-point 8.8 type
+    0b101.0101   // Binary constant
+    0o123.456    // Octal constant
+    0xABC.DEF    // Hexadecimal constant
+    123_456_e7   // Decimal constant with decimal exponent (10^7)
+    123_456_p7   // Decimal constant with binary exponent (2^7)
+    0x123_ABC_p7 // Hexadecimal constant with binary exponent (2^7)
+    7.3 + 8.9j   // Decimal complex constant
+    "A"          // Unicode character constant
+    "ABC"        // Unicode string literal (character array)
+
+Unicode characters can be used directly within strings, such as `"`&ohm;`"` and `"`&alpha;&beta;&gamma;`"`.  Certain non-printable characters can be used by means of escaping.  ALCHA escape sequences are similar to D escape sequences.  The following table provides a summary:
+
+Sequence     | Character
+--------     | ---------
+`\a`         | Alarm (`\x07`)
+`\b`         | Backspace (`\x08`)
+`\f`         | Form-feed (`\x0C`)
+`\n`         | New-line (`\x0A`)
+`\r`         | Carriage return (`\x0D`)
+`\t`         | Horizontal tab (`\x09`)
+`\v`         | Vertical tab (`\x0B`)
+`\\`         | Backslash (`\x5C`)
+`\'`         | Single quotation mark (`\x27`)
+`\"`         | Double quotation mark (`\x22`)
+`\?`         | Question mark (`\x3F`)
+`\nnn`       | up to 11-digit octal Unicode
+`\xHH`       | 2-digit hexadecimal Unicode
+`\uHHHH`     | 4-digit hexadecimal Unicode
+`\UHHHHHHHH` | 8-digit hexadecimal Unicode
+`\&nnnn;`    | Named character, where `nnnn` is any of the [HTML-5 character names](https://w3.org/TR/html5/syntax.html#named-character-references)
+
+## Identifiers
+Non-digits in ALCHA are defined as the '`_`' character, as well as any character in the ranges '`a`' to '`z`', '`A`' to '`Z`' and any Unicode character above `U+7F`, as long as it is not a white-space or newline character.
+
+Digits in ALCHA are defined as any character in the range '`0`' to '`9`'.
+
+Identifiers start with a non-digit, which may then be followed with any digit or non-digit.
+
+
+[[include repo=doccode path=MarkDown/Footer.md]]
+

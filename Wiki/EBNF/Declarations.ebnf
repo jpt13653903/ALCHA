@@ -2,27 +2,21 @@ Module = [Statements];
 
 TargetDefinition = "target" AttributeList ";";
 Definition       = ["signed"] ["in" | "out"] ["signed"] 
-                   ("void" | "pin" | "sig"   | "clk" | 
-                    "int"  | "rat" | "float" | "complex") 
+                   (BaseType | "void" | "auto")
                    [FP_Cast] [AttributeList] IdentifierList;
 
-(* The result from "Concatenation" is checked for syntactic validity before
-   use as a class name or assignment target *)
-Other = Concatenation (
-         (";"                              ) | (* Function call  *)
-         (".{" [Statements] "}"            )   (* Namespace push *)
-         ([AttributeList] IdentifierList   ) | (* Class instance *)
-         (AssignmentOperator Expression ";") | (* Assignment     *)
-        );
-AssignmentOperator = "="  | ":=" | "@=" | "+=" | "-="  | "*="  | "/=" 
-                   | "%=" | "&=" | "|=" | "^=" | "<<=" | ">>=" ; 
+BaseType = "pin"  | "sig" | "clk" 
+         | "int"  | "rat" | "float" | "complex";
 
 IdentifierList = Identifier {ArrayDefinition} (
                   ("(" [DefParameterList] ")" "{" [Statements] "}"   ) |
                   ({"," Identifier {ArrayDefinition}} ";")
                  );
 ArrayDefinition  = "[" [Expression] "]";
-DefParameterList = Identifier {"," Identifier};
+
+DefParameterList = DefParameter {"," DefParameter};
+DefParameter     = [BaseType | (Identifier {"." Identifier})] 
+                   Identifier {"[" "]"};
 
 AttributeList       = "<" AttributeAssignment {, AttributeAssignment} ">";
 AttributeAssignment = Identifier "=" String;

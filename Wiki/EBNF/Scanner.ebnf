@@ -15,19 +15,18 @@ Byte         = ? Any input byte that does not belong to anything else ?;
 
 Token      = String | Literal | Keyword | Identifier | Operator;
 
-Keyword    = "target" | "void"   | "pin"     | "sig"  | "clk"    | "int"    
-           | "rat"    | "float"  | "complex" | "in"   | "out"    | "signed" 
-           | "group"  | "class"  | "if"      | "else" | "for"    | "while"  
-           | "loop"   | "switch" | "default" | "case" | "import" | "as"
+Keyword    = "target" | "void"   | "auto"  | "pin"     | "sig"    | "clk"
+           | "int"    | "rat"    | "float" | "complex" | "in"     | "out"
+           | "signed" | "class"  | "if"    | "else"    | "for"    | "while"  
+           | "loop"   | "switch" | "case"  | "default" | "import" | "as"
            | "rtl"    | "fsm"    | "hdl";
 
-Operator   = "++"  | "--"  | "'"  | "->" | "#"  | "."  | ".{" | "&"  | "~&" 
-           | "|"   | "~|"  | "^"  | "~^" | "~"  | ":"  | "\"  | "@{" | "+" 
-           | "-"   | "*"   | "/"  | "%"  | "<<" | ">>" | "<"  | ">"  | "<=" 
-           | ">="  | "=="  | "!=" | "!"  | "&&" | "||" | "?"  | "="  | ":=" 
-           | "@="  | "+="  | "-=" | "*=" | "/=" | "%=" | "&=" | "|=" | "^=" 
-           | "<<=" | ">>=" | "("  | ")"  | "["  | "]"  | "{"  | "}"  
-           | ","   | ";"   ;
+Operator   = "++"  | "--" | "'"  | "->" | "@"  | "."  | ".{" | "&"  | "~&" 
+           | "|"   | "~|" | "^"  | "~^" | "~"  | ":"  | "\"  | "+"  | "-"
+           | "*"   | "/"  | "%"  | "<<" | ">>" | "<"  | ">"  | "<=" | ">="
+           | "=="  | "!=" | "!"  | "&&" | "||" | "?"  | "="  | ":=" | "~="
+           | "+="  | "-=" | "*=" | "/=" | "%=" | "&=" | "|=" | "^=" | "<<=" 
+           | ">>=" | "("  | ")"  | "["  | "]"  | "{"  | "}"  | ","  | ";";
 
 Literal        = ("0b" Binary) | ("0o" Octal) | ("0x" Hexadecimal) | Decimal;
 

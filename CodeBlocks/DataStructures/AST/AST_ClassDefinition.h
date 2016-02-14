@@ -22,14 +22,14 @@
 #define AST_ClassDefinition_h
 //------------------------------------------------------------------------------
 
-#include "AST_Expression.h"
+#include "AST_Parameter.h"
 //------------------------------------------------------------------------------
 
 struct AST_ClassDefinition: public AST_Base{
   DICTIONARY Attributes;
 
   byte          * Identifier;
-  AST_Expression* Parameters; // Constructor parameters
+  AST_Parameter * Parameters; // Constructor parameters
 
   byte          * Parent;           // This class inherits from Parent
   AST_Expression* ParentParameters; // Parent constructor call

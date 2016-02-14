@@ -81,6 +81,7 @@ void AST_Definition::Display(){
 
  switch(DefinitionType){
   case Void   : printf("Void):\n"    ); break;
+  case Auto   : printf("Auto):\n"     ); break;
   case Pin    : printf("Pin):\n"     ); break;
   case Sig    : printf("Signal):\n"  ); break;
   case Clk    : printf("Clock):\n"   ); break;
@@ -134,9 +135,9 @@ void AST_Definition::Display(){
   }
 
   if(Identifier->Function){
-   printf(" -- function:\n  Parameters: (");
+   printf(" -- function:\n  Parameters: (\n");
    if(Identifier->Parameters) Identifier->Parameters->Display();
-   printf(")\n  Body:{\n");
+   printf(" )\n  Body:{\n");
    if(Identifier->FunctionBody) Identifier->FunctionBody->Display();
    printf("  }\n");
   }

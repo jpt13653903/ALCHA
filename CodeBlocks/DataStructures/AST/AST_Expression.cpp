@@ -67,10 +67,9 @@ void AST_Expression::Display(){
    break;
 
   case FunctionCall    : printf("{call}" ); break;
-  case ArrayConcatenate: printf("{array}"); break;
+  case ArrayConcatenate: printf(" ~ "); break;
 
   case Slice   : printf("{slice}"); break;
-  case SliceAll: printf("{all}"  ); break;
 
   case Dot: printf("."); break;
 

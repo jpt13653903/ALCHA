@@ -73,6 +73,7 @@ SCANNER::SCANNER(){
 
   Keywords.Insert("target" , TOKEN::Target );
   Keywords.Insert("void"   , TOKEN::Void   );
+  Keywords.Insert("auto"   , TOKEN::Auto   );
   Keywords.Insert("pin"    , TOKEN::Pin    );
   Keywords.Insert("sig"    , TOKEN::Sig    );
   Keywords.Insert("clk"    , TOKEN::Clk    );
@@ -83,7 +84,6 @@ SCANNER::SCANNER(){
   Keywords.Insert("in"     , TOKEN::In     );
   Keywords.Insert("out"    , TOKEN::Out    );
   Keywords.Insert("signed" , TOKEN::Signed );
-  Keywords.Insert("group"  , TOKEN::Group  );
   Keywords.Insert("class"  , TOKEN::Class  );
   Keywords.Insert("if"     , TOKEN::If     );
   Keywords.Insert("else"   , TOKEN::Else   );
@@ -103,7 +103,7 @@ SCANNER::SCANNER(){
   Operators.Insert("--" , TOKEN::Decrement         );
   Operators.Insert("'"  , TOKEN::FP_Cast           );
   Operators.Insert("->" , TOKEN::To                );
-  Operators.Insert("#"  , TOKEN::Step              );
+  Operators.Insert("@"  , TOKEN::Step              );
   Operators.Insert("."  , TOKEN::Dot               );
   Operators.Insert(".{" , TOKEN::Dot_Curly         );
   Operators.Insert( "&" , TOKEN::Bit_AND           );
@@ -114,7 +114,6 @@ SCANNER::SCANNER(){
   Operators.Insert("~^" , TOKEN::Bit_XNOR          );
   Operators.Insert("~"  , TOKEN::Bit_NOT           );
   Operators.Insert("\\" , TOKEN::Bit_Repeat        );
-  Operators.Insert("@{" , TOKEN::Array_Concatenate );
   Operators.Insert("+"  , TOKEN::Add               );
   Operators.Insert("-"  , TOKEN::Subtract          );
   Operators.Insert("*"  , TOKEN::Multiply          );
@@ -134,7 +133,7 @@ SCANNER::SCANNER(){
   Operators.Insert("?"  , TOKEN::Conditional       );
   Operators.Insert(  "=", TOKEN::Assign            );
   Operators.Insert( ":=", TOKEN::Raw_Assign        );
-  Operators.Insert( "@=", TOKEN::Append_Assign     );
+  Operators.Insert( "~=", TOKEN::Append_Assign     );
   Operators.Insert( "+=", TOKEN::Add_Assign        );
   Operators.Insert( "-=", TOKEN::Subtract_Assign   );
   Operators.Insert( "*=", TOKEN::Multiply_Assign   );

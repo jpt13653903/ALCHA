@@ -48,7 +48,7 @@ void AST_Assignment::Display(){
  switch(AssignmentType){
   case Assign            : printf(  " = "); break;
   case Raw_Assign        : printf( " := "); break;
-  case Append_Assign     : printf( " @= "); break;
+  case Append_Assign     : printf( " ~= "); break;
   case Add_Assign        : printf( " += "); break;
   case Subtract_Assign   : printf( " -= "); break;
   case Multiply_Assign   : printf( " *= "); break;

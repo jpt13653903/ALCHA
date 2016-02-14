@@ -7,6 +7,17 @@ Statement  = TargetDefinition | ClassDefinition | Definition | Import
 
 Import = "import" String ["as" Identifier];
 
+(* The result from "Array" is checked for syntactic validity before
+   use as a name-space, class name or assignment target *)
+Other = Array (
+         (";"                              ) | (* Function call   *)
+         (".{" [Statements] "}"            )   (* Name-space push *)
+         ([AttributeList] IdentifierList   ) | (* Class instance  *)
+         (AssignmentOperator Expression ";") | (* Assignment      *)
+        );
+AssignmentOperator = "="  | ":=" | "~=" | "+=" | "-="  | "*="  | "/=" 
+                   | "%=" | "&=" | "|=" | "^=" | "<<=" | ">>=" ; 
+
 IfStatement = "if" "(" Expression() ")" StatementBlock ["else" StatementBlock];
               
 ForLoop = "for" "(" Identifier "in" Array ")" 

@@ -1,4 +1,4 @@
-Expression     = LogicalOR      [ "?" Primary ":" Primary];
+Expression     = LogicalOR      [ "?" Cast ":" Cast];
 LogicalOR      = LogicalAND     { "||"                      LogicalAND    };
 LogicalAND     = BitwiseOR      { "&&"                      BitwiseOR     };
 BitwiseOR      = BitwiseXOR     {("|"  | "~|")              BitwiseXOR    };
@@ -8,21 +8,21 @@ Equality       = Relational     {("==" | "!=")              Relational    };
 Relational     = Shift          {("<"  | ">" | "<=" | ">=") Shift         };
 Shift          = Additive       {("<<" | ">>")              Additive      };
 Additive       = Multiplicative {("+"  | "-" )              Multiplicative};
-Multiplicative = Replication    {("*"  | "/" | "%")         Replication   };
+Multiplicative = Array          {("*"  | "/" | "%")         Array         };
+Array          = Replication    { "~"                       Replication   };
 
 Replication   = Concatenation ["\" Primary];
 Concatenation = Cast {":" Cast};
 
 Cast       = Reduction [FP_Cast];
 FP_Cast    = "'" (Identifier | Literal | ("(" Primary ["," Primary] ")"));
-Reduction  = ["&" | "~&" | "|" | "~|" | "^" | "~^" | "!"] Array;
+Reduction  = ["&" | "~&" | "|" | "~|" | "^" | "~^" | "!"] Range;
 
-Array = ("@{" Expression {"," Expression} "}")
-      | (Unary ["->" Unary ["#" Unary]]);
+Range = Unary ["->" Unary ["@" Unary]];
 
 Unary   = {"-" | "~"} Postfix;
 Postfix = Primary {
-           "["  SliceList      "]" | (* Slice *)
+           "[" [Array        ] "]" | (* Slice *)
            "(" [ParameterList] ")" | (* Function call *)
            "."  Identifier         | (* Member reference *)
            "++"                    | (* Increment *)
@@ -31,7 +31,6 @@ Postfix = Primary {
 
 Primary = Identifier | Literal | String | ("(" Expression ")");
 
-SliceList     = ":" | (Array {"," Array});
 ParameterList = Expression {"," Expression};
 (*----------------------------------------------------------------------------*)
 

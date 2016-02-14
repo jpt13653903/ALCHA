@@ -153,17 +153,6 @@ int main(int argc, char** argv){
   ) Info.dwSize.Y--;
  #endif
 
-
- FILE_SYSTEM fs;
- byte* Buffer = fs.Read((byte*)"C:\\JPT\\Projects\\15\\1509 - ALCHA\\Wiki - Copy\\MarkDown\\Home.md");
- for(int j = 0; Buffer[j]; j++){
-  if(Buffer[j] >= 0x80){
-   printf("%.20s\n", Buffer+j-10);
-   while(Buffer[j] >= 0x80) j++;
-  }
- }
-
- return 0;
 // ConvertJSON();
 
  SetCurrentDirectory(L"C:\\JPT\\Projects\\15\\1509 - ALCHA\\Test Cases\\FrontEnd");

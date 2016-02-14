@@ -18,48 +18,54 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "AST_ClassDefinition.h"
+#include "AST_Parameter.h"
 //------------------------------------------------------------------------------
 
-AST_ClassDefinition::AST_ClassDefinition(int Line): AST_Base(Line){
- Type = ClassDefinition;
+AST_Parameter::AST_Parameter(int Line, DEFINITION_TYPE DefinitionType):
+AST_Base(Line){
+ this->Type           = Parameter;
+ this->DefinitionType = DefinitionType;
 
- Attributes.OnDuplicate = AttributesOnDuplicate;
-
- Identifier = 0;
- Parameters = 0;
-
- Parent           = 0;
- ParentParameters = 0;
-
- Body = 0;
+ ClassName       = 0;
+ Identifier      = 0;
+ ArrayDimensions = 0;
 }
 //------------------------------------------------------------------------------
 
-AST_ClassDefinition::~AST_ClassDefinition(){
- Attributes.Action(AtributesDeleteData);
-
- if(Body            ) delete Body;
- if(Parameters      ) delete Parameters;
- if(ParentParameters) delete ParentParameters;
+AST_Parameter::~AST_Parameter(){
+ if(ClassName) delete ClassName;
 }
 //------------------------------------------------------------------------------
 
-void AST_ClassDefinition::Display(){
- printf("\nLine %d -- Class Definition (%s):\n", Line, Identifier);
- printf(" Attributes:\n");
-  Attributes.Action(AttributesDisplay);
+void AST_Parameter::Display(){
+ printf(" Line %d -- Parameter (", Line);
 
- printf(" Parameters:\n"); if(Parameters) Parameters->Display(); printf("\n");
+ switch(DefinitionType){
+  case Auto   : printf("Auto):"    ); break;
+  case Pin    : printf("Pin):"     ); break;
+  case Sig    : printf("Signal):"  ); break;
+  case Clk    : printf("Clock):"   ); break;
+  case Int    : printf("Integer):" ); break;
+  case Rat    : printf("Rational):"); break;
+  case Float  : printf("Float):"   ); break;
+  case Complex: printf("Complex):" ); break;
 
- if(Parent){
-  printf(" Parent (%s):\n  ", Parent);
-  if(ParentParameters) ParentParameters->Display(); printf("\n");
+  case ClassInstance:
+   if(ClassName) ClassName->Display();
+   else          printf("Class instance with no class name");
+   printf("):");
+   break;
+
+  default: printf("Invalid definition type:\n");
  }
- printf(" {\n");
- if(Body) Body->Display();
- printf(" }\n");
 
+ printf(" %s", Identifier);
+
+ int j;
+ for(j = 0; j < ArrayDimensions; j++) printf("[]");
+
+ printf("\n");
  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+

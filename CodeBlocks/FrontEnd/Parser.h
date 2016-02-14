@@ -34,6 +34,7 @@
 #include "AST_ForLoop.h"
 #include "AST_LoopLoop.h"
 #include "AST_WhileLoop.h"
+#include "AST_Parameter.h"
 #include "AST_Definition.h"
 #include "AST_Assignment.h"
 #include "AST_IfStatement.h"
@@ -60,17 +61,17 @@ class PARSER{
   AST_Expression* Identifier();
 
   AST_Expression* ParameterList();
-  AST_Expression* SliceList    ();
 
   AST_Expression* Primary       ();
   AST_Expression* Postfix       ();
   AST_Expression* Unary         ();
-  AST_Expression* Array         ();
+  AST_Expression* Range         ();
   AST_Expression* Reduction     ();
   AST_Expression* FP_Cast       (AST_Expression* Node);
   AST_Expression* Cast          ();
   AST_Expression* Concatenation ();
   AST_Expression* Replication   ();
+  AST_Expression* Array         ();
   AST_Expression* Multiplicative();
   AST_Expression* Additive      ();
   AST_Expression* Shift         ();
@@ -85,7 +86,10 @@ class PARSER{
 
   AST_Definition::ARRAY     * ArrayDefinition ();
   AST_Definition::IDENTIFIER* IdentifierList  ();
-  AST_Expression            * DefParameterList(); // Define function parameters
+
+  // Define function parameters
+  AST_Parameter* DefParameter    ();
+  AST_Parameter* DefParameterList();
 
   bool ValidNamespaceSpecifier(AST_Expression* Node); // Used by Other()
   bool ValidTypeSpecifier     (AST_Expression* Node); // Used by Other()
