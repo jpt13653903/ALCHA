@@ -1,9 +1,11 @@
 StatementBlock = Statement | ("{" [Statements] "}");
 
 Statements = Statement {Statement};
-Statement  = TargetDefinition | ClassDefinition | Definition 
+Statement  = TargetDefinition | ClassDefinition | Definition | Import
            | IfStatement | ForLoop | WhileLoop  | LoopLoop | Switch 
            | RTL | FSM | HDL | Other | ";";
+
+Import = "import" String ["as" Identifier];
 
 IfStatement = "if" "(" Expression() ")" StatementBlock ["else" StatementBlock];
               
@@ -35,4 +37,5 @@ FSM = "fsm" ["(" [ParameterList] ")"] StatementBlock;
    are port definitions. *)
 HDL = "hdl" "(" String {"," String} ")" Identifier ["(" {Assignment} ")"] 
             "{" {Definition} "}";
+(*----------------------------------------------------------------------------*)
 

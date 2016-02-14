@@ -40,6 +40,7 @@ Tokens:
 #include "Token.h"
 #include "Number.h"
 #include "TokenTree.h"
+#include "Dictionary.h"
 #include "FileSystem.h"
 #include "IdentifierTree.h"
 //------------------------------------------------------------------------------

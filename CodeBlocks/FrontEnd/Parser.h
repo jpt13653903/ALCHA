@@ -29,6 +29,7 @@
 #include "AST_FSM.h"
 #include "AST_HDL.h"
 #include "AST_Fence.h"
+#include "AST_Import.h"
 #include "AST_Switch.h"
 #include "AST_ForLoop.h"
 #include "AST_LoopLoop.h"
@@ -97,6 +98,7 @@ class PARSER{
   AST_WhileLoop       * WhileLoop();
   AST_LoopLoop        * LoopLoop();
   AST_ForLoop         * ForLoop();
+  AST_Import          * Import();
   AST_Switch          * Switch();
   AST_Base            * Other();
   AST_RTL             * RTL();

@@ -1,11 +1,3 @@
-(* 
-The source file is scanned in UTF-8.  Any Unicode character checks are 
-performed in UTF-8.  Strings and identifiers are stored, internally, in 
-UTF-8.  This is in order to preserve encoding details which might influence 
-file access on some Linux systems *)
-(*----------------------------------------------------------------------------*)
-
-(* Other than token separation, WhiteSpace is ignored *)
 WhiteSpace = Space | Newline | LineComment | BlockComment;
 
 Space   = ? U+0020 ? | ? U+0009 ? | ? U+00A0 ? | ? U+1680 ? | ? U+180E ? 
@@ -46,7 +38,8 @@ String         = '"' {EscapeSequence | (Byte - '"')} '"' [String];
 EscapeSequence = "\n" | "\t" | "\v" | "\b" | "\r" | "\f" 
                | "\a" | "\\" | "\?" | "\'" | '\"' 
                | ("\x" H H) | ("\u" H H H H) | ("\U" H H H H H H H H)
-               | ("\" O {O});
+               | ("\" O {O}) 
+               | ("\&" ? Any of the HTML-5 character names ? ";");
 
 (* Either the left of the ".", or the right of the "." must have a digit *)
 (* Within literals, the "_" character is ignored *)

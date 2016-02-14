@@ -4,6 +4,7 @@
 .txt
 *.png
 *.jpg
+*.git*
 CodeBlocks/bin/*
 CodeBlocks/obj/*
 InkScape/*

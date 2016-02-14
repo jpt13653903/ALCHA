@@ -19,6 +19,7 @@
 //==============================================================================
 
 #include "Scanner.h"
+#include "CharacterNames.h"
 //------------------------------------------------------------------------------
 
 static bool Initialised = false;
@@ -26,6 +27,7 @@ static bool Initialised = false;
 static TOKEN_TREE Spaces;
 static TOKEN_TREE Keywords;
 static TOKEN_TREE Operators;
+static DICTIONARY Characters;
 //------------------------------------------------------------------------------
 
 SCANNER::SCANNER(){
@@ -156,6 +158,13 @@ SCANNER::SCANNER(){
   Spaces   .Balance();
   Keywords .Balance();
   Operators.Balance();
+
+  for(int j = 0; CharacterNames[j]; j += 2){
+   Characters.Insert(
+    (byte*)CharacterNames[j  ], // The name
+    (void*)CharacterNames[j+1]  // The UTF-8 representation
+   );
+  }
  }
 
  Next   = 0;
@@ -444,7 +453,8 @@ bool SCANNER::Literal(TOKEN* Token){
 //------------------------------------------------------------------------------
 
 bool SCANNER::String(TOKEN* Token){
- int j;
+ int      j;
+ byte*    s;
  unsigned Digit, UTF_32;
 
  if(Buffer[Index] != '"') return false;
@@ -478,6 +488,23 @@ bool SCANNER::String(TOKEN* Token){
     case '?' : Token->Data << '\?'; Index++; break;
     case '\'': Token->Data << '\''; Index++; break;
     case '"' : Token->Data << '\"'; Index++; break;
+
+    case '&': // HTML character name
+     Index++;
+     for(j = Index; Buffer[j] && Buffer[j] != ';'; j++);
+     if(!Buffer[j]){
+      Error("Invalid \\& code");
+      return false;
+     }
+     Buffer[j] = 0;
+     s = (byte*)Characters.Find(Buffer+Index);
+     if(!s){
+      Error("Invalid \\& code");
+      return false;
+     }
+     Index = j+1;
+     Token->Data << s;
+     break;
 
     case 'x' : // Hexadecimal number
      Index++;

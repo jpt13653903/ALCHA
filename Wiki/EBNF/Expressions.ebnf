@@ -1,21 +1,3 @@
-Assignment = Concatenation AssignmentOperator Expression ";";
-
-AssignmentOperator = 
-   "=" | (* Assign, but take fixed-point format into account *)
-  ":=" | (* Assign without bit-weight (straight assign) *)
-  "@=" | (* Assign without bit-weight (straight assign) *)
-  "+=" | (* Add and assign *)
-  "-=" | (* Subtract and assign *)
-  "*=" | (* Multiply and assign *)
-  "/=" | (* Divide and assign *)
-  "%=" | (* Modulus and assign *)
-  "&=" | (* Bitwise AND and assign *)
-  "|=" | (* Bitwise OR and assign *)
-  "^=" | (* Bitwise XOR and assign *)
- "<<=" | (* Shift left and assign *)
- ">>=" ; (* Shift right and assign *)
-(*----------------------------------------------------------------------------*)
-
 Expression     = LogicalOR      [ "?" Primary ":" Primary];
 LogicalOR      = LogicalAND     { "||"                      LogicalAND    };
 LogicalAND     = BitwiseOR      { "&&"                      BitwiseOR     };

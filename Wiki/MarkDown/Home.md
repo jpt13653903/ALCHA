@@ -1,4 +1,4 @@
-<a href="https://openclipart.org/detail/3850/work"><img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70"/></a>
+[[img src=https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg height="70"]]
 The ALCHA project, including the language grammar and, by extension, this wiki, is under active development.  Until the first stable prototype compiler is published, the details of the language are subject to change without notice.  After first prototype publication, a detailed change log will be kept.
 
 [TOC]
@@ -6,15 +6,17 @@ The ALCHA project, including the language grammar and, by extension, this wiki, 
 # 1. Introduction and Overview
 ALCHA (architectural level computational hardware abstraction) is intended to be implemented as a command-line tool to generate vendor-specific FPGA projects from largely vendor-neutral text-based source code.  The image below provides a rough overview of the intended tool-chain.
 
-<center>[[img src=ConceptBlock.svg alt=ConceptBlock.svg]]</center>
+<center markdown>[[img src=https://sourceforge.net/p/alcha/doccode/ci/master/tree/Figures/ConceptBlock.svg?format=raw]]</center>
 
 ALCHA is aimed at unifying the various aspects of FPGA firmware design (RTL design, finite state machines, timing and design constraints, as well as scripting) into a single language.
 
 ALCHA is designed to be as portable, concise and expressive as possible, without the loss of low-level control. It provides a development platform that promises reduced development time and maintenance effort.
 
+Visit [EBNF](/p/alcha/wiki/EBNF) for a formal specification of the language grammar.
+
 # 2. Definitions
 ## 2.1 Identifiers
-Non-digits in ALCHA are defined as any character in the ranges 'a' to 'z', 'A' to 'Z' and any Unicode character above U+80, as long as it is not a white-space or newline character, as well as the '\_' character.
+Non-digits in ALCHA are defined as the '\_' character, as well as any character in the ranges 'a' to 'z', 'A' to 'Z' and any Unicode character above U+7F, as long as it is not a white-space or newline character.
 
 Digits in ALCHA are defined as any character in the range '0' to '9'.
 
@@ -69,7 +71,7 @@ Signals relate to physical wires and / or registers on the FPGA.  They are speci
     sig'(4,-4)   e; // 4-bit integer where the least significant bit
                     // represents 16 and the most significant bit 128.
     sig'(-4,4)   f; // 4-bit fixed-point where the least significant bit
-                    // represents 2ˆ(-8) and the most significant 2ˆ(-5).
+                    // represents 2^(-8) and the most significant 2^(-5).
     sig'(-4,-4)  g; // Illegal: both cannot be negative.
 
 ### 2.3.2 Attributes
@@ -133,7 +135,7 @@ max\_delay  | 0       | The maximum physical trace delay of the pin.
 frequency   | None    | In the case of a clock input, the frequency of the clock.
 jitter      | 0       | In the case of a clock input, the clock jitter.
 
-The unit is important when specifying attributes.  If the unit is absent, a compilation error occurs.  Any SI unit prefix is valid, including *T*, *G*, *M*, *k*, *m*, *u*, *μ*, *n*, *p* and *f*.
+The unit is important when specifying attributes.  If the unit is absent, a compilation error occurs.  Any SI unit prefix is valid, including *T*, *G*, *M*, *k*, *m*, *u*, *&mu;*, *n*, *p* and *f*.
 
 ### 2.4.3 Pin Vectors
 When specifying pin locations for bit-vectors or pin arrays, the *location* attribute contains a comma-separated list of pins.  Pin locations are specified most-significant bit first, as follows:
@@ -172,15 +174,15 @@ Signals, class instances, derived clocks, etc. can be grouped in similar fashion
 ALCHA supports a simple class structure that has a single constructor form.  The body of the class is the constructor.  Classes can also inherit from other classes, as presented in the example below:
 
     :::C++
-    class Multiplier(sig'8 A, sig'8 B){
-     sig'16 Y = A * B;
+    class Multiplier(A, B){
+     Y = A * B; // The type of Y is inferred from the types of A and B
     }
     pin'8  A, B;
     pin'16 Y;
     Multiplier(A, B) MyMultiplier;
     Y = MyMultiplier.Y;
 
-    class MultiplyAdd(sig'8 A, sig'8 B, sig'8 C): Multiplier(A, B){
+    class MultiplyAdd(A, B, C): Multiplier(A, B){
      Y += C; // This is evaluated after the constructor of Multiplier
     }
     pin'8  x, y, z;
@@ -190,7 +192,7 @@ ALCHA supports a simple class structure that has a single constructor form.  The
 
 The constructor parameters is part of the class name, so class inheritance can be used to implement multiple constructors, as follows:
 
-class Base(int N){
+class Base(N){
  sig'N x;
 };
 class Base: Base(8){} // Define a default constructor for class Base
@@ -213,12 +215,12 @@ ALCHA literals are all stored as infinite-precision rational numbers (by means o
     0b101.0101   // Binary constant
     0o123.456    // Octal constant
     0xABC.DEF    // Hexadecimal constant
-    123_456_e7   // Decimal constant with decimal exponent (10ˆ7)
+    123_456_e7   // Decimal constant with decimal exponent (10^7)
     123_456_p7   // Decimal constant with binary exponent (2^7)
-    0x123_ABC_p7 // Hexadecimal constant with binary exponent (2ˆ7)
+    0x123_ABC_p7 // Hexadecimal constant with binary exponent (2^7)
     7.3 + 8.9j   // Decimal complex constant
-    "Ω"          // Unicode character constant
-    "ABC αβγ"    // Unicode string literal (character array)
+    "&ohm;"          // Unicode character constant
+    "ABC &alpha;&beta;&gamma;"    // Unicode string literal (character array)
 
 Certain non-printable characters can be used, within character and string literals, by means of escaping.  ALCHA escape sequences are the same as C escape sequences.  The following table provides a summary:
 
@@ -239,11 +241,12 @@ Sequence    | Character
 \\xHH       | 2-digit hexadecimal Unicode
 \\uHHHH     | 4-digit hexadecimal Unicode
 \\UHHHHHHHH | 8-digit hexadecimal Unicode
+\\&amp;nnnn;| Named character, where nnnn is any of the [HTML-5 character names](https://w3.org/TR/html5/syntax.html#named-character-references)
 
 ## 2.8 Import and Name-space
 Conceptually, ALCHA processes the source as a whole. It is convenient, however, to break the source into a hierarchical structure of files, as presented in the figure below.  In the context of ALCHA, a "module" refers to a source file, rather than an HDL module. An ALCHA module might or might not compile to a corresponding HDL module, depending on the source contents.
 
-<center>[[img src=ProgrammingModel.svg alt=ProgrammingModel.svg]]</center>
+<center markdown>[[img src=https://sourceforge.net/p/alcha/doccode/ci/master/tree/Figures/ProgrammingModel.svg?format=raw]]</center>
 
 The import statement is used to import a child module into a parent module. There are two forms, as shown below. In both forms, the objects defined within the child module are in their own name-space, but have direct access to objects in the parent module name-space.
 
@@ -280,6 +283,8 @@ Assignments come in two flavours.  Normal assignments use the "=" operator and t
 
 During normal assignment, the source is type-cast to the target type before assignment.  If the target does not have sufficient bits to store the source, the source is truncated.  When most-significant bits are removed, the compiler issues a warning.  When least-significant bits are removed, no warning is issued.  It is up to the developer to ensure that correct rounding is applied, if required.
 
+It the target of an assignment has not been defined, it is dynamically defined according to the type of the source of that assignment.  Once defined in such a manner, that variable cannot change its type, and redefining it is illegal.
+
 ## 3.1 Operators
 The following table summarises ALCHA operators, in order of precedence:
 
@@ -287,16 +292,18 @@ Group | Operator | Function
 ----- | -------- | --------
 Group | (...)    | Grouping
 ||
-Post-fix | A++ | Increment after use
-         | A-- | Decrement after use
+Post-fix | A++    | Increment after use
+         | A--    | Decrement after use
+         | A.B    | Access B in namespace (or class instance) A
+         | A(B)   | Call function A with parameter(s) B
+         | A\[B\] | Slice array A with elements in array B
 ||
-Cast | A ' N    | Casts A to an N-bit integer
-     | A '(N,M) | Casts A to an N.M-bit fixed-point
+Unary | -A | Negate
+      | ~A | Bitwise NOT
 ||
-Range | A -> B     | Builds an array of elements from A to B, inclusive
+Array | @{A, B, C} | Concatenate arrays A, B and C
+      | A -> B     | Builds an array of elements from A to B, inclusive
       | A -> B # C | Builds an array of elements from A to B, in steps of C
-||
-Slice | A\[B\] | Array and bit slicing, where B is an array of integers
 ||
 Reduction |  &A      | AND-reduce
           | ~&A      | NAND-reduce
@@ -304,19 +311,18 @@ Reduction |  &A      | AND-reduce
           | ~&#124;A | NOR-reduce
           |  ^A      | XOR-reduce
           | ~^A      | XNOR-reduce
+          |  !A      | Logical compliment
 ||
-Compliment | !A | Logical compliment
-           | ~A | Bitwise compliment
+Cast | A ' N    | Casts A to an N-bit integer
+     | A '(N,M) | Casts A to an N.M-bit fixed-point
 ||
-Unary | +A | No effect
-      | -A | Negate
-Concatenate | A:B:C      | Bit-wise concatenate
-            | @{A, B, C} | Array-element concatenate (elements must be the same type)
+Concatenate | A:B:C | Bit-wise concatenate
 ||
 Replicate   | A \ B | Bit-wise replicate A, B times
 ||
-Arithmetic | A \* B | Multiply
-           | A / B  | Divide
+Arithmetic | A * B | Multiply
+           | A / B | Divide
+           | A % B | Modulus
 ||
            | A + B  | Add
            | A - B  | Subtract
@@ -328,15 +334,21 @@ Relational | A > B  | Greater than
            | A < B  | Less than
            | A >= B | Greater than or equal to
            | A <= B | Less than or equal to
+||
            | A == B | Equal to
            | A != B | Not equal to
 ||
 Bit-wise | A & B      | Bit-wise AND
-         | A &#124; B | Bit-wise OR
+         | A ~& B     | Bit-wise NAND
+||
          | A ^ B      | Bit-wise XOR
          | A ~^ B     | Bit-wise XNOR
 ||
+         | A &#124; B  | Bit-wise OR
+         | A ~&#124; B | Bit-wise OR
+||
 Logical | A && B           | Logical AND
+||
         | A &#124;&#124; B | Logical OR
 ||
 Conditional | A ? B : C | If A, then B, else C
@@ -355,17 +367,17 @@ Assignment | A  = B      | Normal assign (automatically casts to the target fixe
            | A <<= B     | Shift left and assign (normal assign)
            | A >>= B     | Shift right and assign (normal assign)
 
-The unary, arithmetic, shift and relational operators take the fixed-point format of the operands into account, whereas the other operators does not.  Arithmetic operators result in a fixed-point number which is of such a format that no bits are lost in the calculation.  Other operators result in an unsigned integer, regardless of input format.
+The unary, arithmetic, shift and relational operators take the fixed-point format of the operands into account, whereas the other operators do not.  Arithmetic operators result in a fixed-point number which is of such a format that no bits are lost in the calculation.  Other operators result in an unsigned integer, regardless of input format.
 
 The target of an assignment can be an array, array slice or concatenation.
 
-The usual flow-control structures (*if*, *for*, *while*, etc.) are supported.  More detail is provided later, as these are generally more useful in scripting.
+The usual flow-control structures (*if*, *for*, *while*, etc.) are supported.  More detail is provided later.
 
 ## 3.2 Signal use Before Assignment
 When describing FPGA firmware it is often necessary to use a signal before a value is assigned.  This could occur when using parametrised classes, or clocked structures with external feedback.  The code below provides two examples:
 
     :::C++
-    class Adder(int N){ // Parametrisation is presented in the scripting section
+    class Adder(N){ // Parametrisation is presented in the scripting section
      in  sig'N A, B;
      out sig'N Y;
      Y = A + B;
@@ -376,7 +388,9 @@ When describing FPGA firmware it is often necessary to use a signal before a val
     MyAdder.B = y;
     // Now the adder is complete.
 
+And here is another example:
 
+    :::C++
     sig'8 Counter;
     UserClk = (Counter == 125); // "Counter" has no value yet
     rtl(CPUClock){
@@ -476,6 +490,16 @@ This can become quite confusing.  Developers are therefore encouraged to avoid s
      // for every element of array A, set x to that element and do this
     }
 
+One can use array literals to make this easier:
+
+    :::C++
+    for(j in 0->7) A += S[j]; // Sums the first 8 elements of S
+
+The above is equivalent to:
+
+    :::C++
+    for(s in S[0->7]) A += s;
+
 ### 3.3.5 loop
 
     :::C++
@@ -531,7 +555,7 @@ Array literals are useful for vectorised operations.  There are many forms, whic
 Array slices can be used in vectorised statements.  Vectorised operations apply the operation to each element of the array as if it was specified separately for each element.  This works for scalar functions as well.  Below are some examples:
 
     :::C++
-    sig'8 Add(sig'8 A, sig'8 B){
+    sig'8 Add(A, B){
      return A + B;
     }
 
@@ -549,7 +573,7 @@ Array slices can be used in vectorised statements.  Vectorised operations apply 
     Y[14] = A[ 1] + B[13];
     Y[15] = A[ 0] + B[15];
 
-When a boolean (single-bit) array is used as the condition in an *if* statement or *while* loop, the array is AND-reduced.  This allows a concise means by which to compare all elements in an array (or string).
+When an array is used as the condition in an *if* statement or *while* loop, the array is AND-reduced.  This allows a concise means by which to compare all elements in an array (or string).
 
 When a scalar is involved in a vectorised assignment, the scalar is repeated for every instance of the assignment.  This can be used, for instance, to assign a scalar to every element of an array.
 
@@ -856,10 +880,10 @@ The pipelined version (that provides a new result every cycle, with a 4-cycle la
 ALCHA provides a procedural programming model for combinational circuits, as well as state machines.  Any function that does not contain an embedded state machine is considered combinational and can be called from anywhere.  A function that contains an embedded state machine can only be called from within another state machine.
 
 ## 6.1 Combinational Functions
-Functions in ALCHA are defined in similar fashion as C, as illustrated in the example below.  The function name is used as a temporary signal (or variable) for the return value.
+Functions in ALCHA are defined in similar fashion as C, as illustrated in the example below.  The function name is used as a temporary signal (or variable) for the return value.  The parameter types do not need to be defined in the function, but can be inferred from the input parameters when the function is called.  When the types are specified, the parameter types form part of the function name, so that many functions of the same name, but different parameter types, can be defined.
 
     :::C++
-    sig'8 Add(sig'8 A, sig'8 B){
+    sig'8 Add(A, B){
      return A + B; // This is short-hand for "Add = A + B; return;"
     }
     sig'8 x, y, z;
@@ -892,7 +916,7 @@ Arrays and scalars can be mixed in the call, as follows:
 If the function takes an array as a parameter, the same rules apply.  The function can be called with a higher-dimension array, as follows:
 
     :::C++
-    sig'18 Dot(sig'8 A[4], sig'8 B[4]){
+    sig'18 Dot(A[], B[]){
      Dot  = A[1] * B[1];
      Dot += A[2] * B[2];
      Dot += A[3] * B[3];
@@ -906,7 +930,7 @@ If the function takes an array as a parameter, the same rules apply.  The functi
 To return an array, the function name should be defined as an array, as follows:
 
     :::C++
-    signed sig'(16,8) Mult[4][4](signed sig'(16,8) A[4][4], signed sig'(16,8) B[4][4]){
+    signed sig'(16,8) Mult[4][4](A[][], B[][]){
      int i, j, k;
      for(i in 0->3){
       for(j in 0->3){
@@ -932,7 +956,7 @@ The combinational code is evaluated during the calling state, after which the fu
 A return statement in the embedded state machine will cause the target signal to be assigned, and the next state to be loaded from the temporarily-stored state register.  To illustrate this process, consider the following ALCHA (and its corresponding Verilog) code:
 
     :::C++
-    sig'4 BitCount(sig'8 A){
+    sig'4 BitCount(A){
      sig'3 x;
      BitCount = 0;
 
@@ -1135,12 +1159,12 @@ Memory blocks can be instantiated by means of built-in classes to represent the 
 
 Configuration    | Class
 -------------    | -----
-ROM, 1-port      | ROM1(int Width, int Depth, clock Clock, int Init[])
-ROM, 2-port      | ROM2(int Width, int Depth, clock Clock1, clock Clock2, int Init[])
-RAM, 1-port      | RAM1(int Width, int Depth, clock Clock, int Init[])
-RAM, 1W, 1R port | RAM_RW(int Width, int Depth, clock Clock1, clock Clock2, int Init[])
-RAM, full 2-port | RAM2(int Width, int Depth, clock Clock1, clock Clock2, int Init[])
-FIFO,            | FIFO(int Width, int Depth, clock Clock1, clock Clock2, int Init[])
+ROM, 1-port      | ROM1(int Width, int Depth, clk Clock, int Init[])
+ROM, 2-port      | ROM2(int Width, int Depth, clk Clock1, clk Clock2, int Init[])
+RAM, 1-port      | RAM1(int Width, int Depth, clk Clock, int Init[])
+RAM, 1W, 1R port | RAM_RW(int Width, int Depth, clk Clock1, clk Clock2, int Init[])
+RAM, full 2-port | RAM2(int Width, int Depth, clk Clock1, clk Clock2, int Init[])
+FIFO,            | FIFO(int Width, int Depth, clk Clock1, clk Clock2, int Init[])
 
 The other signals are implemented as member signals.
 
@@ -1151,10 +1175,10 @@ Megafunctions and other external HDL modules can be imported into the ALCHA proj
 
     :::C++
     hdl("Library/RS232.v", "Library/RS232_Rx.v", "Library/RS232_Tx.v") RS232_V(
-     int CountBits =  5, // Parameters 
-     int Count0_5  =  8, 
-     int Count1    = 17, 
-     int Count1_5  = 25
+     CountBits =  5; // Parameters 
+     Count0_5  =  8; 
+     Count1    = 17; 
+     Count1_5  = 25;
     ){
      in sig nReset;
      in sig Clk;
@@ -1171,7 +1195,7 @@ Megafunctions and other external HDL modules can be imported into the ALCHA proj
      in  sig Rx;
     }
     
-    class RS232(clock Clock, sig Reset, int BAUD): RS232_V(
+    class RS232(clk Clock, sig Reset, int BAUD): RS232_V(
      ceil(log2(round(Clock.Frequency / BAUD * 1.5))),
                round(Clock.Frequency / BAUD / 2),
                round(Clock.Frequency / BAUD),
@@ -1246,7 +1270,7 @@ June 2017     | Compilation to Xilinx projects
 
 ## Bibliography
 - K Chapman
-  [Get your Priorities Right –- Make your Design Up to 50% Smaller](http://www.xilinx.com/support/documentation/white_papers/wp275.pdf)
+  [Get your Priorities Right -- Make your Design Up to 50% Smaller](http://www.xilinx.com/support/documentation/white_papers/wp275.pdf)
   Xilinx white paper, 2007
 
 - K Chapman
@@ -1263,15 +1287,15 @@ June 2017     | Compilation to Xilinx projects
 
 - A Feller, R Noto and A M Smith
   [Standard Cell Approach for Generating Custom CMOS/SOS Devices Using a Fully Automatic Layout Program](http://dx.doi.org/10.1109/MCAS.1981.6323756)
-  IEEE Circuits and Systems Magazine, September 1981, Volume 3, Number 3, Pages 9 – 13
+  IEEE Circuits and Systems Magazine, September 1981, Volume 3, Number 3, Pages&nbsp;9&nbsp;&endash;&nbsp;13
 
-- L Fousse, G Hanrot, V Lefèvre, P Pélissier and P Zimmermann
+- L Fousse, G Hanrot, V Lef&232;vre, P P&233;lissier and P Zimmermann
   [MPFR: A Multiple-precision Binary Floating-point Library with Correct Rounding](http://doi.acm.org/10.1145/1236463.1236468)
   ACM Transactions on Mathematical Software (TOMS), June 2007, Volume 33, Number 2
 
 - M Frigo and S G Johnson
   [The Design and Implementation of FFTW3](http://dx.doi.org/10.1109/JPROC.2004.840301)
-  Proceedings of the IEEE, February 2005, Volume 93, Number 2, Pages 216 – 231
+  Proceedings of the IEEE, February 2005, Volume 93, Number 2, Pages&nbsp;216&nbsp;&endash;&nbsp;231
 
 - T Granlund and the GMP development team
   [GNU MP: The GNU Multiple Precision Arithmetic Library](http://gmplib.org/)
@@ -1279,7 +1303,7 @@ June 2017     | Compilation to Xilinx projects
 
 - P Luksch, U Maier, S Rathmayer, M Weidmann, F Unger, P Bastian, V Reichenberger and A Haas
   [Software Engineering in Parallel and Distributed Scientific Computing: a Case Study from Industrial Practice](http://dx.doi.org/10.1109/PDSE.1998.668179)
- Proceedings of International Symposium on Software Engineering for Parallel and Distributed Systems, IEEE, April 1998, Pages 187 – 1997
+ Proceedings of International Symposium on Software Engineering for Parallel and Distributed Systems, IEEE, April 1998, Pages&nbsp;187&nbsp;&endash;&nbsp;1997
 
 - R Nane, V M Sima, C Pilato and J Choi
   [A Survey and Evaluation of FPGA High-Level Synthesis Tools](http://dx.doi.org/10.1109/TCAD.2015.2513673)
@@ -1287,14 +1311,14 @@ June 2017     | Compilation to Xilinx projects
 
 - R R Seban
   [An Overview of Object-Oriented Design and C++](http://dx.doi.org/10.1109/AERO.1994.291202)
-  Proceedings of Aerospace Applications Conference, IEEE, February 1994, Pages 65 – 86
+  Proceedings of Aerospace Applications Conference, IEEE, February 1994, Pages&nbsp;65&nbsp;&endash;&nbsp;86
 
 - J Stephenson
   [Design Guidelines for Optimal Results in FPGAs](http://notes-application.abcelectronique.com/038/38-21414.pdf)
   Altera Corporation, 2005
 
 - IEEE 1800-2012
-  [IEEE Standard for SystemVerilog – Unified Hardware Design, Specification, and Verification Language](http://dx.doi.org/10.1109/IEEESTD.2013.6469140)
+  [IEEE Standard for SystemVerilog &endash; Unified Hardware Design, Specification, and Verification Language](http://dx.doi.org/10.1109/IEEESTD.2013.6469140)
   IEEE, February 2013
 
 - T van Court and M C Herbordt
@@ -1303,7 +1327,7 @@ June 2017     | Compilation to Xilinx projects
 
 - H Zheng, S T Gurumani, L Yang, D Chen and K Rupnow
   [High-Level Synthesis with Behavioral-Level Multicycle Path Analysis](http://dx.doi.org/10.1109/TCAD.2014.2361661)
-  Transactions on Computer-Aided Design of Integrated Circuits and Systems, IEEE, December 2014, Volume 33, Number 12, Pages 1832 – 1845
+  Transactions on Computer-Aided Design of Integrated Circuits and Systems, IEEE, December 2014, Volume 33, Number 12, Pages&nbsp;1832&nbsp;&endash;&nbsp;1845
 
 --------------------------------------------------------------------------------
 

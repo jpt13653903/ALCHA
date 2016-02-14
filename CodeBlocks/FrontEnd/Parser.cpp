@@ -53,7 +53,7 @@ void PARSER::Error(const char* Message){
 void PARSER::GetToken(){
  if(error) return;
 
- Scanner->GetToken(&Token);
+ if(!Scanner->GetToken(&Token)) return;
 
  #ifdef Verbose
   printf("%s\tline %d  \t", Scanner->Filename.String(), Token.Line);
@@ -1601,6 +1601,42 @@ AST_ForLoop* PARSER::ForLoop(){
 }
 //------------------------------------------------------------------------------
 
+AST_Import* PARSER::Import(){
+ if(Token.Type != TOKEN::Import) return 0;
+ AST_Import* Node = new AST_Import(Token.Line);
+ GetToken();
+
+ if(Token.Type != TOKEN::String){
+  Error("File name expected");
+  delete Node;
+  return 0;
+ }
+ Node->File = Token.Data;
+ GetToken();
+
+ if(Token.Type == TOKEN::As){
+  GetToken();
+
+  if(Token.Type != TOKEN::Identifier){
+   Error("Identifier expected");
+   delete Node;
+   return 0;
+  }
+  Node->Namespace = Token.ID;
+  GetToken();
+ }
+
+ if(Token.Type != TOKEN::Semicolon){
+  Error("; expected");
+  delete Node;
+  return 0;
+ }
+ GetToken();
+
+ return Node;
+}
+//------------------------------------------------------------------------------
+
 AST_Switch* PARSER::Switch(){
  if(Token.Type != TOKEN::Switch) return 0;
  AST_Switch* Node = new AST_Switch(Token.Line);
@@ -1827,6 +1863,7 @@ AST_Base* PARSER::Statement(){
  Node = WhileLoop       (); if(Node) return Node;
  Node = LoopLoop        (); if(Node) return Node;
  Node = ForLoop         (); if(Node) return Node;
+ Node = Import          (); if(Node) return Node;
  Node = Switch          (); if(Node) return Node;
  Node = RTL             (); if(Node) return Node;
  Node = FSM             (); if(Node) return Node;

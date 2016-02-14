@@ -68,6 +68,8 @@
 		<Unit filename="DataStructures/AST/AST_HDL.h" />
 		<Unit filename="DataStructures/AST/AST_IfStatement.cpp" />
 		<Unit filename="DataStructures/AST/AST_IfStatement.h" />
+		<Unit filename="DataStructures/AST/AST_Import.cpp" />
+		<Unit filename="DataStructures/AST/AST_Import.h" />
 		<Unit filename="DataStructures/AST/AST_LoopLoop.cpp" />
 		<Unit filename="DataStructures/AST/AST_LoopLoop.h" />
 		<Unit filename="DataStructures/AST/AST_NamespacePush.cpp" />

@@ -1,3 +1,4 @@
+/*
 // Target definition
 target<
  Type = "Simulation",
@@ -182,4 +183,18 @@ class<Attribute1 = "Value1", A2 = "V2"> Child(A, B, C): Parent(5->7, B.C(), X^Y*
  B  = 5 + A;
  C := A * B;
 }
+
+import "RS232";
+import "Ethernet" as Eth;
+
+X = Y+2;
+
+fsm(Clk, Reset){
+ loop{
+
+ }
+}
+*/
+
+X = "Hello \&ohm; \&odblac; \&ZHcy; \&Pi; \&pi; \&uparrow; \&Afr; \&acE;";
 
