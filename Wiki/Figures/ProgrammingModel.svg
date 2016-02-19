@@ -9,8 +9,8 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="287.96637"
-   height="170.99339"
+   width="290.46637"
+   height="173.49339"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.5 r10040"
@@ -209,12 +209,12 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8284271"
-     inkscape:cx="198.44291"
-     inkscape:cy="43.584078"
+     inkscape:cx="199.6929"
+     inkscape:cy="44.834078"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="true"
-     units="mm"
+     units="pt"
      inkscape:object-paths="true"
      inkscape:object-nodes="true"
      inkscape:window-width="1920"
@@ -223,10 +223,10 @@
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:snap-global="true"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0">
+     fit-margin-top="1"
+     fit-margin-left="1"
+     fit-margin-right="1"
+     fit-margin-bottom="1">
     <inkscape:grid
        type="xygrid"
        id="grid2985"
@@ -237,8 +237,8 @@
        units="mm"
        spacingx="1mm"
        spacingy="1mm"
-       originx="-35.850001mm"
-       originy="-97.891866mm" />
+       originx="-35.497225mm"
+       originy="-97.539088mm" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -256,7 +256,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-127.02756,-534.50785)">
+     transform="translate(-125.77756,-533.25785)">
     <path
        style="fill:none;stroke:#003366;stroke-width:1.0629921;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        d="m 269.2913,556.29916 56.69292,10e-6 0,28.34645 -56.69292,0 z"
@@ -463,7 +463,7 @@
      id="layer3"
      inkscape:label="Text"
      sodipodi:insensitive="true"
-     transform="translate(-127.02756,-534.50785)">
+     transform="translate(-125.77756,-533.25785)">
     <text
        transform="translate(0,-2.5390623e-6)"
        xml:space="preserve"

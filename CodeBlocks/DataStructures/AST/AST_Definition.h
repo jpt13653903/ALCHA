@@ -23,6 +23,7 @@
 //------------------------------------------------------------------------------
 
 #include "AST_Parameter.h"
+#include "AST_Assignment.h"
 //------------------------------------------------------------------------------
 
 struct AST_Definition: public AST_Base{
@@ -45,6 +46,8 @@ struct AST_Definition: public AST_Base{
   struct IDENTIFIER{
    byte * Identifier; // ID obtained via IdentifierTree
    ARRAY* Array;      // Null when this is a scalar
+
+   AST_Assignment* Initialiser;
 
    // These are used for function definitions.
    bool           Function; // True when this is a function definition

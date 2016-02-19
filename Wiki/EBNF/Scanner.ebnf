@@ -15,11 +15,11 @@ Byte         = ? Any input byte that does not belong to anything else ?;
 
 Token      = String | Literal | Keyword | Identifier | Operator;
 
-Keyword    = "target" | "void"   | "auto"  | "pin"     | "sig"    | "clk"
-           | "int"    | "rat"    | "float" | "complex" | "in"     | "out"
-           | "signed" | "class"  | "if"    | "else"    | "for"    | "while"  
-           | "loop"   | "switch" | "case"  | "default" | "import" | "as"
-           | "rtl"    | "fsm"    | "hdl";
+Keyword    = "target" | "void"   | "auto"     | "pin"     | "sig"    | "clk"
+           | "int"    | "rat"    | "float"    | "complex" | "in"     | "out"
+           | "signed" | "class"  | "if"       | "else"    | "for"    | "while"  
+           | "loop"   | "switch" | "case"     | "default" | "import" | "as"
+           | "return" | "break"  | "continue" | "rtl"     | "fsm"    | "hdl";
 
 Operator   = "++"  | "--" | "'"  | "->" | "@"  | "."  | ".{" | "&"  | "~&" 
            | "|"   | "~|" | "^"  | "~^" | "~"  | ":"  | "\"  | "+"  | "-"
@@ -46,7 +46,7 @@ Binary      = {B} ["." {B}] [("p" | "P"            ) Exponent] ["i" | "j"];
 Octal       = {O} ["." {O}] [("p" | "P"            ) Exponent] ["i" | "j"];
 Hexadecimal = {H} ["." {H}] [("p" | "P"            ) Exponent] ["i" | "j"];
 Decimal     = {D} ["." {D}] [("p" | "P" | "e" | "E") Exponent] ["i" | "j"];
-Exponent    = ["-" | "+"] {D};
+Exponent    = ["-" | "+"] D {D};
 (*----------------------------------------------------------------------------*)
 
 B = "0" | "1";

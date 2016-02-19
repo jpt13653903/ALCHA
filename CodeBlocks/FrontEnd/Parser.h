@@ -28,6 +28,7 @@
 #include "AST_RTL.h"
 #include "AST_FSM.h"
 #include "AST_HDL.h"
+#include "AST_Jump.h"
 #include "AST_Fence.h"
 #include "AST_Import.h"
 #include "AST_Switch.h"
@@ -84,8 +85,9 @@ class PARSER{
   AST_Expression* LogicalOR     ();
   AST_Expression* Expression    (); // AKA Conditional
 
-  AST_Definition::ARRAY     * ArrayDefinition ();
-  AST_Definition::IDENTIFIER* IdentifierList  ();
+  AST_Assignment            * Initialiser    (byte* Identifier);
+  AST_Definition::ARRAY     * ArrayDefinition();
+  AST_Definition::IDENTIFIER* IdentifierList ();
 
   // Define function parameters
   AST_Parameter* DefParameter    ();
@@ -104,6 +106,7 @@ class PARSER{
   AST_ForLoop         * ForLoop();
   AST_Import          * Import();
   AST_Switch          * Switch();
+  AST_Jump            * Jump();
   AST_Base            * Other();
   AST_RTL             * RTL();
   AST_FSM             * FSM();

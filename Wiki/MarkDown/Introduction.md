@@ -33,6 +33,16 @@ June 2017     | Compilation to Xilinx projects
 - [Migen](https://github.com/m-labs/migen)
 - [MyHDL](http://www.myhdl.org/)
 
+### Acknowledgements
+
+Many of the ideas of ALCHA are borrowed from other existing languages.  These include, among others:
+
+- [C++](https://isocpp.org/)
+- [D](http://dlang.org/)
+- [[[img src=https://sourceforge.net/p/alcha/doccode/ci/master/tree/Figures/LaTeX.svg?format=raw]]](https://www.latex-project.org/)
+- [MATLAB](http://www.mathworks.com/products/matlab/)
+- [Python](https://www.python.org/)
+
 ### Publications
 
 - J Taylor and S Winberg
@@ -58,7 +68,7 @@ June 2017     | Compilation to Xilinx projects
 
 - A Feller, R Noto and A M Smith
   [Standard Cell Approach for Generating Custom CMOS/SOS Devices Using a Fully Automatic Layout Program](http://dx.doi.org/10.1109/MCAS.1981.6323756)
-  IEEE Circuits and Systems Magazine, September 1981, Volume 3, Number 3, Pages&nbsp;9&nbsp;&endash;&nbsp;13
+  IEEE Circuits and Systems Magazine, September 1981, Volume 3, Number 3, Pages&nbsp;9&nbsp;&ndash;&nbsp;13
 
 - L Fousse, G Hanrot, V Lef&#232;vre, P P&#233;lissier and P Zimmermann
   [MPFR: A Multiple-precision Binary Floating-point Library with Correct Rounding](http://doi.acm.org/10.1145/1236463.1236468)
@@ -66,7 +76,7 @@ June 2017     | Compilation to Xilinx projects
 
 - M Frigo and S G Johnson
   [The Design and Implementation of FFTW3](http://dx.doi.org/10.1109/JPROC.2004.840301)
-  Proceedings of the IEEE, February 2005, Volume 93, Number 2, Pages&nbsp;216&nbsp;&endash;&nbsp;231
+  Proceedings of the IEEE, February 2005, Volume 93, Number 2, Pages&nbsp;216&nbsp;&ndash;&nbsp;231
 
 - T Granlund and the GMP development team
   [GNU MP: The GNU Multiple Precision Arithmetic Library](http://gmplib.org/)
@@ -74,7 +84,7 @@ June 2017     | Compilation to Xilinx projects
 
 - P Luksch, U Maier, S Rathmayer, M Weidmann, F Unger, P Bastian, V Reichenberger and A Haas
   [Software Engineering in Parallel and Distributed Scientific Computing: a Case Study from Industrial Practice](http://dx.doi.org/10.1109/PDSE.1998.668179)
- Proceedings of International Symposium on Software Engineering for Parallel and Distributed Systems, IEEE, April 1998, Pages&nbsp;187&nbsp;&endash;&nbsp;1997
+ Proceedings of International Symposium on Software Engineering for Parallel and Distributed Systems, IEEE, April 1998, Pages&nbsp;187&nbsp;&ndash;&nbsp;1997
 
 - R Nane, V M Sima, C Pilato and J Choi
   [A Survey and Evaluation of FPGA High-Level Synthesis Tools](http://dx.doi.org/10.1109/TCAD.2015.2513673)
@@ -82,14 +92,14 @@ June 2017     | Compilation to Xilinx projects
 
 - R R Seban
   [An Overview of Object-Oriented Design and C++](http://dx.doi.org/10.1109/AERO.1994.291202)
-  Proceedings of Aerospace Applications Conference, IEEE, February 1994, Pages&nbsp;65&nbsp;&endash;&nbsp;86
+  Proceedings of Aerospace Applications Conference, IEEE, February 1994, Pages&nbsp;65&nbsp;&ndash;&nbsp;86
 
 - J Stephenson
   [Design Guidelines for Optimal Results in FPGAs](http://notes-application.abcelectronique.com/038/38-21414.pdf)
   Altera Corporation, 2005
 
 - IEEE 1800-2012
-  [IEEE Standard for SystemVerilog &endash; Unified Hardware Design, Specification, and Verification Language](http://dx.doi.org/10.1109/IEEESTD.2013.6469140)
+  [IEEE Standard for SystemVerilog &ndash; Unified Hardware Design, Specification, and Verification Language](http://dx.doi.org/10.1109/IEEESTD.2013.6469140)
   IEEE, February 2013
 
 - T van Court and M C Herbordt
@@ -98,7 +108,7 @@ June 2017     | Compilation to Xilinx projects
 
 - H Zheng, S T Gurumani, L Yang, D Chen and K Rupnow
   [High-Level Synthesis with Behavioral-Level Multicycle Path Analysis](http://dx.doi.org/10.1109/TCAD.2014.2361661)
-  Transactions on Computer-Aided Design of Integrated Circuits and Systems, IEEE, December 2014, Volume 33, Number 12, Pages&nbsp;1832&nbsp;&endash;&nbsp;1845
+  Transactions on Computer-Aided Design of Integrated Circuits and Systems, IEEE, December 2014, Volume 33, Number 12, Pages&nbsp;1832&nbsp;&ndash;&nbsp;1845
 
 [[include repo=doccode path=MarkDown/Footer.md]]
 

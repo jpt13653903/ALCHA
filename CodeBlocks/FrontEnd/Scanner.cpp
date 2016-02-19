@@ -71,33 +71,36 @@ SCANNER::SCANNER(){
   Spaces.Insert("\xE2\x80\xA8", TOKEN::Newline); // U+2028: Line Separator
   Spaces.Insert("\xE2\x80\xA9", TOKEN::Newline); // U+2029: Paragraph Separator
 
-  Keywords.Insert("target" , TOKEN::Target );
-  Keywords.Insert("void"   , TOKEN::Void   );
-  Keywords.Insert("auto"   , TOKEN::Auto   );
-  Keywords.Insert("pin"    , TOKEN::Pin    );
-  Keywords.Insert("sig"    , TOKEN::Sig    );
-  Keywords.Insert("clk"    , TOKEN::Clk    );
-  Keywords.Insert("int"    , TOKEN::Int    );
-  Keywords.Insert("rat"    , TOKEN::Rat    );
-  Keywords.Insert("float"  , TOKEN::Float  );
-  Keywords.Insert("complex", TOKEN::Complex);
-  Keywords.Insert("in"     , TOKEN::In     );
-  Keywords.Insert("out"    , TOKEN::Out    );
-  Keywords.Insert("signed" , TOKEN::Signed );
-  Keywords.Insert("class"  , TOKEN::Class  );
-  Keywords.Insert("if"     , TOKEN::If     );
-  Keywords.Insert("else"   , TOKEN::Else   );
-  Keywords.Insert("for"    , TOKEN::For    );
-  Keywords.Insert("while"  , TOKEN::While  );
-  Keywords.Insert("loop"   , TOKEN::Loop   );
-  Keywords.Insert("switch" , TOKEN::Switch );
-  Keywords.Insert("case"   , TOKEN::Case   );
-  Keywords.Insert("default", TOKEN::Default);
-  Keywords.Insert("import" , TOKEN::Import );
-  Keywords.Insert("as"     , TOKEN::As     );
-  Keywords.Insert("rtl"    , TOKEN::RTL    );
-  Keywords.Insert("fsm"    , TOKEN::FSM    );
-  Keywords.Insert("hdl"    , TOKEN::HDL    );
+  Keywords.Insert("target"  , TOKEN::Target  );
+  Keywords.Insert("void"    , TOKEN::Void    );
+  Keywords.Insert("auto"    , TOKEN::Auto    );
+  Keywords.Insert("pin"     , TOKEN::Pin     );
+  Keywords.Insert("sig"     , TOKEN::Sig     );
+  Keywords.Insert("clk"     , TOKEN::Clk     );
+  Keywords.Insert("int"     , TOKEN::Int     );
+  Keywords.Insert("rat"     , TOKEN::Rat     );
+  Keywords.Insert("float"   , TOKEN::Float   );
+  Keywords.Insert("complex" , TOKEN::Complex );
+  Keywords.Insert("in"      , TOKEN::In      );
+  Keywords.Insert("out"     , TOKEN::Out     );
+  Keywords.Insert("signed"  , TOKEN::Signed  );
+  Keywords.Insert("class"   , TOKEN::Class   );
+  Keywords.Insert("if"      , TOKEN::If      );
+  Keywords.Insert("else"    , TOKEN::Else    );
+  Keywords.Insert("for"     , TOKEN::For     );
+  Keywords.Insert("while"   , TOKEN::While   );
+  Keywords.Insert("loop"    , TOKEN::Loop    );
+  Keywords.Insert("switch"  , TOKEN::Switch  );
+  Keywords.Insert("case"    , TOKEN::Case    );
+  Keywords.Insert("default" , TOKEN::Default );
+  Keywords.Insert("import"  , TOKEN::Import  );
+  Keywords.Insert("as"      , TOKEN::As      );
+  Keywords.Insert("return"  , TOKEN::Return  );
+  Keywords.Insert("break"   , TOKEN::Break   );
+  Keywords.Insert("continue", TOKEN::Continue);
+  Keywords.Insert("rtl"     , TOKEN::RTL     );
+  Keywords.Insert("fsm"     , TOKEN::FSM     );
+  Keywords.Insert("hdl"     , TOKEN::HDL     );
 
   Operators.Insert("++" , TOKEN::Increment         );
   Operators.Insert("--" , TOKEN::Decrement         );
@@ -336,6 +339,12 @@ unsigned SCANNER::GetExponent(bool* Sign, TOKEN* Token){
   Token->Data << Buffer[Index++];
  }else if(Buffer[Index] == '+'){
   Token->Data << Buffer[Index++];
+ }
+
+ while(Buffer[Index] == '_') Token->Data << Buffer[Index++];
+ if(Buffer[Index] < '0' || Buffer[Index] > '9'){
+  Error("Exponent digit expected");
+  return 0;
  }
 
  while(Buffer[Index]){

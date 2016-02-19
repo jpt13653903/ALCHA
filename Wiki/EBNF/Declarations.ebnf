@@ -10,9 +10,13 @@ BaseType = "pin"  | "sig" | "clk"
 
 IdentifierList = Identifier {ArrayDefinition} (
                   ("(" [DefParameterList] ")" "{" [Statements] "}"   ) |
-                  ({"," Identifier {ArrayDefinition}} ";")
+                  (
+                   [Initialiser] 
+                   {"," Identifier {ArrayDefinition} [Initialiser]} ";"
+                  )
                  );
 ArrayDefinition  = "[" [Expression] "]";
+Initialiser      = ("=" | ":=") Expression;
 
 DefParameterList = DefParameter {"," DefParameter};
 DefParameter     = [BaseType | (Identifier {"." Identifier})] 

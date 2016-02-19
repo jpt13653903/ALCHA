@@ -1,3 +1,16 @@
+operator
+keyword
+literal
+string
+
+Hello // Whatnot
+
+/* lkjashdf */
+
+/* lkjahdsf
+asdkljfa
+*/
+
 tar Testing the scanner for while if            
 ςιτη σομε γρεεκ ψηαραψτερσ τηροςν ιν.   \           
       
@@ -7,12 +20,15 @@ And some numbers:         \
 0b1001_1010_1011_0101_1010_1000p-6
 0x___9____A____B____5____A____8p-6
 
-123.456 '16'8
+0x09A935Fe50
+0b011010101p7
+
+123.456 '(16,8)
 -0x9AFCp+5'24
 0o673517p-7
 
 Or different style numbers:
-- 0x1B_A8.27_CE '16'16
+- 0x1B_A8.27_CE '(16,16)
 
 \\
 
@@ -34,6 +50,9 @@ Hello\
 "\U12DEAF34";
 "\172";
 
+"A multi-line
+string"
+
 Base.Member();
 Identifier\with\structure\and\u0837\stuff
 
@@ -41,7 +60,7 @@ a = b/c;
       
 "This string "       
 // This is a comment
-  #  include "Some Header File"
+  include "Some Header File"
 "should be concatenated with this one"
 
  /*Comment before directive*/ #  include "Some Header File"
@@ -51,28 +70,38 @@ is a
 multi-
 line
 comment */
+
 // And some more comments
+
 /* And */ // Some more...
- # define Parametrised(a, b, c)
-#define non_parametrised (a, b, c)
 
 // Testing the token tree Find function...
 tarp9ub3f
 tar
 target823
 
-target pin sig clk int rat float complex in out signed group 
-class if else for while loop switch case default import as
+target pin sig clk int rat float complex in out signed 
+class if else for while loop switch case default import as rtl fsm hdl
 
 // Testing the token tree Match function
 ++---=-=-====---=-=-=-=-+++++
 @{
 }
 
-++ -- ' -> # .  .{ & ~& | ~| ^ ~^ ~ : \ @{ + - * / % << >> < > <= >= == !=
-!  && || ?  = := @= += -= *= /= %= &= |= ^= <<= >>= () [ ] { } , ;
+Operator   = ++  -- '  -> @  .  .{ &  ~& 
+             |   ~| ^  ~^ ~  :  \  +  -
+             *   /  %  << >> <  >  <= >=
+             ==  != !  && || ?  =  := ~=
+             +=  -= *= /= %= &= |= ^= <<= 
+             >>= (  )  [  ]  {  }  ,  ;
 
-1234567890987654321
+"This is a string of keywords target pin sig
+\n \t \v \b \r \f \a \\ \? \' \" \x0FBC \uABABAB \UEFEFEFEFEFEFEFE \76455626126271 \&ndash;
+Some more string"
+
+
+
+1234567890987654321.
 .1234567890987654321
 1234567890987654321.1234567890987654321e-50
 123.000

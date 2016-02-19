@@ -1017,6 +1017,33 @@ AST_Expression* PARSER::Expression(){
 }
 //------------------------------------------------------------------------------
 
+AST_Assignment* PARSER::Initialiser(byte* Identifier){
+ AST_Assignment* Node;
+
+ switch(Token.Type){
+  case TOKEN::Assign:
+   Node = new AST_Assignment(Token.Line, AST_Assignment::Assign);
+   break;
+  case TOKEN::Raw_Assign:
+   Node = new AST_Assignment(Token.Line, AST_Assignment::Raw_Assign);
+   break;
+  default:
+   return 0;
+ }
+ GetToken();
+
+ Node->Right = Expression();
+ if(!Node->Right){
+  Error("Expression expected");
+  delete Node;
+  return 0;
+ }
+ Node->Left       = new AST_Expression(Node->Line, AST_Expression::Identifier);
+ Node->Left->Name = Identifier;
+ return Node;
+}
+//------------------------------------------------------------------------------
+
 AST_Definition::ARRAY* PARSER::ArrayDefinition(){
  AST_Definition::ARRAY* Array;
 
@@ -1179,6 +1206,8 @@ AST_Definition::IDENTIFIER* PARSER::IdentifierList(){
   return Head;
  }
 
+ Node->Initialiser = Initialiser(Node->Identifier);
+
  while(Token.Type == TOKEN::Comma){
   GetToken();
 
@@ -1197,6 +1226,8 @@ AST_Definition::IDENTIFIER* PARSER::IdentifierList(){
    Array->Next = ArrayDefinition();
    Array = Array->Next;
   }
+
+  Node->Initialiser = Initialiser(Node->Identifier);
  }
  if(Token.Type != TOKEN::Semicolon){
   Error("; expected");
@@ -1777,6 +1808,37 @@ AST_Switch* PARSER::Switch(){
 }
 //------------------------------------------------------------------------------
 
+AST_Jump* PARSER::Jump(){
+ AST_Jump* Node;
+
+ switch(Token.Type){
+  case TOKEN::Return:
+   Node = new AST_Jump(Token.Line, AST_Jump::Return);
+   break;
+  case TOKEN::Break:
+   Node = new AST_Jump(Token.Line, AST_Jump::Break);
+   break;
+  case TOKEN::Continue:
+   Node = new AST_Jump(Token.Line, AST_Jump::Continue);
+   break;
+  default:
+   return 0;
+ }
+ GetToken();
+
+ Node->Expression = Expression();
+
+ if(Token.Type != TOKEN::Semicolon){
+  Error("; expected");
+  delete Node;
+  return 0;
+ }
+ GetToken();
+
+ return Node;
+}
+//------------------------------------------------------------------------------
+
 AST_RTL* PARSER::RTL(){
  if(Token.Type != TOKEN::RTL) return 0;
  AST_RTL* Node = new AST_RTL(Token.Line);
@@ -1927,6 +1989,7 @@ AST_Base* PARSER::Statement(){
  Node = ForLoop         (); if(Node) return Node;
  Node = Import          (); if(Node) return Node;
  Node = Switch          (); if(Node) return Node;
+ Node = Jump            (); if(Node) return Node;
  Node = RTL             (); if(Node) return Node;
  Node = FSM             (); if(Node) return Node;
  Node = HDL             (); if(Node) return Node;

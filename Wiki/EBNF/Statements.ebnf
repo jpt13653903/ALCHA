@@ -2,13 +2,13 @@ StatementBlock = Statement | ("{" [Statements] "}");
 
 Statements = Statement {Statement};
 Statement  = TargetDefinition | ClassDefinition | Definition | Import
-           | IfStatement | ForLoop | WhileLoop  | LoopLoop | Switch 
+           | IfStatement | ForLoop | WhileLoop  | LoopLoop | Switch | Jump
            | RTL | FSM | HDL | Other | ";";
 
 Import = "import" String ["as" Identifier];
 
 (* The result from "Array" is checked for syntactic validity before
-   use as a name-space, class name or assignment target *)
+   use as a name-space, class name or assignment target. *)
 Other = Array (
          (";"                              ) | (* Function call   *)
          (".{" [Statements] "}"            )   (* Name-space push *)
@@ -33,6 +33,10 @@ Switch = "switch" "(" Expression ")" "{"
           {"case" "(" ParameterList ")" StatementBlock}
           ["default"                    StatementBlock]
          "}";
+
+(* For "break" and "continue", the expression indicates the number of levels,
+   which is 1 by default. *)
+Jump = ("return" | "break" | "continue") [Expression] ";";
 
 (* The first parameter must evaluate to a clock signal.  If the RTL is inside
    a function, the clock is inherited from the calling state machine. *)

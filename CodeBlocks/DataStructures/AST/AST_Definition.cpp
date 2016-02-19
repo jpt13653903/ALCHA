@@ -34,9 +34,10 @@ AST_Definition::ARRAY::~ARRAY(){
 //------------------------------------------------------------------------------
 
 AST_Definition::IDENTIFIER::IDENTIFIER(){
- Identifier = 0;
- Array      = 0;
- Next       = 0;
+ Next        = 0;
+ Array       = 0;
+ Identifier  = 0;
+ Initialiser = 0;
 
  Function     = false;
  Parameters   = 0;
@@ -45,10 +46,10 @@ AST_Definition::IDENTIFIER::IDENTIFIER(){
 //------------------------------------------------------------------------------
 
 AST_Definition::IDENTIFIER::~IDENTIFIER(){
- if(Array) delete Array;
- if(Next ) delete Next;
-
+ if(Next        ) delete Next;
+ if(Array       ) delete Array;
  if(Parameters  ) delete Parameters;
+ if(Initialiser ) delete Initialiser;
  if(FunctionBody) delete FunctionBody;
 }
 //------------------------------------------------------------------------------
@@ -140,6 +141,10 @@ void AST_Definition::Display(){
    printf(" )\n  Body:{\n");
    if(Identifier->FunctionBody) Identifier->FunctionBody->Display();
    printf("  }\n");
+  }
+  if(Identifier->Initialiser){
+   printf(" -- initialiser:");
+   Identifier->Initialiser->Display();
   }
 
   printf("\n");

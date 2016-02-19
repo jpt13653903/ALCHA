@@ -66,6 +66,10 @@ struct TOKEN{
   Import,
   As,
 
+  Return,
+  Break,
+  Continue,
+
   RTL,
   FSM,
   HDL,

@@ -2,7 +2,7 @@
 
 [TOC]
 
-# Scripting
+# Scripting Features
 ALCHA provides a powerful scripting platform to control the generation of firmware.  Any scripting variable (or scripting expression) can be used where synthesisable code expects a constant, thereby providing powerful parametrisation features.  Scripting can further be used for conditional compilation based on various global parameters, including the `target` attributes.
 
 ## Mathematical Functions

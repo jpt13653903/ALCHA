@@ -62,5 +62,39 @@ The above is equivalent to:
      // Do this forever
     }
 
+### return
+
+The `return` statement returns from a function, optionally with a value:
+
+    :::C++
+    int Func(A, B){
+     return A+B;
+    }
+    void Proc(A, B){
+     // Do some stuff
+     if(whatever) return; // return early
+     // do some more stuff
+    }
+
+### break and continue
+
+The `break` and `continue` keywords are used to jump out of, or within, loops.  Both of these take an optional integer expression argument to indicate the number of loop levels.  For instance:
+
+    :::C++
+    loop{
+     for(j = 1->100){
+      while(Busy){
+       if(Timeout) break 3; // Continues at "Error code"
+       continue;   // skips the rest of this loop body
+                      and does the next iteration of this loop
+       continue 2; // skips the rest of the loop body of this and the "for"
+                      loop and does the next iteration of the "for" loop
+       break;      // Breaks out of the "while" loop and does the rest of
+                      the "for" loop body;
+      }
+     }
+    }
+    // Error code
+
 [[include repo=doccode path=MarkDown/Footer.md]]
 

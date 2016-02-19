@@ -9,8 +9,8 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="346.5661"
-   height="230.80981"
+   width="359.0661"
+   height="235.8098"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.5 r10040"
@@ -190,13 +190,13 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="773.5166"
-     inkscape:cy="-80.14584"
-     inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
+     inkscape:zoom="2.0000001"
+     inkscape:cx="404.19461"
+     inkscape:cy="86.135683"
+     inkscape:document-units="pt"
+     inkscape:current-layer="layer2"
      showgrid="true"
-     units="mm"
+     units="pt"
      inkscape:object-paths="true"
      inkscape:object-nodes="true"
      inkscape:window-width="1920"
@@ -205,10 +205,10 @@
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:snap-global="true"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0"
+     fit-margin-top="2"
+     fit-margin-left="5"
+     fit-margin-right="5"
+     fit-margin-bottom="2"
      showborder="true">
     <inkscape:grid
        type="xygrid"
@@ -220,8 +220,8 @@
        units="mm"
        spacingx="1mm"
        spacingy="1mm"
-       originx="-50.341342mm"
-       originy="-212.915mm" />
+       originx="-48.577457mm"
+       originy="-212.20944mm" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -239,7 +239,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-178.37483,-67.129158)">
+     transform="translate(-172.12483,-64.629165)">
     <rect
        style="fill:none;stroke:#003366;stroke-width:1.0629921;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect3967"
@@ -552,7 +552,7 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Text"
-     transform="translate(-178.37483,-67.129155)">
+     transform="translate(-172.12483,-64.629155)">
     <text
        transform="translate(0,-2.5390623e-6)"
        xml:space="preserve"

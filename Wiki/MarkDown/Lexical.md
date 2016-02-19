@@ -52,6 +52,8 @@ Digits in ALCHA are defined as any character in the range '`0`' to '`9`'.
 
 Identifiers start with a non-digit, which may then be followed with any digit or non-digit.
 
+## Syntax Highlighting Scripts
+At the moment, only Vim is supported.  The Vim syntax file can be downloaded from [the repository](https://sourceforge.net/p/alcha/doccode/ci/master/tree/Vim/alcha.vim?format=raw).  It is a direct implementation of the scanner, so it does not have any error-checking features.
 
 [[include repo=doccode path=MarkDown/Footer.md]]
 

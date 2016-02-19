@@ -18,54 +18,34 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_h
-#define AST_h
+#include "AST_Jump.h"
 //------------------------------------------------------------------------------
 
-#include "MyString.h"
-#include "Dictionary.h"
+AST_Jump::AST_Jump(int Line, JUMP_TYPE JumpType): AST_Base(Line){
+ this->Type     = Jump;
+ this->JumpType = JumpType;
+
+ Expression = 0;
+}
 //------------------------------------------------------------------------------
 
-struct AST_Base{ // The base type for AST nodes
- enum TYPE{
-  Fence, // Empty statement, but also "next-cycle" specifier in FSMs
-  Import,
-  TargetDefinition,
-  ClassDefinition,
-  Definition, // pin, sig, clk, int, rat, float, complex and class instance
-  Parameter,
-  Expression,
-  Assignment,
-  NamespacePush,
-  IfStatement,
-  ForLoop,
-  LoopLoop,
-  WhileLoop,
-  Switch,
-  Jump,
-  RTL,
-  FSM,
-  HDL
- } Type;
-
- int       Line;
- AST_Base* Next; // Next sibling
-
-          AST_Base(int Line);
- virtual ~AST_Base(); // Also deletes the rest of the linked list
-
- virtual void Display() = 0;
-};
+AST_Jump::~AST_Jump(){
+ if(Expression) delete Expression;
+}
 //------------------------------------------------------------------------------
 
-void* AttributesOnDuplicate(const byte* Name, void* Old, void* New);
-void  AttributesDisplay    (const byte* Name, void* Data);
-void  AtributesDeleteData  (const byte* Name, void* Data);
-//------------------------------------------------------------------------------
+void AST_Jump::Display(){
+ printf("\nLine %d -- jump(", Line);
+ switch(JumpType){
+  case Return  : printf("return) "           ); break;
+  case Break   : printf("break) "            ); break;
+  case Continue: printf("continue) "         ); break;
+  default      : printf("Unknown jump type) "); break;
+ }
+ if(Expression) Expression->Display();
+ else           printf("{default}");
+ printf("\n");
 
-extern AST_Base* AST; // The global AST root
+ if(Next) Next->Display();
+}
 //------------------------------------------------------------------------------
-
-#endif
-//------------------------------------------------------------------------------
-
