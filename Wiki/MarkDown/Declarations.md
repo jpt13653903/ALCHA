@@ -20,6 +20,13 @@ Signals relate to physical wires and / or registers on the FPGA.  They are speci
                     // represents 2^(-8) and the most significant 2^(-5).
     sig'(-4,-4)  g; // Illegal: both cannot be negative.
 
+### Initialisers
+All signals, pins and variables can take an optional initialiser, as illustrated below:
+
+    :::C++
+    sig' 8    a  = 7;
+    sig'(3,4) pi = 355/113;
+
 ### Attributes
 Signals take optional attributes, which are summarised in the table below:
 
@@ -81,7 +88,7 @@ Attribute     | Default    | Description
 `frequency`   | `"None"`   | In the case of a clock input, the frequency of the clock.
 `jitter`      | `"0"`      | In the case of a clock input, the clock jitter.
 
-The unit is important when specifying attributes.  If the unit is absent, a compilation error occurs.  Any SI unit prefix is valid, including `T`, `G`, `M`, `k`, `m`, `u`, &mu;, &micro;, `n`, `p` and `f`.
+The unit is important when specifying attributes.  If the unit is absent, a compilation error occurs.  Any SI unit prefix is valid, including `T`, `G`, `M`, `k`, `m`, `u`, &mu; (U+03BC), &micro; (U+00B5), `n`, `p` and `f`.
 
 ### Pin Vectors
 When specifying pin locations for bit-vectors or pin arrays, the `location` attribute contains a comma-separated list of pins.  Pin locations are specified most-significant bit first, as follows:

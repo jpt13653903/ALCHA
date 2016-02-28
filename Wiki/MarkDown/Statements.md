@@ -86,11 +86,13 @@ The `break` and `continue` keywords are used to jump out of, or within, loops.  
       while(Busy){
        if(Timeout) break 3; // Continues at "Error code"
        continue;   // skips the rest of this loop body
-                      and does the next iteration of this loop
+                   // and does the next iteration of this loop
+
        continue 2; // skips the rest of the loop body of this and the "for"
-                      loop and does the next iteration of the "for" loop
+                   // loop and does the next iteration of the "for" loop
+
        break;      // Breaks out of the "while" loop and does the rest of
-                      the "for" loop body;
+                   // the "for" loop body;
       }
      }
     }

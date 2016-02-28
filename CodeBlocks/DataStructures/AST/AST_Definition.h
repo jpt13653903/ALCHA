@@ -63,8 +63,9 @@ struct AST_Definition: public AST_Base{
   enum DIRECTION{Bidirectional = 0, In, Out} Direction;
   bool Signed;
 
-  // Expressions for fixed-point casts
-  AST_Expression* Format; // The "Right" of the fixed-point cast
+  // Expression for fixed-point casts
+  AST_Expression::EXPRESSION_TYPE FormatType; // Basic vs. Scaled
+  AST_Expression*                 Format; // The "Right" of the fixed-point cast
 
   DICTIONARY Attributes;
 

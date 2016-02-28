@@ -47,7 +47,7 @@ Array literals are useful for vectorised operations.  There are many forms, whic
 Array slices can be used in vectorised statements.  Vectorised operations apply the operation to each element of the array as if it was specified separately for each element.  This works for scalar functions as well.  Below are some examples:
 
     :::C++
-    sig'8 Add(A, B){
+    auto Add(A, B){
      return A + B;
     }
 
@@ -67,7 +67,7 @@ Array slices can be used in vectorised statements.  Vectorised operations apply 
 
 When an array is used as the condition in an `if` statement or `while` loop, the array is AND-reduced.  This allows a concise means by which to compare all elements in an array (or string).
 
-When a scalar is involved in a vectorised assignment, the scalar is repeated for every instance of the assignment.  This can be used, for instance, to assign a scalar to every element of an array.
+When a scalar is involved in a vectorised operation, the scalar is repeated for every instance of the operation.  This can be used, for instance, to assign a scalar to every element of an array.
 
 [[include repo=doccode path=MarkDown/Footer.md]]
 

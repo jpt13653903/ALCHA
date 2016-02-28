@@ -85,20 +85,22 @@ void AST_Expression::Display(){
   case NAND_Reduce: printf(" ~&"); break;
   case OR_Reduce  : printf( " |"); break;
   case NOR_Reduce : printf(" ~|"); break;
-  case XOR_Reduce : printf( " ^"); break;
-  case XNOR_Reduce: printf(" ~^"); break;
+  case XOR_Reduce : printf( " #"); break;
+  case XNOR_Reduce: printf(" ~#"); break;
   case Logical_NOT: printf( " !"); break;
 
-  case FP_Cast: printf(" {format} "); break;
+  case FP_Cast_Basic: printf(" {N.M format} "   ); break;
+  case FP_Cast_Scale: printf(" {(N, s) format} "); break;
 
   case Concatenate: printf(":"    ); break;
   case Replicate  : printf("{rep}"); break;
 
-  case Multiply: printf(" * " ); break;
-  case Divide  : printf(" / " ); break;
-  case Modulus : printf(" %% "); break;
-  case Add     : printf(" + " ); break;
-  case Subtract: printf(" - " ); break;
+  case Exponential: printf(" ^ " ); break;
+  case Multiply   : printf(" * " ); break;
+  case Divide     : printf(" / " ); break;
+  case Modulus    : printf(" %% "); break;
+  case Add        : printf(" + " ); break;
+  case Subtract   : printf(" - " ); break;
 
   case Shift_Left : printf(" << "); break;
   case Shift_Right: printf(" >> "); break;
@@ -114,8 +116,8 @@ void AST_Expression::Display(){
   case Bit_NAND: printf(" ~& "); break;
   case Bit_OR  : printf( " | "); break;
   case Bit_NOR : printf(" ~| "); break;
-  case Bit_XOR : printf( " ^ "); break;
-  case Bit_XNOR: printf(" ~^ "); break;
+  case Bit_XOR : printf( " # "); break;
+  case Bit_XNOR: printf(" ~# "); break;
 
   case Logical_AND: printf(" && "); break;
   case Logical_OR : printf(" || "); break;

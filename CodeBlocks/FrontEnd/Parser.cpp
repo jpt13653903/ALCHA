@@ -504,7 +504,7 @@ AST_Expression* PARSER::FP_Cast(AST_Expression* Node){
  AST_Expression* Temp;
 
  if(Token.Type == TOKEN::FP_Cast){
-  Temp = new AST_Expression(Token.Line, AST_Expression::FP_Cast);
+  Temp = new AST_Expression(Token.Line, AST_Expression::FP_Cast_Basic);
   GetToken();
   Temp->Left = Node;
   Node = Temp;
@@ -519,17 +519,27 @@ AST_Expression* PARSER::FP_Cast(AST_Expression* Node){
   }
   GetToken();
 
-  Node->Right = Primary();
+  Node->Right = Expression();
   if(!Node->Right){
-   Error("Primary expression expected");
+   Error("Expression expected");
    delete Node;
    return 0;
   }
   if(Token.Type == TOKEN::Comma){
    GetToken();
-   Node->Right->Next = Primary();
+   Node->ExpressionType = AST_Expression::FP_Cast_Basic;
+   Node->Right->Next = Expression();
    if(!Node->Right->Next){
-    Error("Primary expression expected");
+    Error("Expression expected");
+    delete Node;
+    return 0;
+   }
+  }else if(Token.Type == TOKEN::Semicolon){
+   GetToken();
+   Node->ExpressionType = AST_Expression::FP_Cast_Scale;
+   Node->Right->Next = Expression();
+   if(!Node->Right->Next){
+    Error("Expression expected");
     delete Node;
     return 0;
    }
@@ -635,11 +645,42 @@ AST_Expression* PARSER::Array(){
 }
 //------------------------------------------------------------------------------
 
-AST_Expression* PARSER::Multiplicative(){
+AST_Expression* PARSER::Exponential(){
  AST_Expression* Temp;
  AST_Expression* Node;
 
  Node = Array();
+ if(!Node) return 0;
+
+ while(Token.Type){
+  switch(Token.Type){
+   case TOKEN::Exponential:
+    Temp = new AST_Expression(Token.Line, AST_Expression::Exponential);
+    break;
+   default:
+    return Node;
+  }
+  GetToken();
+
+  Temp->Left = Node;
+  Node = Temp;
+
+  Node->Right = Array();
+  if(!Node->Right){
+   Error("Array expected");
+   delete Node;
+   return 0;
+  }
+ }
+ return Node;
+}
+//------------------------------------------------------------------------------
+
+AST_Expression* PARSER::Multiplicative(){
+ AST_Expression* Temp;
+ AST_Expression* Node;
+
+ Node = Exponential();
  if(!Node) return 0;
 
  while(Token.Type){
@@ -661,9 +702,9 @@ AST_Expression* PARSER::Multiplicative(){
   Temp->Left = Node;
   Node = Temp;
 
-  Node->Right = Array();
+  Node->Right = Exponential();
   if(!Node->Right){
-   Error("Array expected");
+   Error("Exponential expected");
    delete Node;
    return 0;
   }
@@ -1305,6 +1346,7 @@ AST_Definition* PARSER::Definition(){
    return 0;
   }
 
+  Node->FormatType = Node->Format->ExpressionType;
   AST_Expression* Temp = Node->Format;
   Node->Format = Temp->Right;
   Temp->Right = 0;
@@ -1511,6 +1553,9 @@ AST_Base* PARSER::Other(){
   case TOKEN::Modulus_Assign:
    Assign = new AST_Assignment(Token.Line, AST_Assignment::Modulus_Assign);
    break;
+  case TOKEN::Exponential_Assign:
+   Assign = new AST_Assignment(Token.Line, AST_Assignment::Exponential_Assign);
+   break;
   case TOKEN::AND_Assign:
    Assign = new AST_Assignment(Token.Line, AST_Assignment::AND_Assign);
    break;
@@ -1542,10 +1587,13 @@ AST_Base* PARSER::Other(){
   delete Assign;
   return 0;
  }
- if(Token.Type != TOKEN::Semicolon){
-  Error("; expected");
-  delete Assign;
-  return 0;
+ switch(Token.Type){
+  case TOKEN::Comma    : Assign->Fence = false; break;
+  case TOKEN::Semicolon: Assign->Fence = true ; break;
+  default:
+   Error(", or ; expected");
+   delete Assign;
+   return 0;
  }
  GetToken();
  return Assign;

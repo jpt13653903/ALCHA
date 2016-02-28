@@ -5,13 +5,13 @@ x = 123.456e+8;
 x = .123;
 x = x._123;
 x = .123;
-x = _._123;
+x = _._123,
 x = 0b.1010101;
-x = 0b._1010101;
+x = 0b._1010101,
 x = 0b_.1010101;
 x = 0b_._1010101;
 
-sig  '  8 x = 3;      // Generate an assignment with AST_Declaration left-child
+sig  '  8 x = 3, y = 5;      // Generate an assignment with AST_Declaration left-child
 float'300 y = sin(x); // and AST_Expression right-child
 
 return 3;
@@ -21,6 +21,19 @@ continue 2;
 return;
 break;
 continue;
+
+sig            w = e;
+sig'  8        x = e'  8       ;
+sig'( 7, 9   ) y = e'( 7, 9   );
+sig'(32; 2*pi) z = e'(32; 2*pi);
+
+a  = b ^ c;
+a  = b # c;
+a  = b ~# c;
+a  = #b;
+a  = ~#b;
+a ^= b;
+a #= b;
 
 /*
 // Target definition

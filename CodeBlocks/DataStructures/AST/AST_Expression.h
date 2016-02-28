@@ -52,7 +52,8 @@ struct AST_Expression: public AST_Base{
    XNOR_Reduce,
    Logical_NOT,
 
-   FP_Cast,
+   FP_Cast_Basic,
+   FP_Cast_Scale,
 
    Concatenate,
    Replicate,
@@ -60,6 +61,7 @@ struct AST_Expression: public AST_Base{
    Multiply,
    Divide,
    Modulus,
+   Exponential,
 
    Add,
    Subtract,

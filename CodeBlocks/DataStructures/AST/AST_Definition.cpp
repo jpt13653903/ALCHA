@@ -65,6 +65,8 @@ AST_Base(Line){
  ClassName = 0;
  Format    = 0;
 
+ FormatType = AST_Expression::FP_Cast_Basic;
+
  Attributes.OnDuplicate = AttributesOnDuplicate;
 }
 //------------------------------------------------------------------------------
@@ -82,7 +84,7 @@ void AST_Definition::Display(){
 
  switch(DefinitionType){
   case Void   : printf("Void):\n"    ); break;
-  case Auto   : printf("Auto):\n"     ); break;
+  case Auto   : printf("Auto):\n"    ); break;
   case Pin    : printf("Pin):\n"     ); break;
   case Sig    : printf("Signal):\n"  ); break;
   case Clk    : printf("Clock):\n"   ); break;
@@ -108,7 +110,9 @@ void AST_Definition::Display(){
   default : printf("Bidirectional\n"); break;
  }
 
- printf(" Format:\n");
+ printf(" Format");
+ if(FormatType == AST_Expression::FP_Cast_Basic) printf(" (Basic):\n" );
+ else                                            printf(" (Scaled):\n");
  if(Signed) printf("  Signed\n");
  else       printf("  Unsigned\n");
  printf("  Format = ");

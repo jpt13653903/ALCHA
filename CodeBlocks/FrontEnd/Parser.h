@@ -73,6 +73,7 @@ class PARSER{
   AST_Expression* Concatenation ();
   AST_Expression* Replication   ();
   AST_Expression* Array         ();
+  AST_Expression* Exponential   ();
   AST_Expression* Multiplicative();
   AST_Expression* Additive      ();
   AST_Expression* Shift         ();

@@ -113,8 +113,8 @@ SCANNER::SCANNER(){
   Operators.Insert("~&" , TOKEN::Bit_NAND          );
   Operators.Insert( "|" , TOKEN::Bit_OR            );
   Operators.Insert("~|" , TOKEN::Bit_NOR           );
-  Operators.Insert( "^" , TOKEN::Bit_XOR           );
-  Operators.Insert("~^" , TOKEN::Bit_XNOR          );
+  Operators.Insert( "#" , TOKEN::Bit_XOR           );
+  Operators.Insert("~#" , TOKEN::Bit_XNOR          );
   Operators.Insert("~"  , TOKEN::Bit_NOT           );
   Operators.Insert("\\" , TOKEN::Bit_Repeat        );
   Operators.Insert("+"  , TOKEN::Add               );
@@ -122,6 +122,7 @@ SCANNER::SCANNER(){
   Operators.Insert("*"  , TOKEN::Multiply          );
   Operators.Insert("/"  , TOKEN::Divide            );
   Operators.Insert("%"  , TOKEN::Modulus           );
+  Operators.Insert("^"  , TOKEN::Exponential       );
   Operators.Insert("<<" , TOKEN::Shift_Left        );
   Operators.Insert(">>" , TOKEN::Shift_Right       );
   Operators.Insert("<"  , TOKEN::Less              );
@@ -142,9 +143,10 @@ SCANNER::SCANNER(){
   Operators.Insert( "*=", TOKEN::Multiply_Assign   );
   Operators.Insert( "/=", TOKEN::Divide_Assign     );
   Operators.Insert( "%=", TOKEN::Modulus_Assign    );
+  Operators.Insert( "^=", TOKEN::Exponential_Assign);
   Operators.Insert( "&=", TOKEN::AND_Assign        );
   Operators.Insert( "|=", TOKEN::OR_Assign         );
-  Operators.Insert( "^=", TOKEN::XOR_Assign        );
+  Operators.Insert( "#=", TOKEN::XOR_Assign        );
   Operators.Insert("<<=", TOKEN::Shift_Left_Assign );
   Operators.Insert(">>=", TOKEN::Shift_Right_Assign);
   Operators.Insert("("  , TOKEN::OpenRound         );

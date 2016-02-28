@@ -35,12 +35,15 @@ struct AST_Assignment: public AST_Base{
    Multiply_Assign,    //  *=
    Divide_Assign,      //  /=
    Modulus_Assign,     //  %=
+   Exponential_Assign, //  ^=
    AND_Assign,         //  &=
    OR_Assign,          //  |=
-   XOR_Assign,         //  ^=
+   XOR_Assign,         //  #=
    Shift_Left_Assign,  // <<=
    Shift_Right_Assign  // >>=
   } AssignmentType;
+
+  bool Fence; // Assignment terminates in a ";" and not a ","
 
   // Left and Right operands
   AST_Expression* Left;

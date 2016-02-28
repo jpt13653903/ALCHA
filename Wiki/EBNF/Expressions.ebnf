@@ -2,21 +2,25 @@ Expression     = LogicalOR      [ "?" Cast ":" Cast];
 LogicalOR      = LogicalAND     { "||"                      LogicalAND    };
 LogicalAND     = BitwiseOR      { "&&"                      BitwiseOR     };
 BitwiseOR      = BitwiseXOR     {("|"  | "~|")              BitwiseXOR    };
-BitwiseXOR     = BitwiseAND     {("^"  | "~^")              BitwiseAND    };
+BitwiseXOR     = BitwiseAND     {("#"  | "~#")              BitwiseAND    };
 BitwiseAND     = Equality       {("&"  | "~&")              Equality      };
 Equality       = Relational     {("==" | "!=")              Relational    };
 Relational     = Shift          {("<"  | ">" | "<=" | ">=") Shift         };
 Shift          = Additive       {("<<" | ">>")              Additive      };
 Additive       = Multiplicative {("+"  | "-" )              Multiplicative};
-Multiplicative = Array          {("*"  | "/" | "%")         Array         };
+Multiplicative = Exponential    {("*"  | "/" | "%")         Exponential   };
+Exponential    = Array          { "^"                       Array         };
 Array          = Replication    { "~"                       Replication   };
 
 Replication   = Concatenation ["\" Primary];
 Concatenation = Cast {":" Cast};
 
 Cast       = Reduction [FP_Cast];
-FP_Cast    = "'" (Identifier | Literal | ("(" Primary ["," Primary] ")"));
-Reduction  = ["&" | "~&" | "|" | "~|" | "^" | "~^" | "!"] Range;
+FP_Cast    = "'" (
+              Identifier | Literal |
+              ("(" Expression [("," | ";") Expression] ")")
+             );
+Reduction  = ["&" | "~&" | "|" | "~|" | "#" | "~#" | "!"] Range;
 
 Range = Unary ["->" Unary ["@" Unary]];
 

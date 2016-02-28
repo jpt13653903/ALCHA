@@ -26,7 +26,8 @@ AST_Base(Line){
  this->Type           = Assignment;
  this->AssignmentType = AssignmentType;
 
- Left = Right = 0;
+ Fence = false;
+ Left  = Right = 0;
 }
 //------------------------------------------------------------------------------
 
@@ -54,9 +55,10 @@ void AST_Assignment::Display(){
   case Multiply_Assign   : printf( " *= "); break;
   case Divide_Assign     : printf( " /= "); break;
   case Modulus_Assign    : printf(" %%= "); break;
+  case Exponential_Assign: printf( " ^= "); break;
   case AND_Assign        : printf( " &= "); break;
   case OR_Assign         : printf( " |= "); break;
-  case XOR_Assign        : printf( " ^= "); break;
+  case XOR_Assign        : printf( " #= "); break;
   case Shift_Left_Assign : printf(" <<= "); break;
   case Shift_Right_Assign: printf(" >>= "); break;
 
@@ -68,6 +70,8 @@ void AST_Assignment::Display(){
   Right->Display();
   if(Right->Left || Right->Right) printf(")");
  }
+
+ if(Fence) printf("{Fence}");
 
  printf("\n");
  if(Next) Next->Display();

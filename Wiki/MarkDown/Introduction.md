@@ -3,9 +3,9 @@
 [TOC]
 
 # Introduction
-ALCHA (architectural level computational hardware abstraction) is intended to be implemented as a command-line tool to generate vendor-specific FPGA projects from largely vendor-neutral text-based source code.  The image below provides a rough overview of the intended tool-chain.
+ALCHA (architectural level computational hardware abstraction) is a command-line tool to generate vendor-specific FPGA projects from largely vendor-neutral text-based source code.  The image below provides a rough overview of the intended tool-chain.
 
-<center markdown>[[img src=https://sourceforge.net/p/alcha/doccode/ci/master/tree/Figures/ConceptBlock.svg?format=raw]]</center>
+<center markdown>![Concept Block Diagram](https://sourceforge.net/p/alcha/doccode/ci/master/tree/Figures/ConceptBlock.svg?format=raw)</center>
 
 ALCHA is aimed at unifying the various aspects of FPGA firmware design (RTL design, finite state machines, timing and design constraints, as well as scripting) into a single language.
 
@@ -16,7 +16,7 @@ The ALCHA compiler applies various optimisations before project synthesis, most 
 
 Unless specified otherwise, the circuit synthesis process assumes that all register-to-register paths have to have a delay of less than one clock period. This is not true for all paths in a typical state-machine. It is likely that a particular signal path have multiple clock-cycles in which to pass through the combinational cloud, thereby requiring less stringent timing constraints than the synthesis tool initially assumes.
 
-Manually specifying multi-cycle paths is a labour-intensive and tedious process avoided by most developers. ALCHA performs this task automatically whenever the design is compiled, thereby generating code that is easier to synthesise, resulting in reduced compilation times.
+Manually specifying multi-cycle paths is a labour-intensive and tedious process. ALCHA performs this task automatically whenever the design is compiled, thereby generating code that is easier to synthesise, resulting in reduced compilation times.
 
 ## Implementation Time-frame
 

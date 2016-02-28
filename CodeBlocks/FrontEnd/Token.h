@@ -87,17 +87,18 @@ struct TOKEN{
   Bit_NAND, // ~&
   Bit_OR,   //  |
   Bit_NOR,  // ~|
-  Bit_XOR,  //  ^
-  Bit_XNOR, // ~^
+  Bit_XOR,  //  #
+  Bit_XNOR, // ~#
   Bit_NOT,  // ~
 
   Bit_Repeat, // \                                                             "
 
-  Add,      // +
-  Subtract, // -
-  Multiply, // *
-  Divide,   // /
-  Modulus,  // %
+  Add,         // +
+  Subtract,    // -
+  Multiply,    // *
+  Divide,      // /
+  Modulus,     // %
+  Exponential, // ^
 
   Shift_Left,  // <<
   Shift_Right, // >>
@@ -123,9 +124,10 @@ struct TOKEN{
   Multiply_Assign,    //  *=
   Divide_Assign,      //  /=
   Modulus_Assign,     //  %=
+  Exponential_Assign, //  ^=
   AND_Assign,         //  &=
   OR_Assign,          //  |=
-  XOR_Assign,         //  ^=
+  XOR_Assign,         //  #=
   Shift_Left_Assign,  // <<=
   Shift_Right_Assign, // >>=
 

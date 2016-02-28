@@ -35,18 +35,22 @@ Reduction | ` &A`        | AND-reduce
           | `~&A`        | NAND-reduce
           |    &#124;`A` | OR-reduce
           | `~`&#124;`A` | NOR-reduce
-          | ` ^A`        | XOR-reduce
-          | `~^A`        | XNOR-reduce
+          | ` #A`        | XOR-reduce
+          | `~#A`        | XNOR-reduce
           | ` !A`        | Logical compliment
 ||
-Cast | `A ' N`    | Casts `A` to an `N`-bit integer
-     | `A '(N,M)` | Casts `A` to an `N.M`-bit fixed-point
+Cast | `A ' N`     | Casts `A` to an `N`-bit integer
+     | `A '(N, M)` | Casts `A` to an `N.M`-bit fixed-point
+     | `A '(N; s)` | Casts `A` to an `N`-bit fixed-point in the range [0, s)
+     | `A '(N;-s)` | Casts `A` to an (`N`+1)-bit fixed-point in the range [-s, s)
 ||
 Concatenate | `A:B:C` | Bit-wise concatenate
 ||
 Replicate   | `A \ B` | Bit-wise replicate `A`, `B` times
 ||
 Array | `A ~ B ~ C` | Concatenate arrays `A`, `B` and `C`
+||
+Exponential | `A ^ B` | Raise `A` to the power of `B`
 ||
 Arithmetic | `A * B` | Multiply
            | `A / B` | Divide
@@ -69,8 +73,8 @@ Relational | `A >  B` | Greater than
 Bit-wise | `A  & B` | Bit-wise AND
          | `A ~& B` | Bit-wise NAND
 ||
-         | `A  ^ B` | Bit-wise XOR
-         | `A ~^ B` | Bit-wise XNOR
+         | `A  # B` | Bit-wise XOR
+         | `A ~# B` | Bit-wise XNOR
 ||
          | `A `&#124;` B`  | Bit-wise OR
          | `A `~&#124;` B` | Bit-wise OR
@@ -89,9 +93,10 @@ Assignment | `A   = B`       | Normal assign (automatically casts to the target 
            | `A  *= B`       | Multiply and assign (normal assign)
            | `A  /= B`       | Divide and assign (normal assign)
            | `A  %= B`       | Modulus and assign (normal assign)
+           | `A  ^= B`       | Exponential and assign (normal assign)
            | `A  &= B`       | Bit-wise AND and assign (raw assign)
            | `A  `&#124;=` B`| Bit-wise OR and assign (raw assign)
-           | `A  ^= B`       | Bit-wise XOR and assign (raw assign)
+           | `A  #= B`       | Bit-wise XOR and assign (raw assign)
            | `A <<= B`       | Shift left and assign (normal assign)
            | `A >>= B`       | Shift right and assign (normal assign)
 
