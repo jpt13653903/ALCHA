@@ -30,6 +30,7 @@
 #include "AST_HDL.h"
 #include "AST_Jump.h"
 #include "AST_Fence.h"
+#include "AST_Group.h"
 #include "AST_Import.h"
 #include "AST_Switch.h"
 #include "AST_ForLoop.h"
@@ -107,8 +108,9 @@ class PARSER{
   AST_ForLoop         * ForLoop();
   AST_Import          * Import();
   AST_Switch          * Switch();
-  AST_Jump            * Jump();
+  AST_Group           * Group();
   AST_Base            * Other();
+  AST_Jump            * Jump();
   AST_RTL             * RTL();
   AST_FSM             * FSM();
   AST_HDL             * HDL();

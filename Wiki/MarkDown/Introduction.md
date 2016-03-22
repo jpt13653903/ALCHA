@@ -47,7 +47,7 @@ Many of the ideas of ALCHA are borrowed from other existing languages.  These in
 
 - J Taylor and S Winberg
   [ALCHA: New Object Oriented Approach to FPGA Project Development](http://www.icit2016.org/)
-  Accepted for publication at the 2016 IEEE International Conference on Industrial Technology
+  Proceedings of International Conference on Industrial Technology, IEEE, March 2016, Pages&nbsp;707&nbsp;&ndash;&nbsp;712
 
 ### Bibliography
 - K Chapman

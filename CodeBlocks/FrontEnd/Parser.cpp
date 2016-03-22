@@ -388,6 +388,9 @@ AST_Expression* PARSER::Unary(){
   }else if(Token.Type == TOKEN::Bit_NOT){
    Node = new AST_Expression(Token.Line, AST_Expression::Bit_NOT);
 
+  }else if(Token.Type == TOKEN::Colon){
+   Node = new AST_Expression(Token.Line, AST_Expression::Raw);
+
   }else{
    break;
   }
@@ -1856,6 +1859,37 @@ AST_Switch* PARSER::Switch(){
 }
 //------------------------------------------------------------------------------
 
+AST_Group* PARSER::Group(){
+ if(Token.Type != TOKEN::OpenAngle) return 0;
+ AST_Group* Node = new AST_Group(Token.Line);
+
+ AttributeList(&Node->Attributes);
+
+ if(Token.Type == TOKEN::Identifier){
+  Node->Identifier = Token.ID;
+  GetToken();
+ }
+
+ if(Token.Type != TOKEN::OpenCurly){
+  Error("{ expected");
+  delete Node;
+  return 0;
+ }
+ GetToken();
+
+ Node->Body = Statements();
+
+ if(Token.Type != TOKEN::CloseCurly){
+  Error("} expected");
+  delete Node;
+  return 0;
+ }
+ GetToken();
+
+ return Node;
+}
+//------------------------------------------------------------------------------
+
 AST_Jump* PARSER::Jump(){
  AST_Jump* Node;
 
@@ -2037,6 +2071,7 @@ AST_Base* PARSER::Statement(){
  Node = ForLoop         (); if(Node) return Node;
  Node = Import          (); if(Node) return Node;
  Node = Switch          (); if(Node) return Node;
+ Node = Group           (); if(Node) return Node;
  Node = Jump            (); if(Node) return Node;
  Node = RTL             (); if(Node) return Node;
  Node = FSM             (); if(Node) return Node;

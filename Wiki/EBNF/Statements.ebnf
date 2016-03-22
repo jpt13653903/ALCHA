@@ -1,19 +1,21 @@
 StatementBlock = Statement | ("{" [Statements] "}");
 
 Statements = Statement {Statement};
-Statement  = TargetDefinition | ClassDefinition | Definition | Import
+Statement  = TargetDefinition | ClassDefinition | Definition | Import | Group
            | IfStatement | ForLoop | WhileLoop  | LoopLoop | Switch | Jump
            | RTL | FSM | HDL | Other | ";";
 
 Import = "import" String ["as" Identifier];
 
+Group = AttributeList [Identifier] "{" [Statements] "}";
+
 (* The result from "Array" is checked for syntactic validity before
    use as a name-space, class name or assignment target. *)
 Other = Array (
          (";"                                      ) | (* Function call   *)
-         (".{" [Statements] "}"                    )   (* Name-space push *)
+         (".{" [Statements] "}"                    ) | (* Name-space push *)
          ([AttributeList] IdentifierList           ) | (* Class instance  *)
-         (AssignmentOperator Expression ("," | ";")) | (* Assignment      *)
+         (AssignmentOperator Expression ("," | ";"))   (* Assignment      *)
         );
 AssignmentOperator = "="  | ":=" | "~=" | "+=" | "-="  | "*="  | "/=" | "^="
                    | "%=" | "&=" | "|=" | "#=" | "<<=" | ">>=" ; 

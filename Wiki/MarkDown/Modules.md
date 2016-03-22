@@ -18,11 +18,12 @@ Or, in the case of a project target:
 
     :::C++
     target<
-     type   = "Project",
-     vendor = "Altera",
-     series = "Cyclone V GX",
-     device = "5CGXFC5C6F27C7N",
-     board  = "Cyclone V GX Starter Kit"
+     type     = "Project",
+     vendor   = "Altera",
+     series   = "Cyclone V GX",
+     device   = "5CGXFC5C6F27C7N",
+     board    = "Cyclone V GX Starter Kit"
+     language = "Verilog"
     >
 
 After definition, the target attributes can be accessed by means of the `target` object and used in conditional compilation, as follows:

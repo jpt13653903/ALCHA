@@ -80,6 +80,7 @@ void AST_Expression::Display(){
 
   case Negate : printf(" -"); break;
   case Bit_NOT: printf(" ~"); break;
+  case Raw    : printf(" :"); break;
 
   case AND_Reduce : printf( " &"); break;
   case NAND_Reduce: printf(" ~&"); break;

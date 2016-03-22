@@ -35,6 +35,19 @@ a  = ~#b;
 a ^= b;
 a #= b;
 
+a = :b + :c;
+a = :b:c;
+a = :b:::c;
+
+<voltage = "2.5 V", current = "5 A"> Named_Group{
+ in  pin<location = "N5"> B1;
+ out pin<location = "A7"> LED7;
+}
+<voltage = "2.5 V", current = "5 A">{
+ in  pin<location = "N5"> B1;
+ out pin<location = "A7"> LED7;
+}
+
 /*
 // Target definition
 target<

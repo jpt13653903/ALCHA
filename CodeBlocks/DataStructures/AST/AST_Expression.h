@@ -43,6 +43,7 @@ struct AST_Expression: public AST_Base{
 
    Negate,
    Bit_NOT,
+   Raw,     // Unary operator to cast to "raw bits", or "unsigned int"
 
    AND_Reduce,
    NAND_Reduce,

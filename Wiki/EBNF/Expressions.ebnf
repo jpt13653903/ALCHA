@@ -24,7 +24,7 @@ Reduction  = ["&" | "~&" | "|" | "~|" | "#" | "~#" | "!"] Range;
 
 Range = Unary ["->" Unary ["@" Unary]];
 
-Unary   = {"-" | "~"} Postfix;
+Unary   = {"-" | "~" | ":"} Postfix;
 Postfix = Primary {
            "[" [Array        ] "]" | (* Slice *)
            "(" [ParameterList] ")" | (* Function call *)

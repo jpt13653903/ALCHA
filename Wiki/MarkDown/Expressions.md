@@ -27,6 +27,7 @@ Post-fix | `A++`  | Increment after use
 ||
 Unary | `-A` | Negate
       | `~A` | Bitwise NOT
+      | `:A` | Cast `A` to raw bits (unsigned integer)
 ||
 Range | `A -> B`     | Builds an array of elements from `A` to `B`, inclusive
       | `A -> B @ C` | Builds an array of elements from `A` to `B`, in steps of `C`

@@ -64,6 +64,8 @@
 		<Unit filename="DataStructures/AST/AST_Fence.h" />
 		<Unit filename="DataStructures/AST/AST_ForLoop.cpp" />
 		<Unit filename="DataStructures/AST/AST_ForLoop.h" />
+		<Unit filename="DataStructures/AST/AST_Group.cpp" />
+		<Unit filename="DataStructures/AST/AST_Group.h" />
 		<Unit filename="DataStructures/AST/AST_HDL.cpp" />
 		<Unit filename="DataStructures/AST/AST_HDL.h" />
 		<Unit filename="DataStructures/AST/AST_IfStatement.cpp" />
