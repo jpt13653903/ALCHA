@@ -39,7 +39,8 @@ struct AST_Expression: public AST_Base{
    Range, // Left = from; Right = to; Right->Next = step
 
    Increment, // If child is on the left, post-increment
-   Decrement,  // If child is on the left, post-increment
+   Decrement, // If child is on the left, post-decrement
+   Factorial,
 
    Negate,
    Bit_NOT,

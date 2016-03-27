@@ -73,8 +73,9 @@ void AST_Expression::Display(){
 
   case Dot: printf("."); break;
 
-  case Increment: printf("++ "); break;
-  case Decrement: printf("-- "); break;
+  case Increment: printf("++"); break;
+  case Decrement: printf("--"); break;
+  case Factorial: printf("!" ); break;
 
   case Range: printf("->"); break;
 

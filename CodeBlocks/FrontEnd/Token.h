@@ -151,11 +151,12 @@ struct TOKEN{
   String,
 
   // Aliases ...................................................................
-  OpenAngle         = Less,     // <
-  CloseAngle        = Greater,  // >
-  Negate            = Subtract, // -
-  Bit_Concatenate   = Colon,    // :
-  Array_Concatenate = Bit_NOT   // ~
+  Factorial         = Logical_NOT, // !
+  OpenAngle         = Less,        // <
+  CloseAngle        = Greater,     // >
+  Negate            = Subtract,    // -
+  Bit_Concatenate   = Colon,       // :
+  Array_Concatenate = Bit_NOT      // ~
 
  } Type;
 

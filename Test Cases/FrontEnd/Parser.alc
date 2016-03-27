@@ -39,6 +39,10 @@ a = :b + :c;
 a = :b:c;
 a = :b:::c;
 
+a = ++x * y--;
+
+a = x - x^3/3! + x^5/5! - x^7/7!;
+
 <voltage = "2.5 V", current = "5 A"> Named_Group{
  in  pin<location = "N5"> B1;
  out pin<location = "A7"> LED7;

@@ -21,13 +21,16 @@ Group | `(...)`  | Grouping
 ||
 Post-fix | `A++`  | Increment after use
          | `A--`  | Decrement after use
+         | `A!`   | Factorial
          | `A.B`  | Access `B` in namespace (or class instance) `A`
          | `A(B)` | Call function `A` with parameter(s) `B`
          | `A[B]` | Slice array `A` with elements in array `B`
 ||
-Unary | `-A` | Negate
-      | `~A` | Bitwise NOT
-      | `:A` | Cast `A` to raw bits (unsigned integer)
+Unary | `++A` | Increment before use
+      | `--A` | Decrement before use
+      |  `-A` | Negate
+      |  `~A` | Bitwise NOT
+      |  `:A` | Cast `A` to raw bits (unsigned integer)
 ||
 Range | `A -> B`     | Builds an array of elements from `A` to `B`, inclusive
       | `A -> B @ C` | Builds an array of elements from `A` to `B`, in steps of `C`

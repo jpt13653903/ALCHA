@@ -368,6 +368,13 @@ AST_Expression* PARSER::Postfix(){
    Temp->Left = Node;
    Node = Temp;
 
+  }else if(Token.Type == TOKEN::Factorial){
+   Temp = new AST_Expression(Token.Line, AST_Expression::Factorial);
+   GetToken();
+
+   Temp->Left = Node;
+   Node = Temp;
+
   }else{
    return Node;
   }
@@ -390,6 +397,12 @@ AST_Expression* PARSER::Unary(){
 
   }else if(Token.Type == TOKEN::Colon){
    Node = new AST_Expression(Token.Line, AST_Expression::Raw);
+
+  }else if(Token.Type == TOKEN::Increment){
+   Node = new AST_Expression(Token.Line, AST_Expression::Increment);
+
+  }else if(Token.Type == TOKEN::Decrement){
+   Node = new AST_Expression(Token.Line, AST_Expression::Decrement);
 
   }else{
    break;
