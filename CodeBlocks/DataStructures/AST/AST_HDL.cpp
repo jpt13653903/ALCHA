@@ -21,7 +21,7 @@
 #include "AST_HDL.h"
 //------------------------------------------------------------------------------
 
-AST_HDL::AST_HDL(int Line): AST_Base(Line){
+AST_HDL::AST_HDL(int Line, const byte* Filename): AST_Base(Line, Filename){
  this->Type = HDL;
 
  Files      = 0;
@@ -39,7 +39,7 @@ AST_HDL::~AST_HDL(){
 //------------------------------------------------------------------------------
 
 void AST_HDL::Display(){
- printf("\nLine %d -- hdl (%s):\n", Line, Identifier);
+ printf("\n%s:%d -- hdl (%s):\n", Filename, Line, Identifier);
  printf(" Files:\n  "     ); if(Files     ) Files     ->Display(); printf("\n");
  printf(" Parameters:\n  "); if(Parameters) Parameters->Display();
  printf(" Ports:\n  "     ); if(Ports     ) Ports     ->Display();

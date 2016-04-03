@@ -41,9 +41,10 @@ void AtributesDeleteData(const byte* Name, void* Data){
 }
 //------------------------------------------------------------------------------
 
-AST_Base::AST_Base(int Line){
- this->Line = Line;
- this->Next = 0;
+AST_Base::AST_Base(int Line, const byte* Filename){
+ this->Line     = Line;
+ this->Filename = IdentifierTree.GetID(Filename);
+ this->Next     = 0;
 }
 //------------------------------------------------------------------------------
 

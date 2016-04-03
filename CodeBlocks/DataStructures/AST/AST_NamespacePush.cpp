@@ -21,7 +21,8 @@
 #include "AST_NamespacePush.h"
 //------------------------------------------------------------------------------
 
-AST_NamespacePush::AST_NamespacePush(int Line): AST_Base(Line){
+AST_NamespacePush::AST_NamespacePush(int Line, const byte* Filename):
+AST_Base(Line, Filename){
  this->Type = NamespacePush;
 
  Namespace  = 0;
@@ -36,7 +37,7 @@ AST_NamespacePush::~AST_NamespacePush(){
 //------------------------------------------------------------------------------
 
 void AST_NamespacePush::Display(){
- printf("\nLine %d -- NamespacePush:\n ", Line);
+ printf("\n%s:%d -- NamespacePush:\n ", Filename, Line);
 
  if(Namespace){
   if(Namespace->Left || Namespace->Right) printf("(");

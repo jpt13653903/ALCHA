@@ -21,7 +21,7 @@
 #include "AST_FSM.h"
 //------------------------------------------------------------------------------
 
-AST_FSM::AST_FSM(int Line): AST_Base(Line){
+AST_FSM::AST_FSM(int Line, const byte* Filename): AST_Base(Line, Filename){
  this->Type = FSM;
 
  Parameters = 0;
@@ -36,7 +36,7 @@ AST_FSM::~AST_FSM(){
 //------------------------------------------------------------------------------
 
 void AST_FSM::Display(){
- printf("\nLine %d -- fsm(", Line);
+ printf("\n%s:%d -- fsm(", Filename, Line);
   if(Parameters) Parameters->Display();
  printf("){\n");
   if(Statements) Statements->Display();

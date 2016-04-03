@@ -21,7 +21,8 @@
 #include "AST_Jump.h"
 //------------------------------------------------------------------------------
 
-AST_Jump::AST_Jump(int Line, JUMP_TYPE JumpType): AST_Base(Line){
+AST_Jump::AST_Jump(int Line, const byte* Filename, JUMP_TYPE JumpType):
+AST_Base(Line, Filename){
  this->Type     = Jump;
  this->JumpType = JumpType;
 
@@ -35,7 +36,7 @@ AST_Jump::~AST_Jump(){
 //------------------------------------------------------------------------------
 
 void AST_Jump::Display(){
- printf("\nLine %d -- jump(", Line);
+ printf("\n%s:%d -- jump(", Filename, Line);
  switch(JumpType){
   case Return  : printf("return) "           ); break;
   case Break   : printf("break) "            ); break;

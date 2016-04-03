@@ -37,7 +37,7 @@ struct AST_Parameter: public AST_Base{
   int   ArrayDimensions;
   byte* Identifier;
 
-  AST_Parameter(int Line, DEFINITION_TYPE DefinitionType);
+  AST_Parameter(int Line, const byte* Filename, DEFINITION_TYPE DefinitionType);
  ~AST_Parameter();
 
   void Display();

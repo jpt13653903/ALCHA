@@ -35,7 +35,8 @@ AST_Switch::CASE::~CASE(){
 }
 //------------------------------------------------------------------------------
 
-AST_Switch::AST_Switch(int Line): AST_Base(Line){
+AST_Switch::AST_Switch(int Line, const byte* Filename):
+AST_Base(Line, Filename){
  this->Type = Switch;
 
  Cases      = 0;
@@ -52,7 +53,7 @@ AST_Switch::~AST_Switch(){
 //------------------------------------------------------------------------------
 
 void AST_Switch::Display(){
- printf("\nLine %d -- switch(", Line);
+ printf("\n%s:%d -- switch(", Filename, Line);
   if(Expression) Expression->Display();
  printf("){\n");
   CASE* Temp = Cases;

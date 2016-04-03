@@ -18,24 +18,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_NamespacePush_h
-#define AST_NamespacePush_h
+#include "SymbolTable.h"
 //------------------------------------------------------------------------------
 
-#include "AST_Expression.h"
+SYMBOL_TABLE::SYMBOL_TABLE(){
+}
 //------------------------------------------------------------------------------
 
-struct AST_NamespacePush: public AST_Base{
-  AST_Expression* Namespace;
-  AST_Base      * Statements;
-
-  AST_NamespacePush(int Line, const byte* Filename);
- ~AST_NamespacePush();
-
-  void Display();
-};
+SYMBOL_TABLE::~SYMBOL_TABLE(){
+}
 //------------------------------------------------------------------------------
-
-#endif
-//------------------------------------------------------------------------------
-

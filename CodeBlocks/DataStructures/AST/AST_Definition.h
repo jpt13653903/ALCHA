@@ -70,7 +70,10 @@ struct AST_Definition: public AST_Base{
 
   IDENTIFIER* Identifiers;
 
-  AST_Definition(int Line, DEFINITION_TYPE DefinitionType);
+  AST_Definition(
+   int             Line,
+   const byte*     Filename,
+   DEFINITION_TYPE DefinitionType);
  ~AST_Definition();
 
   void Display();

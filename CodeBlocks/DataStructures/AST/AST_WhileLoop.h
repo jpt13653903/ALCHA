@@ -29,7 +29,7 @@ struct AST_WhileLoop: public AST_Base{
   AST_Expression* Condition;
   AST_Base      * Statements;
 
-  AST_WhileLoop(int Line);
+  AST_WhileLoop(int Line, const byte* Filename);
  ~AST_WhileLoop();
 
   void Display();

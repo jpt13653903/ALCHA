@@ -100,7 +100,11 @@ struct AST_Expression: public AST_Base{
   AST_Expression* Left;
   AST_Expression* Right;
 
-  AST_Expression(int Line, EXPRESSION_TYPE ExpressionType);
+  AST_Expression(
+   int             Line,
+   const byte*     Filename,
+   EXPRESSION_TYPE ExpressionType
+  );
  ~AST_Expression();
 
   void Display();

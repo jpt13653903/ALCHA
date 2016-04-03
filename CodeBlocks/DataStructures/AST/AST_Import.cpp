@@ -21,7 +21,8 @@
 #include "AST_Import.h"
 //------------------------------------------------------------------------------
 
-AST_Import::AST_Import(int Line): AST_Base(Line){
+AST_Import::AST_Import(int Line, const byte* Filename):
+AST_Base(Line, Filename){
  this->Type = Import;
 
  Namespace = 0;
@@ -33,7 +34,7 @@ AST_Import::~AST_Import(){
 //------------------------------------------------------------------------------
 
 void AST_Import::Display(){
- printf("\nLine %d -- import \"%s\"", Line, File.String());
+ printf("\n%s:%d -- import \"%s\"", Filename, Line, File.String());
  if(Namespace) printf(" as %s\n", Namespace);
  else          printf("\n");
 

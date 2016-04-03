@@ -39,7 +39,7 @@ struct AST_Switch: public AST_Base{
   AST_Base      * Default;
   AST_Expression* Expression;
 
-  AST_Switch(int Line);
+  AST_Switch(int Line, const byte* Filename);
  ~AST_Switch();
 
   void Display();

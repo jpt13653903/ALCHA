@@ -21,8 +21,11 @@
 #include "AST_Expression.h"
 //------------------------------------------------------------------------------
 
-AST_Expression::AST_Expression(int Line, EXPRESSION_TYPE ExpressionType):
-AST_Base(Line){
+AST_Expression::AST_Expression(
+ int             Line,
+ const byte*     Filename,
+ EXPRESSION_TYPE ExpressionType
+): AST_Base(Line, Filename){
  this->Type           = Expression;
  this->ExpressionType = ExpressionType;
 

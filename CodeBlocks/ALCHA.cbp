@@ -30,6 +30,7 @@
 			<Add directory="Objects" />
 			<Add directory="DataStructures" />
 			<Add directory="DataStructures/AST" />
+			<Add directory="DataStructures/SymbolTable" />
 			<Add directory="Libraries/include" />
 		</Compiler>
 		<Linker>
@@ -92,6 +93,8 @@
 		<Unit filename="DataStructures/Dictionary.h" />
 		<Unit filename="DataStructures/IdentifierTree.cpp" />
 		<Unit filename="DataStructures/IdentifierTree.h" />
+		<Unit filename="DataStructures/SymbolTable/SymbolTable.cpp" />
+		<Unit filename="DataStructures/SymbolTable/SymbolTable.h" />
 		<Unit filename="DataStructures/TypeDef.cpp" />
 		<Unit filename="DataStructures/TypeDef.h" />
 		<Unit filename="FrontEnd/CharacterNames.h" />

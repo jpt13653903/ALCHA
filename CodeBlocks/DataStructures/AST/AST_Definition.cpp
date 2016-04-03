@@ -54,8 +54,11 @@ AST_Definition::IDENTIFIER::~IDENTIFIER(){
 }
 //------------------------------------------------------------------------------
 
-AST_Definition::AST_Definition(int Line, DEFINITION_TYPE DefinitionType):
-AST_Base(Line){
+AST_Definition::AST_Definition(
+ int             Line,
+ const byte*     Filename,
+ DEFINITION_TYPE DefinitionType
+): AST_Base(Line, Filename){
  this->Type           = Definition;
  this->DefinitionType = DefinitionType;
 
@@ -79,7 +82,7 @@ AST_Definition::~AST_Definition(){
 //------------------------------------------------------------------------------
 
 void AST_Definition::Display(){
- printf("\nLine %d -- Definition (", Line);
+ printf("\n%s:%d -- Definition (", Filename, Line);
 
  switch(DefinitionType){
   case Void   : printf("Void):\n"    ); break;
@@ -109,7 +112,7 @@ void AST_Definition::Display(){
   default : printf("Bidirectional\n"); break;
  }
 
- printf(" Format:\n");
+ printf(" Format: ");
  if(Format){
   Format->Display();
   printf("\n");
@@ -117,8 +120,10 @@ void AST_Definition::Display(){
   printf("1-bit\n");
  }
 
- printf(" Attributes:\n");
- Attributes.Action(AttributesDisplay);
+ if(Attributes.GetCount()){
+  printf(" Attributes:\n");
+  Attributes.Action(AttributesDisplay);
+ }
 
  printf(" Identifiers:\n");
  IDENTIFIER* Identifier = Identifiers;

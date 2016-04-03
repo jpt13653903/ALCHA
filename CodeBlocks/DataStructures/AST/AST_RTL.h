@@ -29,7 +29,7 @@ struct AST_RTL: public AST_Base{
   AST_Expression* Parameters;
   AST_Base*       Statements;
 
-  AST_RTL(int Line);
+  AST_RTL(int Line, const byte* Filename);
  ~AST_RTL();
 
   void Display();

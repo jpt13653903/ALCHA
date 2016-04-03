@@ -21,8 +21,11 @@
 #include "AST_Parameter.h"
 //------------------------------------------------------------------------------
 
-AST_Parameter::AST_Parameter(int Line, DEFINITION_TYPE DefinitionType):
-AST_Base(Line){
+AST_Parameter::AST_Parameter(
+ int             Line,
+ const byte*     Filename,
+ DEFINITION_TYPE DefinitionType
+): AST_Base(Line, Filename){
  this->Type           = Parameter;
  this->DefinitionType = DefinitionType;
 

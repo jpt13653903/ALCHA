@@ -21,8 +21,8 @@
 #include "AST_TargetDefinition.h"
 //------------------------------------------------------------------------------
 
-AST_TargetDefinition::AST_TargetDefinition(int Line):
-AST_Base(Line){
+AST_TargetDefinition::AST_TargetDefinition(int Line, const byte* Filename):
+AST_Base(Line, Filename){
  Type = TargetDefinition;
 
  Attributes.OnDuplicate = AttributesOnDuplicate;
@@ -35,7 +35,7 @@ AST_TargetDefinition::~AST_TargetDefinition(){
 //------------------------------------------------------------------------------
 
 void AST_TargetDefinition::Display(){
- printf("\nLine %d -- Target Definition:\n Attributes:\n", Line);
+ printf("\n%s:%d -- Target Definition:\n Attributes:\n", Filename, Line);
  Attributes.Action(AttributesDisplay);
 
  if(Next) Next->Display();

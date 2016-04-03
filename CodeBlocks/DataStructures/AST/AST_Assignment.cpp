@@ -21,8 +21,11 @@
 #include "AST_Assignment.h"
 //------------------------------------------------------------------------------
 
-AST_Assignment::AST_Assignment(int Line, ASSIGNMENT_TYPE AssignmentType):
-AST_Base(Line){
+AST_Assignment::AST_Assignment(
+ int             Line,
+ const byte*     Filename,
+ ASSIGNMENT_TYPE AssignmentType
+): AST_Base(Line, Filename){
  this->Type           = Assignment;
  this->AssignmentType = AssignmentType;
 
@@ -38,7 +41,7 @@ AST_Assignment::~AST_Assignment(){
 //------------------------------------------------------------------------------
 
 void AST_Assignment::Display(){
- printf("\nLine %d -- Assignment: ", Line);
+ printf("\n%s:%d -- Assignment: ", Filename, Line);
 
  if(Left){
   if(Left->Left || Left->Right) printf("(");

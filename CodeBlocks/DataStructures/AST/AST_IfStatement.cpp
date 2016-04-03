@@ -21,7 +21,8 @@
 #include "AST_IfStatement.h"
 //------------------------------------------------------------------------------
 
-AST_IfStatement::AST_IfStatement(int Line): AST_Base(Line){
+AST_IfStatement::AST_IfStatement(int Line, const byte* Filename):
+AST_Base(Line, Filename){
  this->Type = IfStatement;
 
  Condition       = 0;
@@ -38,7 +39,7 @@ AST_IfStatement::~AST_IfStatement(){
 //------------------------------------------------------------------------------
 
 void AST_IfStatement::Display(){
- printf("\nLine %d -- if(", Line);
+ printf("\n%s:%d -- if(", Filename, Line);
   if(Condition) Condition->Display();
  printf("){\n");
   if(TrueStatements) TrueStatements->Display();

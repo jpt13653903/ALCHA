@@ -51,6 +51,7 @@ class DICTIONARY{
   };
 
   NODE* Root;
+  int   ItemCount;
 
   bool  IsRed      (NODE* Node);
   void  ColourFlip (NODE* Node);
@@ -69,8 +70,9 @@ class DICTIONARY{
   // is to update to the new data.
   DICTIONARY_DUPLICATE OnDuplicate;
 
-  void  Insert(const byte* Name, void* Data);
-  void* Find  (const byte* Name);
+  void  Insert  (const byte* Name, void* Data);
+  void* Find    (const byte* Name);
+  int   GetCount();
 
   // This calls the given function for every node, in order
   void Action(DICTIONARY_ACTION Function);

@@ -21,7 +21,8 @@
 #include "AST_WhileLoop.h"
 //------------------------------------------------------------------------------
 
-AST_WhileLoop::AST_WhileLoop(int Line): AST_Base(Line){
+AST_WhileLoop::AST_WhileLoop(int Line, const byte* Filename):
+AST_Base(Line, Filename){
  this->Type = WhileLoop;
 
  Condition  = 0;
@@ -36,7 +37,7 @@ AST_WhileLoop::~AST_WhileLoop(){
 //------------------------------------------------------------------------------
 
 void AST_WhileLoop::Display(){
- printf("\nLine %d -- while(", Line);
+ printf("\n%s:%d -- while(", Filename, Line);
   if(Condition) Condition->Display();
  printf("){\n");
   if(Statements) Statements->Display();

@@ -21,7 +21,8 @@
 #include "AST_LoopLoop.h"
 //------------------------------------------------------------------------------
 
-AST_LoopLoop::AST_LoopLoop(int Line): AST_Base(Line){
+AST_LoopLoop::AST_LoopLoop(int Line, const byte* Filename):
+AST_Base(Line, Filename){
  this->Type = LoopLoop;
 
  Count      = 0;
@@ -36,7 +37,7 @@ AST_LoopLoop::~AST_LoopLoop(){
 //------------------------------------------------------------------------------
 
 void AST_LoopLoop::Display(){
- printf("\nLine %d -- loop(", Line);
+ printf("\n%s:%d -- loop(", Filename, Line);
   if(Count) Count->Display();
   else      printf("{inf}");
  printf("){\n");

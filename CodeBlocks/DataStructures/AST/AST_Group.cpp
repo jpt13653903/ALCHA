@@ -21,7 +21,7 @@
 #include "AST_Group.h"
 //------------------------------------------------------------------------------
 
-AST_Group::AST_Group(int Line): AST_Base(Line){
+AST_Group::AST_Group(int Line, const byte* Filename): AST_Base(Line, Filename){
  Type = Group;
 
  Attributes.OnDuplicate = AttributesOnDuplicate;
@@ -39,8 +39,8 @@ AST_Group::~AST_Group(){
 //------------------------------------------------------------------------------
 
 void AST_Group::Display(){
- if(Identifier) printf("\nLine %d -- Group (%s):\n", Line, Identifier);
- else           printf("\nLine %d -- Group:\n"     , Line);
+ if(Identifier) printf("\n%s:%d -- Group (%s):\n", Filename, Line, Identifier);
+ else           printf("\n%s:%d -- Group:\n"     , Filename, Line);
 
  printf(" Attributes:\n");
   Attributes.Action(AttributesDisplay);

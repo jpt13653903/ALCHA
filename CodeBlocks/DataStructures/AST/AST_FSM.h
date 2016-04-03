@@ -29,7 +29,7 @@ struct AST_FSM: public AST_Base{
   AST_Expression* Parameters;
   AST_Base*       Statements;
 
-  AST_FSM(int Line);
+  AST_FSM(int Line, const byte* Filename);
  ~AST_FSM();
 
   void Display();

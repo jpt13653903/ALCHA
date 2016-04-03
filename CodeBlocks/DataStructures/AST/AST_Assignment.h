@@ -49,7 +49,10 @@ struct AST_Assignment: public AST_Base{
   AST_Expression* Left;
   AST_Expression* Right;
 
-  AST_Assignment(int Line, ASSIGNMENT_TYPE AssignmentType);
+  AST_Assignment(
+   int             Line,
+   const byte*     Filename,
+   ASSIGNMENT_TYPE AssignmentType);
  ~AST_Assignment();
 
   void Display();

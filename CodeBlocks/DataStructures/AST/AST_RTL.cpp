@@ -21,7 +21,7 @@
 #include "AST_RTL.h"
 //------------------------------------------------------------------------------
 
-AST_RTL::AST_RTL(int Line): AST_Base(Line){
+AST_RTL::AST_RTL(int Line, const byte* Filename): AST_Base(Line, Filename){
  this->Type = RTL;
 
  Parameters = 0;
@@ -36,7 +36,7 @@ AST_RTL::~AST_RTL(){
 //------------------------------------------------------------------------------
 
 void AST_RTL::Display(){
- printf("\nLine %d -- rtl(", Line);
+ printf("\n%s:%d -- rtl(", Filename, Line);
   if(Parameters) Parameters->Display();
  printf("){\n");
   if(Statements) Statements->Display();

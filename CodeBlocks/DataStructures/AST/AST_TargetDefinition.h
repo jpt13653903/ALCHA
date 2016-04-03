@@ -28,7 +28,7 @@
 struct AST_TargetDefinition: public AST_Base{
   DICTIONARY Attributes;
 
-  AST_TargetDefinition(int Line);
+  AST_TargetDefinition(int Line, const byte* Filename);
  ~AST_TargetDefinition();
 
   void Display();

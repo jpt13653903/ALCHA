@@ -30,7 +30,7 @@ struct AST_IfStatement: public AST_Base{
   AST_Base      * TrueStatements;
   AST_Base      * FalseStatements;
 
-  AST_IfStatement(int Line);
+  AST_IfStatement(int Line, const byte* Filename);
  ~AST_IfStatement();
 
   void Display();

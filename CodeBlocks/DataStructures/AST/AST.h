@@ -24,6 +24,7 @@
 
 #include "MyString.h"
 #include "Dictionary.h"
+#include "IdentifierTree.h"
 //------------------------------------------------------------------------------
 
 struct AST_Base{ // The base type for AST nodes
@@ -50,9 +51,10 @@ struct AST_Base{ // The base type for AST nodes
  } Type;
 
  int       Line;
- AST_Base* Next; // Next sibling
+ byte*     Filename; // Memory handled by IdentifierTree
+ AST_Base* Next;     // Next sibling
 
-          AST_Base(int Line);
+          AST_Base(int Line, const byte* Filename);
  virtual ~AST_Base(); // Also deletes the rest of the linked list
 
  virtual void Display() = 0;

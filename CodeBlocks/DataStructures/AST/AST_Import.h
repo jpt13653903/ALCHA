@@ -29,7 +29,7 @@ struct AST_Import: public AST_Base{
   STRING File;
   byte*  Namespace;
 
-  AST_Import(int Line);
+  AST_Import(int Line, const byte* Filename);
  ~AST_Import();
 
   void Display();

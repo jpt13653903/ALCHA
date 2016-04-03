@@ -31,7 +31,7 @@ struct AST_Group: public AST_Base{
   byte    * Identifier;
   AST_Base* Body;
 
-  AST_Group(int Line);
+  AST_Group(int Line, const byte* Filename);
  ~AST_Group();
 
   void Display();

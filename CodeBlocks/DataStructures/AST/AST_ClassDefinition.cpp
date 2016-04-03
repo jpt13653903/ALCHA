@@ -21,7 +21,8 @@
 #include "AST_ClassDefinition.h"
 //------------------------------------------------------------------------------
 
-AST_ClassDefinition::AST_ClassDefinition(int Line): AST_Base(Line){
+AST_ClassDefinition::AST_ClassDefinition(int Line, const byte* Filename):
+AST_Base(Line, Filename){
  Type = ClassDefinition;
 
  Attributes.OnDuplicate = AttributesOnDuplicate;
@@ -46,7 +47,7 @@ AST_ClassDefinition::~AST_ClassDefinition(){
 //------------------------------------------------------------------------------
 
 void AST_ClassDefinition::Display(){
- printf("\nLine %d -- Class Definition (%s):\n", Line, Identifier);
+ printf("\n%s:%d -- Class Definition (%s):\n", Filename, Line, Identifier);
  printf(" Attributes:\n");
   Attributes.Action(AttributesDisplay);
 

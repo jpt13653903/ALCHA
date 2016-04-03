@@ -36,7 +36,7 @@ struct AST_ClassDefinition: public AST_Base{
 
   AST_Base* Body;
 
-  AST_ClassDefinition(int Line);
+  AST_ClassDefinition(int Line, const byte* Filename);
  ~AST_ClassDefinition();
 
   void Display();

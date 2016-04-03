@@ -50,6 +50,7 @@ DICTIONARY::NODE::~NODE(){
 
 DICTIONARY::DICTIONARY(){
  Root        = 0;
+ ItemCount   = 0;
  OnDuplicate = DefaultOnDuplicate;
 }
 //------------------------------------------------------------------------------
@@ -98,7 +99,10 @@ void DICTIONARY::Insert(const byte* Name, void* Data){
 //------------------------------------------------------------------------------
 
 DICTIONARY::NODE* DICTIONARY::Insert(NODE* Node, const byte* Name, void* Data){
- if(!Node) return new NODE(Name, Data);
+ if(!Node){
+  ItemCount++;
+  return new NODE(Name, Data);
+ }
 
  int j;
  for(j = 0; Name[j]; j++){
@@ -157,6 +161,11 @@ void* DICTIONARY::Find(const byte* Name){
   }
  }
  return 0;
+}
+//------------------------------------------------------------------------------
+
+int DICTIONARY::GetCount(){
+ return ItemCount;
 }
 //------------------------------------------------------------------------------
 

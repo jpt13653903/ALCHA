@@ -33,7 +33,7 @@ struct AST_Jump: public AST_Base{
   } JumpType;
   AST_Expression* Expression;
 
-  AST_Jump(int Line, JUMP_TYPE JumpType);
+  AST_Jump(int Line, const byte* Filename, JUMP_TYPE JumpType);
  ~AST_Jump();
 
   void Display();

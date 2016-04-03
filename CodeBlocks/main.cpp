@@ -154,11 +154,12 @@ int main(int argc, char** argv){
  #endif
 
 // ConvertJSON();
-
- SetCurrentDirectory(L"C:\\JPT\\Projects\\15\\1509 - ALCHA\\Test Cases\\FrontEnd");
+ SetCurrentDirectory(
+  L"C:\\JPT\\Projects\\15\\1509 - ALCHA\\Test Cases\\Counter"
+ );
 
  PARSER Parser;
- AST = Parser.Run((byte*)"Parser.alc");
+ AST = Parser.Run((byte*)"Counter.alc");
  if(!AST) return -1;
 
 // ALTERA Altera;
