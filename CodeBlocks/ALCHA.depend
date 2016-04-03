@@ -1,13 +1,8 @@
 # depslib dependency file v1.0
-1454912052 source:c:\jpt\projects\15\1509 - alcha\codeblocks\backend\altera.cpp
+1459689647 source:c:\jpt\projects\15\1509 - alcha\codeblocks\backend\altera.cpp
 	"Altera.h"
 
-1450263033 c:\jpt\projects\15\1509 - alcha\codeblocks\backend\altera.h
-	<time.h>
-	"HDL.h"
-	"Pin.h"
-	"Target.h"
-	"FileSystem.h"
+1459689647 c:\jpt\projects\15\1509 - alcha\codeblocks\backend\altera.h
 
 1455042216 c:\jpt\projects\15\1509 - alcha\codeblocks\objects\pin.h
 	"Object.h"
@@ -45,7 +40,7 @@
 	"Tree.h"
 	"MyString.h"
 
-1459677038 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\parser.cpp
+1459686853 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\parser.cpp
 	"Parser.h"
 
 1458631490 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\parser.h
@@ -95,7 +90,7 @@
 1454911896 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\preprocessor.cpp
 	"PreProcessor.h"
 
-1459672772 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\scanner.cpp
+1459683540 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\scanner.cpp
 	"Scanner.h"
 	"CharacterNames.h"
 
@@ -186,14 +181,14 @@
 	"gmp.h"
 	"MyString.h"
 
-1459672690 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\token.h
+1459683549 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\token.h
 	"Number.h"
 	"MyString.h"
 
 1455297952 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\token.cpp
 	"Token.h"
 
-1455036199 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\tokentree.h
+1459689714 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\tokentree.h
 	"Token.h"
 
 1455033566 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\tokentree.cpp
@@ -201,13 +196,13 @@
 
 1455544543 c:\jpt\projects\15\1509 - alcha\codeblocks\global\global.h
 
-1459674344 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\dictionary.cpp
+1459686549 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\dictionary.cpp
 	"Dictionary.h"
 
-1459674184 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\dictionary.h
+1459686549 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\dictionary.h
 	"Global.h"
 
-1459676502 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast.cpp
+1459684835 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast.cpp
 	"AST.h"
 
 1459676502 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast.h
@@ -240,10 +235,10 @@
 1459676437 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_targetdefinition.h
 	"AST.h"
 
-1459676856 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_definition.cpp
+1459681413 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_definition.cpp
 	"AST_Definition.h"
 
-1459676502 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_definition.h
+1459688953 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_definition.h
 	"AST_Parameter.h"
 	"AST_Assignment.h"
 
@@ -334,10 +329,10 @@
 
 1455444444 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\characternames.h
 
-1459676592 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_parameter.cpp
+1459681487 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_parameter.cpp
 	"AST_Parameter.h"
 
-1459676437 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_parameter.h
+1459685811 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_parameter.h
 	"AST_Expression.h"
 
 1459676437 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_jump.h
@@ -352,8 +347,37 @@
 1459676437 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_group.h
 	"AST.h"
 
-1459674609 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\symboltable.cpp
+1459686167 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\symboltable.cpp
 	"SymbolTable.h"
 
-1459675548 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\symboltable.h
+1459686183 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\symboltable.h
+	"AST.h"
+	"Dictionary.h"
+	"IdentifierTree.h"
+
+1459688157 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\symbol.cpp
+	"Symbol.h"
+
+1459689295 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\symbol.h
+	"AST.h"
+	"Number.h"
+	"SymbolTree.h"
+
+1459689289 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\symboltree.h
+	"Global.h"
+
+1459689237 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\scope.cpp
+	"Scope.h"
+
+1459689289 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\scope.h
+	"SymbolTree.h"
+
+1459689599 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\pin.h
+
+1459689289 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\symboltree.cpp
+	"Symbol.h"
+	"SymbolTree.h"
+
+1455042231 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\pin.cpp
+	"Pin.h"
 

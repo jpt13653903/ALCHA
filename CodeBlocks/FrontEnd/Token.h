@@ -35,10 +35,11 @@ struct TOKEN{
   Newline,
 
   // Keywords ..................................................................
-  Target,
+  SetTarget,
 
   Void,
   Auto,
+  Func,
   Pin,
   Sig,
   Clk,

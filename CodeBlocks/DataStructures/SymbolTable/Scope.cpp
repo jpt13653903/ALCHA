@@ -18,27 +18,61 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Target_h
-#define Target_h
+#include "Scope.h"
 //------------------------------------------------------------------------------
 
-#include "MyString.h"
+SCOPE Scope;
 //------------------------------------------------------------------------------
 
-struct TARGET{
- // Physical attributes
- STRING Type;
- STRING Vendor;
- STRING Series;
- STRING Device;
- STRING Board;
-
- TARGET();
-};
+SCOPE::NODE::NODE(){
+ Namespace = 0;
+ Next      = 0;
+}
 //------------------------------------------------------------------------------
 
-extern TARGET Target;
+SCOPE::NODE::~NODE(){
+ if(Next) delete Next;
+}
 //------------------------------------------------------------------------------
 
-#endif
+SCOPE::SCOPE(){
+ NODE* Stack = new NODE;
+ Current = &Stack->Symbols;
+}
+//------------------------------------------------------------------------------
+
+SCOPE::~SCOPE(){
+ delete Stack;
+}
+//------------------------------------------------------------------------------
+
+void SCOPE::New(){
+ NODE* Temp = new NODE;
+ Temp->Next = Stack;
+ Stack      = Temp;
+ Current    = &Stack->Symbols;
+}
+//------------------------------------------------------------------------------
+
+void SCOPE::Push(SYMBOL* Namespace){
+ NODE* Temp = new NODE;
+ Temp->Next = Stack;
+ Stack      = Temp;
+
+ Stack->Namespace = Namespace;
+ Current          = Namespace->Members;
+}
+//------------------------------------------------------------------------------
+
+void SCOPE::Pop(){
+ if(!Stack || !Stack->Next) return; // Trying to pop the global scope
+
+ NODE* Temp = Stack;
+ Stack      = Temp->Next;
+ Temp->Next = 0;
+ delete Temp;
+
+ if(Stack->Namespace) Current =  Namespace->Members;
+ else                 Current = &Stack    ->Symbols;
+}
 //------------------------------------------------------------------------------

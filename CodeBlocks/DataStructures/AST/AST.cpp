@@ -53,7 +53,7 @@ AST_Base::~AST_Base(){
  AST_Base* Temp;
  while(Next){
   Temp       = Next;
-  Next       = Next->Next;
+  Next       = Temp->Next;
   Temp->Next = 0;
   delete Temp;
  }

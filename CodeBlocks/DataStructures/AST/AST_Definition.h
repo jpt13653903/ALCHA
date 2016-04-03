@@ -31,13 +31,14 @@ struct AST_Definition: public AST_Base{
    Void, Auto, // Used for functions only
    Pin, Sig, Clk,
    Int, Rat, Float, Complex,
+   Func, // Function pointer
    ClassInstance
   } DefinitionType;
   AST_Expression* ClassName; // For class instances
 
   struct ARRAY{
    AST_Expression* Size;
-   ARRAY         * Next;
+   ARRAY         * Next; // Next dimension of the array
 
    ARRAY();
   ~ARRAY();

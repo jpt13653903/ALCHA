@@ -27,7 +27,7 @@
 
 struct AST_Import: public AST_Base{
   STRING File;
-  byte*  Namespace;
+  byte*  Namespace; // Obtained from IdentifierTree
 
   AST_Import(int Line, const byte* Filename);
  ~AST_Import();

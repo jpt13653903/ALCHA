@@ -18,13 +18,40 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "SymbolTable.h"
+#ifndef Scope_h
+#define Scope_h
 //------------------------------------------------------------------------------
 
-SYMBOL_TABLE::SYMBOL_TABLE(){
-}
+#include "SymbolTree.h"
 //------------------------------------------------------------------------------
 
-SYMBOL_TABLE::~SYMBOL_TABLE(){
-}
+class SCOPE{
+ private:
+  struct NODE{
+   SYMBOL_TREE Symbols;   // In use when this is a scope
+   SYMBOL*     Namespace; // In use when this is a name-space (null otherwise)
+   NODE*       Next;
+
+   NODE();
+  ~NODE();
+  };
+  NODE* Stack;
+
+ public:
+  SYMBOL_TREE* Current; // The current scope (do not change the pointer)
+
+  void New ();                  // Creates new scope (statement blocks, etc.)
+  void Push(SYMBOL* Namespace); // Pushes name-space
+  void Pop ();                  // Pops the top scope or name-space
+
+  SCOPE();
+ ~SCOPE();
+};
 //------------------------------------------------------------------------------
+
+extern SCOPE Scope; // The global data structure
+//------------------------------------------------------------------------------
+
+#endif
+//------------------------------------------------------------------------------
+

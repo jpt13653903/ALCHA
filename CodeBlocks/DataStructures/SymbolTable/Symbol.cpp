@@ -18,18 +18,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "TypeDef.h"
+#include "Symbol.h"
 //------------------------------------------------------------------------------
 
-SYMBOL::SYMBOL(const byte* Name, TYPE_DEF* Type){
- this->Name << Name;
+SYMBOL::SYMBOL(TYPE Type, byte* Name){
  this->Type = Type;
-       Next = 0;
+ this->Name = Name;
 }
 //------------------------------------------------------------------------------
 
 SYMBOL::~SYMBOL(){
- if(Next) delete Next;
 }
 //------------------------------------------------------------------------------
-

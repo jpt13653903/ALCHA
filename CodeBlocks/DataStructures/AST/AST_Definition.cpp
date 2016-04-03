@@ -94,6 +94,7 @@ void AST_Definition::Display(){
   case Rat    : printf("Rational):\n"); break;
   case Float  : printf("Float):\n"   ); break;
   case Complex: printf("Complex):\n" ); break;
+  case Func   : printf("Function):\n"); break;
 
   case ClassInstance:
    printf("Class instance definition (");

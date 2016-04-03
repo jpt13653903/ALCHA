@@ -28,17 +28,17 @@ Unicode characters can be used directly within strings, such as `"`&ohm;`"` and 
 
 Sequence     | Character
 --------     | ---------
-`\a`         | Alarm (`\x07`)
-`\b`         | Backspace (`\x08`)
-`\f`         | Form-feed (`\x0C`)
-`\n`         | New-line (`\x0A`)
-`\r`         | Carriage return (`\x0D`)
-`\t`         | Horizontal tab (`\x09`)
-`\v`         | Vertical tab (`\x0B`)
-`\\`         | Backslash (`\x5C`)
-`\'`         | Single quotation mark (`\x27`)
-`\"`         | Double quotation mark (`\x22`)
-`\?`         | Question mark (`\x3F`)
+`\a`         | Alarm (`U+07`)
+`\b`         | Backspace (`U+08`)
+`\f`         | Form-feed (`U+0C`)
+`\n`         | New-line (`U+0A`)
+`\r`         | Carriage return (`U+0D`)
+`\t`         | Horizontal tab (`U+09`)
+`\v`         | Vertical tab (`U+0B`)
+`\\`         | Backslash (`U+5C`)
+`\'`         | Single quotation mark (`U+27`)
+`\"`         | Double quotation mark (`U+22`)
+`\?`         | Question mark (`U+3F`)
 `\nnn`       | up to 11-digit octal Unicode
 `\xHH`       | 2-digit hexadecimal Unicode
 `\uHHHH`     | 4-digit hexadecimal Unicode
@@ -51,6 +51,17 @@ Non-digits in ALCHA are defined as the '`_`' character, as well as any character
 Digits in ALCHA are defined as any character in the range '`0`' to '`9`'.
 
 Identifiers start with a non-digit, which may then be followed with any digit or non-digit.
+
+## Predefined Constants
+
+The following constants are predefined in the same precision as the surrounding variables.  They can be redefined by the developer, following the scoping rules.
+
+Symbol                        | Description            | Value
+------                        | -----------            | -----
+`pi` or &pi; (`U+0C30`)       | &pi;                   | 3.141 592 653 ...
+`e`                           | Natural base           | 2.718 281 828 ...
+`i` or `j`                    | Imaginary constant     | &radic;(-1)
+`gamma` or &gamma; (`U+03B3`) | Euler's constant       | 0.577 215 664 ...
 
 ## Syntax Highlighting Scripts
 At the moment, only Vim is supported.  The Vim syntax file can be downloaded from [the repository](https://sourceforge.net/p/alcha/doccode/ci/master/tree/Vim/alcha.vim?format=raw).  It is a direct implementation of the scanner, so it does not have any error-checking features.

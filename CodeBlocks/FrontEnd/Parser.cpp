@@ -79,7 +79,7 @@ bool PARSER::AttributeAssignment(DICTIONARY* Attributes){
   Error("Attribute expected");
   return false;
  }
- STRING Name = Token.Data;
+ byte* Name = Token.ID;
  GetToken();
 
  if(Token.Type != TOKEN::Assign){
@@ -92,9 +92,7 @@ bool PARSER::AttributeAssignment(DICTIONARY* Attributes){
   Error("Attribute value expected");
   return false;
  }
- STRING* Data = new STRING;
- *Data = Token.Data;
- Attributes->Insert(Name.String(), Data);
+ Attributes->Insert(Name, new STRING(Token.Data));
  GetToken();
 
  return true;
@@ -126,7 +124,7 @@ bool PARSER::AttributeList(DICTIONARY* Attributes){
 //------------------------------------------------------------------------------
 
 AST_TargetDefinition* PARSER::TargetDefinition(){
- if(Token.Type != TOKEN::Target) return 0;
+ if(Token.Type != TOKEN::SetTarget) return 0;
  AST_TargetDefinition* Node = new AST_TargetDefinition(
   Token.Line, Scanner->Filename.String()
  );
@@ -1256,6 +1254,11 @@ AST_Parameter* PARSER::DefParameter(){
     Token.Line, Scanner->Filename.String(), AST_Parameter::Complex
    ); GetToken();
    break;
+  case TOKEN::Func:
+   Node = new AST_Parameter(
+    Token.Line, Scanner->Filename.String(), AST_Parameter::Func
+   ); GetToken();
+   break;
   case TOKEN::Identifier:
    Node = new AST_Parameter(
     Token.Line, Scanner->Filename.String(), AST_Parameter::ClassInstance
@@ -1459,6 +1462,10 @@ AST_Definition* PARSER::Definition(){
    Node = new AST_Definition(
     Token.Line, Scanner->Filename.String(), AST_Definition::Complex
    ); break;
+  case TOKEN::Func:
+   Node = new AST_Definition(
+    Token.Line, Scanner->Filename.String(), AST_Definition::Func
+   ); break;
   default:
    if(Direction) Error("Type name expected");
    return 0;
@@ -1475,6 +1482,11 @@ AST_Definition* PARSER::Definition(){
   }
   if(Node->DefinitionType == AST_Definition::Auto){
    Error("Auto cannot have a format");
+   delete Node;
+   return 0;
+  }
+  if(Node->DefinitionType == AST_Definition::Func){
+   Error("Function cannot have a format");
    delete Node;
    return 0;
   }

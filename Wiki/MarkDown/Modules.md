@@ -6,10 +6,10 @@
 ## Target Descriptor
 Every ALCHA design must have a target descriptor.  There are two types: simulation and project.  A simulation target indicates a waveform database of all the pins in the design.  A project target indicates a vendor-specific project, including the project file, design constraints and HDL source.
 
-To specify a target, the `target` keyword is used, as follows:
+To specify a target, the `set_target` keyword is used, as follows:
 
     :::C++
-    target<
+    set_target<
      type = "Simulation",
      time = "100 ms"
     >
@@ -17,7 +17,7 @@ To specify a target, the `target` keyword is used, as follows:
 Or, in the case of a project target:
 
     :::C++
-    target<
+    set_target<
      type     = "Project",
      vendor   = "Altera",
      series   = "Cyclone V GX",

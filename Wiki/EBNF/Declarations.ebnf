@@ -1,12 +1,13 @@
 Module = [Statements];
 
-TargetDefinition = "target" AttributeList ";";
+TargetDefinition = "set_target" AttributeList ";";
 Definition       = ["in" | "out"]
                    (BaseType | "void" | "auto")
                    [FP_Cast] [AttributeList] IdentifierList;
 
 BaseType = "pin"  | "sig" | "clk" 
-         | "int"  | "rat" | "float" | "complex";
+         | "int"  | "rat" | "float" | "complex"
+         | "func" ;
 
 IdentifierList = Identifier {ArrayDefinition} (
                   ("(" [DefParameterList] ")" "{" [Statements] "}"   ) |

@@ -18,72 +18,46 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef TypeDef_h
-#define TypeDef_h
+/**
+ It is advantageous to keep the pins as separate structures (instead of a "pin"
+ class that is handled like any other class), because it makes listing all
+ the pins in the back-end much easier.
+*/
 //------------------------------------------------------------------------------
 
-#include "MyString.h"
+#ifndef Pin_h
+#define Pin_h
 //------------------------------------------------------------------------------
 
-struct TYPE_DEF;
+//#include "Object.h"
 //------------------------------------------------------------------------------
 
-struct SYMBOL{
- STRING    Name;
- TYPE_DEF* Type;
-
- SYMBOL* Next; // Linked list used for parameters
-
- SYMBOL(const byte* Name, TYPE_DEF* Type);
-~SYMBOL();
-};
-//------------------------------------------------------------------------------
-
-struct TYPE_DEF{
- bool Synthesiseable; // compile-time otherwise
-
- enum TYPE{
-  // Compile-time
-  Integer,
-  Rational,
-  Float,
-  Complex,
-
-  // Synthesiseable
-  Signed,
-  Unsigned,
-
-  // Structured Types
-  Array,
-  Class,
-
-  Function
- } Type;
-
- union{
-  struct{ // Float and Complex
-   int FloatPrecision;
-  };
-
-  struct{ // Signed and Unsigned
-   int IntegerBits;
-   int FractionBits;
-  };
-
-  struct{ // Array
-   TYPE_DEF* BaseType;
-   int       Size;
-  };
-
-  struct{ // Function
-   TYPE_DEF* ReturnType; // Funtion
-   SYMBOL*   Parameters; // Linked List
-  };
- };
-};
+//struct PIN: public OBJECT{
+// int  ArrayDepth;
+// int* Indices;
+//
+// STRING Standard;  // The logic standard: CMOS, TTL, HSUL, etc.
+// STRING Number;    // Physical pin number
+// STRING Pair;      // Physical pin number of negative of the differential pair
+//
+// enum{Output, Input, Bidirectional} Direction;
+//
+// double Voltage;   // Nominal logic standard voltage [V]
+// double Current;   // Nominal pin drive strength [A] (0 => use bank default)
+//
+// double MinDelay;  // Physical minimum external trace delay [s] (default = 0)
+// double MaxDelay;  // Physical maximum external trace delay [s] (default = 0)
+//
+// double Frequency; // Input frequency of a clock pin [Hz] (0 if not clock pin)
+// double Phase;     // Clock phase [degrees]
+// double Jitter;    // Clock peak-to-peak jitter [s]
+//
+//  PIN(const byte* Name);
+// ~PIN();
+//
+// int Compare(TREE_NODE* Right);
+//};
 //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------
-
-

@@ -1,4 +1,4 @@
-target<
+set_target<
  type = "Simulation",
  time = "100 μs"
 >;

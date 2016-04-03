@@ -30,12 +30,13 @@ struct AST_Parameter: public AST_Base{
    Auto,
    Pin, Sig, Clk,
    Int, Rat, Float, Complex,
+   Func, // Function pointer
    ClassInstance
   } DefinitionType;
   AST_Expression* ClassName; // For class instances
 
   int   ArrayDimensions;
-  byte* Identifier;
+  byte* Identifier; // ID obtained via IdentifierTree
 
   AST_Parameter(int Line, const byte* Filename, DEFINITION_TYPE DefinitionType);
  ~AST_Parameter();

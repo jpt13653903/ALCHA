@@ -52,6 +52,7 @@ void AST_Parameter::Display(){
   case Rat    : printf("Rational):"); break;
   case Float  : printf("Float):"   ); break;
   case Complex: printf("Complex):" ); break;
+  case Func   : printf("Function):"); break;
 
   case ClassInstance:
    if(ClassName) ClassName->Display();

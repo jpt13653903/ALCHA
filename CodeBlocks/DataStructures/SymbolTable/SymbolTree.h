@@ -18,13 +18,56 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Object_h
-#define Object_h
+/**
+This is a dictionary to store the symbol table.  It is based on DICTIONARY, but
+uses the identifier ID (obtained from IdentifierTree) instead of the identifier
+string.                                                                       */
 //------------------------------------------------------------------------------
 
-class OBJECT{
+#ifndef SymbolTree_h
+#define SymbolTree_h
+//------------------------------------------------------------------------------
+
+#include "Global.h"
+//------------------------------------------------------------------------------
+
+class SYMBOL;
+//------------------------------------------------------------------------------
+
+class SYMBOL_TREE{
+ private:
+  struct NODE{
+   bool  Red;
+
+   SYMBOL* Symbol; // The symbol
+
+   NODE* Left;
+   NODE* Right;
+
+   NODE(SYMBOL* Symbol);
+  ~NODE();
+  };
+
+  NODE* Root;
+
+  bool  IsRed      (NODE* Node);
+  void  ColourFlip (NODE* Node);
+  NODE* RotateLeft (NODE* Node);
+  NODE* RotateRight(NODE* Node);
+
+  bool  Duplicate;
+  NODE* Insert(NODE* Node, SYMBOL* Symbol);
+
+ public:
+  SYMBOL_TREE();
+ ~SYMBOL_TREE();
+
+  // Name must be an ID obtained from IdentifierTree
+  bool    Insert(SYMBOL*     Symbol); // Returns false on duplicate name
+  SYMBOL* Find  (const byte* Name  );
 };
 //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------
+
