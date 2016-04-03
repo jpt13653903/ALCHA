@@ -50,7 +50,6 @@ struct TOKEN{
 
   In,
   Out,
-  Signed,
 
   Class,
 

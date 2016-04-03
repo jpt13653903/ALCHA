@@ -520,7 +520,7 @@ AST_Expression* PARSER::FP_Cast(AST_Expression* Node){
  AST_Expression* Temp;
 
  if(Token.Type == TOKEN::FP_Cast){
-  Temp = new AST_Expression(Token.Line, AST_Expression::FP_Cast_Basic);
+  Temp = new AST_Expression(Token.Line, AST_Expression::FP_Cast);
   GetToken();
   Temp->Left = Node;
   Node = Temp;
@@ -543,16 +543,6 @@ AST_Expression* PARSER::FP_Cast(AST_Expression* Node){
   }
   if(Token.Type == TOKEN::Comma){
    GetToken();
-   Node->ExpressionType = AST_Expression::FP_Cast_Basic;
-   Node->Right->Next = Expression();
-   if(!Node->Right->Next){
-    Error("Expression expected");
-    delete Node;
-    return 0;
-   }
-  }else if(Token.Type == TOKEN::Semicolon){
-   GetToken();
-   Node->ExpressionType = AST_Expression::FP_Cast_Scale;
    Node->Right->Next = Expression();
    if(!Node->Right->Next){
     Error("Expression expected");
@@ -1297,15 +1287,8 @@ AST_Definition::IDENTIFIER* PARSER::IdentifierList(){
 //------------------------------------------------------------------------------
 
 AST_Definition* PARSER::Definition(){
- bool Signed = false;
-
  AST_Definition::DIRECTION Direction =
   AST_Definition::Bidirectional;
-
- if(Token.Type == TOKEN::Signed){
-  Signed = true;
-  GetToken();
- }
 
  if(Token.Type == TOKEN::In){
   Direction = AST_Definition::In;
@@ -1313,11 +1296,6 @@ AST_Definition* PARSER::Definition(){
 
  }else if(Token.Type == TOKEN::Out){
   Direction = AST_Definition::Out;
-  GetToken();
- }
-
- if(Token.Type == TOKEN::Signed){
-  Signed = true;
   GetToken();
  }
 
@@ -1342,10 +1320,9 @@ AST_Definition* PARSER::Definition(){
   case TOKEN::Complex:
    Node = new AST_Definition(Token.Line, AST_Definition::Complex); break;
   default:
-   if(Signed || Direction) Error("Type name expected");
+   if(Direction) Error("Type name expected");
    return 0;
  }
- Node->Signed    = Signed;
  Node->Direction = Direction;
  GetToken();
 

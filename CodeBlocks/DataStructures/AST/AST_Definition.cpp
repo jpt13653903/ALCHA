@@ -59,13 +59,12 @@ AST_Base(Line){
  this->Type           = Definition;
  this->DefinitionType = DefinitionType;
 
- Signed    = false;
  Direction = Bidirectional;
 
  ClassName = 0;
  Format    = 0;
 
- FormatType = AST_Expression::FP_Cast_Basic;
+ FormatType = AST_Expression::FP_Cast;
 
  Attributes.OnDuplicate = AttributesOnDuplicate;
 }
@@ -110,12 +109,7 @@ void AST_Definition::Display(){
   default : printf("Bidirectional\n"); break;
  }
 
- printf(" Format");
- if(FormatType == AST_Expression::FP_Cast_Basic) printf(" (Basic):\n" );
- else                                            printf(" (Scaled):\n");
- if(Signed) printf("  Signed\n");
- else       printf("  Unsigned\n");
- printf("  Format = ");
+ printf(" Format:\n");
  if(Format){
   Format->Display();
   printf("\n");

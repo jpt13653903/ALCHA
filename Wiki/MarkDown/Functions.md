@@ -56,7 +56,7 @@ If the function takes an array as a parameter, the same rules apply.  The functi
 To return an array, the function name should be defined as an array, as follows:
 
     :::C++
-    signed sig'(16,8) Mult[4][4](A[][], B[][]){
+    sig'(16, -8) Mult[4][4](A[][], B[][]){
      int i, j, k;
      for(i in 0->3){
       for(j in 0->3){

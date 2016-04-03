@@ -80,7 +80,7 @@ tarp9ub3f
 tar
 target823
 
-target pin sig clk int rat float complex in out signed 
+target pin sig clk int rat float complex in out 
 class if else for while loop switch case default import as rtl fsm hdl
 
 // Testing the token tree Match function

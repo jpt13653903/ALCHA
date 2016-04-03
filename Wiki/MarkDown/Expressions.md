@@ -44,9 +44,8 @@ Reduction | ` &A`        | AND-reduce
           | ` !A`        | Logical compliment
 ||
 Cast | `A ' N`     | Casts `A` to an `N`-bit integer
-     | `A '(N, M)` | Casts `A` to an `N.M`-bit fixed-point
-     | `A '(N; s)` | Casts `A` to an `N`-bit fixed-point in the range [0, s)
-     | `A '(N;-s)` | Casts `A` to an (`N`+1)-bit fixed-point in the range [-s, s)
+     | `A '(N, s)` | Casts `A` to an `N`-bit fixed-point in the range [0, s)
+     | `A '(N,-s)` | Casts `A` to an (`N`+1)-bit fixed-point in the range [-s, s)
 ||
 Concatenate | `A:B:C` | Bit-wise concatenate
 ||

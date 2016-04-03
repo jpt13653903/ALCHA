@@ -1,7 +1,7 @@
 Module = [Statements];
 
 TargetDefinition = "target" AttributeList ";";
-Definition       = ["signed"] ["in" | "out"] ["signed"] 
+Definition       = ["in" | "out"]
                    (BaseType | "void" | "auto")
                    [FP_Cast] [AttributeList] IdentifierList;
 

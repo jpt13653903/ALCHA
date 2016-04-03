@@ -16,4 +16,5 @@ The ALCHA project, including the language grammar and, by extension, this wiki, 
 - [Scripting Features](/p/alcha/wiki/Scripting)
 - [High-level Structures](/p/alcha/wiki/HighLevelStructures)
 - [Simulation and Verification](/p/alcha/wiki/Simulation)
+--------------------------------------------------------------------------------
 

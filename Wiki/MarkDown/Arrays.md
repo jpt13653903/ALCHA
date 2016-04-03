@@ -16,14 +16,14 @@ Each new dimension is defined by means of a positive integer in square brackets,
 Array elements can be addressed by means of slices.  The bits are modelled as the deepest dimension, with indices equal to the power-of-two representation of that bit.  The element indices are zero-based.  An empty slice ("`[]`") can be used to indicate "all elements".  Any bit-slice removes the fixed-point format.  The result of a bit-slice is always an unsigned integer with as many bits as in the slice.  Some examples are presented below:
 
     :::C++
-    sig'(16,8) A[16];
-    A[5]             // Element 5 of A (the 6th element).
-    A[][15->0]       // All the elements of A, but only the integer bits
-    A[3~7~2][-1->-8] // Elements 3, 7 and 2 of A (in that order), and only the fraction bits
-    A[0->15@3]       // Every third element of A (0, 3, 6, 9, 12 and 15)
+    sig'(16, 8) A[16];
+    A[5]            // Element 5 of A (the 6th element).
+    A[][15->13]     // All the elements of A, but only the integer bits
+    A[3~7~2][12->0] // Elements 3, 7 and 2 of A (in that order), and only the fraction bits
+    A[0->15@3]      // Every third element of A (0, 3, 6, 9, 12 and 15)
 
-    A[5~3~7][-6~7~2] // Bits -6, 7 and 2 (in that order) of elements 5, 3 and 7 (in that order)
-                     // The result is a 3-element array of 3-bit integers
+    A[5~3~7][6~7~2] // Bits -6, 7 and 2 (in that order) of elements 5, 3 and 7 (in that order)
+                    // The result is a 3-element array of 3-bit integers
 
 The indices can also be specified by means of an integer array, as follows:
 

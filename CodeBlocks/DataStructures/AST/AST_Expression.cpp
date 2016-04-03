@@ -91,8 +91,7 @@ void AST_Expression::Display(){
   case XNOR_Reduce: printf(" ~#"); break;
   case Logical_NOT: printf( " !"); break;
 
-  case FP_Cast_Basic: printf(" {N.M format} "   ); break;
-  case FP_Cast_Scale: printf(" {(N, s) format} "); break;
+  case FP_Cast: printf(" {format} "); break;
 
   case Concatenate: printf(":"    ); break;
   case Replicate  : printf("{rep}"); break;

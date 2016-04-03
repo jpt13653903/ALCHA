@@ -24,8 +24,7 @@ continue;
 
 sig            w = e;
 sig'  8        x = e'  8       ;
-sig'( 7, 9   ) y = e'( 7, 9   );
-sig'(32; 2*pi) z = e'(32; 2*pi);
+sig'(32, 2*pi) z = e'(32, 2*pi);
 
 a  = b ^ c;
 a  = b # c;
@@ -69,8 +68,8 @@ in pin<frequency = "50 MHz", location = "C8" > Clk;
 
 out pin'3<location = "A, B, C"> Output;
 
-sig       ' 8    X;
-signed sig'(3,9) Y[A][A.B][A.B.C][8];
+sig' 8       X;
+sig'(12, -8) Y[A][A.B][A.B.C][8];
 
 int         A, B, C;
 rat         D[]; // Dynamic array;

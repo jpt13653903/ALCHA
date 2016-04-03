@@ -18,7 +18,7 @@ Concatenation = Cast {":" Cast};
 Cast       = Reduction [FP_Cast];
 FP_Cast    = "'" (
               Identifier | Literal |
-              ("(" Expression [("," | ";") Expression] ")")
+              ("(" Expression [(",") Expression] ")")
              );
 Reduction  = ["&" | "~&" | "|" | "~|" | "#" | "~#" | "!"] Range;
 

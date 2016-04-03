@@ -83,7 +83,6 @@ SCANNER::SCANNER(){
   Keywords.Insert("complex" , TOKEN::Complex );
   Keywords.Insert("in"      , TOKEN::In      );
   Keywords.Insert("out"     , TOKEN::Out     );
-  Keywords.Insert("signed"  , TOKEN::Signed  );
   Keywords.Insert("class"   , TOKEN::Class   );
   Keywords.Insert("if"      , TOKEN::If      );
   Keywords.Insert("else"    , TOKEN::Else    );

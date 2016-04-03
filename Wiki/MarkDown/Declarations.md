@@ -5,27 +5,23 @@
 # Declarations
 ## Signals
 ### Definition
-Signals relate to physical wires and / or registers on the FPGA.  They are specified by means of the `sig` keyword.  If no format is specified, a signal is a single-bit unsigned integer, which also represents a boolean.  The format is specified by means of a "fixed-point cast" using the `'` (single-quote) operator.  An optional `signed` modifier can be used to define 2's compliment signed numbers.  Some examples are shown below:
+Signals relate to physical wires and / or registers on the FPGA.  They are specified by means of the `sig` keyword.  If no format is specified, a signal is a single-bit unsigned integer, which also represents a boolean.  The format is specified by means of a "fixed-point cast" using the `'` (single-quote) operator.  Some examples are shown below:
 
     :::C++
-    sig          a; // Single-bit unsigned integer
-    sig'8        b; // 8-bit unsigned integer
-    signed sig'8 c; // 8-bit signed integer
+    sig           a; // Single-bit unsigned integer
+    sig'8         b; // 8-bit unsigned integer
+    sig'(7, -128) c; // 8-bit signed integer
 
-    sig'(4,4)    d; // 8-bit unsigned fixed point with 4 integer bits
-                    // and 4 fraction bits
-    sig'(4,-4)   e; // 4-bit integer where the least significant bit
-                    // represents 16 and the most significant bit 128.
-    sig'(-4,4)   f; // 4-bit fixed-point where the least significant bit
-                    // represents 2^(-8) and the most significant 2^(-5).
-    sig'(-4,-4)  g; // Illegal: both cannot be negative.
+    sig'(4, 4)    d; // 4-bit unsigned fixed point with 2 integer bits
+                     // and 2 fraction bits (in the range [0, 4)
+    sig'(4, -4)   e; // 5-bit signed fixed-point in the range [-4, 4)
 
 ### Initialisers
 All signals, pins and variables can take an optional initialiser, as illustrated below:
 
     :::C++
-    sig' 8    a  = 7;
-    sig'(3,4) pi = 355/113;
+    sig' 8     a  = 7;       // The binary value "0000 0111"
+    sig'(8, 4) pi = 355/113; // The binary value "1100 1001"
 
 ### Attributes
 Signals take optional attributes, which are summarised in the table below:
