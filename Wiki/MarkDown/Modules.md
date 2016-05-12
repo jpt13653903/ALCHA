@@ -1,4 +1,4 @@
-[[include repo=code path=Wiki/Markdown/Header.md]]
+[[include repo=code path=Wiki/MarkDown/Header.md]]
 
 [TOC]
 
@@ -70,5 +70,5 @@ Specifying the class instance, or name-space, can become tedious.  Instead, the 
      }
     }
 
-[[include repo=code path=Wiki/Markdown/Footer.md]]
+[[include repo=code path=Wiki/MarkDown/Footer.md]]
 

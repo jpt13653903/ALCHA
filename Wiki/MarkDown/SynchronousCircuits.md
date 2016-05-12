@@ -1,4 +1,4 @@
-[[include repo=code path=Wiki/Markdown/Header.md]]
+[[include repo=code path=Wiki/MarkDown/Header.md]]
 
 [TOC]
 
@@ -301,5 +301,5 @@ The pipelined version (that provides a new result every cycle, with a 4-cycle la
      }
     }
 
-[[include repo=code path=Wiki/Markdown/Footer.md]]
+[[include repo=code path=Wiki/MarkDown/Footer.md]]
 

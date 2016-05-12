@@ -1,4 +1,4 @@
-[[include repo=code path=Wiki/Markdown/Header.md]]
+[[include repo=code path=Wiki/MarkDown/Header.md]]
 
 [TOC]
 
@@ -168,5 +168,5 @@ Which translates to:
      end
     end
 
-[[include repo=code path=Wiki/Markdown/Footer.md]]
+[[include repo=code path=Wiki/MarkDown/Footer.md]]
 

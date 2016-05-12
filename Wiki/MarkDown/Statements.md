@@ -1,4 +1,4 @@
-[[include repo=code path=Wiki/Markdown/Header.md]]
+[[include repo=code path=Wiki/MarkDown/Header.md]]
 
 [TOC]
 
@@ -98,5 +98,5 @@ The `break` and `continue` keywords are used to jump out of, or within, loops.  
     }
     // Error code
 
-[[include repo=code path=Wiki/Markdown/Footer.md]]
+[[include repo=code path=Wiki/MarkDown/Footer.md]]
 

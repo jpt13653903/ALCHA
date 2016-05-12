@@ -1,4 +1,4 @@
-[[include repo=code path=Wiki/Markdown/Header.md]]
+[[include repo=code path=Wiki/MarkDown/Header.md]]
 
 [TOC]
 
@@ -33,5 +33,5 @@ Operator overloading is handled in similar fashion to C.  It can be used to defi
 
 The pattern continues for other relevant operators.  The `complex` type is a built-in scripting type and will be presented in more detail in the scripting section.
 
-[[include repo=code path=Wiki/Markdown/Footer.md]]
+[[include repo=code path=Wiki/MarkDown/Footer.md]]
 

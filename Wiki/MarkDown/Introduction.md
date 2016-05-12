@@ -1,11 +1,11 @@
-[[include repo=code path=Wiki/Markdown/Header.md]]
+[[include repo=code path=Wiki/MarkDown/Header.md]]
 
 [TOC]
 
 # Introduction
 ALCHA (architectural level computational hardware abstraction) is a command-line tool to generate vendor-specific FPGA projects from largely vendor-neutral text-based source code.  The image below provides a rough overview of the intended tool-chain.
 
-<center markdown>![Concept Block Diagram](https://sourceforge.net/p/alcha/doccode/ci/master/tree/Figures/ConceptBlock.svg?format=raw)</center>
+<center markdown>![Concept Block Diagram](https://sourceforge.net/p/alcha/code/ci/master/tree/Wiki/Figures/ConceptBlock.svg?format=raw)</center>
 
 ALCHA is aimed at unifying the various aspects of FPGA firmware design (RTL design, finite state machines, timing and design constraints, as well as scripting) into a single language.
 
@@ -39,7 +39,7 @@ Many of the ideas of ALCHA are borrowed from other existing languages.  These in
 
 - [C++](https://isocpp.org/)
 - [D](http://dlang.org/)
-- [[[img src=https://sourceforge.net/p/alcha/doccode/ci/master/tree/Figures/LaTeX.svg?format=raw]]](https://www.latex-project.org/)
+- [[[img src=https://sourceforge.net/p/alcha/code/ci/master/tree/Wiki/Figures/LaTeX.svg?format=raw]]](https://www.latex-project.org/)
 - [MATLAB](http://www.mathworks.com/products/matlab/)
 - [Python](https://www.python.org/)
 
@@ -110,5 +110,5 @@ Many of the ideas of ALCHA are borrowed from other existing languages.  These in
   [High-Level Synthesis with Behavioral-Level Multicycle Path Analysis](http://dx.doi.org/10.1109/TCAD.2014.2361661)
   Transactions on Computer-Aided Design of Integrated Circuits and Systems, IEEE, December 2014, Volume 33, Number 12, Pages&nbsp;1832&nbsp;&ndash;&nbsp;1845
 
-[[include repo=code path=Wiki/Markdown/Footer.md]]
+[[include repo=code path=Wiki/MarkDown/Footer.md]]
 

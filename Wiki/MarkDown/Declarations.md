@@ -1,4 +1,4 @@
-[[include repo=code path=Wiki/Markdown/Header.md]]
+[[include repo=code path=Wiki/MarkDown/Header.md]]
 
 [TOC]
 
@@ -134,5 +134,5 @@ The `float` and `complex` keywords can optionally be followed by the `'` operato
 
 More on scripting in the [Scripting Section](p/alcha/wiki/Scripting)
 
-[[include repo=code path=Wiki/Markdown/Footer.md]]
+[[include repo=code path=Wiki/MarkDown/Footer.md]]
 

@@ -1,4 +1,4 @@
-[[include repo=code path=Wiki/Markdown/Header.md]]
+[[include repo=code path=Wiki/MarkDown/Header.md]]
 
 [TOC]
 
@@ -40,5 +40,5 @@ Whenever a class is instantiated, the instance can be assigned various attribute
     }
     SomeModule<location = "(0.1, 0.3)->(0.8, 0.5)"> TheInstance;
 
-[[include repo=code path=Wiki/Markdown/Footer.md]]
+[[include repo=code path=Wiki/MarkDown/Footer.md]]
 

@@ -1,4 +1,4 @@
-[[include repo=code path=Wiki/Markdown/Header.md]]
+[[include repo=code path=Wiki/MarkDown/Header.md]]
 
 [TOC]
 
@@ -63,5 +63,5 @@ Megafunctions and other external HDL modules can be imported into the ALCHA proj
     RS232_Tx = MyUART.Tx;
     MyUART.Rx = RS232_Rx;
 
-[[include repo=code path=Wiki/Markdown/Footer.md]]
+[[include repo=code path=Wiki/MarkDown/Footer.md]]
 

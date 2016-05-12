@@ -1,4 +1,4 @@
-[[include repo=code path=Wiki/Markdown/Header.md]]
+[[include repo=code path=Wiki/MarkDown/Header.md]]
 
 [TOC]
 
@@ -29,5 +29,5 @@ During simulation, the ALCHA compiler writes all pin signals to a wave-form data
 ## Hardware Testing
 The waveform generator above is hardware synthesisable. The same test-bench can therefore be used to test the system on real hardware, optionally using a firmware-based logic analyser.
 
-[[include repo=code path=Wiki/Markdown/Footer.md]]
+[[include repo=code path=Wiki/MarkDown/Footer.md]]
 
