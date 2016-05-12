@@ -1,3 +1,23 @@
+//==============================================================================
+// Copyright (C) John-Philip Taylor
+// jpt13653903@gmail.com
+//
+// This file is part of ALCHA
+//
+// This file is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>
+//==============================================================================
+
 #include "Pin.h"
 //------------------------------------------------------------------------------
 
@@ -18,39 +38,9 @@
 // Phase     = 0.0;
 // Jitter    = 0.0;
 //}
-////------------------------------------------------------------------------------
-//
+//------------------------------------------------------------------------------
+
 //PIN::~PIN(){
 // if(Indices) delete[] Indices;
 //}
-////------------------------------------------------------------------------------
-//
-//int PIN::Compare(TREE_NODE* Right){
-// PIN* right = (PIN*)Right;
-//
-// int Result = Name.Compare(right->Name);
-// if(Result) return Result;
-//
-// int j;
-// for(j = 0; j < ArrayDepth && j < right->ArrayDepth; j++){
-//  if(Indices[j] < right->Indices[j]) return -1;
-//  if(Indices[j] > right->Indices[j]) return  1;
-// }
-// if(ArrayDepth < right->ArrayDepth) return -1;
-// if(ArrayDepth > right->ArrayDepth) return  1;
-// return 0;
-//}
-////------------------------------------------------------------------------------
-//
-//PIN* PINS::FindName(const byte* Name, int ArrayDepth, int* Indices){
-// PIN Key(Name);
-// Key.ArrayDepth = ArrayDepth;
-// Key.Indices    = Indices;
-//
-// PIN* Result = (PIN*)Find(&Key);
-//
-// Key.Indices = 0; // Prevent premature deletion
-//
-// return Result;
-//}
-////------------------------------------------------------------------------------
+//------------------------------------------------------------------------------

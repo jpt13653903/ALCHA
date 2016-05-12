@@ -1,4 +1,4 @@
-[[include repo=doccode path=MarkDown/Header.md]]
+[[include repo=code path=Wiki/Markdown/Header.md]]
 
 [TOC]
 
@@ -44,17 +44,15 @@ Conceptually, ALCHA processes the source as a whole. It is convenient, however, 
 
 <center markdown>![Programming Model](https://sourceforge.net/p/alcha/doccode/ci/master/tree/Figures/ProgrammingModel.svg?format=raw)</center>
 
-The import statement is used to import a child module into a parent module. There are two forms, as shown below. In both forms, the objects defined within the child module are in their own name-space, but have direct access to objects in the parent module name-space.
+The import statement is used to import a child module into a parent module. There are two forms, as shown below.  The first form imports the contents of "UART.alc" into the same name-space as the parent module, as if the file contents appeared in place of the `import` statement.  The second form imports the contents of "Ethernet.alc" into the "Eth" name-space.  It is illegal to import two modules into the same name within the same module.  In both forms, the imported modules have direct access to objects in the parent module name-space.
 
     :::Python
     import "UART"
     import "Ethernet" as Eth
 
-In this example, the UART module is imported anonymously, whereas the Ethernet module is imported into the `Eth` name-space.  Name-spaces are stored on a stack and the module being evaluated is always on top of the stack. Each anonymously imported module adds a level to the stack, whereas the name of a named import resides in the parent module name-space.  It is illegal to import two modules into the same name within the same module.
+This name-space model allows the developer to define an environment in a parent module. This environment is visible to all child modules, without the need of ports or parameter passing. The target and pin definitions are examples of where this is useful.  As another example, the developer might, for instance, define a `Round` function, which is used by child modules whenever signals must be rounded. The rounding behaviour of the design can then be changed by simply modifying the behaviour of this `Round` function.
 
-This name-space model allows the developer to define an environment in a parent module. This environment is visible to all child modules, without the need of ports or parameter passing. The target and pin definitions are examples of where this is useful. The developer might, for instance, define a `Round` function, which is used by child modules whenever signals must be rounded. The rounding behaviour of the design can then be changed by simply modifying the behaviour of this `Round` function.
-
-Specifying the class instance, or name-space, can become tedious. Instead, the developer can temporarily push a name-space onto the name-space stack by means of a special syntax, as shown below. The `A.{` construct pushes the `A` name-space onto the stack, whereas the `B.{` construct pushes the `B` name-space. The closing curly braces pop the name-spaces from the stack.
+Specifying the class instance, or name-space, can become tedious.  Instead, the developer can temporarily push a name-space onto the scope stack by means of a special syntax, as shown below. The `A.{` construct pushes the `A` name-space onto the stack, whereas the `B.{` construct pushes the `B` name-space. The closing curly braces pop the name-spaces from the stack.
 
     :::C++
     class S1{sig'8 r, g, b, a;}
@@ -72,5 +70,5 @@ Specifying the class instance, or name-space, can become tedious. Instead, the d
      }
     }
 
-[[include repo=doccode path=MarkDown/Footer.md]]
+[[include repo=code path=Wiki/Markdown/Footer.md]]
 

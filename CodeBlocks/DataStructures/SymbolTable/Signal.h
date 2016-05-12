@@ -18,15 +18,24 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Symbol.h"
+#ifndef Signal_h
+#define Signal_h
 //------------------------------------------------------------------------------
 
-SYMBOL::SYMBOL(TYPE Type, byte* Name){
- this->Type = Type;
- this->Name = Name;
-}
+#include "Object.h"
 //------------------------------------------------------------------------------
 
-SYMBOL::~SYMBOL(){
-}
+struct SIGNAL: public OBJECT{
+ double Setup; // External setup requirement
+ double Hold;  // External hold requirement
+ double Delay; // External propagation delay
+
+          SIGNAL();
+ virtual ~SIGNAL(); // PIN inherits from SIGNAL
+
+ virtual void Display();
+};
+//------------------------------------------------------------------------------
+
+#endif
 //------------------------------------------------------------------------------

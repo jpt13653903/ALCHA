@@ -32,7 +32,7 @@ AST_Group::AST_Group(int Line, const byte* Filename): AST_Base(Line, Filename){
 //------------------------------------------------------------------------------
 
 AST_Group::~AST_Group(){
- Attributes.Action(AtributesDeleteData);
+ Attributes.Action(AttributesDeleteData);
 
  if(Body) delete Body;
 }

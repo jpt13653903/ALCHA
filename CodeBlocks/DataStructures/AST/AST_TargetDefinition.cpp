@@ -30,7 +30,7 @@ AST_Base(Line, Filename){
 //------------------------------------------------------------------------------
 
 AST_TargetDefinition::~AST_TargetDefinition(){
- Attributes.Action(AtributesDeleteData);
+ Attributes.Action(AttributesDeleteData);
 }
 //------------------------------------------------------------------------------
 

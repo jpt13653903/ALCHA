@@ -36,7 +36,7 @@ void AttributesDisplay(const byte* Name, void* Data){
 }
 //------------------------------------------------------------------------------
 
-void AtributesDeleteData(const byte* Name, void* Data){
+void AttributesDeleteData(const byte* Name, void* Data){
  delete (STRING*)Data;
 }
 //------------------------------------------------------------------------------

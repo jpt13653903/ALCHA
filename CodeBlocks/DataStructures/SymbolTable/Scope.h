@@ -22,6 +22,7 @@
 #define Scope_h
 //------------------------------------------------------------------------------
 
+#include "Object.h"
 #include "SymbolTree.h"
 //------------------------------------------------------------------------------
 
@@ -29,7 +30,7 @@ class SCOPE{
  private:
   struct NODE{
    SYMBOL_TREE Symbols;   // In use when this is a scope
-   SYMBOL*     Namespace; // In use when this is a name-space (null otherwise)
+   OBJECT*     Namespace; // In use when this is a name-space (null otherwise)
    NODE*       Next;
 
    NODE();
@@ -41,7 +42,7 @@ class SCOPE{
   SYMBOL_TREE* Current; // The current scope (do not change the pointer)
 
   void New ();                  // Creates new scope (statement blocks, etc.)
-  void Push(SYMBOL* Namespace); // Pushes name-space
+  void Push(OBJECT* Namespace); // Pushes name-space
   void Pop ();                  // Pops the top scope or name-space
 
   SCOPE();

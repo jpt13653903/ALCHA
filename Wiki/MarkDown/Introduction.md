@@ -1,4 +1,4 @@
-[[include repo=doccode path=MarkDown/Header.md]]
+[[include repo=code path=Wiki/Markdown/Header.md]]
 
 [TOC]
 
@@ -110,5 +110,5 @@ Many of the ideas of ALCHA are borrowed from other existing languages.  These in
   [High-Level Synthesis with Behavioral-Level Multicycle Path Analysis](http://dx.doi.org/10.1109/TCAD.2014.2361661)
   Transactions on Computer-Aided Design of Integrated Circuits and Systems, IEEE, December 2014, Volume 33, Number 12, Pages&nbsp;1832&nbsp;&ndash;&nbsp;1845
 
-[[include repo=doccode path=MarkDown/Footer.md]]
+[[include repo=code path=Wiki/Markdown/Footer.md]]
 

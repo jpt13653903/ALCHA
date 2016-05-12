@@ -38,7 +38,7 @@ AST_Base(Line, Filename){
 //------------------------------------------------------------------------------
 
 AST_ClassDefinition::~AST_ClassDefinition(){
- Attributes.Action(AtributesDeleteData);
+ Attributes.Action(AttributesDeleteData);
 
  if(Body            ) delete Body;
  if(Parameters      ) delete Parameters;

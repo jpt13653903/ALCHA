@@ -18,57 +18,23 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_h
-#define AST_h
+#include "Object.h"
 //------------------------------------------------------------------------------
 
-#include "MyString.h"
-#include "Dictionary.h"
-#include "IdentifierTree.h"
+OBJECT::OBJECT(TYPE Type){
+ this->Type = Type;
+
+ Attributes.OnDuplicate = AttributesOnDuplicate;
+}
 //------------------------------------------------------------------------------
 
-struct AST_Base{ // The base type for AST nodes
- enum TYPE{
-  Fence, // Empty statement, but also "next-cycle" specifier in FSMs
-  Import,
-  Group,
-  TargetDefinition,
-  ClassDefinition,
-  Definition, // pin, sig, clk, int, rat, float, complex and class instance
-  Parameter,
-  Expression,
-  Assignment,
-  NamespacePush,
-  IfStatement,
-  ForLoop,
-  LoopLoop,
-  WhileLoop,
-  Switch,
-  Jump,
-  RTL,
-  FSM,
-  HDL
- } Type;
-
- int       Line;
- byte*     Filename; // Memory handled by IdentifierTree
- AST_Base* Next;     // Next sibling
-
-          AST_Base(int Line, const byte* Filename);
- virtual ~AST_Base(); // Also deletes the rest of the linked list
-
- virtual void Display() = 0;
-};
+OBJECT::~OBJECT(){
+ Attributes.Action(AttributesDeleteData);
+}
 //------------------------------------------------------------------------------
 
-void* AttributesOnDuplicate(const byte* Name, void* Old, void* New);
-void  AttributesDisplay    (const byte* Name, void* Data);
-void  AttributesDeleteData (const byte* Name, void* Data);
+void OBJECT::Attribute_Add(const byte* Name, STRING* Value){
+ STRING* ThisValue = new STRING(*Value);
+ Attributes.Insert(Name, ThisValue);
+}
 //------------------------------------------------------------------------------
-
-extern AST_Base* AST; // The global AST root
-//------------------------------------------------------------------------------
-
-#endif
-//------------------------------------------------------------------------------
-

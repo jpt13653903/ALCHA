@@ -1,4 +1,4 @@
-[[include repo=doccode path=MarkDown/Header.md]]
+[[include repo=code path=Wiki/Markdown/Header.md]]
 
 [TOC]
 
@@ -7,15 +7,15 @@ The parser takes tokens from the scanner and builds an abstract syntax tree.  No
 
 ## Definitions
 
-[[include repo=doccode path=EBNF/Declarations.ebnf]]
+[[include repo=code path=EBNF/Declarations.ebnf]]
 
 ## Expressions
 
-[[include repo=doccode path=EBNF/Expressions.ebnf]]
+[[include repo=code path=EBNF/Expressions.ebnf]]
 
 ## Statements
 
-[[include repo=doccode path=EBNF/Statements.ebnf]]
+[[include repo=code path=EBNF/Statements.ebnf]]
 
-[[include repo=doccode path=MarkDown/Footer.md]]
+[[include repo=code path=Wiki/Markdown/Footer.md]]
 

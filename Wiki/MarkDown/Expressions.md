@@ -1,4 +1,4 @@
-[[include repo=doccode path=MarkDown/Header.md]]
+[[include repo=code path=Wiki/Markdown/Header.md]]
 
 [TOC]
 
@@ -187,5 +187,5 @@ An important consequence of this mechanism is that the developer must keep the d
 
 This can become quite confusing.  Developers are therefore encouraged to avoid signal use before assignment when describing combinational circuits.
 
-[[include repo=doccode path=MarkDown/Footer.md]]
+[[include repo=code path=Wiki/Markdown/Footer.md]]
 

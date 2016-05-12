@@ -18,45 +18,34 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-/**
- It is advantageous to keep the pins as separate structures (instead of a "pin"
- class that is handled like any other class), because it makes listing all
- the pins in the back-end much easier.
-*/
-//------------------------------------------------------------------------------
-
 #ifndef Pin_h
 #define Pin_h
 //------------------------------------------------------------------------------
 
-//#include "Object.h"
+#include "Signal.h"
+#include "MyString.h"
 //------------------------------------------------------------------------------
 
-//struct PIN: public OBJECT{
-// int  ArrayDepth;
-// int* Indices;
-//
-// STRING Standard;  // The logic standard: CMOS, TTL, HSUL, etc.
-// STRING Number;    // Physical pin number
-// STRING Pair;      // Physical pin number of negative of the differential pair
-//
-// enum{Output, Input, Bidirectional} Direction;
-//
-// double Voltage;   // Nominal logic standard voltage [V]
-// double Current;   // Nominal pin drive strength [A] (0 => use bank default)
-//
-// double MinDelay;  // Physical minimum external trace delay [s] (default = 0)
-// double MaxDelay;  // Physical maximum external trace delay [s] (default = 0)
-//
-// double Frequency; // Input frequency of a clock pin [Hz] (0 if not clock pin)
-// double Phase;     // Clock phase [degrees]
-// double Jitter;    // Clock peak-to-peak jitter [s]
-//
-//  PIN(const byte* Name);
-// ~PIN();
-//
-// int Compare(TREE_NODE* Right);
-//};
+struct PIN: public SIGNAL{
+  STRING Standard;  // The logic standard: CMOS, TTL, HSUL, etc.
+  STRING Number;    // Physical pin number
+  STRING Pair;      // Physical pin number of negative of the differential pair
+
+  double Voltage;   // Nominal logic standard voltage [V]
+  double Current;   // Nominal pin drive strength [A] (0 => use bank default)
+
+  double MinDelay;  // Physical minimum external trace delay [s] (default = 0)
+  double MaxDelay;  // Physical maximum external trace delay [s] (default = 0)
+
+  double Frequency; // Input frequency of a clock pin [Hz] (0 if not clock pin)
+  double Phase;     // Clock phase [degrees]
+  double Jitter;    // Clock peak-to-peak jitter [s]
+
+  PIN();
+ ~PIN();
+
+  void Display();
+};
 //------------------------------------------------------------------------------
 
 #endif

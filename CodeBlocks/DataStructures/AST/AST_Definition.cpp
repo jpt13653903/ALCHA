@@ -77,7 +77,7 @@ AST_Definition::~AST_Definition(){
  if(ClassName) delete ClassName;
  if(Format   ) delete Format;
 
- Attributes.Action(AtributesDeleteData);
+ Attributes.Action(AttributesDeleteData);
 }
 //------------------------------------------------------------------------------
 

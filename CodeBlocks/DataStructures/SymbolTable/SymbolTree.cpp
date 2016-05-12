@@ -18,15 +18,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Symbol.h"
 #include "SymbolTree.h"
 //------------------------------------------------------------------------------
 
-SYMBOL_TREE::NODE::NODE(SYMBOL* Symbol){
+SYMBOL_TREE::NODE::NODE(const byte* Name, OBJECT* Object){
  Red  = true;
  Left = Right = 0;
 
- this->Symbol = Symbol;
+ this->Name   = Name;
+ this->Object = Object;
 }
 //------------------------------------------------------------------------------
 
@@ -79,21 +79,25 @@ SYMBOL_TREE::NODE* SYMBOL_TREE::RotateRight(NODE* Node){
 }
 //------------------------------------------------------------------------------
 
-bool SYMBOL_TREE::Insert(SYMBOL* Symbol){
+bool SYMBOL_TREE::Insert(const byte* Name, OBJECT* Object){
  Duplicate = false;
- Root = Insert(Root, Symbol);
+ Root = Insert(Root, Name, Object);
  return !Duplicate;
 }
 //------------------------------------------------------------------------------
 
-SYMBOL_TREE::NODE* SYMBOL_TREE::Insert(NODE* Node, SYMBOL* Symbol){
- if(!Node) return new NODE(Symbol);
+SYMBOL_TREE::NODE* SYMBOL_TREE::Insert(
+ NODE*       Node,
+ const byte* Name,
+ OBJECT*     Object
+){
+ if(!Node) return new NODE(Name, Object);
 
- if(Symbol->Name < Node->Symbol->Name){
-  Node->Left = Insert(Node->Left, Symbol);
+ if(Name < Node->Name){
+  Node->Left = Insert(Node->Left, Name, Object);
 
- }else if(Symbol->Name > Node->Symbol->Name){
-  Node->Right = Insert(Node->Right, Symbol);
+ }else if(Name > Node->Name){
+  Node->Right = Insert(Node->Right, Name, Object);
 
  }else{ // Duplicate
   Duplicate = true;
@@ -108,13 +112,13 @@ SYMBOL_TREE::NODE* SYMBOL_TREE::Insert(NODE* Node, SYMBOL* Symbol){
 }
 //------------------------------------------------------------------------------
 
-SYMBOL* SYMBOL_TREE::Find(const byte* Name){
+OBJECT* SYMBOL_TREE::Find(const byte* Name){
  NODE* Node = Root;
 
  while(Node){
-       if(Name < Node->Symbol->Name) Node = Node->Left;
-  else if(Name > Node->Symbol->Name) Node = Node->Right;
-  else                               return Node->Symbol;
+       if(Name < Node->Name) Node = Node->Left;
+  else if(Name > Node->Name) Node = Node->Right;
+  else                       return Node->Object;
  }
  return 0;
 }

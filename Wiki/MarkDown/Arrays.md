@@ -1,4 +1,4 @@
-[[include repo=doccode path=MarkDown/Header.md]]
+[[include repo=code path=Wiki/Markdown/Header.md]]
 
 [TOC]
 
@@ -69,5 +69,5 @@ When an array is used as the condition in an `if` statement or `while` loop, the
 
 When a scalar is involved in a vectorised operation, the scalar is repeated for every instance of the operation.  This can be used, for instance, to assign a scalar to every element of an array.
 
-[[include repo=doccode path=MarkDown/Footer.md]]
+[[include repo=code path=Wiki/Markdown/Footer.md]]
 

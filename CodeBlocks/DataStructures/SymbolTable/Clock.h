@@ -18,57 +18,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_h
-#define AST_h
+#ifndef Clock_h
+#define Clock_h
 //------------------------------------------------------------------------------
 
-#include "MyString.h"
-#include "Dictionary.h"
-#include "IdentifierTree.h"
+#include "Object.h"
 //------------------------------------------------------------------------------
 
-struct AST_Base{ // The base type for AST nodes
- enum TYPE{
-  Fence, // Empty statement, but also "next-cycle" specifier in FSMs
-  Import,
-  Group,
-  TargetDefinition,
-  ClassDefinition,
-  Definition, // pin, sig, clk, int, rat, float, complex and class instance
-  Parameter,
-  Expression,
-  Assignment,
-  NamespacePush,
-  IfStatement,
-  ForLoop,
-  LoopLoop,
-  WhileLoop,
-  Switch,
-  Jump,
-  RTL,
-  FSM,
-  HDL
- } Type;
+struct CLOCK: public OBJECT{
+  double Frequency; // Input frequency of a clock pin [Hz] (0 if not clock pin)
+  double Tolerance; // Tolerance of requested frequency (real f = [f-t, f+t])
+  double Phase;     // Clock phase [degrees]
+  double Jitter;    // Clock peak-to-peak jitter [s]
 
- int       Line;
- byte*     Filename; // Memory handled by IdentifierTree
- AST_Base* Next;     // Next sibling
+  CLOCK();
+ ~CLOCK();
 
-          AST_Base(int Line, const byte* Filename);
- virtual ~AST_Base(); // Also deletes the rest of the linked list
-
- virtual void Display() = 0;
+  void Display();
 };
-//------------------------------------------------------------------------------
-
-void* AttributesOnDuplicate(const byte* Name, void* Old, void* New);
-void  AttributesDisplay    (const byte* Name, void* Data);
-void  AttributesDeleteData (const byte* Name, void* Data);
-//------------------------------------------------------------------------------
-
-extern AST_Base* AST; // The global AST root
 //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------
-

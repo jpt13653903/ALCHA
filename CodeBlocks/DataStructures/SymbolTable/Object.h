@@ -18,17 +18,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Symbol_h
-#define Symbol_h
+#ifndef Object_h
+#define Object_h
 //------------------------------------------------------------------------------
 
 #include "AST.h"
-#include "Number.h"
-#include "SymbolTree.h"
 //------------------------------------------------------------------------------
 
-struct SYMBOL{ // Base class for the symbol table
+struct OBJECT{ // Base class for the symbol table
  enum TYPE{
+  Target,                   // The target object
   Pin, Sig, Clk,            // Physical signals
   Int, Rat, Float, Complex, // Scripting variables
   Array,                    // Array of...
@@ -39,19 +38,17 @@ struct SYMBOL{ // Base class for the symbol table
   Namespace                 // Namespace of an imported file
  } Type;
 
- byte* Name; // ID obtained via IdentifierTree
+ // The object name (or reference) is stored in the symbol table, not as
+ // part of the object.
+ enum{Output, Input, Bidirectional} Direction;
 
- unsigned Length; // bit count in Pin and Sig; precision in Float and Complex;
-                  // number of elements in Array.
- NUMBER   Value;
+ DICTIONARY Attributes; // Makes use of AST.h AttributeXXX functions
+ void       Attribute_Add(const byte* Name, STRING* Value);
 
- AST_Base*   Body;    // The executable body of the class or function
- SYMBOL_TREE Members; // The member symbols of the class, function or name-space
- SYMBOL*     SubType; // The elements of the array; actual function pointer to
-                      // by FuncPtr.
+          OBJECT(TYPE Type);
+ virtual ~OBJECT();
 
- SYMBOL(TYPE Type, byte* Name);
-~SYMBOL();
+ virtual void Display() = 0;
 };
 //------------------------------------------------------------------------------
 

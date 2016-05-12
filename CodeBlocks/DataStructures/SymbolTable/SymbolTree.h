@@ -28,10 +28,7 @@ string.                                                                       */
 #define SymbolTree_h
 //------------------------------------------------------------------------------
 
-#include "Global.h"
-//------------------------------------------------------------------------------
-
-class SYMBOL;
+#include "Object.h"
 //------------------------------------------------------------------------------
 
 class SYMBOL_TREE{
@@ -39,12 +36,13 @@ class SYMBOL_TREE{
   struct NODE{
    bool  Red;
 
-   SYMBOL* Symbol; // The symbol
+   const byte* Name;   // Name ID taken from IdentifierTree
+   OBJECT*     Object; // The object
 
    NODE* Left;
    NODE* Right;
 
-   NODE(SYMBOL* Symbol);
+   NODE(const byte* Name, OBJECT* Object);
   ~NODE();
   };
 
@@ -56,15 +54,16 @@ class SYMBOL_TREE{
   NODE* RotateRight(NODE* Node);
 
   bool  Duplicate;
-  NODE* Insert(NODE* Node, SYMBOL* Symbol);
+  NODE* Insert(NODE* Node, const byte* Name, OBJECT* Object);
 
  public:
   SYMBOL_TREE();
  ~SYMBOL_TREE();
 
   // Name must be an ID obtained from IdentifierTree
-  bool    Insert(SYMBOL*     Symbol); // Returns false on duplicate name
-  SYMBOL* Find  (const byte* Name  );
+  // Insert returns false on duplicate name
+  bool    Insert(const byte* Name, OBJECT* Object);
+  OBJECT* Find  (const byte* Name);
 };
 //------------------------------------------------------------------------------
 

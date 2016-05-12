@@ -1,4 +1,4 @@
-[[include repo=doccode path=MarkDown/Header.md]]
+[[include repo=code path=Wiki/Markdown/Header.md]]
 
 [TOC]
 
@@ -6,7 +6,7 @@
 
 The scanner reads UTF-8 formatted files.  The UTF-8 formatting is retained, even though the input stream is searched for Unicode space and newline characters.  At this stage, white-space and comments are ignored, adjacent strings are concatenated and escape sequences within strings are evaluated.  The lexical EBNF is presented below:
 
-[[include repo=doccode path=EBNF/Scanner.ebnf]]
+[[include repo=code path=EBNF/Scanner.ebnf]]
 
 ## Literals
 ALCHA literals are all stored as infinite-precision rational numbers (by means of the [GNU MP library](https://gmplib.org/)). An imaginary literal can be specified by using either a `j` or `i` postfix.  Literals can be binary (`0b` prefix), octal (`0o` prefix), hexadecimal (`0x` prefix) or decimal (no prefix).  Decimal numbers have an optional decimal exponent by means of an `e` postfix.  Binary, octal, decimal and hexadecimal numbers have an optional binary exponent by means of a `p` postfix.  All literals can be cast to a fixed-point format by means of the `'` operator.  Within numerical literals, the underscore character (`_`) is ignored.  Character literals are string literals with only one character.  Below are some examples:
@@ -66,5 +66,5 @@ Symbol                        | Description            | Value
 ## Syntax Highlighting Scripts
 At the moment, only Vim is supported.  The Vim syntax file can be downloaded from [the repository](https://sourceforge.net/p/alcha/doccode/ci/master/tree/Vim/alcha.vim?format=raw).  It is a direct implementation of the scanner, so it does not have any error-checking features.
 
-[[include repo=doccode path=MarkDown/Footer.md]]
+[[include repo=code path=Wiki/Markdown/Footer.md]]
 

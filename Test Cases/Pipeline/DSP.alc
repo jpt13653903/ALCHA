@@ -1,0 +1,26 @@
+set_target<
+ type = "simulation",
+ time = "1 ms"
+>;
+
+class DATA{
+ sig    Valid;
+ sig'32 Data;
+}
+
+in pin<frequency = "50 MHz"> Clk;
+   clk<frequency = "20 MHz">(Clk) ADC_Clk;
+
+in pin Reset;
+
+import "AD7400" as ADC;
+ADC.Driver(ADC_Clk, Reset);
+DATA Filtered = FIR(Driver.Stream);
+
+DATA Windowed = Window(Filtered);
+DATA Spectrum = FFT   (Windowed);
+
+import "RS232" as UART;
+UART.Tx(Clk, Reset, 9600) Tx_UART;
+Tx_UART.Send_Stream(Spectrum);
+

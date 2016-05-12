@@ -54,13 +54,13 @@ void SCOPE::New(){
 }
 //------------------------------------------------------------------------------
 
-void SCOPE::Push(SYMBOL* Namespace){
+void SCOPE::Push(OBJECT* Namespace){
  NODE* Temp = new NODE;
  Temp->Next = Stack;
  Stack      = Temp;
 
  Stack->Namespace = Namespace;
- Current          = Namespace->Members;
+// Current          = Namespace->Members;
 }
 //------------------------------------------------------------------------------
 
@@ -72,7 +72,7 @@ void SCOPE::Pop(){
  Temp->Next = 0;
  delete Temp;
 
- if(Stack->Namespace) Current =  Namespace->Members;
- else                 Current = &Stack    ->Symbols;
+// if(Stack->Namespace) Current =  Namespace->Members;
+// else                 Current = &Stack    ->Symbols;
 }
 //------------------------------------------------------------------------------
