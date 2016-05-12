@@ -64,7 +64,7 @@ Symbol                        | Description            | Value
 `gamma` or &gamma; (`U+03B3`) | Euler's constant       | 0.577 215 664 ...
 
 ## Syntax Highlighting Scripts
-At the moment, only Vim is supported.  The Vim syntax file can be downloaded from [the repository](https://sourceforge.net/p/alcha/doccode/ci/master/tree/Vim/alcha.vim?format=raw).  It is a direct implementation of the scanner, so it does not have any error-checking features.
+At the moment, only Vim is supported.  The Vim syntax file can be downloaded from [the repository](https://sourceforge.net/p/alcha/code/ci/master/tree/Wiki/Vim/alcha.vim?format=raw).  It is a direct implementation of the scanner, so it does not have any error-checking features.
 
 [[include repo=code path=Wiki/MarkDown/Footer.md]]
 

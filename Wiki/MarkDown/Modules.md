@@ -42,7 +42,7 @@ In order to promote portability, the attribute values should be standardised wit
 ## Import and Name-space
 Conceptually, ALCHA processes the source as a whole. It is convenient, however, to break the source into a hierarchical structure of files, as presented in the figure below.  In the context of ALCHA, a "module" refers to a source file, rather than an HDL module. An ALCHA module might or might not compile to a corresponding HDL module, depending on the source contents.
 
-<center markdown>![Programming Model](https://sourceforge.net/p/alcha/doccode/ci/master/tree/Figures/ProgrammingModel.svg?format=raw)</center>
+<center markdown>![Programming Model](https://sourceforge.net/p/alcha/code/ci/master/tree/Wiki/Figures/ProgrammingModel.svg?format=raw)</center>
 
 The import statement is used to import a child module into a parent module. There are two forms, as shown below.  The first form imports the contents of "UART.alc" into the same name-space as the parent module, as if the file contents appeared in place of the `import` statement.  The second form imports the contents of "Ethernet.alc" into the "Eth" name-space.  It is illegal to import two modules into the same name within the same module.  In both forms, the imported modules have direct access to objects in the parent module name-space.
 
