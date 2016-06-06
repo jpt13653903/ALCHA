@@ -1,0 +1,27 @@
+Types:
+- Base type (pin, sig, clk, int, rat, float, complex, func)
+- array
+- class (type)
+- function (reference)
+
+Synthesisable:
+- pin
+- sig
+- clk
+
+Scripting:
+- int
+- rat
+- float
+- complex
+
+Internal named structures:
+- array
+- class (instance)
+- function (actual)
+- HDL
+
+Internal non-named structures
+- RTL
+- FSM
+

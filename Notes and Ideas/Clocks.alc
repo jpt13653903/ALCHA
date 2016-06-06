@@ -1,0 +1,24 @@
+// Minimal clock tree example, with clock pin, PLL and clock-enable type clock
+
+pin  <Frequency = "50 MHz"> Clk_50M;
+clock<Frequency = "10 MHz", Base   = Clk_50M> Clk_10M;
+clock<Frequency = "1 Hz"  , Clock  = Clk_10M> Clk_1;
+clock<Frequency = "4 MHz" , Signal = SPDIF_Recovered> SPDIF_Recovered;
+
+// The presence of the Base attribute marks it as a PLL clock.  The
+// presence of the Clock attribute marks it as a clock-enable type clock.
+
+// The presence of the Signal attribute marks it as a clock that is based on an
+// internal signal (ripple-clock).  For the signal to be used as a clock, it
+// has to be defined this way, otherwise the clock cannot be included in the
+// timing constraints.  These clocks are automatically marked as asynchronous,
+// even if it is sourced by a register in another clock domain.  All clock
+// domain boundary rules apply.
+
+// If the user specifies a Base, but the frequency is outside the PLL counter
+// capabilities, the compiler will try to generate a clock-enable type clock
+// instead, and issue a compilation warning.
+
+// The task and pipe constructs take 3 parameters: clock, reset and enable.  The
+// clock and reset are both required, but the enable is optional.
+

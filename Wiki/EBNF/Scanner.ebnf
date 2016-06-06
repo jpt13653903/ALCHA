@@ -8,18 +8,24 @@ Space   = ? U+0020 ? | ? U+0009 ? | ? U+00A0 ? | ? U+1680 ? | ? U+180E ?
 Newline = ? U+0A U+0D ? | ? U+0D U+0A ? | ? U+0A ? | ? U+0D ? | ? U+0B ? 
         | ? U+0C ? | ? U+85 ? | ? U+2028 ? | ? U+2029 ? ;
        
-LineComment  = "//" {? Any byte sequence ? -Newline} Newline;
-BlockComment = "/*" {? Any byte sequence ? -"*/"} "*/";
-Byte         = ? Any input byte that does not belong to anything else ?;
+LineComment   = "//" {? Any byte sequence ? -Newline} Newline;
+BlockComment  = "/*" {? Any byte sequence ? -"*/"} "*/";
+NestedComment = "/+" {? Any byte sequence ? -"+/"} "+/";
+Byte          = ? Any input byte that does not belong to anything else ?;
 (*----------------------------------------------------------------------------*)
 
 Token      = String | Literal | Keyword | Identifier | Operator;
 
-Keyword    = "target" | "void"   | "auto"     | "pin"     | "sig"    | "clk"
-           | "int"    | "rat"    | "float"    | "complex" | "in"     | "out"
-           | "signed" | "class"  | "if"       | "else"    | "for"    | "while"  
-           | "loop"   | "switch" | "case"     | "default" | "import" | "as"
-           | "return" | "break"  | "continue" | "rtl"     | "fsm"    | "hdl";
+Keyword    = "target" | "set_target" 
+           | "void"   | "auto" 
+           | "pin"    | "sig"  | "clk" 
+           | "int"    | "rat"  | "float"  | "complex" 
+           | "in"     | "out"  | "signed" | "class"  
+           | "if"     | "else" | "for"    | "while" | "loop" 
+           | "switch" | "case" | "default" 
+           | "import" | "as" 
+           | "return" | "break"  | "continue"
+           | "rtl" | "fsm" | "hdl";
 
 Operator   = "++" | "--"  | "'"   | "->" | "@"  | "."  | ".{" | "&"  | "~&" 
            | "|"  | "~|"  | "#"   | "~#" | "~"  | ":"  | "\"  | "+"  | "-"

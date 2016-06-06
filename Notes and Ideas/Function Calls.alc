@@ -1,0 +1,13 @@
+// The function name could be an alias for the target:
+
+sig`8 Add(sig`8 A, sig`8 B){
+ Add = A + B;
+}
+
+sig`8 A, B, Y;
+Y = Add(A, B);
+
+// In clocked functions, the assignment is applied immediately, in the function.
+// This is achieved by means of a multiplexer with a port for every function-
+// call.
+

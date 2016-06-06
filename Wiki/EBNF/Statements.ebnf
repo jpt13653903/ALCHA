@@ -52,6 +52,7 @@ FSM = "fsm" ["(" [ParameterList] ")"] StatementBlock;
 (* The strings form a list of file names to include in the project, the 
    Assignments form a list of HDL parameter assignments and the Definitions 
    are port definitions. *)
+(* The "Assignment" is obtained through "Other" *)
 HDL = "hdl" "(" String {"," String} ")" Identifier ["(" {Assignment} ")"] 
             "{" {Definition} "}";
 (*----------------------------------------------------------------------------*)

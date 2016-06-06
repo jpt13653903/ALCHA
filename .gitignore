@@ -1,12 +1,12 @@
 *.swp
 *.log
 *.zip
-.txt
-*.png
-*.jpg
-*.git*
+
 CodeBlocks/bin/*
 CodeBlocks/obj/*
 InkScape/*
-Notes\ and\ Ideas/*
+
+**/db/*
+**/incremental_db/*
+**/output_files/*
 

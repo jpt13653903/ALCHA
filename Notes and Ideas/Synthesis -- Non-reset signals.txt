@@ -1,0 +1,49 @@
+Email to Suleyman: 2016-03-28
+
+Good day,
+
+When you have a moment, I have a quick question regarding reset details (for Stratix 10 purposes).
+
+Say, for instance, I have a circuit that makes use of a counter, as follows:
+always @(posedge Clk) begin
+ Count <= Count + 1'b1;
+
+ if(Reset) begin
+  // Reset the state machine
+ end else begin
+  // Run the state machine
+ end
+end
+
+This is all good, as the Counter is not dependent on the reset signal.
+
+Now, if I change the circuit so that the counter is dependent on the state, as follows:
+always @(posedge Clk) begin
+ if(Reset) begin
+  State <= 0;
+
+ end else begin
+  case(State)
+   2d'0: begin
+    // Some stuff
+   end
+
+   2d'1: begin
+    // Some stuff
+    Count <= Count + 1'b1;
+   end
+
+   default:;
+  endcase
+ end
+end
+
+As I understand it, when Reset is high, the Altera compiler interprets it as "Count must keep it's previous value", which builds a circuit that is dependent on the Reset signal.
+
+How do I ensure that the Count signal is only dependent on the State signal, and not the reset signal?  I can't move the state machine to outside the else block, because then the State signal has multiple drivers (which I like to avoid, even inside always blocks).
+
+I could move only the "if(State == 2'd1) Count <= Count + 1'b1" to outside the else block, but that makes the code difficult to read and maintain.  Is there a better solution?
+
+Regards,
+John-Philip
+

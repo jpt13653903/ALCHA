@@ -1,0 +1,5 @@
+import "UART"; // Imports into this namespace
+
+import "UART" as U1; // Imports into the "U1" namespace
+
+// The import statement also runs all the global statements

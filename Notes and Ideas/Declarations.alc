@@ -1,0 +1,21 @@
+// Instead of
+sig`8 a;
+sig`8 b;
+sig`8 c;
+
+// Support
+sig`8 a, b, c;
+
+// Defining arrays:
+sig`8.4[16] A;
+// or
+sig`8.4 A[16];
+// ???
+
+// Instantiating classes:
+UART MyUART(Clk, 9600);
+// or
+UART(Clk, 9600) MyUART;
+// ???
+
+

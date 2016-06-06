@@ -1,0 +1,18 @@
+class Adder(int N){
+ in `N A;
+ in `N B;
+ out`N Y;
+
+ Y = B + C;
+}
+
+sig`8 A; // unsigned by default: use "signed" to make them signed
+sig`8 B;
+sig`8 C;
+
+Adder Adder1(8);
+A = Adder.Y;
+Adder.A = B;
+Adder.B = C;
+
+

@@ -26,8 +26,12 @@ DefParameter     = [BaseType | (Identifier {"." Identifier})]
 AttributeList       = "<" AttributeAssignment {, AttributeAssignment} ">";
 AttributeAssignment = Identifier "=" String;
 
-ClassDefinition = "class" [AttributeList] Identifier ["("[DefParameterList]")"] 
-                  [":" Identifier ["(" [ParameterList] ")"]] 
+ClassDefinition = "class" [AttributeList] Identifier {"." Identifier}
+                  ["("[DefParameterList]")"] 
+                  [
+                    ":" Identifier ["(" [ParameterList] ")"] 
+                   {"," Identifier ["(" [ParameterList] ")"]}
+                  ]
                   "{" [Statements] "}";
 (*----------------------------------------------------------------------------*)
 

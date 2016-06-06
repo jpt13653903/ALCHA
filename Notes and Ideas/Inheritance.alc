@@ -1,0 +1,68 @@
+// Everything is public and accessible
+
+clock Clk;
+sig   Reset;
+//------------------------------------------------------------------------------
+
+class Bus_Master(int Address_N, int Data_N){
+ out`Address_N Address;
+ in `Data_N    Read_Data;
+ out`Data_N    Write_Data;
+ out           Latch;
+}
+//------------------------------------------------------------------------------
+
+class Bus_Slave(int Address_N, int Data_N, int Address_Count){
+ int FirstAddress;
+
+ in `Address_N Address;    // Input only port
+ out`Data_N    Read_Data;  // Output only port
+ in `Data_N    Write_Data;
+ in            Latch;
+
+ sig`Data_N Data[Address_Count]; // Bidirectional port
+
+ if(Address >= FirstAddress && Address <= FirstAddress+Address_Count){
+  Read_Data = Data[Address-FirstAddress];
+ }else{
+  Read_Data = 0xZ;
+ }
+
+ rtl<Clk, Reset>{
+  if(Latch && Address >= FirstAddress && Address <= FirstAddress+Address_Count){
+   Data[Address-FirstAddress] = Write_Data;
+  }
+ }
+}
+//------------------------------------------------------------------------------
+
+class Bus(Bus_Master Master){
+ int SlaveCount = 0;
+
+ void Connect(Bus_Slave Slave){
+  Slave.FirstAddress = SlaveCount;
+  SlaveCount += Slave.Address_Count;
+  
+  Slave.Address    = Master.Address;
+  Slave.Write_Data = Master.Write_Data;
+  Slave.Latch      = Master.Latch;
+  Master.Read_Data = Slave.Read_Data;
+ }
+}
+//------------------------------------------------------------------------------
+
+class ADC_Driver: Bus_Slave(8, 8, 4){
+
+}
+//------------------------------------------------------------------------------
+
+class CPU: Bus_Master(8, 8){
+
+}
+//------------------------------------------------------------------------------
+
+CPU CPU1;
+Bus Bus1(CPU1);
+ADC_Driver ADC1;
+Bus1.Connect(ADC1);
+

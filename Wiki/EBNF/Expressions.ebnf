@@ -15,11 +15,12 @@ Array          = Replication    { "~"                       Replication   };
 Replication   = Concatenation ["\" Primary];
 Concatenation = Cast {":" Cast};
 
-Cast       = Reduction [FP_Cast];
+Cast       = Reduction [FP_Cast | Class_Cast];
 FP_Cast    = "'" (
               Identifier | Literal |
               ("(" Expression [(",") Expression] ")")
              );
+Class_Cast = "'" Identifier {"." Identifier};
 Reduction  = ["&" | "~&" | "|" | "~|" | "#" | "~#" | "!"] Range;
 
 Range = Unary ["->" Unary ["@" Unary]];
