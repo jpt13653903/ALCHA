@@ -250,7 +250,10 @@ bool SCANNER::NestedComment(){
    Index += 2;
    return true;
   }
+
   if(NestedComment()) continue;
+  if(error) return false;
+
   if(Spaces.Match(Buffer+Index, &Count) == TOKEN::Newline){
    Line  ++;
    Index += Count;

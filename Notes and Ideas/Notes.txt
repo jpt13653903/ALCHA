@@ -10,80 +10,14 @@ Todo:
    - Pipelined reset
    - Reset dependence on signals that does not require resets
 
-- A class is a collection of instructions and members.  So is a namespace, but 
-  a namespace is the instance, whereas a class must still be instanced...
-- Strip out all the definitions and leave the AST
-
-- Why not build all the objects into their respective bins at the same time as 
-  evaluating the AST?  Objects include: signals, pins and clocks; rtl's; fsm's; 
-  hdl's; classes; functions; scripting variables.
-- The object reference is governed by the scope and symbol table, which is a 
-  separate structure.
-- The objects are inserted into linked lists, in the order that they appear in 
-  the code.  The names and reference to the objects are inserted into the 
-  symbol tree, at the correct scope level.
-
-- Split SYMBOL into a class tree (similar to AST)
-  - Change the class to "OBJECT"
-
-- In Scope, change the OBJECT* Namespace to OBJECT_Namespace*
-  - Also in Scope.cpp, line 63, add members to the current scope
-  - Same with lines 75 & 76
-
-- OBJECT should only store instances.  Make a new class hierarchy for TYPE,
-  which is used to store complex types.
-  - Or make TYPE a child of OBJECT so that the symbol table can store type
-    names as well...
-
-- A scope abstraction
-
-- Function calls:
-  - While running a function, a new scope is pushed onto the scope stack
-  - When looking for the correct function to call, run through the scopes
-    and look for functions with the same number of arguments
-    - The first exact match is the correct one
-    - If there is no exact match, but only one with an argument count match,
-      that is the correct one (as long as the parameters are compatible
-      through automatic casting).
-    - If there is no exact match, but many with an argument count match, the
-      compiler issues an error.
-
-- Use D-Style operator overloading:
-  - Define like functions, and include all operators (unary, reduction, 
-    bit-wise, etc.)
-  - The function name is based on the operator function, not the actual
-    operator symbol.
-  - Overload anything in the AST_Assignment and AST_Expression EBNF list.
-
-- Special keywords for __FILE__, __LINE__, etc.
-  - Look at D compiler reflection...
-
-- Note "auto" functions in wiki
-  - Infer from:
-    - First assignment to the function name
-    - First return statement
-
-- It must be able to define function parameters with a specific type.  This
-  type can be used to define multiple functions with the same name, but
-  different parameter types.
-
-- Automatically inferred target type, within reason.
-
-- Function parameters must be able to take an optional list of "[]" in order
-  to designate array input.  This is required to determine when a function
-  must be vectorised.
-
-- How to handle the target object?  It must be accessible so that the 
-  scripting can check its attributes
+- Arrays have "a.length" and other properties.
+  - Note this in the wiki
 --------------------------------------------------------------------------------
 
 Notes...
-- Use "'" to cast base class to parent class?
-  - Or can this happen automatically, since the reference knows it's 
-    original type?
-
-- Arrays have "a.length" and other properties.
-  - Note this in the wiki
+- A class is a collection of instructions and members.  So is a namespace, but 
+  a namespace is the instance, whereas a class must still be instanced...
+- Strip out all the definitions and leave the AST
 
 - Unit tests and contracts?
 
@@ -97,38 +31,18 @@ Notes...
 - Always copy - never reference?
   - Except into a function, which is always pass-by-reference?
 
-- For simulation: use a priority queue with time-stamped events
-  - The clock does not need to be in the queue directly, as they can be 
-    calculated deterministically
-  - Use int-based time variables based on the lowest common multiple of the 
-    clock frequencies
-  - Simplify case-statements to binary search trees if the two expressions can 
-    be compared; linear search otherwise.
-
-- Keep import AST in a BST and parse the file only once.
-  - Just after parsing to AST, simplify the AST as far as possible?
-
 - If the LHS is not defined, define it based on the RHS type.  The resulting
   variable cannot be redefined as something else later.
 
-- Functions are duck-typed and parameters are passed by reference.  Only the
-  return type is specified
+- Functions are duck-typed and parameters are passed by reference.
   - Vector notation is handled automatically by the way the parameters are
     used.
-
-- Function parameters must specify if it expects an array or not (& how many 
-  dimentions) by appending "[]" to the identifiers
-  - This is required to know when to vectorise the function
 
 - Clocked functions do not have to be within the calling state machine
   - They can be handled by means of a "busy" signal instead.  This might make
     the overall circuit smaller
   - The "busy" flag can be put around the whole state machine, so that it is
     routed to the clock-enable...
-
-- No need for the "group" keyword - simply start the line with "<"
-  <attribute = "Value>{...}
-  <attribute = "Value> GroupName{...}
   
 - Synthesisable recursive functions are legal, as long as they are
   declared with a "stacksize" attribute.
@@ -145,44 +59,10 @@ Notes...
   - Specify a rectangle consisting of normalised coordinates (P-Block in
     Xilinx)
 
-- What about complex literals?
-  - Python simply uses a "j" suffix.  It has imaginary literals, not complex:
-    complex literals are built by adding a real to an imaginary.
-
 - PLL-type clocks need a tolerance property:
   - You cannot get 133 MHz and 10 MHz out of the same PLL on older devices, 
     but if the 133 MHz is specified with a -3->+1 tolerance, the 
     ALCHA compiler can make it work.
-
-- Constant arrays:
-  - {1, 2, 3, 4}
-  - {1->5} == {1, 2, 3, 4, 5}
-  - {0->9#3} == {0, 3, 6, 9}
-- Slices can take an array:
-  A    = {1, 6, 4, 8};
-  B[A, 9] = {0, 1, 2, 3, 4};
-- For loops can use elements in an array:
-  - for(j in {0->9#3}){...}
-  - for(j in A){...}
-  - C-style is not legal: for(j = 0; j < 7; j++){...} must be written as
-    j = 0; while(j < 7){...; j++} or for(j in 0->6){...}
-
-- Sometimes the user would like to verify an entity without hardware and pins:
-  - It must therefore be possible to have a "simulation" target.
-  - The simulation is performed on as high a level of the AST as possible:
-    - The HLS is not converted to HDL: it uses the design constraints (latency
-      and throughput), to determine timing during simulation.  The output data
-      is "invalid" while the calculation is busy.
-    - The design can have pins: specifically, clock pins so that the 
-      frequency is known.  The pin does not have a pin number though.
-
-- All file I/O is performed via buffers.  The user can read a file into a 
-  buffer, write a buffer to a file, and modify the buffer (use the STRING type)
-  - In the ALCHA language, use a Unicode or byte array.
-  - Unicode array is an abstract type that is stored as UTF-8 internally (and
-    in the resulting file), but the user sees UTF-32.
-    - No: store as UTF-32 internally as well -- makes indexing easier.
-  - The user can also write with "append", rather than "create"
 
 - Clock groups:
   - All unrelated clocks must be grouped
@@ -190,130 +70,6 @@ Notes...
   - -include_generated_clocks makes it easier when the node names are not
     known.
 
-- Instead of saying [[...]] and [...], only use [].  The first one is always
-  the first array dimension, then the next array dimension, etc.  The last
-  one is the bits.  The [:] slice means "all of them".
-  - Cannot use commas to separate dimensions, because the slice can actuall
-    be a list of slices: X[2,4->6,9], which translates to {X[2], X[4:6], X[9]}
-- Synthesiseable types have 4-state logic (0, 1, X and Z)
-  - An expression such as
-     if(X == 0x74X9`16)
-    yields a meaningful result.  The above compiles to
-     if((X[15:8] == 8'h74) && (X[3:0] == 4'h9))
-  - A don't-care (X) assignment to a synthesiseable signal makes it a zero, and
-    the compiler issues a warning.
-  - A don't-care initialiser will cause that bit in the array to not reset.
-
-- Have a construct for HLS (call it hls).  It has similar syntax to task,
-  but does not have cycle-accurate description.  The compiler sorts out the
-  timing.  The use can specify a maximum time (in cycles), as well as
-  pipe-lining parameters (specify latency and throughput, in cycles)
-
-- The "loop" keyword has an optional count parameter.  No parameter => loop
-  for ever; with count parameter => loop count times.
-
-- Verification:
-  - Hardware testbench instead of simulation...
-  - Waveform generation part of the ALCHA language.  One can say, for instance:
-    task<Clk, Reset>{
-     Wave = 1;
-     Wave = 0;
-     loop(5); // Do nothing for 5 states
-     Wave = 1;
-     loop{
-      if(Input){ // Wait for Input to go high
-       Wave = 0,
-       break;
-      }
-     }
-    }
-
-- Visual Basic has a "with" command to ease setting multiple members of an
-  object.  Matlab has the built-in set and get commands for the same 
-  purpose.  Maybe something similar?  Maybe:
-    with Base{
-     .Member1 = 2;
-     SomePin = .Member3;
-    }
-  - The "with" construct cannot be nested (for obvious reasons)
-
-- Add an enum structure
-
-- Maybe change "sig" to "net"?
-
-- Any function that can be called on an element can also be called directly on
-  an array, in which case the function is vectorised and run for each element.
-
-Processing Stages:
-1) Scan
-2) Preprocess
-3) Parse into abstract syntax trees, pin database and other internal structures
-   and save this as object files.
-4) Link object files
-5) Evaluate the scripts so that all script variables become constants
-6) Apply these constants to produce the vendor-specific project
-
-- Scripts must be evaluated only when required:
-  - Any translation unit that the script depends on have changed
-  - Any translation unit that calls the script have changed
-  - Any file that the script reads have changed
-
-Conceptual:
-- All constructs (assignments; tasks; etc.) can be global.
-- Constructs can alternatively be encapsulated into classes
-
-Concatenation:
-- Use ":" as concatenation?
-- Use "\" as repetition?
-- At this point, an identifier has more metadata, so I know if it is a type,
-  class, instance, variable, etc...  This metadata can be used to 
-  determine what was intended.
-- (A:B)\5 would compile to {5{{A, B}};
-- Concatenation always results in an integer with as many bits as the
-  sum of the operators.  This is a problem when you want to say
-  - A = A[0]:A[7->1]; where A is defined as unsigned`8.3
-  - In this case, there is the "raw assignment" operator ":=", which does
-    not take bit weights into account;
-
-Slices:
-- Slices can be a list of ranges:
-  LED[8,5->3,1] = 0b10101`5;
-- These can be in any order and direction:
-  LED[1,5->3,7->8,2] = 0x6B`7;
-  X[7->0] = X[0->7];
-- Slices can be applied to bits within a vector, or elements within an array:
-  X[[3, 5]] = Y[[9, 2]];
-- If A is an array of vectors, defined as unsigned<8> A[20];
-  then A[5->3] implies all the array elements, bits 5:3
-       A[[5->3]] implies all the bits, array elements 5:3
-       A[7][[5]] is bit 7 of element 5; as is A[[5]][7], which means the
-                 same thing
-
-Fixed-point format specifier:
-- The `x.y format is an operator that can be applied to any expression:
-  LED = (5`8.3 + 7.92`3.5) `8;
-- It takes highest precedence (just after brackets).
-
-Loops and structures:
-- Some loops must be run on the compiler:
-  - Say I want to do the following:
-    X[[ 0-> 7]] = A[[ 0-> 7]] * B[[ 0-> 7]];
-    X[[ 8->15]] = A[[ 8->15]] * B[[ 0->15]];
-    X[[16->23]] = A[[16->23]] * B[[16->23]];
-    X[[24->31]] = A[[24->31]] * B[[24->31]];
-  - It's a pipelined multiplication on array slices.  It would be more
-    convenient to say:
-    for(j = 0; j < 4; j++){
-     X[[8*j->8*j+7]] = A[[8*j->8*j+7]] * B[[8*j->8*j+7]];
-    }
-    which must be evaluated at compile-time.
-- Other loops must be evaluated on the FPGA instead...
-  - Same example as above.  I might not want the 4 separate states, but would
-    rather like the FPGA to do an address decoding.  The loop therefore must
-    run on the FPGA, but the loop definition is the same, so how do I
-    specify which?
-    - j could be defined as a compile-time variable, but that makes the code
-      difficult to read (the reader must go and look how j has been defined)
-    - I could have a "compile" structure specifier that tells the compiler
-      to run the loop at compile-time...
+- Is it possible to handle "don't care" conditions in if-statements and case
+  statements?
     
