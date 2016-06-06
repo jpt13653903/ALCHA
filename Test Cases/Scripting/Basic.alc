@@ -1,3 +1,6 @@
+/+ This is a nested comment /+ with nested stuff
++/+/
+
 int      x = 5;
 rat      y = 7/3;
 float'64 z = Math.sin(x * y);

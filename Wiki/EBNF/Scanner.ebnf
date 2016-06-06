@@ -10,13 +10,13 @@ Newline = ? U+0A U+0D ? | ? U+0D U+0A ? | ? U+0A ? | ? U+0D ? | ? U+0B ?
        
 LineComment   = "//" {? Any byte sequence ? -Newline} Newline;
 BlockComment  = "/*" {? Any byte sequence ? -"*/"} "*/";
-NestedComment = "/+" {? Any byte sequence ? -"+/"} "+/";
+NestedComment = "/+" {NestedComment | (? Any byte sequence ? -"+/")} "+/";
 Byte          = ? Any input byte that does not belong to anything else ?;
 (*----------------------------------------------------------------------------*)
 
 Token      = String | Literal | Keyword | Identifier | Operator;
 
-Keyword    = "target" | "set_target" 
+Keyword    = "set_target"
            | "void"   | "auto" 
            | "pin"    | "sig"  | "clk" 
            | "int"    | "rat"  | "float"  | "complex" 

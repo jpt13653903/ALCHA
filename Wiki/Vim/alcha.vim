@@ -36,18 +36,20 @@ syn region AlchaString start=/"/ skip=/\\"/ end=/"/ contains=@Spell,AlchaEscape
 
 " Comment
 syn match  AlchaComment "\/\/.*" contains=@Spell
-syn region AlchaComment start=/\/\*/ end=/\*\// contains=@Spell
+syn region AlchaComment       start=/\/\*/ end=/\*\// contains=@Spell
+syn region AlchaNestedComment start=/\/+/  end=/+\//  contains=@Spell,AlchaNestedComment
 
 " Link the types
-hi def link AlchaOperator Operator
-hi def link AlchaPrefix   SpecialChar
-hi def link AlchaBinExp   SpecialChar
-hi def link AlchaDecExp   SpecialChar
-hi def link AlchaConstant Constant
-hi def link AlchaKeyword  Keyword
-hi def link AlchaEscape   SpecialChar
-hi def link AlchaString   String
-hi def link AlchaComment  Comment
+hi def link AlchaOperator      Operator
+hi def link AlchaPrefix        SpecialChar
+hi def link AlchaBinExp        SpecialChar
+hi def link AlchaDecExp        SpecialChar
+hi def link AlchaConstant      Constant
+hi def link AlchaKeyword       Keyword
+hi def link AlchaEscape        SpecialChar
+hi def link AlchaString        String
+hi def link AlchaComment       Comment
+hi def link AlchaNestedComment Comment
 
 " Set the syntax type
 let b:current_syntax = "alcha"

@@ -239,12 +239,36 @@ bool SCANNER::BlockComment(){
 }
 //------------------------------------------------------------------------------
 
+bool SCANNER::NestedComment(){
+ int Count;
+
+ if(Buffer[Index] != '/' || Buffer[Index+1] != '+') return false;
+ Index += 2;
+
+ while(Buffer[Index]){
+  if(Buffer[Index] == '+' && Buffer[Index+1] == '/'){
+   Index += 2;
+   return true;
+  }
+  if(NestedComment()) continue;
+  if(Spaces.Match(Buffer+Index, &Count) == TOKEN::Newline){
+   Line  ++;
+   Index += Count;
+  }else{
+   Index++;
+  }
+ }
+ Error("Incomplete nested comment");
+ return false;
+}
+//------------------------------------------------------------------------------
+
 void SCANNER::WhiteSpace(){
  TOKEN::TYPE Type;
  int         Count;
 
  while(Buffer[Index]){
-  while(LineComment() || BlockComment());
+  while(LineComment() || BlockComment() | NestedComment());
 
   Type = Spaces.Match(Buffer+Index, &Count);
   switch(Type){

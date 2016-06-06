@@ -54,9 +54,10 @@ class SCANNER{
   unsigned Index;
   byte*    Buffer;
 
-  bool LineComment ();
-  bool BlockComment();
-  void WhiteSpace  (); // Ignores spaces, new-lines and comments
+  bool LineComment  ();
+  bool BlockComment ();
+  bool NestedComment();
+  void WhiteSpace   (); // Ignores spaces, new-lines and comments
 
   bool Digit   (); // Returns true on decimal digit
   bool NonDigit();
