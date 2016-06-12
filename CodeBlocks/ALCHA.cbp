@@ -56,6 +56,8 @@
 		<Unit filename="DataStructures/AST/AST_ClassDefinition.h" />
 		<Unit filename="DataStructures/AST/AST_Definition.cpp" />
 		<Unit filename="DataStructures/AST/AST_Definition.h" />
+		<Unit filename="DataStructures/AST/AST_EnumDefinition.cpp" />
+		<Unit filename="DataStructures/AST/AST_EnumDefinition.h" />
 		<Unit filename="DataStructures/AST/AST_Expression.cpp" />
 		<Unit filename="DataStructures/AST/AST_Expression.h" />
 		<Unit filename="DataStructures/AST/AST_FSM.cpp" />

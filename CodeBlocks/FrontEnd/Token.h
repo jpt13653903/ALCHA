@@ -60,6 +60,7 @@ struct TOKEN{
   Out,
 
   Class,
+  Enum,
 
   If,
   Else,

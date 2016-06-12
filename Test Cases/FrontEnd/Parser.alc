@@ -6,6 +6,30 @@ print(__DATE__);
 print(__TIME__);
 print(__NAMESPACE__);
 
+enum STATE {Idle, Writing, Done, Others}
+STATE State;
+
+switch(State){
+ case(Idle){
+  // Do some stuff
+  State = Writing;
+ }
+ case(Writing){
+  // Do some stuff
+  State = Done;
+ }
+ case(Done){
+  // Do some stuff
+  State = Idle;
+ }
+ default{
+  // Do some stuff
+ }
+}
+
+pin'STATE PinState; // Pin enumeration
+sig'STATE SigState; // Signal enumeration
+
 /*
 x = 123.456e789;
 x = 1____2____3____.____4____5____6____e____7____8____9____;

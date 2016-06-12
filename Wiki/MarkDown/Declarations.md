@@ -134,5 +134,68 @@ The `float` and `complex` keywords can optionally be followed by the `'` operato
 
 More on scripting in the [Scripting Section](p/alcha/wiki/Scripting)
 
+## Enumerations
+An enumeration type can be defined by means of the `enum` keyword, as illustrated below.  The numerical constants associated with the enumeration start at `0` for the first element and increase by `1` for each element.
+
+    :::C++
+    enum STATE {Idle, Writing, Done, Others}
+    STATE State;
+
+    switch(State){
+     case(Idle){
+      // Do some stuff
+      State = Writing;
+     }
+     case(Writing){
+      // Do some stuff
+      State = Done;
+     }
+     case(Done){
+      // Do some stuff
+      State = Idle;
+     }
+     default{
+      // Do some stuff
+     }
+    }
+
+Ordinarily, enumerations are equivalent to the non-synthesisable type `int`.  The enumeration can, however, be used to define a synthesisable enumeration, as follows:
+
+    :::C++
+    enum STATE {Idle, Writing, Done, Others}
+    pin'STATE PinState; // Pin enumeration
+    sig'STATE SigState; // Signal enumeration
+
+In this case, the number of bits, or width, of the signal (or pin array) is the number of bits required to uniquely identify each enumeration value.  In the above example, this is 4&nbsp;bits.
+
+If an enumeration is used outside a variable of that type, the values of the enumeration can be referenced through its type.  The following statements are all legal:
+
+    :::C++
+    emum Enum{A, B, C}
+
+    int  a;
+    Enum e;
+
+    a = Enum.A;
+    e = B;
+    a = e;
+
+A variable declared as an enumeration can only take values from that enumeration.  It is illegal to assign anything else to an enumeration type.  It is legal to compare an enumeration to other types, however.
+
+    :::C++
+    emum Enum{A, B, C}
+
+    int  a;
+    Enum e, n;
+
+    a = A;          // Illegal: A does not exist in this namespace
+    e = A;          // Legal  : assigning a value to the enumeration
+    n = e;          // Legal  : the enumeration types are the same
+    e = 2;          // Illegal: must assign a value from the defined list
+    a = e;          // Legal  : e is automatically cast to an int
+    if(e == B){...} // Legal  : comparing enumeration values
+    if(a == B){...} // Illegal: B does not exist in this namespace
+    if(e == 2){...} // Legal  : e is automatically cast to an int
+
 [[include repo=code path=Wiki/MarkDown/Footer.md]]
 

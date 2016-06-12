@@ -41,6 +41,7 @@
 #include "AST_Assignment.h"
 #include "AST_IfStatement.h"
 #include "AST_NamespacePush.h"
+#include "AST_EnumDefinition.h"
 #include "AST_ClassDefinition.h"
 #include "AST_TargetDefinition.h"
 //------------------------------------------------------------------------------
@@ -102,6 +103,7 @@ class PARSER{
 
   AST_TargetDefinition* TargetDefinition();
   AST_ClassDefinition * ClassDefinition();
+  AST_EnumDefinition  * EnumDefinition();
   AST_IfStatement     * IfStatement();
   AST_Definition      * Definition();
   AST_WhileLoop       * WhileLoop();

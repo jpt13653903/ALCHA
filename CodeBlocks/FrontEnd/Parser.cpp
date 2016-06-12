@@ -227,6 +227,58 @@ AST_ClassDefinition* PARSER::ClassDefinition(){
 }
 //------------------------------------------------------------------------------
 
+AST_EnumDefinition* PARSER::EnumDefinition(){
+ if(Token.Type != TOKEN::Enum) return 0;
+ AST_EnumDefinition* Node = new AST_EnumDefinition(
+  Token.Line, Scanner->Filename.String()
+ );
+ GetToken();
+
+ if(Token.Type != TOKEN::Identifier){
+  Error("Identifier expected");
+  delete Node;
+  return 0;
+ }
+ Node->Identifier = Token.ID;
+ GetToken();
+
+ if(Token.Type != TOKEN::OpenCurly){
+  Error("{ expected");
+  delete Node;
+  return 0;
+ }
+
+ AST_EnumDefinition::VALUE* Value;
+ AST_EnumDefinition::VALUE* LastValue = 0;
+
+ do{
+  GetToken();
+
+  Value = new AST_EnumDefinition::VALUE;
+  if(LastValue) LastValue->Next = Value;
+  else          Node->Values    = Value;
+  LastValue = Value;
+
+  if(Token.Type != TOKEN::Identifier){
+   Error("Identifier expected");
+   delete Node;
+   return 0;
+  }
+  Value->Identifier = Token.ID;
+  GetToken();
+ }while(Token.Type == TOKEN::Comma);
+
+ if(Token.Type != TOKEN::CloseCurly){
+  Error("} expected");
+  delete Node;
+  return 0;
+ }
+ GetToken();
+
+ return Node;
+}
+//------------------------------------------------------------------------------
+
 AST_Expression* PARSER::String(){
  if(Token.Type != TOKEN::String) return 0;
 
@@ -2282,6 +2334,7 @@ AST_Base* PARSER::Statement(){
 
  Node = TargetDefinition(); if(Node) return Node;
  Node = ClassDefinition (); if(Node) return Node;
+ Node = EnumDefinition  (); if(Node) return Node;
  Node = Definition      (); if(Node) return Node;
  Node = IfStatement     (); if(Node) return Node;
  Node = WhileLoop       (); if(Node) return Node;

@@ -34,6 +34,8 @@ ClassDefinition = "class" [AttributeList] Identifier
                   ]
                   "{" [Statements] "}";
 
+EnumDefinition = "enum" Identifier "{" Identifier {"," Identifier} "}";
+
 TypeIdentifier = Identifier {"." Identifier}; (* NameSpace.TypeName *)
 (*----------------------------------------------------------------------------*)
 

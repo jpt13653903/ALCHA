@@ -18,56 +18,31 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_h
-#define AST_h
+#ifndef AST_EnumDefinition_h
+#define AST_EnumDefinition_h
 //------------------------------------------------------------------------------
 
-#include "MyString.h"
-#include "Dictionary.h"
-#include "IdentifierTree.h"
+#include "AST.h"
 //------------------------------------------------------------------------------
 
-struct AST_Base{ // The base type for AST nodes
- enum TYPE{
-  Fence, // Empty statement, but also "next-cycle" specifier in FSMs
-  Import,
-  Group,
-  TargetDefinition,
-  ClassDefinition,
-  EnumDefinition,
-  Definition, // pin, sig, clk, int, rat, float, complex and class instance
-  Parameter,
-  Expression,
-  Assignment,
-  NamespacePush,
-  IfStatement,
-  ForLoop,
-  LoopLoop,
-  WhileLoop,
-  Switch,
-  Jump,
-  RTL,
-  FSM,
-  HDL
- } Type;
+struct AST_EnumDefinition: public AST_Base{
+  struct VALUE{ // Link-list node for enumeration values
+   byte* Identifier; // Obtained through IdentifierTree
 
- int       Line;
- byte*     Filename; // Memory handled by IdentifierTree
- AST_Base* Next;     // Next sibling
+   VALUE* Next;
 
-          AST_Base(int Line, const byte* Filename);
- virtual ~AST_Base(); // Also deletes the rest of the linked list
+   VALUE();
+  ~VALUE(); // Also deletes the rest of the list
+  };
 
- virtual void Display() = 0;
+  byte * Identifier; // Obtained through IdentifierTree
+  VALUE* Values;
+
+  AST_EnumDefinition(int Line, const byte* Filename);
+ ~AST_EnumDefinition();
+
+  void Display();
 };
-//------------------------------------------------------------------------------
-
-void* AttributesOnDuplicate(const byte* Name, void* Old, void* New);
-void  AttributesDisplay    (const byte* Name, void* Data);
-void  AttributesDeleteData (const byte* Name, void* Data);
-//------------------------------------------------------------------------------
-
-extern AST_Base* AST; // The global AST root
 //------------------------------------------------------------------------------
 
 #endif
