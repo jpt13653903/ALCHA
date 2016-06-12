@@ -4,6 +4,7 @@ print(__CLASS__);
 print(__FUNCTION__);
 print(__DATE__);
 print(__TIME__);
+print(__NAMESPACE__);
 
 /*
 x = 123.456e789;

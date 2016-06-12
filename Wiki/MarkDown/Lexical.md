@@ -63,6 +63,20 @@ Symbol                        | Description            | Value
 `i` or `j`                    | Imaginary constant     | &radic;(-1)
 `gamma` or &gamma; (`U+03B3`) | Euler's constant       | 0.577 215 664 ...
 
+## Special Keywords
+
+Alcha supports the following special keywords:
+
+Keyword         | Description
+-------         | -----------
+`__FILE__`      | A string constant containing the current source file name
+`__LINE__`      | A literal constant equal to the current source line number
+`__DATE__`      | A string constant containing the current date, in "yyyy-mm-dd" format
+`__TIME__`      | A string constant containing the current time, in "HH-mm-ss" format
+`__CLASS__`     | A string constant containing the current class name.  If not in a class, "Global" is returned.
+`__FUNCTION__`  | A string constant containing the current function name.  If not in a function, "Global" is returned.
+`__NAMESPACE__` | A string constant containing the current name-space.  If not in a name-space, "Global" is returned.
+
 ## Syntax Highlighting Scripts
 At the moment, only Vim is supported.  The Vim syntax file can be downloaded from [the repository](https://sourceforge.net/p/alcha/code/ci/master/tree/Wiki/Vim/alcha.vim?format=raw).  It is a direct implementation of the scanner, so it does not have any error-checking features.
 
