@@ -1,3 +1,7 @@
+alias A    = Namespace.SubSpace.ClassName.Member;
+alias Calc = 8*4+B'cast.member;
+
+/*
 print(__FILE__);
 print(__LINE__);
 print(__CLASS__);
@@ -292,4 +296,4 @@ fsm(Clk, Reset){
 
  }
 }
-
+*/

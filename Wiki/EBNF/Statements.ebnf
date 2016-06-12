@@ -1,13 +1,14 @@
 StatementBlock = Statement | ("{" [Statements] "}");
 
 Statements = Statement {Statement};
-Statement  = TargetDefinition | ClassDefinition | Definition | Import | Group
+Statement  = TargetDefinition | ClassDefinition | Definition 
+           | Alias | Import | Group
            | IfStatement | ForLoop | WhileLoop  | LoopLoop | Switch | Jump
            | RTL | FSM | HDL | Other | ";";
 
+Alias  = "alias" Identifier "=" Expression ";";
 Import = "import" String ["as" Identifier];
-
-Group = "group" [AttributeList] [Identifier] "{" [Statements] "}";
+Group  = "group" [AttributeList] [Identifier] "{" [Statements] "}";
 
 (* The result from "Array" is checked for syntactic validity before
    use as a name-space, class name or assignment target. *)

@@ -50,6 +50,8 @@
 		<Unit filename="BackEnd/TimingSpec.h" />
 		<Unit filename="DataStructures/AST/AST.cpp" />
 		<Unit filename="DataStructures/AST/AST.h" />
+		<Unit filename="DataStructures/AST/AST_Alias.cpp" />
+		<Unit filename="DataStructures/AST/AST_Alias.h" />
 		<Unit filename="DataStructures/AST/AST_Assignment.cpp" />
 		<Unit filename="DataStructures/AST/AST_Assignment.h" />
 		<Unit filename="DataStructures/AST/AST_ClassDefinition.cpp" />

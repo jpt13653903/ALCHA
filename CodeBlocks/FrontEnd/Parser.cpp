@@ -2141,6 +2141,45 @@ AST_Switch* PARSER::Switch(){
 }
 //------------------------------------------------------------------------------
 
+AST_Alias* PARSER::Alias(){
+ if(Token.Type != TOKEN::Alias) return 0;
+ GetToken();
+
+ AST_Alias* Node = new AST_Alias(Token.Line, Scanner->Filename.String());
+
+ if(Token.Type != TOKEN::Identifier){
+  Error("Identifier expected");
+  delete Node;
+  return 0;
+ }
+ Node->Identifier = Token.ID;
+ GetToken();
+
+ if(Token.Type != TOKEN::Assign){
+  Error("= expected");
+  delete Node;
+  return 0;
+ }
+ GetToken();
+
+ Node->Expression = Expression();
+ if(!Node->Expression){
+  Error("Identifier expected");
+  delete Node;
+  return 0;
+ }
+
+ if(Token.Type != TOKEN::Semicolon){
+  Error("; expected");
+  delete Node;
+  return 0;
+ }
+ GetToken();
+
+ return Node;
+}
+//------------------------------------------------------------------------------
+
 AST_Group* PARSER::Group(){
  if(Token.Type != TOKEN::Group) return 0;
  GetToken();
@@ -2364,6 +2403,7 @@ AST_Base* PARSER::Statement(){
  Node = Import          (); if(Node) return Node;
  Node = Switch          (); if(Node) return Node;
  Node = Group           (); if(Node) return Node;
+ Node = Alias           (); if(Node) return Node;
  Node = Jump            (); if(Node) return Node;
  Node = RTL             (); if(Node) return Node;
  Node = FSM             (); if(Node) return Node;

@@ -98,5 +98,25 @@ The `break` and `continue` keywords are used to jump out of, or within, loops.  
     }
     // Error code
 
+## Alias
+It is often the case where the same expression is used many times, yet cannot be simply assigned to a variable.  In this case, it is convenient to define an alias for the expression, as follows:
+
+    :::C++
+    alias C   = Namespace.ClassInstance;
+    alias M   = C.Member;
+    alias Clk = SYS_GLOBAL_CLK;
+
+    C.Member = 3;
+    M = 5;
+    fsm(Clk){
+     // Some statements...
+    }
+
+It is important to note, however, that the alias is evaluated first, before used in the target expression.  The following two lines are equivalent:
+
+    :::C++
+    alias sum = A + B; X = Y * sum;
+    X = Y * (A + B);
+
 [[include repo=code path=Wiki/MarkDown/Footer.md]]
 

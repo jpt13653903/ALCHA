@@ -40,10 +40,10 @@
 	"Tree.h"
 	"MyString.h"
 
-1465749626 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\parser.cpp
+1465754692 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\parser.cpp
 	"Parser.h"
 
-1465744345 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\parser.h
+1465754709 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\parser.h
 	"Scanner.h"
 	"Dictionary.h"
 	"AST_RTL.h"
@@ -51,6 +51,7 @@
 	"AST_HDL.h"
 	"AST_Jump.h"
 	"AST_Fence.h"
+	"AST_Alias.h"
 	"AST_Group.h"
 	"AST_Import.h"
 	"AST_Switch.h"
@@ -92,7 +93,7 @@
 1454911896 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\preprocessor.cpp
 	"PreProcessor.h"
 
-1465749485 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\scanner.cpp
+1465754563 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\scanner.cpp
 	"Scanner.h"
 	"CharacterNames.h"
 
@@ -183,7 +184,7 @@
 	"gmp.h"
 	"MyString.h"
 
-1465753293 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\token.h
+1465754773 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\token.h
 	"Number.h"
 	"MyString.h"
 
@@ -207,7 +208,7 @@
 1459780719 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast.cpp
 	"AST.h"
 
-1465750290 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast.h
+1465754866 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast.h
 	"MyString.h"
 	"Dictionary.h"
 	"IdentifierTree.h"
@@ -421,4 +422,10 @@
 
 1465747632 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\net.h
 	"Object.h"
+
+1465754835 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_alias.cpp
+	"AST_Alias.h"
+
+1465754773 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_alias.h
+	"AST_Expression.h"
 

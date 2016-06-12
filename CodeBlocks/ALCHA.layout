@@ -1,64 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Release" />
-	<File name="DataStructures\AST\AST_ForLoop.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="DataStructures\AST\AST_LoopLoop.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1291" topLine="8" />
-		</Cursor>
-	</File>
-	<File name="Tools\MyString.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2448" topLine="48" />
-		</Cursor>
-	</File>
-	<File name="BackEnd\Altera.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1017" topLine="6" />
-		</Cursor>
-	</File>
-	<File name="BackEnd\TimingSpec.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="23" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="Tools\Number.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3250" topLine="109" />
-		</Cursor>
-	</File>
-	<File name="BackEnd\Altera.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="9165" topLine="196" />
-		</Cursor>
-	</File>
-	<File name="Global\OS_Header.h" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1093" topLine="15" />
-		</Cursor>
-	</File>
-	<File name="BackEnd\MemoryTable.h" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="126" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_WhileLoop.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1543" topLine="13" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_Expression.cpp" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2808" topLine="79" />
-		</Cursor>
-	</File>
-	<File name="FrontEnd\Parser.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3558" topLine="93" />
-		</Cursor>
-	</File>
-	<File name="BackEnd\TimingSpec.h" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="577" topLine="1" />
+			<Cursor1 position="1485" topLine="14" />
 		</Cursor>
 	</File>
 	<File name="DataStructures\SymbolTable\Clock.h" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -66,89 +11,9 @@
 			<Cursor1 position="1141" topLine="8" />
 		</Cursor>
 	</File>
-	<File name="DataStructures\AST\AST_Switch.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="BackEnd\ClockTree.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1478" topLine="17" />
-		</Cursor>
-	</File>
-	<File name="main.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1053" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST.cpp" open="0" top="0" tabpos="19" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1511" topLine="24" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\SymbolTable\Net.cpp" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="98" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_LoopLoop.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1485" topLine="14" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1369" topLine="28" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\SymbolTable\Object.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1340" topLine="20" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_IfStatement.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1320" topLine="8" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_Expression.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1211" topLine="18" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_TargetDefinition.cpp" open="0" top="0" tabpos="23" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1349" topLine="6" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_Import.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1227" topLine="7" />
-		</Cursor>
-	</File>
-	<File name="BackEnd\MemoryTable.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="21" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_TargetDefinition.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1191" topLine="6" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_NamespacePush.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1289" topLine="7" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\SymbolTable\SymbolTree.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1784" topLine="38" />
-		</Cursor>
-	</File>
-	<File name="BackEnd\HDL.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="237" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\Dictionary.h" open="0" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2600" topLine="0" />
+			<Cursor1 position="699" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="DataStructures\AST\AST_Parameter.cpp" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -156,154 +21,14 @@
 			<Cursor1 position="1930" topLine="35" />
 		</Cursor>
 	</File>
-	<File name="main.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4171" topLine="139" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_FSM.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1462" topLine="9" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\SymbolTable\Net.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_Parameter.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1235" topLine="15" />
-		</Cursor>
-	</File>
-	<File name="FrontEnd\CharacterNames.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="58405" topLine="2117" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_Fence.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="952" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\IdentifierTree.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1519" topLine="12" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_Import.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1396" topLine="8" />
-		</Cursor>
-	</File>
-	<File name="FrontEnd\Parser.cpp" open="1" top="1" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="47268" topLine="2141" />
-		</Cursor>
-	</File>
-	<File name="BackEnd\ClockTree.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="104" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\SymbolTable\Clock.cpp" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="15" topLine="0" />
-		</Cursor>
-	</File>
 	<File name="DataStructures\AST\AST_Switch.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="1900" topLine="38" />
 		</Cursor>
 	</File>
-	<File name="DataStructures\AST\AST_ForLoop.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="DataStructures\AST\AST.cpp" open="0" top="0" tabpos="19" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1459" topLine="15" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\SymbolTable\Object.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1431" topLine="6" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_HDL.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1365" topLine="7" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\SymbolTable\Target.cpp" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1317" topLine="4" />
-		</Cursor>
-	</File>
-	<File name="BackEnd\HDL.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="368" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_WhileLoop.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1273" topLine="7" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_LoopLoop.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1265" topLine="7" />
-		</Cursor>
-	</File>
-	<File name="Tools\FileSystem.h" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1556" topLine="11" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_Group.h" open="0" top="0" tabpos="20" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1158" topLine="9" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\SymbolTable\Pin.cpp" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1157" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_NamespacePush.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1536" topLine="18" />
-		</Cursor>
-	</File>
-	<File name="FrontEnd\Token.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1778" topLine="41" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_EnumDefinition.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1058" topLine="10" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\SymbolTable\Pin.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1053" topLine="15" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_RTL.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1454" topLine="13" />
-		</Cursor>
-	</File>
-	<File name="BackEnd\ClockTree.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="699" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\SymbolTable\Scope.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2371" topLine="44" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_RTL.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1250" topLine="3" />
+			<Cursor1 position="1511" topLine="24" />
 		</Cursor>
 	</File>
 	<File name="DataStructures\AST\AST_HDL.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -311,29 +36,49 @@
 			<Cursor1 position="1518" topLine="15" />
 		</Cursor>
 	</File>
-	<File name="DataStructures\Dictionary.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="DataStructures\AST\AST_TargetDefinition.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="4502" topLine="148" />
+			<Cursor1 position="1191" topLine="6" />
 		</Cursor>
 	</File>
-	<File name="DataStructures\AST\AST_Jump.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="BackEnd\Altera.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1262" topLine="9" />
+			<Cursor1 position="9165" topLine="196" />
 		</Cursor>
 	</File>
-	<File name="DataStructures\SymbolTable\Scope.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="Tools\Number.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1686" topLine="20" />
+			<Cursor1 position="3250" topLine="109" />
 		</Cursor>
 	</File>
-	<File name="DataStructures\AST\AST_ClassDefinition.h" open="0" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="DataStructures\AST\AST_Import.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1614" topLine="23" />
+			<Cursor1 position="1227" topLine="7" />
 		</Cursor>
 	</File>
-	<File name="DataStructures\IdentifierTree.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="DataStructures\SymbolTable\Net.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2980" topLine="85" />
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="BackEnd\Altera.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1017" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_Parameter.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1235" topLine="15" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\SymbolTable\Object.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1431" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_Assignment.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1790" topLine="24" />
 		</Cursor>
 	</File>
 	<File name="DataStructures\AST\AST_IfStatement.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -341,14 +86,234 @@
 			<Cursor1 position="1599" topLine="17" />
 		</Cursor>
 	</File>
-	<File name="DataStructures\SymbolTable\SymbolTree.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="FrontEnd\CharacterNames.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2968" topLine="75" />
+			<Cursor1 position="58405" topLine="2117" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_ClassDefinition.h" open="0" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1614" topLine="23" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_Alias.h" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1198" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_Import.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1396" topLine="8" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_Fence.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1186" topLine="4" />
+		</Cursor>
+	</File>
+	<File name="FrontEnd\Parser.cpp" open="1" top="1" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="47722" topLine="2168" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST.h" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1324" topLine="28" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_FSM.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1224" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_RTL.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1250" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_Expression.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1211" topLine="18" />
+		</Cursor>
+	</File>
+	<File name="FrontEnd\TokenTree.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1726" topLine="55" />
+		</Cursor>
+	</File>
+	<File name="BackEnd\MemoryTable.h" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="126" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\SymbolTable\Scope.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2371" topLine="44" />
+		</Cursor>
+	</File>
+	<File name="BackEnd\MemoryTable.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="21" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_Alias.cpp" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1099" topLine="10" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\SymbolTable\Net.cpp" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="98" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\SymbolTable\Target.h" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1380" topLine="18" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_FSM.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1462" topLine="9" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\SymbolTable\SymbolTree.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1784" topLine="38" />
+		</Cursor>
+	</File>
+	<File name="BackEnd\HDL.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="368" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\IdentifierTree.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1519" topLine="12" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_WhileLoop.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1273" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="BackEnd\TimingSpec.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="23" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_TargetDefinition.cpp" open="0" top="0" tabpos="23" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1349" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\IdentifierTree.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2980" topLine="85" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\SymbolTable\Pin.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1053" topLine="15" />
+		</Cursor>
+	</File>
+	<File name="FrontEnd\TokenTree.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5316" topLine="192" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\Dictionary.h" open="0" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2600" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="DataStructures\AST\AST_Assignment.cpp" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="1566" topLine="34" />
+		</Cursor>
+	</File>
+	<File name="Tools\MyString.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2448" topLine="48" />
+		</Cursor>
+	</File>
+	<File name="Tools\FileSystem.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3314" topLine="114" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\SymbolTable\Object.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1340" topLine="20" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_Definition.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1310" topLine="18" />
+		</Cursor>
+	</File>
+	<File name="Tools\FileSystem.h" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1556" topLine="11" />
+		</Cursor>
+	</File>
+	<File name="FrontEnd\Parser.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1194" topLine="48" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_ForLoop.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1459" topLine="15" />
+		</Cursor>
+	</File>
+	<File name="Global\OS_Header.h" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1093" topLine="15" />
+		</Cursor>
+	</File>
+	<File name="Tools\MyString.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5296" topLine="152" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\SymbolTable\Pin.cpp" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1157" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_ForLoop.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1291" topLine="8" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\SymbolTable\Clock.cpp" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="15" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_EnumDefinition.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1058" topLine="10" />
+		</Cursor>
+	</File>
+	<File name="Global\Global.h" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1144" topLine="5" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_Jump.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1262" topLine="9" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\SymbolTable\SymbolTree.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2968" topLine="75" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_EnumDefinition.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1685" topLine="28" />
 		</Cursor>
 	</File>
 	<File name="DataStructures\AST\AST_Jump.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -358,22 +323,7 @@
 	</File>
 	<File name="FrontEnd\Scanner.cpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="4914" topLine="78" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_Definition.cpp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3018" topLine="77" />
-		</Cursor>
-	</File>
-	<File name="Tools\Number.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1682" topLine="35" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_Assignment.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1790" topLine="24" />
+			<Cursor1 position="4959" topLine="111" />
 		</Cursor>
 	</File>
 	<File name="DataStructures\AST\AST_ClassDefinition.cpp" open="0" top="0" tabpos="20" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -381,34 +331,9 @@
 			<Cursor1 position="2300" topLine="54" />
 		</Cursor>
 	</File>
-	<File name="Tools\FileSystem.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="DataStructures\AST\AST_RTL.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3314" topLine="114" />
-		</Cursor>
-	</File>
-	<File name="Tools\MyString.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="5296" topLine="152" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_EnumDefinition.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1685" topLine="28" />
-		</Cursor>
-	</File>
-	<File name="FrontEnd\Token.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1002" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="FrontEnd\TokenTree.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="5316" topLine="192" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_Definition.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1310" topLine="18" />
+			<Cursor1 position="1454" topLine="13" />
 		</Cursor>
 	</File>
 	<File name="FrontEnd\Scanner.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -416,19 +341,109 @@
 			<Cursor1 position="1416" topLine="24" />
 		</Cursor>
 	</File>
-	<File name="FrontEnd\TokenTree.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="DataStructures\AST\AST_Definition.cpp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1726" topLine="55" />
+			<Cursor1 position="3018" topLine="77" />
 		</Cursor>
 	</File>
-	<File name="DataStructures\AST\AST_FSM.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="main.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1224" topLine="7" />
+			<Cursor1 position="4171" topLine="139" />
 		</Cursor>
 	</File>
-	<File name="DataStructures\SymbolTable\Target.h" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="DataStructures\AST\AST_NamespacePush.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1380" topLine="18" />
+			<Cursor1 position="1536" topLine="18" />
+		</Cursor>
+	</File>
+	<File name="FrontEnd\Token.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1002" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_Expression.cpp" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2808" topLine="79" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_NamespacePush.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1289" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="FrontEnd\Token.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3396" topLine="131" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_Fence.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="952" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_HDL.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1365" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\Dictionary.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4502" topLine="148" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_Group.h" open="0" top="0" tabpos="20" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1158" topLine="9" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\SymbolTable\Target.cpp" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1317" topLine="4" />
+		</Cursor>
+	</File>
+	<File name="BackEnd\ClockTree.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="104" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_LoopLoop.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1265" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\SymbolTable\Scope.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1686" topLine="20" />
+		</Cursor>
+	</File>
+	<File name="BackEnd\TimingSpec.h" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="577" topLine="1" />
+		</Cursor>
+	</File>
+	<File name="main.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1053" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_IfStatement.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1320" topLine="8" />
+		</Cursor>
+	</File>
+	<File name="DataStructures\AST\AST_Switch.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1478" topLine="17" />
+		</Cursor>
+	</File>
+	<File name="BackEnd\HDL.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="237" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="Tools\Number.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1682" topLine="35" />
 		</Cursor>
 	</File>
 	<File name="DataStructures\AST\AST_Group.cpp" open="0" top="0" tabpos="21" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -436,14 +451,9 @@
 			<Cursor1 position="1318" topLine="17" />
 		</Cursor>
 	</File>
-	<File name="Global\Global.h" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="DataStructures\AST\AST_WhileLoop.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1144" topLine="5" />
-		</Cursor>
-	</File>
-	<File name="DataStructures\AST\AST_Fence.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1186" topLine="4" />
+			<Cursor1 position="1543" topLine="13" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

@@ -1,6 +1,6 @@
-alias Clk    SYS_CLK
-alias Button SW
-alias LED    USER_LED
+alias Clk    = SYS_CLK;
+alias Button = SW;
+alias LED    = USER_LED;
 
 import "BeMicro Max 10";
 //------------------------------------------------------------------------------

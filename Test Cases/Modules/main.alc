@@ -1,5 +1,5 @@
-alias LED    USER_LED
-alias Button SW
+alias LED    = USER_LED;
+alias Button = SW;
 
 import "BeMicro Max 10"; // Imports straight into the global namespace
 

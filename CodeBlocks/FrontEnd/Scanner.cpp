@@ -94,6 +94,7 @@ SCANNER::SCANNER(){
   Keywords.Insert("class"     , TOKEN::Class    );
   Keywords.Insert("enum"      , TOKEN::Enum     );
   Keywords.Insert("group"     , TOKEN::Group    );
+  Keywords.Insert("alias"     , TOKEN::Alias    );
   Keywords.Insert("if"        , TOKEN::If       );
   Keywords.Insert("else"      , TOKEN::Else     );
   Keywords.Insert("for"       , TOKEN::For      );
