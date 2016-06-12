@@ -63,8 +63,6 @@ a = b/c;
   include "Some Header File"
 "should be concatenated with this one"
 
- /*Comment before directive*/ #  include "Some Header File"
-
 /* This
 is a 
 multi-

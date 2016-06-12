@@ -1,6 +1,6 @@
-#define Clk    SYS_CLK
-#define Button SW
-#define LED    USER_LED
+alias Clk    SYS_CLK
+alias Button SW
+alias LED    USER_LED
 
 import "BeMicro Max 10";
 //------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ ADC.adc_pll_locked_export = ADC_Clk.Locked;
 ADC.clock_clk             = Clk;
 ADC.reset_sink_reset_n    = ADC_Clk.Locked;
 
-task(Clk, !ADC_Clk.Locked){
+fsm(Clk, !ADC_Clk.Locked){
  ADC.command_valid         = 1,
  ADC.command_channel       = 4, // Photo resistor
  ADC.command_startofpacket = 1;

@@ -4,19 +4,19 @@ hdl("Library/RS232.v", "Library/RS232_Rx.v", "Library/RS232_Tx.v") RS232_V(
  int Count1    = 17, 
  int Count1_5  = 25
 ){
- in nReset;
- in Clk;
+ in net nReset;
+ in net Clk;
 
- in`8 TxData;
- in   Send;
- out  Busy;
+ in  net'8 TxData;
+ in  net   Send;
+ out net   Busy;
 
- out   DataReady;
- out`8 RxData;
- in    Ack;
+ out net   DataReady;
+ out net'8 RxData;
+ in  net   Ack;
   
- out Tx;
- in  Rx;
+ out net Tx;
+ in  net Rx;
 }
 
 class RS232(clk Clock, net Reset, int BAUD): public RS232_V(

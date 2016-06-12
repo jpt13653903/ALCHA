@@ -64,6 +64,7 @@ struct TOKEN{
 
   Class,
   Enum,
+  Group,
 
   If,
   Else,

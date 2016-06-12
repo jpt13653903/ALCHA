@@ -6,8 +6,8 @@ group<type = "PLL">{
 group<...whatnot...> SD{
  out pin  <...whatnot...> CLK;
  out pin  <...whatnot...> CMD;
-     pin`4<...whatnot..., number = "XX, YY, ZZ, WW"> DAT;
+     pin'4<...whatnot..., number = "XX, YY, ZZ, WW"> DAT;
 }
 
-Later: SD.DAT = 7`4;
+Later: SD.DAT = 7'4;
 

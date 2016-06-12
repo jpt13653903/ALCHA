@@ -2142,10 +2142,13 @@ AST_Switch* PARSER::Switch(){
 //------------------------------------------------------------------------------
 
 AST_Group* PARSER::Group(){
- if(Token.Type != TOKEN::OpenAngle) return 0;
- AST_Group* Node = new AST_Group(Token.Line, Scanner->Filename.String());
+ if(Token.Type != TOKEN::Group) return 0;
+ GetToken();
 
- AttributeList(&Node->Attributes);
+ AST_Group* Node = new AST_Group(Token.Line, Scanner->Filename.String());
+ if(Token.Type == TOKEN::OpenAngle){
+  AttributeList(&Node->Attributes);
+ }
 
  if(Token.Type == TOKEN::Identifier){
   Node->Identifier = Token.ID;

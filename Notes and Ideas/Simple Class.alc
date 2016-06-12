@@ -1,7 +1,7 @@
 class Adder(int N){
- in 'N A;
- in 'N B;
- out'N Y;
+ in  net'N A;
+ in  net'N B;
+ out net'N Y;
 
  Y = B + C;
 }

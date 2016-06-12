@@ -35,7 +35,8 @@ struct AST_Base{ // The base type for AST nodes
   TargetDefinition,
   ClassDefinition,
   EnumDefinition,
-  Definition, // pin, net, clk, int, rat, float, complex and class instance
+  Definition, // pin, net, clk, byte, char, int, rat, float, complex and 
+              // class instance
   Parameter,
   Expression,
   Assignment,

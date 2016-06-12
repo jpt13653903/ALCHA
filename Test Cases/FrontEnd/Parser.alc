@@ -30,7 +30,6 @@ switch(State){
 pin'STATE PinState; // Pin enumeration
 net'STATE SigState; // Net enumeration
 
-/*
 x = 123.456e789;
 x = 1____2____3____.____4____5____6____e____7____8____9____;
 x = 123.456e+8;
@@ -82,15 +81,14 @@ a = ++x * y--;
 
 a = x - x^3/3! + x^5/5! - x^7/7!;
 
-<voltage = "2.5 V", current = "5 A"> Named_Group{
+group<voltage = "2.5 V", current = "5 A"> Named_Group{
  in  pin<location = "N5"> B1;
  out pin<location = "A7"> LED7;
 }
-<voltage = "2.5 V", current = "5 A">{
+group<voltage = "2.5 V", current = "5 A">{
  in  pin<location = "N5"> B1;
  out pin<location = "A7"> LED7;
 }
-
 
 // Target definition
 set_target<
@@ -294,5 +292,4 @@ fsm(Clk, Reset){
 
  }
 }
-*/
 

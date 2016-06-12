@@ -5,22 +5,22 @@ net Reset;
 //------------------------------------------------------------------------------
 
 class Bus_Master(int Address_N, int Data_N){
- out`Address_N Address;
- in `Data_N    Read_Data;
- out`Data_N    Write_Data;
- out           Latch;
+ out net'Address_N Address;
+ in  net'Data_N    Read_Data;
+ out net'Data_N    Write_Data;
+ out net           Latch;
 }
 //------------------------------------------------------------------------------
 
 class Bus_Slave(int Address_N, int Data_N, int Address_Count){
  int FirstAddress;
 
- in `Address_N Address;    // Input only port
- out`Data_N    Read_Data;  // Output only port
- in `Data_N    Write_Data;
- in            Latch;
+ in  net'Address_N Address;    // Input only port
+ out net'Data_N    Read_Data;  // Output only port
+ in  net'Data_N    Write_Data;
+ in  net           Latch;
 
- net`Data_N Data[Address_Count]; // Bidirectional port
+ net'Data_N Data[Address_Count]; // Bidirectional port
 
  if(Address >= FirstAddress && Address <= FirstAddress+Address_Count){
   Read_Data = Data[Address-FirstAddress];

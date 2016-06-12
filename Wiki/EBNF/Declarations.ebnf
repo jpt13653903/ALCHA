@@ -6,6 +6,7 @@ Definition       = ["in" | "out"]
                    [CastEpr] [AttributeList] IdentifierList;
 
 BaseType = "pin"  | "net" | "clk" 
+         | "byte" | "char"
          | "int"  | "rat" | "float" | "complex"
          | "func" ;
 

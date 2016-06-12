@@ -7,7 +7,7 @@ Statement  = TargetDefinition | ClassDefinition | Definition | Import | Group
 
 Import = "import" String ["as" Identifier];
 
-Group = AttributeList [Identifier] "{" [Statements] "}";
+Group = "group" [AttributeList] [Identifier] "{" [Statements] "}";
 
 (* The result from "Array" is checked for syntactic validity before
    use as a name-space, class name or assignment target. *)

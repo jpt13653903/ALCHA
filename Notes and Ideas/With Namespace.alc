@@ -1,5 +1,5 @@
-struct vector{
- net`8 x, y, z, w;
+class vector{
+ net'8 x, y, z, w;
 }
 
 vector a, b, c;
@@ -8,16 +8,16 @@ a.x:a.y = a.z:a.w;
 
 // or
 
-with(a) x:y = z:w;
+a.{x:y = z:w;}
 //------------------------------------------------------------------------------
 
 class RS232{
- in<8> a, b, c, d;
+ in net'8 a, b, c, d;
 }
 
 RS232 My_RS232;
 
-with(My_RS232){
+My_RS232.{
  a = 1;
  b = 2;
  c = 3;
@@ -25,10 +25,10 @@ with(My_RS232){
 }
 //------------------------------------------------------------------------------
 
-struct S1{
+class S1{
  int r, g, b, a;
 }
-struct S2{
+class S2{
  int x, y, z, w;
 }
 S1 A;
@@ -38,7 +38,11 @@ S2 B;
 A.r:A.g:A.b:A.a = B.x:B.y:B.z:B.w;
 
 // Say:
-with(A) with(B) r:g:b:a = x:y:z:w;
+A.{
+ B.{
+  r:g:b:a = x:y:z:w;
+ }
+}
 
 // The first "with" pushes namespace A, and the second pushes namespace B, so
 // the compiler will search in namespace B first, and then in namespace A.
