@@ -22,11 +22,11 @@
 #define Pin_h
 //------------------------------------------------------------------------------
 
-#include "Signal.h"
+#include "Net.h"
 #include "MyString.h"
 //------------------------------------------------------------------------------
 
-struct PIN: public SIGNAL{
+struct PIN: public NET{
   STRING Standard;  // The logic standard: CMOS, TTL, HSUL, etc.
   STRING Number;    // Physical pin number
   STRING Pair;      // Physical pin number of negative of the differential pair

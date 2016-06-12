@@ -48,8 +48,11 @@ struct TOKEN{
   Auto,
   Func,
   Pin,
-  Sig,
+  Net,
   Clk,
+
+  Byte,
+  Char,
 
   Int,
   Rat,

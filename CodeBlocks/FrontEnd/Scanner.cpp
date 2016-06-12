@@ -81,8 +81,10 @@ SCANNER::SCANNER(){
   Keywords.Insert("auto"      , TOKEN::Auto     );
   Keywords.Insert("func"      , TOKEN::Func     );
   Keywords.Insert("pin"       , TOKEN::Pin      );
-  Keywords.Insert("sig"       , TOKEN::Sig      );
+  Keywords.Insert("net"       , TOKEN::Net      );
   Keywords.Insert("clk"       , TOKEN::Clk      );
+  Keywords.Insert("byte"      , TOKEN::Byte     );
+  Keywords.Insert("char"      , TOKEN::Char     );
   Keywords.Insert("int"       , TOKEN::Int      );
   Keywords.Insert("rat"       , TOKEN::Rat      );
   Keywords.Insert("float"     , TOKEN::Float    );

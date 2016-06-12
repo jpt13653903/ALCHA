@@ -5,7 +5,7 @@
 import "BeMicro Max 10";
 //------------------------------------------------------------------------------
 
-clock<Frequency = "10 MHz", Location = "PLL_1"> ADC_Clk(Clk);
+clk<Frequency = "10 MHz", Location = "PLL_1"> ADC_Clk(Clk);
 // Clock_10M has a "locked" property, which is the PLL "locked" wire
 //------------------------------------------------------------------------------
 
@@ -43,10 +43,10 @@ task(Clk, !ADC_Clk.Locked){
 }
 //------------------------------------------------------------------------------
 
-unsigned`12 ADC_Photo;
-unsigned`12 ADC_Thermal;
+net'12 ADC_Photo;
+net'12 ADC_Thermal;
 
-unsigned`8  PWM;
+net'8  PWM;
 
      if(ADC_Photo[[11:8]] < 0x1) PWM = 0x03;
 else if(ADC_Photo[[11:8]] < 0x2) PWM = 0x04;
@@ -66,9 +66,9 @@ else if(ADC_Photo[[11:8]] < 0xF) PWM = 0xBD;
 else                             PWM = 0xFF;
 //------------------------------------------------------------------------------
 
-unsigned`1  PWM_out;
+net    PWM_out;
 
-unsigned`16 Count;
+net'16 Count;
 rtl(Clk){
  PWM_out = (Count >> 8) < PWM,
  Count++;

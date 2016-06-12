@@ -88,8 +88,10 @@ void AST_Definition::Display(){
   case Void   : printf("Void):\n"    ); break;
   case Auto   : printf("Auto):\n"    ); break;
   case Pin    : printf("Pin):\n"     ); break;
-  case Sig    : printf("Signal):\n"  ); break;
+  case Net    : printf("Net):\n"     ); break;
   case Clk    : printf("Clock):\n"   ); break;
+  case Byte   : printf("Byte):"     ); break;
+  case Char   : printf("Character):"); break;
   case Int    : printf("Integer):\n" ); break;
   case Rat    : printf("Rational):\n"); break;
   case Float  : printf("Float):\n"   ); break;

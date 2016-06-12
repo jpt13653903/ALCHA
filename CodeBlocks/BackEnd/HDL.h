@@ -17,7 +17,7 @@ struct HDL{
  ~PARAMETER(); // Also deletes the rest of the list
  };
 
- struct SIGNAL{
+ struct NET{
   STRING Name;
 
   bool Port;
@@ -36,10 +36,10 @@ struct HDL{
   int* ArrayStart; // Array of start indices
   int* ArrayEnd;   // Array of end indices
 
-  SIGNAL* Next;
+  NET* Next;
 
-  SIGNAL(const byte* Name);
- ~SIGNAL(); // Also deletes the rest of the list
+  NET(const byte* Name);
+ ~NET(); // Also deletes the rest of the list
 
   void Write(STRING& Buffer);
  };
@@ -132,7 +132,7 @@ struct HDL{
 
   // These are new instances, not linked to the module instance
   PARAMETER* Parameters; // List of parameter overrides (named)
-  SIGNAL*    Ports;      // List of port assignments (names)
+  NET*       Ports;      // List of port assignments (names)
   AST*       PortValues; // List of port assignments (values)
 
   INSTANCE* Next;
@@ -145,7 +145,7 @@ struct HDL{
   STRING Name;
 
   PARAMETER* Parameters; // List of parameters
-  SIGNAL*    Signals;    // List of ports, wires and registers
+  NET*       Nets;       // List of ports, wires and registers
   INSTANCE*  Instances;  // List of sub-circuit instances
   AST*       Statements; // AST
 

@@ -1,15 +1,15 @@
 // Instead of
-sig`8 a;
-sig`8 b;
-sig`8 c;
+net`8 a;
+net`8 b;
+net`8 c;
 
 // Support
-sig`8 a, b, c;
+net`8 a, b, c;
 
 // Defining arrays:
-sig`8.4[16] A;
+net`8.4[16] A;
 // or
-sig`8.4 A[16];
+net`8.4 A[16];
 // ???
 
 // Instantiating classes:

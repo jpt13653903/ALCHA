@@ -27,12 +27,12 @@ The constructor parameters is part of the class name, so class inheritance can b
 
     :::C++
     class Base(N){
-     sig'N x;
+     net'N x;
     };
     class Base: Base(8){} // Define a default constructor for class Base
 
 ## Attributes
-Whenever a class is instantiated, the instance can be assigned various attributes (in similar fashion to signals and pins).  A typical attribute that might be assigned is the `location`, which indicates where on the FPGA the class instance should be placed.  The exact details of this has not been finalised yet, but it is envisioned that the developer can define a rectangle in normalised coordinates, similar to the example below:
+Whenever a class is instantiated, the instance can be assigned various attributes (in similar fashion to pins and nets).  A typical attribute that might be assigned is the `location`, which indicates where on the FPGA the class instance should be placed.  The exact details of this has not been finalised yet, but it is envisioned that the developer can define a rectangle in normalised coordinates, similar to the example below:
 
     :::C++
     class SomeModule{

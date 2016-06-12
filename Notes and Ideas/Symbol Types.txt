@@ -1,12 +1,12 @@
 Types:
-- Base type (pin, sig, clk, int, rat, float, complex, func)
+- Base type (pin, net, clk, int, rat, float, complex, func)
 - array
 - class (type)
 - function (reference)
 
 Synthesisable:
 - pin
-- sig
+- net
 - clk
 
 Scripting:

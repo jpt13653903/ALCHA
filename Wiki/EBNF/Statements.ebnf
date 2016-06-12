@@ -40,12 +40,12 @@ Switch = "switch" "(" Expression ")" "{"
    which is 1 by default. *)
 Jump = ("return" | "break" | "continue") [Expression] ";";
 
-(* The first parameter must evaluate to a clock signal.  If the RTL is inside
+(* The first parameter must evaluate to a clock net.  If the RTL is inside
    a function, the clock is inherited from the calling state machine. *)
 RTL = "rtl" ["(" [ParameterList] ")"] StatementBlock;
 
-(* The first parameter must evaluate to a clock signal and the second parameter 
-   to a reset signal.  If the FSM is inside a function, the parameters are
+(* The first parameter must evaluate to a clock net and the second parameter 
+   to a reset net.  If the FSM is inside a function, the parameters are
    inherited from the calling state machine. *)
 FSM = "fsm" ["(" [ParameterList] ")"] StatementBlock;
 

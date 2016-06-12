@@ -5,7 +5,7 @@ Definition       = ["in" | "out"]
                    (BaseType | "void" | "auto")
                    [CastEpr] [AttributeList] IdentifierList;
 
-BaseType = "pin"  | "sig" | "clk" 
+BaseType = "pin"  | "net" | "clk" 
          | "int"  | "rat" | "float" | "complex"
          | "func" ;
 

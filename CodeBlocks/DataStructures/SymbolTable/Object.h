@@ -28,7 +28,7 @@
 struct OBJECT{ // Base class for the symbol table
  enum TYPE{
   Target,                   // The target object
-  Pin, Sig, Clk,            // Physical signals
+  Pin, Net, Clk,            // Physical pins, nets and clocks
   Int, Rat, Float, Complex, // Scripting variables
   Array,                    // Array of...
   Class,                    // Class type

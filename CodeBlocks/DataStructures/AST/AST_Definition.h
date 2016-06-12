@@ -29,8 +29,8 @@
 struct AST_Definition: public AST_Base{
   enum DEFINITION_TYPE{
    Void, Auto, // Used for functions only
-   Pin, Sig, Clk,
-   Int, Rat, Float, Complex,
+   Pin, Net, Clk,
+   Byte, Char, Int, Rat, Float, Complex,
    Func, // Function pointer
    ClassInstance
   } DefinitionType;

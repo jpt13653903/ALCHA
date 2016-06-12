@@ -1,5 +1,5 @@
 struct vector{
- sig`8 x, y, z, w;
+ net`8 x, y, z, w;
 }
 
 vector a, b, c;

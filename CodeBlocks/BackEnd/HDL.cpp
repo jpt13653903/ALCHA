@@ -20,7 +20,7 @@ HDL::PARAMETER::~PARAMETER(){
 }
 //------------------------------------------------------------------------------
 
-HDL::SIGNAL::SIGNAL(const byte* Name){
+HDL::NET::NET(const byte* Name){
  this->Name = Name;
 
  Port            = false;
@@ -36,14 +36,14 @@ HDL::SIGNAL::SIGNAL(const byte* Name){
 }
 //------------------------------------------------------------------------------
 
-HDL::SIGNAL::~SIGNAL(){
+HDL::NET::~NET(){
  if(ArrayStart) delete[] ArrayStart;
  if(ArrayEnd  ) delete[] ArrayEnd;
  if(Next      ) delete   Next;
 }
 //------------------------------------------------------------------------------
 
-void HDL::SIGNAL::Write(STRING& Buffer){
+void HDL::NET::Write(STRING& Buffer){
  if(Port){
   switch(Direction){
    case Input : Buffer << " input  "; break;
@@ -485,7 +485,7 @@ HDL::MODULE::MODULE(const byte* Name){
  this->Name = Name;
 
  Parameters = 0;
- Signals    = 0;
+ Nets       = 0;
  Instances  = 0;
  Statements = 0;
  Next       = 0;
@@ -494,7 +494,7 @@ HDL::MODULE::MODULE(const byte* Name){
 
 HDL::MODULE::~MODULE(){
  if(Parameters) delete Parameters;
- if(Signals   ) delete Signals;
+ if(Nets      ) delete Nets;
  if(Instances ) delete Instances;
  if(Statements) delete Statements;
  if(Next      ) delete Next;
@@ -520,24 +520,24 @@ void HDL::MODULE::Write(STRING& Buffer){
  bool Wires     = false;
  bool Registers = false;
 
- SIGNAL* Signal = Signals;
- while(Signal){
-       if(Signal->Port    ) Ports     = true;
-  else if(Signal->Register) Registers = true;
-  else                      Wires     = true;
+ NET* Net = Nets;
+ while(Net){
+       if(Net->Port    ) Ports     = true;
+  else if(Net->Register) Registers = true;
+  else                   Wires     = true;
   if(Ports && Wires && Registers) break;
-  Signal = Signal->Next;
+  Net = Net->Next;
  }
 
  if(Ports){
   Buffer << "(\n";
-  Signal = Signals;
-  while(Signal){
-   if(Signal->Port){
-    Signal->Write(Buffer);
-    Signal = Signal->Next;
-    if(Signal) Buffer << ",\n";
-    else       Buffer << "\n";
+  Net = Nets;
+  while(Net){
+   if(Net->Port){
+    Net->Write(Buffer);
+    Net = Net->Next;
+    if(Net) Buffer << ",\n";
+    else    Buffer << "\n";
    }
   }
   Buffer << ");\n";
@@ -548,12 +548,12 @@ void HDL::MODULE::Write(STRING& Buffer){
  }
 
  if(Wires){
-  Signal = Signals;
-  while(Signal){
-   if(!Signal->Port && !Signal->Register){
-    Signal->Write(Buffer);
+  Net = Nets;
+  while(Net){
+   if(!Net->Port && !Net->Register){
+    Net->Write(Buffer);
     Buffer << ";\n";
-    Signal = Signal->Next;
+    Net = Net->Next;
    }
   }
   Buffer << "//--------------------------------------"
@@ -561,12 +561,12 @@ void HDL::MODULE::Write(STRING& Buffer){
  }
 
  if(Registers){
-  Signal = Signals;
-  while(Signal){
-   if(!Signal->Port && Signal->Register){
-    Signal->Write(Buffer);
+  Net = Nets;
+  while(Net){
+   if(!Net->Port && Net->Register){
+    Net->Write(Buffer);
     Buffer << ";\n";
-    Signal = Signal->Next;
+    Net = Net->Next;
    }
   }
   Buffer << "//--------------------------------------"

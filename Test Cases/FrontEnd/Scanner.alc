@@ -80,7 +80,7 @@ tarp9ub3f
 tar
 target823
 
-target pin sig clk int rat float complex in out 
+target pin net clk int rat float complex in out 
 class if else for while loop switch case default import as rtl fsm hdl
 
 // Testing the token tree Match function
@@ -95,7 +95,7 @@ Operator   = ++  -- '  -> @  .  .{ &  ~&
              +=  -= *= /= %= &= |= ^= <<= 
              >>= (  )  [  ]  {  }  ,  ;
 
-"This is a string of keywords target pin sig
+"This is a string of keywords target pin net
 \n \t \v \b \r \f \a \\ \? \' \" \x0FBC \uABABAB \UEFEFEFEFEFEFEFE \76455626126271 \&ndash;
 Some more string"
 

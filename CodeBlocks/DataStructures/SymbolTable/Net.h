@@ -18,20 +18,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Signal_h
-#define Signal_h
+#ifndef Net_h
+#define Net_h
 //------------------------------------------------------------------------------
 
 #include "Object.h"
 //------------------------------------------------------------------------------
 
-struct SIGNAL: public OBJECT{
+struct NET: public OBJECT{
  double Setup; // External setup requirement
  double Hold;  // External hold requirement
  double Delay; // External propagation delay
 
-          SIGNAL();
- virtual ~SIGNAL(); // PIN inherits from SIGNAL
+          NET();
+ virtual ~NET(); // PIN inherits from NET
 
  virtual void Display();
 };

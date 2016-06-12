@@ -15,7 +15,7 @@ RAM, 1W, 1R port | `RAM_RW(int Width, int Depth, clk Clock1, clk Clock2, int Ini
 RAM, full 2-port | `RAM2(int Width, int Depth, clk Clock1, clk Clock2, int Init[])`
 FIFO,            | `FIFO(int Width, int Depth, clk Clock1, clk Clock2, int Init[])`
 
-The other signals are implemented as member signals.
+The other nets are implemented as member nets.
 
 ## Megafunctions and External HDL Modules
 An FPGA project often makes use of FPGA features that are not directly supported by ALCHA.  Such features might include, among others, PCI-Express interfaces, DDR memory interfaces and embedded processors.  These are called "megafunctions", after the Altera nomenclature.  Megafunctions are both vendor and device specific.
@@ -29,22 +29,22 @@ Megafunctions and other external HDL modules can be imported into the ALCHA proj
      Count1    = 17; 
      Count1_5  = 25;
     ){
-     in sig nReset;
-     in sig Clk;
+     in net nReset;
+     in net Clk;
     
-     in  sig'8 TxData;
-     in  sig   Send;
-     out sig   Busy;
+     in  net'8 TxData;
+     in  net   Send;
+     out net   Busy;
     
-     out sig   DataReady;
-     out sig'8 RxData;
-     in  sig   Ack;
+     out net   DataReady;
+     out net'8 RxData;
+     in  net   Ack;
       
-     out sig Tx;
-     in  sig Rx;
+     out net Tx;
+     in  net Rx;
     }
     
-    class RS232(clk Clock, sig Reset, int BAUD): RS232_V(
+    class RS232(clk Clock, net Reset, int BAUD): RS232_V(
      ceil(log2(round(Clock.Frequency / BAUD * 1.5))),
                round(Clock.Frequency / BAUD / 2),
                round(Clock.Frequency / BAUD),

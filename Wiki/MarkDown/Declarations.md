@@ -3,32 +3,32 @@
 [TOC]
 
 # Declarations
-## Signals
+## Nets
 ### Definition
-Signals relate to physical wires and / or registers on the FPGA.  They are specified by means of the `sig` keyword.  If no format is specified, a signal is a single-bit unsigned integer, which also represents a boolean.  The format is specified by means of a "fixed-point cast" using the `'` (single-quote) operator.  Some examples are shown below:
+Nets relate to physical wires and / or registers on the FPGA.  They are specified by means of the `net` keyword.  If no format is specified, a net is a single-bit unsigned integer, which also represents a boolean.  The format is specified by means of a "fixed-point cast" using the `'` (single-quote) operator.  Some examples are shown below:
 
     :::C++
-    sig           a; // Single-bit unsigned integer
-    sig'8         b; // 8-bit unsigned integer
-    sig'(7, -128) c; // 8-bit signed integer
+    net           a; // Single-bit unsigned integer
+    net'8         b; // 8-bit unsigned integer
+    net'(7, -128) c; // 8-bit signed integer
 
-    sig'(4, 4)    d; // 4-bit unsigned fixed point with 2 integer bits
+    net'(4, 4)    d; // 4-bit unsigned fixed point with 2 integer bits
                      // and 2 fraction bits (in the range [0, 4)
-    sig'(4, -4)   e; // 5-bit signed fixed-point in the range [-4, 4)
+    net'(4, -4)   e; // 5-bit signed fixed-point in the range [-4, 4)
 
 ### Initialisers
-All signals, pins and variables can take an optional initialiser, as illustrated below:
+All nets, pins and variables can take an optional initialiser, as illustrated below:
 
     :::C++
-    sig' 8     a  = 7;       // The binary value "0000 0111"
-    sig'(8, 4) pi = 355/113; // The binary value "1100 1001"
+    net' 8     a  = 7;       // The binary value "0000 0111"
+    net'(8, 4) pi = 355/113; // The binary value "1100 1001"
 
 ### Attributes
-Signals take optional attributes, which are summarised in the table below:
+Nets take optional attributes, which are summarised in the table below:
 
 Attribute      | Default   | Description
 ---------      | -------   | -----------
-`global`       | `"False"` | Indicates whether or not the signal should be routed on the global clock network.  Takes only `"True"` or `"False"` values.
+`global`       | `"False"` | Indicates whether or not the net should be routed on the global clock network.  Takes only `"True"` or `"False"` values.
 `output_clock` | `"None"`  | Specifies the clock used for external setup and hold constraints.
 `setup`        | `"0"`     | Specifies the minimum setup time of an external register, in relation to `output_clock`
 `hold`         | `"0"`     | Specifies the minimum hold time of an external register, in relation to `output_clock`
@@ -37,7 +37,7 @@ Attribute      | Default   | Description
 `max_delay`    | `"0"`     | Specifies the maximum output delay of an external register, in relation to `input_clock`
 
 ### Timing Constraints
-As indicated in the table above, signal attributes can be used to specify external peripheral timing requirements.  These timing attributes are specified as if there are no PCB or trace delays.  When the signal is connected to a pin, the trace delays and pin capacitance specified by the pin attributes are used in conjunction with the signal timing attributes to calculate the appropriate external timing constraints.  An example is provided below:
+As indicated in the table above, net attributes can be used to specify external peripheral timing requirements.  These timing attributes are specified as if there are no PCB or trace delays.  When the net is connected to a pin, the trace delays and pin capacitance specified by the pin attributes are used in conjunction with the net timing attributes to calculate the appropriate external timing constraints.  An example is provided below:
 
     :::C++
     // PCB trace delays in the pin definitions:
@@ -46,17 +46,17 @@ As indicated in the table above, signal attributes can be used to specify extern
           number    = "U7, T7, V8, T8"> SD_DAT;
 
     // Peripheral specifications in the driver class:
-    sig'4< input_clock = "!Clock", max_delay = "14 ns"          > Data_in;
-    sig'4<output_clock =  "Clock", setup = "5 ns", hold = "5 ns"> Data_out;
+    net'4< input_clock = "!Clock", max_delay = "14 ns"          > Data_in;
+    net'4<output_clock =  "Clock", setup = "5 ns", hold = "5 ns"> Data_out;
 
-    // Assign the signals to the pin
+    // Assign the nets to the pin
     Data_in = SD_DAT;
     SD_DAT  = Data_out;
 
 External delays are always referenced to a clock, even if the external delay is purely combinational.  This is so that the timing constraints are compatible with the Synopsis Design Constraints format, which is the industry-preferred standard.
 
 ### Bus Connections
-ALCHA does not support high-impedance signals directly.  Pins can be set to high-impedance by disabling the driver (see the Pins section for details).  In order to emulate a bus that has a set of tri-state drivers, the signals should be gated through AND gates and then combined through an OR gate to drive the bus.
+ALCHA does not support high-impedance nets directly.  Pins can be set to high-impedance by disabling the driver (see the Pins section for details).  In order to emulate a bus that has a set of tri-state drivers, the nets should be gated through AND gates and then combined through an OR gate to drive the bus.
 
 ## Pins
 ### Definition
@@ -116,7 +116,7 @@ In this case, the pins that are actually defined are `SD.CLK`, `SD.CMD` and `SD.
      in pin<location = "N20"> CLOCK_B6A;
     }
 
-Signals, class instances, derived clocks, etc. can be grouped in similar fashion.
+Nets, class instances, derived clocks, etc. can be grouped in similar fashion.
 
 ## Scripting Data Types
 The table below summarises ALCHA scripting variable types:
@@ -164,14 +164,14 @@ Ordinarily, enumerations are equivalent to the non-synthesisable type `int`.  Th
     :::C++
     enum STATE {Idle, Writing, Done, Others}
     pin'STATE PinState; // Pin enumeration
-    sig'STATE SigState; // Signal enumeration
+    net'STATE SigState; // Net enumeration
 
-In this case, the number of bits, or width, of the signal (or pin array) is the number of bits required to uniquely identify each enumeration value.  In the above example, this is 4&nbsp;bits.
+In this case, the number of bits, or width, of the net (or pin array) is the number of bits required to uniquely identify each enumeration value.  In the above example, this is 4&nbsp;bits.
 
 If an enumeration is used outside a variable of that type, the values of the enumeration can be referenced through its type.  The following statements are all legal:
 
     :::C++
-    emum Enum{A, B, C}
+    enum Enum{A, B, C}
 
     int  a;
     Enum e;
@@ -183,7 +183,7 @@ If an enumeration is used outside a variable of that type, the values of the enu
 A variable declared as an enumeration can only take values from that enumeration.  It is illegal to assign anything else to an enumeration type.  It is legal to compare an enumeration to other types, however.
 
     :::C++
-    emum Enum{A, B, C}
+    enum Enum{A, B, C}
 
     int  a;
     Enum e, n;
@@ -196,6 +196,15 @@ A variable declared as an enumeration can only take values from that enumeration
     if(e == B){...} // Legal  : comparing enumeration values
     if(a == B){...} // Illegal: B does not exist in this namespace
     if(e == 2){...} // Legal  : e is automatically cast to an int
+
+## Built-in Members
+Various ALCHA types have built-in members, which can be accessed similarly to class members.  The list below is not exhaustive.
+
+Member      | Types           | Description
+------      | -----           | -----------
+`width`     | `pin`, `net`    | The number of bits in the vector.  Returns `1` for scalers.
+`length`    | All array types | The number of elements in the array.
+`frequency` | Clock nets      | The frequency of the clock, in Hz.
 
 [[include repo=code path=Wiki/MarkDown/Footer.md]]
 

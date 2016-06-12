@@ -1,14 +1,15 @@
 class Adder(int N){
- in `N A;
- in `N B;
- out`N Y;
+ in 'N A;
+ in 'N B;
+ out'N Y;
 
  Y = B + C;
 }
 
-sig`8 A; // unsigned by default: use "signed" to make them signed
-sig`8 B;
-sig`8 C;
+net' 8        A;        // Unsigned
+net'(7, -128) A_signed; // 2's compliment signed 8-bit 
+net' 8        B;
+net' 8        C;
 
 Adder Adder1(8);
 A = Adder.Y;

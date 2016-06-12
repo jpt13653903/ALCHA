@@ -28,7 +28,7 @@ switch(State){
 }
 
 pin'STATE PinState; // Pin enumeration
-sig'STATE SigState; // Signal enumeration
+net'STATE SigState; // Net enumeration
 
 /*
 x = 123.456e789;
@@ -44,7 +44,7 @@ x = 0b._1010101,
 x = 0b_.1010101;
 x = 0b_._1010101;
 
-sig  '  8 x = 3, y = 5;      // Generate an assignment with AST_Declaration left-child
+net  '  8 x = 3, y = 5;      // Generate an assignment with AST_Declaration left-child
 float'300 y = sin(x); // and AST_Expression right-child
 
 class<attribute = "value"> MyClass(int x): A, B, C(7){};
@@ -62,9 +62,9 @@ return;
 break;
 continue;
 
-sig            w = e;
-sig'  8        x = e'  8       ;
-sig'(32, 2*pi) z = e'(32, 2*pi);
+net            w = e;
+net'  8        x = e'  8       ;
+net'(32, 2*pi) z = e'(32, 2*pi);
 
 a  = b ^ c;
 a  = b # c;
@@ -98,7 +98,7 @@ set_target<
  Time = "1 ms"
 >;
 
-sig x;
+net x;
 pin<location = "AB11"> y, z, w;
 
 pin<Attrib = "xyz"> y[1], z[1][2], w[1][2][3];
@@ -108,8 +108,8 @@ in pin<frequency = "50 MHz", location = "C8" > Clk;
 
 out pin'3<location = "A, B, C"> Output;
 
-sig' 8       X;
-sig'(12, -8) Y[A][A.B][A.B.C][8];
+net' 8       X;
+net'(12, -8) Y[A][A.B][A.B.C][8];
 
 int         A, B, C;
 rat         D[]; // Dynamic array;
@@ -153,15 +153,15 @@ Class(A, B(x, y(), z), C) A, B, C[5], D[6][9];
 // Function definition
 Class Function(){}
 Class Function(A, B){}
-sig'8 Func(){}
-sig'8 Func(x, y, A, B, C, X){}
-sig'8 Func[7](x, y, A, B, C, X){
+net'8 Func(){}
+net'8 Func(x, y, A, B, C, X){}
+net'8 Func[7](x, y, A, B, C, X){
  x <<= y(B);
 }
 void Func(x){}
 
 auto Func(x){}
-auto Func(int x, y, sig z[]){}
+auto Func(int x, y, net z[]){}
 
 Namespace.Func(Calling, Function);
 
@@ -244,39 +244,39 @@ hdl("Library/RS232.v", "Library/RS232_Rx.v", "Library/RS232_Tx.v") RS232_V(
  Count1    = 17; 
  Count1_5  = 25;
 ){
- in sig nReset;
- in sig Clk;
+ in net nReset;
+ in net Clk;
 
- in  sig'8 TxData;
- in  sig   Send;
- out sig   Busy;
+ in  net'8 TxData;
+ in  net   Send;
+ out net   Busy;
 
- out sig   DataReady;
- out sig'8 RxData;
- in  sig   Ack;
+ out net   DataReady;
+ out net'8 RxData;
+ in  net   Ack;
 
- out sig Tx;
- in  sig Rx;
+ out net Tx;
+ in  net Rx;
 }
 
 class X{
- sig Y;
+ net Y;
 }
 
 class P: X{
- sig A;
+ net A;
 }
 
 class X(Z){
- sig Y;
+ net Y;
 }
 
 class P(A): X(B){
- sig C;
+ net C;
 }
 
 class<Attribute1 = "Value1", A2 = "V2"> Child(A, B, C): Parent(5->7, B.C(), X^Y*Z){
- sig'(8,16) A, B, C;
+ net'(8,16) A, B, C;
  A  = 3;
  B  = 5 + A;
  C := A * B;

@@ -3,20 +3,22 @@
 [TOC]
 
 # Arrays
-ALCHA only supports fixed-length arrays.  Arrays can be defined with any number of dimensions.
+ALCHA supports fixed-length arrays for synthesisable types, and variable-length arrays for scripting types.  Multiple-dimensional arrays are defined in terms of "arrays of arrays".
 
 ## Defining Arrays
 Each new dimension is defined by means of a positive integer in square brackets, representing the number of elements in that dimension.  An example is presented below:
 
     :::C++
-    sig'8 A[16]; // A 16-element array of 8-bit unsigned integers
-    sig'8 B[3][4][5]; // A 3-dimensional array of 8-bit unsigned integers
+    net'8 A[16]; // A 16-element array of 8-bit unsigned integers
+    net'8 B[3][4][5]; // A 3-dimensional array of 8-bit unsigned integers
 
 ## Slices
-Array elements can be addressed by means of slices.  The bits are modelled as the deepest dimension, with indices equal to the power-of-two representation of that bit.  The element indices are zero-based.  An empty slice ("`[]`") can be used to indicate "all elements".  Any bit-slice removes the fixed-point format.  The result of a bit-slice is always an unsigned integer with as many bits as in the slice.  Some examples are presented below:
+Array elements can be addressed by means of slices.  The bits are modelled as the deepest dimension.  The element indices are zero-based, i.e. index&nbsp;0 is the least significant bit of a bit-vector, or the first element in an array.  An empty slice ("`[]`") can be used to indicate "all elements".
+
+Any bit-slice removes the fixed-point format.  The result of a bit-slice is always an unsigned integer with as many bits as in the slice.  Some examples are presented below:
 
     :::C++
-    sig'(16, 8) A[16];
+    net'(16, 8) A[16];
     A[5]            // Element 5 of A (the 6th element).
     A[][15->13]     // All the elements of A, but only the integer bits
     A[3~7~2][12->0] // Elements 3, 7 and 2 of A (in that order), and only the fraction bits
@@ -28,7 +30,7 @@ Array elements can be addressed by means of slices.  The bits are modelled as th
 The indices can also be specified by means of an integer array, as follows:
 
     :::C++
-    sig'8 A[16];
+    net'8 A[16];
     int   B[5] = 4~2~7~1~12;
     A[B] // Elements 4, 2, 7, 1 and 12 of A, in that order
     A[B ~ 0->15] // Elements 4, 2, 7, 1, 12 and 0 to 15 of A
@@ -51,7 +53,7 @@ Array slices can be used in vectorised statements.  Vectorised operations apply 
      return A + B;
     }
 
-    sig'8 A[16], B[16], Y[16];
+    net'8 A[16], B[16], Y[16];
     Y = A + B;     // Perform an element-wise addition
     Y = Add(A, B); // Equivalent to the addition above
 

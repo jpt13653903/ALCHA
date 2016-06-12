@@ -44,15 +44,17 @@ void AST_Parameter::Display(){
  printf(" Line %d -- Parameter (", Line);
 
  switch(DefinitionType){
-  case Auto   : printf("Auto):"    ); break;
-  case Pin    : printf("Pin):"     ); break;
-  case Sig    : printf("Signal):"  ); break;
-  case Clk    : printf("Clock):"   ); break;
-  case Int    : printf("Integer):" ); break;
-  case Rat    : printf("Rational):"); break;
-  case Float  : printf("Float):"   ); break;
-  case Complex: printf("Complex):" ); break;
-  case Func   : printf("Function):"); break;
+  case Auto   : printf("Auto):"     ); break;
+  case Pin    : printf("Pin):"      ); break;
+  case Net    : printf("Net):"      ); break;
+  case Clk    : printf("Clock):"    ); break;
+  case Byte   : printf("Byte):"     ); break;
+  case Char   : printf("Character):"); break;
+  case Int    : printf("Integer):"  ); break;
+  case Rat    : printf("Rational):" ); break;
+  case Float  : printf("Float):"    ); break;
+  case Complex: printf("Complex):"  ); break;
+  case Func   : printf("Function):" ); break;
 
   case ClassInstance:
    if(ClassName) ClassName->Display();

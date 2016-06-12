@@ -8,8 +8,8 @@ Operator overloading is handled in similar fashion to C.  It can be used to defi
 
     :::C++
     class Complex{
-     sig'(16, 2^8) x = 0;
-     sig'(16, 2^8) y = 0;
+     net'(16, 2^8) x = 0;
+     net'(16, 2^8) y = 0;
 
      Complex operator+(complex C){
       Complex r;
@@ -17,7 +17,7 @@ Operator overloading is handled in similar fashion to C.  It can be used to defi
       r.y = y + imag(C);
       return r;
      }
-     Complex operator+(sig X){
+     Complex operator+(net X){
       Complex r;
       r.x = x + X;
       r.y = y;

@@ -111,17 +111,17 @@ The target of an assignment can be an array, array slice or concatenation.
 
 The usual flow-control structures (`if`, `for`, `while`, etc.) are supported.  More detail is provided later.
 
-## Signal use Before Assignment
-When describing FPGA firmware it is often necessary to use a signal before a value is assigned.  This could occur when using parametrised classes, or clocked structures with external feedback.  The code below provides two examples:
+## Net use Before Assignment
+When describing FPGA firmware it is often necessary to use a net before a value is assigned.  This could occur when using parametrised classes, or clocked structures with external feedback.  The code below provides two examples:
 
     :::C++
     class Adder(N){ // Parametrisation is presented in the scripting section
-     in  sig'N A, B;
-     out sig'N Y;
+     in  net'N A, B;
+     out net'N Y;
      Y = A + B;
     }
     Adder(8) MyAdder; // Instance of an 8-bit adder.  This statement also evaluates "Y = A + B"
-    sig'8 x, y, z;
+    net'8 x, y, z;
     MyAdder.A = x; // These assignments assign values to A and B after use
     MyAdder.B = y;
     // Now the adder is complete.
@@ -129,17 +129,17 @@ When describing FPGA firmware it is often necessary to use a signal before a val
 And here is another example:
 
     :::C++
-    sig'8 Counter;
+    net'8 Counter;
     UserClk = (Counter == 125); // "Counter" has no value yet
     rtl(CPUClock){
      if(UserClk) Counter  = 0;
      else        Counter += 1;
     }
 
-Internally, ALCHA implements the blocking nature of combinational assignments by using a copy of the source expression-tree, rather that the source signal itself.  When that source has no expression-tree yet, a reference to the signal is used instead.  A simplified example is presented below:
+Internally, ALCHA implements the blocking nature of combinational assignments by using a copy of the source expression-tree, rather that the source net itself.  When that source has no expression-tree yet, a reference to the net is used instead.  A simplified example is presented below:
 
     :::C++
-    sig'8 A, B, C, D;
+    net'8 A, B, C, D;
     A = C;
     B = 5 * D;
     C = B + 7;
@@ -153,7 +153,7 @@ Internally, ALCHA implements the blocking nature of combinational assignments by
 It is possible to create circular references, which is illegal.  This is illustrated below:
 
     :::C++
-    sig'8 A, B, C;
+    net'8 A, B, C;
     A = C;
     B = 5 * C;
     C = B + 7;
@@ -168,7 +168,7 @@ This only applies to combinational circuits.  Clocked structures are evaluated a
 An important consequence of this mechanism is that the developer must keep the dependencies in mind.  This is illustrated below:
 
     :::C++
-    sig'8 A, B, C, D, E;
+    net'8 A, B, C, D, E;
     A  = C;
     B  = 5 * D;
     C  = B + 7;
@@ -187,7 +187,7 @@ An important consequence of this mechanism is that the developer must keep the d
     // Any further changes to C will affect A, but not E.
     // Any futther changes to D will affect E, but not A.
 
-This can become quite confusing.  Developers are therefore encouraged to avoid signal use before assignment when describing combinational circuits.
+This can become quite confusing.  Developers are therefore encouraged to avoid net use before assignment when describing combinational circuits.
 
 [[include repo=code path=Wiki/MarkDown/Footer.md]]
 

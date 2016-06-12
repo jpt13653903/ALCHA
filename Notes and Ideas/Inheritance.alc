@@ -1,7 +1,7 @@
 // Everything is public and accessible
 
-clock Clk;
-sig   Reset;
+clk Clk;
+net Reset;
 //------------------------------------------------------------------------------
 
 class Bus_Master(int Address_N, int Data_N){
@@ -20,7 +20,7 @@ class Bus_Slave(int Address_N, int Data_N, int Address_Count){
  in `Data_N    Write_Data;
  in            Latch;
 
- sig`Data_N Data[Address_Count]; // Bidirectional port
+ net`Data_N Data[Address_Count]; // Bidirectional port
 
  if(Address >= FirstAddress && Address <= FirstAddress+Address_Count){
   Read_Data = Data[Address-FirstAddress];

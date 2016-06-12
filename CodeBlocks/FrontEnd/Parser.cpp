@@ -1314,14 +1314,24 @@ AST_Parameter* PARSER::DefParameter(){
     Token.Line, Scanner->Filename.String(), AST_Parameter::Pin
    ); GetToken();
    break;
-  case TOKEN::Sig:
+  case TOKEN::Net:
    Node = new AST_Parameter(
-    Token.Line, Scanner->Filename.String(), AST_Parameter::Sig
+    Token.Line, Scanner->Filename.String(), AST_Parameter::Net
    ); GetToken();
    break;
   case TOKEN::Clk:
    Node = new AST_Parameter(
     Token.Line, Scanner->Filename.String(), AST_Parameter::Clk
+   ); GetToken();
+   break;
+  case TOKEN::Byte:
+   Node = new AST_Parameter(
+    Token.Line, Scanner->Filename.String(), AST_Parameter::Byte
+   ); GetToken();
+   break;
+  case TOKEN::Char:
+   Node = new AST_Parameter(
+    Token.Line, Scanner->Filename.String(), AST_Parameter::Char
    ); GetToken();
    break;
   case TOKEN::Int:
@@ -1528,13 +1538,21 @@ AST_Definition* PARSER::Definition(){
    Node = new AST_Definition(
     Token.Line, Scanner->Filename.String(), AST_Definition::Pin
    ); break;
-  case TOKEN::Sig:
+  case TOKEN::Net:
    Node = new AST_Definition(
-    Token.Line, Scanner->Filename.String(), AST_Definition::Sig
+    Token.Line, Scanner->Filename.String(), AST_Definition::Net
    ); break;
   case TOKEN::Clk:
    Node = new AST_Definition(
     Token.Line, Scanner->Filename.String(), AST_Definition::Clk
+   ); break;
+  case TOKEN::Byte:
+   Node = new AST_Definition(
+    Token.Line, Scanner->Filename.String(), AST_Definition::Byte
+   ); break;
+  case TOKEN::Char:
+   Node = new AST_Definition(
+    Token.Line, Scanner->Filename.String(), AST_Definition::Char
    ); break;
   case TOKEN::Int:
    Node = new AST_Definition(
@@ -1607,7 +1625,7 @@ AST_Definition* PARSER::Definition(){
   if(!Node->Identifiers->Function){
    Error(
     "Only functions can have \"void\" or \"auto\" types.\n         "
-    "For auto variables and signals, don't declare them at all."
+    "For auto variables and nets, don't declare them at all."
    );
   }
  }

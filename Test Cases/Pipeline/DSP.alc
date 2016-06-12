@@ -4,8 +4,8 @@ set_target<
 >;
 
 class DATA{
- sig    Valid;
- sig'32 Data;
+ net    Valid;
+ net'32 Data;
 }
 
 in pin<frequency = "50 MHz"> Clk;

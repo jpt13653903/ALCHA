@@ -40,7 +40,7 @@
 	"Tree.h"
 	"MyString.h"
 
-1465745264 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\parser.cpp
+1465749626 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\parser.cpp
 	"Parser.h"
 
 1465744345 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\parser.h
@@ -92,7 +92,7 @@
 1454911896 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\preprocessor.cpp
 	"PreProcessor.h"
 
-1465744067 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\scanner.cpp
+1465749485 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\scanner.cpp
 	"Scanner.h"
 	"CharacterNames.h"
 
@@ -147,7 +147,7 @@
 1454911931 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\tree.cpp
 	"Tree.h"
 
-1454912108 c:\jpt\projects\15\1509 - alcha\codeblocks\backend\hdl.h
+1465747317 c:\jpt\projects\15\1509 - alcha\codeblocks\backend\hdl.h
 	"MyString.h"
 	"FileSystem.h"
 
@@ -162,7 +162,7 @@
 
 1455228918 c:\jpt\projects\15\1509 - alcha\codeblocks\backend\clocktree.h
 
-1454911902 source:c:\jpt\projects\15\1509 - alcha\codeblocks\backend\hdl.cpp
+1465747431 source:c:\jpt\projects\15\1509 - alcha\codeblocks\backend\hdl.cpp
 	"HDL.h"
 
 1454911968 source:c:\jpt\projects\15\1509 - alcha\codeblocks\backend\memorytable.cpp
@@ -183,7 +183,7 @@
 	"gmp.h"
 	"MyString.h"
 
-1465744067 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\token.h
+1465749450 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\token.h
 	"Number.h"
 	"MyString.h"
 
@@ -207,7 +207,7 @@
 1459780719 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast.cpp
 	"AST.h"
 
-1465744524 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast.h
+1465747255 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast.h
 	"MyString.h"
 	"Dictionary.h"
 	"IdentifierTree.h"
@@ -237,10 +237,10 @@
 1459676437 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_targetdefinition.h
 	"AST.h"
 
-1465724630 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_definition.cpp
+1465749626 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_definition.cpp
 	"AST_Definition.h"
 
-1465744528 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_definition.h
+1465749626 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_definition.h
 	"AST_Parameter.h"
 	"AST_Assignment.h"
 
@@ -331,10 +331,10 @@
 
 1455444444 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\characternames.h
 
-1459681487 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_parameter.cpp
+1465749626 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_parameter.cpp
 	"AST_Parameter.h"
 
-1459685811 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_parameter.h
+1465749626 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_parameter.h
 	"AST_Expression.h"
 
 1459676437 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_jump.h
@@ -375,8 +375,8 @@
 	"Object.h"
 	"SymbolTree.h"
 
-1459781124 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\pin.h
-	"Signal.h"
+1465747569 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\pin.h
+	"Net.h"
 	"MyString.h"
 
 1459781428 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\symboltree.cpp
@@ -388,7 +388,7 @@
 1459781797 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\object.cpp
 	"Object.h"
 
-1459781835 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\object.h
+1465747548 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\object.h
 	"AST.h"
 
 1459777818 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\clock.cpp
@@ -413,6 +413,12 @@
 1465745140 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_enumdefinition.h
 	"AST.h"
 
-1465744744 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_enumdefinition.cpp
+1465745363 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_enumdefinition.cpp
 	"AST_EnumDefinition.h"
+
+1465747582 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\net.cpp
+	"Net.h"
+
+1465747632 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\net.h
+	"Object.h"
 

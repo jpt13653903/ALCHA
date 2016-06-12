@@ -55,8 +55,8 @@ This name-space model allows the developer to define an environment in a parent 
 Specifying the class instance, or name-space, can become tedious.  Instead, the developer can temporarily push a name-space onto the scope stack by means of a special syntax, as shown below. The `A.{` construct pushes the `A` name-space onto the stack, whereas the `B.{` construct pushes the `B` name-space. The closing curly braces pop the name-spaces from the stack.
 
     :::C++
-    class S1{sig'8 r, g, b, a;}
-    class S2{sig'8 x, y, z, w;}
+    class S1{net'8 r, g, b, a;}
+    class S2{net'8 x, y, z, w;}
     S1 A;
     S2 B;
 

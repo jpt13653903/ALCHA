@@ -6,19 +6,19 @@
 ALCHA provides a procedural programming model for combinational circuits, as well as state machines.  Any function that does not contain an embedded state machine is considered combinational and can be called from anywhere.  A function that contains an embedded state machine can only be called from within another state machine.
 
 ## Combinational Functions
-Functions in ALCHA are defined in similar fashion as C, as illustrated in the example below.  The function name is used as a temporary signal (or variable) for the return value.  The parameter types do not need to be defined in the function, but can be inferred from the input parameters when the function is called.  When the types are specified, the parameter types form part of the function name, so that many functions of the same name, but different parameter types, can be defined.
+Functions in ALCHA are defined in similar fashion as C, as illustrated in the example below.  The function name is used as a temporary net (or variable) for the return value.  The parameter types do not need to be defined in the function, but can be inferred from the input parameters when the function is called.  When the types are specified, the parameter types form part of the function name, so that many functions of the same name, but different parameter types, can be defined.
 
     :::C++
-    sig'8 Add(sig A, sig B){
+    net'8 Add(net A, net B){
      return A + B; // This is short-hand for "Add = A + B; return;"
     }
-    sig'8 x, y, z;
+    net'8 x, y, z;
     z = Add(x, y);
 
 Combinational functions can be called from anywhere, including the bodies of clocked structures.  Functions can also be called in vectorised form, which is especially useful when combined with array slicing.  The adder above can be called as follows:
 
     :::C++
-    sig'8 x[4], y[4], z[4];
+    net'8 x[4], y[4], z[4];
     z = Add(x, y);
 
     // This is equavalent to:
@@ -30,7 +30,7 @@ Combinational functions can be called from anywhere, including the bodies of clo
 Arrays and scalars can be mixed in the call, as follows:
 
     :::C++
-    sig'8 x, y[4], z[4];
+    net'8 x, y[4], z[4];
     z = Add(x, y);
 
     // This is equavalent to:
@@ -42,21 +42,21 @@ Arrays and scalars can be mixed in the call, as follows:
 If the function takes an array as a parameter, the same rules apply.  The function can be called with a higher-dimension array, as follows:
 
     :::C++
-    sig'18 Dot(A[], B[]){
+    net'18 Dot(A[], B[]){
      Dot  = A[1] * B[1];
      Dot += A[2] * B[2];
      Dot += A[3] * B[3];
      Dot += A[4] * B[4];
      return;
     }
-    sig'18 Y[16];
-    sig'8  A[4][16], B[4][16];
+    net'18 Y[16];
+    net'8  A[4][16], B[4][16];
     Y = Dot(A, B);
 
 To return an array, the function name should be defined as an array, as follows:
 
     :::C++
-    sig'(16, -8) Mult[4][4](A[][], B[][]){
+    net'(16, -8) Mult[4][4](A[][], B[][]){
      int i, j, k;
      for(i in 0->3){
       for(j in 0->3){
@@ -79,11 +79,11 @@ The body of the embedded state machine is only implemented once, so that many st
 
 The combinational code is evaluated during the calling state, after which the function parameters, as well as the return state, are saved to temporary registers.  The next cycle executes the first state of the embedded state machine.
 
-A return statement in the embedded state machine will cause the target signal to be assigned, and the next state to be loaded from the temporarily-stored state register.  To illustrate this process, consider the following ALCHA (and its corresponding Verilog) code:
+A return statement in the embedded state machine will cause the target net to be assigned, and the next state to be loaded from the temporarily-stored state register.  To illustrate this process, consider the following ALCHA (and its corresponding Verilog) code:
 
     :::C++
-    sig'4 BitCount(A){
-     sig'3 x;
+    net'4 BitCount(A){
+     net'3 x;
      BitCount = 0;
 
      fsm{
@@ -94,7 +94,7 @@ A return statement in the embedded state machine will cause the target signal to
      }
     }
 
-    sig'8 A, B;
+    net'8 A, B;
 
     fsm(Clk, Reset){
      A = 123;
