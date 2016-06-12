@@ -26,13 +26,22 @@
 //------------------------------------------------------------------------------
 
 struct AST_ClassDefinition: public AST_Base{
+  struct PARENT{ // Link-list node for parent classes
+   AST_Expression* ClassName;  // This class inherits from Parent
+   AST_Expression* Parameters; // Parent constructor call
+
+   PARENT* Next;
+
+   PARENT();
+  ~PARENT(); // Also deletes the rest of the list
+  };
+
   DICTIONARY Attributes;
 
   byte          * Identifier;
   AST_Parameter * Parameters; // Constructor parameters
 
-  byte          * Parent;           // This class inherits from Parent
-  AST_Expression* ParentParameters; // Parent constructor call
+  PARENT* Parents;
 
   AST_Base* Body;
 

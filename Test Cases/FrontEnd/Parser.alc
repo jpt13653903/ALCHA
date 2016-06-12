@@ -14,6 +14,13 @@ x = 0b_._1010101;
 sig  '  8 x = 3, y = 5;      // Generate an assignment with AST_Declaration left-child
 float'300 y = sin(x); // and AST_Expression right-child
 
+class<attribute = "value"> MyClass(int x): A, B, C(7){};
+
+Namespace.MyClass(parameters) <attribute = "value"> Instance;
+
+A = B'MyClass + C'(NameSpace.TheOtherClass);
+A = B'MyClass + C'TheOtherClass.Member;
+
 return 3;
 break 78;
 continue 2;
@@ -51,13 +58,14 @@ a = x - x^3/3! + x^5/5! - x^7/7!;
  out pin<location = "A7"> LED7;
 }
 
-/*
+
 // Target definition
-target<
+set_target<
  Type = "Simulation",
  Time = "1 ms"
 >;
 
+/*
 sig x;
 pin<location = "AB11"> y, z, w;
 

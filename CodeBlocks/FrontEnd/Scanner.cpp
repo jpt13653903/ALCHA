@@ -104,7 +104,7 @@ SCANNER::SCANNER(){
 
   Operators.Insert("++" , TOKEN::Increment         );
   Operators.Insert("--" , TOKEN::Decrement         );
-  Operators.Insert("'"  , TOKEN::FP_Cast           );
+  Operators.Insert("'"  , TOKEN::CastOp            );
   Operators.Insert("->" , TOKEN::To                );
   Operators.Insert("@"  , TOKEN::Step              );
   Operators.Insert("."  , TOKEN::Dot               );

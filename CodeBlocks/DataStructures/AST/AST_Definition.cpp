@@ -67,7 +67,7 @@ AST_Definition::AST_Definition(
  ClassName = 0;
  Format    = 0;
 
- FormatType = AST_Expression::FP_Cast;
+ FormatType = AST_Expression::Cast;
 
  Attributes.OnDuplicate = AttributesOnDuplicate;
 }

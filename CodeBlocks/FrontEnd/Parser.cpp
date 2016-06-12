@@ -176,28 +176,36 @@ AST_ClassDefinition* PARSER::ClassDefinition(){
  }
 
  if(Token.Type == TOKEN::Colon){
-  GetToken();
-
-  if(Token.Type != TOKEN::Identifier){
-   Error("Identifier expected");
-   delete Node;
-   return 0;
-  }
-  Node->Parent = Token.ID;
-  GetToken();
-
-  if(Token.Type == TOKEN::OpenRound){
+  AST_ClassDefinition::PARENT* Parent;
+  AST_ClassDefinition::PARENT* LastParent = 0;
+  do{
    GetToken();
 
-   Node->ParentParameters = ParameterList();
+   Parent = new AST_ClassDefinition::PARENT;
+   if(LastParent) LastParent->Next = Parent;
+   else           Node->Parents    = Parent;
+   LastParent = Parent;
 
-   if(Token.Type != TOKEN::CloseRound){
-    Error(") expected");
+   Parent->ClassName = TypeIdentifier();
+   if(!Parent->ClassName){
+    Error("Type identifier expected");
     delete Node;
     return 0;
    }
-   GetToken();
-  }
+
+   if(Token.Type == TOKEN::OpenRound){
+    GetToken();
+
+    Parent->Parameters = ParameterList();
+
+    if(Token.Type != TOKEN::CloseRound){
+     Error(") expected");
+     delete Node;
+     return 0;
+    }
+    GetToken();
+   }
+  }while(Token.Type == TOKEN::Comma);
  }
  if(Token.Type != TOKEN::OpenCurly){
   Error("{ expected");
@@ -309,8 +317,64 @@ AST_Expression* PARSER::Primary(){
 }
 //------------------------------------------------------------------------------
 
+AST_Expression* PARSER::CastEpr(AST_Expression* Node){
+ AST_Expression* Temp;
+
+ if(Token.Type == TOKEN::CastOp){
+  Temp = new AST_Expression(
+  Token.Line, Scanner->Filename.String(), AST_Expression::Cast
+  );
+  GetToken();
+  Temp->Left = Node;
+  Node = Temp;
+
+  Node->Right = Identifier(); if(Node->Right) return Node;
+  Node->Right = Literal   (); if(Node->Right) return Node;
+
+  if(Token.Type != TOKEN::OpenRound){
+   Error("Cast expression specifier expected");
+   delete Node;
+   return 0;
+  }
+  GetToken();
+
+  Node->Right = Expression();
+  if(!Node->Right){
+   Error("Expression expected");
+   delete Node;
+   return 0;
+  }
+  if(Token.Type == TOKEN::Comma){
+   GetToken();
+   Node->Right->Next = Expression();
+   if(!Node->Right->Next){
+    Error("Expression expected");
+    delete Node;
+    return 0;
+   }
+  }
+  if(Token.Type != TOKEN::CloseRound){
+   Error(") expected");
+   delete Node;
+   return 0;
+  }
+  GetToken();
+ }
+ return Node;
+}
+//------------------------------------------------------------------------------
+
+AST_Expression* PARSER::Cast(){
+ AST_Expression* Node;
+ Node = Primary();
+ if(!Node) return 0;
+
+ return CastEpr(Node);
+}
+//------------------------------------------------------------------------------
+
 AST_Expression* PARSER::Postfix(){
- AST_Expression* Node = Primary();
+ AST_Expression* Node = Cast();
  if(!Node) return 0;
 
  AST_Expression* Temp;
@@ -560,67 +624,11 @@ AST_Expression* PARSER::Reduction(){
 }
 //------------------------------------------------------------------------------
 
-AST_Expression* PARSER::FP_Cast(AST_Expression* Node){
- AST_Expression* Temp;
-
- if(Token.Type == TOKEN::FP_Cast){
-  Temp = new AST_Expression(
-   Token.Line, Scanner->Filename.String(), AST_Expression::FP_Cast
-  );
-  GetToken();
-  Temp->Left = Node;
-  Node = Temp;
-
-  Node->Right = Identifier(); if(Node->Right) return Node;
-  Node->Right = Literal   (); if(Node->Right) return Node;
-
-  if(Token.Type != TOKEN::OpenRound){
-   Error("Format specifier expected");
-   delete Node;
-   return 0;
-  }
-  GetToken();
-
-  Node->Right = Expression();
-  if(!Node->Right){
-   Error("Expression expected");
-   delete Node;
-   return 0;
-  }
-  if(Token.Type == TOKEN::Comma){
-   GetToken();
-   Node->Right->Next = Expression();
-   if(!Node->Right->Next){
-    Error("Expression expected");
-    delete Node;
-    return 0;
-   }
-  }
-  if(Token.Type != TOKEN::CloseRound){
-   Error(") expected");
-   delete Node;
-   return 0;
-  }
-  GetToken();
- }
- return Node;
-}
-//------------------------------------------------------------------------------
-
-AST_Expression* PARSER::Cast(){
- AST_Expression* Node;
- Node = Reduction();
- if(!Node) return 0;
-
- return FP_Cast(Node);
-}
-//------------------------------------------------------------------------------
-
 AST_Expression* PARSER::Concatenation(){
  AST_Expression* Temp;
  AST_Expression* Node;
 
- Node = Cast();
+ Node = Reduction();
  if(!Node) return 0;
 
  while(Token.Type == TOKEN::Bit_Concatenate){
@@ -632,9 +640,9 @@ AST_Expression* PARSER::Concatenation(){
   Temp->Left = Node;
   Node = Temp;
 
-  Node->Right = Cast();
+  Node->Right = Reduction();
   if(!Node->Right){
-   Error("Cast expected");
+   Error("Reduction expected");
    delete Node;
    return 0;
   }
@@ -1162,6 +1170,36 @@ AST_Expression* PARSER::Expression(){
 }
 //------------------------------------------------------------------------------
 
+AST_Expression* PARSER::TypeIdentifier(){
+ AST_Expression* Node = Identifier();
+ if(!Node) return 0;
+
+ AST_Expression* Temp;
+
+ while(Token.Type){
+  if(Token.Type == TOKEN::Dot){
+   Temp = new AST_Expression(
+    Token.Line, Scanner->Filename.String(), AST_Expression::Dot
+   );
+   GetToken();
+
+   Temp->Left  = Node;
+   Temp->Right = Identifier();
+   Node = Temp;
+
+   if(!Node->Right){
+    Error("Identifier expected");
+    delete Node;
+    return 0;
+   }
+  }else{
+   return Node;
+  }
+ }
+ return Node;
+}
+//------------------------------------------------------------------------------
+
 AST_Assignment* PARSER::Initialiser(byte* Identifier){
  AST_Assignment* Node;
 
@@ -1263,8 +1301,8 @@ AST_Parameter* PARSER::DefParameter(){
    Node = new AST_Parameter(
     Token.Line, Scanner->Filename.String(), AST_Parameter::ClassInstance
    );
-   Node->ClassName = Postfix();
-   if(!ValidNamespaceSpecifier(Node->ClassName)){
+   Node->ClassName = TypeIdentifier();
+   if(!Node->ClassName){
     Error("Invalid class name specifier");
     delete Node;
     return 0;
@@ -1473,7 +1511,7 @@ AST_Definition* PARSER::Definition(){
  Node->Direction = Direction;
  GetToken();
 
- Node->Format = FP_Cast(0);
+ Node->Format = CastEpr(0);
  if(Node->Format){
   if(Node->DefinitionType == AST_Definition::Void){
    Error("Void cannot have a format");

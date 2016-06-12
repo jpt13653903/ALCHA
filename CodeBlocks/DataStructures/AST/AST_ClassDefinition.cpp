@@ -21,6 +21,20 @@
 #include "AST_ClassDefinition.h"
 //------------------------------------------------------------------------------
 
+AST_ClassDefinition::PARENT::PARENT(){
+ ClassName  = 0;
+ Parameters = 0;
+ Next       = 0;
+}
+//------------------------------------------------------------------------------
+
+AST_ClassDefinition::PARENT::~PARENT(){
+ if(ClassName ) delete ClassName;
+ if(Parameters) delete Parameters;
+ if(Next      ) delete Next;
+}
+//------------------------------------------------------------------------------
+
 AST_ClassDefinition::AST_ClassDefinition(int Line, const byte* Filename):
 AST_Base(Line, Filename){
  Type = ClassDefinition;
@@ -30,8 +44,7 @@ AST_Base(Line, Filename){
  Identifier = 0;
  Parameters = 0;
 
- Parent           = 0;
- ParentParameters = 0;
+ Parents = 0;
 
  Body = 0;
 }
@@ -40,23 +53,33 @@ AST_Base(Line, Filename){
 AST_ClassDefinition::~AST_ClassDefinition(){
  Attributes.Action(AttributesDeleteData);
 
- if(Body            ) delete Body;
- if(Parameters      ) delete Parameters;
- if(ParentParameters) delete ParentParameters;
+ if(Body      ) delete Body;
+ if(Parents   ) delete Parents;
+ if(Parameters) delete Parameters;
 }
 //------------------------------------------------------------------------------
 
 void AST_ClassDefinition::Display(){
  printf("\n%s:%d -- Class Definition (%s):\n", Filename, Line, Identifier);
- printf(" Attributes:\n");
+
+ if(Attributes.GetCount()){
+  printf(" Attributes:\n");
   Attributes.Action(AttributesDisplay);
-
- printf(" Parameters:\n"); if(Parameters) Parameters->Display(); printf("\n");
-
- if(Parent){
-  printf(" Parent (%s):\n  ", Parent);
-  if(ParentParameters) ParentParameters->Display(); printf("\n");
  }
+
+ if(Parameters){
+  printf(" Parameters:\n"); Parameters->Display(); printf("\n");
+ }
+
+ if(Parents) printf(" Parents:\n");
+ PARENT* Parent = Parents;
+ while(Parent){
+  printf(" - ");
+  if(Parent->ClassName ) Parent->ClassName ->Display(); printf("(");
+  if(Parent->Parameters) Parent->Parameters->Display(); printf(")\n");
+  Parent = Parent->Next;
+ }
+
  printf(" {\n");
  if(Body) Body->Display();
  printf(" }\n");

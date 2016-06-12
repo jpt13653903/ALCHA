@@ -54,7 +54,7 @@ struct AST_Expression: public AST_Base{
    XNOR_Reduce,
    Logical_NOT,
 
-   FP_Cast,
+   Cast,
 
    Concatenate,
    Replicate,

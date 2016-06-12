@@ -77,7 +77,7 @@ struct TOKEN{
   // Operators .................................................................
   Increment, // ++
   Decrement, // --
-  FP_Cast,   // '
+  CastOp,    // '
   To,        // ->
   Step,      // @
   Dot,       // .

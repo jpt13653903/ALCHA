@@ -3,7 +3,7 @@ Module = [Statements];
 TargetDefinition = "set_target" AttributeList ";";
 Definition       = ["in" | "out"]
                    (BaseType | "void" | "auto")
-                   [FP_Cast] [AttributeList] IdentifierList;
+                   [CastEpr] [AttributeList] IdentifierList;
 
 BaseType = "pin"  | "sig" | "clk" 
          | "int"  | "rat" | "float" | "complex"
@@ -20,18 +20,20 @@ ArrayDefinition  = "[" [Expression] "]";
 Initialiser      = ("=" | ":=") Expression;
 
 DefParameterList = DefParameter {"," DefParameter};
-DefParameter     = [BaseType | (Identifier {"." Identifier})] 
+DefParameter     = [BaseType | TypeIdentifier] 
                    Identifier {"[" "]"};
 
 AttributeList       = "<" AttributeAssignment {, AttributeAssignment} ">";
 AttributeAssignment = Identifier "=" String;
 
-ClassDefinition = "class" [AttributeList] Identifier {"." Identifier}
+ClassDefinition = "class" [AttributeList] Identifier
                   ["("[DefParameterList]")"] 
                   [
-                    ":" Identifier ["(" [ParameterList] ")"] 
-                   {"," Identifier ["(" [ParameterList] ")"]}
+                    ":" TypeIdentifier ["(" [ParameterList] ")"] 
+                   {"," TypeIdentifier ["(" [ParameterList] ")"]}
                   ]
                   "{" [Statements] "}";
+
+TypeIdentifier = Identifier {"." Identifier}; (* NameSpace.TypeName *)
 (*----------------------------------------------------------------------------*)
 

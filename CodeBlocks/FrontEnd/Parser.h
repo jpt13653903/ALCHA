@@ -65,12 +65,12 @@ class PARSER{
   AST_Expression* ParameterList();
 
   AST_Expression* Primary       ();
+  AST_Expression* CastEpr       (AST_Expression* Node);
+  AST_Expression* Cast          ();
   AST_Expression* Postfix       ();
   AST_Expression* Unary         ();
   AST_Expression* Range         ();
   AST_Expression* Reduction     ();
-  AST_Expression* FP_Cast       (AST_Expression* Node);
-  AST_Expression* Cast          ();
   AST_Expression* Concatenation ();
   AST_Expression* Replication   ();
   AST_Expression* Array         ();
@@ -86,6 +86,7 @@ class PARSER{
   AST_Expression* LogicalAND    ();
   AST_Expression* LogicalOR     ();
   AST_Expression* Expression    (); // AKA Conditional
+  AST_Expression* TypeIdentifier();
 
   AST_Assignment            * Initialiser    (byte* Identifier);
   AST_Definition::ARRAY     * ArrayDefinition();

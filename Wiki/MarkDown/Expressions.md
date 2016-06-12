@@ -19,6 +19,10 @@ Group | Operator | Function
 ----- | -------- | --------
 Group | `(...)`  | Grouping
 ||
+Cast | `A ' N`     | Casts `A` to an `N`-bit integer
+     | `A '(N, s)` | Casts `A` to an `N`-bit fixed-point in the range [0, s)
+     | `A '(N,-s)` | Casts `A` to an (`N`+1)-bit fixed-point in the range [-s, s)
+||
 Post-fix | `A++`  | Increment after use
          | `A--`  | Decrement after use
          | `A!`   | Factorial
@@ -42,10 +46,6 @@ Reduction | ` &A`        | AND-reduce
           | ` #A`        | XOR-reduce
           | `~#A`        | XNOR-reduce
           | ` !A`        | Logical compliment
-||
-Cast | `A ' N`     | Casts `A` to an `N`-bit integer
-     | `A '(N, s)` | Casts `A` to an `N`-bit fixed-point in the range [0, s)
-     | `A '(N,-s)` | Casts `A` to an (`N`+1)-bit fixed-point in the range [-s, s)
 ||
 Concatenate | `A:B:C` | Bit-wise concatenate
 ||
