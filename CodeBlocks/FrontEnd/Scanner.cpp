@@ -71,6 +71,11 @@ SCANNER::SCANNER(){
   Spaces.Insert("\xE2\x80\xA8", TOKEN::Newline); // U+2028: Line Separator
   Spaces.Insert("\xE2\x80\xA9", TOKEN::Newline); // U+2029: Paragraph Separator
 
+
+  Keywords.Insert("__FILE__"  , TOKEN::FILE     );
+  Keywords.Insert("__LINE__"  , TOKEN::LINE     );
+  Keywords.Insert("__DATE__"  , TOKEN::DATE     );
+  Keywords.Insert("__TIME__"  , TOKEN::TIME     );
   Keywords.Insert("set_target", TOKEN::SetTarget);
   Keywords.Insert("void"      , TOKEN::Void     );
   Keywords.Insert("auto"      , TOKEN::Auto     );
@@ -308,6 +313,9 @@ bool SCANNER::NonDigit(){
 //------------------------------------------------------------------------------
 
 bool SCANNER::Identifier(TOKEN* Token){
+ time_t Timer;
+ tm*    Time;
+
  if(!NonDigit()) return false;
 
  Token->Data << Buffer[Index++];
@@ -316,9 +324,54 @@ bool SCANNER::Identifier(TOKEN* Token){
   Token->Data << Buffer[Index++];
  }
  Token->Type = Keywords.Find(Token->Data.String());
- if(!Token->Type){
-  Token->ID   = IdentifierTree.GetID(Token->Data.String());
-  Token->Type = TOKEN::Identifier;
+
+ switch(Token->Type){
+  case 0:
+   Token->ID   = IdentifierTree.GetID(Token->Data.String());
+   Token->Type = TOKEN::Identifier;
+   break;
+
+  case TOKEN::FILE:
+   Token->Type = TOKEN::String;
+   Token->Data = Filename;
+   break;
+
+  case TOKEN::LINE:
+   Token->Type  = TOKEN::Literal;
+   Token->Value = Token->Line;
+   break;
+
+  case TOKEN::DATE:
+   Token->Type = TOKEN::String;
+   Token->Data.Clear();
+   time(&Timer);
+   Time = localtime(&Timer);
+   Token->Data << Time->tm_year + 1900;
+   Token->Data << "-";
+   if(Time->tm_mon < 9) Token->Data << "0";
+   Token->Data << Time->tm_mon + 1;
+   Token->Data << "-";
+   if(Time->tm_mday < 10) Token->Data << "0";
+   Token->Data << Time->tm_mday;
+   break;
+
+  case TOKEN::TIME:
+   Token->Type = TOKEN::String;
+   Token->Data.Clear();
+   time(&Timer);
+   Time = localtime(&Timer);
+   if(Time->tm_hour < 10) Token->Data << "0";
+   Token->Data << Time->tm_hour;
+   Token->Data << ":";
+   if(Time->tm_min < 10) Token->Data << "0";
+   Token->Data << Time->tm_min;
+   Token->Data << ":";
+   if(Time->tm_sec < 10) Token->Data << "0";
+   Token->Data << Time->tm_sec;
+   break;
+
+  default:
+   break;
  }
  return true;
 }

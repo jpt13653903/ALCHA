@@ -34,6 +34,13 @@ struct TOKEN{
   Space,   // These are only used in the scanner
   Newline,
 
+  // Special keywords ..........................................................
+  FILE,
+  LINE,
+  DATE,
+  TIME,
+  // __CLASS__ and __FUNCTION__ are implemented as special variables
+
   // Keywords ..................................................................
   SetTarget,
 

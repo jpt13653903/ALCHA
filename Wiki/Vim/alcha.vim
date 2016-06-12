@@ -28,7 +28,7 @@ syn match AlchaConstant "\<0o\(\o\|_\)*\(\.\(\o\|_\)*\)\?\([pP]_*\([+-]\?\(\d\|_
 syn match AlchaConstant "\<0x\(\x\|_\)*\(\.\(\x\|_\)*\)\?\([pP]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"   contains=AlchaPrefix,AlchaBinExp
 
 " Keywords
-syn match AlchaKeyword "\<\(target\|set_target\|void\|auto\|pin\|sig\|clk\|int\|rat\|float\|complex\|in\|out\|signed\|class\|if\|else\|for\|while\|loop\|switch\|case\|default\|import\|as\|return\|break\|continue\|rtl\|fsm\|hdl\)\>"
+syn match AlchaKeyword "\<\(__FILE__\|__LINE__\|__CLASS__\|__FUNCTION__\|__DATE__\|__TIME__\|target\|set_target\|void\|auto\|pin\|sig\|clk\|int\|rat\|float\|complex\|in\|out\|signed\|class\|if\|else\|for\|while\|loop\|switch\|case\|default\|import\|as\|return\|break\|continue\|rtl\|fsm\|hdl\)\>"
 
 " Strings
 syn match  AlchaEscape display contained "\\n\|\\t\|\\v\|\\b\|\\r\|\\f\|\\a\|\\\\\|\\?\|\\'\|\\\"\|\\x\x\{2}\|\\u\x\{4}\|\\U\x\{8}\|\\\o\{1,11}\|\\&\(\d\|\a\)\{-};"

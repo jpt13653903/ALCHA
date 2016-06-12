@@ -1,3 +1,11 @@
+print(__FILE__);
+print(__LINE__);
+print(__CLASS__);
+print(__FUNCTION__);
+print(__DATE__);
+print(__TIME__);
+
+/*
 x = 123.456e789;
 x = 1____2____3____.____4____5____6____e____7____8____9____;
 x = 123.456e+8;
@@ -65,7 +73,6 @@ set_target<
  Time = "1 ms"
 >;
 
-/*
 sig x;
 pin<location = "AB11"> y, z, w;
 

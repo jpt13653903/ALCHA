@@ -19,9 +19,11 @@ Group | Operator | Function
 ----- | -------- | --------
 Group | `(...)`  | Grouping
 ||
-Cast | `A ' N`     | Casts `A` to an `N`-bit integer
-     | `A '(N, s)` | Casts `A` to an `N`-bit fixed-point in the range [0, s)
-     | `A '(N,-s)` | Casts `A` to an (`N`+1)-bit fixed-point in the range [-s, s)
+Cast | `A ' N`       | Casts `A` to an `N`-bit integer
+     | `A '(N, s)`   | Casts `A` to an `N`-bit fixed-point in the range [0, s)
+     | `A '(N,-s)`   | Casts `A` to an (`N`+1)-bit fixed-point in the range [-s, s)
+     | `A 'Class     | Casts `A` to `Class`, provided `Class` is in A's inheritance graph
+     | `A '(N.Class) | Casts `A` to `Class`, where `Class` is in namespace `N`
 ||
 Post-fix | `A++`  | Increment after use
          | `A--`  | Decrement after use
