@@ -1,0 +1,168 @@
+Pin: USER_LED[1]
+  Standard : LVTTL
+  Number   : M2
+  Pair     : 
+  Direction: Output
+  Voltage  : 3.3 V
+  Current  : 8 mA
+  MinDelay : 0 ns
+  MaxDelay : 0 ns
+  Frequency: 0 MHz
+  Phase    : 0
+  Jitter   : 0 ns
+Pin: USER_LED[2]
+  Standard : LVTTL
+  Number   : N1
+  Pair     : 
+  Direction: Output
+  Voltage  : 3.3 V
+  Current  : 8 mA
+  MinDelay : 0 ns
+  MaxDelay : 0 ns
+  Frequency: 0 MHz
+  Phase    : 0
+  Jitter   : 0 ns
+Pin: USER_LED[3]
+  Standard : LVTTL
+  Number   : R2
+  Pair     : 
+  Direction: Output
+  Voltage  : 3.3 V
+  Current  : 8 mA
+  MinDelay : 0 ns
+  MaxDelay : 0 ns
+  Frequency: 0 MHz
+  Phase    : 0
+  Jitter   : 0 ns
+Pin: USER_LED[4]
+  Standard : LVTTL
+  Number   : T1
+  Pair     : 
+  Direction: Output
+  Voltage  : 3.3 V
+  Current  : 8 mA
+  MinDelay : 0 ns
+  MaxDelay : 0 ns
+  Frequency: 0 MHz
+  Phase    : 0
+  Jitter   : 0 ns
+Pin: USER_LED[5]
+  Standard : LVTTL
+  Number   : V4
+  Pair     : 
+  Direction: Output
+  Voltage  : 3.3 V
+  Current  : 8 mA
+  MinDelay : 0 ns
+  MaxDelay : 0 ns
+  Frequency: 0 MHz
+  Phase    : 0
+  Jitter   : 0 ns
+Pin: USER_LED[6]
+  Standard : LVTTL
+  Number   : T6
+  Pair     : 
+  Direction: Output
+  Voltage  : 3.3 V
+  Current  : 8 mA
+  MinDelay : 0 ns
+  MaxDelay : 0 ns
+  Frequency: 0 MHz
+  Phase    : 0
+  Jitter   : 0 ns
+Pin: USER_LED[7]
+  Standard : LVTTL
+  Number   : AB4
+  Pair     : 
+  Direction: Output
+  Voltage  : 3.3 V
+  Current  : 8 mA
+  MinDelay : 0 ns
+  MaxDelay : 0 ns
+  Frequency: 0 MHz
+  Phase    : 0
+  Jitter   : 0 ns
+Pin: USER_LED[8]
+  Standard : LVTTL
+  Number   : AA5
+  Pair     : 
+  Direction: Output
+  Voltage  : 3.3 V
+  Current  : 8 mA
+  MinDelay : 0 ns
+  MaxDelay : 0 ns
+  Frequency: 0 MHz
+  Phase    : 0
+  Jitter   : 0 ns
+Pin: SW[1]
+  Standard : LVCMOS
+  Number   : M1
+  Pair     : 
+  Direction: Input
+  Voltage  : 3.3 V
+  Current  : 0 mA
+  MinDelay : 0 ns
+  MaxDelay : 0 ns
+  Frequency: 0 MHz
+  Phase    : 0
+  Jitter   : 0 ns
+Pin: SW[2]
+  Standard : LVCMOS
+  Number   : R1
+  Pair     : 
+  Direction: Input
+  Voltage  : 3.3 V
+  Current  : 0 mA
+  MinDelay : 0 ns
+  MaxDelay : 0 ns
+  Frequency: 0 MHz
+  Phase    : 0
+  Jitter   : 0 ns
+Pin: SW[3]
+  Standard : LVCMOS
+  Number   : V5
+  Pair     : 
+  Direction: Input
+  Voltage  : 3.3 V
+  Current  : 0 mA
+  MinDelay : 0 ns
+  MaxDelay : 0 ns
+  Frequency: 0 MHz
+  Phase    : 0
+  Jitter   : 0 ns
+Pin: SW[4]
+  Standard : LVCMOS
+  Number   : AB5
+  Pair     : 
+  Direction: Input
+  Voltage  : 3.3 V
+  Current  : 0 mA
+  MinDelay : 0 ns
+  MaxDelay : 0 ns
+  Frequency: 0 MHz
+  Phase    : 0
+  Jitter   : 0 ns
+Pin: SYS_CLK
+  Standard : LVCMOS
+  Number   : N14
+  Pair     : 
+  Direction: Input
+  Voltage  : 3.3 V
+  Current  : 0 mA
+  MinDelay : 0 ns
+  MaxDelay : 0 ns
+  Frequency: 50 MHz
+  Phase    : 0
+  Jitter   : 0 ns
+Pin: USER_CLK
+  Standard : LVCMOS
+  Number   : N15
+  Pair     : 
+  Direction: Input
+  Voltage  : 3.3 V
+  Current  : 0 mA
+  MinDelay : 0 ns
+  MaxDelay : 0 ns
+  Frequency: 0 MHz
+  Phase    : 0
+  Jitter   : 0 ns

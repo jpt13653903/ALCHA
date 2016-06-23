@@ -15,6 +15,15 @@ Todo:
 --------------------------------------------------------------------------------
 
 Notes...
+- Abstract the time between signals so that Alcha automatically generate the
+  counters, etc. for something like the timing generator.
+- For compiler: look at MD5 sum, not the modification date.
+- For the PhD: take the case study design and break it up into components.  
+  Fixed-point operations, streaming interfaces (with and without back-pressure), 
+  register / control bus (i.e. memory-mapped PIO), clock domain crossing, etc...  
+  Count the lines if code of each type of primitive, and how much it would save
+  if the language provided built-in support...
+
 - A class is a collection of instructions and members.  So is a namespace, but 
   a namespace is the instance, whereas a class must still be instanced...
 - Strip out all the definitions and leave the AST
