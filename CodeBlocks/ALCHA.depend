@@ -40,7 +40,7 @@
 	"Tree.h"
 	"MyString.h"
 
-1465754692 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\parser.cpp
+1465755051 source:c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\parser.cpp
 	"Parser.h"
 
 1465754709 c:\jpt\projects\15\1509 - alcha\codeblocks\frontend\parser.h
@@ -97,7 +97,7 @@
 	"Scanner.h"
 	"CharacterNames.h"
 
-1465731861 source:c:\jpt\projects\15\1509 - alcha\codeblocks\main.cpp
+1468135818 source:c:\jpt\projects\15\1509 - alcha\codeblocks\main.cpp
 	"main.h"
 
 1455297798 c:\jpt\projects\15\1509 - alcha\codeblocks\main.h
@@ -366,8 +366,8 @@
 	"Number.h"
 	"SymbolTree.h"
 
-1459781416 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\symboltree.h
-	"Object.h"
+1468140711 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\symboltree.h
+	"Reference.h"
 
 1459774597 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\scope.cpp
 	"Scope.h"
@@ -376,27 +376,26 @@
 	"Object.h"
 	"SymbolTree.h"
 
-1465747569 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\pin.h
-	"Net.h"
+1468142265 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\pin.h
+	"Reference.h"
 	"MyString.h"
 
-1459781428 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\symboltree.cpp
+1468140711 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\symboltree.cpp
 	"SymbolTree.h"
 
-1459781124 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\pin.cpp
+1468142333 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\pin.cpp
 	"Pin.h"
 
-1459781797 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\object.cpp
+1468140550 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\object.cpp
 	"Object.h"
 
-1465747548 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\object.h
-	"AST.h"
+1468142361 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\object.h
 
 1459777818 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\clock.cpp
 	"Clock.h"
 
-1459781124 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\clock.h
-	"Object.h"
+1468142025 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\clock.h
+	"Net.h"
 
 1459781124 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\signal.h
 	"Object.h"
@@ -420,12 +419,19 @@
 1465747582 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\net.cpp
 	"Net.h"
 
-1465747632 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\net.h
-	"Object.h"
+1468142256 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\net.h
+	"Reference.h"
 
 1465754835 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_alias.cpp
 	"AST_Alias.h"
 
 1465754773 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\ast\ast_alias.h
 	"AST_Expression.h"
+
+1468140508 source:c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\reference.cpp
+	"Reference.h"
+
+1468142328 c:\jpt\projects\15\1509 - alcha\codeblocks\datastructures\symboltable\reference.h
+	"AST.h"
+	"Object.h"
 

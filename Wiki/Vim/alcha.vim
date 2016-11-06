@@ -38,6 +38,7 @@ syn region AlchaString start=/"/ skip=/\\"/ end=/"/ contains=@Spell,AlchaEscape
 syn match  AlchaComment "\/\/.*" contains=@Spell
 syn region AlchaComment       start=/\/\*/ end=/\*\// contains=@Spell
 syn region AlchaNestedComment start=/\/+/  end=/+\//  contains=@Spell,AlchaNestedComment
+syn match  AlchaToDoComment "!!.*" contains=@Spell
 
 " Link the types
 hi def link AlchaOperator      Operator
@@ -50,6 +51,7 @@ hi def link AlchaEscape        SpecialChar
 hi def link AlchaString        String
 hi def link AlchaComment       Comment
 hi def link AlchaNestedComment Comment
+hi def link AlchaToDoComment   Todo
 
 " Set the syntax type
 let b:current_syntax = "alcha"

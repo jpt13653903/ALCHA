@@ -22,16 +22,16 @@
 #define Net_h
 //------------------------------------------------------------------------------
 
-#include "Object.h"
+#include "Reference.h"
 //------------------------------------------------------------------------------
 
-struct NET: public OBJECT{
+struct NET: public REFERENCE{
  double Setup; // External setup requirement
  double Hold;  // External hold requirement
  double Delay; // External propagation delay
 
           NET();
- virtual ~NET(); // PIN inherits from NET
+ virtual ~NET();
 
  virtual void Display();
 };

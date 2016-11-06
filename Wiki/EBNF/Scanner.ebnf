@@ -1,4 +1,5 @@
-WhiteSpace = Space | Newline | LineComment | BlockComment;
+WhiteSpace = Space | Newline | Comment;
+Comment    = LineComment | BlockComment | NestedComment | ToDoComment;
 
 Space   = ? U+0020 ? | ? U+0009 ? | ? U+00A0 ? | ? U+1680 ? | ? U+180E ? 
         | ? U+2000 ? | ? U+2001 ? | ? U+2002 ? | ? U+2003 ? | ? U+2004 ? 
@@ -11,6 +12,7 @@ Newline = ? U+0A U+0D ? | ? U+0D U+0A ? | ? U+0A ? | ? U+0D ? | ? U+0B ?
 LineComment   = "//" {? Any byte sequence ? -Newline} Newline;
 BlockComment  = "/*" {? Any byte sequence ? -"*/"} "*/";
 NestedComment = "/+" {NestedComment | (? Any byte sequence ? -"+/")} "+/";
+ToDoComment   = "!!" {? Any byte sequence ? -Newline} Newline;
 Byte          = ? Any input byte that does not belong to anything else ?;
 (*----------------------------------------------------------------------------*)
 

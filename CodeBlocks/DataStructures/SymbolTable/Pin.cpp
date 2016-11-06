@@ -21,26 +21,21 @@
 #include "Pin.h"
 //------------------------------------------------------------------------------
 
-//PIN::PIN(const byte* Name): OBJECT(otPin, Name){
-// ArrayDepth = 0;
-// Indices    = 0;
-//
-// Standard  = "LVCMOS";
-// Voltage   = 3.3;
-// Current   = 0.0;
-//
-// Direction = Bidirectional;
-//
-// MinDelay  = 0.0;
-// MaxDelay  = 0.0;
-//
-// Frequency = 0.0;
-// Phase     = 0.0;
-// Jitter    = 0.0;
-//}
+PIN::PIN(): REFERENCE(REFERENCE::Pin){
+ /// \todo Initialise all the attributes
+
+ Enable = 0;
+ Driver = 0;
+}
 //------------------------------------------------------------------------------
 
-//PIN::~PIN(){
-// if(Indices) delete[] Indices;
-//}
+PIN::~PIN(){
+ /// \todo Decrement the Enable and Driver reference counters, deleting them
+ ///       as required.
+}
+//------------------------------------------------------------------------------
+
+void PIN::Display(){
+ /// \todo Display the Pin, for debug purposes
+}
 //------------------------------------------------------------------------------

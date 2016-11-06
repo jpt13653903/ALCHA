@@ -18,14 +18,23 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Object.h"
+#include "Reference.h"
 //------------------------------------------------------------------------------
 
-OBJECT::OBJECT(TYPE Type){
+REFERENCE::REFERENCE(TYPE Type){
  this->Type = Type;
+
+ Attributes.OnDuplicate = AttributesOnDuplicate;
 }
 //------------------------------------------------------------------------------
 
-OBJECT::~OBJECT(){
+REFERENCE::~REFERENCE(){
+ Attributes.Action(AttributesDeleteData);
+}
+//------------------------------------------------------------------------------
+
+void REFERENCE::Attribute_Add(const byte* Name, STRING* Value){
+ STRING* ThisValue = new STRING(*Value);
+ Attributes.Insert(Name, ThisValue);
 }
 //------------------------------------------------------------------------------

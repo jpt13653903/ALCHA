@@ -1,6 +1,6 @@
 int      x = 5;
-rat      y = 7/3;
-float'64 z = Math.sin(x * y);
+//rat      y = 7/3;
+//float'64 z = sin(x * y);
 
-print(z);
+print(x);
 

@@ -18,14 +18,30 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
+#ifndef Reference_h
+#define Reference_h
+//------------------------------------------------------------------------------
+
+#include "AST.h"
 #include "Object.h"
 //------------------------------------------------------------------------------
 
-OBJECT::OBJECT(TYPE Type){
- this->Type = Type;
-}
+struct REFERENCE{ // Base class for the symbol table
+ enum TYPE{
+  Pin, Net, Clk,           // Physical pins, nets and clocks
+  Int, Rat, Float, Complex // Scripting variables
+ } Type;
+
+ DICTIONARY Attributes; // Makes use of AST.h AttributeXXX functions
+ void       Attribute_Add(const byte* Name, STRING* Value);
+
+          REFERENCE(TYPE Type);
+ virtual ~REFERENCE();
+
+ virtual void Display() = 0;
+};
 //------------------------------------------------------------------------------
 
-OBJECT::~OBJECT(){
-}
+#endif
 //------------------------------------------------------------------------------
+

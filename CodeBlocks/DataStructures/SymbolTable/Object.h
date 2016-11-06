@@ -22,28 +22,21 @@
 #define Object_h
 //------------------------------------------------------------------------------
 
-#include "AST.h"
-//------------------------------------------------------------------------------
-
 struct OBJECT{ // Base class for the symbol table
  enum TYPE{
-  Target,                   // The target object
-  Pin, Net, Clk,            // Physical pins, nets and clocks
-  Int, Rat, Float, Complex, // Scripting variables
-  Array,                    // Array of...
-  Class,                    // Class type
-  ClassInstance,            // Class instance
-  Function,                 // Actual function, with an AST as a body
-  FuncPtr,                  // Function pointer
-  Namespace                 // Namespace of an imported file
+  Target,
+
+  // Constants (stores a value)
+  Int, Rat, Float, Complex,
+
+  // Others
+  Array, // An array of references
+  Expression,
+  Namespace,
+  ClassDefinition,
+  ClassInstance,
+  Function // The actual function, with parameter definition and body AST
  } Type;
-
- // The object name (or reference) is stored in the symbol table, not as
- // part of the object.
- enum{Output, Input, Bidirectional} Direction;
-
- DICTIONARY Attributes; // Makes use of AST.h AttributeXXX functions
- void       Attribute_Add(const byte* Name, STRING* Value);
 
           OBJECT(TYPE Type);
  virtual ~OBJECT();

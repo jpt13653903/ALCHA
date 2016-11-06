@@ -21,12 +21,12 @@
 #include "SymbolTree.h"
 //------------------------------------------------------------------------------
 
-SYMBOL_TREE::NODE::NODE(const byte* Name, OBJECT* Object){
+SYMBOL_TREE::NODE::NODE(const byte* Name, REFERENCE* Reference){
  Red  = true;
  Left = Right = 0;
 
- this->Name   = Name;
- this->Object = Object;
+ this->Name      = Name;
+ this->Reference = Reference;
 }
 //------------------------------------------------------------------------------
 
@@ -79,9 +79,9 @@ SYMBOL_TREE::NODE* SYMBOL_TREE::RotateRight(NODE* Node){
 }
 //------------------------------------------------------------------------------
 
-bool SYMBOL_TREE::Insert(const byte* Name, OBJECT* Object){
+bool SYMBOL_TREE::Insert(const byte* Name, REFERENCE* Reference){
  Duplicate = false;
- Root = Insert(Root, Name, Object);
+ Root      = Insert(Root, Name, Reference);
  return !Duplicate;
 }
 //------------------------------------------------------------------------------
@@ -89,15 +89,15 @@ bool SYMBOL_TREE::Insert(const byte* Name, OBJECT* Object){
 SYMBOL_TREE::NODE* SYMBOL_TREE::Insert(
  NODE*       Node,
  const byte* Name,
- OBJECT*     Object
+ REFERENCE*  Reference
 ){
- if(!Node) return new NODE(Name, Object);
+ if(!Node) return new NODE(Name, Reference);
 
  if(Name < Node->Name){
-  Node->Left = Insert(Node->Left, Name, Object);
+  Node->Left = Insert(Node->Left, Name, Reference);
 
  }else if(Name > Node->Name){
-  Node->Right = Insert(Node->Right, Name, Object);
+  Node->Right = Insert(Node->Right, Name, Reference);
 
  }else{ // Duplicate
   Duplicate = true;
@@ -112,13 +112,13 @@ SYMBOL_TREE::NODE* SYMBOL_TREE::Insert(
 }
 //------------------------------------------------------------------------------
 
-OBJECT* SYMBOL_TREE::Find(const byte* Name){
+REFERENCE* SYMBOL_TREE::Find(const byte* Name){
  NODE* Node = Root;
 
  while(Node){
        if(Name < Node->Name) Node = Node->Left;
   else if(Name > Node->Name) Node = Node->Right;
-  else                       return Node->Object;
+  else                       return Node->Reference;
  }
  return 0;
 }

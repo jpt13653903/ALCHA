@@ -22,11 +22,11 @@
 #define Pin_h
 //------------------------------------------------------------------------------
 
-#include "Net.h"
 #include "MyString.h"
+#include "Reference.h"
 //------------------------------------------------------------------------------
 
-struct PIN: public NET{
+struct PIN: public REFERENCE{
   STRING Standard;  // The logic standard: CMOS, TTL, HSUL, etc.
   STRING Number;    // Physical pin number
   STRING Pair;      // Physical pin number of negative of the differential pair
@@ -40,6 +40,10 @@ struct PIN: public NET{
   double Frequency; // Input frequency of a clock pin [Hz] (0 if not clock pin)
   double Phase;     // Clock phase [degrees]
   double Jitter;    // Clock peak-to-peak jitter [s]
+
+  // These are references to expressions
+  OBJECT* Enable;
+  OBJECT* Driver;
 
   PIN();
  ~PIN();

@@ -104,6 +104,8 @@
 		<Unit filename="DataStructures/SymbolTable/Object.h" />
 		<Unit filename="DataStructures/SymbolTable/Pin.cpp" />
 		<Unit filename="DataStructures/SymbolTable/Pin.h" />
+		<Unit filename="DataStructures/SymbolTable/Reference.cpp" />
+		<Unit filename="DataStructures/SymbolTable/Reference.h" />
 		<Unit filename="DataStructures/SymbolTable/Scope.cpp" />
 		<Unit filename="DataStructures/SymbolTable/Scope.h" />
 		<Unit filename="DataStructures/SymbolTable/SymbolTree.cpp" />

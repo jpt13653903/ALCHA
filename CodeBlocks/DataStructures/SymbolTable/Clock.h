@@ -22,10 +22,10 @@
 #define Clock_h
 //------------------------------------------------------------------------------
 
-#include "Object.h"
+#include "Net.h"
 //------------------------------------------------------------------------------
 
-struct CLOCK: public OBJECT{
+struct CLOCK: public NET{
   double Frequency; // Input frequency of a clock pin [Hz] (0 if not clock pin)
   double Tolerance; // Tolerance of requested frequency (real f = [f-t, f+t])
   double Phase;     // Clock phase [degrees]
