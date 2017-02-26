@@ -29,14 +29,14 @@ Postfix = Cast {
            "!"                       (* Factorial *)
           };
 
-Cast       = Primary [CastEpr];
-CastEpr    = "'" (
-              Identifier | Literal |
-              ("(" Expression [(",") Expression] ")")
-             );
+Cast    = Primary [CastEpr];
+CastEpr = "'" (
+           Identifier | Literal |
+           ("(" Expression [(",") Expression] ")")
+          );
 
 Primary = Identifier | Literal | String | ("(" Expression ")");
 
-ParameterList = Expression {"," Expression};
+ParameterList = [Identifier "="] Expression {"," [Identifier "="] Expression};
 (*----------------------------------------------------------------------------*)
 

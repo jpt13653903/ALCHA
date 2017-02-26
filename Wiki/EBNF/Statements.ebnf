@@ -1,30 +1,21 @@
 StatementBlock = Statement | ("{" [Statements] "}");
 
-Statements = Statement {Statement};
-Statement  = TargetDefinition | ClassDefinition | Definition 
-           | Alias | Import | Group
-           | IfStatement | ForLoop | WhileLoop  | LoopLoop | Switch | Jump
-           | RTL | FSM | HDL | Other | ";";
-
 Alias  = "alias" Identifier "=" Expression ";";
 Import = "import" String ["as" Identifier];
 Group  = "group" [AttributeList] [Identifier] "{" [Statements] "}";
 
-(* The result from "Array" is checked for syntactic validity before
+(* The result from "Postfix" or "Array" is checked for syntactic validity before
    use as a name-space, class name or assignment target. *)
-Other = Array (
-         (";"                                      ) | (* Function call   *)
-         (".{" [Statements] "}"                    ) | (* Name-space push *)
-         ([AttributeList] IdentifierList           ) | (* Class instance  *)
-         (AssignmentOperator Expression ("," | ";"))   (* Assignment      *)
-        );
+FunctionCall  = Postfix ("," | ";");
+NamespacePush = Postfix ".{" [Statements] "}";
+Assignment    = Array AssignmentOperator Expression ("," | ";");
+
 AssignmentOperator = "="  | ":=" | "~=" | "+=" | "-="  | "*="  | "/=" | "^="
                    | "%=" | "&=" | "|=" | "#=" | "<<=" | ">>=" ; 
 
-IfStatement = "if" "(" Expression() ")" StatementBlock ["else" StatementBlock];
+IfStatement = "if" "(" Expression ")" StatementBlock ["else" StatementBlock];
               
-ForLoop = "for" "(" Identifier "in" Array ")" 
-          StatementBlock;
+ForLoop = "for" "(" Identifier "in" Array ")" StatementBlock;
 
 (* For while loops, Expression must evaluate to a boolean *)
 WhileLoop = "while" "(" Expression ")" StatementBlock);
@@ -32,9 +23,10 @@ WhileLoop = "while" "(" Expression ")" StatementBlock);
 (* For loop loops, Expression must evaluate to an integer *)
 LoopLoop = "loop" ["(" Expression ")"] StatementBlock);
 
+(* For case statements, Expression must evaluate to a constant *)
 Switch = "switch" "(" Expression ")" "{" 
-          {"case" "(" ParameterList ")" StatementBlock}
-          ["default"                    StatementBlock]
+          {"case" "(" Expression {"," Expression} ")" StatementBlock}
+          ["default"                                  StatementBlock]
          "}";
 
 (* For "break" and "continue", the expression indicates the number of levels,

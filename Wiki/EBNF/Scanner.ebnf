@@ -10,10 +10,10 @@ Newline = ? U+0A U+0D ? | ? U+0D U+0A ? | ? U+0A ? | ? U+0D ? | ? U+0B ?
         | ? U+0C ? | ? U+85 ? | ? U+2028 ? | ? U+2029 ? ;
        
 LineComment   = "//" {? Any byte sequence ? -Newline} Newline;
+ToDoComment   = "!!" {? Any byte sequence ? -Newline} Newline;
 BlockComment  = "/*" {? Any byte sequence ? -"*/"} "*/";
 NestedComment = "/+" {NestedComment | (? Any byte sequence ? -"+/")} "+/";
-ToDoComment   = "!!" {? Any byte sequence ? -Newline} Newline;
-Byte          = ? Any input byte that does not belong to anything else ?;
+Byte          = ? Any 8-bit unit from the input stream ?;
 (*----------------------------------------------------------------------------*)
 
 Token      = String | Literal | Keyword | Identifier | Operator;
@@ -21,13 +21,11 @@ Token      = String | Literal | Keyword | Identifier | Operator;
 Special    = "__FILE__"  | "__LINE__" | "__DATE__" | "__TIME__" 
            | "__CLASS__" | "__FUNCTION__" | "__NAMESPACE__";
 
-Keyword    = "set_target"
-           | "void"   | "auto" 
+Keyword    = "void"   | "auto" 
            | "pin"    | "net"  | "clk" 
-           | "byte"   | "char" | "int" | "rat" | "float" | "complex" 
+           | "byte"   | "char" | "num"
            | "class"  | "enum" | "group" | "alias"
-           | "in"     | "out"
-           | "if"     | "else" | "for"    | "while" | "loop" 
+           | "if"     | "else" | "for"   | "while" | "loop" 
            | "switch" | "case" | "default" 
            | "import" | "as" 
            | "return" | "break"  | "continue"
@@ -41,11 +39,12 @@ Operator   = "++" | "--"  | "'"   | "->" | "@"  | "."  | ".{" | "&"  | "~&"
            | "#=" | "<<=" | ">>=" | "("  | ")"  | "["  | "]"  | "{"  | "}"  
            | ","  | ";";
 
-Literal        = ("0b" Binary) | ("0o" Octal) | ("0x" Hexadecimal) | Decimal;
+Literal        = (("0b" Binary) | ("0o" Octal) | ("0x" Hexadecimal) | Decimal)
+                 [Exponent] ["i" | "j"];
 
 Identifier     = (NonDigit {D | NonDigit}) -Keyword; 
 
-String         = '"' {EscapeSequence | (Byte - '"')} '"' [String];
+String         = '"' {(Byte -'"' -"\") | EscapeSequence} '"' [String];
 
 EscapeSequence = "\n" | "\t" | "\v" | "\b" | "\r" | "\f" 
                | "\a" | "\\" | "\?" | "\'" | '\"' 
@@ -53,13 +52,12 @@ EscapeSequence = "\n" | "\t" | "\v" | "\b" | "\r" | "\f"
                | ("\" O {O}) 
                | ("\&" ? Any of the HTML-5 character names ? ";");
 
-(* Either the left of the ".", or the right of the "." must have a digit *)
-(* Within literals, the "_" character is ignored *)
-Binary      = {B} ["." {B}] [("p" | "P"            ) Exponent] ["i" | "j"];
-Octal       = {O} ["." {O}] [("p" | "P"            ) Exponent] ["i" | "j"];
-Hexadecimal = {H} ["." {H}] [("p" | "P"            ) Exponent] ["i" | "j"];
-Decimal     = {D} ["." {D}] [("p" | "P" | "e" | "E") Exponent] ["i" | "j"];
-Exponent    = ["-" | "+"] D {D};
+Binary      = (B {B | "_"} ["." {B | "_"}]) | ("." B {B | "_"});
+Octal       = (O {O | "_"} ["." {O | "_"}]) | ("." O {O | "_"});
+Decimal     = (D {D | "_"} ["." {D | "_"}]) | ("." D {D | "_"});
+Hexadecimal = (H {H | "_"} ["." {H | "_"}]) | ("." H {H | "_"});
+
+Exponent    = ("p" | "P" | "e" | "E") ["-" | "+"] D {D};
 (*----------------------------------------------------------------------------*)
 
 B = "0" | "1";
@@ -68,7 +66,7 @@ D = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
 H = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" 
   | "a" | "b" | "c" | "d" | "e" | "f" | "A" | "B" | "C" | "D" | "E" | "F"; 
 
-NonDigit = ?"a".."z"? | ?"A".."Z"? | "_" 
+NonDigit = ?"a".."z"? | ?"A".."Z"? | "_"
          | (? Any Unicode >= U+80 ? -Space -Newline);
 (*----------------------------------------------------------------------------*)
 

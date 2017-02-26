@@ -1,39 +1,41 @@
-Module = [Statements];
+Source = [Statements];
 
-TargetDefinition = "set_target" AttributeList ";";
-Definition       = ["in" | "out"]
-                   (BaseType | "void" | "auto")
-                   [CastEpr] [AttributeList] IdentifierList;
+Statements = Statement {Statement};
+Statement  = Definition | ClassDefinition 
+           | Alias | Import | Group
+           | IfStatement | ForLoop | WhileLoop  | LoopLoop | Switch | Jump
+           | FunctionCall | NamespacePush | Assignment
+           | RTL | FSM | HDL | ";";
 
-BaseType = "pin"  | "net" | "clk" 
-         | "byte" | "char"
-         | "int"  | "rat" | "float" | "complex"
-         | "func" ;
-
-IdentifierList = Identifier {ArrayDefinition} (
-                  ("(" [DefParameterList] ")" "{" [Statements] "}"   ) |
-                  (
-                   [Initialiser] 
-                   {"," Identifier {ArrayDefinition} [Initialiser]} ";"
-                  )
-                 );
-ArrayDefinition  = "[" [Expression] "]";
-Initialiser      = ("=" | ":=") Expression;
-
-DefParameterList = DefParameter {"," DefParameter};
-DefParameter     = [BaseType | TypeIdentifier] 
-                   Identifier {"[" "]"};
-
-AttributeList       = "<" AttributeAssignment {, AttributeAssignment} ">";
-AttributeAssignment = Identifier "=" String;
+Definition = (BaseType | TypeIdentifier | "void" | "auto")
+             [CastEpr] [AttributeList] IdentifierList;
 
 ClassDefinition = "class" [AttributeList] Identifier
                   ["("[DefParameterList]")"] 
                   [
-                    ":" TypeIdentifier ["(" [ParameterList] ")"] 
+                    ":" TypeIdentifier ["(" [ParameterList] ")"]
                    {"," TypeIdentifier ["(" [ParameterList] ")"]}
                   ]
                   "{" [Statements] "}";
+
+BaseType = "pin"  | "net"  | "clk" (* Synthesisable types *)
+         | "byte" | "char" | "num" (* Scripting types     *)
+         | "func" ;                (* Function pointer    *)
+
+IdentifierList = FunctionDef | (VariableDef {"," VariableDef} ";");
+
+VariableDef    = Identifier {ArrayDefinition} [Initialiser];
+FunctionDef    = Identifier {ArrayDefinition} "(" [DefParameterList] ")" 
+                 "{" [Statements] "}";
+
+ArrayDefinition  = "[" [Expression] "]";
+Initialiser      = ("=" | ":=") Expression;
+
+DefParameterList = DefParameter {"," DefParameter};
+DefParameter     = [BaseType | TypeIdentifier] Identifier {"[" "]"} [Initialiser];
+
+AttributeList       = "<" AttributeAssignment {, AttributeAssignment} ">";
+AttributeAssignment = Identifier "=" Primary;
 
 EnumDefinition = "enum" Identifier "{" Identifier {"," Identifier} "}";
 
