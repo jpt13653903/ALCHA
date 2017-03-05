@@ -17,81 +17,79 @@ ALCHA supports two variants of clock-enable type clocks.  The first uses an auto
 
 Some examples of clock definitions are presented below:
 
-~~~C++
-pin<frequency =  "50 MHz"                                                        > BaseClock;
-clk<frequency = "133 MHz", tolerance = "-5, 0", type = "PLL"   , base = BaseClock> DDRClock;
-clk<frequency =  "10 MHz",                      type = "PLL"   , base = BaseClock> CPUClock;
-clk<frequency =   "1 Hz" ,                      type = "Enable", base = CPUClock > RTC;
-clk<frequency =   "5 MHz",                      type = "Enable", base = CPUClock > UserClk;
-clk<frequency =  "10 MHz",                      type = "Internal"                > CPUGated;
+    :::C++
+    pin<frequency =  "50 MHz"                                                        > BaseClock;
+    clk<frequency = "133 MHz", tolerance = "-5, 0", type = "PLL"   , base = BaseClock> DDRClock;
+    clk<frequency =  "10 MHz",                      type = "PLL"   , base = BaseClock> CPUClock;
+    clk<frequency =   "1 Hz" ,                      type = "Enable", base = CPUClock > RTC;
+    clk<frequency =   "5 MHz",                      type = "Enable", base = CPUClock > UserClk;
+    clk<frequency =  "10 MHz",                      type = "Internal"                > CPUGated;
 
-// Define the gated clock
-net CPUGate; // Controled externally
-CPUGated = CPUGate & CPUClock;
+    // Define the gated clock
+    net CPUGate; // Controled externally
+    CPUGated = CPUGate & CPUClock;
 
-// Define a user-defined synchronous clock-enble type clock
-net'5 UserClk_Limit; // Controled externally
-net'5 UserClk_Counter;
-UserClk = (UserClk_Counter == UserClk_Limit);
-rtl(CPUClock){
- if(UserClk) UserClk_Counter  = 0;
- else        UserClk_Counter += 1;
-}
+    // Define a user-defined synchronous clock-enble type clock
+    net'5 UserClk_Limit; // Controled externally
+    net'5 UserClk_Counter;
+    UserClk = (UserClk_Counter == UserClk_Limit);
+    rtl(CPUClock){
+     if(UserClk) UserClk_Counter  = 0;
+     else        UserClk_Counter += 1;
+    }
 
-// Use the RTC clock in a state machine
-net'6 Seconds;
-fsm(RTC){
- loop{
-  Seconds++;
- }
-}
-~~~
+    // Use the RTC clock in a state machine
+    net'6 Seconds;
+    fsm(RTC){
+     loop{
+      Seconds++;
+     }
+    }
 
 And the equivalent Verilog:
 
-~~~Verilog
-wire DDRClock;
-wire CPUClock;
-// Vendor-specific PLL instances to generate the two PLL clocks
+    :::Verilog
+    wire DDRClock;
+    wire CPUClock;
+    // Vendor-specific PLL instances to generate the two PLL clocks
 
-// Auto-generate the RTC enable-type clock
-reg [23:0]RTC_Counter;
-reg       RTC = (RTC_Counter == 24'd_9_999_999);
-always @(posedge CPUClock) begin
- if(RTC) RTC_Counter <= 0;
- else    RTC_Counter <= RTC_Counter + 1'b1;
-end
+    // Auto-generate the RTC enable-type clock
+    reg [23:0]RTC_Counter;
+    reg       RTC = (RTC_Counter == 24'd_9_999_999);
+    always @(posedge CPUClock) begin
+     if(RTC) RTC_Counter <= 0;
+     else    RTC_Counter <= RTC_Counter + 1'b1;
+    end
 
-// Implement the combinational circuit for the gated clock
-wire  CPUGate;
-wire tCPUGated = CPUGate & CPUClock;
+    // Implement the combinational circuit for the gated clock
+    wire  CPUGate;
+    wire tCPUGated = CPUGate & CPUClock;
 
-// Register the gated clock to remove ripples
-reg CPUGated;
-always @(posedge CPUClock) CPUGated <= tCPUGated;
+    // Register the gated clock to remove ripples
+    reg CPUGated;
+    always @(posedge CPUClock) CPUGated <= tCPUGated;
 
-// Implement the UserClk code
-wire [4:0]UserClk_Limit;
-reg  [4:0]UserClk_Counter;
-wire      UserClk = (UserClk_Counter == UserClk_Limit);
-always @(posedge CPUClock) begin
- if(UserClk) UserClk_Counter <= 0;
- else        UserClk_Counter <= UserClk_Counter + 1'b1;
-end
+    // Implement the UserClk code
+    wire [4:0]UserClk_Limit;
+    reg  [4:0]UserClk_Counter;
+    wire      UserClk = (UserClk_Counter == UserClk_Limit);
+    always @(posedge CPUClock) begin
+     if(UserClk) UserClk_Counter <= 0;
+     else        UserClk_Counter <= UserClk_Counter + 1'b1;
+    end
 
-// Implement the state-machine
-reg tReset;
-always @(posedge CPUClock) begin
- tReset <= Reset; // Localise the reset
+    // Implement the state-machine
+    reg tReset;
+    always @(posedge CPUClock) begin
+     tReset <= Reset; // Localise the reset
 
- if(tReset) begin
-  // Reset signals here
+     if(tReset) begin
+      // Reset signals here
 
- end else if(RTC) begin
-  Seconds <= Seconds + 1'b1;
- end
-end
-~~~
+     end else if(RTC) begin
+      Seconds <= Seconds + 1'b1;
+     end
+    end
 
 ### Global Clock Networks
 Most modern FPGAs contain dedicated high-fanout, low-skew clock tree networks. ALCHA automatically assigns clocks to the available clock networks. If there are more clocks defined than clock networks available, the higher-frequency clocks take priority.  This automated global clock network assignment can be bypassed by explicitly specifying the `global` attribute.
@@ -109,64 +107,61 @@ Attribute   | Default  | Description
 ### Built-in Properties
 All clocks (including clock pins) have a `frequency` member (of type `num`) that can be used by scripts to calculate clock-frequency dependent parameters.  A button denouncer might, for instance, be defined as follows:
 
-~~~C++
-net Debouncer(clk Clk, net Input){
- num Count = Clk.Frequency * 20e-3 - 1; // 20 ms dead-time
- num N     = ceil(log2(Count));
+    :::C++
+    net Debouncer(clk Clk, net Input){
+     num Count = Clk.Frequency * 20e-3 - 1; // 20 ms dead-time
+     num N     = ceil(log2(Count));
 
- net'N Counter;
+     net'N Counter;
 
- rtl(Clk){
-  if(&Counter){
-   if(Debouncer != Input){
-    Debouncer = Input;
-    Counter   = 0;
-   }
-  }else{
-   Counter++;
-  }
- }
-}
-~~~
+     rtl(Clk){
+      if(&Counter){
+       if(Debouncer != Input){
+        Debouncer = Input;
+        Counter   = 0;
+       }
+      }else{
+       Counter++;
+      }
+     }
+    }
 
 ## Register Transfer Level
 Most HDL designers are familiar with RTL design.  In ALCHA, the `rtl` construct can be used to describe RTL logic.  It takes one parameter: the clock, which must be a clock type.  All statements within an `rtl` construct are non-blocking.  Below is an example:
 
-~~~C++
-pin<frequency = "50 MHz"> Clk;
-pin                       Reset;
+    :::C++
+    pin<frequency = "50 MHz"> Clk;
+    pin                       Reset;
 
-net A, B;
+    net A, B;
 
-net'27 Count;
+    net'27 Count;
 
-rtl(Clk){
- if(Reset) Count = 0;
- else      Count++;
+    rtl(Clk){
+     if(Reset) Count = 0;
+     else      Count++;
 
- if(&Count){
-  A = B;
-  B = A;
- }
-}
-~~~
+     if(&Count){
+      A = B;
+      B = A;
+     }
+    }
 
 The equivalent Verlog of the above ALCHA is:
 
-~~~Verilog
-reg       A, B;
-reg [26:0]Count;
+    :::Verilog
+    reg       A, B;
+    reg [26:0]Count;
 
-always @(posedge Clk) begin
- if(Reset) Count <= 0;
- else      Count <= Count + 1'b1;
+    always @(posedge Clk) begin
+     if(Reset) Count <= 0;
+     else      Count <= Count + 1'b1;
 
- if(&Count) begin
-  A <= B;
-  B <= A;
- end
-end
-~~~
+     if(&Count) begin
+      A <= B;
+      B <= A;
+     end
+    end
 
 The `rtl` construct essentially provides a means to write code that translates directly to Verilog.  It is not meant for general use, but rather for special cases where the low-level control of RTL is required.  It does provide the developer with vectorised notation and function calls, however.
 
@@ -175,59 +170,57 @@ Most FPGA firmware is based on finite state machines (FSMs).  ALCHA provides a c
 
 Each statement within an `fsm` construct that ends in a comma (`,`), is considered to be in the same state, or cycle, as the next statement.  A semicolon (`;`) ends a cycle (or state).  All statements are considered non-blocking.  A simple example is provided below:
 
-~~~C++
-pin<frequency = "50 MHz"> Clk;
-pin                       Reset;
+    :::C++
+    pin<frequency = "50 MHz"> Clk;
+    pin                       Reset;
 
-net'8 A, B, C;
+    net'8 A, B, C;
 
-B = 123;
+    B = 123;
 
-fsm(Clk, Reset){
- loop{
-  A = B + C, B = C - A;
+    fsm(Clk, Reset){
+     loop{
+      A = B + C, B = C - A;
 
-  if(A < B) C++,
-  else      C--,
-  ;
- }
-}
-~~~
+      if(A < B) C++,
+      else      C--,
+      ;
+     }
+    }
 
 This state machine has two states and translates to the following Verilog:
 
-~~~Verilog
-reg[7:0] A, B, C;
+    :::Verilog
+    reg[7:0] A, B, C;
 
-reg tReset;
-reg State;
+    reg tReset;
+    reg State;
 
-always @(posedge Clk) begin
- tReset <= Reset
+    always @(posedge Clk) begin
+     tReset <= Reset
 
- if(tReset) begin
-  B     <= 8'd123;
-  State <= 0;
+     if(tReset) begin
+      B     <= 8'd123;
+      State <= 0;
 
- end else begin
-  case(State)
-   1'b0: begin
-    A     <= B + C;
-    B     <= C - A;
-    State <= 1'b1;
-   end
+     end else begin
+      case(State)
+       1'b0: begin
+        A     <= B + C;
+        B     <= C - A;
+        State <= 1'b1;
+       end
 
-   1'b1: begin
-    if(A < B) C <= C + 1'b1;
-    else      C <= C - 1'b1;
-    State <= 1'b0;
-   end
+       1'b1: begin
+        if(A < B) C <= C + 1'b1;
+        else      C <= C - 1'b1;
+        State <= 1'b0;
+       end
 
-   default:;
-  endcase
- end
-end
-~~~
+       default:;
+      endcase
+     end
+    end
 
 All reset signals are localised to the state machine.  All signals that enter the `fsm` construct with a value (that must evaluate to a run-time constant) are reset to that value.
 
@@ -235,81 +228,78 @@ The ALCHA `if` and `while` statements follow the same syntax as in C.  The state
 
 The `for` loop is used to iterate through elements in an array, as follows:
 
-~~~C++
-net'8  x;
-net'10 A;
+    :::C++
+    net'8  x;
+    net'10 A;
 
-fsm(Clk){
- for(x in 0->200){
-  A = 3 * x + 7;
- }
-}
-~~~
+    fsm(Clk){
+     for(x in 0->200){
+      A = 3 * x + 7;
+     }
+    }
 
 This translates to:
 
-~~~Verilog
-reg [7:0]x;
-reg [9:0]A;
-reg      State;
+    :::Verilog
+    reg [7:0]x;
+    reg [9:0]A;
+    reg      State;
 
-always @(posedge Clk) begin
- tReset <= Reset;
+    always @(posedge Clk) begin
+     tReset <= Reset;
 
- if(tReset) begin
-  x     <= 0;
-  State <= 0;
+     if(tReset) begin
+      x     <= 0;
+      State <= 0;
 
- end else begin
-  case(State)
-   1'b0: begin
-    A <= 2'd3 * x + 3'd7;
-    x <= x + 1'b1;
-    if(x == 8'd200) State <= 1'b1;
-   end
+     end else begin
+      case(State)
+       1'b0: begin
+        A <= 2'd3 * x + 3'd7;
+        x <= x + 1'b1;
+        if(x == 8'd200) State <= 1'b1;
+       end
 
-   default:;
-  endcase
- end
-end
-~~~
+       default:;
+      endcase
+     end
+    end
 
 The `loop` loop is used to repeat something.  Without a parameter, a `loop` loop will run forever (or until a `break` statement is encountered).  With a parameter, the `loop(N)` loop will run for `N` iterations.
 
 ## Pipelines
 Finite state machines can also be used to implement pipelines.  Say, for instance, the developer wants to implement a pipelined version of the function
 
+    :::C++
     y = a*x*x + b*x + c,
 
 where a, b and c are constants.  The intended non-pipelined behaviour is given below, in which case there would be a new result every 4 cycles.
 
-~~~C++
-fsm(Clk){
- loop{
-  t =     a*x;
-  t =     t*x;
-  t = t + b*x;
-  y = t + c;
- }
-}
-~~~
+    :::C++
+    fsm(Clk){
+     loop{
+      t =     a*x;
+      t =     t*x;
+      t = t + b*x;
+      y = t + c;
+     }
+    }
 
 The pipelined version (that provides a new result every cycle, with a 4-cycle latency) is:
 
-~~~C++
-// t  is a 3-element array
-// tx is a 2-element array
-fsm(Clk){
- loop{
-  tx = x ~ tx[0], // array concatenation
+    :::C++
+    // t  is a 3-element array
+    // tx is a 2-element array
+    fsm(Clk){
+     loop{
+      tx = x ~ tx[0], // array concatenation
 
-  t[0] =        a   * x   ,
-  t[1] =        t[0]*tx[0],
-  t[2] = t[1] + b   *tx[1],
-  y    = t[2] + c;
- }
-}
-~~~
+      t[0] =        a   * x   ,
+      t[1] =        t[0]*tx[0],
+      t[2] = t[1] + b   *tx[1],
+      y    = t[2] + c;
+     }
+    }
 
 [[include repo=code path=Wiki/MarkDown/Footer.md]]
 

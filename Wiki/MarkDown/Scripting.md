@@ -57,18 +57,17 @@ The file contents are kept in arrays, which are buffered in RAM.  Large files ar
 ## Dynamic Arrays
 Scriping arrays can be declared as dynamic by specifying empty square brackets.  The array size is adjusted depending on the assignment.  While building the contents of a text file, for instance, the code might look as follows:
 
-~~~C++
-char File[] = "";
-// Some code...
-File ~= "Header\n";
-// Some more code...
-File ~= "Some Body...\n";
-// Some more code...
-File ~= "Some Body...\n";
-// Some more code...
-File ~= "Some Body...\n";
-textwrite("My Log File.log", File);
-~~~
+    :::C++
+    char File[] = "";
+    // Some code...
+    File ~= "Header\n";
+    // Some more code...
+    File ~= "Some Body...\n";
+    // Some more code...
+    File ~= "Some Body...\n";
+    // Some more code...
+    File ~= "Some Body...\n";
+    textwrite("My Log File.log", File);
 
 ## Shell Commands
 ALCHA has a built-in function `shell` to execute shell commands.  It takes a single parameter (a string) that is executed as if called on the command-line.  This can be used, for instance, to call an external compiler for CPU code.  The resulting CPU binary can be imported by means of file I/O functions and used to initialise the CPU ROM.

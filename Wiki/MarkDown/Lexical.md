@@ -11,19 +11,18 @@ The scanner reads UTF-8 formatted files.  The UTF-8 formatting is retained, even
 ## Literals
 ALCHA literals are all stored as infinite-precision rational numbers (by means of the [GNU MP library](https://gmplib.org/)). An imaginary literal can be specified by using either a `j` or `i` postfix.  Literals can be binary (`0b` prefix), octal (`0o` prefix), hexadecimal (`0x` prefix) or decimal (no prefix).  Literals may contain an optional decimal or binary exponent, by means of a `e` or `p` postfix, respectively.  All literals can be cast to a fixed-point format by means of the `'` operator.  Within numerical literals, the underscore character (`_`) is ignored.  Character literals are string literals with only one character.  Below are some examples:
 
-~~~C++
-123.456           // decimal constant
-123.456'(16, 128) // Decimal constant cast to 16 bits with full-scale range [0, 128)
-0b101.0101        // Binary constant
-0o123.456         // Octal constant
-0xABC.DEF         // Hexadecimal constant
-123_456_e7        // Decimal constant with decimal exponent (10^7)
-123_456_p7        // Decimal constant with binary exponent (2^7)
-0x123_ABC_p7      // Hexadecimal constant with binary exponent (2^7)
-7.3 + 8.9j        // Decimal complex constant
-"A"               // Unicode character constant
-"ABC"             // Unicode string literal (character array)
-~~~
+    :::C++
+    123.456           // decimal constant
+    123.456'(16, 128) // Decimal constant cast to 16 bits with full-scale range [0, 128)
+    0b101.0101        // Binary constant
+    0o123.456         // Octal constant
+    0xABC.DEF         // Hexadecimal constant
+    123_456_e7        // Decimal constant with decimal exponent (10^7)
+    123_456_p7        // Decimal constant with binary exponent (2^7)
+    0x123_ABC_p7      // Hexadecimal constant with binary exponent (2^7)
+    7.3 + 8.9j        // Decimal complex constant
+    "A"               // Unicode character constant
+    "ABC"             // Unicode string literal (character array)
 
 Imaginary and complex numbers are useful when using compile-time scripting to initialise FIR filter constants, among other uses.
 
