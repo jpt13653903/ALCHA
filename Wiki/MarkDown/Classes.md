@@ -4,6 +4,7 @@
 
 # Classes
 ## Definition and Inheritance
+
 ALCHA supports a simple class structure that has a single constructor form.  The body of the class is the constructor.  Classes can also inherit from other classes, as presented in the example below:
 
     :::C++
@@ -42,7 +43,41 @@ A variable defined with a class type is actually a reference to that class.  Cal
     vec4 A = vec4(1, 2, 3, 4);
     num  B = A.dot(vec4(9, 8, 7, 6));
 
+## Abstract Signal Types
+
+When calling a function, the function name becomes a reference to the target variable, and the parameters are references to the input parameters.  This can be used to define abstractions of streaming processors, for example.  Below is an example of how a digital signal processing chain might be implemented:
+
+    :::C++
+    class STREAM(){
+     net Data;
+     net Valid;
+     net Ready;
+    }
+
+    STREAM Filter(STREAM Input){
+     Input.Ready = Filter.Ready; // Implements back pressure
+
+     rtl(Clk){ // Uses global clock
+      if(Filter.Ready && Input.Valid){
+       // Implement the body of the filter here, controlling the
+       // output data and valid fields as required.
+      }
+     }
+    }
+
+    STREAM Decimate(STREAM Input, num N = 128){
+     // Similarly defined as the filter above
+    }
+    
+    STREAM FFT(STREAM Input){
+     // Implements a streaming FFT
+    }
+
+    // Hook up the chain:
+    STREAM Output = FFT(Decimate(Filter(Input)));
+     
 ## Attributes
+
 Whenever a class is instantiated, the instance can be assigned various attributes (in similar fashion to pins and nets).  A typical attribute that might be assigned is the `location`, which indicates where on the FPGA the class instance should be placed.  The exact details of this has not been finalised yet, but it is envisioned that the developer can define a rectangle in normalised coordinates, similar to the example below:
 
     :::C++
