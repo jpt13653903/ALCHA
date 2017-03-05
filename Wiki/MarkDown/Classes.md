@@ -55,6 +55,8 @@ When calling a function, the function name becomes a reference to the target var
     }
 
     STREAM Filter(STREAM Input){
+     Filter = STREAM(); // Creates a new stream object
+
      Input.Ready = Filter.Ready; // Implements back pressure
 
      rtl(Clk){ // Uses global clock
