@@ -1,7 +1,7 @@
 " Vim syntax file
 " Language:	ALCHA
 " Maintainer:	J Taylor <tyljoh010@myuct.ac.za>
-" Last Change:	2016-02-15
+" Last Change:	2017-02-26
 
 if version < 600
   syntax clear
@@ -12,23 +12,22 @@ endif
 " Operators
 syn match AlchaOperator "<<=\|>>=\|++\|--\|->\|\.{\|\~&\|\~|\|\~\^\|<<\|>>\|<=\|>=\|==\|!=\|&&\|||\|:=\|\~=\|+=\|-=\|\*=\|\/=\|%=\|&=\||=\|\^=\|'\|@\|\.\|&\||\|\^\|\~\|:\|\\\|+\|-\|\*\|\/\|%\|<\|>\|!\|?\|=\|(\|)\|\[\|\]\|{\|}\|,\|;"
 
-" Constants
-" Binary      = {B} ["." {B}] [("p" | "P"            ) Exponent] ["i" | "j"];
-" Octal       = {O} ["." {O}] [("p" | "P"            ) Exponent] ["i" | "j"];
-" Hexadecimal = {H} ["." {H}] [("p" | "P"            ) Exponent] ["i" | "j"];
-" Decimal     = {D} ["." {D}] [("p" | "P" | "e" | "E") Exponent] ["i" | "j"];
-" Exponent    = ["-" | "+"] D {D};
+" Literal     = (("0b" Binary) | ("0o" Octal) | ("0x" Hexadecimal) | Decimal) [Exponent] ["i" | "j"];
+" Binary      = (B {B | "_"} ["." {B | "_"}]) | ("." B {B | "_"});
+" Octal       = (O {O | "_"} ["." {O | "_"}]) | ("." O {O | "_"});
+" Decimal     = (D {D | "_"} ["." {D | "_"}]) | ("." D {D | "_"});
+" Hexadecimal = (H {H | "_"} ["." {H | "_"}]) | ("." H {H | "_"});
+" Exponent    = ("p" | "P" | "e" | "E") ["-" | "+"] D {D};
 syn match AlchaPrefix display contained "0b\|0o\|0x"
-syn match AlchaBinExp display contained "[pP]_*\([+-]\?\(\d\|_\)\+\)"
-syn match AlchaDecExp display contained "[eE]_*\([+-]\?\(\d\|_\)\+\)"
-syn match AlchaConstant "\<\d\(\d\|_\)*\(\.\(\d\|_\)*\)\?\([pPeE]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*" contains=AlchaBinExp,AlchaDecExp
-syn match AlchaConstant "\(\.\d\(\d\|_\)*\)\([pPeE]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"               contains=AlchaBinExp,AlchaDecExp
-syn match AlchaConstant "\<0b[01_]*\(\.[01_]*\)\?\([pP]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"           contains=AlchaPrefix,AlchaBinExp
-syn match AlchaConstant "\<0o\(\o\|_\)*\(\.\(\o\|_\)*\)\?\([pP]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"   contains=AlchaPrefix,AlchaBinExp
-syn match AlchaConstant "\<0x\(\x\|_\)*\(\.\(\x\|_\)*\)\?\([pP]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"   contains=AlchaPrefix,AlchaBinExp
+syn match AlchaExp display contained "[pPeE]_*\([+-]\?\(\d\|_\)\+\)"
+syn match AlchaConstant "\<\d\(\d\|_\)*\(\.\(\d\|_\)*\)\?\([pPeE]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"   contains=AlchaExp
+syn match AlchaConstant "\(\.\d\(\d\|_\)*\)\([pPeE]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"                 contains=AlchaExp
+syn match AlchaConstant "\<0b[01_]*\(\.[01_]*\)\?\([pPeE]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"           contains=AlchaExp,AlchaPrefix
+syn match AlchaConstant "\<0o\(\o\|_\)*\(\.\(\o\|_\)*\)\?\([pPeE]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"   contains=AlchaExp,AlchaPrefix
+syn match AlchaConstant "\<0x\(\x\|_\)*\(\.\(\x\|_\)*\)\?\([pPeE]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"   contains=AlchaExp,AlchaPrefix
 
 " Keywords
-syn match AlchaKeyword "\<\(__FILE__\|__LINE__\|__DATE__\|__TIME__\|__CLASS__\|__FUNCTION__\|__NAMESPACE__\|target\|set_target\|alias\|void\|auto\|pin\|net\|clk\|byte\|char\|int\|rat\|float\|complex\|in\|out\|class\|enum\|group\|if\|else\|for\|while\|loop\|switch\|case\|default\|import\|as\|return\|break\|continue\|rtl\|fsm\|hdl\)\>"
+syn match AlchaKeyword "\<\(__FILE__\|__LINE__\|__DATE__\|__TIME__\|__CLASS__\|__FUNCTION__\|__NAMESPACE__\|alias\|void\|auto\|pin\|net\|clk\|byte\|char\|num\|class\|enum\|group\|if\|else\|for\|while\|loop\|switch\|case\|default\|import\|as\|return\|break\|continue\|rtl\|fsm\|hdl\)\>"
 
 " Strings
 syn match  AlchaEscape display contained "\\n\|\\t\|\\v\|\\b\|\\r\|\\f\|\\a\|\\\\\|\\?\|\\'\|\\\"\|\\x\x\{2}\|\\u\x\{4}\|\\U\x\{8}\|\\\o\{1,11}\|\\&\(\d\|\a\)\{-};"
@@ -43,8 +42,7 @@ syn match  AlchaToDoComment "!!.*" contains=@Spell
 " Link the types
 hi def link AlchaOperator      Operator
 hi def link AlchaPrefix        SpecialChar
-hi def link AlchaBinExp        SpecialChar
-hi def link AlchaDecExp        SpecialChar
+hi def link AlchaExp           SpecialChar
 hi def link AlchaConstant      Constant
 hi def link AlchaKeyword       Keyword
 hi def link AlchaEscape        SpecialChar

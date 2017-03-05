@@ -3,170 +3,349 @@
 [TOC]
 
 # Functions
-ALCHA provides a procedural programming model for combinational circuits, as well as state machines.  Any function that does not contain an embedded state machine is considered combinational and can be called from anywhere.  A function that contains an embedded state machine can only be called from within another state machine.
+ALCHA provides a procedural programming model for combinational circuits, state machines and scripting.  There are various categories of functions, resulting in different calling conventions.
+
+The function name is used as a reference to the target net (or variable) for the return value.  This has implications for functions that contain clocked structures, as the state machine (or RTL) has control over the value of the target net, even though the function has not returned yet.
+
+The parameter types do not need to be defined in the function, but can be inferred from the input parameters when the function is called (this is also known as duck-typing).  When the types are specified, the parameter types form part of the function name, so that many functions of the same name, but different parameter types, can be defined.
 
 ## Combinational Functions
-Functions in ALCHA are defined in similar fashion as C, as illustrated in the example below.  The function name is used as a temporary net (or variable) for the return value.  The parameter types do not need to be defined in the function, but can be inferred from the input parameters when the function is called.  When the types are specified, the parameter types form part of the function name, so that many functions of the same name, but different parameter types, can be defined.
+Functions in ALCHA are defined in similar fashion as C, as illustrated in the example below.
 
-    :::C++
-    net'8 Add(net A, net B){
-     return A + B; // This is short-hand for "Add = A + B; return;"
-    }
-    net'8 x, y, z;
-    z = Add(x, y);
+~~~C++
+net'8 Add(net'8 A, net'8 B){
+ Add = A + B;
+}
+net'8 x, y, z;
+z = Add(x, y);
+~~~
+
+Functions also support default parameters and named parameter assignment, as illustrated below:
+
+~~~C++
+auto MyFunction(A, B, C = 7, D = 2){
+ // Function body
+}
+
+net'8 X = MyFunction(B = 2, A = 8, D = 4); // C defaults to 7
+~~~
 
 Combinational functions can be called from anywhere, including the bodies of clocked structures.  Functions can also be called in vectorised form, which is especially useful when combined with array slicing.  The adder above can be called as follows:
 
-    :::C++
-    net'8 x[4], y[4], z[4];
-    z = Add(x, y);
+~~~C++
+net'8 x[4], y[4], z[4];
+z = Add(x, y);
 
-    // This is equavalent to:
-    z[0] = Add(x[0], y[0]);
-    z[1] = Add(x[1], y[1]);
-    z[2] = Add(x[2], y[2]);
-    z[3] = Add(x[3], y[3]);
+// This is equavalent to:
+z[0] = Add(x[0], y[0]);
+z[1] = Add(x[1], y[1]);
+z[2] = Add(x[2], y[2]);
+z[3] = Add(x[3], y[3]);
+~~~
 
 Arrays and scalars can be mixed in the call, as follows:
 
-    :::C++
-    net'8 x, y[4], z[4];
-    z = Add(x, y);
+~~~C++
+net'8 x, y[4], z[4];
+z = Add(x, y);
 
-    // This is equavalent to:
-    z[0] = Add(x, y[0]);
-    z[1] = Add(x, y[1]);
-    z[2] = Add(x, y[2]);
-    z[3] = Add(x, y[3]);
+// This is equavalent to:
+z[0] = Add(x, y[0]);
+z[1] = Add(x, y[1]);
+z[2] = Add(x, y[2]);
+z[3] = Add(x, y[3]);
+~~~
 
 If the function takes an array as a parameter, the same rules apply.  The function can be called with a higher-dimension array, as follows:
 
-    :::C++
-    net'18 Dot(A[], B[]){
-     Dot  = A[1] * B[1];
-     Dot += A[2] * B[2];
-     Dot += A[3] * B[3];
-     Dot += A[4] * B[4];
-     return;
-    }
-    net'18 Y[16];
-    net'8  A[4][16], B[4][16];
-    Y = Dot(A, B);
+~~~C++
+net'18 Dot(A[], B[]){
+ Dot  = A[1] * B[1];
+ Dot += A[2] * B[2];
+ Dot += A[3] * B[3];
+ Dot += A[4] * B[4];
+}
+net'18 Y[16];
+net'8  A[4][16], B[4][16];
+Y = Dot(A, B);
+~~~
 
 To return an array, the function name should be defined as an array, as follows:
 
-    :::C++
-    net'(16, -8) Mult[4][4](A[][], B[][]){
-     int i, j, k;
-     for(i in 0->3){
-      for(j in 0->3){
-       Mult[i][j] = 0;
-       for(k in 0->3){
-        Mult[i][j] += A[i][k] * B[k][j];
-       }
-      }
-     }
-    }
+~~~C++
+net'(16, -8) Mult[4][4](A[][], B[][]){
+ int i, j, k;
+ for(i in 0->3){
+  for(j in 0->3){
+   Mult[i][j] = 0;
+   for(k in 0->3){
+    Mult[i][j] += A[i][k] * B[k][j];
+   }
+  }
+ }
+}
+~~~
 
 The loops above are discussed in greater detail in the Scripting section.  Such combinational loops should be used with care, as very little code can result in very large circuits.
 
 ## Clocked Functions
-Clocked functions contain optional combinational code, as well as an embedded state machine.  The embedded state machine does not take parameters, as the clock is inherited from the calling state machine.  The calling state also implements the reset.
+Clocked functions contain optional combinational code, as well as an embedded state machine or RTL.  The embedded clocked structure's clock and reset can, potentially, be different to that of the calling clocked structure.  These could either be global signals, or passed through a function parameter.
 
-There has to be a cycle-boundary after a clocked function call (i.e. the call must end with a semicolon, not a comma).
+The function body is implemented as few times as possible, typically in a sub-module.  If many different states call the same function, the function body in implemented only once.  It is possible to call the same function many times from the same state, in which case the function is implemented multiple times.
 
-The body of the embedded state machine is only implemented once, so that many states in the calling state machine can make use of the function without further resource usage.
+The call is controlled through hand-shaking signals.  The resulting function module has implicit `Go` (input) and `Busy` (output) signals.  These are handled by the compiler and hidden from the developer.  When multiple different functions are called from the same state, the state machine must wait for all the functions to finish (i.e. make their `Busy` lines low) before continuing to the next state.
 
-The combinational code is evaluated during the calling state, after which the function parameters, as well as the return state, are saved to temporary registers.  The next cycle executes the first state of the embedded state machine.
+The combinational code of the function body, as well as the function reset code, is evaluated during the calling state.  The `Go` line is also pulled high during that state.
 
-A return statement in the embedded state machine will cause the target net to be assigned, and the next state to be loaded from the temporarily-stored state register.  To illustrate this process, consider the following ALCHA (and its corresponding Verilog) code:
+The handshaking signals are handled differently when the function and calling structure reside within the same clock-domain, or when there is a clock-domain crossing required.  When there is a clock-domain crossing, the calling state machine waits for the `Busy` to go high before releasing the `Go` signal.  The function waits for the `Go` to go low before releasing the `Busy` signal.  These hand-shaking signals are properly clock-domain crossed when required.
 
-    :::C++
-    net'4 BitCount(A){
-     net'3 x;
-     BitCount = 0;
+When there are no clock-domain crossing required, the calling state machine pulses the `Go` signal for a single cycle instead of following the full hand-shaking algorithm described above.  This is a timing optimisation.
 
-     fsm{
-      for(x in 0->7){
-       BitCount += A[x]; // The ";" forces every addition into a new cycle
-      }
-      return;
-     }
-    }
+The `Busy` signal further acts as a clock-enable signal of the function body.  The output signals of the function keep their state until the next call.
 
-    net'8 A, B;
+## RTL Functions
 
-    fsm(Clk, Reset){
-     A = 123;
-     B = 93;
-     A = BitCount(A);
-     B = BitCount(B);
-    }
+RTL structures do not have the concept of an instruction sequence.  In order to return from a function that contains RTL structure, a `return` statement must exist somewhere in the RTL body, which releases the `Busy` signal and halts execution of the RTL structure.
 
-Which translates to:
+Furthermore, RTL structures do not support the handshaking algorithm described above.  The developer must implement them manually.
 
-    :::Verilog
-    reg [2:0]BitCount_RetState;
-    reg [3:0]BitCount;
-    reg [7:0]BitCount_A;
-    reg [2:0]BitCount_x;
+When calling a function from an RTL structure, the same rules apply as for calling them from combinational logic.
 
-    reg [7:0]A;
-    reg [7:0]B;
+## Example
 
-    reg [2:0]State;
-    reg      tReset;
+In order to illustrate the use of functions within state machines, here follows an example of a simple SPI interface in ALCHA, as well as its equivalent Verilog:
 
-    always @(posedge Clk) begin
-     tReset <= Reset;
+~~~C++
+pin<frequency = "50 MHz"> Clk;
 
-     if(tReset) begin
-      State <= 0;
+pin Reset;
 
-     end else begin
-      case(State)
-       3'd0: begin
-        A     <= 8'd123;
-        State <= 3'd1;
-       end
-       
-       3'd1: begin
-        B     <= 8'd93;
-        State <= 3'd2;
-       end
-       
-       3'd2: begin
-        BitCount_RetState <= 3'd3;
-        BitCount_A        <= A;
-        BitCount_x        <= 0;
-        BitCount          <= 0;
-        State             <= 3'd7;
-       end
-       
-       3'd3: begin
-        A                 <= BitCount;
-        BitCount_RetState <= 3'd4;
-        BitCount_A        <= B;
-        BitCount_x        <= 0;
-        BitCount          <= 0;
-        State             <= 3'd7;
-       end
+group SPI{
+ pin Clk, Data, Latch;
+}
+//------------------------------------------------------------------------------
 
-       3'd4: begin
-        A     <= BitCount;
-        State <= 3'd5;
-       end
-       
-       3'd7: begin // The BitCount function
-        BitCount   <= BitCount + BitCount_A[BitCount_x];
-        BitCount_x <= BitCount_x + 1'b1;
-        if(BitCount_x == 3'd7) State <= BitCount_RetState;
-       end
+void SPI_Send(net'32 Data){
+ net'5  bit;
+ net'32 Shift;
 
-       default:;
-      endcase
+ SPI.Clk   = 0;
+ SPI.Latch = 1;
+ SPI.Data  = Shift[31];
+
+ fsm(Clk, Reset){
+  SPI.Latch = 0,
+  Shift     = Data;
+
+  for(bit in 31->0){
+   SPI.Clk = 1;
+   
+   SPI.Clk = 0,
+   Shift <<= 1,
+   if(!bit) SPI.Latch = 1,
+   ;
+  }
+  SPI.Latch = 0;
+ }
+}
+//------------------------------------------------------------------------------
+
+// Initialise some SPI-based peripheral
+fsm(Clk, Reset){
+ Send(0x12345678);
+ Send(0xFEDCBA98);
+ Send(18271662);
+ Send(0b11010011:0x123456);
+}
+//------------------------------------------------------------------------------
+~~~
+
+Which is equivalent to:
+
+~~~Verilog
+module SPI_Send(
+ input Clk,
+ input Reset,
+
+ input      Go,
+ output reg Busy,
+
+ input [31:0]Data,
+
+ output reg SPI_Clk,
+ output     SPI_Data,
+ output reg SPI_Latch
+);
+//------------------------------------------------------------------------------
+
+ reg [ 4:0]bit;
+ reg [31:0]Shift;
+
+ reg       tReset;
+ reg   [1:0]State;
+ localparam GetData = 2'd0;
+ localparam Sending = 2'd1;
+ localparam Done    = 2'd2;
+//------------------------------------------------------------------------------
+
+ assign SPI_Data = Shift[31];
+//------------------------------------------------------------------------------
+
+ always @(posedge Clk) begin
+  tReset <= Reset;
+  
+  if(tReset) begin
+    SPI_Clk   <= 0;
+    SPI_Latch <= 1'b1;
+    Busy      <= 0;
+    State     <= GetData;
+//------------------------------------------------------------------------------
+
+  end else if(Busy) begin
+   case(State)
+    GetData: begin
+     SPI_Latch <= 0;
+     Shift     <= Data;
+     bit       <= 5'd31;
+     State     <= Sending
+    end
+//------------------------------------------------------------------------------
+
+    Sending: begin
+     if(~SPI_Clk) begin
+      SPI_Clk <= 1'b1;
+
+     end else begin // SPI_Clk is high
+      SPI_Clk <= 0;
+      Shift   <= {Shift[30:0], 1'b0};
+      if(~|bit) begin
+       SPI_Latch <= 1'b1;
+       State     <= Done;
+      end
+      bit <= bit - 1'b1;
+     end  
+    end
+//------------------------------------------------------------------------------
+
+    Done: begin
+     SPI_Latch <= 0;
+     Busy      <= 0;
+    end
+//------------------------------------------------------------------------------
+
+    default:;
+   endcase
+   State <= State + 1'b1;
+//------------------------------------------------------------------------------
+
+  end else if(Go) begin
+   SPI_Clk   <= 0;
+   SPI_Latch <= 1'b1;
+   Busy      <= 1'b1;
+   State     <= GetData;
+  end
+ end
+endmodule
+//##############################################################################
+
+module TopLevel(
+ input Clk,
+ input Reset,
+
+ output SPI_Clk,
+ output SPI_Data,
+ output SPI_Latch
+);
+//------------------------------------------------------------------------------
+
+ reg       SPI_Send_Go;
+ wire      SPI_Send_Busy;
+ reg [31:0]Data;
+
+ SPI_Send SPI_Send_Intance(
+  .Clk      (Clk),
+  .Reset    (Reset),
+
+  .Go       (SPI_Send_Go),
+  .Busy     (SPI_Send_Busy),
+
+  .Data     (Data),
+
+  .SPI_Clk  (SPI_Clk),
+  .SPI_Data (SPI_Data),
+  .SPI_Latch(SPI_Latch)
+ );
+//------------------------------------------------------------------------------
+
+ reg       tReset;
+ reg   [2:0]State;
+ localparam Send1 = 3'd0;
+ localparam Send2 = 3'd1;
+ localparam Send3 = 3'd2;
+ localparam Send4 = 3'd3;
+ localparam Done  = 3'd4;
+//------------------------------------------------------------------------------
+
+ always @(posedge Clk) begin
+  tReset <= Reset;
+
+  if(tReset) begin
+   SPI_Send_Go <= 0;
+   State       <= Send1;
+//------------------------------------------------------------------------------
+
+  end else begin
+   case(State)
+    Send1: begin
+     Data        <= 32'h12345678;
+     SPI_Send_Go <= 1'b1;
+     State       <= Send2;
+    end
+//------------------------------------------------------------------------------
+
+    Send2: begin
+          if( SPI_Send_Go  ) SPI_Send_Go <= 0;
+     else if(!SPI_Send_Busy) begin
+      Data        <= 32'hFEDCBA98;
+      SPI_Send_Go <= 1'b1;
+      State       <= Send3;
      end
     end
+//------------------------------------------------------------------------------
+
+    Send3: begin
+          if( SPI_Send_Go  ) SPI_Send_Go <= 0;
+     else if(!SPI_Send_Busy) begin
+      Data        <= 32'd18271662;
+      SPI_Send_Go <= 1'b1;
+      State       <= Send4;
+     end
+    end
+//------------------------------------------------------------------------------
+
+    Send4: begin
+          if( SPI_Send_Go  ) SPI_Send_Go <= 0;
+     else if(!SPI_Send_Busy) begin
+      Data        <= {8'b11010011, 24'h123456};
+      SPI_Send_Go <= 1'b1;
+      State       <= Done;
+     end
+    end
+//------------------------------------------------------------------------------
+
+    default: SPI_Send_Go <= 0;
+   endcase
+  end
+ end
+endmodule
+//------------------------------------------------------------------------------
+~~~
+
+The hand-shaking has been simplified because the two clocked structures are in the same clock domain.  This Verilog code has been hand-written in order to show the details of the ALCHA calling convention.  Compiler-generated code might look very different, but is equivalent in functionality.
+
+## Calling Clocked Functions from Combinational Circuits
+
+It is possible to call a clocked function from a combinational circuit.  It that case, the function body is evaluated as if it occurred in place of the function call.
 
 [[include repo=code path=Wiki/MarkDown/Footer.md]]
 

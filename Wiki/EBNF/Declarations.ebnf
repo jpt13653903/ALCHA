@@ -1,4 +1,4 @@
-Source = [Statements];
+Module = [Statements];
 
 Statements = Statement {Statement};
 Statement  = Definition | ClassDefinition 

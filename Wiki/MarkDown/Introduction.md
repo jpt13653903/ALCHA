@@ -22,10 +22,9 @@ Manually specifying multi-cycle paths is a labour-intensive and tedious process.
 
 Target Date   | Feature
 -----------   | -------
-December 2016 | Case study of the language grammar, using [FUI Audio DAC](https://sourceforge.net/projects/fui-audio-dac/)
-April 2017    | Prototype compiler with elementary simulation
-June 2017     | Compilation to Altera projects
-December 2017 | Compilation to Xilinx projects
+December 2017 | Prototype compiler with elementary simulation
+June 2018     | Compilation to Altera projects
+December 2018 | Compilation to Xilinx projects
 
 ## References
 ### Similar Projects
