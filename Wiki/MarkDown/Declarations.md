@@ -160,8 +160,8 @@ The same location can be assigned to different pin objects.  This is useful when
 Often there are attributes that applies to many objects.  In this case, the definitions can be grouped.  All child definitions inherit the attributes of the group.  When a child definition includes an attribute that is already defined in the group, the child definition takes precedence.  Below is an example of a named group for pin definitions.
 
     :::C++
-    group SD<voltage   = "3.3 V" , capacitance = "10 pF",
-     min_delay = "500 ps", max_delay = "1 ns">{
+    group<voltage   = "3.3 V" , capacitance = "10 pF",
+     min_delay = "500 ps", max_delay = "1 ns"> SD{
       pin  <location = "AB6"           > CLK;
       pin  <location = "W8"            > CMD;
       pin'4<location = "U7, T7, V8, T8"> DAT;
