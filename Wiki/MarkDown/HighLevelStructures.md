@@ -5,18 +5,36 @@
 # High-level Structures
 ## Memory Blocks
 
-Memory blocks can be instantiated by means of built-in classes to represent the various configurations of block RAM.  The various configurations, and the corresponding classes, are summarised in the table below:
+Memory blocks can be instantiated by means of the built-in `BRAM` class.  The basic configuration is specified by means of class parameters.  The class is used as if it was defined as follows:
 
-Configuration    | Class
--------------    | -----
-ROM, 1-port      | `ROM1(int Width, int Depth, clk Clock, int Init[])`
-ROM, 2-port      | `ROM2(int Width, int Depth, clk Clock1, clk Clock2, int Init[])`
-RAM, 1-port      | `RAM1(int Width, int Depth, clk Clock, int Init[])`
-RAM, 1W, 1R port | `RAM_RW(int Width, int Depth, clk Clock1, clk Clock2, int Init[])`
-RAM, full 2-port | `RAM2(int Width, int Depth, clk Clock1, clk Clock2, int Init[])`
-FIFO,            | `FIFO(int Width, int Depth, clk Clock1, clk Clock2, int Init[])`
+    :::C++
+    class BRAM(num Width1, num Depth1, num Width2 = 0, num Init[] = 0){
+     num Depth2;
+     num AddressWidth;
 
-The other nets are implemented as member nets, not part of the class constructor.
+     AddressWidth = ceil(log2(Depth1));
+
+     clk              Clock1; // Can optionally include a clock-enable signal
+     net'AddressWidth Address1;
+     net'Width1       ReadData1;
+     net'Width1       WriteData1;
+     net              WriteEnable1;
+
+     if(Width2){
+      Depth2       = Depth1 * Width1 / Width2;
+      AddressWidth = ceil(log2(Depth2));
+     }else{
+      Width2 = Width1;
+     }
+
+     clk              Clock2; // Can optionally include a clock-enable signal
+     net'AddressWidth Address2;
+     net'Width2       ReadData2;
+     net'Width2       WriteData2;
+     net              WriteEnable2;
+    }
+
+All configurations of RAM blocks can be created from this class.
 
 ## Megafunctions and External HDL Modules
 

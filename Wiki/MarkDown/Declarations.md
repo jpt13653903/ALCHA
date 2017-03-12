@@ -16,6 +16,8 @@ Nets relate to physical wires and / or registers on the FPGA.  They are specifie
                      // and 2 fraction bits -- in the range [0, 4)
     net'(4, -4)   e; // 5-bit signed fixed-point in the range [-4, 4)
 
+Signed nets have one more bit than specified in the format.  This is a convenient convention for fixed-point digital signal processing, but can be confusing.
+
 ### Initialisers
 All nets, pins and variables can take an optional initialiser, as illustrated below:
 
@@ -161,10 +163,10 @@ Often there are attributes that applies to many objects.  In this case, the defi
 
     :::C++
     group<voltage   = "3.3 V" , capacitance = "10 pF",
-     min_delay = "500 ps", max_delay = "1 ns"> SD{
-      pin  <location = "AB6"           > CLK;
-      pin  <location = "W8"            > CMD;
-      pin'4<location = "U7, T7, V8, T8"> DAT;
+          min_delay = "500 ps", max_delay   = "1 ns"> SD{
+     pin  <location = "AB6"           > CLK;
+     pin  <location = "W8"            > CMD;
+     pin'4<location = "U7, T7, V8, T8"> DAT;
     }
 
 In this case, the pins that are actually defined are `SD.CLK`, `SD.CMD` and `SD.DAT`.  The group can also be anonymous, as given below. In this case, each pin is a child of the parent group object (global, in this case).

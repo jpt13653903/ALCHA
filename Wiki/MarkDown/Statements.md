@@ -36,7 +36,7 @@ Switch-statement syntax is presented below:
 
 The expressions in the `case` statements (`B`, `C`, `D` and `E` in the above example) must evaluate to unique values.  During the scripting stage of compilation, these can be dynamic (because the values are known during compile-time).  During the synthesis stage, the expressions must evaluate to constants.
 
-ALCHA does not infer latches.  Modern FPGAs do not have latches, so it makes little sense to implement a language structure does.  Within combinational circuits, ALCHA assigns "don't care" to any net not assigned a value in all possible evaluations of `if`- or `switch`-statements.  Within clocked structures, the net keeps it's previous value unless explicitly assigned.
+ALCHA does not infer latches.  Modern FPGAs do not have latches, so it makes little sense to implement a language structure that does.  Within combinational circuits, ALCHA assigns "don't care" to any net not assigned a value in all possible evaluations of `if`- or `switch`-statements.  Within clocked structures, the net keeps it's previous value unless explicitly assigned.
 
 ### while
 
@@ -56,7 +56,7 @@ The for-loop syntax is presented below.  `A` must evaluate to an array.  For eve
      // for every element of array A, set x to that element and do this
     }
 
-The loop is evaluated in the same order as the elements of the array, not in parallel.  When the elements of `A` is a synthesisable type, and the loop occurs during a combinational statement, the result could potentially be a parallel combinational circuit.  During compilation, however, the loop is still evaluated sequentially, following normal combinational-statement blocking assignment rules.
+The loop is evaluated in the same order as the elements of the array, not in parallel.  When the elements of `A` is a synthesisable type, and the loop occurs during a combinational statement, the result could potentially be a parallel combinational circuit.  During compilation, however, the loop is still evaluated sequentially, following normal combinational-statement blocking assignment rules.  This is illustrated below:
 
     :::C++
     net'8 A, B;
@@ -113,11 +113,11 @@ This is equivalent to the following Verilog:
 
 ### return
 
-The `return` statement returns from a function, optionally with a value:
+The `return` statement returns from a function.  If the function was called combinationally, the return statement simply ends evaluation of the rest of the function body (thereby not synthesising the rest of the circuit).  If the return statement occurs within a clocked structure, the clocked structure goes into an idle state, either waiting for the next call (if it was called from a state machine) or halting until the next system reset (if it was called combinationally).
 
     :::C++
     num Func(A, B){
-     return A+B;
+     return A+B; // Equivalent to "Func = A+B; return;"
     }
     void Proc(A, B){
      // Do some stuff

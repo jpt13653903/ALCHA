@@ -85,7 +85,7 @@ The loops above are discussed in greater detail in the Scripting section.  Such 
 ## Clocked Functions
 Clocked functions contain optional combinational code, as well as an embedded state machine or RTL.  The embedded clocked structure's clock and reset can, potentially, be different to that of the calling clocked structure.  These could either be global signals, or passed through a function parameter.
 
-The function body is implemented as few times as possible, typically in a sub-module.  If many different states call the same function, the function body in implemented only once.  It is possible to call the same function many times from the same state, in which case the function is implemented multiple times.
+The function body is implemented as few times as possible, typically in a sub-module.  If many different states call the same function, the function body is implemented only once.  It is possible to call the same function many times from the same state, in which case the function is implemented multiple times.
 
 The call is controlled through hand-shaking signals.  The resulting function module has implicit `Go` (input) and `Busy` (output) signals.  These are handled by the compiler and hidden from the developer.  When multiple different functions are called from the same state, the state machine must wait for all the functions to finish (i.e. make their `Busy` lines low) before continuing to the next state.
 
@@ -99,7 +99,7 @@ The `Busy` signal further acts as a clock-enable signal of the function body.  T
 
 ## RTL Functions
 
-RTL structures do not have the concept of an instruction sequence.  In order to return from a function that contains RTL structure, a `return` statement must exist somewhere in the RTL body, which releases the `Busy` signal and halts execution of the RTL structure.
+RTL structures do not have the concept of an instruction sequence.  In order to return from a function that contains an RTL structure, a `return` statement must exist somewhere in the RTL body, which releases the `Busy` signal and halts execution of the RTL structure.
 
 Furthermore, RTL structures do not support the handshaking algorithm described above.  The developer must implement them manually.
 
@@ -124,7 +124,7 @@ In order to illustrate the use of functions within state machines, here follows 
      net'32 Shift;
 
      SPI.Clk   = 0;
-     SPI.Latch = 1;
+     SPI.Latch = 0;
      SPI.Data  = Shift[31];
 
      fsm(Clk, Reset){
@@ -189,7 +189,7 @@ Which is equivalent to:
       
       if(tReset) begin
         SPI_Clk   <= 0;
-        SPI_Latch <= 1'b1;
+        SPI_Latch <= 0;
         Busy      <= 0;
         State     <= GetData;
     //------------------------------------------------------------------------------
@@ -233,7 +233,7 @@ Which is equivalent to:
 
       end else if(Go) begin
        SPI_Clk   <= 0;
-       SPI_Latch <= 1'b1;
+       SPI_Latch <= 0;
        Busy      <= 1'b1;
        State     <= GetData;
       end
@@ -337,7 +337,7 @@ The hand-shaking has been simplified because the two clocked structures are in t
 
 ## Calling Clocked Functions from Combinational Circuits
 
-It is possible to call a clocked function from a combinational circuit.  It that case, the function body is evaluated as if it occurred in place of the function call.
+It is possible to call a clocked function from a combinational circuit.  It that case, the function body is evaluated as if it occurred in place of the function call, with the signal being assigned to appearing in place of the function name.
 
 [[include repo=code path=Wiki/MarkDown/Footer.md]]
 

@@ -9,13 +9,7 @@ ALCHA supports a simple class structure that has a single constructor form.
 
 ## Constructor
 
-The body of the class is the constructor.  The constructor parameters is part of the class name, so class inheritance can be used to implement multiple constructors, as follows:
-
-    :::C++
-    class Base(N){
-     net'N x;
-    };
-    class Base: Base(8){} // Define a default constructor for class Base
+The body of the class is the constructor.  Any statements within the body of the class are evaluated within the name-space of the class.  Any declarations within the class body declare class members, be it nets, scripting variables or functions.
 
 ## Member Functions
 
@@ -36,7 +30,7 @@ A variable defined with a class type is actually a reference to that class.  Cal
 
 ## Abstract Signal Types
 
-When calling a function, the function name becomes a reference to the target variable, and the parameters are references to the input parameters.  This can be used to define abstractions of streaming processors, for example.  Below is an example of how a digital signal processing chain might be implemented:
+When calling a function, the function name becomes a reference to the target variable, and the parameters are references to the input parameters.  This can be used to define abstractions of streaming processors, for instance.  An example of how a digital signal processing chain might be implemented is presented below:
 
     :::C++
     class STREAM(num Width = 8){
@@ -47,7 +41,7 @@ When calling a function, the function name becomes a reference to the target var
 
     STREAM Filter(STREAM Input){
      // Creates a new stream object which has double the width of the input.
-     Filter = STREAM(Input.Data.Width * 2);
+     Filter = STREAM(Input.Data.width * 2);
 
      Input.Ready = Filter.Ready; // Implements back pressure
 
@@ -71,24 +65,26 @@ When calling a function, the function name becomes a reference to the target var
     ADC Input = ADC();
     STREAM Output = FFT(Decimate(Filter(Input)));
 
-The ADC class used in the example above might, for instance, be defined as below.
+## Inheritance
+
+ALCHA classes support multiple inheritance.  The parent classes are specified by means of a comma-separated list after a colon.  The ADC class used in the example above might, for instance, be defined as follows:
 
     :::C++
     group<standard = "CMOS", voltage = "2.5 V"> ADC{
      group Data{
-      pin   <location = "B7"> Clock; // From FPGA to ADC
+      pin   <location = "B7"> Clock = 0; // From FPGA to ADC
       pin'14<location = "A8, C9, E17, D11, G3, C14, B16,
-                         B4, H2, A25, E19, F7, G21, A11> Data;
+                         B4, H2, A25, E19, F7, G21, A11"> Data;
      }
      group SPI{
-      pin<location = "K7"> Clock;
-      pin<location = "L2"> Data;
-      pin<location = "N9"> Latch;
+      pin<location = "K7"> Clock = 1; // These initialisers are reset conditions
+      pin<location = "L2"> Data  = 1;
+      pin<location = "N9"> Latch = 1;
      }
     }
 
     class ADC(): STREAM(14){ // Inherits from the STREAM class
-     void SetRegister(auto Address, auto Data){
+     void SetRegister(Address, Data){
       fsm(GlobalClock, GlobalReset){
        // A state-machine that implements the ADC's SPI interface.
 
@@ -104,26 +100,6 @@ The ADC class used in the example above might, for instance, be defined as below
       // set the various ADC registers to default values.
      }
     }
-
-## Inheritance
-
-ALCHA classes support multiple inheritance.  The parent classes are specified by means of a comma-separated list after a colon, as presented in the example below:
-
-    :::C++
-    class Multiplier(A, B){
-     auto Y = A * B; // The type of Y is inferred from the types of A and B
-    }
-    pin'8 A, B;
-    Multiplier MyMultiplier = Multiplier(A, B);
-    pin'16 Y = MyMultiplier.Y;
-
-    class MultiplyAdd(A, B, C): Multiplier(A, B){
-     Y += C; // This is evaluated after the constructor of `Multiplier`, 
-             // which declares the type of `Y`.
-    }
-    pin'8  x, y, z;
-    MultiplyAdd MyMultiplyAdd = MultiplyAdd(x, y, z);
-    pin'16 w = MyMultiplyAdd.Y;
 
 ## Polymorphism
 

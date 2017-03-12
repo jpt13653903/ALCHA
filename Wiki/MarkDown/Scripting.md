@@ -3,11 +3,15 @@
 [TOC]
 
 # Scripting Features
+
 ALCHA provides a powerful scripting platform to control the generation of firmware.  Any scripting variable (or scripting expression) can be used where synthesisable code expects a constant, thereby providing powerful parametrisation features.  Scripting can further be used for conditional compilation based on various parameters.
 
-All ACLHA features are available for scripting use, including, among others, functions, classes, array slicing and vectorised expressions.
+During compilation, the abstract syntax tree is evaluated in two passes.  The first pass evaluates the scripting statements, while ignoring any synthesisable code.  This reduces all scripting statements to constants.  The second pass synthesises the intended circuit, based of the reduced abstract syntax tree.
+
+All ALCHA features are available for scripting use, including, among others, functions, classes, array slicing and vectorised expressions.
 
 ## Mathematical Functions
+
 ALCHA scripting has the following built-in mathematical functions:
 
 Function | Description
@@ -42,8 +46,9 @@ Function | Description
 
 Fast Fourier transforms (FFTs) are implemented by means of the [FFTW library](http://www.fftw.org/).  The implication is that all FFTs are double-precision.
 
-## File I/O
-File I/O is accomplished by means of four functions, described below:
+## I/O Functions
+
+Arbitrary input and output is accomplished by means of five functions, described below:
 
 Function    | Description
 --------    | -----------
@@ -51,10 +56,21 @@ Function    | Description
 `write`     | Writes the given `byte` array to file
 `textread`  | Reads the given UTF-8 file into an UTF-32 `char` array buffer
 `textwrite` | Writes the given UTF-32 `char` array to an UTF-8 file
+`print`     | Prints a string to the command-line
 
 The file contents are kept in arrays, which are buffered in RAM.  Large files are handled by means of dynamic paging.  The ALCHA user is unaware of this caching mechanism.
 
+## Conversion Functions
+
+While reading and writing text-based files, it is often required to convert between numerical variables (of type `num`) and strings.  The functions presented below can be used for this purpose:
+
+Function    | Description
+--------    | -----------
+`num2str`   | Converts a number to a string.  The base and other parameters are controlled by means of function parameters.
+`str2num`   | Converts a string to a number.  The scripting interpreter makes use of the same expression engine used in [Engineering Calculator](https://sourceforge.net/p/alwaysontopcalc/wiki).
+
 ## Dynamic Arrays
+
 Scriping arrays can be declared as dynamic by specifying empty square brackets.  The array size is adjusted depending on the assignment.  While building the contents of a text file, for instance, the code might look as follows:
 
     :::C++
@@ -67,10 +83,13 @@ Scriping arrays can be declared as dynamic by specifying empty square brackets. 
     File ~= "Some Body...\n";
     // Some more code...
     File ~= "Some Body...\n";
-    textwrite("My Log File.log", File);
+    textwrite(File, "My Log File.log");
 
 ## Shell Commands
+
 ALCHA has a built-in function `shell` to execute shell commands.  It takes a single parameter (a string) that is executed as if called on the command-line.  This can be used, for instance, to call an external compiler for CPU code.  The resulting CPU binary can be imported by means of file I/O functions and used to initialise the CPU ROM.
+
+Another use for this mechanism is to call an external scripting tool to plot data.  This could be useful to visualise the data used to initialise an instance of ROM.
 
 [[include repo=code path=Wiki/MarkDown/Footer.md]]
 

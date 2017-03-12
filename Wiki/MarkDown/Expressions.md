@@ -209,7 +209,7 @@ An important consequence of this mechanism is that the developer must keep the d
     D = 4;
     E = ((5 * D) + 7) - 9;
     // Any further changes to C will affect A, but not E.
-    // Any further changes to D will affect E, but not A.
+    // Any further changes to D will affect E, but not B.
 
 This can become quite confusing.  Developers are therefore encouraged to avoid net use before assignment when describing combinational circuits.  Developers are also encouraged to avoid assigning more than one expression to the same net, unless the intention is clear from the code.
 

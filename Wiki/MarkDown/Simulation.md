@@ -38,11 +38,11 @@ During simulation, it is often useful to inject data from a file, and then store
 
 ALCHA scripting can be used to populate an instance of ROM, which is injected into the circuit by means of a simple state machine.  The standard simulation output log file can be post-processed in order to extract the required information.
 
-If more sophisticated functionality is required, the design can be compiled to Verilog and analysed by means of more powerful tools.
+If more sophisticated functionality is required, the design can be compiled to Verilog and analysed by means of existing, more powerful tools.
 
 ## Hardware Testing
 
-The waveform generator above is hardware synthesisable. The same test-bench can therefore be used to test the system on real hardware, optionally using a firmware-based logic analyser.
+ALCHA test-benches are hardware synthesisable. The same test-bench can therefore be used to test the system on real hardware, optionally using a firmware-based logic analyser.
 
 [[include repo=code path=Wiki/MarkDown/Footer.md]]
 
