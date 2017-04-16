@@ -10,10 +10,10 @@ Shift          = Additive       {("<<" | ">>")              Additive      };
 Additive       = Multiplicative {("+"  | "-" )              Multiplicative};
 Multiplicative = Exponential    {("*"  | "/" | "%")         Exponential   };
 Exponential    = Array          { "^"                       Array         };
-Array          = Replication    { "~"                       Replication   };
 
-Replication   = Concatenation ["\" Primary];
-Concatenation = Reduction {":" Reduction};
+Array         = (Concatenation {"~" Concatenation}) | ("[" Array {"," Array} "]");
+Concatenation = Replication {":" Replication};
+Replication   = Reduction ["\" Primary];
 
 Reduction  = ["&" | "~&" | "|" | "~|" | "#" | "~#" | "!"] Range;
 
@@ -24,6 +24,7 @@ Postfix = Cast {
            "[" [Array        ] "]" | (* Slice *)
            "(" [ParameterList] ")" | (* Function call *)
            "."  Identifier         | (* Member reference *)
+           "::" Identifier         | (* Attribute reference *)
            "++"                    | (* Increment *)
            "--"                    | (* Decrement *)
            "!"                       (* Factorial *)

@@ -29,6 +29,7 @@ Post-fix | `A++`  | Increment after use
          | `A--`  | Decrement after use
          | `A!`   | Factorial
          | `A.B`  | Access `B` in namespace (or class instance) `A`
+         | `A::B` | Access the attribute `B` of `A`
          | `A(B)` | Call function `A` with parameter(s) `B`
          | `A[B]` | Slice array `A` with elements in array `B`
 ||
@@ -49,11 +50,12 @@ Reduction | ` &A`        | AND-reduce
           | `~#A`        | XNOR-reduce
           | ` !A`        | Logical compliment
 ||
-Concatenate | `A:B:C` | Bit-wise concatenate
-||
 Replicate   | `A \ B` | Bit-wise replicate `A`, `B` times
 ||
+Concatenate | `A:B:C` | Bit-wise concatenate
+||
 Array | `A ~ B ~ C` | Concatenate arrays `A`, `B` and `C`
+      | `[A, B, C]` | Concatenate arrays `A`, `B` and `C`
 ||
 Exponential | `A ^ B` | Raise `A` to the power of `B`
 ||
