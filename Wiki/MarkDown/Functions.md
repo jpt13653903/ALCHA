@@ -146,10 +146,10 @@ In order to illustrate the use of functions within state machines, here follows 
 
     // Initialise some SPI-based peripheral
     fsm(Clk, Reset){
-     Send(0x12345678);
-     Send(0xFEDCBA98);
-     Send(18271662);
-     Send(0b11010011:0x123456);
+     SPI_Send(0x12345678);
+     SPI_Send(0xFEDCBA98);
+     SPI_Send(18271662);
+     SPI_Send(0b11010011:0x123456);
     }
     //------------------------------------------------------------------------------
 

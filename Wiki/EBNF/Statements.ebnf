@@ -1,7 +1,7 @@
 StatementBlock = Statement | ("{" [Statements] "}");
 
 Alias  = "alias" Identifier "=" Expression ";";
-Import = "import" String ["as" Identifier];
+Import = "import" String ["as" Identifier] ";";
 Group  = "group" [AttributeList] [Identifier] "{" [Statements] "}";
 
 (* The result from "Postfix" or "Array" is checked for syntactic validity before
@@ -35,18 +35,19 @@ Jump = ("return" | "break" | "continue") [Expression] ";";
 
 (* The first parameter must evaluate to a clock net.  If the RTL is inside
    a function, the clock is inherited from the calling state machine. *)
-RTL = "rtl" ["(" [ParameterList] ")"] StatementBlock;
+RTL = "rtl" [AttributeList] ["(" [ParameterList] ")"] StatementBlock;
 
 (* The first parameter must evaluate to a clock net and the second parameter 
    to a reset net.  If the FSM is inside a function, the parameters are
    inherited from the calling state machine. *)
-FSM = "fsm" ["(" [ParameterList] ")"] StatementBlock;
+FSM = "fsm" [AttributeList] ["(" [ParameterList] ")"] StatementBlock;
 
 (* The strings form a list of file names to include in the project, the 
    Assignments form a list of HDL parameter assignments and the Definitions 
    are port definitions. *)
 (* The "Assignment" is obtained through "Other" *)
-HDL = "hdl" "(" String {"," String} ")" Identifier ["(" {Assignment} ")"] 
-            "{" {Definition} "}";
+HDL = "hdl" [AttributeList] "(" String {"," String} ")" Identifier
+            ["(" {Assignment} ")"] 
+             "{" {Definition} "}";
 (*----------------------------------------------------------------------------*)
 

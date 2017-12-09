@@ -1,7 +1,7 @@
 Module = [Statements];
 
 Statements = Statement {Statement};
-Statement  = Definition | ClassDefinition 
+Statement  = Definition | ClassDefinition | EnumDefinition
            | Alias | Import | Group
            | IfStatement | ForLoop | WhileLoop  | LoopLoop | Switch | Jump
            | FunctionCall | NamespacePush | Assignment

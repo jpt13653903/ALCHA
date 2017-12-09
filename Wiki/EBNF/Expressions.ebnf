@@ -11,7 +11,7 @@ Additive       = Multiplicative {("+"  | "-" )              Multiplicative};
 Multiplicative = Exponential    {("*"  | "/" | "%")         Exponential   };
 Exponential    = Array          { "^"                       Array         };
 
-Array         = (Concatenation {"~" Concatenation}) | ("[" Array {"," Array} "]");
+Array         = (Concatenation {"~" Concatenation});
 Concatenation = Replication {":" Replication};
 Replication   = Reduction ["\" Primary];
 
@@ -36,7 +36,9 @@ CastEpr = "'" (
            ("(" Expression [(",") Expression] ")")
           );
 
-Primary = Identifier | Literal | String | ("(" Expression ")");
+Primary = Identifier | Literal | ArrayLiteral | String | ("(" Expression ")");
+
+ArrayLiteral = "[" Array {"," Array} "]";
 
 ParameterList = [Identifier "="] Expression {"," [Identifier "="] Expression};
 (*----------------------------------------------------------------------------*)
