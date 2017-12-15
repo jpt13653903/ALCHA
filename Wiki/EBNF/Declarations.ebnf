@@ -5,7 +5,7 @@ Statement  = Definition | ClassDefinition | EnumDefinition
            | Alias | Import | Group
            | IfStatement | ForLoop | WhileLoop  | LoopLoop | Switch | Jump
            | FunctionCall | NamespacePush | Assignment
-           | RTL | FSM | HDL | ";";
+           | RTL | FSM | HDL | Actor | ";";
 
 Definition = (BaseType | TypeIdentifier | "void" | "auto")
              [CastEpr] [AttributeList] IdentifierList;
@@ -35,7 +35,7 @@ DefParameterList = DefParameter {"," DefParameter};
 DefParameter     = [BaseType | TypeIdentifier] Identifier {"[" "]"} [Initialiser];
 
 AttributeList       = "<" AttributeAssignment {, AttributeAssignment} ">";
-AttributeAssignment = Identifier "=" Primary;
+AttributeAssignment = Identifier "=" Array;
 
 EnumDefinition = "enum" Identifier "{" Identifier {"," Identifier} "}";
 

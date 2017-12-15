@@ -33,6 +33,8 @@ Switch = "switch" "(" Expression ")" "{"
    which is 1 by default. *)
 Jump = ("return" | "break" | "continue") [Expression] ";";
 
+(* Only 
+
 (* The first parameter must evaluate to a clock net.  If the RTL is inside
    a function, the clock is inherited from the calling state machine. *)
 RTL = "rtl" [AttributeList] ["(" [ParameterList] ")"] StatementBlock;
@@ -47,7 +49,9 @@ FSM = "fsm" [AttributeList] ["(" [ParameterList] ")"] StatementBlock;
    are port definitions. *)
 (* The "Assignment" is obtained through "Other" *)
 HDL = "hdl" [AttributeList] "(" String {"," String} ")" Identifier
-            ["(" {Assignment} ")"] 
+            ["(" {Assignment} ")"]
              "{" {Definition} "}";
+
+Actor = "actor" StatementBlock;
 (*----------------------------------------------------------------------------*)
 
