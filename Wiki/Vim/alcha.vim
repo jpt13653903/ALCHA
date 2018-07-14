@@ -10,7 +10,7 @@ elseif exists("b:current_syntax")
 endif
 
 " Operators
-syn match AlchaOperator "<<=\|>>=\|++\|--\|->\|\.{\|\~&\|\~|\|\~\^\|<<\|>>\|<=\|>=\|==\|!=\|&&\|||\|:=\|\~=\|+=\|-=\|\*=\|\/=\|%=\|&=\||=\|\^=\|'\|@\|\.\|&\||\|\^\|\~\|:\|\\\|+\|-\|\*\|\/\|%\|<\|>\|!\|?\|=\|(\|)\|\[\|\]\|{\|}\|,\|;"
+syn match AlchaOperator "<<=\|>>=\|++\|--\|->\|\.{\|\~&\|\~|\|\~\^\|<<\|>>\|<=\|>=\|==\|!=\|&&\|||\|:=\|\~=\|+=\|-=\|\*=\|\/=\|%=\|&=\||=\|\^=\|'\|@\|\.\|&\||\|\^\|\~\|:\|\\\|+\|-\|\*\|\/\|%\|<\|>\|!\|?\|=\|(\|)\|\[\|\]\|{\|}\|,\|;\|\#\|\$"
 
 " Literal     = (("0b" Binary) | ("0o" Octal) | ("0x" Hexadecimal) | Decimal) [Exponent] ["i" | "j"];
 " Binary      = (B {B | "_"} ["." {B | "_"}]) | ("." B {B | "_"});
@@ -27,10 +27,10 @@ syn match AlchaConstant "\<0o\(\o\|_\)*\(\.\(\o\|_\)*\)\?\([pPeE]_*\([+-]\?\(\d\
 syn match AlchaConstant "\<0x\(\x\|_\)*\(\.\(\x\|_\)*\)\?\([pPeE]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"   contains=AlchaExp,AlchaPrefix
 
 " Keywords
-syn match AlchaKeyword "\<\(__FILE__\|__LINE__\|__DATE__\|__TIME__\|__CLASS__\|__FUNCTION__\|__NAMESPACE__\|alias\|void\|auto\|pin\|net\|clk\|byte\|char\|num\|class\|enum\|group\|if\|else\|for\|while\|loop\|switch\|case\|default\|import\|as\|return\|break\|continue\|rtl\|fsm\|hdl\)\>"
+syn match AlchaKeyword "\<\(__FILE__\|__LINE__\|__DATE__\|__TIME__\|__CLASS__\|__FUNCTION__\|__NAMESPACE__\|alias\|void\|auto\|pin\|net\|clk\|byte\|char\|num\|class\|enum\|group\|if\|else\|for\|while\|loop\|switch\|case\|default\|import\|as\|return\|break\|continue\|rtl\|fsm\|hdl\|actor\|wait\|in\)\>"
 
 " Strings
-syn match  AlchaEscape display contained "\\n\|\\t\|\\v\|\\b\|\\r\|\\f\|\\a\|\\\\\|\\?\|\\'\|\\\"\|\\x\x\{2}\|\\u\x\{4}\|\\U\x\{8}\|\\\o\{1,11}\|\\&\(\d\|\a\)\{-};"
+syn match  AlchaEscape display contained "\\n\|\\t\|\\v\|\\b\|\\r\|\\f\|\\a\|\\\\\|\\?\|\\'\|\\\"\|\\x\x\{2}\|\\u\x\{4}\|\\U\x\{8}\|\\\o\{1,11}\|\\&\(\d\|\a\)\{-};\|{.\{-}}"
 syn region AlchaString start=/"/ skip=/\\"/ end=/"/ contains=@Spell,AlchaEscape
 
 " Comment

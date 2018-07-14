@@ -64,10 +64,11 @@ The file contents are kept in arrays, which are buffered in RAM.  Large files ar
 
 While reading and writing text-based files, it is often required to convert between numerical variables (of type `num`) and strings.  The functions presented below can be used for this purpose:
 
-Function    | Description
---------    | -----------
-`num2str`   | Converts a number to a string.  The base and other parameters are controlled by means of function parameters.
-`str2num`   | Converts a string to a number.  The scripting interpreter makes use of the same expression engine used in [Engineering Calculator](https://sourceforge.net/p/alwaysontopcalc/wiki).
+Function | Description
+-------- | -----------
+`$`      | Stringify operator.  It converts whatever expression comes next to a decimal representation.
+`format` | Converts a number to a string.  The base and other parameters are controlled by means of function parameters.
+`eval`   | Converts a string to a number.  The scripting interpreter makes use of the same expression engine used in [Engineering Calculator](https://sourceforge.net/p/alwaysontopcalc/wiki).
 
 ## Dynamic Arrays
 
@@ -83,7 +84,7 @@ Scriping arrays can be declared as dynamic by specifying empty square brackets. 
     File ~= "Some Body...\n";
     // Some more code...
     File ~= "Some Body...\n";
-    textwrite(File, "My Log File.log");
+    textwrite("My Log File.log", File);
 
 ## Shell Commands
 
