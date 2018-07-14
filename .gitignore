@@ -2,11 +2,3 @@
 *.log
 *.zip
 
-CodeBlocks/bin/*
-CodeBlocks/obj/*
-InkScape/*
-
-**/db/*
-**/incremental_db/*
-**/output_files/*
-
