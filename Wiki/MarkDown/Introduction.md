@@ -22,9 +22,9 @@ Manually specifying multi-cycle paths is a labour-intensive and tedious process.
 
 Target Date   | Feature
 -----------   | -------
-December 2017 | Prototype compiler with elementary simulation
-June 2018     | Compilation to Altera projects
-December 2018 | Compilation to Xilinx projects
+December 2018 | Prototype compiler with elementary simulation
+June 2019     | Compilation to Altera projects
+December 2019 | Compilation to Xilinx projects
 
 ## References
 ### Similar Projects
