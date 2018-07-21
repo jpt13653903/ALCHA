@@ -26,6 +26,10 @@ December 2018 | Prototype compiler with elementary simulation
 June 2019     | Compilation to Altera projects
 December 2019 | Compilation to Xilinx projects
 
+## Source
+
+The source is available from the [git repository](https://sourceforge.net/p/alcha/code/ci/master/tree/) and [GitHub](https://github.com/jpt13653903/ALCHA).
+
 ## References
 ### Similar Projects
 
