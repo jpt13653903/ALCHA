@@ -82,20 +82,31 @@ tarp9ub3f
 tar
 target823
 
-target pin net clk int rat float complex in out 
-class if else for while loop switch case default import as rtl fsm hdl
+// Keywords
+void auto pin net byte char num true false
+class enum struct group alias
+input output public private protected
+if else for while loop switch case default import as
+return break continue goto func inline rtl fsm hdl
+stimulus emulate sequence assert wait
 
 // Testing the token tree Match function
 ++---=-=-====---=-=-=-=-+++++
 @{
 }
 
-Operator   = ++  -- '  -> @  .  .{ &  ~& 
-             |   ~| ^  ~^ ~  :  \  +  -
-             *   /  %  << >> <  >  <= >=
-             ==  != !  && || ?  =  := ~=
-             +=  -= *= /= %= &= |= ^= <<= 
-             >>= (  )  [  ]  {  }  ,  ;
+Operator ++  --  '  ..  :  .  .{
+         &  ~&  |  ~|  ^  ~^  ~  !
+         :(  :[  `
+         +  -  *  /  %  **
+         <<  >>  <  >  <=  >=  ==  !=
+         ?  ?:  ?.
+         =  :=  ~=  +=  -=  *=  /=  %=
+         ^=  &=  |=  **=  <<=  >>=
+         (  )  [  ]  {  }  ,  ;
+         $  $(
+         @  #  ##  [*  [->  [=  |->  |=>
+         ||  &&  &&&
 
 "This is a string of keywords target pin net
 \n \t \v \b \r \f \a \\ \? \' \" \x0FBC \uABABAB \UEFEFEFEFEFEFEFE \76455626126271 \&ndash;
@@ -103,8 +114,8 @@ Some more string"
 
 
 
-1234567890987654321.
-.1234567890987654321
+1234567890987654321.0
+0.1234567890987654321
 1234567890987654321.1234567890987654321e-50
 123.000
 

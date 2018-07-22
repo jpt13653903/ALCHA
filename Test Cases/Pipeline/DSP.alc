@@ -1,17 +1,17 @@
-set_target<
- type = "simulation",
- time = "1 ms"
->;
+group target{
+  char type[] = "simulation";
+  num  time   = 1e-3;
+};
 
 class DATA{
- net    Valid;
- net'32 Data;
+  net     Valid;
+  net(32) Data;
 }
 
-in pin<frequency = "50 MHz"> Clk;
-   clk<frequency = "20 MHz">(Clk) ADC_Clk;
+pin<frequency = 50e6> Clk;
+net<frequency = 20e6> ADC_Clk;
 
-in pin Reset;
+pin Reset;
 
 import "AD7400" as ADC;
 ADC.Driver(ADC_Clk, Reset);

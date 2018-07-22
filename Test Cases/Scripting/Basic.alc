@@ -1,6 +1,6 @@
-int      x = 5;
-//rat      y = 7/3;
-//float'64 z = sin(x * y);
+num     x = 5;
+num     y = 7/3;
+num(64) z = sin(x * y);
 
 print(x);
 

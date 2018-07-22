@@ -1,19 +1,18 @@
-class Adder(int N){
- in  net'N A;
- in  net'N B;
- out net'N Y;
+class Adder(num N){
+ input  net(N) A;
+ input  net(N) B;
+ output net(N) Y;
 
  Y = B + C;
 }
 
-net' 8        A;        // Unsigned
-net'(7, -128) A_signed; // 2's compliment signed 8-bit 
-net' 8        B;
-net' 8        C;
+net(8      ) A;        // Unsigned
+net(7, -128) A_signed; // 2's compliment signed 8-bit 
+net(8      ) B;
+net(8      ) C;
 
-Adder Adder1(8);
+Adder(8) Adder1;
 A = Adder.Y;
 Adder.A = B;
 Adder.B = C;
-
 

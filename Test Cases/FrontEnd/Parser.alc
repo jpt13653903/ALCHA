@@ -1,7 +1,7 @@
 alias A    = Namespace.SubSpace.ClassName.Member;
-alias Calc = 8*4+B'cast.member;
+alias Calc = 8*4+B@cast.member;
 
-/*
+
 print(__FILE__);
 print(__LINE__);
 print(__CLASS__);
@@ -14,25 +14,25 @@ enum STATE {Idle, Writing, Done, Others}
 STATE State;
 
 switch(State){
- case(Idle){
-  // Do some stuff
-  State = Writing;
- }
- case(Writing){
-  // Do some stuff
-  State = Done;
- }
- case(Done){
-  // Do some stuff
-  State = Idle;
- }
- default{
-  // Do some stuff
- }
+  case(Idle){
+    // Do some stuff
+    State = Writing;
+  }
+  case(Writing){
+    // Do some stuff
+    State = Done;
+  }
+  case(Done){
+    // Do some stuff
+    State = Idle;
+  }
+  default{
+    // Do some stuff
+  }
 }
 
-pin'STATE PinState; // Pin enumeration
-net'STATE SigState; // Net enumeration
+pin(STATE) PinState; // Pin enumeration
+net(STATE) SigState; // Net enumeration
 
 x = 123.456e789;
 x = 1____2____3____.____4____5____6____e____7____8____9____;
@@ -47,15 +47,15 @@ x = 0b._1010101,
 x = 0b_.1010101;
 x = 0b_._1010101;
 
-net  '  8 x = 3, y = 5;      // Generate an assignment with AST_Declaration left-child
-float'300 y = sin(x); // and AST_Expression right-child
+net(  8) x = 3, y = 5; // Generate an assignment with AST_Declaration left-child
+num(300) y = sin(x);   // and AST_Expression right-child
 
 class<attribute = "value"> MyClass(int x): A, B, C(7){};
 
 Namespace.MyClass(parameters) <attribute = "value"> Instance;
 
-A = B'MyClass + C'(NameSpace.TheOtherClass);
-A = B'MyClass + C'TheOtherClass.Member;
+A = B@MyClass + C@(NameSpace.TheOtherClass);
+A = B@MyClass + C@TheOtherClass.Member;
 
 return 3;
 break 78;
@@ -65,17 +65,16 @@ return;
 break;
 continue;
 
-net            w = e;
-net'  8        x = e'  8       ;
-net'(32, 2*pi) z = e'(32, 2*pi);
+net           w = e;
+net( 8      ) x = e@  8       ;
+net(32, 2*pi) z = e@(32, 2*pi);
 
-a  = b ^ c;
+a  = b ** c;
 a  = b # c;
 a  = b ~# c;
-a  = #b;
-a  = ~#b;
+a  = ^b;
+a  = ~^b;
 a ^= b;
-a #= b;
 
 a = :b + :c;
 a = :b:c;
@@ -83,48 +82,48 @@ a = :b:::c;
 
 a = ++x * y--;
 
-a = x - x^3/3! + x^5/5! - x^7/7!;
+a = x - x**3/3! + x**5/5! - x**7/7!;
 
-group<voltage = "2.5 V", current = "5 A"> Named_Group{
- in  pin<location = "N5"> B1;
- out pin<location = "A7"> LED7;
+group<voltage = 2.5, current = 5> Named_Group{
+ input  pin<location = "N5"> B1;
+ output pin<location = "A7"> LED7;
 }
-group<voltage = "2.5 V", current = "5 A">{
- in  pin<location = "N5"> B1;
- out pin<location = "A7"> LED7;
+group<voltage = 2.5, current = 5>{
+ input  pin<location = "N5"> B1;
+ output pin<location = "A7"> LED7;
 }
 
 // Target definition
-set_target<
- Type = "Simulation",
- Time = "1 ms"
->;
+group target{
+  char Type[] = "Simulation";
+  num  Time   = 1e-3;
+};
 
 net x;
 pin<location = "AB11"> y, z, w;
 
 pin<Attrib = "xyz"> y[1], z[1][2], w[1][2][3];
 
-in pin<frequency = "50 MHz", location = "C8" > Clk;
-   clk<frequency = "10 MHz", type     = "PLL"> CPU_Clk;
+input pin<frequency = 50e6, location = "C8"> Clk;
+      net<frequency = 10e6                 > CPU_Clk;
 
-out pin'3<location = "A, B, C"> Output;
+output pin(3)<location = ["A", "B", "C"]> Output;
 
-net' 8       X;
-net'(12, -8) Y[A][A.B][A.B.C][8];
+net( 8    ) X;
+net(12, -8) Y[A][A.B][A.B.C][8];
 
-int         A, B, C;
-rat         D[]; // Dynamic array;
-float  '80  E;
-complex'120 F;
+num      A, B, C;
+num      D[]; // Dynamic array;
+num( 80) E;
+num(120) F = 1 + 2j;
 
 void X(){}
 
 // Class instance
-Class Instance;
+Class   Reference;
 Class() Instance;
 Namespace.Class Instance;
-Namespace.Class(Z+7, 5->8@2, sin(x)) Instance;
+Namespace.Class(Z+7, 5..8:2, sin(x)) Instance;
 
 // Function call
 Func();
@@ -132,15 +131,15 @@ Class.Func();
 Namespace.Class.Func();
 
 // RHS expression testing...
-A  =  (x+y)*z?A:(B:C:5'3:9);
-A +=  A.B[5].C(5->3, 7->2@-1);
+A  =  (x+y)*z?A: :(B,C,5@3,9);
+A +=  A.B[5].C(5..3, 7..2:-1);
 A *=  A + B++ - C--;
 A %=  7 << &A.B(7).C[5].D % 3;
-A /=  A:B'(3,(7+4)):C\(8+C);
-A ~=  A~B + C~D * F~8->77@2;
-A <<= A[][5->3~7][][5~2~9~A];
+A /=  :(A,B@(3,(7+4)),C`(8+C);
+A ~=  :[A,B + C,D * F,8..77:2];
+A <<= A[][5..3,7][][5,2,9,A];
 
-A = a + b ~ c*5 - d;
+A = a + :[b , c]*5 - d;
 
 // These are illegal
 // Namespace.Class.Func() = 5;
@@ -155,10 +154,10 @@ Class(A, B(x, y(), z), C) A, B, C[5], D[6][9];
 // Function definition
 Class Function(){}
 Class Function(A, B){}
-net'8 Func(){}
-net'8 Func(x, y, A, B, C, X){}
-net'8 Func[7](x, y, A, B, C, X){
- x <<= y(B);
+net(8) Func(){}
+net(8) Func(x, y, A, B, C, X){}
+net(8) Func[7](x, y, A, B, C, X){
+  x <<= y(B);
 }
 void Func(x){}
 
@@ -168,10 +167,10 @@ auto Func(int x, y, net z[]){}
 Namespace.Func(Calling, Function);
 
 // LHS Expression
-A~B~C = D;
-A:B:C = D;
+:[A,B,C] = D;
+:(A,B,C) = D;
 A.B.C = D;
-A.B[5->7].C = D;
+A.B[5..7].C = D;
 
 x = fft(Z+7+8i, Hanning, 1024);
 
@@ -184,9 +183,9 @@ A.B.C.{
 
 // Target query
 if(Target.Type == "Simulation"){
- x = 3;
+  x = 3;
 }else{
- x = 5;
+  x = 5;
 }
 
 if(x+2 == 7-1) print("x");
@@ -196,15 +195,15 @@ if(x);
 if(y) A();
 if(z) B(); else C();
 
-for(j in 5->7){
- Do Something;
+for(j in 5..7){
+  !! Do Something;
 }
-for(x in 5~7~1);
+for(x in [5,7,1]);
 
 while(x == 3) y++;
 while(1){
- Stuff();
- x = 7;
+  Stuff();
+  x = 7;
 }
 
 loop(7) x--;
@@ -214,74 +213,74 @@ loop{
 }
 
 switch(A){
- case(B, C, D){
-  // if A is equal to B, C or D, do this
-  x = 3;
- }
- case(E){
-  // if A is equal to E, do this
-  y = 4;
- }
- default{
-  // otherwise do this
-  z = 5;
- }
+  case(B, C, D){
+    // if A is equal to B, C or D, do this
+    x = 3;
+  }
+  case(E){
+    // if A is equal to E, do this
+    y = 4;
+  }
+  default{
+    // otherwise do this
+    z = 5;
+  }
 }
 
 rtl{
- x = 4;
- y = 5;
+  x = 4;
+  y = 5;
 }
 rtl(Clk) Count++;
 
 fsm{
- x = 4;
- y = 5;
+  x = 4;
+  y = 5;
 }
 fsm(Clk, Reset) Count++;
 
 hdl("Library/RS232.v", "Library/RS232_Rx.v", "Library/RS232_Tx.v") RS232_V(
- CountBits =  5; // Parameters 
- Count0_5  =  8; 
- Count1    = 17; 
- Count1_5  = 25;
+  CountBits =  5; // Parameters 
+  Count0_5  =  8; 
+  Count1    = 17; 
+  Count1_5  = 25;
 ){
- in net nReset;
- in net Clk;
-
- in  net'8 TxData;
- in  net   Send;
- out net   Busy;
-
- out net   DataReady;
- out net'8 RxData;
- in  net   Ack;
-
- out net Tx;
- in  net Rx;
+  input net nReset;
+  input net Clk;
+ 
+  input  net(8) TxData;
+  input  net    Send;
+  output net    Busy;
+ 
+  output net    DataReady;
+  output net(8) RxData;
+  input  net    Ack;
+ 
+  output net    Tx;
+  input  net    Rx;
 }
 
 class X{
- net Y;
+  net Y;
 }
 
 class P: X{
- net A;
+  net A;
 }
 
 class X(Z){
- net Y;
+  net Y;
 }
 
 class P(A): X(B){
- net C;
+  net C;
 }
 
-class<Attribute1 = "Value1", A2 = "V2"> Child(A, B, C): Parent(5->7, B.C(), X^Y*Z){
- net'(8,16) A, B, C;
- A  = 3;
- B  = 5 + A;
- C := A * B;
+class<Attribute1 = "Value1", A2 = "V2"> Child(A, B, C): Parent(5..7, B.C(), X**Y*Z){
+  net(8,16) A, B, C;
+  A  = 3;
+  B  = 5 + A;
+  C := A * B;
 }
 
 import "RS232";
@@ -292,8 +291,8 @@ X = Y+2;
 X = "Hello \&ohm; \&odblac; \&ZHcy; \&Pi; \&pi; \&uparrow; \&Afr; \&acE;";
 
 fsm(Clk, Reset){
- loop{
+  loop{
 
- }
+  }
 }
-*/
+

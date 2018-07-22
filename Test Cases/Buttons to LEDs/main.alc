@@ -1,5 +1,5 @@
 import "../Target/Minimal BeMicro Max 10"
 
 // Global assignment
-LED := Button:Button;
+LED := :(Button, Button);
 

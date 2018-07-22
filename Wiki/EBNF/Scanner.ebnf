@@ -36,6 +36,7 @@ Keyword    = "void"     | "auto"
            | "byte"     | "char"    | "num"
            | "true"     | "false"
            | "class"    | "enum"    | "struct"   | "group" | "alias"
+           | "input"    | "output"
            | "public"   | "private" | "protected"
            | "if"       | "else"    | "for"      | "while" | "loop"
            | "switch"   | "case"    | "default"
@@ -46,7 +47,7 @@ Keyword    = "void"     | "auto"
            | "stimulus" | "emulate" | "sequence" | "assert" | "wait" ;
 
 Operator   = "++" | "--" | "'"  | ".."  | ":"   | "."   | ".{"
-           | "&"  | "~&" | "|"  | "~|"  | "^"   | "~^"  | "~"
+           | "&"  | "~&" | "|"  | "~|"  | "^"   | "~^"  | "~"   | "!"
            | ":(" | ":[" | "`"
            | "+"  | "-"  | "*"  | "/"   | "%"   | "**"
            | "<<" | ">>" | "<"  | ">"   | "<="  | ">="  | "=="  | "!="
@@ -58,8 +59,7 @@ Operator   = "++" | "--" | "'"  | ".."  | ":"   | "."   | ".{"
            | "@"  | "#"  | "##" | "[*"  | "[->" | "[="  | "|->" | "|=>" 
            | "||" | "&&" | "&&&" ;
 
-Literal        = (("0b" Binary) | ("0o" Octal) | ("0x" Hexadecimal) | Decimal)
-                 [Exponent] ["i" | "j"];
+Literal        = Binary | Octal | Hexadecimal | Decimal [Exponent] ["i" | "j"];
 
 Identifier     = (NonDigit {D | NonDigit}) -Keyword; 
 
@@ -71,10 +71,10 @@ EscapeSequence = "\n" | "\t" | "\v" | "\b" | "\r" | "\f"
                | ("\" O {O}) 
                | ("\&" ? Any of the HTML-5 character names ? ";");
 
-Binary      = (B {B | "_"} ["." {B | "_"}]) | ("." B {B | "_"});
-Octal       = (O {O | "_"} ["." {O | "_"}]) | ("." O {O | "_"});
-Decimal     = (D {D | "_"} ["." {D | "_"}]) | ("." D {D | "_"});
-Hexadecimal = (H {H | "_"} ["." {H | "_"}]) | ("." H {H | "_"});
+Binary      = "0b" ((B | "_") {B | "_"} ["." (B | "_") {B | "_"}]);
+Octal       = "0o" ((O | "_") {O | "_"} ["." (O | "_") {O | "_"}]);
+Decimal     =        D        {D | "_"} ["." (D | "_") {D | "_"}] ;
+Hexadecimal = "0x" ((H | "_") {H | "_"} ["." (H | "_") {H | "_"}]);
 
 Exponent    = ("p" | "P" | "e" | "E") ["-" | "+"] D {D};
 (*----------------------------------------------------------------------------*)

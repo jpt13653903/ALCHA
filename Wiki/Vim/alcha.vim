@@ -10,7 +10,76 @@ elseif exists("b:current_syntax")
 endif
 
 " Operators
-syn match AlchaOperator "<<=\|>>=\|++\|--\|->\|\.{\|\~&\|\~|\|\~\^\|<<\|>>\|<=\|>=\|==\|!=\|&&\|||\|:=\|\~=\|+=\|-=\|\*=\|\/=\|%=\|&=\||=\|\^=\|'\|@\|\.\|&\||\|\^\|\~\|:\|\\\|+\|-\|\*\|\/\|%\|<\|>\|!\|?\|=\|(\|)\|\[\|\]\|{\|}\|,\|;\|\#\|\$"
+syn match AlchaPunctuator "'"
+syn match AlchaOperator   "-"
+syn match AlchaOperator   "--"
+syn match AlchaOperator   "#"
+syn match AlchaOperator   "##"
+syn match AlchaOperator   "%"
+syn match AlchaOperator   "%="
+syn match AlchaOperator   "&"
+syn match AlchaOperator   "&&"
+syn match AlchaOperator   "&&&"
+syn match AlchaOperator   "&="
+syn match AlchaBracket    "("
+syn match AlchaBracket    ")"
+syn match AlchaOperator   "\*"
+syn match AlchaOperator   "\*\*"
+syn match AlchaOperator   "\*\*="
+syn match AlchaOperator   "\*="
+syn match AlchaPunctuator ","
+syn match AlchaOperator   "/"
+syn match AlchaOperator   "/="
+syn match AlchaOperator   ":"
+syn match AlchaBracket    ":("
+syn match AlchaBracket    ":\["
+syn match AlchaOperator   ":="
+syn match AlchaPunctuator ";"
+syn match AlchaOperator   "?"
+syn match AlchaOperator   "?:"
+syn match AlchaPunctuator "?\."
+syn match AlchaOperator   "@"
+syn match AlchaOperator   "\!"
+syn match AlchaOperator   "\!="
+syn match AlchaOperator   "\$"
+syn match AlchaOperator   "\$("
+syn match AlchaPunctuator "\."
+syn match AlchaOperator   "\.\."
+syn match AlchaBracket    "\.{"
+syn match AlchaBracket    "\["
+syn match AlchaBracket    "\[\*"
+syn match AlchaBracket    "\[="
+syn match AlchaOperator   "\[->"
+syn match AlchaBracket    "\]"
+syn match AlchaOperator   "\^"
+syn match AlchaOperator   "\^="
+syn match AlchaOperator   "\~"
+syn match AlchaOperator   "\~&"
+syn match AlchaOperator   "\~\^"
+syn match AlchaOperator   "\~|"
+syn match AlchaOperator   "\~="
+syn match AlchaOperator   "`"
+syn match AlchaBracket    "{"
+syn match AlchaOperator   "|"
+syn match AlchaOperator   "||"
+syn match AlchaOperator   "|="
+syn match AlchaOperator   "|=>"
+syn match AlchaOperator   "|->"
+syn match AlchaBracket    "}"
+syn match AlchaOperator   "+"
+syn match AlchaOperator   "++"
+syn match AlchaOperator   "+="
+syn match AlchaOperator   "<"
+syn match AlchaOperator   "<<"
+syn match AlchaOperator   "<<="
+syn match AlchaOperator   "<="
+syn match AlchaOperator   "="
+syn match AlchaOperator   "-="
+syn match AlchaOperator   "=="
+syn match AlchaOperator   ">"
+syn match AlchaOperator   ">="
+syn match AlchaOperator   ">>"
+syn match AlchaOperator   ">>="
 
 " Literal     = (("0b" Binary) | ("0o" Octal) | ("0x" Hexadecimal) | Decimal) [Exponent] ["i" | "j"];
 " Binary      = (B {B | "_"} ["." {B | "_"}]) | ("." B {B | "_"});
@@ -20,27 +89,50 @@ syn match AlchaOperator "<<=\|>>=\|++\|--\|->\|\.{\|\~&\|\~|\|\~\^\|<<\|>>\|<=\|
 " Exponent    = ("p" | "P" | "e" | "E") ["-" | "+"] D {D};
 syn match AlchaPrefix display contained "0b\|0o\|0x"
 syn match AlchaExp display contained "[pPeE]_*\([+-]\?\(\d\|_\)\+\)"
-syn match AlchaConstant "\<\d\(\d\|_\)*\(\.\(\d\|_\)*\)\?\([pPeE]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"   contains=AlchaExp
-syn match AlchaConstant "\(\.\d\(\d\|_\)*\)\([pPeE]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"                 contains=AlchaExp
-syn match AlchaConstant "\<0b[01_]*\(\.[01_]*\)\?\([pPeE]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"           contains=AlchaExp,AlchaPrefix
-syn match AlchaConstant "\<0o\(\o\|_\)*\(\.\(\o\|_\)*\)\?\([pPeE]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"   contains=AlchaExp,AlchaPrefix
-syn match AlchaConstant "\<0x\(\x\|_\)*\(\.\(\x\|_\)*\)\?\([pPeE]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"   contains=AlchaExp,AlchaPrefix
+syn match AlchaConstant "\<\d\(\d\|_\)*\(\.\(\d\|_\)\+\)\?\([pPeE]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"    contains=AlchaExp
+syn match AlchaConstant "\<0b[01_]\+\(\.[01_]\+\)\?\([pPeE]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"           contains=AlchaExp,AlchaPrefix
+syn match AlchaConstant "\<0o\(\o\|_\)\+\(\.\(\o\|_\)\+\)\?\([pPeE]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"   contains=AlchaExp,AlchaPrefix
+syn match AlchaConstant "\<0x\(\x\|_\)\+\(\.\(\x\|_\)\+\)\?\([pPeE]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"   contains=AlchaExp,AlchaPrefix
+
+" Types
+syn match AlchaType "\<\(void\|auto\|pin\|net\|byte\|char\|num\)\>"
 
 " Keywords
-syn match AlchaKeyword "\<\(__FILE__\|__LINE__\|__DATE__\|__TIME__\|__CLASS__\|__FUNCTION__\|__NAMESPACE__\|alias\|void\|auto\|pin\|net\|clk\|byte\|char\|num\|class\|enum\|group\|if\|else\|for\|while\|loop\|switch\|case\|default\|import\|as\|return\|break\|continue\|rtl\|fsm\|hdl\|actor\|wait\|in\)\>"
+syn match AlchaSpecial      "\<\(__FILE__\|__LINE__\|__DATE__\|__TIME__\|__CLASS__\|__FUNCTION__\|__NAMESPACE__\)\>"
+syn match AlchaKeyword      "\<\(true\|false\)\>"
+syn match AlchaStructure    "\<\(class\|enum\|struct\|group\|alias\)\>"
+syn match AlchaStorageClass "\<\(input\|output\)\>"
+syn match AlchaStorageClass "\<\(public\|private\|protected\)\>"
+syn match AlchaConditional  "\<\(if\|else\)\>"
+syn match AlchaRepeat       "\<\(for\|while\|loop\)\>"
+syn match AlchaConditional  "\<\(switch\|case\|default\)\>"
+syn match AlchaInclude      "\<\(import\|as\)\>"
+syn match AlchaKeyword      "\<\(return\|break\|continue\|goto\)\>"
+syn match AlchaKeyword      "\<\(func\|inline\)\>"
+syn match AlchaKeyword      "\<\(rtl\|fsm\|hdl\)\>"
+syn match AlchaKeyword      "\<\(stimulus\|emulate\|sequence\|assert\|wait\)\>"
 
 " Strings
-syn match  AlchaEscape display contained "\\n\|\\t\|\\v\|\\b\|\\r\|\\f\|\\a\|\\\\\|\\?\|\\'\|\\\"\|\\x\x\{2}\|\\u\x\{4}\|\\U\x\{8}\|\\\o\{1,11}\|\\&\(\d\|\a\)\{-};\|{.\{-}}"
+syn match  AlchaEscape display contained "\\n\|\\t\|\\v\|\\b\|\\r\|\\f\|\\a\|\\\\\|\\?\|\\'\|\\\"\|\\x\x\{2}\|\\u\x\{4}\|\\U\x\{8}\|\\\o\{1,11}\|\\&\(\d\|\a\)\{-};"
 syn region AlchaString start=/"/ skip=/\\"/ end=/"/ contains=@Spell,AlchaEscape
 
 " Comment
-syn match  AlchaComment "\/\/.*" contains=@Spell
+syn match  AlchaComment "\/\/.*$" contains=@Spell
 syn region AlchaComment       start=/\/\*/ end=/\*\// contains=@Spell
 syn region AlchaNestedComment start=/\/+/  end=/+\//  contains=@Spell,AlchaNestedComment
-syn match  AlchaToDoComment "!!.*" contains=@Spell
+syn match  AlchaToDoComment "!!.*$" contains=@Spell
 
 " Link the types
 hi def link AlchaOperator      Operator
+hi def link AlchaBracket       Delimiter
+hi def link AlchaPunctuator    Delimiter
+hi def link AlchaType          Type
+hi def link AlchaStorageClass  StorageClass
+hi def link AlchaStructure     Structure
+hi def link AlchaConditional   Conditional
+hi def link AlchaRepeat        Repeat
+hi def link AlchaSpecial       Preproc
+hi def link AlchaInclude       Include
 hi def link AlchaPrefix        SpecialChar
 hi def link AlchaExp           SpecialChar
 hi def link AlchaConstant      Constant

@@ -1,13 +1,7 @@
-set_target<
- type = "Simulation",
- time = "100 μs"
->;
-//------------------------------------------------------------------------------
+input  pin<frequency = 50e6> Clk;
+input  pin                   Reset;
 
-in pin<frequency = "50 MHz"> Clk;
-in pin                       Reset;
-
-out pin'8 Counter;
+output pin(8) Counter;
 //------------------------------------------------------------------------------
 
 rtl(Clk) Counter++;

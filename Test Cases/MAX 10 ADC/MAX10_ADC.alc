@@ -1,20 +1,20 @@
 hdl("Library/MAX10_ADC/synthesis/MAX10_ADC.qip") MAX10_ADC{
- in  clk adc_pll_clock_clk;
- in  net adc_pll_locked_export;
+  net     adc_pll_clock_clk;
+  net     adc_pll_locked_export;
 
- in  clk clock_clk;
- in  net reset_sink_reset_n;
+  net     clock_clk;
+  net     reset_sink_reset_n;
 
- in  net   command_valid         = 0;
- in  net'5 command_channel       = 0;
- in  net   command_startofpacket = 0;
- in  net   command_endofpacket   = 0;
- out net   command_ready;
+  net     command_valid         = 0;
+  net( 5) command_channel       = 0;
+  net     command_startofpacket = 0;
+  net     command_endofpacket   = 0;
+  net     command_ready;
 
- out net    response_valid;
- out net' 5 response_channel;
- out net'12 response_data;
- out net    response_startofpacket;
- out net    response_endofpacket;
+  net     response_valid;
+  net( 5) response_channel;
+  net(12) response_data;
+  net     response_startofpacket;
+  net     response_endofpacket;
 }
 

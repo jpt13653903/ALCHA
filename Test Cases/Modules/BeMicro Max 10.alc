@@ -2,173 +2,171 @@
 //------------------------------------------------------------------------------
 
 // Target
-set_target<
- vendor = "Altera",
- series = "MAX 10",
- device = "10M08DAF484C8GES",
- board  = "BeMicro Max 10"
->;
+group target{
+  vendor = "Altera",
+  series = "MAX 10",
+  device = "10M08DAF484C8GES",
+  board  = "BeMicro Max 10"
+};
 //------------------------------------------------------------------------------
 
 group ADXL362{
- out pin<number = "L14"> CS;
- in  pin<number = "M15"> INT1;
- in  pin<number = "M14"> INT2;
- in  pin<number = "L18"> MISO;
- out pin<number = "L19"> MOSI;
- out pin<number = "M18"> SCLK;
+  pin<location = "L14"> CS;
+  pin<location = "M15"> INT1;
+  pin<location = "M14"> INT2;
+  pin<location = "L18"> MISO;
+  pin<location = "L19"> MOSI;
+  pin<location = "M18"> SCLK;
 }
 //------------------------------------------------------------------------------
 
 group AD5681R{
- out pin<number = "N18"> LDACn;
- out pin<number = "L15"> RSTn;
- out pin<number = "G17"> SCL;
- out pin<number = "H17"> SDA;
- out pin<number = "N19"> SYNCn;
+  pin<location = "N18"> LDACn;
+  pin<location = "L15"> RSTn;
+  pin<location = "G17"> SCL;
+  pin<location = "H17"> SDA;
+  pin<location = "N19"> SYNCn;
 }
 //------------------------------------------------------------------------------
 
 group ADT7420{
- in  pin<number = "P13" > CT;
- in  pin<number = "AB14"> INT;
- out pin<number = "W13" > SCL;
-     pin<number = "R13" > SDA;
+  pin<location = "P13" > CT;
+  pin<location = "AB14"> INT;
+  pin<location = "W13" > SCL;
+  pin<location = "R13" > SDA;
 }
 //------------------------------------------------------------------------------
 
 group SDRAM{
- out pin'13<number = "N20, P19,  U21,  P22, P20, U22,
-                      R22, T22, AA22, AA21, T18, T19, T20"> A;
- out pin' 2<number = "T21, R20"> BA;
- out pin   <number = "N21"     > CASn;
- out pin   <number = "N22"     > CKE;
- out pin   <number = "M22"     > CLK;
- out pin   <number = "P21"     > CSn;
- out pin   <number = "L22"     > DQMH;
- out pin   <number = "L20"     > DQML;
- out pin   <number = "M20"     > RASn;
- out pin   <number = "M21"     > WEn;
-     pin'16<number = "C21, D21, E21, F21, G20, H21, J21, K21, 
-                      K22, J22, H22, G22, F22, E22, D22, C22"> DQ;
+  pin(13)<location = ["N20", "P19",  "U21",  "P22", "P20", "U22",
+                      "R22", "T22", "AA22", "AA21", "T18", "T19", "T20"]> A;
+  pin( 2)<location = ["T21", "R20"]> BA;
+  pin    <location =  "N21"        > CASn;
+  pin    <location =  "N22"        > CKE;
+  pin    <location =  "M22"        > CLK;
+  pin    <location =  "P21"        > CSn;
+  pin    <location =  "L22"        > DQMH;
+  pin    <location =  "L20"        > DQML;
+  pin    <location =  "M20"        > RASn;
+  pin    <location =  "M21"        > WEn;
+  pin(16)<location = ["C21", "D21", "E21", "F21", "G20", "H21", "J21", "K21", 
+                      "K22", "J22", "H22", "G22", "F22", "E22", "D22", "C22"]> DQ;
 }
 //------------------------------------------------------------------------------
 
 group SFLASH{
- out pin<number = "R11"> ASDI;
- out pin<number = "R10"> CSn;
- in  pin<number = "P10"> DATA;
- out pin<number = "P11"> DCLK;
+  pin<location = "R11"> ASDI;
+  pin<location = "R10"> CSn;
+  pin<location = "P10"> DATA;
+  pin<location = "P11"> DCLK;
 }
 //------------------------------------------------------------------------------
 
-out pin'8<
- current = "8 mA", standard = "LVTTL", 
- number = "AA5, AB4, T6, V4, T1, R2, N1, M2"
->USER_LED;
+pin(8)<
+  current  = 8e-3, standard = "LVTTL", 
+  location = ["AA5", "AB4", "T6", "V4", "T1", "R2", "N1", "M2"]
+> USER_LED;
 //------------------------------------------------------------------------------
 
-in pin'4<number = "AB5, V5, R1, M1">SW;
+pin(4)<location = ["AB5", "V5", "R1", "M1"]>SW;
 //------------------------------------------------------------------------------
 
-in pin'8<number = "F3, J9, G4, J8, E3, F4, E4, F5">AIN;
+pin(8)<location = ["F3", "J9", "G4", "J8", "E3", "F4", "E4", "F5"]> AIN;
 //------------------------------------------------------------------------------
 
 group EG{ // Incomplete array
- pin<number = "C1" >P1;
- pin<number = "D2" >P2;
- pin<number = "D1" >P3;
- pin<number = "D3" >P4;
- pin<number = "E1" >P5;
- pin<number = "F2" >P6;
- pin<number = "F1" >P7;
- pin<number = "G1" >P8;
- pin<number = "H1" >P9;
- pin<number = "J1" >P10;
- pin<number = "K2" >P11;
- pin<number = "L2" >P12;
- pin<number = "N2" >P13;
- pin<number = "P3" >P14;
- pin<number = "P1" >P15;
- pin<number = "R3" >P16;
- pin<number = "T2" >P17;
- pin<number = "R4" >P18;
- pin<number = "T5" >P19;
- pin<number = "Y1" >P20;
- pin<number = "Y2" >P21;
- pin<number = "AA1">P22;
- pin<number = "AA2">P23;
- pin<number = "Y3" >P24;
- pin<number = "Y4" >P25;
- pin<number = "AB6">P26;
- pin<number = "AB7">P27;
- pin<number = "AA8">P28;
- pin<number = "AB8">P29;
- pin<number = "E11">P35;
- pin<number = "E10">P36;
- pin<number = "D9" >P37;
- pin<number = "E9" >P38;
- pin<number = "E8" >P39;
- pin<number = "D8" >P40;
- pin<number = "E6" >P41;
- pin<number = "D7" >P42;
- pin<number = "C8" >P43;
- pin<number = "C7" >P44;
- pin<number = "D6" >P45;
- pin<number = "C6" >P46;
- pin<number = "D5" >P47;
- pin<number = "C5" >P48;
- pin<number = "C4" >P49;
- pin<number = "H11">P50;
- pin<number = "J10">P51;
- pin<number = "M9" >P52;
- pin<number = "M8" >P53;
- pin<number = "N9" >P54;
- pin<number = "N8" >P55;
- pin<number = "N5" >P56;
- pin<number = "N4" >P57;
- pin<number = "N3" >P58;
- pin<number = "P5" >P59;
- pin<number = "P4" >P60;
+  pin<location = "C1" >P1;
+  pin<location = "D2" >P2;
+  pin<location = "D1" >P3;
+  pin<location = "D3" >P4;
+  pin<location = "E1" >P5;
+  pin<location = "F2" >P6;
+  pin<location = "F1" >P7;
+  pin<location = "G1" >P8;
+  pin<location = "H1" >P9;
+  pin<location = "J1" >P10;
+  pin<location = "K2" >P11;
+  pin<location = "L2" >P12;
+  pin<location = "N2" >P13;
+  pin<location = "P3" >P14;
+  pin<location = "P1" >P15;
+  pin<location = "R3" >P16;
+  pin<location = "T2" >P17;
+  pin<location = "R4" >P18;
+  pin<location = "T5" >P19;
+  pin<location = "Y1" >P20;
+  pin<location = "Y2" >P21;
+  pin<location = "AA1">P22;
+  pin<location = "AA2">P23;
+  pin<location = "Y3" >P24;
+  pin<location = "Y4" >P25;
+  pin<location = "AB6">P26;
+  pin<location = "AB7">P27;
+  pin<location = "AA8">P28;
+  pin<location = "AB8">P29;
+  pin<location = "E11">P35;
+  pin<location = "E10">P36;
+  pin<location = "D9" >P37;
+  pin<location = "E9" >P38;
+  pin<location = "E8" >P39;
+  pin<location = "D8" >P40;
+  pin<location = "E6" >P41;
+  pin<location = "D7" >P42;
+  pin<location = "C8" >P43;
+  pin<location = "C7" >P44;
+  pin<location = "D6" >P45;
+  pin<location = "C6" >P46;
+  pin<location = "D5" >P47;
+  pin<location = "C5" >P48;
+  pin<location = "C4" >P49;
+  pin<location = "H11">P50;
+  pin<location = "J10">P51;
+  pin<location = "M9" >P52;
+  pin<location = "M8" >P53;
+  pin<location = "N9" >P54;
+  pin<location = "N8" >P55;
+  pin<location = "N5" >P56;
+  pin<location = "N4" >P57;
+  pin<location = "N3" >P58;
+  pin<location = "P5" >P59;
+  pin<location = "P4" >P60;
 }
-pin<number = "R5"> EXP_PRESENT;
-pin<number = "C2"> RESET_EXPn;
+pin<location = "R5"> EXP_PRESENT;
+pin<location = "C2"> RESET_EXPn;
 //------------------------------------------------------------------------------
 
-pin'36<number = "K15, K14, E15, E16, C17, D17, J13, H14,
-                 C13, C14, B14, A14, E13, D14, D13, E12, 
-                 J11, H12, C9 , B10, B8 , A9 , A8 , A7 , 
-                 A6 , B7 , A5 , B5 , A4 , B4 , A3 , B3 , 
-                 A2 , C3 , B1 , B2">GPIO;
+pin(36)location = "K15, K14, E15, E16, C17, D17, J13, H14,
+                   C13, C14, B14, A14, E13, D14, D13, E12, 
+                   J11, H12, C9 , B10, B8 , A9 , A8 , A7 , 
+                   A6 , B7 , A5 , B5 , A4 , B4 , A3 , B3 , 
+                   A2 , C3 , B1 , B2">GPIO;
 
-in pin'12<
- standard = "LVDS", 
- number   = "A7, A9, B10, H12, E12, D14, A14, C14, H14, D17, E16, K14", 
- pair     = "A8, B8, C9 , J11, D13, E13, B14, C13, J13, C17, E15, K15"
->DIFF_RX;
+pin(12)<standard = "LVDS", 
+        location = [ "A7-A8" ,  "A9-B8" , "B10-C9" , "H12-J11",
+                    "E12-D13", "D14-E13", "A14-B14", "C14-C13",
+                    "H14-J13", "D17-C17", "E16-E15", "K14-K15"]> DIFF_RX;
 
 group I2C{
-     pin<number = "AA14"> SDA;
- out pin<number = "AB15"> SCL;
+  pin<location = "AA14"> SDA;
+  pin<location = "AB15"> SCL;
 }
-pin<number = "AA15"> GPIO_A;
-pin<number = "Y16" > GPIO_B;
-out pin'12<
- standard = "LVDS",
- number   = "W3, W6, U7, W8, AA7, V10, AA10, Y14, W14, W15, V16, V17",
- pair     = "W4, W5, U6, W7, AA6, V9 ,  Y10, Y13, V13, V14, U15, W17"
->LVDS_TX
+pin<location = "AA15"> GPIO_A;
+pin<location = "Y16" > GPIO_B;
+pin(12)<standard = "LVDS",
+        location = [ "W3-W4" ,  "W6-W5" ,   "U7-U6" ,  "W8-W7" ,
+                    "AA7-AA6", "V10-V9" , "AA10-Y10", "Y14-Y13",
+                    "W14-V13", "W15-V14",  "V16-U15", "V17-W17"]> LVDS_TX
 //------------------------------------------------------------------------------
 
 group PMOD{
- pin'4<number = "E18, D18, D19, C20">A;
- pin'4<number = "G19, F20, F18, E19">B;
- pin'4<number = "P18, R18, U17, U18">C;
- pin'4<number = "P14, P15, R15, R14">D;
+  pin(4)<location = "E18, D18, D19, C20">A;
+  pin(4)<location = "G19, F20, F18, E19">B;
+  pin(4)<location = "P18, R18, U17, U18">C;
+  pin(4)<location = "P14, P15, R15, R14">D;
 }
 //------------------------------------------------------------------------------
 
-in pin<frequency = "50 MHz", number = "N14"> SYS_CLK;
-in pin<                      number = "N15"> USER_CLK;
+pin<frequency = 50e6, location = "N14"> SYS_CLK;
+pin<                  location = "N15"> USER_CLK;
 //------------------------------------------------------------------------------
 
