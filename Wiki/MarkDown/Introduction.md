@@ -3,6 +3,7 @@
 [TOC]
 
 # Introduction
+
 ALCHA (architectural level computational hardware abstraction) is a command-line tool to generate vendor-specific FPGA projects from largely vendor-neutral text-based source code.  The image below provides a rough overview of the intended tool-chain.
 
 <center markdown>![Concept Block Diagram](https://sourceforge.net/p/alcha/code/ci/master/tree/Wiki/Figures/ConceptBlock.svg?format=raw)</center>
@@ -12,6 +13,7 @@ ALCHA is aimed at unifying the various aspects of FPGA firmware design (RTL desi
 ALCHA is designed to be as portable, concise and expressive as possible, without the loss of low-level control. It provides a development platform that promises reduced development time and maintenance effort.
 
 ## Automated Optimisation
+
 The ALCHA compiler applies various optimisations before project synthesis, most of which are related to finite state machine resource usage. The details of this is outside the scope of this wiki. One notable optimisation, however, is automated multi-cycle analysis.
 
 Unless specified otherwise, the circuit synthesis process assumes that all register-to-register paths have to have a delay of less than one clock period. This is not true for all paths in a typical state-machine. It is likely that a particular signal path have multiple clock-cycles in which to pass through the combinational cloud, thereby requiring less stringent timing constraints than the synthesis tool initially assumes.
@@ -19,6 +21,8 @@ Unless specified otherwise, the circuit synthesis process assumes that all regis
 Manually specifying multi-cycle paths is a labour-intensive and tedious process. ALCHA performs this task automatically whenever the design is compiled, thereby generating code that is easier to synthesise, resulting in reduced compilation times.
 
 ## Implementation Time-frame
+
+The best estimate at present is:
 
 Target Date   | Feature
 -----------   | -------
@@ -31,6 +35,7 @@ December 2019 | Compilation to Xilinx projects
 The source is available from the [git repository](https://sourceforge.net/p/alcha/code/ci/master/tree/) and [GitHub](https://github.com/jpt13653903/ALCHA).
 
 ## References
+
 ### Similar Projects
 
 - [Synflow Cx](http://cx-lang.org/)
@@ -48,6 +53,10 @@ Many of the ideas of ALCHA are borrowed from other existing languages.  These in
 - [Python](https://www.python.org/)
 
 ### Publications
+
+- J Taylor and S Winberg
+  [ALCHA: Introducing Arbitrary Fixed-point and Procedural Programming to FPGA Firmware Design](http://sites.ieee.org/sips2018/)
+  Proceedings of International Workshop on Signal Processing Systems, IEEE, October 2018
 
 - J Taylor and S Winberg
   [ALCHA: New Object Oriented Approach to FPGA Project Development](http://www.icit2016.org/)

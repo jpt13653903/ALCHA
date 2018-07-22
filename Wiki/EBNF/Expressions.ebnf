@@ -15,7 +15,7 @@ Replication    = Stringification ["`" Primary];   (* Vector replication  *)
 Stringification = ["$"] Reduction 
                 |  "$(" Reduction ["," Expression] ")";
                 
-Reduction = ["&" | "~&" | "|" | "~|" | "^" | "~^"] Range;
+Reduction = ["&" | "~&" | "|" | "~|" | "^" | "~^" | "!"] Range;
 
 Range = Unary [".." Unary [":" Unary]];
 

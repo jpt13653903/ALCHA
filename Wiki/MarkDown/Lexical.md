@@ -9,20 +9,22 @@ The scanner reads UTF-8 formatted files.  The UTF-8 formatting is retained, even
 [[include repo=code path=Wiki/EBNF/Scanner.ebnf]]
 
 ## Literals
-ALCHA literals are all stored as infinite-precision rational numbers (by means of the [GNU MP library](https://gmplib.org/)). An imaginary literal can be specified by using either a `j` or `i` postfix.  Literals can be binary (`0b` prefix), octal (`0o` prefix), hexadecimal (`0x` prefix) or decimal (no prefix).  Literals may contain an optional decimal or binary exponent, by means of a `e` or `p` postfix, respectively.  All literals can be cast to a fixed-point format by means of the `'` operator.  Within numerical literals, the underscore character (`_`) is ignored.  Character literals are string literals with only one character.  Below are some examples:
 
-    :::C++
-    123.456           // decimal constant
-    123.456'(16, 128) // Decimal constant cast to 16 bits with full-scale range [0, 128)
-    0b101.0101        // Binary constant
-    0o123.456         // Octal constant
-    0xABC.DEF         // Hexadecimal constant
-    123_456_e7        // Decimal constant with decimal exponent (10^7)
-    123_456_p7        // Decimal constant with binary exponent (2^7)
-    0x123_ABC_p7      // Hexadecimal constant with binary exponent (2^7)
-    7.3 + 8.9j        // Decimal complex constant
-    "A"               // Unicode character constant
-    "ABC"             // Unicode string literal (character array)
+ALCHA literals are all stored as infinite-precision rational numbers (by means of the [GNU MP library](https://gmplib.org/)). An imaginary literal can be specified by using either a `j` or `i` postfix.  Literals can be binary (`0b` prefix), octal (`0o` prefix), hexadecimal (`0x` prefix) or decimal (no prefix).  Literals may contain an optional decimal or binary exponent, by means of a `e` or `p` postfix, respectively.  All literals can be cast to a fixed-point format by means of the `@` operator.  Within numerical literals, the underscore character (`_`) is ignored.  Character literals are string literals with only one character.  Below are some examples:
+
+```C++
+  123.456           // decimal constant
+  123.456@(16, 128) // Decimal constant cast to 16 bits with full-scale range [0, 128)
+  0b101.0101        // Binary constant
+  0o123.456         // Octal constant
+  0xABC.DEF         // Hexadecimal constant
+  123_456_e7        // Decimal constant with decimal exponent (10^7)
+  123_456_p7        // Decimal constant with binary exponent (2^7)
+  0x123_ABC_p7      // Hexadecimal constant with binary exponent (2^7)
+  7.3 + 8.9j        // Decimal complex constant
+  "A"               // Unicode character constant
+  "ABC"             // Unicode string literal (character array)
+```
 
 Imaginary and complex numbers are useful when using compile-time scripting to initialise FIR filter constants, among other uses.
 
@@ -48,6 +50,7 @@ Sequence     | Character
 `\&nnnn;`    | Named character, where `nnnn` is any of the [HTML-5 character names](https://w3.org/TR/html5/syntax.html#named-character-references)
 
 ## Identifiers
+
 Non-digits in ALCHA are defined as the '`_`' character, as well as any character in the ranges '`a`' to '`z`', '`A`' to '`Z`' and any Unicode character above `U+7F`, as long as it is not a white-space or newline character.
 
 Digits in ALCHA are defined as any character in the range '`0`' to '`9`'.
@@ -63,7 +66,6 @@ Symbol                        | Description            | Value
 `pi` or &pi; (`U+0C30`)       | &pi;                   | 3.141 592 653 ...
 `e`                           | Natural base           | 2.718 281 828 ...
 `i` or `j`                    | Imaginary constant     | &radic;(-1)
-`gamma` or &gamma; (`U+03B3`) | Euler's constant       | 0.577 215 664 ...
 
 ## Special Keywords
 
@@ -80,6 +82,7 @@ Keyword         | Description
 `__NAMESPACE__` | A string constant containing the current name-space.  If not in a name-space, "Global" is returned.
 
 ## Syntax Highlighting Scripts
+
 At the moment, only Vim is supported.  The Vim syntax file can be downloaded from [the repository](https://sourceforge.net/p/alcha/code/ci/master/tree/Wiki/Vim/alcha.vim?format=raw).  It is a direct implementation of the scanner, so it does not have any error-checking features.
 
 [[include repo=code path=Wiki/MarkDown/Footer.md]]

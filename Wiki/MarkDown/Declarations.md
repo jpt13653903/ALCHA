@@ -3,71 +3,86 @@
 [TOC]
 
 # Declarations
+
 ## Nets
+
 ### Definition
-Nets relate to physical wires and / or registers on the FPGA.  They are specified by means of the `net` keyword.  If no format is specified, a net is a single-bit unsigned integer, which also represents a boolean.  The format is specified by means of a "fixed-point cast" using the `'` (single-quote) operator.  Some examples are shown below:
 
-    :::C++
-    net           a; // Single-bit unsigned integer
-    net'8         b; // 8-bit unsigned integer
-    net'(7, -128) c; // 8-bit signed integer
+Nets relate to physical wires and / or registers on the FPGA.  They are specified by means of the `net` keyword.  If no format is specified, a net is a single-bit unsigned integer, which also represents a boolean.  The format is specified by means of optional instantiation parameters.  Some examples are shown below:
 
-    net'(4, 4)    d; // 4-bit unsigned fixed point with 2 integer bits
-                     // and 2 fraction bits -- in the range [0, 4)
-    net'(4, -4)   e; // 5-bit signed fixed-point in the range [-4, 4)
+```C++
+  net          a; // Single-bit unsigned integer
+  net(8)       b; // 8-bit unsigned integer
+  net(7, -128) c; // 8-bit signed integer
+
+  net(4, 4)    d; // 4-bit unsigned fixed point with 2 integer bits
+                  // and 2 fraction bits -- in the range [0, 4)
+  net(4, -4)   e; // 5-bit signed fixed-point in the range [-4, 4)
+```
 
 Signed nets have one more bit than specified in the format.  This is a convenient convention for fixed-point digital signal processing, but can be confusing.
 
 ### Initialisers
+
 All nets, pins and variables can take an optional initialiser, as illustrated below:
 
-    :::C++
-    net' 8     a  = 7;       // The binary value "0000 0111"
-    net'(8, 4) pi = 355/113; // The binary value "1100 1001"
+```C++
+    net(8   ) a  = 7;       // The binary value "0000 0111"
+    net(8, 4) pi = 355/113; // The binary value "1100 1001"
+```
 
 ### Attributes
-Nets take optional attributes, which are summarised in the table below:
 
-Attribute      | Default   | Description
----------      | -------   | -----------
-`global`       | `"false"` | Indicates whether or not the net should be routed on the global clock network.  Takes only `"true"` or `"false"` values.
-`output_clock` | `"none"`  | Specifies the clock used for external setup and hold constraints.
-`setup`        | `"0"`     | Specifies the minimum setup time of an external register, in relation to `output_clock`
-`hold`         | `"0"`     | Specifies the minimum hold time of an external register, in relation to `output_clock`
-`input_clock`  | `"none"`  | Specifies the clock used for external delay constraints.
-`min_delay`    | `"0"`     | Specifies the minimum output delay of an external register, in relation to `input_clock`
-`max_delay`    | `"0"`     | Specifies the maximum output delay of an external register, in relation to `input_clock`
+Nets take optional attributes, which are summarised in the table below.  External IC parameters and PCB trance parameters are split into separate attributes so that they can be specified at different points in the design.  The PCB trace parameters might be specified with the pin definition, for instance, while the external IC parameters are specified in the abstraction module that controls that IC.
+
+Attribute            | Default | Description
+---------            | ------- | -----------
+`global`             | `false` | Indicates whether or not the net should be routed on the global clock network.  Takes only `true` or `false` values.
+`external_clock`     | `none`  | Specifies the clock used for external setup and hold constraints.
+`external_setup`     | `0`     | Specifies the minimum setup time of an external register, in relation to `external_clock`
+`external_hold`      | `0`     | Specifies the minimum hold time of an external register, in relation to `external_clock`
+`external_min_delay` | `0`     | Specifies the minimum output delay of an external register, in relation to `external_clock`
+`external_max_delay` | `0`     | Specifies the maximum output delay of an external register, in relation to `external_clock`
+`trace_input_delay`  | `0`     | Specifies the electrical delay between the FPGA pin and the external device
+`trace_uncertainty`  | `0`     | Specifies the electrical delay uncertainty between the FPGA pin and the external device
 
 ### Timing Constraints
+
 As indicated in the table above, net attributes can be used to specify external peripheral timing requirements.  These timing attributes are specified as if there are no PCB or trace delays.  When the net is connected to a pin, the trace delays and pin capacitance specified by the pin attributes are used in conjunction with the net timing attributes to calculate the appropriate external timing constraints.  An example is provided below:
 
-    :::C++
-    // PCB trace delays in the pin definitions:
-    pin'4<voltage   = "3.3 V" , capacitance = "10 pf",
-          min_delay = "500 ps", max_delay   =  "1 ns"
-          number    = "U7, T7, V8, T8"> SD_DAT;
+```C++
+  // PCB trace delays in the pin definitions:
+  pin(4)<voltage = 3.3, capacitance = 10e-12,
+         external_min_delay = 500e-12, external_max_delay = 1e-9,
+         location = ["U7", "T7", "V8", "T8"]> SD_DAT;
 
-    // Peripheral specifications in the driver class:
-    net'4< input_clock = "!Clock", max_delay = "14 ns"          > Data_in;
-    net'4<output_clock =  "Clock", setup = "5 ns", hold = "5 ns"> Data_out;
+  // Peripheral specifications in the driver class:
+  net(4)<external_clock = ~Clock, external_max_delay = 14e-9                      > DataIn;
+  net(4)<external_clock =  Clock, external_setup     =  5e-9, external_hold = 5e-9> DataOut;
 
-    // Assign the nets to the pin
-    Data_in = SD_DAT;
-    SD_DAT  = Data_out;
+  // Assign the nets to the pin
+  DataIn         = SD_DAT.pad;
+  SD_DAT.driver  = DataOut;
+  SD_DAT.enable  = DataEnable;
+```
 
 External delays are always referenced to a clock, even if the external delay is purely combinational.  This is so that the timing constraints are compatible with the Synopsis Design Constraints format, which is the industry-preferred standard.
 
 ### Bus Connections
+
 ALCHA does not support high-impedance nets directly.  Pins can be set to high-impedance by disabling the driver (see the Pins section for details).  In order to emulate a bus that has a set of tri-state drivers, the nets should be gated through AND gates and then combined through an OR gate to drive the bus.
 
 ## Pins
+
 ### Definition
+
 Pins in ALCHA are specified by means of the `pin` keyword.  Pins can have various attributes.  A short example is presented below:
 
-    :::C++
-    pin<frequency = "50 MHz", voltage = "2.5 V", location = "H12"> Clock;
-    pin<                      voltage = "1.2 V", location = "P11"> Key;
-    pin<                      voltage = "2.5 V", location = "F7" > LED;
+```C++
+  pin<frequency = 50e6, voltage = 2.5, location = "H12"> Clock;
+  pin<                  voltage = 1.2, location = "P11"> Key;
+  pin<                  voltage = 2.5, location = "F7" > LED;
+```
 
 A pin is a structured object that consists of three nets: the `pad` (physical FPGA pin), the `driver` (input to the pin buffer) and the `enable` (driver enable).  In order to set a pin to output, the driver must be enabled by assigning a constant high to the `enable` net.  Bidirectional pins are created by assigning an expression to the `enable` net.
 
@@ -75,111 +90,117 @@ When, at the time of circuit synthesis, the `enable` net is undefined, the compi
 
 When the developer assigns directly to the pin name, the expression is actually assigned to the `driver` net.  When the pin is read, the `pad` net is read.  This is sometimes problematic, as illustrated in the following example:
 
-    :::C++
-    // Define I2C bus pins (initialisers assign to the driver net)
-    pin S_Clk  = 1;
-    pin S_Data = 0;
+```C++
+  // Define I2C bus pins (initialisers assign to the driver net)
+  pin S_Clk  = 1;
+  pin S_Data = 0;
 
-    // Assign pin direction
-    S_Data.enable = 0;
+  // Assign pin direction
+  S_Data.enable = 0;
 
-    // Add a device to the bus (wrong)
-    S_Clk  &= ThisClock; // Equivalent to S_Clk.driver  = S_Clk.pad  & ThisClock;
-    S_Data |= ~ThisData; // Equivalent to S_Data.driver = S_Data.pad | ~ThisData;
+  // Add a device to the bus (wrong)
+  S_Clk  &=  ThisClock; // Equivalent to S_Clk .driver = S_Clk .pad &  ThisClock;
+  S_Data |= ~ThisData;  // Equivalent to S_Data.driver = S_Data.pad | ~ThisData;
 
-    // Add a device to the bus (correct)
-    S_Clk.driver  &= ThisClock;
-    S_Data.enable |= ~ThisData;
+  // Add a device to the bus (correct)
+  S_Clk .driver &=  ThisClock;
+  S_Data.enable |= ~ThisData;
 
-    // Add another device to the bus
-    S_Clk.driver  &= ThatClock;
-    S_Data.enable |= ~ThatData;
+  // Add another device to the bus
+  S_Clk.driver  &=  ThatClock;
+  S_Data.enable |= ~ThatData;
 
-    // Read the Data line
-    pin LED = S_Data; // Equivalent to LED.driver = S_Data.pad
+  // Read the Data line
+  pin LED = S_Data; // Equivalent to LED.driver = S_Data.pad
+```
 
 When ignoring the first (wrong) assignment, the code above is equivalent to the following Verilog:
 
-    :::Verilog
-    module TopLevel(
-      output S_Clk,
-      inout  S_Data,
-      output LED
-    );
+```Verilog
+  module TopLevel(
+    output S_Clk,
+    inout  S_Data,
+    output LED
+  );
 
-    wire   S_Data_enable;
-    assign S_Data = S_Data_enable ? 1'b0 : 1'bZ;
+  wire   S_Data_enable;
+  assign S_Data = S_Data_enable ? 1'b0 : 1'bZ;
 
-    assign S_Clk         = 1'b1 & ThisClock & ThatClock;
-    assign S_Data_enable = 1'b0 | ~ThisData | ~ThatData;
+  assign S_Clk         = 1'b1 &  ThisClock &  ThatClock;
+  assign S_Data_enable = 1'b0 | ~ThisData  | ~ThatData;
 
-    assign LED = S_Data;
+  assign LED = S_Data;
+```
 
 Typically, the compiler will remove the and-with-one and or-with-zero.  It is kept here to show the relationship between the ALCHA and Verilog more clearly.
 
 ### Attributes
+
 The table below summarises pin attributes and their default values:
 
 Attribute     | Default    | Description
 ---------     | -------    | -----------
 `location`    | `"None"`   | The physical pin number on the target device.  In the case of a differential pair, the pin location is specified in `"PP-NN"` format, where `PP` is the positive pin number and `NN` the negative pin number.
-`voltage`     | `"3.3 V"`  | The voltage of the I/O bank.
-`current`     | `"5 mA"`   | The intended maximum current of the pin, in case of an output.
-`capacitance` | `"10 pF"`  | The load capacitance of the pin, in case of an output.
+`voltage`     | `3.3`      | The voltage of the I/O bank.
+`current`     | `5e-3`     | The intended maximum current of the pin, in case of an output.
+`capacitance` | `10e-12`   | The load capacitance of the pin, in case of an output.
 `standard`    | `"LVCMOS"` | The logic standard of the pin.
-`termination` | `"false"`  | Indicates whether or not the pin should enable the internal termination.  Takes only `"true"` or `"false"` values.
-`min_delay`   | `"0"`      | The minimum physical trace delay of the pin.
-`max_delay`   | `"0"`      | The maximum physical trace delay of the pin.
+`termination` | `false`    | Indicates whether or not the pin should enable the internal termination.  Takes only `"true"` or `"false"` values.
 `frequency`   | `"None"`   | In the case of a clock input, the frequency of the clock.
-`jitter`      | `"0"`      | In the case of a clock input, the clock jitter.
-
-The unit is important when specifying attributes.  If the unit is absent, a compilation error occurs.  Any SI unit prefix is valid, including `T`, `G`, `M`, `k`, `m`, `u`, &mu; (U+03BC), &micro; (U+00B5), `n`, `p` and `f`.
+`jitter`      | `0`        | In the case of a clock input, the clock jitter.
 
 ### Pin Vectors
+
 When specifying pin locations for bit-vectors or pin arrays, the `location` attribute contains a comma-separated list of pins.  Pin locations are specified most-significant bit first, as follows:
 
-    :::C++
-    // Assign H9 to LED(7), H8 to LED(6), ..., L7 to LED(0)
-    pin'8<location = "H9, H8, B6, A5, E9, D8, K6, L7"> LED;
+```C++
+  // Assign H9 to LED(7), H8 to LED(6), ..., L7 to LED(0)
+  pin(8)<location = ["H9", "H8", "B6", "A5", "E9", "D8", "K6", "L7"]> LED;
+```
 
 Pin arrays are handled in similar fashion.  The first (0-index) pin location(s) are specified first, then the next (1-index), etc.  All the locations are comma-separated.
 
 The same location can be assigned to different pin objects.  This is useful when the physical board can have different functions on the same pin, such as a choice between single-ended or LVDS.  This is illustrated below:
 
-    :::C++
-    pin'4 <
-     standard    = "LVDS",
-     termination = "true",
-     location    = "L12-K11, H18-H17, M11-L11, N12-M12", 
-    > HSMC_RX;
+```C++
+  pin(4) <
+    standard    = "LVDS",
+    termination =  true,
+    location    = ["L12-K11", "H18-H17", "M11-L11", "N12-M12"], 
+  > HSMC_RX;
 
-    group <standard = "LVCMOS">{
-     pin'4 <location = "L12, H18, M11, N12"> HSMC_RX_p;
-     pin'4 <location = "K11, H17, L11, M12"> HSMC_RX_n;
-    }
+  group <standard = "LVCMOS">{
+    pin(4) <location = ["L12", "H18", "M11", "N12"]> HSMC_RX_p;
+    pin(4) <location = ["K11", "H17", "L11", "M12"]> HSMC_RX_n;
+  }
+```
 
 ## Groups
+
 Often there are attributes that applies to many objects.  In this case, the definitions can be grouped.  All child definitions inherit the attributes of the group.  When a child definition includes an attribute that is already defined in the group, the child definition takes precedence.  Below is an example of a named group for pin definitions.
 
-    :::C++
-    group<voltage   = "3.3 V" , capacitance = "10 pF",
-          min_delay = "500 ps", max_delay   = "1 ns"> SD{
-     pin  <location = "AB6"           > CLK;
-     pin  <location = "W8"            > CMD;
-     pin'4<location = "U7, T7, V8, T8"> DAT;
-    }
+```C++
+  group<voltage = 3.3, capacitance = 10e-12,
+        external_min_delay = 500e-12, external_max_delay = 1e-9> SD{
+    pin   <location = "AB6"                   > CLK;
+    pin   <location = "W8"                    > CMD;
+    pin(4)<location = ["U7", "T7", "V8", "T8"]> DAT;
+  }
+```
 
 In this case, the pins that are actually defined are `SD.CLK`, `SD.CMD` and `SD.DAT`.  The group can also be anonymous, as given below. In this case, each pin is a child of the parent group object (global, in this case).
 
-    :::C++
-    group <voltage = "3.3 V", frequency = "50 MHz">{
-     pin<location = "R20"> CLOCK_B5B;
-     pin<location = "N20"> CLOCK_B6A;
-    }
+```C++
+  group <voltage = 3.3, frequency = 50e6>{
+    pin<location = "R20"> CLOCK_B5B;
+    pin<location = "N20"> CLOCK_B6A;
+  }
+```
 
 Nets, class instances, derived clocks, etc. can be grouped in similar fashion.
 
 ## Scripting Data Types
+
 The table below summarises ALCHA scripting variable types:
 
 Keyword | Description
@@ -193,70 +214,76 @@ When a floating-point is assigned to a `num` type, the same precision as the flo
 More on scripting in the [Scripting Section](p/alcha/wiki/Scripting)
 
 ## Enumerations
+
 An enumeration type can be defined by means of the `enum` keyword, as illustrated below.  The numerical constants associated with the enumeration start at `0` for the first element and increase by `1` for each element.
 
-    :::C++
-    enum STATE {Idle, Writing, Done, Others}
-    STATE State;
+```C++
+  enum STATE {Idle, Writing, Done, Others}
+  STATE State;
 
-    switch(State){
-     case(Idle){
+  switch(State){
+    case(Idle){
       // Do some stuff
       State = Writing;
-     }
-     case(Writing){
+    }
+    case(Writing){
       // Do some stuff
       State = Done;
-     }
-     case(Done){
+    }
+    case(Done){
       // Do some stuff
       State = Idle;
-     }
-     default{
-      // Do some stuff
-     }
     }
+    default{
+      // Do some stuff
+    }
+  }
+```
 
 Ordinarily, enumerations are equivalent to the non-synthesisable type `num`.  The enumeration can, however, be used to define a synthesisable enumeration, as follows:
 
-    :::C++
-    enum STATE {Idle, Writing, Done, Others}
-    pin'STATE PinState; // Pin enumeration
-    net'STATE SigState; // Net enumeration
+```C++
+  enum STATE {Idle, Writing, Done, Others}
+  pin(STATE) PinState; // Pin enumeration
+  net(STATE) SigState; // Net enumeration
+```
 
 In this case, the number of bits, or width, of the net (or pin array) is the number of bits required to uniquely identify each enumeration value.  In the above example, this is 2&nbsp;bits.
 
 If an enumeration is used outside a variable of that type, the values of the enumeration can be referenced through its type.  The following statements are all legal:
 
-    :::C++
-    enum Enum{A, B, C}
+```C++
+  enum Enum{A, B, C}
 
-    int  a;
-    Enum e;
+  int  a;
+  Enum e;
 
-    a = Enum.A;
-    e = B;
-    a = e;
+  a = Enum.A;
+  e = B;
+  a = e;
+```
 
 A variable declared as an enumeration can only take values from that enumeration.  It is illegal to assign anything else to an enumeration type.  It is legal to compare an enumeration to other types, however.
 
-    :::C++
-    enum Enum{A, B, C}
+```
+  enum Enum{A, B, C}
 
-    int  a;
-    Enum e, n;
+  int  a;
+  Enum e, n;
 
-    a = A;          // Illegal: A does not exist in this namespace
-    e = A;          // Legal  : assigning a value to the enumeration
-    n = e;          // Legal  : the enumeration types are the same
-    e = 2;          // Illegal: must assign a value from the defined list
-    a = e;          // Legal  : e is automatically cast to an int
-    if(e == B){...} // Legal  : comparing enumeration values
-    if(a == B){...} // Illegal: B does not exist in this namespace
-    if(e == 2){...} // Legal  : e is automatically cast to an int
+  a = A;          // Illegal: A does not exist in this namespace
+  e = A;          // Legal  : assigning a value to the enumeration
+  n = e;          // Legal  : the enumeration types are the same
+  e = 2;          // Illegal: must assign a value from the defined list
+  a = e;          // Legal  : e is automatically cast to an int
+  if(e == B){...} // Legal  : comparing enumeration values
+  if(a == B){...} // Illegal: B does not exist in this namespace
+  if(e == 2){...} // Legal  : e is automatically cast to an int
+```
 
 ## Built-in Members
-Various ALCHA types have built-in members, which can be accessed similarly to class members.  The list below is not exhaustive.
+
+Various ALCHA types have built-in attributes.  The list below is not exhaustive.
 
 Member      | Types           | Description
 ------      | -----           | -----------

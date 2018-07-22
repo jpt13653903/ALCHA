@@ -54,8 +54,8 @@ Function    | Description
 --------    | -----------
 `read`      | Reads the given file into a `byte` array buffer
 `write`     | Writes the given `byte` array to file
-`textread`  | Reads the given UTF-8 file into an UTF-32 `char` array buffer
-`textwrite` | Writes the given UTF-32 `char` array to an UTF-8 file
+`textread`  | Reads the given UTF-8 file into a UTF-32 `char` array buffer
+`textwrite` | Writes the given UTF-32 `char` array to a UTF-8 file
 `print`     | Prints a string to the command-line
 
 The file contents are kept in arrays, which are buffered in RAM.  Large files are handled by means of dynamic paging.  The ALCHA user is unaware of this caching mechanism.
@@ -64,27 +64,28 @@ The file contents are kept in arrays, which are buffered in RAM.  Large files ar
 
 While reading and writing text-based files, it is often required to convert between numerical variables (of type `num`) and strings.  The functions presented below can be used for this purpose:
 
-Function | Description
--------- | -----------
-`$`      | Stringify operator.  It converts whatever expression comes next to a decimal representation.
-`format` | Converts a number to a string.  The base and other parameters are controlled by means of function parameters.
-`eval`   | Converts a string to a number.  The scripting interpreter makes use of the same expression engine used in [Engineering Calculator](https://sourceforge.net/p/alwaysontopcalc/wiki).
+Function  | Description
+--------  | -----------
+`$x`      | Converts variable `x` to a string.
+`$(x, S)` | Converts expression `x` to a string.  The base and other parameters are controlled by means of the optional format string `S`.
+`eval(S)` | Converts a string `S` to a number.  The scripting interpreter makes use of the same expression engine used in [Engineering Calculator](https://sourceforge.net/p/alwaysontopcalc/wiki).
 
 ## Dynamic Arrays
 
 Scriping arrays can be declared as dynamic by specifying empty square brackets.  The array size is adjusted depending on the assignment.  While building the contents of a text file, for instance, the code might look as follows:
 
-    :::C++
-    char File[] = "";
-    // Some code...
-    File ~= "Header\n";
-    // Some more code...
-    File ~= "Some Body...\n";
-    // Some more code...
-    File ~= "Some Body...\n";
-    // Some more code...
-    File ~= "Some Body...\n";
-    textwrite("My Log File.log", File);
+```C++
+  char Buffer[] = "";
+  // Some code...
+  Buffer ~= "Header\n";
+  // Some more code...
+  Buffer ~= "Some Body...\n";
+  // Some more code...
+  Buffer ~= "Some Body...\n";
+  // Some more code...
+  Buffer ~= "Some Body...\n";
+  textwrite("My Log Buffer.log", Buffer);
+```
 
 ## Shell Commands
 
