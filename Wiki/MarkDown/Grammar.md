@@ -17,5 +17,9 @@ The parser takes tokens from the scanner and builds an abstract syntax tree.  No
 
 [[include repo=code path=Wiki/EBNF/Statements.ebnf]]
 
+## Verification
+
+[[include repo=code path=Wiki/EBNF/Verification.ebnf]]
+
 [[include repo=code path=Wiki/MarkDown/Footer.md]]
 

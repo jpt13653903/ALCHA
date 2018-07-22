@@ -1,19 +1,29 @@
 WhiteSpace = Space | Newline | Comment;
 Comment    = LineComment | BlockComment | NestedComment | ToDoComment;
 
-Space   = ? U+0020 ? | ? U+0009 ? | ? U+00A0 ? | ? U+1680 ? | ? U+180E ? 
-        | ? U+2000 ? | ? U+2001 ? | ? U+2002 ? | ? U+2003 ? | ? U+2004 ? 
-        | ? U+2005 ? | ? U+2006 ? | ? U+2007 ? | ? U+2008 ? | ? U+2009 ? 
-        | ? U+200A ? | ? U+202F ? | ? U+200B ? | ? U+200C ? | ? U+200D ? 
-        | ? U+205F ? | ? U+2060 ? | ? U+3000 ? | ? U+FEFF ? ;
+Space   = ? U+0020 ? | ? U+0009 ? | ? U+00A0 ? | ? U+1680 ? | ? U+2000 ?
+        | ? U+2001 ? | ? U+2002 ? | ? U+2003 ? | ? U+2004 ? | ? U+2005 ?
+        | ? U+2006 ? | ? U+2007 ? | ? U+2008 ? | ? U+2009 ? | ? U+200A ?
+        | ? U+202F ? | ? U+200B ? | ? U+205F ? | ? U+3000 ? | ? U+FEFF ? ;
 Newline = ? U+0A U+0D ? | ? U+0D U+0A ? | ? U+0A ? | ? U+0D ? | ? U+0B ? 
         | ? U+0C ? | ? U+85 ? | ? U+2028 ? | ? U+2029 ? ;
        
+Byte          = ? Any 8-bit unit from the input stream ?;
+
+B = "0" | "1";
+O = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7";
+D = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+H = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" 
+  | "a" | "b" | "c" | "d" | "e" | "f" | "A" | "B" | "C" | "D" | "E" | "F"; 
+
+NonDigit = ?"a".."z"? | ?"A".."Z"? | "_"
+         | (? Any Unicode >= U+80 ? -Space -Newline);
+(*----------------------------------------------------------------------------*)
+
 LineComment   = "//" {? Any byte sequence ? -Newline} Newline;
 ToDoComment   = "!!" {? Any byte sequence ? -Newline} Newline;
 BlockComment  = "/*" {? Any byte sequence ? -"*/"} "*/";
 NestedComment = "/+" {NestedComment | (? Any byte sequence ? -"+/")} "+/";
-Byte          = ? Any 8-bit unit from the input stream ?;
 (*----------------------------------------------------------------------------*)
 
 Token      = String | Literal | Keyword | Identifier | Operator;
@@ -21,23 +31,32 @@ Token      = String | Literal | Keyword | Identifier | Operator;
 Special    = "__FILE__"  | "__LINE__" | "__DATE__" | "__TIME__" 
            | "__CLASS__" | "__FUNCTION__" | "__NAMESPACE__";
 
-Keyword    = "void"   | "auto" 
-           | "pin"    | "net"  | "clk" 
-           | "byte"   | "char" | "num"
-           | "class"  | "enum" | "group" | "alias"
-           | "if"     | "else" | "for"   | "while" | "loop" 
-           | "switch" | "case" | "default" 
-           | "import" | "as" 
-           | "return" | "break"  | "continue"
-           | "rtl" | "fsm" | "hdl";
+Keyword    = "void"     | "auto"
+           | "pin"      | "net"
+           | "byte"     | "char"    | "num"
+           | "true"     | "false"
+           | "class"    | "enum"    | "struct"   | "group" | "alias"
+           | "public"   | "private" | "protected"
+           | "if"       | "else"    | "for"      | "while" | "loop"
+           | "switch"   | "case"    | "default"
+           | "import"   | "as"
+           | "return"   | "break"   | "continue" | "goto"
+           | "func"     | "inline"
+           | "rtl"      | "fsm"     | "hdl" 
+           | "stimulus" | "emulate" | "sequence" | "assert" | "wait" ;
 
-Operator   = "++" | "--"  | "'"   | "->" | "@"  | "."  | ".{" | "&"  | "~&" 
-           | "|"  | "~|"  | "#"   | "~#" | "~"  | ":"  | "\"  | "+"  | "-"
-           | "*"  | "/"   | "%"   | "^"  | "<<" | ">>" | "<"  | ">"  | "<=" 
-           | ">=" | "=="  | "!="  | "!"  | "&&" | "||" | "?"  | "="  | ":=" 
-           | "~=" | "+="  | "-="  | "*=" | "/=" | "%=" | "^=" | "&=" | "|=" 
-           | "#=" | "<<=" | ">>=" | "("  | ")"  | "["  | "]"  | "{"  | "}"  
-           | ","  | ";";
+Operator   = "++" | "--" | "'"  | ".."  | ":"   | "."   | ".{"
+           | "&"  | "~&" | "|"  | "~|"  | "^"   | "~^"  | "~"
+           | ":(" | ":[" | "`"
+           | "+"  | "-"  | "*"  | "/"   | "%"   | "**"
+           | "<<" | ">>" | "<"  | ">"   | "<="  | ">="  | "=="  | "!="
+           | "?"  | "??" | "?."
+           | "="  | ":=" | "~=" | "+="  | "-="  | "*="  | "/="  | "%="
+           | "^=" | "&=" | "|=" | "**=" | "<<=" | ">>="
+           | "("  | ")"  | "["  | "]"   | "{"   | "}"   | ","   | ";"
+           | "$"  | "$("
+           | "@"  | "#"  | "##" | "[*"  | "[->" | "[="  | "|->" | "|=>" 
+           | "||" | "&&" | "&&&" ;
 
 Literal        = (("0b" Binary) | ("0o" Octal) | ("0x" Hexadecimal) | Decimal)
                  [Exponent] ["i" | "j"];
@@ -58,15 +77,5 @@ Decimal     = (D {D | "_"} ["." {D | "_"}]) | ("." D {D | "_"});
 Hexadecimal = (H {H | "_"} ["." {H | "_"}]) | ("." H {H | "_"});
 
 Exponent    = ("p" | "P" | "e" | "E") ["-" | "+"] D {D};
-(*----------------------------------------------------------------------------*)
-
-B = "0" | "1";
-O = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7";
-D = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
-H = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" 
-  | "a" | "b" | "c" | "d" | "e" | "f" | "A" | "B" | "C" | "D" | "E" | "F"; 
-
-NonDigit = ?"a".."z"? | ?"A".."Z"? | "_"
-         | (? Any Unicode >= U+80 ? -Space -Newline);
 (*----------------------------------------------------------------------------*)
 

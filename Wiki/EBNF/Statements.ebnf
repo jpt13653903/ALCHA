@@ -2,26 +2,29 @@ StatementBlock = Statement | ("{" [Statements] "}");
 
 Alias  = "alias" Identifier "=" Expression ";";
 Import = "import" String ["as" Identifier] ";";
-Group  = "group" [AttributeList] [Identifier] "{" [Statements] "}";
+Struct = "struct" [AttributeList] [Identifier] "{"
+          { (Definition | Struct) ";" }
+         "}";
+Group  = "group"  [AttributeList] [Identifier] "{" [Statements] "}";
 
-(* The result from "Postfix" or "Array" is checked for syntactic validity before
-   use as a name-space, class name or assignment target. *)
+(* The result from "Postfix" or "Concatenation" is checked for syntactic
+   validity before use as a name-space, class name or assignment target. *)
 FunctionCall  = Postfix ("," | ";");
 NamespacePush = Postfix ".{" [Statements] "}";
-Assignment    = Array AssignmentOperator Expression ("," | ";");
+Assignment    = Concatenation AssignmentOperator Expression ("," | ";");
 
-AssignmentOperator = "="  | ":=" | "~=" | "+=" | "-="  | "*="  | "/=" | "^="
-                   | "%=" | "&=" | "|=" | "#=" | "<<=" | ">>=" ; 
+AssignmentOperator = "="  | ":=" | "~=" | "+="  | "-="  | "*="  | "/="  | "**="
+                   | "%=" | "&=" | "|=" | "^=" | "<<=" | ">>=" ; 
 
 IfStatement = "if" "(" Expression ")" StatementBlock ["else" StatementBlock];
               
-ForLoop = "for" "(" Identifier "in" Array ")" StatementBlock;
+For = "for" "(" Identifier "in" Concatenation ")" StatementBlock;
 
 (* For while loops, Expression must evaluate to a boolean *)
-WhileLoop = "while" "(" Expression ")" StatementBlock);
+While = "while" "(" Expression ")" StatementBlock);
 
 (* For loop loops, Expression must evaluate to an integer *)
-LoopLoop = "loop" ["(" Expression ")"] StatementBlock);
+Loop = "loop" ["(" Expression ")"] StatementBlock);
 
 (* For case statements, Expression must evaluate to a constant *)
 Switch = "switch" "(" Expression ")" "{" 
@@ -32,11 +35,10 @@ Switch = "switch" "(" Expression ")" "{"
 (* For "break" and "continue", the expression indicates the number of levels,
    which is 1 by default. *)
 Jump = ("return" | "break" | "continue") [Expression] ";";
-
-(* Only 
+GoTo = "goto" Identifier ";";
 
 (* The first parameter must evaluate to a clock net.  If the RTL is inside
-   a function, the clock is inherited from the calling state machine. *)
+   a function, all parameters are inherited from the calling state machine. *)
 RTL = "rtl" [AttributeList] ["(" [ParameterList] ")"] StatementBlock;
 
 (* The first parameter must evaluate to a clock net and the second parameter 
@@ -49,9 +51,7 @@ FSM = "fsm" [AttributeList] ["(" [ParameterList] ")"] StatementBlock;
    are port definitions. *)
 (* The "Assignment" is obtained through "Other" *)
 HDL = "hdl" [AttributeList] "(" String {"," String} ")" Identifier
-            ["(" {Assignment} ")"]
-             "{" {Definition} "}";
-
-Actor = "actor" StatementBlock;
+            ["(" {Assignment           } ")"]
+             "{" {Definition | Stimulus} "}";
 (*----------------------------------------------------------------------------*)
 

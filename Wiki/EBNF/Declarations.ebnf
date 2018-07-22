@@ -1,41 +1,52 @@
 Module = [Statements];
 
 Statements = Statement {Statement};
-Statement  = Definition | ClassDefinition | EnumDefinition
-           | Alias | Import | Group
-           | IfStatement | ForLoop | WhileLoop  | LoopLoop | Switch | Jump
+Statement  = Label | Definition | ClassDefinition | EnumDefinition
+           | Alias | Import | Struct | Group | AccessDirectionGroup
+           | IfStatement | For | While  | Loop | Switch | Jump | GoTo
            | FunctionCall | NamespacePush | Assignment
-           | RTL | FSM | HDL | Actor | ";";
+           | RTL | FSM | HDL 
+           | Stimulus | Emulate | ForkJoin | Assert | Sequence ";";
 
-Definition = (BaseType | TypeIdentifier | "void" | "auto")
-             [CastEpr] [AttributeList] IdentifierList;
+Label  = Identifier ":"; (* Only useful within an fsm construct *)
+
+Definition = ( BaseType | TypeIdentifier ) ["(" [ParameterList] ")"]
+           | ( "void" | "auto" ) [AttributeList] IdentifierList;
 
 ClassDefinition = "class" [AttributeList] Identifier
-                  ["("[DefParameterList]")"] 
+                  ["(" [DefParameterList] ")"] 
                   [
                     ":" TypeIdentifier ["(" [ParameterList] ")"]
                    {"," TypeIdentifier ["(" [ParameterList] ")"]}
                   ]
                   "{" [Statements] "}";
 
-BaseType = "pin"  | "net"  | "clk" (* Synthesisable types *)
+(* Only useful within a class body *)
+AccessDirectionGroup = ( ( AccessSpecifier [DirectionSpecifier] ) |
+                         ( DirectionSpecifier ) ) StatementBlock;
+AccessSpecifier    = "public" | "private" | "protected";
+DirectionSpecifier = "input" | "output";
+
+BaseType = "pin"  | "net"          (* Synthesisable types *)
          | "byte" | "char" | "num" (* Scripting types     *)
          | "func" ;                (* Function pointer    *)
 
 IdentifierList = FunctionDef | (VariableDef {"," VariableDef} ";");
 
 VariableDef    = Identifier {ArrayDefinition} [Initialiser];
-FunctionDef    = Identifier {ArrayDefinition} "(" [DefParameterList] ")" 
-                 "{" [Statements] "}";
+FunctionDef    = ["inline"] Identifier {ArrayDefinition} 
+                 "(" [DefParameterList] ")" 
+                 ( "{" [Statements] "}" | ";");
 
 ArrayDefinition  = "[" [Expression] "]";
 Initialiser      = ("=" | ":=") Expression;
 
 DefParameterList = DefParameter {"," DefParameter};
-DefParameter     = [BaseType | TypeIdentifier] Identifier {"[" "]"} [Initialiser];
+DefParameter     = [BaseType | TypeIdentifier] Identifier {"[" "]"} 
+                   [Initialiser];
 
 AttributeList       = "<" AttributeAssignment {, AttributeAssignment} ">";
-AttributeAssignment = Identifier "=" Array;
+AttributeAssignment = Identifier "=" Expression;
 
 EnumDefinition = "enum" Identifier "{" Identifier {"," Identifier} "}";
 

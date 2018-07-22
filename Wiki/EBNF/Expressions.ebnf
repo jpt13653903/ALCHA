@@ -1,45 +1,51 @@
-Expression     = LogicalOR      [ "?" Cast ":" Cast];
-LogicalOR      = LogicalAND     { "||"                      LogicalAND    };
-LogicalAND     = BitwiseOR      { "&&"                      BitwiseOR     };
+Expression     = BitwiseOR      ( [ "?" Cast ":" Cast] | [ "?:" Cast ]);
 BitwiseOR      = BitwiseXOR     {("|"  | "~|")              BitwiseXOR    };
-BitwiseXOR     = BitwiseAND     {("#"  | "~#")              BitwiseAND    };
+BitwiseXOR     = BitwiseAND     {("^"  | "~^")              BitwiseAND    };
 BitwiseAND     = Equality       {("&"  | "~&")              Equality      };
 Equality       = Relational     {("==" | "!=")              Relational    };
 Relational     = Shift          {("<"  | ">" | "<=" | ">=") Shift         };
 Shift          = Additive       {("<<" | ">>")              Additive      };
 Additive       = Multiplicative {("+"  | "-" )              Multiplicative};
 Multiplicative = Exponential    {("*"  | "/" | "%")         Exponential   };
-Exponential    = Array          { "^"                       Array         };
+Exponential    = Replication    { "**"                      Replication   };
 
-Array         = (Concatenation {"~" Concatenation});
-Concatenation = Replication {":" Replication};
-Replication   = Reduction ["\" Primary];
+Replication    = Stringification ["`" Primary];   (* Vector replication  *)
 
-Reduction  = ["&" | "~&" | "|" | "~|" | "#" | "~#" | "!"] Range;
+(* When used as a function, the second parameter must evaluate to a string *)
+Stringification = ["$"] Reduction 
+                |  "$(" Reduction ["," Expression] ")";
+                
+Reduction = ["&" | "~&" | "|" | "~|" | "^" | "~^"] Range;
 
-Range = Unary ["->" Unary ["@" Unary]];
+Range = Unary [".." Unary [":" Unary]];
 
-Unary   = {"$" | "-" | "~" | ":" | "++" | "--"} Postfix;
-Postfix = Cast {
-           "[" [Array        ] "]" | (* Slice *)
-           "(" [ParameterList] ")" | (* Function call *)
-           "."  Identifier         | (* Member reference *)
-           "::" Identifier         | (* Attribute reference *)
-           "++"                    | (* Increment *)
-           "--"                    | (* Decrement *)
-           "!"                       (* Factorial *)
-          };
+Unary   = {"-" | "~" | ":" | "++" | "--"} Postfix;
+
+Postfix = Cast { Array                   | (* Slice *)
+                 "(" [ParameterList] ")" | (* Function call *)
+                 "."  Identifier         | (* Member reference *)
+                 "?." Identifier         | (* Safe member reference *)
+                 "@"  Identifier         | (* Attribute reference *)
+                 "++"                    | (* Increment *)
+                 "--"                    | (* Decrement *)
+                 "!"                    }; (* Factorial *)
 
 Cast    = Primary [CastEpr];
-CastEpr = "'" (
-           Identifier | Literal |
-           ("(" Expression [(",") Expression] ")")
-          );
+CastEpr = "@" ( Identifier | Literal
+              | ("(" Expression [(",") Expression] ")") );
 
-Primary = Identifier | Literal | ArrayLiteral | String | ("(" Expression ")");
+(* The "::" and "'" prefixes chooses the global scope *)
+Primary = (["::" | "'"] Identifier) | Literal | "true" | "false"
+        | VectorConcat | ArrayConcat | Array | String | ("(" Expression ")");
 
-ArrayLiteral = "[" Array {"," Array} "]";
+(* These perform vector or array concatenation *)
+VectorConcat = ":(" Expression {"," Expression} ")";
+ArrayConcat  = ":[" Expression {"," Expression} "]";
 
-ParameterList = [Identifier "="] Expression {"," [Identifier "="] Expression};
+(* This builds an array (an array of arrays when nested) *)
+Array = "[" Expression {"," Expression} "]";
+
+ParameterList = [Identifier ("=" | ":=")] Expression {
+            "," [Identifier ("=" | ":=")] Expression };
 (*----------------------------------------------------------------------------*)
 

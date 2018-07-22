@@ -1,0 +1,20 @@
+(* This is a work-in-progress that will be completed when implementation
+   gets to the verification features.  The end result will be very
+   similar to SystemVerilog. *)
+
+Stimulus = "stimulus" [AttributeList] ["(" [ParameterList] ")"]  [Identifier] 
+           StatementBlock;
+Emulate  = "emulate" [AttributeList] ["(" [ParameterList] ")"]  [Identifier] 
+           StatementBlock;
+ForkJoin = "{" [Statements] "}" {("||" | "&&") "{" [Statements] "}"}
+Wait     = ("wait" "(" Sequence        ")")
+         | ("@("       SensitivityList ")")
+         | (("#" | "##")  Primary) ;
+
+SensitivityList = 
+
+Assert   = 
+Sequence = (* Put sequence expressions in here, 
+              with "Expression" at the leaves of the tree *)
+(*----------------------------------------------------------------------------*)
+
