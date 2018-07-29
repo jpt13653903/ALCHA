@@ -22,79 +22,79 @@
 //------------------------------------------------------------------------------
 
 TOKEN_TREE::NODE::NODE(byte Char){
- Left = Right = Next = 0;
+  Left = Right = Next = 0;
 
- this->Char = Char;
- this->Type = TOKEN::Unknown;
+  this->Char = Char;
+  this->Type = TOKEN::Unknown;
 }
 //------------------------------------------------------------------------------
 
 TOKEN_TREE::NODE::~NODE(){
- if(Next ) delete Next;
- if(Left ) delete Left;
- if(Right) delete Right;
+  if(Next ) delete Next;
+  if(Left ) delete Left;
+  if(Right) delete Right;
 }
 //------------------------------------------------------------------------------
 
 TOKEN_TREE::TOKEN_TREE(){
- Root = 0;
+  Root = 0;
 }
 //------------------------------------------------------------------------------
 
 TOKEN_TREE::~TOKEN_TREE(){
- if(Root) delete Root;
+  if(Root) delete Root;
 }
 //------------------------------------------------------------------------------
 
 void TOKEN_TREE::Insert(const char* Pattern, TOKEN::TYPE Type){
- Root = Insert(Root, (byte*)Pattern, Type);
+  Root = Insert(Root, (byte*)Pattern, Type);
 }
 //------------------------------------------------------------------------------
 
 TOKEN_TREE::NODE* TOKEN_TREE::Insert(
- NODE*       Root,
- const byte* Pattern,
- TOKEN::TYPE Type
+  NODE*       Root,
+  const byte* Pattern,
+  TOKEN::TYPE Type
 ){
- if(!Pattern[0]) return Root;
+  if(!Pattern[0]) return Root;
 
- // Keep in vine structure until balancing restructures the tree
+  // Keep in vine structure until balancing restructures the tree
 
- NODE* Node;
- NODE* Prev = 0;
- NODE* Temp = Root;
+  NODE* Node;
+  NODE* Prev = 0;
+  NODE* Temp = Root;
 
- while(Temp){
-  if(*Pattern < Temp->Char){
-   Node        = new NODE(*Pattern);
-   Node->Right = Temp;
-   if(Pattern[1]) Node->Next = Insert(Node->Next, Pattern+1, Type);
-   else           Node->Type = Type;
-   if(Prev) Prev->Right = Node;
-   else     Root        = Node;
-   return Root;
+  while(Temp){
+    if(*Pattern < Temp->Char){
+      Node        = new NODE(*Pattern);
+      Node->Right = Temp;
+      if(Pattern[1]) Node->Next = Insert(Node->Next, Pattern+1, Type);
+      else           Node->Type = Type;
+      if(Prev) Prev->Right = Node;
+      else     Root        = Node;
+      return Root;
 
-  }else if(*Pattern > Temp->Char){
-   Prev = Temp;
-   Temp = Temp->Right;
+    }else if(*Pattern > Temp->Char){
+      Prev = Temp;
+      Temp = Temp->Right;
 
-  }else{
-   if(Pattern[1]){
-    Temp->Next = Insert(Temp->Next, Pattern+1, Type);
-   }else{
-    if(Temp->Type) printf("Duplicate token entry: ...%s = %d\n", Pattern, Type);
-    else           Temp->Type = Type;
-   }
-   return Root;
+    }else{
+      if(Pattern[1]){
+        Temp->Next = Insert(Temp->Next, Pattern+1, Type);
+      }else{
+        if(Temp->Type) printf("Duplicate token entry: ...%s = %d\n", Pattern, Type);
+        else           Temp->Type = Type;
+      }
+      return Root;
+    }
   }
- }
- Node = new NODE(*Pattern);
- if(Pattern[1]) Node->Next = Insert(Node->Next, Pattern+1, Type);
- else           Node->Type = Type;
- if(Prev) Prev->Right = Node;
- else     Root        = Node;
+  Node = new NODE(*Pattern);
+  if(Pattern[1]) Node->Next = Insert(Node->Next, Pattern+1, Type);
+  else           Node->Type = Type;
+  if(Prev) Prev->Right = Node;
+  else     Root        = Node;
 
- return Root;
+  return Root;
 }
 //------------------------------------------------------------------------------
 
@@ -105,122 +105,122 @@ TOKEN_TREE::NODE* TOKEN_TREE::Insert(
     http://www.eecs.umich.edu/~qstout/pap/CACM86.pdf */
 
 void TOKEN_TREE::Balance(){
- Root = Balance(Root);
+  Root = Balance(Root);
 }
 //------------------------------------------------------------------------------
 
 TOKEN_TREE::NODE* TOKEN_TREE::Balance(NODE* Root){
- if(!Root) return 0;
+  if(!Root) return 0;
 
- // Count the items in the vine
- int   Count = 0;
- NODE* Node  = Root;
- while(Node){
-  Count++;
-  Node = Node->Right;
- }
+  // Count the items in the vine
+  int   Count = 0;
+  NODE* Node  = Root;
+  while(Node){
+    Count++;
+    Node = Node->Right;
+  }
 
- // Create the deepest leaves
- int j    = 0x8000;
- int Size = Count + 1;
- while(j > Size) j >>= 1; // j = 2^floor(log2(Count + 1))
- Size -= j;
+  // Create the deepest leaves
+  int j    = 0x8000;
+  int Size = Count + 1;
+  while(j > Size) j >>= 1; // j = 2^floor(log2(Count + 1))
+  Size -= j;
 
- if(Size) Root = Compress(Root, Size);
- Size = Count - Size;
+  if(Size) Root = Compress(Root, Size);
+  Size = Count - Size;
 
- // Balance the tree
- while(Size > 1){
-  Size /= 2;
-  Root  = Compress(Root, Size);
- }
+  // Balance the tree
+  while(Size > 1){
+    Size /= 2;
+    Root  = Compress(Root, Size);
+  }
 
- SubBalance(Root);
+  SubBalance(Root);
 
- return Root;
+  return Root;
 }
 //------------------------------------------------------------------------------
 
 TOKEN_TREE::NODE* TOKEN_TREE::Compress(NODE* Root, int Count){
- NODE* Temp  = Root->Right;
- Root->Right = Temp->Left;
- Temp->Left  = Root;
- Root        = Temp;
+  NODE* Temp  = Root->Right;
+  Root->Right = Temp->Left;
+  Temp->Left  = Root;
+  Root        = Temp;
 
- int   j;
- NODE* Node = Root;
+  int   j;
+  NODE* Node = Root;
 
- for(j = 1; j < Count; j++){
-  Temp               = Node->Right->Right;
-  Node->Right->Right = Temp->Left;
-  Temp->Left         = Node->Right;
-  Node->Right        = Temp;
-  Node               = Temp;
- }
- return Root;
+  for(j = 1; j < Count; j++){
+    Temp               = Node->Right->Right;
+    Node->Right->Right = Temp->Left;
+    Temp->Left         = Node->Right;
+    Node->Right        = Temp;
+    Node               = Temp;
+  }
+  return Root;
 }
 //------------------------------------------------------------------------------
 
 void TOKEN_TREE::SubBalance(NODE* Node){
- if(Node->Next) Node->Next = Balance(Node->Next);
+  if(Node->Next) Node->Next = Balance(Node->Next);
 
- if(Node->Left ) SubBalance(Node->Left );
- if(Node->Right) SubBalance(Node->Right);
+  if(Node->Left ) SubBalance(Node->Left );
+  if(Node->Right) SubBalance(Node->Right);
 }
 //------------------------------------------------------------------------------
 
 TOKEN::TYPE TOKEN_TREE::Match(const byte* Pattern, int* Count){
- int         N    = 0;
- TOKEN::TYPE Type = TOKEN::Unknown;
+  int         N    = 0;
+  TOKEN::TYPE Type = TOKEN::Unknown;
 
- *Count = 0;
+  *Count = 0;
 
- NODE* Node = Root;
+  NODE* Node = Root;
 
- while(Node){
-  if(*Pattern < Node->Char){
-   Node = Node->Left;
+  while(Node){
+    if(*Pattern < Node->Char){
+      Node = Node->Left;
 
-  }else if(*Pattern > Node->Char){
-   Node = Node->Right;
+    }else if(*Pattern > Node->Char){
+      Node = Node->Right;
 
-  }else{
-   N++;
-   if(Node->Type){ // Keep track of the best option
-    *Count = N;
-    Type   = Node->Type;
-   }
-   if(Pattern[1]){
-    Pattern++;
-    Node = Node->Next;
-   }else{
-    return Type;
-   }
+    }else{
+      N++;
+      if(Node->Type){ // Keep track of the best option
+        *Count = N;
+        Type   = Node->Type;
+      }
+      if(Pattern[1]){
+        Pattern++;
+        Node = Node->Next;
+      }else{
+        return Type;
+      }
+    }
   }
- }
- return Type;
+  return Type;
 }
 //------------------------------------------------------------------------------
 
 TOKEN::TYPE TOKEN_TREE::Find(const byte* Pattern){
- NODE* Node = Root;
+  NODE* Node = Root;
 
- while(Node){
-  if(*Pattern < Node->Char){
-   Node = Node->Left;
+  while(Node){
+    if(*Pattern < Node->Char){
+      Node = Node->Left;
 
-  }else if(*Pattern > Node->Char){
-   Node = Node->Right;
+    }else if(*Pattern > Node->Char){
+      Node = Node->Right;
 
-  }else{
-   if(Pattern[1]){
-    Pattern++;
-    Node = Node->Next;
-   }else{
-    return Node->Type;
-   }
+    }else{
+      if(Pattern[1]){
+        Pattern++;
+        Node = Node->Next;
+      }else{
+        return Node->Type;
+      }
+    }
   }
- }
- return TOKEN::Unknown;
+  return TOKEN::Unknown;
 }
 //------------------------------------------------------------------------------

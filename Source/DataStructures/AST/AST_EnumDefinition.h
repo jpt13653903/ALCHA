@@ -27,12 +27,12 @@
 
 struct AST_EnumDefinition: public AST_Base{
   struct VALUE{ // Link-list node for enumeration values
-   byte* Identifier; // Obtained through IdentifierTree
+    byte* Identifier; // Obtained through IdentifierTree
 
-   VALUE* Next;
+    VALUE* Next;
 
-   VALUE();
-  ~VALUE(); // Also deletes the rest of the list
+    VALUE();
+   ~VALUE(); // Also deletes the rest of the list
   };
 
   byte * Identifier; // Obtained through IdentifierTree

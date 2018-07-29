@@ -27,26 +27,26 @@
 //------------------------------------------------------------------------------
 
 class SCOPE{
- private:
-  struct NODE{
-   SYMBOL_TREE Symbols;   // In use when this is a scope
-   OBJECT*     Namespace; // In use when this is a name-space (null otherwise)
-   NODE*       Next;
+  private:
+    struct NODE{
+      SYMBOL_TREE Symbols;   // In use when this is a scope
+      OBJECT*     Namespace; // In use when this is a name-space (null otherwise)
+      NODE*       Next;
 
-   NODE();
-  ~NODE();
-  };
-  NODE* Stack;
+      NODE();
+     ~NODE();
+    };
+    NODE* Stack;
 
- public:
-  SYMBOL_TREE* Current; // The current scope (do not change the pointer)
+  public:
+    SYMBOL_TREE* Current; // The current scope (do not change the pointer)
 
-  void New ();                  // Creates new scope (statement blocks, etc.)
-  void Push(OBJECT* Namespace); // Pushes name-space
-  void Pop ();                  // Pops the top scope or name-space
+    void New ();                  // Creates new scope (statement blocks, etc.)
+    void Push(OBJECT* Namespace); // Pushes name-space
+    void Pop ();                  // Pops the top scope or name-space
 
-  SCOPE();
- ~SCOPE();
+    SCOPE();
+   ~SCOPE();
 };
 //------------------------------------------------------------------------------
 

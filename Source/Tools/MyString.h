@@ -41,70 +41,70 @@
 //------------------------------------------------------------------------------
 
 class STRING{
- private:
-  unsigned Allocated; // In bytes
-  unsigned TheLength; // In bytes
-  byte*    TheString; // UTF-8
+  private:
+    unsigned Allocated; // In bytes
+    unsigned TheLength; // In bytes
+    byte*    TheString; // UTF-8
 
-  bool      Changed;       // Signals that TheWideString must be rebuilt
-  uwchar_t* TheWideString; // Local buffer for WideString()
+    bool      Changed;       // Signals that TheWideString must be rebuilt
+    uwchar_t* TheWideString; // Local buffer for WideString()
 
- public:
-  STRING();
+  public:
+    STRING();
 
-  STRING(const char   * s);
-  STRING(const byte   * s);
-  STRING(const wchar_t* s);
-  STRING(      STRING & s);
+    STRING(const char   * s);
+    STRING(const byte   * s);
+    STRING(const wchar_t* s);
+    STRING(      STRING & s);
 
- ~STRING();
+   ~STRING();
 
-  void Clear();
+    void Clear();
 
-  unsigned Length(); // In bytes
+    unsigned Length(); // In bytes
 
-  STRING& operator= (const char   * s);
-  STRING& operator= (const byte   * s);
-  STRING& operator= (const wchar_t* s);
-  STRING& operator= (      STRING & s);
+    STRING& operator= (const char   * s);
+    STRING& operator= (const byte   * s);
+    STRING& operator= (const wchar_t* s);
+    STRING& operator= (      STRING & s);
 
-  STRING& operator<<   (char     c);
-  STRING& operator<<   (byte     c);
-  STRING& operator<<   (wchar_t  c);
-  void    Append_UTF_32(unsigned c);
+    STRING& operator<<   (char     c);
+    STRING& operator<<   (byte     c);
+    STRING& operator<<   (wchar_t  c);
+    void    Append_UTF_32(unsigned c);
 
-  STRING& operator<< (const char   * s);
-  STRING& operator<< (const byte   * s);
-  STRING& operator<< (const wchar_t* s);
-  STRING& operator<< (      STRING & s);
+    STRING& operator<< (const char   * s);
+    STRING& operator<< (const byte   * s);
+    STRING& operator<< (const wchar_t* s);
+    STRING& operator<< (      STRING & s);
 
-  STRING& operator<< (int    i);
-  STRING& operator<< (float  f);
-  STRING& operator<< (double d);
+    STRING& operator<< (int    i);
+    STRING& operator<< (float  f);
+    STRING& operator<< (double d);
 
-  STRING& Hex(unsigned i);
+    STRING& Hex(unsigned i);
 
-  byte operator[] (unsigned Index);
+    byte operator[] (unsigned Index);
 
-  const byte   *     String(); // Internal memory management: do not delete
-  const wchar_t* WideString(); // Internal memory management: do not delete
+    const byte   *     String(); // Internal memory management: do not delete
+    const wchar_t* WideString(); // Internal memory management: do not delete
 
-  // Index is in bytes, not characters
-  unsigned GetUTF_32(unsigned Index, unsigned* CodeLength = 0);
+    // Index is in bytes, not characters
+    unsigned GetUTF_32(unsigned Index, unsigned* CodeLength = 0);
 
-  // Deletes the current buffer and uses the given buffer instead.
-  // Simply uses the pointer -- it does not copy the data.
-  void UseMem(byte* s);
+    // Deletes the current buffer and uses the given buffer instead.
+    // Simply uses the pointer -- it does not copy the data.
+    void UseMem(byte* s);
 
-  // Returns:
-  //  0 when equal
-  // -1 when left is a substring of right
-  //  1 when right is a substring of left
-  // -2 when left is smaller than right
-  //  2 when left is greater than right
-  int Compare(STRING&     Right);
-  int Compare(const char* Right);
-  int Compare(const byte* Right);
+    // Returns:
+    //  0 when equal
+    // -1 when left is a substring of right
+    //  1 when right is a substring of left
+    // -2 when left is smaller than right
+    //  2 when left is greater than right
+    int Compare(STRING&     Right);
+    int Compare(const char* Right);
+    int Compare(const byte* Right);
 };
 //------------------------------------------------------------------------------
 

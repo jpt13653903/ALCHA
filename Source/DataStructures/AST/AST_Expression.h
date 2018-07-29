@@ -28,67 +28,67 @@
 
 struct AST_Expression: public AST_Base{
   enum EXPRESSION_TYPE{
-   String,
-   Literal,
-   Identifier,
+    String,
+    Literal,
+    Identifier,
 
-   FunctionCall, // Left is the function name; right is the parameter list
-   Slice,
-   Dot,
-   ArrayConcatenate,
-   Range, // Left = from; Right = to; Right->Next = step
+    FunctionCall, // Left is the function name; right is the parameter list
+    Slice,
+    Dot,
+    ArrayConcatenate,
+    Range, // Left = from; Right = to; Right->Next = step
 
-   Increment, // If child is on the left, post-increment
-   Decrement, // If child is on the left, post-decrement
-   Factorial,
+    Increment, // If child is on the left, post-increment
+    Decrement, // If child is on the left, post-decrement
+    Factorial,
 
-   Negate,
-   Bit_NOT,
-   Raw,     // Unary operator to cast to "raw bits", or "unsigned int"
+    Negate,
+    Bit_NOT,
+    Raw,     // Unary operator to cast to "raw bits", or "unsigned int"
 
-   AND_Reduce,
-   NAND_Reduce,
-   OR_Reduce,
-   NOR_Reduce,
-   XOR_Reduce,
-   XNOR_Reduce,
-   Logical_NOT,
+    AND_Reduce,
+    NAND_Reduce,
+    OR_Reduce,
+    NOR_Reduce,
+    XOR_Reduce,
+    XNOR_Reduce,
+    Logical_NOT,
 
-   Cast,
+    Cast,
 
-   Concatenate,
-   Replicate,
+    Concatenate,
+    Replicate,
 
-   Multiply,
-   Divide,
-   Modulus,
-   Exponential,
+    Multiply,
+    Divide,
+    Modulus,
+    Exponential,
 
-   Add,
-   Subtract,
+    Add,
+    Subtract,
 
-   Shift_Left,
-   Shift_Right,
+    Shift_Left,
+    Shift_Right,
 
-   Less,
-   Greater,
-   Less_Equal,
-   Greater_Equal,
+    Less,
+    Greater,
+    Less_Equal,
+    Greater_Equal,
 
-   Equal,
-   Not_Equal,
+    Equal,
+    Not_Equal,
 
-   Bit_AND,
-   Bit_NAND,
-   Bit_OR,
-   Bit_NOR,
-   Bit_XOR,
-   Bit_XNOR,
+    Bit_AND,
+    Bit_NAND,
+    Bit_OR,
+    Bit_NOR,
+    Bit_XOR,
+    Bit_XNOR,
 
-   Logical_AND,
-   Logical_OR,
+    Logical_AND,
+    Logical_OR,
 
-   Conditional
+    Conditional
   } ExpressionType;
 
   // Pointers so that not all expression nodes have instances, wasting space
@@ -101,9 +101,9 @@ struct AST_Expression: public AST_Base{
   AST_Expression* Right;
 
   AST_Expression(
-   int             Line,
-   const byte*     Filename,
-   EXPRESSION_TYPE ExpressionType
+    int             Line,
+    const byte*     Filename,
+    EXPRESSION_TYPE ExpressionType
   );
  ~AST_Expression();
 

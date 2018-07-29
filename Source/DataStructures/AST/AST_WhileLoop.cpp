@@ -23,26 +23,26 @@
 
 AST_WhileLoop::AST_WhileLoop(int Line, const byte* Filename):
 AST_Base(Line, Filename){
- this->Type = WhileLoop;
+  this->Type = WhileLoop;
 
- Condition  = 0;
- Statements = 0;
+  Condition  = 0;
+  Statements = 0;
 }
 //------------------------------------------------------------------------------
 
 AST_WhileLoop::~AST_WhileLoop(){
- if(Condition ) delete Condition;
- if(Statements) delete Statements;
+  if(Condition ) delete Condition;
+  if(Statements) delete Statements;
 }
 //------------------------------------------------------------------------------
 
 void AST_WhileLoop::Display(){
- printf("\n%s:%d -- while(", Filename, Line);
-  if(Condition) Condition->Display();
- printf("){\n");
-  if(Statements) Statements->Display();
- printf("}\n");
+  printf("\n%s:%d -- while(", Filename, Line);
+    if(Condition) Condition->Display();
+  printf("){\n");
+    if(Statements) Statements->Display();
+  printf("}\n");
 
- if(Next) Next->Display();
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

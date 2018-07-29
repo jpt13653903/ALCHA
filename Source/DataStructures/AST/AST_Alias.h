@@ -26,13 +26,13 @@
 //------------------------------------------------------------------------------
 
 struct AST_Alias: public AST_Base{
-  byte          * Identifier;
-  AST_Expression* Expression;
+    byte          * Identifier;
+    AST_Expression* Expression;
 
-  AST_Alias(int Line, const byte* Filename);
- ~AST_Alias();
+    AST_Alias(int Line, const byte* Filename);
+   ~AST_Alias();
 
-  void Display();
+    void Display();
 };
 //------------------------------------------------------------------------------
 

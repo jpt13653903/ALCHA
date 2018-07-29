@@ -27,18 +27,18 @@
 //------------------------------------------------------------------------------
 
 struct REFERENCE{ // Base class for the symbol table
- enum TYPE{
-  Pin, Net, Clk,           // Physical pins, nets and clocks
-  Int, Rat, Float, Complex // Scripting variables
- } Type;
+  enum TYPE{
+    Pin, Net, Clk,           // Physical pins, nets and clocks
+    Int, Rat, Float, Complex // Scripting variables
+  } Type;
 
- DICTIONARY Attributes; // Makes use of AST.h AttributeXXX functions
- void       Attribute_Add(const byte* Name, STRING* Value);
+  DICTIONARY Attributes; // Makes use of AST.h AttributeXXX functions
+  void       Attribute_Add(const byte* Name, STRING* Value);
 
-          REFERENCE(TYPE Type);
- virtual ~REFERENCE();
+           REFERENCE(TYPE Type);
+  virtual ~REFERENCE();
 
- virtual void Display() = 0;
+  virtual void Display() = 0;
 };
 //------------------------------------------------------------------------------
 

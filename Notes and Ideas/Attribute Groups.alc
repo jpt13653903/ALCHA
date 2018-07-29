@@ -1,12 +1,12 @@
 group<type = "PLL">{
- clk<frequency = "133 MHz", tolerance = "-5:0"> DDR_Clk(Base_Clk);
- clk<frequency =  "10 MHz"                    > CPU_Clk(Base_Clk);
+  clk<frequency = "133 MHz", tolerance = "-5:0"> DDR_Clk(Base_Clk);
+  clk<frequency =  "10 MHz"                    > CPU_Clk(Base_Clk);
 }
 
 group<...whatnot...> SD{
- out pin  <...whatnot...> CLK;
- out pin  <...whatnot...> CMD;
-     pin'4<...whatnot..., number = "XX, YY, ZZ, WW"> DAT;
+  out pin  <...whatnot...> CLK;
+  out pin  <...whatnot...> CMD;
+      pin'4<...whatnot..., number = "XX, YY, ZZ, WW"> DAT;
 }
 
 Later: SD.DAT = 7'4;

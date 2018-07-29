@@ -23,25 +23,25 @@
 //------------------------------------------------------------------------------
 
 #if defined(__WIN32)
- #define  NTDDI_VERSION 0x05010000 // Windows XP
- #define  WINVER        0x0501
- #define _WIN32_WINNT   WINVER
- #define _WIN32_IE      WINVER
- #define  UNICODE
+  #define  NTDDI_VERSION 0x05010000 // Windows XP
+  #define  WINVER        0x0501
+  #define _WIN32_WINNT   WINVER
+  #define _WIN32_IE      WINVER
+  #define  UNICODE
 
- #include <windows.h>
+  #include <windows.h>
 //------------------------------------------------------------------------------
 
 #elif defined(__linux__)
- #error Linux not yet supported at this point.
+  #error Linux not yet supported at this point.
 //------------------------------------------------------------------------------
 
 #elif defined(__APPLE__)
- #error MAC OS not yet supported at this point.
+  #error MAC OS not yet supported at this point.
 //------------------------------------------------------------------------------
 
 #else
- #error Your operating system is not supported at this point.
+  #error Your operating system is not supported at this point.
 #endif
 //------------------------------------------------------------------------------
 

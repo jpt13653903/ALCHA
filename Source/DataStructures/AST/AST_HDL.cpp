@@ -22,28 +22,28 @@
 //------------------------------------------------------------------------------
 
 AST_HDL::AST_HDL(int Line, const byte* Filename): AST_Base(Line, Filename){
- this->Type = HDL;
+  this->Type = HDL;
 
- Files      = 0;
- Ports      = 0;
- Parameters = 0;
- Identifier = 0;
+  Files      = 0;
+  Ports      = 0;
+  Parameters = 0;
+  Identifier = 0;
 }
 //------------------------------------------------------------------------------
 
 AST_HDL::~AST_HDL(){
- if(Files     ) delete Files;
- if(Ports     ) delete Ports;
- if(Parameters) delete Parameters;
+  if(Files     ) delete Files;
+  if(Ports     ) delete Ports;
+  if(Parameters) delete Parameters;
 }
 //------------------------------------------------------------------------------
 
 void AST_HDL::Display(){
- printf("\n%s:%d -- hdl (%s):\n", Filename, Line, Identifier);
- printf(" Files:\n  "     ); if(Files     ) Files     ->Display(); printf("\n");
- printf(" Parameters:\n  "); if(Parameters) Parameters->Display();
- printf(" Ports:\n  "     ); if(Ports     ) Ports     ->Display();
+  printf("\n%s:%d -- hdl (%s):\n", Filename, Line, Identifier);
+  printf(" Files:\n  "     ); if(Files     ) Files     ->Display(); printf("\n");
+  printf(" Parameters:\n  "); if(Parameters) Parameters->Display();
+  printf(" Ports:\n  "     ); if(Ports     ) Ports     ->Display();
 
- if(Next) Next->Display();
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

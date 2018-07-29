@@ -22,104 +22,104 @@
 //------------------------------------------------------------------------------
 
 SYMBOL_TREE::NODE::NODE(const byte* Name, REFERENCE* Reference){
- Red  = true;
- Left = Right = 0;
+  Red  = true;
+  Left = Right = 0;
 
- this->Name      = Name;
- this->Reference = Reference;
+  this->Name      = Name;
+  this->Reference = Reference;
 }
 //------------------------------------------------------------------------------
 
 SYMBOL_TREE::NODE::~NODE(){
- if(Left ) delete Left;
- if(Right) delete Right;
+  if(Left ) delete Left;
+  if(Right) delete Right;
 }
 //------------------------------------------------------------------------------
 
 SYMBOL_TREE::SYMBOL_TREE(){
- Root = 0;
+  Root = 0;
 }
 //------------------------------------------------------------------------------
 
 SYMBOL_TREE::~SYMBOL_TREE(){
- if(Root) delete Root;
+  if(Root) delete Root;
 }
 //------------------------------------------------------------------------------
 
 bool SYMBOL_TREE::IsRed(NODE* Node){
- if(!Node) return false;
- return Node->Red;
+  if(!Node) return false;
+  return Node->Red;
 }
 //------------------------------------------------------------------------------
 
 void SYMBOL_TREE::ColourFlip(NODE* Node){
- Node       ->Red = !Node       ->Red;
- Node->Left ->Red = !Node->Left ->Red;
- Node->Right->Red = !Node->Right->Red;
+  Node       ->Red = !Node       ->Red;
+  Node->Left ->Red = !Node->Left ->Red;
+  Node->Right->Red = !Node->Right->Red;
 }
 //------------------------------------------------------------------------------
 
 SYMBOL_TREE::NODE* SYMBOL_TREE::RotateLeft(NODE* Node){
- NODE* Temp  = Node->Right;
- Node->Right = Temp->Left;
- Temp->Left  = Node;
- Temp->Red   = Node->Red;
- Node->Red   = true;
- return Temp;
+  NODE* Temp  = Node->Right;
+  Node->Right = Temp->Left;
+  Temp->Left  = Node;
+  Temp->Red   = Node->Red;
+  Node->Red   = true;
+  return Temp;
 }
 //------------------------------------------------------------------------------
 
 SYMBOL_TREE::NODE* SYMBOL_TREE::RotateRight(NODE* Node){
- NODE* Temp  = Node->Left;
- Node->Left  = Temp->Right;
- Temp->Right = Node;
- Temp->Red   = Node->Red;
- Node->Red   = true;
- return Temp;
+  NODE* Temp  = Node->Left;
+  Node->Left  = Temp->Right;
+  Temp->Right = Node;
+  Temp->Red   = Node->Red;
+  Node->Red   = true;
+  return Temp;
 }
 //------------------------------------------------------------------------------
 
 bool SYMBOL_TREE::Insert(const byte* Name, REFERENCE* Reference){
- Duplicate = false;
- Root      = Insert(Root, Name, Reference);
- return !Duplicate;
+  Duplicate = false;
+  Root      = Insert(Root, Name, Reference);
+  return !Duplicate;
 }
 //------------------------------------------------------------------------------
 
 SYMBOL_TREE::NODE* SYMBOL_TREE::Insert(
- NODE*       Node,
- const byte* Name,
- REFERENCE*  Reference
+  NODE*       Node,
+  const byte* Name,
+  REFERENCE*  Reference
 ){
- if(!Node) return new NODE(Name, Reference);
+  if(!Node) return new NODE(Name, Reference);
 
- if(Name < Node->Name){
-  Node->Left = Insert(Node->Left, Name, Reference);
+  if(Name < Node->Name){
+    Node->Left = Insert(Node->Left, Name, Reference);
 
- }else if(Name > Node->Name){
-  Node->Right = Insert(Node->Right, Name, Reference);
+  }else if(Name > Node->Name){
+    Node->Right = Insert(Node->Right, Name, Reference);
 
- }else{ // Duplicate
-  Duplicate = true;
+  }else{ // Duplicate
+    Duplicate = true;
+    return Node;
+  }
+
+  if(IsRed(Node->Right) && !IsRed(Node->Left      )) Node = RotateLeft (Node);
+  if(IsRed(Node->Left ) &&  IsRed(Node->Left->Left)) Node = RotateRight(Node);
+  if(IsRed(Node->Left ) &&  IsRed(Node->Right     ))        ColourFlip (Node);
+
   return Node;
- }
-
- if(IsRed(Node->Right) && !IsRed(Node->Left      )) Node = RotateLeft (Node);
- if(IsRed(Node->Left ) &&  IsRed(Node->Left->Left)) Node = RotateRight(Node);
- if(IsRed(Node->Left ) &&  IsRed(Node->Right     ))        ColourFlip (Node);
-
- return Node;
 }
 //------------------------------------------------------------------------------
 
 REFERENCE* SYMBOL_TREE::Find(const byte* Name){
- NODE* Node = Root;
+  NODE* Node = Root;
 
- while(Node){
-       if(Name < Node->Name) Node = Node->Left;
-  else if(Name > Node->Name) Node = Node->Right;
-  else                       return Node->Reference;
- }
- return 0;
+  while(Node){
+         if(Name < Node->Name) Node = Node->Left;
+    else if(Name > Node->Name) Node = Node->Right;
+    else                       return Node->Reference;
+  }
+  return 0;
 }
 //------------------------------------------------------------------------------

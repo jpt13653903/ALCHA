@@ -28,39 +28,39 @@
 //------------------------------------------------------------------------------
 
 struct AST_Base{ // The base type for AST nodes
- enum TYPE{
-  Fence, // Empty statement, but also "next-cycle" specifier in FSMs
-  Import,
-  Group,
-  Alias,
-  TargetDefinition,
-  ClassDefinition,
-  EnumDefinition,
-  Definition, // pin, net, clk, byte, char, int, rat, float, complex and
-              // class instance
-  Parameter,
-  Expression,
-  Assignment,
-  NamespacePush,
-  IfStatement,
-  ForLoop,
-  LoopLoop,
-  WhileLoop,
-  Switch,
-  Jump,
-  RTL,
-  FSM,
-  HDL
- } Type;
+  enum TYPE{
+    Fence, // Empty statement, but also "next-cycle" specifier in FSMs
+    Import,
+    Group,
+    Alias,
+    TargetDefinition,
+    ClassDefinition,
+    EnumDefinition,
+    Definition, // pin, net, clk, byte, char, int, rat, float, complex and
+                // class instance
+    Parameter,
+    Expression,
+    Assignment,
+    NamespacePush,
+    IfStatement,
+    ForLoop,
+    LoopLoop,
+    WhileLoop,
+    Switch,
+    Jump,
+    RTL,
+    FSM,
+    HDL
+  } Type;
 
- int       Line;
- byte*     Filename; // Memory handled by IdentifierTree
- AST_Base* Next;     // Next sibling
+  int       Line;
+  byte*     Filename; // Memory handled by IdentifierTree
+  AST_Base* Next;     // Next sibling
 
-          AST_Base(int Line, const byte* Filename);
- virtual ~AST_Base(); // Also deletes the rest of the linked list
+           AST_Base(int Line, const byte* Filename);
+  virtual ~AST_Base(); // Also deletes the rest of the linked list
 
- virtual void Display() = 0;
+  virtual void Display() = 0;
 };
 //------------------------------------------------------------------------------
 

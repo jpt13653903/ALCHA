@@ -26,10 +26,10 @@
 //------------------------------------------------------------------------------
 
 struct AST_Fence: public AST_Base{
-  AST_Fence(int Line, const byte* Filename);
- ~AST_Fence();
+    AST_Fence(int Line, const byte* Filename);
+   ~AST_Fence();
 
-  void Display();
+    void Display();
 };
 //------------------------------------------------------------------------------
 

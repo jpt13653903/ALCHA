@@ -49,41 +49,41 @@ Tokens:
 //------------------------------------------------------------------------------
 
 class SCANNER{
- private:
-  bool error;
-  void Error(const char* Message);
+  private:
+    bool error;
+    void Error(const char* Message);
 
-  int      Line;
-  unsigned Index;
-  byte*    Buffer;
+    int      Line;
+    unsigned Index;
+    byte*    Buffer;
 
-  bool LineComment  ();
-  bool BlockComment ();
-  bool NestedComment();
-  void WhiteSpace   (); // Ignores spaces, new-lines and comments
+    bool LineComment  ();
+    bool BlockComment ();
+    bool NestedComment();
+    void WhiteSpace   (); // Ignores spaces, new-lines and comments
 
-  bool Digit   (); // Returns true on decimal digit
-  bool NonDigit();
+    bool Digit   (); // Returns true on decimal digit
+    bool NonDigit();
 
-  bool     GetDigit   (unsigned* Digit, unsigned Base);
-  unsigned GetExponent(bool    * Sign , TOKEN* Token);
-  bool     GetNumber  (TOKEN   * Token, unsigned Base);
+    bool     GetDigit   (unsigned* Digit, unsigned Base);
+    unsigned GetExponent(bool    * Sign , TOKEN* Token);
+    bool     GetNumber  (TOKEN   * Token, unsigned Base);
 
-  bool Identifier(TOKEN* Token);
-  bool Operator  (TOKEN* Token);
-  bool Literal   (TOKEN* Token);
-  bool String    (TOKEN* Token);
+    bool Identifier(TOKEN* Token);
+    bool Operator  (TOKEN* Token);
+    bool Literal   (TOKEN* Token);
+    bool String    (TOKEN* Token);
 
- public: // Public interface
-  SCANNER* Next; // The parser uses a linked list of scanners
+  public: // Public interface
+    SCANNER* Next; // The parser uses a linked list of scanners
 
-  SCANNER();
- ~SCANNER();
+    SCANNER();
+   ~SCANNER();
 
-  STRING Filename; // Read-only
-  bool   Open(const byte* Filename);
+    STRING Filename; // Read-only
+    bool   Open(const byte* Filename);
 
-  bool GetToken(TOKEN* Token);
+    bool GetToken(TOKEN* Token);
 };
 //------------------------------------------------------------------------------
 

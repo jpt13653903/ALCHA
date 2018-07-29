@@ -22,20 +22,20 @@
 //------------------------------------------------------------------------------
 
 PIN::PIN(): REFERENCE(REFERENCE::Pin){
- /// \todo Initialise all the attributes
+  /// \todo Initialise all the attributes
 
- Enable = 0;
- Driver = 0;
+  Enable = 0;
+  Driver = 0;
 }
 //------------------------------------------------------------------------------
 
 PIN::~PIN(){
- /// \todo Decrement the Enable and Driver reference counters, deleting them
- ///       as required.
+  /// \todo Decrement the Enable and Driver reference counters, deleting them
+  ///       as required.
 }
 //------------------------------------------------------------------------------
 
 void PIN::Display(){
- /// \todo Display the Pin, for debug purposes
+  /// \todo Display the Pin, for debug purposes
 }
 //------------------------------------------------------------------------------

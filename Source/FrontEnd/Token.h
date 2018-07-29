@@ -27,158 +27,158 @@
 //------------------------------------------------------------------------------
 
 struct TOKEN{
- enum TYPE{
-  Unknown = 0, // also used to designate errors, etc.
+  enum TYPE{
+    Unknown = 0, // also used to designate errors, etc.
 
-  // White-space ...............................................................
-  Space,   // These are only used in the scanner
-  Newline,
+    // White-space ...............................................................
+    Space,   // These are only used in the scanner
+    Newline,
 
-  // Special keywords ..........................................................
-  FILE,
-  LINE,
-  DATE,
-  TIME,
-  // __CLASS__ and __FUNCTION__ are implemented as special variables
+    // Special keywords ..........................................................
+    FILE,
+    LINE,
+    DATE,
+    TIME,
+    // __CLASS__ and __FUNCTION__ are implemented as special variables
 
-  // Keywords ..................................................................
-  SetTarget,
+    // Keywords ..................................................................
+    SetTarget,
 
-  Void,
-  Auto,
-  Func,
-  Pin,
-  Net,
-  Clk,
+    Void,
+    Auto,
+    Func,
+    Pin,
+    Net,
+    Clk,
 
-  Byte,
-  Char,
+    Byte,
+    Char,
 
-  Int,
-  Rat,
-  Float,
-  Complex,
+    Int,
+    Rat,
+    Float,
+    Complex,
 
-  In,
-  Out,
+    In,
+    Out,
 
-  Class,
-  Enum,
-  Group,
-  Alias,
+    Class,
+    Enum,
+    Group,
+    Alias,
 
-  If,
-  Else,
-  For,
-  While,
-  Loop,
-  Switch,
-  Case,
-  Default,
+    If,
+    Else,
+    For,
+    While,
+    Loop,
+    Switch,
+    Case,
+    Default,
 
-  Import,
-  As,
+    Import,
+    As,
 
-  Return,
-  Break,
-  Continue,
+    Return,
+    Break,
+    Continue,
 
-  RTL,
-  FSM,
-  HDL,
+    RTL,
+    FSM,
+    HDL,
 
-  // Operators .................................................................
-  Increment, // ++
-  Decrement, // --
-  CastOp,    // '
-  To,        // ->
-  Step,      // @
-  Dot,       // .
-  Dot_Curly, // .{
+    // Operators .................................................................
+    Increment, // ++
+    Decrement, // --
+    CastOp,    // '
+    To,        // ->
+    Step,      // @
+    Dot,       // .
+    Dot_Curly, // .{
 
-  Bit_AND,  //  &
-  Bit_NAND, // ~&
-  Bit_OR,   //  |
-  Bit_NOR,  // ~|
-  Bit_XOR,  //  #
-  Bit_XNOR, // ~#
-  Bit_NOT,  // ~
+    Bit_AND,  //  &
+    Bit_NAND, // ~&
+    Bit_OR,   //  |
+    Bit_NOR,  // ~|
+    Bit_XOR,  //  #
+    Bit_XNOR, // ~#
+    Bit_NOT,  // ~
 
-  Bit_Repeat, // \                                                             "
+    Bit_Repeat, // \                                                             "
 
-  Add,         // +
-  Subtract,    // -
-  Multiply,    // *
-  Divide,      // /
-  Modulus,     // %
-  Exponential, // ^
+    Add,         // +
+    Subtract,    // -
+    Multiply,    // *
+    Divide,      // /
+    Modulus,     // %
+    Exponential, // ^
 
-  Shift_Left,  // <<
-  Shift_Right, // >>
+    Shift_Left,  // <<
+    Shift_Right, // >>
 
-  Less,          // <
-  Greater,       // >
-  Less_Equal,    // <=
-  Greater_Equal, // >=
-  Equal,         // ==
-  Not_Equal,      // !=
+    Less,          // <
+    Greater,       // >
+    Less_Equal,    // <=
+    Greater_Equal, // >=
+    Equal,         // ==
+    Not_Equal,      // !=
 
-  Logical_NOT, // !
-  Logical_AND, // &&
-  Logical_OR,  // ||
+    Logical_NOT, // !
+    Logical_AND, // &&
+    Logical_OR,  // ||
 
-  Conditional, // ?
+    Conditional, // ?
 
-  Assign,             //   =
-  Raw_Assign,         //  :=
-  Append_Assign,      //  @=
-  Add_Assign,         //  +=
-  Subtract_Assign,    //  -=
-  Multiply_Assign,    //  *=
-  Divide_Assign,      //  /=
-  Modulus_Assign,     //  %=
-  Exponential_Assign, //  ^=
-  AND_Assign,         //  &=
-  OR_Assign,          //  |=
-  XOR_Assign,         //  #=
-  Shift_Left_Assign,  // <<=
-  Shift_Right_Assign, // >>=
+    Assign,             //   =
+    Raw_Assign,         //  :=
+    Append_Assign,      //  @=
+    Add_Assign,         //  +=
+    Subtract_Assign,    //  -=
+    Multiply_Assign,    //  *=
+    Divide_Assign,      //  /=
+    Modulus_Assign,     //  %=
+    Exponential_Assign, //  ^=
+    AND_Assign,         //  &=
+    OR_Assign,          //  |=
+    XOR_Assign,         //  #=
+    Shift_Left_Assign,  // <<=
+    Shift_Right_Assign, // >>=
 
-  // Punctuators ...............................................................
-  OpenRound,   // (
-  CloseRound,  // )
+    // Punctuators ...............................................................
+    OpenRound,   // (
+    CloseRound,  // )
 
-  OpenSquare,  // [
-  CloseSquare, // ]
+    OpenSquare,  // [
+    CloseSquare, // ]
 
-  OpenCurly,   // {
-  CloseCurly,  // }
+    OpenCurly,   // {
+    CloseCurly,  // }
 
-  Comma,       // ,
-  Colon,       // :
-  Semicolon,   // ;
+    Comma,       // ,
+    Colon,       // :
+    Semicolon,   // ;
 
-  // Other types ...............................................................
-  Identifier,
-  Literal,
-  String,
+    // Other types ...............................................................
+    Identifier,
+    Literal,
+    String,
 
-  // Aliases ...................................................................
-  Factorial         = Logical_NOT, // !
-  OpenAngle         = Less,        // <
-  CloseAngle        = Greater,     // >
-  Negate            = Subtract,    // -
-  Bit_Concatenate   = Colon,       // :
-  Array_Concatenate = Bit_NOT      // ~
+    // Aliases ...................................................................
+    Factorial         = Logical_NOT, // !
+    OpenAngle         = Less,        // <
+    CloseAngle        = Greater,     // >
+    Negate            = Subtract,    // -
+    Bit_Concatenate   = Colon,       // :
+    Array_Concatenate = Bit_NOT      // ~
 
- } Type;
+  } Type;
 
- int    Line;  // The line number
- byte*  ID;    // The identifier ID
- STRING Data;  // The string contents; otherwise the original token characters
- NUMBER Value; // Literal value
+  int    Line;  // The line number
+  byte*  ID;    // The identifier ID
+  STRING Data;  // The string contents; otherwise the original token characters
+  NUMBER Value; // Literal value
 
- TOKEN();
+  TOKEN();
 };
 //------------------------------------------------------------------------------
 

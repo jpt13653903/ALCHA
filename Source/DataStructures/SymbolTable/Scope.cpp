@@ -25,52 +25,52 @@ SCOPE Scope;
 //------------------------------------------------------------------------------
 
 SCOPE::NODE::NODE(){
- Namespace = 0;
- Next      = 0;
+  Namespace = 0;
+  Next      = 0;
 }
 //------------------------------------------------------------------------------
 
 SCOPE::NODE::~NODE(){
- if(Next) delete Next;
+  if(Next) delete Next;
 }
 //------------------------------------------------------------------------------
 
 SCOPE::SCOPE(){
- NODE* Stack = new NODE;
- Current = &Stack->Symbols;
+  NODE* Stack = new NODE;
+  Current = &Stack->Symbols;
 }
 //------------------------------------------------------------------------------
 
 SCOPE::~SCOPE(){
- delete Stack;
+  delete Stack;
 }
 //------------------------------------------------------------------------------
 
 void SCOPE::New(){
- NODE* Temp = new NODE;
- Temp->Next = Stack;
- Stack      = Temp;
- Current    = &Stack->Symbols;
+  NODE* Temp = new NODE;
+  Temp->Next = Stack;
+  Stack      = Temp;
+  Current    = &Stack->Symbols;
 }
 //------------------------------------------------------------------------------
 
 void SCOPE::Push(OBJECT* Namespace){
- NODE* Temp = new NODE;
- Temp->Next = Stack;
- Stack      = Temp;
+  NODE* Temp = new NODE;
+  Temp->Next = Stack;
+  Stack      = Temp;
 
- Stack->Namespace = Namespace;
+  Stack->Namespace = Namespace;
 // Current          = Namespace->Members;
 }
 //------------------------------------------------------------------------------
 
 void SCOPE::Pop(){
- if(!Stack || !Stack->Next) return; // Trying to pop the global scope
+  if(!Stack || !Stack->Next) return; // Trying to pop the global scope
 
- NODE* Temp = Stack;
- Stack      = Temp->Next;
- Temp->Next = 0;
- delete Temp;
+  NODE* Temp = Stack;
+  Stack      = Temp->Next;
+  Temp->Next = 0;
+  delete Temp;
 
 // if(Stack->Namespace) Current =  Namespace->Members;
 // else                 Current = &Stack    ->Symbols;

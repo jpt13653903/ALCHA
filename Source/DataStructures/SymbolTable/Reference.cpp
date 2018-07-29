@@ -22,19 +22,19 @@
 //------------------------------------------------------------------------------
 
 REFERENCE::REFERENCE(TYPE Type){
- this->Type = Type;
+  this->Type = Type;
 
- Attributes.OnDuplicate = AttributesOnDuplicate;
+  Attributes.OnDuplicate = AttributesOnDuplicate;
 }
 //------------------------------------------------------------------------------
 
 REFERENCE::~REFERENCE(){
- Attributes.Action(AttributesDeleteData);
+  Attributes.Action(AttributesDeleteData);
 }
 //------------------------------------------------------------------------------
 
 void REFERENCE::Attribute_Add(const byte* Name, STRING* Value){
- STRING* ThisValue = new STRING(*Value);
- Attributes.Insert(Name, ThisValue);
+  STRING* ThisValue = new STRING(*Value);
+  Attributes.Insert(Name, ThisValue);
 }
 //------------------------------------------------------------------------------

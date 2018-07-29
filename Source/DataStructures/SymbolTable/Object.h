@@ -23,25 +23,25 @@
 //------------------------------------------------------------------------------
 
 struct OBJECT{ // Base class for the symbol table
- enum TYPE{
-  Target,
+  enum TYPE{
+    Target,
 
-  // Constants (stores a value)
-  Int, Rat, Float, Complex,
+    // Constants (stores a value)
+    Int, Rat, Float, Complex,
 
-  // Others
-  Array, // An array of references
-  Expression,
-  Namespace,
-  ClassDefinition,
-  ClassInstance,
-  Function // The actual function, with parameter definition and body AST
- } Type;
+    // Others
+    Array, // An array of references
+    Expression,
+    Namespace,
+    ClassDefinition,
+    ClassInstance,
+    Function // The actual function, with parameter definition and body AST
+  } Type;
 
-          OBJECT(TYPE Type);
- virtual ~OBJECT();
+           OBJECT(TYPE Type);
+  virtual ~OBJECT();
 
- virtual void Display() = 0;
+  virtual void Display() = 0;
 };
 //------------------------------------------------------------------------------
 

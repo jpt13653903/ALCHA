@@ -26,29 +26,29 @@
 //------------------------------------------------------------------------------
 
 struct AST_ClassDefinition: public AST_Base{
-  struct PARENT{ // Link-list node for parent classes
-   AST_Expression* ClassName;  // This class inherits from Parent
-   AST_Expression* Parameters; // Parent constructor call
+    struct PARENT{ // Link-list node for parent classes
+      AST_Expression* ClassName;  // This class inherits from Parent
+      AST_Expression* Parameters; // Parent constructor call
 
-   PARENT* Next;
+      PARENT* Next;
 
-   PARENT();
-  ~PARENT(); // Also deletes the rest of the list
-  };
+      PARENT();
+     ~PARENT(); // Also deletes the rest of the list
+    };
 
-  DICTIONARY Attributes;
+    DICTIONARY Attributes;
 
-  byte          * Identifier;
-  AST_Parameter * Parameters; // Constructor parameters
+    byte          * Identifier;
+    AST_Parameter * Parameters; // Constructor parameters
 
-  PARENT* Parents;
+    PARENT* Parents;
 
-  AST_Base* Body;
+    AST_Base* Body;
 
-  AST_ClassDefinition(int Line, const byte* Filename);
- ~AST_ClassDefinition();
+    AST_ClassDefinition(int Line, const byte* Filename);
+   ~AST_ClassDefinition();
 
-  void Display();
+    void Display();
 };
 //------------------------------------------------------------------------------
 

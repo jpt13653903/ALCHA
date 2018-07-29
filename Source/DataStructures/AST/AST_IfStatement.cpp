@@ -23,30 +23,30 @@
 
 AST_IfStatement::AST_IfStatement(int Line, const byte* Filename):
 AST_Base(Line, Filename){
- this->Type = IfStatement;
+  this->Type = IfStatement;
 
- Condition       = 0;
- TrueStatements  = 0;
- FalseStatements = 0;
+  Condition       = 0;
+  TrueStatements  = 0;
+  FalseStatements = 0;
 }
 //------------------------------------------------------------------------------
 
 AST_IfStatement::~AST_IfStatement(){
- if(Condition      ) delete Condition;
- if(TrueStatements ) delete TrueStatements;
- if(FalseStatements) delete FalseStatements;
+  if(Condition      ) delete Condition;
+  if(TrueStatements ) delete TrueStatements;
+  if(FalseStatements) delete FalseStatements;
 }
 //------------------------------------------------------------------------------
 
 void AST_IfStatement::Display(){
- printf("\n%s:%d -- if(", Filename, Line);
-  if(Condition) Condition->Display();
- printf("){\n");
-  if(TrueStatements) TrueStatements->Display();
- printf("}else{\n");
-  if(FalseStatements) FalseStatements->Display();
- printf("}\n");
+  printf("\n%s:%d -- if(", Filename, Line);
+    if(Condition) Condition->Display();
+  printf("){\n");
+    if(TrueStatements) TrueStatements->Display();
+  printf("}else{\n");
+    if(FalseStatements) FalseStatements->Display();
+  printf("}\n");
 
- if(Next) Next->Display();
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

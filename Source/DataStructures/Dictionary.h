@@ -36,46 +36,46 @@ typedef void* (*DICTIONARY_DUPLICATE)(const byte* Name, void* Old, void* New);
 //------------------------------------------------------------------------------
 
 class DICTIONARY{
- private:
-  struct NODE{
-   bool  Red;
+  private:
+    struct NODE{
+      bool  Red;
 
-   byte* Name; ///< This memory is internally managed
-   void* Data; ///< This is arbitrary data and not deleted by this structure
+      byte* Name; ///< This memory is internally managed
+      void* Data; ///< This is arbitrary data and not deleted by this structure
 
-   NODE* Left;
-   NODE* Right;
+      NODE* Left;
+      NODE* Right;
 
-   NODE(const byte* Name, void* Data);
-  ~NODE();
-  };
+      NODE(const byte* Name, void* Data);
+     ~NODE();
+    };
 
-  NODE* Root;
-  int   ItemCount;
+    NODE* Root;
+    int   ItemCount;
 
-  bool  IsRed      (NODE* Node);
-  void  ColourFlip (NODE* Node);
-  NODE* RotateLeft (NODE* Node);
-  NODE* RotateRight(NODE* Node);
+    bool  IsRed      (NODE* Node);
+    void  ColourFlip (NODE* Node);
+    NODE* RotateLeft (NODE* Node);
+    NODE* RotateRight(NODE* Node);
 
-  NODE* Insert(NODE* Node, const byte* Name, void* Data);
-  void  Action(NODE* Node, DICTIONARY_ACTION Function);
+    NODE* Insert(NODE* Node, const byte* Name, void* Data);
+    void  Action(NODE* Node, DICTIONARY_ACTION Function);
 
- public:
-  DICTIONARY();
- ~DICTIONARY();
+  public:
+    DICTIONARY();
+   ~DICTIONARY();
 
-  // Callback function called upon duplicate insert.  The return value must
-  // be the data that must be stored at that location.  The default behaviour
-  // is to update to the new data.
-  DICTIONARY_DUPLICATE OnDuplicate;
+    // Callback function called upon duplicate insert.  The return value must
+    // be the data that must be stored at that location.  The default behaviour
+    // is to update to the new data.
+    DICTIONARY_DUPLICATE OnDuplicate;
 
-  void  Insert  (const byte* Name, void* Data);
-  void* Find    (const byte* Name);
-  int   GetCount();
+    void  Insert  (const byte* Name, void* Data);
+    void* Find    (const byte* Name);
+    int   GetCount();
 
-  // This calls the given function for every node, in order
-  void Action(DICTIONARY_ACTION Function);
+    // This calls the given function for every node, in order
+    void Action(DICTIONARY_ACTION Function);
 };
 //------------------------------------------------------------------------------
 

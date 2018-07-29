@@ -1,9 +1,9 @@
 class Adder(num N){
- input  net(N) A;
- input  net(N) B;
- output net(N) Y;
+  input  net(N) A;
+  input  net(N) B;
+  output net(N) Y;
 
- Y = B + C;
+  Y = B + C;
 }
 
 net(8      ) A;        // Unsigned

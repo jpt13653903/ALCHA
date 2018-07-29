@@ -10,9 +10,9 @@
 
 struct CLOCK_TREE{
   enum TYPE{
-   Pin,   // Root level of the tree
-   PLL,   // PLL-derived clock
-   Enable // Clock-enable type clock
+    Pin,   // Root level of the tree
+    PLL,   // PLL-derived clock
+    Enable // Clock-enable type clock
   } Type;
 
   double Frequency; // In Hz

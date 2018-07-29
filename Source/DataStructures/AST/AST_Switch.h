@@ -27,12 +27,12 @@
 
 struct AST_Switch: public AST_Base{
   struct CASE{
-   AST_Expression* Expressions; // List through the AST_Base::Next pointer
-   AST_Base      * Statements;
+    AST_Expression* Expressions; // List through the AST_Base::Next pointer
+    AST_Base      * Statements;
 
-   CASE* Next; // The next case (this can be turned into a BST later...)
+    CASE* Next; // The next case (this can be turned into a BST later...)
 
-   CASE();
+    CASE();
   ~CASE();
   };
   CASE          * Cases;

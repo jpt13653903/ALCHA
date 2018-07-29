@@ -25,9 +25,9 @@ TARGET Target;
 //------------------------------------------------------------------------------
 
 TARGET::TARGET(): OBJECT(OBJECT::Target){
- Type     = Simulation;
- Language = Verilog;
- Time     = 1e-6; // 1 μs
+  Type     = Simulation;
+  Language = Verilog;
+  Time     = 1e-6; // 1 μs
 }
 //------------------------------------------------------------------------------
 
@@ -36,6 +36,6 @@ TARGET::~TARGET(){
 //------------------------------------------------------------------------------
 
 void TARGET::Display(){
- printf("Target display not yet implemented\n");
+  printf("Target display not yet implemented\n");
 }
 //------------------------------------------------------------------------------

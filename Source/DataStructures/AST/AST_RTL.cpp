@@ -22,26 +22,26 @@
 //------------------------------------------------------------------------------
 
 AST_RTL::AST_RTL(int Line, const byte* Filename): AST_Base(Line, Filename){
- this->Type = RTL;
+  this->Type = RTL;
 
- Parameters = 0;
- Statements = 0;
+  Parameters = 0;
+  Statements = 0;
 }
 //------------------------------------------------------------------------------
 
 AST_RTL::~AST_RTL(){
- if(Parameters) delete Parameters;
- if(Statements) delete Statements;
+  if(Parameters) delete Parameters;
+  if(Statements) delete Statements;
 }
 //------------------------------------------------------------------------------
 
 void AST_RTL::Display(){
- printf("\n%s:%d -- rtl(", Filename, Line);
-  if(Parameters) Parameters->Display();
- printf("){\n");
-  if(Statements) Statements->Display();
- printf("}\n");
+  printf("\n%s:%d -- rtl(", Filename, Line);
+    if(Parameters) Parameters->Display();
+  printf("){\n");
+    if(Statements) Statements->Display();
+  printf("}\n");
 
- if(Next) Next->Display();
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

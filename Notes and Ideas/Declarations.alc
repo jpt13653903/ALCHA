@@ -1,21 +1,14 @@
 // Instead of
-net'8 a;
-net'8 b;
-net'8 c;
+net(8) a;
+net(8) b;
+net(8) c;
 
 // Support
-net'8 a, b, c;
+net(8) a, b, c;
 
 // Defining arrays:
-net'8.4[16] A;
-// or
-net'8.4 A[16];
-// ???
+net(12, 256) A[16];
 
 // Instantiating classes:
-UART MyUART(Clk, 9600);
-// or
 UART(Clk, 9600) MyUART;
-// ???
-
 

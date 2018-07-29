@@ -22,56 +22,56 @@
 //------------------------------------------------------------------------------
 
 AST_Parameter::AST_Parameter(
- int             Line,
- const byte*     Filename,
- DEFINITION_TYPE DefinitionType
+  int             Line,
+  const byte*     Filename,
+  DEFINITION_TYPE DefinitionType
 ): AST_Base(Line, Filename){
- this->Type           = Parameter;
- this->DefinitionType = DefinitionType;
+  this->Type           = Parameter;
+  this->DefinitionType = DefinitionType;
 
- ClassName       = 0;
- Identifier      = 0;
- ArrayDimensions = 0;
+  ClassName       = 0;
+  Identifier      = 0;
+  ArrayDimensions = 0;
 }
 //------------------------------------------------------------------------------
 
 AST_Parameter::~AST_Parameter(){
- if(ClassName) delete ClassName;
+  if(ClassName) delete ClassName;
 }
 //------------------------------------------------------------------------------
 
 void AST_Parameter::Display(){
- printf(" Line %d -- Parameter (", Line);
+  printf(" Line %d -- Parameter (", Line);
 
- switch(DefinitionType){
-  case Auto   : printf("Auto):"     ); break;
-  case Pin    : printf("Pin):"      ); break;
-  case Net    : printf("Net):"      ); break;
-  case Clk    : printf("Clock):"    ); break;
-  case Byte   : printf("Byte):"     ); break;
-  case Char   : printf("Character):"); break;
-  case Int    : printf("Integer):"  ); break;
-  case Rat    : printf("Rational):" ); break;
-  case Float  : printf("Float):"    ); break;
-  case Complex: printf("Complex):"  ); break;
-  case Func   : printf("Function):" ); break;
+  switch(DefinitionType){
+    case Auto   : printf("Auto):"     ); break;
+    case Pin    : printf("Pin):"      ); break;
+    case Net    : printf("Net):"      ); break;
+    case Clk    : printf("Clock):"    ); break;
+    case Byte   : printf("Byte):"     ); break;
+    case Char   : printf("Character):"); break;
+    case Int    : printf("Integer):"  ); break;
+    case Rat    : printf("Rational):" ); break;
+    case Float  : printf("Float):"    ); break;
+    case Complex: printf("Complex):"  ); break;
+    case Func   : printf("Function):" ); break;
 
-  case ClassInstance:
-   if(ClassName) ClassName->Display();
-   else          printf("Class instance with no class name");
-   printf("):");
-   break;
+    case ClassInstance:
+      if(ClassName) ClassName->Display();
+      else          printf("Class instance with no class name");
+      printf("):");
+      break;
 
-  default: printf("Invalid definition type:\n");
- }
+    default: printf("Invalid definition type:\n");
+  }
 
- printf(" %s", Identifier);
+  printf(" %s", Identifier);
 
- int j;
- for(j = 0; j < ArrayDimensions; j++) printf("[]");
+  int j;
+  for(j = 0; j < ArrayDimensions; j++) printf("[]");
 
- printf("\n");
- if(Next) Next->Display();
+  printf("\n");
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
 

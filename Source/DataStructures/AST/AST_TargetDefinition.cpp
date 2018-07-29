@@ -23,21 +23,21 @@
 
 AST_TargetDefinition::AST_TargetDefinition(int Line, const byte* Filename):
 AST_Base(Line, Filename){
- Type = TargetDefinition;
+  Type = TargetDefinition;
 
- Attributes.OnDuplicate = AttributesOnDuplicate;
+  Attributes.OnDuplicate = AttributesOnDuplicate;
 }
 //------------------------------------------------------------------------------
 
 AST_TargetDefinition::~AST_TargetDefinition(){
- Attributes.Action(AttributesDeleteData);
+  Attributes.Action(AttributesDeleteData);
 }
 //------------------------------------------------------------------------------
 
 void AST_TargetDefinition::Display(){
- printf("\n%s:%d -- Target Definition:\n Attributes:\n", Filename, Line);
- Attributes.Action(AttributesDisplay);
+  printf("\n%s:%d -- Target Definition:\n Attributes:\n", Filename, Line);
+  Attributes.Action(AttributesDisplay);
 
- if(Next) Next->Display();
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

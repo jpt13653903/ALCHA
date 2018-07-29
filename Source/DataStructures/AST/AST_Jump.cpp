@@ -23,30 +23,30 @@
 
 AST_Jump::AST_Jump(int Line, const byte* Filename, JUMP_TYPE JumpType):
 AST_Base(Line, Filename){
- this->Type     = Jump;
- this->JumpType = JumpType;
+  this->Type     = Jump;
+  this->JumpType = JumpType;
 
- Expression = 0;
+  Expression = 0;
 }
 //------------------------------------------------------------------------------
 
 AST_Jump::~AST_Jump(){
- if(Expression) delete Expression;
+  if(Expression) delete Expression;
 }
 //------------------------------------------------------------------------------
 
 void AST_Jump::Display(){
- printf("\n%s:%d -- jump(", Filename, Line);
- switch(JumpType){
-  case Return  : printf("return) "           ); break;
-  case Break   : printf("break) "            ); break;
-  case Continue: printf("continue) "         ); break;
-  default      : printf("Unknown jump type) "); break;
- }
- if(Expression) Expression->Display();
- else           printf("{default}");
- printf("\n");
+  printf("\n%s:%d -- jump(", Filename, Line);
+  switch(JumpType){
+    case Return  : printf("return) "           ); break;
+    case Break   : printf("break) "            ); break;
+    case Continue: printf("continue) "         ); break;
+    default      : printf("Unknown jump type) "); break;
+  }
+  if(Expression) Expression->Display();
+  else           printf("{default}");
+  printf("\n");
 
- if(Next) Next->Display();
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

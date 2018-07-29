@@ -26,14 +26,14 @@
 //------------------------------------------------------------------------------
 
 struct NET: public REFERENCE{
- double Setup; // External setup requirement
- double Hold;  // External hold requirement
- double Delay; // External propagation delay
+  double Setup; // External setup requirement
+  double Hold;  // External hold requirement
+  double Delay; // External propagation delay
 
-          NET();
- virtual ~NET();
+           NET();
+  virtual ~NET();
 
- virtual void Display();
+  virtual void Display();
 };
 //------------------------------------------------------------------------------
 

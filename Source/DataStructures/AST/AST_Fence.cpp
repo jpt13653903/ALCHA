@@ -22,7 +22,7 @@
 //------------------------------------------------------------------------------
 
 AST_Fence::AST_Fence(int Line, const byte* Filename): AST_Base(Line, Filename){
- this->Type = Fence;
+  this->Type = Fence;
 }
 //------------------------------------------------------------------------------
 
@@ -31,8 +31,8 @@ AST_Fence::~AST_Fence(){
 //------------------------------------------------------------------------------
 
 void AST_Fence::Display(){
- printf("\n%s:%d -- Fence\n", Filename, Line);
+  printf("\n%s:%d -- Fence\n", Filename, Line);
 
- if(Next) Next->Display();
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

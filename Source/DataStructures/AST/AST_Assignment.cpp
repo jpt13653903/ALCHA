@@ -22,61 +22,61 @@
 //------------------------------------------------------------------------------
 
 AST_Assignment::AST_Assignment(
- int             Line,
- const byte*     Filename,
- ASSIGNMENT_TYPE AssignmentType
+  int             Line,
+  const byte*     Filename,
+  ASSIGNMENT_TYPE AssignmentType
 ): AST_Base(Line, Filename){
- this->Type           = Assignment;
- this->AssignmentType = AssignmentType;
+  this->Type           = Assignment;
+  this->AssignmentType = AssignmentType;
 
- Fence = false;
- Left  = Right = 0;
+  Fence = false;
+  Left  = Right = 0;
 }
 //------------------------------------------------------------------------------
 
 AST_Assignment::~AST_Assignment(){
- if(Left ) delete Left;
- if(Right) delete Right;
+  if(Left ) delete Left;
+  if(Right) delete Right;
 }
 //------------------------------------------------------------------------------
 
 void AST_Assignment::Display(){
- printf("\n%s:%d -- Assignment: ", Filename, Line);
+  printf("\n%s:%d -- Assignment: ", Filename, Line);
 
- if(Left){
-  if(Left->Left || Left->Right) printf("(");
-  Left->Display();
-  if(Left->Left || Left->Right) printf(")");
- }
+  if(Left){
+    if(Left->Left || Left->Right) printf("(");
+    Left->Display();
+    if(Left->Left || Left->Right) printf(")");
+  }
 
- switch(AssignmentType){
-  case Assign            : printf(  " = "); break;
-  case Raw_Assign        : printf( " := "); break;
-  case Append_Assign     : printf( " ~= "); break;
-  case Add_Assign        : printf( " += "); break;
-  case Subtract_Assign   : printf( " -= "); break;
-  case Multiply_Assign   : printf( " *= "); break;
-  case Divide_Assign     : printf( " /= "); break;
-  case Modulus_Assign    : printf(" %%= "); break;
-  case Exponential_Assign: printf( " ^= "); break;
-  case AND_Assign        : printf( " &= "); break;
-  case OR_Assign         : printf( " |= "); break;
-  case XOR_Assign        : printf( " #= "); break;
-  case Shift_Left_Assign : printf(" <<= "); break;
-  case Shift_Right_Assign: printf(" >>= "); break;
+  switch(AssignmentType){
+    case Assign            : printf(  " = "); break;
+    case Raw_Assign        : printf( " := "); break;
+    case Append_Assign     : printf( " ~= "); break;
+    case Add_Assign        : printf( " += "); break;
+    case Subtract_Assign   : printf( " -= "); break;
+    case Multiply_Assign   : printf( " *= "); break;
+    case Divide_Assign     : printf( " /= "); break;
+    case Modulus_Assign    : printf(" %%= "); break;
+    case Exponential_Assign: printf( " ^= "); break;
+    case AND_Assign        : printf( " &= "); break;
+    case OR_Assign         : printf( " |= "); break;
+    case XOR_Assign        : printf( " #= "); break;
+    case Shift_Left_Assign : printf(" <<= "); break;
+    case Shift_Right_Assign: printf(" >>= "); break;
 
-  default: printf("(Unknown assignment type)");
- }
+    default: printf("(Unknown assignment type)");
+  }
 
- if(Right){
-  if(Right->Left || Right->Right) printf("(");
-  Right->Display();
-  if(Right->Left || Right->Right) printf(")");
- }
+  if(Right){
+    if(Right->Left || Right->Right) printf("(");
+    Right->Display();
+    if(Right->Left || Right->Right) printf(")");
+  }
 
- if(Fence) printf("{Fence}");
+  if(Fence) printf("{Fence}");
 
- printf("\n");
- if(Next) Next->Display();
+  printf("\n");
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

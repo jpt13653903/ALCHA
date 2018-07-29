@@ -26,36 +26,35 @@
 //------------------------------------------------------------------------------
 
 struct AST_Assignment: public AST_Base{
-  enum ASSIGNMENT_TYPE{
-   Assign,             //   =
-   Raw_Assign,         //  :=
-   Append_Assign,      //  @=
-   Add_Assign,         //  +=
-   Subtract_Assign,    //  -=
-   Multiply_Assign,    //  *=
-   Divide_Assign,      //  /=
-   Modulus_Assign,     //  %=
-   Exponential_Assign, //  ^=
-   AND_Assign,         //  &=
-   OR_Assign,          //  |=
-   XOR_Assign,         //  #=
-   Shift_Left_Assign,  // <<=
-   Shift_Right_Assign  // >>=
-  } AssignmentType;
+    enum ASSIGNMENT_TYPE{
+      Assign,             //   =
+      Raw_Assign,         //  :=
+      Append_Assign,      //  @=
+      Add_Assign,         //  +=
+      Subtract_Assign,    //  -=
+      Multiply_Assign,    //  *=
+      Divide_Assign,      //  /=
+      Modulus_Assign,     //  %=
+      Exponential_Assign, //  ^=
+      AND_Assign,         //  &=
+      OR_Assign,          //  |=
+      XOR_Assign,         //  #=
+      Shift_Left_Assign,  // <<=
+      Shift_Right_Assign  // >>=
+    } AssignmentType;
 
-  bool Fence; // Assignment terminates in a ";" and not a ","
+    bool Fence; // Assignment terminates in a ";" and not a ","
 
-  // Left and Right operands
-  AST_Expression* Left;
-  AST_Expression* Right;
+    // Left and Right operands
+    AST_Expression* Left;
+    AST_Expression* Right;
 
-  AST_Assignment(
-   int             Line,
-   const byte*     Filename,
-   ASSIGNMENT_TYPE AssignmentType);
- ~AST_Assignment();
+    AST_Assignment(int             Line,
+                   const byte*     Filename,
+                   ASSIGNMENT_TYPE AssignmentType);
+   ~AST_Assignment();
 
-  void Display();
+    void Display();
 };
 //------------------------------------------------------------------------------
 

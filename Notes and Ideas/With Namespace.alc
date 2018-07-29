@@ -1,47 +1,47 @@
 class vector{
- net'8 x, y, z, w;
+  net(8) x, y, z, w;
 }
 
 vector a, b, c;
 
-a.x:a.y = a.z:a.w;
+:(a.x, a.y) = :(a.z, a.w);
 
 // or
 
-a.{x:y = z:w;}
+a.{:(x, y) = :(z, w);}
 //------------------------------------------------------------------------------
 
 class RS232{
- in net'8 a, b, c, d;
+  input net(8) a, b, c, d;
 }
 
-RS232 My_RS232;
+RS232() My_RS232;
 
 My_RS232.{
- a = 1;
- b = 2;
- c = 3;
- d = 4;
+  a = 1;
+  b = 2;
+  c = 3;
+  d = 4;
 }
 //------------------------------------------------------------------------------
 
 class S1{
- int r, g, b, a;
+  num r, g, b, a;
 }
 class S2{
- int x, y, z, w;
+  num x, y, z, w;
 }
 S1 A;
 S2 B;
 
 // Instead of saying:
-A.r:A.g:A.b:A.a = B.x:B.y:B.z:B.w;
+:(A.r, A.g, A.b, A.a) = :(B.x, B.y, B.z, B.w);
 
 // Say:
 A.{
- B.{
-  r:g:b:a = x:y:z:w;
- }
+  B.{
+    :(r, g, b, a) = :(x, y, z, w);
+  }
 }
 
 // The first "with" pushes namespace A, and the second pushes namespace B, so

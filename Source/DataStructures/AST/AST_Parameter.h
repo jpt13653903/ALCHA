@@ -27,11 +27,11 @@
 
 struct AST_Parameter: public AST_Base{
   enum DEFINITION_TYPE{
-   Auto,
-   Pin, Net, Clk,
-   Byte, Char, Int, Rat, Float, Complex,
-   Func, // Function pointer
-   ClassInstance
+    Auto,
+    Pin, Net, Clk,
+    Byte, Char, Int, Rat, Float, Complex,
+    Func, // Function pointer
+    ClassInstance
   } DefinitionType;
   AST_Expression* ClassName; // For class instances
 

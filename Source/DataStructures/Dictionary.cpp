@@ -22,161 +22,161 @@
 //------------------------------------------------------------------------------
 
 void* DefaultOnDuplicate(const byte* Name, void* Old, void* New){
- return New;
+  return New;
 }
 //------------------------------------------------------------------------------
 
 DICTIONARY::NODE::NODE(const byte* Name, void* Data){
- Red  = true;
- Left = Right = 0;
+  Red  = true;
+  Left = Right = 0;
 
- int j;
- for(j = 0; Name[j]; j++);
- this->Name = new byte[j+1];
- for(j = 0; Name[j]; j++) this->Name[j] = Name[j];
- this->Name[j] = 0;
+  int j;
+  for(j = 0; Name[j]; j++);
+  this->Name = new byte[j+1];
+  for(j = 0; Name[j]; j++) this->Name[j] = Name[j];
+  this->Name[j] = 0;
 
- this->Data = Data;
+  this->Data = Data;
 }
 //------------------------------------------------------------------------------
 
 DICTIONARY::NODE::~NODE(){
- delete[] Name;
+  delete[] Name;
 
- if(Left ) delete Left;
- if(Right) delete Right;
+  if(Left ) delete Left;
+  if(Right) delete Right;
 }
 //------------------------------------------------------------------------------
 
 DICTIONARY::DICTIONARY(){
- Root        = 0;
- ItemCount   = 0;
- OnDuplicate = DefaultOnDuplicate;
+  Root        = 0;
+  ItemCount   = 0;
+  OnDuplicate = DefaultOnDuplicate;
 }
 //------------------------------------------------------------------------------
 
 DICTIONARY::~DICTIONARY(){
- if(Root) delete Root;
+  if(Root) delete Root;
 }
 //------------------------------------------------------------------------------
 
 bool DICTIONARY::IsRed(NODE* Node){
- if(!Node) return false;
- return Node->Red;
+  if(!Node) return false;
+  return Node->Red;
 }
 //------------------------------------------------------------------------------
 
 void DICTIONARY::ColourFlip(NODE* Node){
- Node       ->Red = !Node       ->Red;
- Node->Left ->Red = !Node->Left ->Red;
- Node->Right->Red = !Node->Right->Red;
+  Node       ->Red = !Node       ->Red;
+  Node->Left ->Red = !Node->Left ->Red;
+  Node->Right->Red = !Node->Right->Red;
 }
 //------------------------------------------------------------------------------
 
 DICTIONARY::NODE* DICTIONARY::RotateLeft(NODE* Node){
- NODE* Temp  = Node->Right;
- Node->Right = Temp->Left;
- Temp->Left  = Node;
- Temp->Red   = Node->Red;
- Node->Red   = true;
- return Temp;
+  NODE* Temp  = Node->Right;
+  Node->Right = Temp->Left;
+  Temp->Left  = Node;
+  Temp->Red   = Node->Red;
+  Node->Red   = true;
+  return Temp;
 }
 //------------------------------------------------------------------------------
 
 DICTIONARY::NODE* DICTIONARY::RotateRight(NODE* Node){
- NODE* Temp  = Node->Left;
- Node->Left  = Temp->Right;
- Temp->Right = Node;
- Temp->Red   = Node->Red;
- Node->Red   = true;
- return Temp;
+  NODE* Temp  = Node->Left;
+  Node->Left  = Temp->Right;
+  Temp->Right = Node;
+  Temp->Red   = Node->Red;
+  Node->Red   = true;
+  return Temp;
 }
 //------------------------------------------------------------------------------
 
 void DICTIONARY::Insert(const byte* Name, void* Data){
- Root = Insert(Root, Name, Data);
+  Root = Insert(Root, Name, Data);
 }
 //------------------------------------------------------------------------------
 
 DICTIONARY::NODE* DICTIONARY::Insert(NODE* Node, const byte* Name, void* Data){
- if(!Node){
-  ItemCount++;
-  return new NODE(Name, Data);
- }
-
- int j;
- for(j = 0; Name[j]; j++){
-  if(Name[j] < Node->Name[j]){
-   Node->Left = Insert(Node->Left, Name, Data);
-   break;
-
-  }else if(Name[j] > Node->Name[j]){
-   Node->Right = Insert(Node->Right, Name, Data);
-   break;
+  if(!Node){
+    ItemCount++;
+    return new NODE(Name, Data);
   }
- }
- if(!Name[j]){
-  if(!Node->Name[j]){
-   Node->Data = OnDuplicate(Name, Node->Data, Data);
-   return Node;
-  }else{
-   Node->Left = Insert(Node->Left, Name, Data);
+
+  int j;
+  for(j = 0; Name[j]; j++){
+    if(Name[j] < Node->Name[j]){
+      Node->Left = Insert(Node->Left, Name, Data);
+      break;
+
+    }else if(Name[j] > Node->Name[j]){
+      Node->Right = Insert(Node->Right, Name, Data);
+      break;
+    }
   }
- }
+  if(!Name[j]){
+    if(!Node->Name[j]){
+      Node->Data = OnDuplicate(Name, Node->Data, Data);
+      return Node;
+    }else{
+      Node->Left = Insert(Node->Left, Name, Data);
+    }
+  }
 
- if(IsRed(Node->Right) && !IsRed(Node->Left      )) Node = RotateLeft (Node);
- if(IsRed(Node->Left ) &&  IsRed(Node->Left->Left)) Node = RotateRight(Node);
- if(IsRed(Node->Left ) &&  IsRed(Node->Right     ))        ColourFlip (Node);
+  if(IsRed(Node->Right) && !IsRed(Node->Left      )) Node = RotateLeft (Node);
+  if(IsRed(Node->Left ) &&  IsRed(Node->Left->Left)) Node = RotateRight(Node);
+  if(IsRed(Node->Left ) &&  IsRed(Node->Right     ))        ColourFlip (Node);
 
- return Node;
+  return Node;
 }
 //------------------------------------------------------------------------------
 
 void* DICTIONARY::Find(const byte* Name){
- int   j;
- NODE* Node = Root;
+  int   j;
+  NODE* Node = Root;
 
- while(Node){
-  if(Name[0] < Node->Name[0]){
-   Node = Node->Left;
+  while(Node){
+    if(Name[0] < Node->Name[0]){
+      Node = Node->Left;
 
-  }else if(Name[0] > Node->Name[0]){
-   Node = Node->Right;
+    }else if(Name[0] > Node->Name[0]){
+      Node = Node->Right;
 
-  }else{
-   for(j = 1; Name[j]; j++){
-    if(Name[j] < Node->Name[j]){
-     Node = Node->Left;
-     break;
+    }else{
+      for(j = 1; Name[j]; j++){
+        if(Name[j] < Node->Name[j]){
+          Node = Node->Left;
+          break;
 
-    }else if(Name[j] > Node->Name[j]){
-     Node = Node->Right;
-     break;
+        }else if(Name[j] > Node->Name[j]){
+          Node = Node->Right;
+          break;
+        }
+      }
+      if(!Name[j]){
+        if(!Node->Name[j]) return Node->Data;
+        else               Node = Node->Left;
+      }
     }
-   }
-   if(!Name[j]){
-    if(!Node->Name[j]) return Node->Data;
-    else               Node = Node->Left;
-   }
   }
- }
- return 0;
+  return 0;
 }
 //------------------------------------------------------------------------------
 
 int DICTIONARY::GetCount(){
- return ItemCount;
+  return ItemCount;
 }
 //------------------------------------------------------------------------------
 
 void DICTIONARY::Action(DICTIONARY_ACTION Function){
- if(Root) Action(Root, Function);
+  if(Root) Action(Root, Function);
 }
 //------------------------------------------------------------------------------
 
 void DICTIONARY::Action(NODE* Node, DICTIONARY_ACTION Function){
- if(Node->Left ) Action(Node->Left , Function);
- Function(Node->Name, Node->Data);
- if(Node->Right) Action(Node->Right, Function);
+  if(Node->Left ) Action(Node->Left , Function);
+  Function(Node->Name, Node->Data);
+  if(Node->Right) Action(Node->Right, Function);
 }
 //------------------------------------------------------------------------------

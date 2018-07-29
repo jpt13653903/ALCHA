@@ -23,32 +23,32 @@
 
 AST_NamespacePush::AST_NamespacePush(int Line, const byte* Filename):
 AST_Base(Line, Filename){
- this->Type = NamespacePush;
+  this->Type = NamespacePush;
 
- Namespace  = 0;
- Statements = 0;
+  Namespace  = 0;
+  Statements = 0;
 }
 //------------------------------------------------------------------------------
 
 AST_NamespacePush::~AST_NamespacePush(){
- if(Namespace ) delete Namespace;
- if(Statements) delete Statements;
+  if(Namespace ) delete Namespace;
+  if(Statements) delete Statements;
 }
 //------------------------------------------------------------------------------
 
 void AST_NamespacePush::Display(){
- printf("\n%s:%d -- NamespacePush:\n ", Filename, Line);
+  printf("\n%s:%d -- NamespacePush:\n ", Filename, Line);
 
- if(Namespace){
-  if(Namespace->Left || Namespace->Right) printf("(");
-  Namespace->Display();
-  if(Namespace->Left || Namespace->Right) printf(")");
- }
+  if(Namespace){
+    if(Namespace->Left || Namespace->Right) printf("(");
+    Namespace->Display();
+    if(Namespace->Left || Namespace->Right) printf(")");
+  }
 
- printf(".{\n");
-  if(Statements) Statements->Display();
- printf("}\n");
+  printf(".{\n");
+    if(Statements) Statements->Display();
+  printf("}\n");
 
- if(Next) Next->Display();
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

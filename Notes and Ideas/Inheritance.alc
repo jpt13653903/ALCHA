@@ -5,49 +5,50 @@ net Reset;
 //------------------------------------------------------------------------------
 
 class Bus_Master(int Address_N, int Data_N){
- out net'Address_N Address;
- in  net'Data_N    Read_Data;
- out net'Data_N    Write_Data;
- out net           Latch;
+  output net(Address_N) Address;
+  input  net(Data_N   ) Read_Data;
+  output net(Data_N   ) Write_Data;
+  output net            Latch;
 }
 //------------------------------------------------------------------------------
 
 class Bus_Slave(int Address_N, int Data_N, int Address_Count){
- int FirstAddress;
+  int FirstAddress;
 
- in  net'Address_N Address;    // Input only port
- out net'Data_N    Read_Data;  // Output only port
- in  net'Data_N    Write_Data;
- in  net           Latch;
+  input  net(Address_N) Address;    // Input only port
+  output net(Data_N   ) Read_Data;  // Output only port
+  input  net(Data_N   ) Write_Data;
+  input  net            Latch;
 
- net'Data_N Data[Address_Count]; // Bidirectional port
+  net(Data_N) Data[Address_Count]; // Bidirectional port
 
- if(Address >= FirstAddress && Address <= FirstAddress+Address_Count){
-  Read_Data = Data[Address-FirstAddress];
- }else{
-  Read_Data = 0xZ;
- }
-
- rtl<Clk, Reset>{
-  if(Latch && Address >= FirstAddress && Address <= FirstAddress+Address_Count){
-   Data[Address-FirstAddress] = Write_Data;
+  if((Address >= FirstAddress) & (Address <= FirstAddress + Address_Count)){
+    Read_Data = Data[Address-FirstAddress];
+    Read_Data.enable = 1;
+  }else{
+    Read_Data.enable = 0;
   }
- }
+
+  rtl(Clk, Reset){
+    if(Latch & (Address >= FirstAddress) & (Address <= FirstAddress+Address_Count)){
+      Data[Address-FirstAddress] = Write_Data;
+    }
+  }
 }
 //------------------------------------------------------------------------------
 
 class Bus(Bus_Master Master){
- int SlaveCount = 0;
+  int SlaveCount = 0;
 
- void Connect(Bus_Slave Slave){
-  Slave.FirstAddress = SlaveCount;
-  SlaveCount += Slave.Address_Count;
-  
-  Slave.Address    = Master.Address;
-  Slave.Write_Data = Master.Write_Data;
-  Slave.Latch      = Master.Latch;
-  Master.Read_Data = Slave.Read_Data;
- }
+  void Connect(Bus_Slave Slave){
+    Slave.FirstAddress = SlaveCount;
+    SlaveCount += Slave.Address_Count;
+
+    Slave.Address    = Master.Address;
+    Slave.Write_Data = Master.Write_Data;
+    Slave.Latch      = Master.Latch;
+    Master.Read_Data = Slave.Read_Data;
+  }
 }
 //------------------------------------------------------------------------------
 

@@ -27,9 +27,9 @@
 
 struct AST_Jump: public AST_Base{
   enum JUMP_TYPE{
-   Return,
-   Break,
-   Continue
+    Return,
+    Break,
+    Continue
   } JumpType;
   AST_Expression* Expression;
 

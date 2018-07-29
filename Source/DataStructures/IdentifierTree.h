@@ -34,34 +34,34 @@ Department of Computer Science, Princeton University, Princeton, NJ 08544     */
 //------------------------------------------------------------------------------
 
 class IDENTIFIER_TREE{
- private:
-  struct NODE{
-   bool  Red;
+  private:
+    struct NODE{
+      bool  Red;
 
-   byte* Name;
+      byte* Name;
 
-   NODE* Left;
-   NODE* Right;
+      NODE* Left;
+      NODE* Right;
 
-   NODE(const byte* Name);
-  ~NODE();
-  };
+      NODE(const byte* Name);
+     ~NODE();
+    };
 
-  NODE* Root;
+    NODE* Root;
 
-  bool  IsRed      (NODE* Node);
-  void  ColourFlip (NODE* Node);
-  NODE* RotateLeft (NODE* Node);
-  NODE* RotateRight(NODE* Node);
+    bool  IsRed      (NODE* Node);
+    void  ColourFlip (NODE* Node);
+    NODE* RotateLeft (NODE* Node);
+    NODE* RotateRight(NODE* Node);
 
-  byte* Find  (            const byte* Name);
-  NODE* Insert(NODE* Node, const byte* Name);
+    byte* Find  (            const byte* Name);
+    NODE* Insert(NODE* Node, const byte* Name);
 
- public:
-  IDENTIFIER_TREE();
- ~IDENTIFIER_TREE();
+  public:
+    IDENTIFIER_TREE();
+   ~IDENTIFIER_TREE();
 
-  byte* GetID(const byte* Name);
+    byte* GetID(const byte* Name);
 };
 //------------------------------------------------------------------------------
 

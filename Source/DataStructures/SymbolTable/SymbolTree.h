@@ -32,38 +32,38 @@ string.                                                                       */
 //------------------------------------------------------------------------------
 
 class SYMBOL_TREE{
- private:
-  struct NODE{
-   bool  Red;
+  private:
+    struct NODE{
+      bool  Red;
 
-   const byte* Name;   // Name ID taken from IdentifierTree
-   REFERENCE*  Reference; // The object
+      const byte* Name;   // Name ID taken from IdentifierTree
+      REFERENCE*  Reference; // The object
 
-   NODE* Left;
-   NODE* Right;
+      NODE* Left;
+      NODE* Right;
 
-   NODE(const byte* Name, REFERENCE* Reference);
-  ~NODE();
-  };
+      NODE(const byte* Name, REFERENCE* Reference);
+     ~NODE();
+    };
 
-  NODE* Root;
+    NODE* Root;
 
-  bool  IsRed      (NODE* Node);
-  void  ColourFlip (NODE* Node);
-  NODE* RotateLeft (NODE* Node);
-  NODE* RotateRight(NODE* Node);
+    bool  IsRed      (NODE* Node);
+    void  ColourFlip (NODE* Node);
+    NODE* RotateLeft (NODE* Node);
+    NODE* RotateRight(NODE* Node);
 
-  bool  Duplicate;
-  NODE* Insert(NODE* Node, const byte* Name, REFERENCE* Reference);
+    bool  Duplicate;
+    NODE* Insert(NODE* Node, const byte* Name, REFERENCE* Reference);
 
- public:
-  SYMBOL_TREE();
- ~SYMBOL_TREE();
+  public:
+    SYMBOL_TREE();
+   ~SYMBOL_TREE();
 
-  // Name must be an ID obtained from IdentifierTree
-  // Insert returns false on duplicate name
-  bool       Insert(const byte* Name, REFERENCE* Reference);
-  REFERENCE* Find  (const byte* Name);
+    // Name must be an ID obtained from IdentifierTree
+    // Insert returns false on duplicate name
+    bool       Insert(const byte* Name, REFERENCE* Reference);
+    REFERENCE* Find  (const byte* Name);
 };
 //------------------------------------------------------------------------------
 

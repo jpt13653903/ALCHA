@@ -22,142 +22,142 @@
 //------------------------------------------------------------------------------
 
 AST_Definition::ARRAY::ARRAY(){
- Size = 0;
- Next = 0;
+  Size = 0;
+  Next = 0;
 }
 //------------------------------------------------------------------------------
 
 AST_Definition::ARRAY::~ARRAY(){
- if(Size) delete Size;
- if(Next) delete Next;
+  if(Size) delete Size;
+  if(Next) delete Next;
 }
 //------------------------------------------------------------------------------
 
 AST_Definition::IDENTIFIER::IDENTIFIER(){
- Next        = 0;
- Array       = 0;
- Identifier  = 0;
- Initialiser = 0;
+  Next        = 0;
+  Array       = 0;
+  Identifier  = 0;
+  Initialiser = 0;
 
- Function     = false;
- Parameters   = 0;
- FunctionBody = 0;
+  Function     = false;
+  Parameters   = 0;
+  FunctionBody = 0;
 }
 //------------------------------------------------------------------------------
 
 AST_Definition::IDENTIFIER::~IDENTIFIER(){
- if(Next        ) delete Next;
- if(Array       ) delete Array;
- if(Parameters  ) delete Parameters;
- if(Initialiser ) delete Initialiser;
- if(FunctionBody) delete FunctionBody;
+  if(Next        ) delete Next;
+  if(Array       ) delete Array;
+  if(Parameters  ) delete Parameters;
+  if(Initialiser ) delete Initialiser;
+  if(FunctionBody) delete FunctionBody;
 }
 //------------------------------------------------------------------------------
 
 AST_Definition::AST_Definition(
- int             Line,
- const byte*     Filename,
- DEFINITION_TYPE DefinitionType
+  int             Line,
+  const byte*     Filename,
+  DEFINITION_TYPE DefinitionType
 ): AST_Base(Line, Filename){
- this->Type           = Definition;
- this->DefinitionType = DefinitionType;
+  this->Type           = Definition;
+  this->DefinitionType = DefinitionType;
 
- Direction = Bidirectional;
+  Direction = Bidirectional;
 
- ClassName = 0;
- Format    = 0;
+  ClassName = 0;
+  Format    = 0;
 
- FormatType = AST_Expression::Cast;
+  FormatType = AST_Expression::Cast;
 
- Attributes.OnDuplicate = AttributesOnDuplicate;
+  Attributes.OnDuplicate = AttributesOnDuplicate;
 }
 //------------------------------------------------------------------------------
 
 AST_Definition::~AST_Definition(){
- if(ClassName) delete ClassName;
- if(Format   ) delete Format;
+  if(ClassName) delete ClassName;
+  if(Format   ) delete Format;
 
- Attributes.Action(AttributesDeleteData);
+  Attributes.Action(AttributesDeleteData);
 }
 //------------------------------------------------------------------------------
 
 void AST_Definition::Display(){
- printf("\n%s:%d -- Definition (", Filename, Line);
+  printf("\n%s:%d -- Definition (", Filename, Line);
 
- switch(DefinitionType){
-  case Void   : printf("Void):\n"    ); break;
-  case Auto   : printf("Auto):\n"    ); break;
-  case Pin    : printf("Pin):\n"     ); break;
-  case Net    : printf("Net):\n"     ); break;
-  case Clk    : printf("Clock):\n"   ); break;
-  case Byte   : printf("Byte):"     ); break;
-  case Char   : printf("Character):"); break;
-  case Int    : printf("Integer):\n" ); break;
-  case Rat    : printf("Rational):\n"); break;
-  case Float  : printf("Float):\n"   ); break;
-  case Complex: printf("Complex):\n" ); break;
-  case Func   : printf("Function):\n"); break;
+  switch(DefinitionType){
+    case Void   : printf("Void):\n"    ); break;
+    case Auto   : printf("Auto):\n"    ); break;
+    case Pin    : printf("Pin):\n"     ); break;
+    case Net    : printf("Net):\n"     ); break;
+    case Clk    : printf("Clock):\n"   ); break;
+    case Byte   : printf("Byte):"     ); break;
+    case Char   : printf("Character):"); break;
+    case Int    : printf("Integer):\n" ); break;
+    case Rat    : printf("Rational):\n"); break;
+    case Float  : printf("Float):\n"   ); break;
+    case Complex: printf("Complex):\n" ); break;
+    case Func   : printf("Function):\n"); break;
 
-  case ClassInstance:
-   printf("Class instance definition (");
-   if(ClassName) ClassName->Display();
-   else          printf("Class instance with no class name");
-   printf("):\n");
-   break;
+    case ClassInstance:
+      printf("Class instance definition (");
+      if(ClassName) ClassName->Display();
+      else          printf("Class instance with no class name");
+      printf("):\n");
+      break;
 
-  default: printf("Invalid definition type:\n");
- }
-
- printf(" Direction = ");
- switch(Direction){
-  case In : printf("Input\n"); break;
-  case Out: printf("Output\n"); break;
-  default : printf("Bidirectional\n"); break;
- }
-
- printf(" Format: ");
- if(Format){
-  Format->Display();
-  printf("\n");
- }else{
-  printf("1-bit\n");
- }
-
- if(Attributes.GetCount()){
-  printf(" Attributes:\n");
-  Attributes.Action(AttributesDisplay);
- }
-
- printf(" Identifiers:\n");
- IDENTIFIER* Identifier = Identifiers;
- ARRAY     * Array;
- while(Identifier){
-  printf(" - %s", Identifier->Identifier);
-  Array = Identifier->Array;
-  while(Array){
-   printf("[");
-   if(Array->Size) Array->Size->Display();
-   printf("]");
-   Array = Array->Next;
+    default: printf("Invalid definition type:\n");
   }
 
-  if(Identifier->Function){
-   printf(" -- function:\n  Parameters: (\n");
-   if(Identifier->Parameters) Identifier->Parameters->Display();
-   printf(" )\n  Body:{\n");
-   if(Identifier->FunctionBody) Identifier->FunctionBody->Display();
-   printf("  }\n");
-  }
-  if(Identifier->Initialiser){
-   printf(" -- initialiser:");
-   Identifier->Initialiser->Display();
+  printf(" Direction = ");
+  switch(Direction){
+    case In : printf("Input\n"); break;
+    case Out: printf("Output\n"); break;
+    default : printf("Bidirectional\n"); break;
   }
 
-  printf("\n");
-  Identifier = Identifier->Next;
- }
+  printf(" Format: ");
+  if(Format){
+    Format->Display();
+    printf("\n");
+  }else{
+    printf("1-bit\n");
+  }
 
- if(Next) Next->Display();
+  if(Attributes.GetCount()){
+    printf(" Attributes:\n");
+    Attributes.Action(AttributesDisplay);
+  }
+
+  printf(" Identifiers:\n");
+  IDENTIFIER* Identifier = Identifiers;
+  ARRAY     * Array;
+  while(Identifier){
+    printf(" - %s", Identifier->Identifier);
+    Array = Identifier->Array;
+    while(Array){
+      printf("[");
+      if(Array->Size) Array->Size->Display();
+      printf("]");
+      Array = Array->Next;
+    }
+
+    if(Identifier->Function){
+      printf(" -- function:\n  Parameters: (\n");
+      if(Identifier->Parameters) Identifier->Parameters->Display();
+      printf(" )\n  Body:{\n");
+      if(Identifier->FunctionBody) Identifier->FunctionBody->Display();
+      printf("  }\n");
+    }
+    if(Identifier->Initialiser){
+      printf(" -- initialiser:");
+      Identifier->Initialiser->Display();
+    }
+
+    printf("\n");
+    Identifier = Identifier->Next;
+  }
+
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
 

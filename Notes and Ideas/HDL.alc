@@ -1,31 +1,31 @@
 hdl("Library/RS232.v", "Library/RS232_Rx.v", "Library/RS232_Tx.v") RS232_V(
- int CountBits =  5, 
- int Count0_5  =  8, 
- int Count1    = 17, 
- int Count1_5  = 25
+  num CountBits =  5, 
+  num Count0_5  =  8, 
+  num Count1    = 17, 
+  num Count1_5  = 25
 ){
- in net nReset;
- in net Clk;
+  input  net    nReset;
+  input  net    Clk;
 
- in  net'8 TxData;
- in  net   Send;
- out net   Busy;
+  input  net(8) TxData;
+  input  net    Send;
+  output net    Busy;
 
- out net   DataReady;
- out net'8 RxData;
- in  net   Ack;
+  output net    DataReady;
+  output net(8) RxData;
+  input  net    Ack;
   
- out net Tx;
- in  net Rx;
+  output net Tx;
+  input  net Rx;
 }
 
 class RS232(clk Clock, net Reset, int BAUD): public RS232_V(
- ceil(log2(round(Clock.Frequency / BAUD * 1.5))),
-           round(Clock.Frequency / BAUD / 2),
-           round(Clock.Frequency / BAUD),
-           round(Clock.Frequency / BAUD * 1.5)
+  ceil(log2(round(Clock.Frequency / BAUD * 1.5))),
+            round(Clock.Frequency / BAUD / 2),
+            round(Clock.Frequency / BAUD),
+            round(Clock.Frequency / BAUD * 1.5)
 ){
- nReset = !Reset;
- Clk    = Clock;
+  nReset = !Reset;
+  Clk    = Clock;
 }
 

@@ -22,33 +22,33 @@
 //------------------------------------------------------------------------------
 
 AST_Group::AST_Group(int Line, const byte* Filename): AST_Base(Line, Filename){
- Type = Group;
+  Type = Group;
 
- Attributes.OnDuplicate = AttributesOnDuplicate;
+  Attributes.OnDuplicate = AttributesOnDuplicate;
 
- Identifier = 0;
- Body       = 0;
+  Identifier = 0;
+  Body       = 0;
 }
 //------------------------------------------------------------------------------
 
 AST_Group::~AST_Group(){
- Attributes.Action(AttributesDeleteData);
+  Attributes.Action(AttributesDeleteData);
 
- if(Body) delete Body;
+  if(Body) delete Body;
 }
 //------------------------------------------------------------------------------
 
 void AST_Group::Display(){
- if(Identifier) printf("\n%s:%d -- Group (%s):\n", Filename, Line, Identifier);
- else           printf("\n%s:%d -- Group:\n"     , Filename, Line);
+  if(Identifier) printf("\n%s:%d -- Group (%s):\n", Filename, Line, Identifier);
+  else           printf("\n%s:%d -- Group:\n"     , Filename, Line);
 
- printf(" Attributes:\n");
-  Attributes.Action(AttributesDisplay);
+  printf(" Attributes:\n");
+    Attributes.Action(AttributesDisplay);
 
- printf(" {\n");
- if(Body) Body->Display();
- printf(" }\n");
+  printf(" {\n");
+  if(Body) Body->Display();
+  printf(" }\n");
 
- if(Next) Next->Display();
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

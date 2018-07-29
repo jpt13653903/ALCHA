@@ -48,87 +48,87 @@
 //------------------------------------------------------------------------------
 
 class PARSER{
- private:
-  bool error;
-  void Error(const char* Message);
+  private:
+    bool error;
+    void Error(const char* Message);
 
-  TOKEN    Token;    // The current token
-  SCANNER* Scanner;  // The scanner (linked-list based stack)
+    TOKEN    Token;    // The current token
+    SCANNER* Scanner;  // The scanner (linked-list based stack)
 
-  void GetToken();
+    void GetToken();
 
-  bool AttributeAssignment(DICTIONARY* Attributes);
-  bool AttributeList      (DICTIONARY* Attributes);
+    bool AttributeAssignment(DICTIONARY* Attributes);
+    bool AttributeList      (DICTIONARY* Attributes);
 
-  AST_Expression* String    ();
-  AST_Expression* Literal   ();
-  AST_Expression* Identifier();
+    AST_Expression* String    ();
+    AST_Expression* Literal   ();
+    AST_Expression* Identifier();
 
-  AST_Expression* ParameterList();
+    AST_Expression* ParameterList();
 
-  AST_Expression* Primary       ();
-  AST_Expression* CastEpr       (AST_Expression* Node);
-  AST_Expression* Cast          ();
-  AST_Expression* Postfix       ();
-  AST_Expression* Unary         ();
-  AST_Expression* Range         ();
-  AST_Expression* Reduction     ();
-  AST_Expression* Concatenation ();
-  AST_Expression* Replication   ();
-  AST_Expression* Array         ();
-  AST_Expression* Exponential   ();
-  AST_Expression* Multiplicative();
-  AST_Expression* Additive      ();
-  AST_Expression* Shift         ();
-  AST_Expression* Relational    ();
-  AST_Expression* Equality      ();
-  AST_Expression* BitwiseAND    ();
-  AST_Expression* BitwiseXOR    ();
-  AST_Expression* BitwiseOR     ();
-  AST_Expression* LogicalAND    ();
-  AST_Expression* LogicalOR     ();
-  AST_Expression* Expression    (); // AKA Conditional
-  AST_Expression* TypeIdentifier();
+    AST_Expression* Primary       ();
+    AST_Expression* CastEpr       (AST_Expression* Node);
+    AST_Expression* Cast          ();
+    AST_Expression* Postfix       ();
+    AST_Expression* Unary         ();
+    AST_Expression* Range         ();
+    AST_Expression* Reduction     ();
+    AST_Expression* Concatenation ();
+    AST_Expression* Replication   ();
+    AST_Expression* Array         ();
+    AST_Expression* Exponential   ();
+    AST_Expression* Multiplicative();
+    AST_Expression* Additive      ();
+    AST_Expression* Shift         ();
+    AST_Expression* Relational    ();
+    AST_Expression* Equality      ();
+    AST_Expression* BitwiseAND    ();
+    AST_Expression* BitwiseXOR    ();
+    AST_Expression* BitwiseOR     ();
+    AST_Expression* LogicalAND    ();
+    AST_Expression* LogicalOR     ();
+    AST_Expression* Expression    (); // AKA Conditional
+    AST_Expression* TypeIdentifier();
 
-  AST_Assignment            * Initialiser    (byte* Identifier);
-  AST_Definition::ARRAY     * ArrayDefinition();
-  AST_Definition::IDENTIFIER* IdentifierList ();
+    AST_Assignment            * Initialiser    (byte* Identifier);
+    AST_Definition::ARRAY     * ArrayDefinition();
+    AST_Definition::IDENTIFIER* IdentifierList ();
 
-  // Define function parameters
-  AST_Parameter* DefParameter    ();
-  AST_Parameter* DefParameterList();
+    // Define function parameters
+    AST_Parameter* DefParameter    ();
+    AST_Parameter* DefParameterList();
 
-  bool ValidNamespaceSpecifier(AST_Expression* Node); // Used by Other()
-  bool ValidTypeSpecifier     (AST_Expression* Node); // Used by Other()
-  bool ValidLHS               (AST_Expression* Node); // Used by Other()
+    bool ValidNamespaceSpecifier(AST_Expression* Node); // Used by Other()
+    bool ValidTypeSpecifier     (AST_Expression* Node); // Used by Other()
+    bool ValidLHS               (AST_Expression* Node); // Used by Other()
 
-  AST_TargetDefinition* TargetDefinition();
-  AST_ClassDefinition * ClassDefinition();
-  AST_EnumDefinition  * EnumDefinition();
-  AST_IfStatement     * IfStatement();
-  AST_Definition      * Definition();
-  AST_WhileLoop       * WhileLoop();
-  AST_LoopLoop        * LoopLoop();
-  AST_ForLoop         * ForLoop();
-  AST_Import          * Import();
-  AST_Switch          * Switch();
-  AST_Alias           * Alias();
-  AST_Group           * Group();
-  AST_Base            * Other();
-  AST_Jump            * Jump();
-  AST_RTL             * RTL();
-  AST_FSM             * FSM();
-  AST_HDL             * HDL();
+    AST_TargetDefinition* TargetDefinition();
+    AST_ClassDefinition * ClassDefinition();
+    AST_EnumDefinition  * EnumDefinition();
+    AST_IfStatement     * IfStatement();
+    AST_Definition      * Definition();
+    AST_WhileLoop       * WhileLoop();
+    AST_LoopLoop        * LoopLoop();
+    AST_ForLoop         * ForLoop();
+    AST_Import          * Import();
+    AST_Switch          * Switch();
+    AST_Alias           * Alias();
+    AST_Group           * Group();
+    AST_Base            * Other();
+    AST_Jump            * Jump();
+    AST_RTL             * RTL();
+    AST_FSM             * FSM();
+    AST_HDL             * HDL();
 
-  AST_Base* Statement     ();
-  AST_Base* Statements    ();
-  AST_Base* StatementBlock();
+    AST_Base* Statement     ();
+    AST_Base* Statements    ();
+    AST_Base* StatementBlock();
 
- public:
-  PARSER();
- ~PARSER();
+  public:
+    PARSER();
+   ~PARSER();
 
-  AST_Base* Run(const byte* Filename);
+    AST_Base* Run(const byte* Filename);
 };
 //------------------------------------------------------------------------------
 

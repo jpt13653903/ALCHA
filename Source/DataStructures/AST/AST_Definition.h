@@ -27,57 +27,56 @@
 //------------------------------------------------------------------------------
 
 struct AST_Definition: public AST_Base{
-  enum DEFINITION_TYPE{
-   Void, Auto, // Used for functions only
-   Pin, Net, Clk,
-   Byte, Char, Int, Rat, Float, Complex,
-   Func, // Function pointer
-   ClassInstance
-  } DefinitionType;
-  AST_Expression* ClassName; // For class instances
+    enum DEFINITION_TYPE{
+      Void, Auto, // Used for functions only
+      Pin, Net, Clk,
+      Byte, Char, Int, Rat, Float, Complex,
+      Func, // Function pointer
+      ClassInstance
+    } DefinitionType;
+    AST_Expression* ClassName; // For class instances
 
-  struct ARRAY{
-   AST_Expression* Size;
-   ARRAY         * Next; // Next dimension of the array
+    struct ARRAY{
+      AST_Expression* Size;
+      ARRAY         * Next; // Next dimension of the array
 
-   ARRAY();
-  ~ARRAY();
-  };
+      ARRAY();
+     ~ARRAY();
+    };
 
-  struct IDENTIFIER{
-   byte * Identifier; // ID obtained via IdentifierTree
-   ARRAY* Array;      // Null when this is a scalar
+    struct IDENTIFIER{
+      byte * Identifier; // ID obtained via IdentifierTree
+      ARRAY* Array;      // Null when this is a scalar
 
-   AST_Assignment* Initialiser;
+      AST_Assignment* Initialiser;
 
-   // These are used for function definitions.
-   bool           Function; // True when this is a function definition
-   AST_Parameter* Parameters; // List of identifiers (calls are duck-typed)
-   AST_Base     * FunctionBody;
+      // These are used for function definitions.
+      bool           Function; // True when this is a function definition
+      AST_Parameter* Parameters; // List of identifiers (calls are duck-typed)
+      AST_Base     * FunctionBody;
 
-   IDENTIFIER* Next;
+      IDENTIFIER* Next;
 
-   IDENTIFIER();
-  ~IDENTIFIER();
-  };
+      IDENTIFIER();
+     ~IDENTIFIER();
+    };
 
-  enum DIRECTION{Bidirectional = 0, In, Out} Direction;
+    enum DIRECTION{Bidirectional = 0, In, Out} Direction;
 
-  // Expression for fixed-point casts
-  AST_Expression::EXPRESSION_TYPE FormatType; // Basic vs. Scaled
-  AST_Expression*                 Format; // The "Right" of the fixed-point cast
+    // Expression for fixed-point casts
+    AST_Expression::EXPRESSION_TYPE FormatType; // Basic vs. Scaled
+    AST_Expression*                 Format; // The "Right" of the fixed-point cast
 
-  DICTIONARY Attributes;
+    DICTIONARY Attributes;
 
-  IDENTIFIER* Identifiers;
+    IDENTIFIER* Identifiers;
 
-  AST_Definition(
-   int             Line,
-   const byte*     Filename,
-   DEFINITION_TYPE DefinitionType);
- ~AST_Definition();
+    AST_Definition(int             Line,
+                   const byte*     Filename,
+                   DEFINITION_TYPE DefinitionType);
+   ~AST_Definition();
 
-  void Display();
+    void Display();
 };
 //------------------------------------------------------------------------------
 

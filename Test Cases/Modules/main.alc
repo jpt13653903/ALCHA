@@ -4,7 +4,7 @@ alias Button = SW;
 import "BeMicro Max 10"; // Imports straight into the global namespace
 
 // Global straight (bit-wise) assignment, using concatenation
-LED := Button`2;
+LED := Button@2;
 //------------------------------------------------------------------------------
 
 // Or (alternatively) with a namespace:

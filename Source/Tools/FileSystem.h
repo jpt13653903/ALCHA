@@ -27,17 +27,17 @@
 //------------------------------------------------------------------------------
 
 class FILE_SYSTEM{
- private:
-  void GetLongName(const byte   * Path, STRING& LongPath);
-  bool CreatePath (      wchar_t* Path);
+  private:
+    void GetLongName(const byte   * Path, STRING& LongPath);
+    bool CreatePath (      wchar_t* Path);
 
- public:
-  // UTF-8 name; returns null on error; null-terminates the buffer
-  byte* Read(const byte* Filename, unsigned* Filesize = 0);
+  public:
+    // UTF-8 name; returns null on error; null-terminates the buffer
+    byte* Read(const byte* Filename, unsigned* Filesize = 0);
 
-  // UTF-8 name; also creates the path if it does not exist
-  // If Size is 0, Data is assumed to be null-terminated
-  bool Write(const byte* Filename, const byte* Data, unsigned Size = 0);
+    // UTF-8 name; also creates the path if it does not exist
+    // If Size is 0, Data is assumed to be null-terminated
+    bool Write(const byte* Filename, const byte* Data, unsigned Size = 0);
 };
 //------------------------------------------------------------------------------
 

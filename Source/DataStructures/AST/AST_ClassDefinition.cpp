@@ -22,68 +22,68 @@
 //------------------------------------------------------------------------------
 
 AST_ClassDefinition::PARENT::PARENT(){
- ClassName  = 0;
- Parameters = 0;
- Next       = 0;
+  ClassName  = 0;
+  Parameters = 0;
+  Next       = 0;
 }
 //------------------------------------------------------------------------------
 
 AST_ClassDefinition::PARENT::~PARENT(){
- if(ClassName ) delete ClassName;
- if(Parameters) delete Parameters;
- if(Next      ) delete Next;
+  if(ClassName ) delete ClassName;
+  if(Parameters) delete Parameters;
+  if(Next      ) delete Next;
 }
 //------------------------------------------------------------------------------
 
 AST_ClassDefinition::AST_ClassDefinition(int Line, const byte* Filename):
 AST_Base(Line, Filename){
- Type = ClassDefinition;
+  Type = ClassDefinition;
 
- Attributes.OnDuplicate = AttributesOnDuplicate;
+  Attributes.OnDuplicate = AttributesOnDuplicate;
 
- Identifier = 0;
- Parameters = 0;
+  Identifier = 0;
+  Parameters = 0;
 
- Parents = 0;
+  Parents = 0;
 
- Body = 0;
+  Body = 0;
 }
 //------------------------------------------------------------------------------
 
 AST_ClassDefinition::~AST_ClassDefinition(){
- Attributes.Action(AttributesDeleteData);
+  Attributes.Action(AttributesDeleteData);
 
- if(Body      ) delete Body;
- if(Parents   ) delete Parents;
- if(Parameters) delete Parameters;
+  if(Body      ) delete Body;
+  if(Parents   ) delete Parents;
+  if(Parameters) delete Parameters;
 }
 //------------------------------------------------------------------------------
 
 void AST_ClassDefinition::Display(){
- printf("\n%s:%d -- Class Definition (%s):\n", Filename, Line, Identifier);
+  printf("\n%s:%d -- Class Definition (%s):\n", Filename, Line, Identifier);
 
- if(Attributes.GetCount()){
-  printf(" Attributes:\n");
-  Attributes.Action(AttributesDisplay);
- }
+  if(Attributes.GetCount()){
+    printf(" Attributes:\n");
+    Attributes.Action(AttributesDisplay);
+  }
 
- if(Parameters){
-  printf(" Parameters:\n"); Parameters->Display(); printf("\n");
- }
+  if(Parameters){
+    printf(" Parameters:\n"); Parameters->Display(); printf("\n");
+  }
 
- if(Parents) printf(" Parents:\n");
- PARENT* Parent = Parents;
- while(Parent){
-  printf(" - ");
-  if(Parent->ClassName ) Parent->ClassName ->Display(); printf("(");
-  if(Parent->Parameters) Parent->Parameters->Display(); printf(")\n");
-  Parent = Parent->Next;
- }
+  if(Parents) printf(" Parents:\n");
+  PARENT* Parent = Parents;
+  while(Parent){
+    printf(" - ");
+    if(Parent->ClassName ) Parent->ClassName ->Display(); printf("(");
+    if(Parent->Parameters) Parent->Parameters->Display(); printf(")\n");
+    Parent = Parent->Next;
+  }
 
- printf(" {\n");
- if(Body) Body->Display();
- printf(" }\n");
+  printf(" {\n");
+  if(Body) Body->Display();
+  printf(" }\n");
 
- if(Next) Next->Display();
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

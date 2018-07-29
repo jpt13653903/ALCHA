@@ -22,41 +22,41 @@
 //------------------------------------------------------------------------------
 
 AST_EnumDefinition::VALUE::VALUE(){
- Next = 0;
+  Next = 0;
 }
 //------------------------------------------------------------------------------
 
 AST_EnumDefinition::VALUE::~VALUE(){
- if(Next) delete Next;
+  if(Next) delete Next;
 }
 //------------------------------------------------------------------------------
 
 AST_EnumDefinition::AST_EnumDefinition(int Line, const byte* Filename):
 AST_Base(Line, Filename){
- Type = EnumDefinition;
+  Type = EnumDefinition;
 
- Identifier = 0;
- Values     = 0;
+  Identifier = 0;
+  Values     = 0;
 }
 //------------------------------------------------------------------------------
 
 AST_EnumDefinition::~AST_EnumDefinition(){
- if(Values) delete Values;
+  if(Values) delete Values;
 }
 //------------------------------------------------------------------------------
 
 void AST_EnumDefinition::Display(){
- printf("\n%s:%d -- Enum Definition (%s):\n", Filename, Line, Identifier);
+  printf("\n%s:%d -- Enum Definition (%s):\n", Filename, Line, Identifier);
 
- printf(" Values: ");
- VALUE* Value = Values;
- while(Value){
-  printf("%s", Value->Identifier);
-  Value = Value->Next;
-  if(Value) printf(", ");
-  else      printf("\n");
- }
+  printf(" Values: ");
+  VALUE* Value = Values;
+  while(Value){
+    printf("%s", Value->Identifier);
+    Value = Value->Next;
+    if(Value) printf(", ");
+    else      printf("\n");
+  }
 
- if(Next) Next->Display();
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

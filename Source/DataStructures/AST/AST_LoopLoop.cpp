@@ -23,27 +23,27 @@
 
 AST_LoopLoop::AST_LoopLoop(int Line, const byte* Filename):
 AST_Base(Line, Filename){
- this->Type = LoopLoop;
+  this->Type = LoopLoop;
 
- Count      = 0;
- Statements = 0;
+  Count      = 0;
+  Statements = 0;
 }
 //------------------------------------------------------------------------------
 
 AST_LoopLoop::~AST_LoopLoop(){
- if(Count     ) delete Count;
- if(Statements) delete Statements;
+  if(Count     ) delete Count;
+  if(Statements) delete Statements;
 }
 //------------------------------------------------------------------------------
 
 void AST_LoopLoop::Display(){
- printf("\n%s:%d -- loop(", Filename, Line);
-  if(Count) Count->Display();
-  else      printf("{inf}");
- printf("){\n");
-  if(Statements) Statements->Display();
- printf("}\n");
+  printf("\n%s:%d -- loop(", Filename, Line);
+    if(Count) Count->Display();
+    else      printf("{inf}");
+  printf("){\n");
+    if(Statements) Statements->Display();
+  printf("}\n");
 
- if(Next) Next->Display();
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
