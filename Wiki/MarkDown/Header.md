@@ -1,5 +1,5 @@
 [[[img src=https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg height="70"]]](https://openclipart.org/detail/3850/work)
-The ALCHA project, including the language grammar and, by extension, this wiki, is under active development.  Until the first stable prototype compiler is published, the details of the language are subject to change without notice.
+The ALCHA project, including the language grammar and, by extension, this wiki, is under development.  This wiki serves as a documentation of the project goals and aspirations, which are inherently unstable and subject to change without notice.
 
 - [Introduction](/p/alcha/wiki/Introduction)
 - [Lexical](/p/alcha/wiki/Lexical)

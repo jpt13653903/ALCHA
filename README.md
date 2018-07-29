@@ -19,4 +19,5 @@ but without loosing the low-level control that HDLs, such as Verilog, provide.
 
 ## More information
 
-See [the wiki](https://sourceforge.net/p/alcha/wiki/Introduction/) for more information.
+See the [Wiki](https://sourceforge.net/p/alcha/wiki) for more information.
+
