@@ -1,7 +1,7 @@
 " Vim syntax file
 " Language:	ALCHA
 " Maintainer:	J Taylor <tyljoh010@myuct.ac.za>
-" Last Change:	2017-02-26
+" Last Change:	2018-07-29
 
 if version < 600
   syntax clear

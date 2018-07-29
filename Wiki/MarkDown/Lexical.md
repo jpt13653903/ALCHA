@@ -83,7 +83,7 @@ Keyword         | Description
 
 ## Syntax Highlighting Scripts
 
-At the moment, only Vim is supported.  The Vim syntax file can be downloaded from [the repository](https://sourceforge.net/p/alcha/code/ci/master/tree/Wiki/Vim/alcha.vim?format=raw).  It is a direct implementation of the scanner, so it does not have any error-checking features.
+Syntax highlighting scripts are available from [the repository](https://sourceforge.net/p/alcha/code/ci/master/tree/Syntax%20Highlighting).
 
 [[include repo=code path=Wiki/MarkDown/Footer.md]]
 
