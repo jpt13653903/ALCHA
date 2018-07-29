@@ -87,40 +87,39 @@ syn match AlchaOperator   ">>="
 " Decimal     = (D {D | "_"} ["." {D | "_"}]) | ("." D {D | "_"});
 " Hexadecimal = (H {H | "_"} ["." {H | "_"}]) | ("." H {H | "_"});
 " Exponent    = ("p" | "P" | "e" | "E") ["-" | "+"] D {D};
-syn match AlchaPrefix display contained "0b\|0o\|0x"
-syn match AlchaExp display contained "[pPeE]_*\([+-]\?\(\d\|_\)\+\)"
+syn match AlchaPrefix contained "0b\|0o\|0x"
+syn match AlchaExp contained "[pPeE]_*\([+-]\?\(\d\|_\)\+\)"
 syn match AlchaConstant "\<\d\(\d\|_\)*\(\.\(\d\|_\)\+\)\?\([pPeE]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"    contains=AlchaExp
 syn match AlchaConstant "\<0b[01_]\+\(\.[01_]\+\)\?\([pPeE]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"           contains=AlchaExp,AlchaPrefix
 syn match AlchaConstant "\<0o\(\o\|_\)\+\(\.\(\o\|_\)\+\)\?\([pPeE]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"   contains=AlchaExp,AlchaPrefix
 syn match AlchaConstant "\<0x\(\x\|_\)\+\(\.\(\x\|_\)\+\)\?\([pPeE]_*\([+-]\?\(\d\|_\)\+\)\)\?\([ij]\)\?_*"   contains=AlchaExp,AlchaPrefix
 
-" Types
-syn match AlchaType "\<\(void\|auto\|pin\|net\|byte\|char\|num\)\>"
-
 " Keywords
-syn match AlchaSpecial      "\<\(__FILE__\|__LINE__\|__DATE__\|__TIME__\|__CLASS__\|__FUNCTION__\|__NAMESPACE__\)\>"
-syn match AlchaKeyword      "\<\(true\|false\)\>"
-syn match AlchaStructure    "\<\(class\|enum\|struct\|group\|alias\)\>"
-syn match AlchaStorageClass "\<\(input\|output\)\>"
-syn match AlchaStorageClass "\<\(public\|private\|protected\)\>"
-syn match AlchaConditional  "\<\(if\|else\)\>"
-syn match AlchaRepeat       "\<\(for\|while\|loop\)\>"
-syn match AlchaConditional  "\<\(switch\|case\|default\)\>"
-syn match AlchaInclude      "\<\(import\|as\)\>"
-syn match AlchaKeyword      "\<\(return\|break\|continue\|goto\)\>"
-syn match AlchaKeyword      "\<\(func\|inline\)\>"
-syn match AlchaKeyword      "\<\(rtl\|fsm\|hdl\)\>"
-syn match AlchaKeyword      "\<\(stimulus\|emulate\|sequence\|assert\|wait\)\>"
+syn keyword AlchaSpecial      __FILE__ __LINE__ __DATE__ __TIME__ __CLASS__ __FUNCTION__ __NAMESPACE__
+syn keyword AlchaKeyword      true false
+syn keyword AlchaType         void auto pin net byte char num
+syn keyword AlchaStructure    class enum struct group alias
+syn keyword AlchaStorageClass input output
+syn keyword AlchaStorageClass public private protected
+syn keyword AlchaConditional  if else
+syn keyword AlchaRepeat       for while loop
+syn keyword AlchaConditional  switch case default
+syn keyword AlchaInclude      import as
+syn keyword AlchaKeyword      return break continue goto
+syn keyword AlchaKeyword      func inline
+syn keyword AlchaKeyword      rtl fsm hdl
+syn keyword AlchaKeyword      stimulus emulate sequence assert wait
 
 " Strings
-syn match  AlchaEscape display contained "\\n\|\\t\|\\v\|\\b\|\\r\|\\f\|\\a\|\\\\\|\\?\|\\'\|\\\"\|\\x\x\{2}\|\\u\x\{4}\|\\U\x\{8}\|\\\o\{1,11}\|\\&\(\d\|\a\)\{-};"
+syn match  AlchaEscape contained "\\n\|\\t\|\\v\|\\b\|\\r\|\\f\|\\a\|\\\\\|\\?\|\\'\|\\\"\|\\x\x\{2}\|\\u\x\{4}\|\\U\x\{8}\|\\\o\{1,11}\|\\&\(\d\|\a\)\{-};"
 syn region AlchaString start=/"/ skip=/\\"/ end=/"/ contains=@Spell,AlchaEscape
 
 " Comment
-syn match  AlchaComment "\/\/.*$" contains=@Spell
-syn region AlchaComment       start=/\/\*/ end=/\*\// contains=@Spell
-syn region AlchaNestedComment start=/\/+/  end=/+\//  contains=@Spell,AlchaNestedComment
+syn match  AlchaComment   "\/\/.*$" contains=@Spell
 syn match  AlchaToDoComment "!!.*$" contains=@Spell
+syn region AlchaComment                 start="\/\*" end="\*\/" contains=@Spell
+syn region AlchaNestedComment contained start="\/+"  end="+\/"  contains=@Spell
+syn region AlchaComment                 start="\/+"  end="+\/"  contains=@Spell,AlchaNestedComment
 
 " Link the types
 hi def link AlchaOperator      Operator
