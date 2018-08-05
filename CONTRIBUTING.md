@@ -8,6 +8,19 @@ This said, any contribution to planning will be greatly appreciated.
 
 If you'd like to make contributions to the project, the preferred method for the general public is to create a fork, make the changes and then [create a pull request](https://github.com/jpt13653903/ALCHA/pulls) for that fork.  Project collaborators should create a branch, make changes and then [create a pull request](https://github.com/jpt13653903/ALCHA/pulls) for that branch.
 
+## Build environment
+
+The build process is dependent on:
+
+- GNU G++ (use MinGW on Windows)
+- GNU Make
+- Python (optional)
+    - Python is used to auto-gen various parts of the code-base, but the output
+      of the auto-gen process is included in the repository.
+    - At the time of writing this, Python 3.6.5 was used.
+
+To build the project, run "make" from the project root.
+
 ## Dependencies
 
 Please keep dependencies to an absolute minimum.  The vision is that the target user can download a single executable file and then use it.  Any framework or library in use should either be so standard that all target systems are guaranteed to have it (C run-time, Win32 API on Windows, POSIX Threads on Linux, etc.) or statically linked into the project binary.
@@ -24,6 +37,5 @@ The intended language syntax and features are described in the [Wiki](https://so
 ## Diagrams and Figures
 
 The documentation includes various diagrams, all of which are stored in the [Wiki/Figures](https://github.com/jpt13653903/ALCHA/tree/master/Wiki/Figures) folder.  The preferred format is [InkScape](https://inkscape.org)-based scalable vector graphics.  Most diagram editing tools can export SVG files.
-
 
 

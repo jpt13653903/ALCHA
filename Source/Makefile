@@ -73,6 +73,9 @@ Headers = ../Toolbox/Cpp/*.h     \
           DataStructures/*.h     \
           DataStructures/AST/*.h \
           DataStructures/SymbolTable/*.h
+
+# Auto-generated headers
+Headers += FrontEnd/CharacterNames.h
 #-------------------------------------------------------------------------------
 
 .PHONY:    clean all
@@ -96,6 +99,12 @@ bin/ALCHA.exe: main.cpp main.h $(Objects) $(Headers)
 obj/%.o: %.cpp $(Headers)
 	mkdir -p $(@D)
 	$(CC) $(Options) $(Version) $(Defines) -c $(Includes) $< -o $@
+#-------------------------------------------------------------------------------
+
+# Autogen
+
+FrontEnd/CharacterNames.h: FrontEnd/CharacterNames.json FrontEnd/CharacterNames.py
+	cd FrontEnd; py CharacterNames.py
 #-------------------------------------------------------------------------------
 
 # Resources
