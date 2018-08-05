@@ -4,7 +4,8 @@
 
 /**
 This list is used in the scanner to evaluate escape sequences of the form
-"\&nnnn;", where nnnn is any of the 2 125 HTML-5 character names.             */
+"\&nnnn;", where nnnn is any of the HTML-5 character names defined in
+https://github.com/w3c/html/blob/master/entities.json                         */
 //------------------------------------------------------------------------------
 
 static const char* CharacterNames[] = {

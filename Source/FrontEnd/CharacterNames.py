@@ -30,9 +30,9 @@ with open("CharacterNames.h", "w", newline="\n") as file:
     file.write('\n');
     file.write('/**\n');
     file.write('This list is used in the scanner to evaluate escape sequences of the form\n');
-    file.write('"\&nnnn;", where nnnn is any of the 2 125 HTML-5 character names.             */\n');
-    file.write('//--------------------------------------');
-    file.write('----------------------------------------\n');
+    file.write('"\\&nnnn;", where nnnn is any of the HTML-5 character names defined in\n');
+    file.write('https://github.com/w3c/html/blob/master/entities.json                         */\n');
+    file.write('//------------------------------------------------------------------------------\n');
     file.write('\n');
     file.write('static const char* CharacterNames[] = {\n');
     for name in json_map:
@@ -40,10 +40,8 @@ with open("CharacterNames.h", "w", newline="\n") as file:
             file.write(f'  "{name[1:-1]}", "{getUTF8(json_map[name]["codepoints"])}",\n');
     file.write('  0, 0\n');
     file.write('};\n');
-    file.write('//--------------------------------------');
-    file.write('----------------------------------------\n');
+    file.write('//------------------------------------------------------------------------------\n');
     file.write('\n');
     file.write('#endif\n');
-    file.write('//--------------------------------------');
-    file.write('----------------------------------------\n');
+    file.write('//------------------------------------------------------------------------------\n');
 
