@@ -199,24 +199,25 @@ In this case, the pins that are actually defined are `SD.CLK`, `SD.CMD` and `SD.
 
 Nets, class instances, derived clocks, etc. can be grouped in similar fashion.
 
-## Scripting Data Types
+## Structures
 
-The table below summarises ALCHA scripting variable types:
+ALCHA structures are "packed", which makes it possible to treat the structure as if it is a bit-vector.  It is therefore possible, for example, to assign a multi-member structure to the input port of a RAM block and then assign the output of the RAM block to a different instance of the same structure.  The user does not need to use concatenation in the process.
 
-Keyword | Description
-------- | -----------
-`byte`  | 8-bit unsigned integer typically used for binary file I/O
-`char`  | 32-bit Unicode character typically used for text file I/O
-`num`   | Infinite precision, rational, signed complex numbers (see [GNU MP](https://gmplib.org/) and [GNU MPFR](http://www.mpfr.org/))
+Structures are defined by means of the `struct` keyword, as follows:
 
-When a floating-point is assigned to a `num` type, the same precision as the floating-point is used to determine the size of the components of the rational number.
+```C++
+  struct double{
+    net     Sign;
+    net(11) Exponent;
+    net(52) Mantissa;
+  }
+```
 
-More on scripting in the [Scripting Section](p/alcha/wiki/Scripting)
+These structures follow the same rules as SystemVerilog structures, i.e. they are specified from most-significant to least-significant bit.  An instance of a structure can be used in as if it is a bit-vector.
 
 ## Enumerations
 
-An enumeration type can be defined by means of the `enum` keyword, as illustrated below.  The numerical constants associated with the enumeration start at `0` for the first element and increase by `1` for each element.
-
+An enumeration type can be defined by means of the `enum` keyword, as illustrated below.
 ```C++
   enum STATE {Idle, Writing, Done, Others}
   STATE State;
@@ -240,7 +241,9 @@ An enumeration type can be defined by means of the `enum` keyword, as illustrate
   }
 ```
 
-Ordinarily, enumerations are equivalent to the non-synthesisable type `num`.  The enumeration can, however, be used to define a synthesisable enumeration, as follows:
+### Base Type and Encoding
+
+By default, the numerical constants associated with the enumeration start at 0 for the first element and increase by 1 for each element.  The user can, however, assign arbitrary constants to the enumeration members.  Ordinarily, enumerations are equivalent to the non-synthesisable type `num`. The enumeration can, however, be used to define a synthesisable enumeration, as shown below.
 
 ```C++
   enum STATE {Idle, Writing, Done, Others}
@@ -248,38 +251,42 @@ Ordinarily, enumerations are equivalent to the non-synthesisable type `num`.  Th
   net(STATE) SigState; // Net enumeration
 ```
 
-In this case, the number of bits, or width, of the net (or pin array) is the number of bits required to uniquely identify each enumeration value.  In the above example, this is 2&nbsp;bits.
+In this case, the number of bits, or width, of the net (or pin array) is the number of bits required to uniquely identify each enumeration value.  In the above example, this is 2&nbsp;bits.  If the enumeration was declared with the `encoding = "one-hot"` attribute, the vectors would be 4~bits wide.
 
-If an enumeration is used outside a variable of that type, the values of the enumeration can be referenced through its type.  The following statements are all legal:
+### ALCHA Enumeration Semantics
+
+A variable declared as an enumeration can only take values from that enumeration.  If the LHS of an assignment is an enumeration instance, the compiler pushes that enumeration onto the name-space stack.  If an enumeration is used outside a variable of that type, the values of the enumeration can be referenced through its type.  It is illegal to assign anything else to an enumeration type. It is legal to compare an enumeration to other types, however.  The code below shows various examples of legal and illegal statements.
 
 ```C++
   enum Enum{A, B, C}
-
-  int  a;
-  Enum e;
-
-  a = Enum.A;
-  e = B;
-  a = e;
-```
-
-A variable declared as an enumeration can only take values from that enumeration.  It is illegal to assign anything else to an enumeration type.  It is legal to compare an enumeration to other types, however.
-
-```
-  enum Enum{A, B, C}
-
-  int  a;
+  
+  num  a;
   Enum e, n;
-
-  a = A;          // Illegal: A does not exist in this namespace
-  e = A;          // Legal  : assigning a value to the enumeration
+  
+  a = A;          // Illegal: A does not exist in this name-space
+  a = Enum.A;     // Legal  : A represents an integer value
+  e = B;          // Legal  : assigning a value to the enumeration
   n = e;          // Legal  : the enumeration types are the same
   e = 2;          // Illegal: must assign a value from the defined list
-  a = e;          // Legal  : e is automatically cast to an int
+  a = e;          // Legal  : e is automatically cast to an integer
   if(e == B){...} // Legal  : comparing enumeration values
-  if(a == B){...} // Illegal: B does not exist in this namespace
-  if(e == 2){...} // Legal  : e is automatically cast to an int
+  if(a == B){...} // Illegal: B does not exist in this name-space
+  if(e == 2){...} // Legal  : e is automatically cast to an integer
 ```
+
+## Scripting Data Types
+
+The table below summarises ALCHA scripting variable types:
+
+Keyword | Description
+------- | -----------
+`byte`  | 8-bit unsigned integer typically used for binary file I/O
+`char`  | 32-bit Unicode character typically used for text file I/O
+`num`   | Infinite precision, rational, signed complex numbers (see [GNU MP](https://gmplib.org/) and [GNU MPFR](http://www.mpfr.org/))
+
+When a floating-point is assigned to a `num` type, the same precision as the floating-point is used to determine the size of the components of the rational number.
+
+More on scripting in the [Scripting Section](p/alcha/wiki/Scripting)
 
 ## Built-in Members
 

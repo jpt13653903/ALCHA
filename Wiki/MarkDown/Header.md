@@ -14,6 +14,7 @@ The ALCHA project, including the language grammar and, by extension, this wiki, 
 - [Classes](/p/alcha/wiki/Classes)
 - [Operator Overloading](/p/alcha/wiki/OperatorOverloading)
 - [Scripting Features](/p/alcha/wiki/Scripting)
+- [Advanced Attributes](/p/alcha/wiki/AdvancedAttributes)
 - [High-level Structures](/p/alcha/wiki/HighLevelStructures)
 - [Simulation and Verification](/p/alcha/wiki/Simulation)
 --------------------------------------------------------------------------------

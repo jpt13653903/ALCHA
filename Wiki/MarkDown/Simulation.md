@@ -234,7 +234,7 @@ Formal verification is related to assertion-based verification.  Assertions make
 
 Hardware-in-the-loop verification entails loading the code onto a physical FPGA and verifying functionality by means of data-injection.  The concept is depicted below.
 
-<center markdown>![Topology of typical hardware-in-the-loop verification](https://sourceforge.net/p/alcha/code/ci/master/tree/Wiki/Figures/HardwareInTheLoop.svg)</center>
+<center markdown>![Topology of typical hardware-in-the-loop verification](https://sourceforge.net/p/alcha/code/ci/master/tree/Wiki/Figures/HardwareInTheLoop.svg?format=raw)</center>
 
 The logic analyser can be a laboratory instrument, embedded logic analyser within the FPGA firmware, or a combination of the two.  Within the ALCHA language, the user can add the `logic_analyser` attribute to any signal, which will cause the compiler to automatically generate an embedded logic analyser project file (ChipScope in Xilinx Vivado or SignalTap in Altera Quartus) that includes that signal in the sample set.
 

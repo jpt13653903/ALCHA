@@ -35,12 +35,12 @@ And some numbers:         \
 0x09A935Fe50
 0b011010101p7
 
-123.456 '(16,8)
--0x9AFCp+5'24
+123.456 @(16,8)
+-0x9AFCp+5@24
 0o673517p-7
 
 Or different style numbers:
-- 0x1B_A8.27_CE '(16,16)
+- 0x1B_A8.27_CE @(16,16)
 
 \\
 
@@ -72,7 +72,7 @@ a = b/c;
       
 "This string "       
 // This is a comment
-  include "Some Header File"
+  import "Some Header File"
 "should be concatenated with this one"
 
 /* This
@@ -116,7 +116,7 @@ Operator ++  --  '  ..  :  .  .{
          @  #  ##  [*  [->  [=  |->  |=>
          ||  &&  &&&
 
-"This is a string of keywords target pin net
+"This is a string of keywords private pin net
 \n \t \v \b \r \f \a \\ \? \' \" \x0FBC \uABABAB \UEFEFEFEFEFEFEFE \76455626126271 \&ndash;
 Some more string"
 
