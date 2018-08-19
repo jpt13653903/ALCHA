@@ -29,12 +29,12 @@ TOKEN::TOKEN(){
 //------------------------------------------------------------------------------
 
 void TOKEN::Display(){
-  printf(ANSI_FG_CYAN "Token:\n" ANSI_RESET);
-  printf(ANSI_FG_BRIGHT_BLACK "  Type  = " ANSI_RESET "%d\n", (int)Type);
-  printf(ANSI_FG_BRIGHT_BLACK "  Line  = " ANSI_RESET "%d\n", Line);
-  printf(ANSI_FG_BRIGHT_BLACK "  ID    = " ANSI_RESET "%s\n", (char*)ID);
-  printf(ANSI_FG_BRIGHT_BLACK "  Data  = " ANSI_RESET "%s\n", (char*)Data.String());
-  printf(ANSI_FG_BRIGHT_BLACK "  Value = " ANSI_RESET ""); Value.Display(); printf("\n");
+  printf(ANSI_FG_CYAN "Token: " ANSI_RESET);
+  printf(ANSI_FG_BRIGHT_BLACK "Type = "  ANSI_RESET "%3d ", (int)Type);
+  printf(ANSI_FG_BRIGHT_BLACK "Line = "  ANSI_RESET "%5d ", Line);
+  printf(ANSI_FG_BRIGHT_BLACK "ID = "    ANSI_RESET "%-20s ", (char*)ID);
+  printf(ANSI_FG_BRIGHT_BLACK "Data = "  ANSI_RESET "%-40s ", (char*)Data.String());
+  printf(ANSI_FG_BRIGHT_BLACK "Value = " ANSI_RESET ""); Value.Display(); printf("\n");
 }
 //------------------------------------------------------------------------------
 

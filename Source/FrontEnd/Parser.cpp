@@ -41,7 +41,7 @@ void PARSER::Error(const char* Message){
   if(error) return;
   error = true;
   printf(
-    "%s:%d - Error: %s\n",
+    "%s:%d - " ANSI_FG_RED "Error:" ANSI_FG_MAGENTA " %s" ANSI_RESET "\n",
     Scanner->Filename.String(),
     Token.Line,
     Message
@@ -56,7 +56,7 @@ void PARSER::GetToken(){
   if(!Scanner->GetToken(&Token)) return;
 
   #ifdef DEBUG
-    printf("%s:%05d  \t", Scanner->Filename.String(), Token.Line);
+    printf(ANSI_FG_BRIGHT_BLACK "%s:" ANSI_FG_CYAN "%05d  \t" ANSI_RESET, Scanner->Filename.String(), Token.Line);
     switch(Token.Type){
       case TOKEN::Identifier: printf("Identifier\t"            ); break;
       case TOKEN::Literal   : printf("Literal   \t"            ); break;
@@ -2477,7 +2477,7 @@ AST_Base* PARSER::StatementBlock(){
 //------------------------------------------------------------------------------
 
 AST_Base* PARSER::Run(const byte* Filename){
-  printf("Building AST for %s...\n", Filename);
+  debug("Building AST for %s...", Filename);
 
   SCANNER* Temp;
   while(Scanner){

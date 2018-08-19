@@ -81,13 +81,21 @@ Headers = Tools/*.h                      \
 Headers += FrontEnd/CharacterNames.h
 #-------------------------------------------------------------------------------
 
-.PHONY:    clean all
-.PRECIOUS: $(Objects) bin/*
+.PHONY: clean all
+.SECONDARY:
 
 all: bin/ALCHA.exe
 
 clean:
-	rm -rf bin obj
+	rm -rf bin
+	rm -rf obj
+	rm FrontEnd/CharacterNames.h
+
+test: testScanner \
+      testParser
+
+test%: bin/test%.exe
+	$<
 #-------------------------------------------------------------------------------
 
 # Binaries
@@ -111,7 +119,7 @@ obj/Toolbox/%.o: $(Toolbox)/%.cpp $(Headers)
 # Autogen
 
 FrontEnd/CharacterNames.h: FrontEnd/CharacterNames.json FrontEnd/CharacterNames.py
-	cd FrontEnd; py CharacterNames.py
+	cd $(@D); py CharacterNames.py
 #-------------------------------------------------------------------------------
 
 # Resources

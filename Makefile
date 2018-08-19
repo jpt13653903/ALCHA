@@ -6,7 +6,7 @@ all:
 clean:
 	make -C Source clean
 
-test: all
-	cd Test\ Cases/FrontEnd; ../../Source/bin/ALCHA Scanner.alc
+test:
+	make -C Source test
 #-------------------------------------------------------------------------------
 

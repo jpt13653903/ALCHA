@@ -31,6 +31,7 @@ switch(State){
   }
 }
 
+/+
 pin(STATE) PinState; // Pin enumeration
 net(STATE) SigState; // Net enumeration
 
@@ -295,4 +296,5 @@ fsm(Clk, Reset){
 
   }
 }
++/
 
