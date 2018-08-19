@@ -30,7 +30,7 @@ Department of Computer Science, Princeton University, Princeton, NJ 08544     */
 #define IdentifierTree_h
 //------------------------------------------------------------------------------
 
-#include "Global.h"
+#include "General.h"
 //------------------------------------------------------------------------------
 
 class IDENTIFIER_TREE{

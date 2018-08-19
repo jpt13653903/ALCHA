@@ -27,6 +27,9 @@ struct TIMING_SPEC{
     CLOCK* Next;      // Also deletes the rest of the list
   };
 
+  #ifdef IGNORE
+    #undef IGNORE
+  #endif
   struct IGNORE{
     STRING  From;
     STRING  To;
@@ -58,6 +61,9 @@ struct TIMING_SPEC{
     OUTPUT* Next;  // Also deletes the rest of the list
   };
 
+  #ifdef ABSOLUTE
+    #undef ABSOLUTE
+  #endif
   struct ABSOLUTE{ // min-max delay specification
     STRING From;
     STRING To;

@@ -1,5 +1,8 @@
 CC      = g++
-Options = -Wall -fexceptions -O2
+Options = -Wall -fexceptions -O2 -DDEBUG
+#-------------------------------------------------------------------------------
+
+Toolbox = ../Toolbox/Cpp
 #-------------------------------------------------------------------------------
 
 Includes   = -IBackEnd                    \
@@ -10,7 +13,7 @@ Includes   = -IBackEnd                    \
              -IGlobal                     \
              -ILibraries/include          \
              -ITools                      \
-             -I../Toolbox/Cpp
+             -I$(Toolbox)
 
 Libraries  = -lfftw3 -lgmp -lmpfr
 LibInclude = -LLibraries/lib
@@ -23,8 +26,8 @@ Objects = obj/BackEnd/Altera.o                          \
           obj/BackEnd/HDL.o                             \
           obj/BackEnd/MemoryTable.o                     \
           obj/BackEnd/TimingSpec.o                      \
-          obj/DataStructures/Dictionary.o               \
           obj/DataStructures/IdentifierTree.o           \
+          obj/DataStructures/TokenTree.o                \
           obj/DataStructures/AST/AST.o                  \
           obj/DataStructures/AST/AST_Alias.o            \
           obj/DataStructures/AST/AST_Assignment.o       \
@@ -58,28 +61,28 @@ Objects = obj/BackEnd/Altera.o                          \
           obj/FrontEnd/Parser.o                         \
           obj/FrontEnd/Scanner.o                        \
           obj/FrontEnd/Token.o                          \
-          obj/FrontEnd/TokenTree.o                      \
           obj/Tools/FileSystem.o                        \
           obj/Tools/MyString.o                          \
           obj/Tools/Number.o                            \
-	  obj/Resources/resource.res
+          obj/Toolbox/General.o                         \
+          obj/Toolbox/Dictionary.o                      \
+          obj/Resources/resource.res
 
-Headers = ../Toolbox/Cpp/*.h     \
-          Libraries/include/*.h  \
-          Tools/*.h              \
-          Global/*.h             \
-          BackEnd/*.h            \
-          FrontEnd/*.h           \
-          DataStructures/*.h     \
-          DataStructures/AST/*.h \
-          DataStructures/SymbolTable/*.h
+Headers = Tools/*.h                      \
+          BackEnd/*.h                    \
+          FrontEnd/*.h                   \
+          DataStructures/*.h             \
+          DataStructures/AST/*.h         \
+          DataStructures/SymbolTable/*.h \
+          Libraries/include/*.h          \
+          $(Toolbox)/*.h          
 
 # Auto-generated headers
 Headers += FrontEnd/CharacterNames.h
 #-------------------------------------------------------------------------------
 
 .PHONY:    clean all
-.PRECIOUS: $(Objects)
+.PRECIOUS: $(Objects) bin/*
 
 all: bin/ALCHA.exe
 
@@ -89,7 +92,7 @@ clean:
 
 # Binaries
 
-bin/ALCHA.exe: main.cpp main.h $(Objects) $(Headers)
+bin/%.exe: %.cpp $(Objects) $(Headers)
 	mkdir -p bin
 	$(CC) $(Options) $(Version) $(Includes) $< $(Objects) -s $(LibInclude) $(Libraries) -o $@
 #-------------------------------------------------------------------------------
@@ -97,6 +100,10 @@ bin/ALCHA.exe: main.cpp main.h $(Objects) $(Headers)
 # Objects
 
 obj/%.o: %.cpp $(Headers)
+	mkdir -p $(@D)
+	$(CC) $(Options) $(Version) $(Defines) -c $(Includes) $< -o $@
+
+obj/Toolbox/%.o: $(Toolbox)/%.cpp $(Headers)
 	mkdir -p $(@D)
 	$(CC) $(Options) $(Version) $(Defines) -c $(Includes) $< -o $@
 #-------------------------------------------------------------------------------

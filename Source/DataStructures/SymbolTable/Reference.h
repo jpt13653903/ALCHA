@@ -33,7 +33,7 @@ struct REFERENCE{ // Base class for the symbol table
   } Type;
 
   DICTIONARY Attributes; // Makes use of AST.h AttributeXXX functions
-  void       Attribute_Add(const byte* Name, STRING* Value);
+  void       Attribute_Add(const char* Name, STRING* Value);
 
            REFERENCE(TYPE Type);
   virtual ~REFERENCE();

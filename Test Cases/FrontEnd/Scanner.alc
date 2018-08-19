@@ -24,10 +24,10 @@ asdkljfa
 Some text and !! a to-do comment
 
 tar Testing the scanner for while if            
-ςιτη σομε γρεεκ ψηαραψτερσ τηροςν ιν.   \           
+ςιτη σομε γρεεκ ψηαραψτερσ τηροςν ιν.              
       
-And some numbers:         \  
-    ABC\
+And some numbers:           
+    ABC
 
 0b1001_1010_1011_0101_1010_1000p-6
 0x___9____A____B____5____A____8p-6
@@ -42,17 +42,17 @@ And some numbers:         \
 Or different style numbers:
 - 0x1B_A8.27_CE @(16,16)
 
-\\
 
-Hello\    
-     \
-     \
-\     
-\     
-\     
-\    
-   \    
-   \
+
+Hello    
+     
+     
+     
+     
+     
+    
+       
+   
     
 "A string \" with escaped \" stuff"
 "Ω""\n";
@@ -66,14 +66,15 @@ Hello\
 string"
 
 Base.Member();
-Identifier\with\structure\and\u0837\stuff
+Identifier.with.structure.and.u0837.stuff
 
 a = b/c;
       
 "This string "       
 // This is a comment
-  import "Some Header File"
 "should be concatenated with this one"
+
+  import "Some Header File"
 
 /* This
 is a 
@@ -94,7 +95,7 @@ target823
 void auto pin net byte char num true false
 class enum struct group alias
 input output public private protected
-if else for while loop switch case default import as
+if else for in while loop switch case default import as
 return break continue goto func inline rtl fsm hdl
 stimulus emulate sequence assert wait
 

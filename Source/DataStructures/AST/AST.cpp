@@ -24,19 +24,19 @@
 AST_Base* AST = 0;
 //------------------------------------------------------------------------------
 
-void* AttributesOnDuplicate(const byte* Name, void* Old, void* New){
+void* AttributesOnDuplicate(const char* Name, void* Old, void* New){
   delete (STRING*)Old;
   return New;
 }
 //------------------------------------------------------------------------------
 
-void AttributesDisplay(const byte* Name, void* Data){
+void AttributesDisplay(const char* Name, void* Data){
   STRING* Value = (STRING*)Data;
   printf(" - %s = \"%s\"\n", Name, Value->String());
 }
 //------------------------------------------------------------------------------
 
-void AttributesDeleteData(const byte* Name, void* Data){
+void AttributesDeleteData(const char* Name, void* Data){
   delete (STRING*)Data;
 }
 //------------------------------------------------------------------------------

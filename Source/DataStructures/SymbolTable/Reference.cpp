@@ -33,7 +33,7 @@ REFERENCE::~REFERENCE(){
 }
 //------------------------------------------------------------------------------
 
-void REFERENCE::Attribute_Add(const byte* Name, STRING* Value){
+void REFERENCE::Attribute_Add(const char* Name, STRING* Value){
   STRING* ThisValue = new STRING(*Value);
   Attributes.Insert(Name, ThisValue);
 }

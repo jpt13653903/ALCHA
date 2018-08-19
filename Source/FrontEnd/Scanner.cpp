@@ -39,7 +39,6 @@ SCANNER::SCANNER(){
     Spaces.Insert("\xA0"        , TOKEN::Space); // U+00A0: No-break Space
     Spaces.Insert("\xC2\xA0"    , TOKEN::Space); // U+00A0: No-break Space
     Spaces.Insert("\xE1\x9A\x80", TOKEN::Space); // U+1680: Ogham Space Mark
-    Spaces.Insert("\xE1\xA0\x8E", TOKEN::Space); // U+180E: Mongolian Vowel Separator
     Spaces.Insert("\xE2\x80\x80", TOKEN::Space); // U+2000: En Quad
     Spaces.Insert("\xE2\x80\x81", TOKEN::Space); // U+2001: Em Quad
     Spaces.Insert("\xE2\x80\x82", TOKEN::Space); // U+2002: En Space
@@ -53,10 +52,7 @@ SCANNER::SCANNER(){
     Spaces.Insert("\xE2\x80\x8A", TOKEN::Space); // U+200A: Hair Space
     Spaces.Insert("\xE2\x80\xAF", TOKEN::Space); // U+202F: Narrow No-break Space
     Spaces.Insert("\xE2\x80\x8B", TOKEN::Space); // U+200B: Zero Width Space
-    Spaces.Insert("\xE2\x80\x8C", TOKEN::Space); // U+200C: Zero Width Non-joiner
-    Spaces.Insert("\xE2\x80\x8D", TOKEN::Space); // U+200D: Zero Width Joiner
-    Spaces.Insert("\x81\x9F"    , TOKEN::Space); // U+205F: Medium Mathematical Space
-    Spaces.Insert("\x81\xA0"    , TOKEN::Space); // U+2060: Word Joiner
+    Spaces.Insert("\xE2\x81\x9F", TOKEN::Space); // U+205F: Medium Mathematical Space
     Spaces.Insert("\xE3\x80\x80", TOKEN::Space); // U+3000: Ideographic Space
     Spaces.Insert("\xEF\xBB\xBF", TOKEN::Space); // U+FEFF: Zero Width Non-breaking Space
 
@@ -71,103 +67,184 @@ SCANNER::SCANNER(){
     Spaces.Insert("\xE2\x80\xA8", TOKEN::Newline); // U+2028: Line Separator
     Spaces.Insert("\xE2\x80\xA9", TOKEN::Newline); // U+2029: Paragraph Separator
 
+    Keywords.Insert("__FILE__"     , TOKEN::FILE);
+    Keywords.Insert("__LINE__"     , TOKEN::LINE);
+    Keywords.Insert("__DATE__"     , TOKEN::DATE);
+    Keywords.Insert("__TIME__"     , TOKEN::TIME);
+    // __CLASS__, __FUNCTION__, etc. are implemented as special variables
 
-    Keywords.Insert("__FILE__"  , TOKEN::FILE     );
-    Keywords.Insert("__LINE__"  , TOKEN::LINE     );
-    Keywords.Insert("__DATE__"  , TOKEN::DATE     );
-    Keywords.Insert("__TIME__"  , TOKEN::TIME     );
-    Keywords.Insert("set_target", TOKEN::SetTarget);
-    Keywords.Insert("void"      , TOKEN::Void     );
-    Keywords.Insert("auto"      , TOKEN::Auto     );
-    Keywords.Insert("func"      , TOKEN::Func     );
-    Keywords.Insert("pin"       , TOKEN::Pin      );
-    Keywords.Insert("net"       , TOKEN::Net      );
-    Keywords.Insert("clk"       , TOKEN::Clk      );
-    Keywords.Insert("byte"      , TOKEN::Byte     );
-    Keywords.Insert("char"      , TOKEN::Char     );
-    Keywords.Insert("int"       , TOKEN::Int      );
-    Keywords.Insert("rat"       , TOKEN::Rat      );
-    Keywords.Insert("float"     , TOKEN::Float    );
-    Keywords.Insert("complex"   , TOKEN::Complex  );
-    Keywords.Insert("in"        , TOKEN::In       );
-    Keywords.Insert("out"       , TOKEN::Out      );
-    Keywords.Insert("class"     , TOKEN::Class    );
-    Keywords.Insert("enum"      , TOKEN::Enum     );
-    Keywords.Insert("group"     , TOKEN::Group    );
-    Keywords.Insert("alias"     , TOKEN::Alias    );
-    Keywords.Insert("if"        , TOKEN::If       );
-    Keywords.Insert("else"      , TOKEN::Else     );
-    Keywords.Insert("for"       , TOKEN::For      );
-    Keywords.Insert("while"     , TOKEN::While    );
-    Keywords.Insert("loop"      , TOKEN::Loop     );
-    Keywords.Insert("switch"    , TOKEN::Switch   );
-    Keywords.Insert("case"      , TOKEN::Case     );
-    Keywords.Insert("default"   , TOKEN::Default  );
-    Keywords.Insert("import"    , TOKEN::Import   );
-    Keywords.Insert("as"        , TOKEN::As       );
-    Keywords.Insert("return"    , TOKEN::Return   );
-    Keywords.Insert("break"     , TOKEN::Break    );
-    Keywords.Insert("continue"  , TOKEN::Continue );
-    Keywords.Insert("rtl"       , TOKEN::RTL      );
-    Keywords.Insert("fsm"       , TOKEN::FSM      );
-    Keywords.Insert("hdl"       , TOKEN::HDL      );
+    Keywords.Insert("void"         , TOKEN::Void);
+    Keywords.Insert("auto"         , TOKEN::Auto);
 
-    Operators.Insert("++" , TOKEN::Increment         );
-    Operators.Insert("--" , TOKEN::Decrement         );
-    Operators.Insert("'"  , TOKEN::CastOp            );
-    Operators.Insert("->" , TOKEN::To                );
-    Operators.Insert("@"  , TOKEN::Step              );
-    Operators.Insert("."  , TOKEN::Dot               );
-    Operators.Insert(".{" , TOKEN::Dot_Curly         );
-    Operators.Insert( "&" , TOKEN::Bit_AND           );
-    Operators.Insert("~&" , TOKEN::Bit_NAND          );
-    Operators.Insert( "|" , TOKEN::Bit_OR            );
-    Operators.Insert("~|" , TOKEN::Bit_NOR           );
-    Operators.Insert( "#" , TOKEN::Bit_XOR           );
-    Operators.Insert("~#" , TOKEN::Bit_XNOR          );
-    Operators.Insert("~"  , TOKEN::Bit_NOT           );
-    Operators.Insert("\\" , TOKEN::Bit_Repeat        );
-    Operators.Insert("+"  , TOKEN::Add               );
-    Operators.Insert("-"  , TOKEN::Subtract          );
-    Operators.Insert("*"  , TOKEN::Multiply          );
-    Operators.Insert("/"  , TOKEN::Divide            );
-    Operators.Insert("%"  , TOKEN::Modulus           );
-    Operators.Insert("^"  , TOKEN::Exponential       );
-    Operators.Insert("<<" , TOKEN::Shift_Left        );
-    Operators.Insert(">>" , TOKEN::Shift_Right       );
-    Operators.Insert("<"  , TOKEN::Less              );
-    Operators.Insert(">"  , TOKEN::Greater           );
-    Operators.Insert("<=" , TOKEN::Less_Equal        );
-    Operators.Insert(">=" , TOKEN::Greater_Equal     );
-    Operators.Insert("==" , TOKEN::Equal             );
-    Operators.Insert("!=" , TOKEN::Not_Equal         );
-    Operators.Insert("!"  , TOKEN::Logical_NOT       );
-    Operators.Insert("&&" , TOKEN::Logical_AND       );
-    Operators.Insert("||" , TOKEN::Logical_OR        );
-    Operators.Insert("?"  , TOKEN::Conditional       );
-    Operators.Insert(  "=", TOKEN::Assign            );
-    Operators.Insert( ":=", TOKEN::Raw_Assign        );
-    Operators.Insert( "~=", TOKEN::Append_Assign     );
-    Operators.Insert( "+=", TOKEN::Add_Assign        );
-    Operators.Insert( "-=", TOKEN::Subtract_Assign   );
-    Operators.Insert( "*=", TOKEN::Multiply_Assign   );
-    Operators.Insert( "/=", TOKEN::Divide_Assign     );
-    Operators.Insert( "%=", TOKEN::Modulus_Assign    );
-    Operators.Insert( "^=", TOKEN::Exponential_Assign);
-    Operators.Insert( "&=", TOKEN::AND_Assign        );
-    Operators.Insert( "|=", TOKEN::OR_Assign         );
-    Operators.Insert( "#=", TOKEN::XOR_Assign        );
+    Keywords.Insert("pin"          , TOKEN::Pin);
+    Keywords.Insert("net"          , TOKEN::Net);
+
+    Keywords.Insert("byte"         , TOKEN::Byte);
+    Keywords.Insert("char"         , TOKEN::Char);
+    Keywords.Insert("num"          , TOKEN::Num );
+
+    Keywords.Insert("true"         , TOKEN::True );
+    Keywords.Insert("false"        , TOKEN::False);
+
+    Keywords.Insert("class"        , TOKEN::Class );
+    Keywords.Insert("enum"         , TOKEN::Enum  );
+    Keywords.Insert("struct"       , TOKEN::Struct);
+    Keywords.Insert("group"        , TOKEN::Group );
+    Keywords.Insert("alias"        , TOKEN::Alias );
+
+    Keywords.Insert("input"        , TOKEN::Input );
+    Keywords.Insert("output"       , TOKEN::Output);
+
+    Keywords.Insert("public"       , TOKEN::Public   );
+    Keywords.Insert("private"      , TOKEN::Private  );
+    Keywords.Insert("protected"    , TOKEN::Protected);
+
+    Keywords.Insert("if"           , TOKEN::If   );
+    Keywords.Insert("else"         , TOKEN::Else );
+    Keywords.Insert("for"          , TOKEN::For  );
+    Keywords.Insert("in"           , TOKEN::In   );
+    Keywords.Insert("while"        , TOKEN::While);
+    Keywords.Insert("loop"         , TOKEN::Loop );
+
+    Keywords.Insert("switch"       , TOKEN::Switch );
+    Keywords.Insert("case"         , TOKEN::Case   );
+    Keywords.Insert("default"      , TOKEN::Default);
+
+    Keywords.Insert("import"       , TOKEN::Import);
+    Keywords.Insert("as"           , TOKEN::As    );
+
+    Keywords.Insert("return"       , TOKEN::Return  );
+    Keywords.Insert("break"        , TOKEN::Break   );
+    Keywords.Insert("continue"     , TOKEN::Continue);
+    Keywords.Insert("goto"         , TOKEN::Goto    );
+
+    Keywords.Insert("func"         , TOKEN::Func  );
+    Keywords.Insert("inline"       , TOKEN::Inline);
+
+    Keywords.Insert("rtl"          , TOKEN::RTL);
+    Keywords.Insert("fsm"          , TOKEN::FSM);
+    Keywords.Insert("hdl"          , TOKEN::HDL);
+
+    Keywords.Insert("stimulus"     , TOKEN::Stimulus);
+    Keywords.Insert("emulate"      , TOKEN::Emulate );
+    Keywords.Insert("sequence"     , TOKEN::Sequence);
+    Keywords.Insert("assert"       , TOKEN::Assert  );
+    Keywords.Insert("wait"         , TOKEN::Wait    );
+
+    // Conditional Expression
+    Operators.Insert("?"  , TOKEN::TernaryIf  );
+    Operators.Insert(":"  , TOKEN::TernaryElse);
+    Operators.Insert("?:" , TOKEN::Elvis      );
+
+    // Bit-wise
+    Operators.Insert("|"  , TOKEN::Bit_OR     );
+    Operators.Insert("~|" , TOKEN::Bit_NOR    );
+    Operators.Insert("^"  , TOKEN::Bit_XOR    );
+    Operators.Insert("~^" , TOKEN::Bit_XNOR   );
+    Operators.Insert("&"  , TOKEN::Bit_AND    );
+    Operators.Insert("~&" , TOKEN::Bit_NAND   );
+
+    // Relational
+    Operators.Insert("==" , TOKEN::Equal        );
+    Operators.Insert("!=" , TOKEN::Not_Equal    );
+    Operators.Insert("<"  , TOKEN::Less         );
+    Operators.Insert(">"  , TOKEN::Greater      );
+    Operators.Insert("<=" , TOKEN::Less_Equal   );
+    Operators.Insert(">=" , TOKEN::Greater_Equal);
+
+    // Shift
+    Operators.Insert("<<" , TOKEN::Shift_Left );
+    Operators.Insert(">>" , TOKEN::Shift_Right);
+
+    // Arithmetic
+    Operators.Insert("+"  , TOKEN::Add        );
+    Operators.Insert("-"  , TOKEN::Subtract   );
+    Operators.Insert("*"  , TOKEN::Multiply   );
+    Operators.Insert("/"  , TOKEN::Divide     );
+    Operators.Insert("%"  , TOKEN::Modulus    );
+    Operators.Insert("**" , TOKEN::Exponential);
+    Operators.Insert("!"  , TOKEN::Factorial  );
+
+    // Concatenation of vectors and arrays
+    Operators.Insert("`"  , TOKEN::Replicate       );
+    Operators.Insert(":(" , TOKEN::Concatenate     );
+    Operators.Insert(":[" , TOKEN::ArrayConcatenate);
+
+    // Stringification
+    Operators.Insert("$"  , TOKEN::Stringify          );
+    Operators.Insert("$(" , TOKEN::StringifyExpression);
+
+    // Reduction
+    Operators.Insert("&"  , TOKEN::AND_Reduce );
+    Operators.Insert("~&" , TOKEN::NAND_Reduce);
+    Operators.Insert("|"  , TOKEN::OR_Reduce  );
+    Operators.Insert("~|" , TOKEN::NOR_Reduce );
+    Operators.Insert("^"  , TOKEN::XOR_Reduce );
+    Operators.Insert("~^" , TOKEN::XNOR_Reduce);
+    Operators.Insert("!"  , TOKEN::Logical_NOT);
+
+    // Array
+    Operators.Insert(".." , TOKEN::To  );
+    Operators.Insert(":"  , TOKEN::Step);
+
+    // Unary
+    Operators.Insert("-"  , TOKEN::Negate   );
+    Operators.Insert("~"  , TOKEN::Bit_NOT  );
+    Operators.Insert(":"  , TOKEN::RawBits  );
+    Operators.Insert("++" , TOKEN::Increment);
+    Operators.Insert("--" , TOKEN::Decrement);
+
+    // Accessors
+    Operators.Insert("."  , TOKEN::AccessMember    );
+    Operators.Insert("?." , TOKEN::AccessMemberSafe);
+    Operators.Insert(".{" , TOKEN::AccessMemberPush);
+    Operators.Insert("'"  , TOKEN::AccessAttribute );
+    Operators.Insert("::" , TOKEN::AccessNamespace );
+
+    // Cast
+    Operators.Insert("@"  , TOKEN::CastOp);
+
+    // Assignment
+    Operators.Insert("="  , TOKEN::Assign            );
+    Operators.Insert(":=" , TOKEN::Raw_Assign        );
+    Operators.Insert("~=" , TOKEN::Append_Assign     );
+    Operators.Insert("+=" , TOKEN::Add_Assign        );
+    Operators.Insert("-=" , TOKEN::Subtract_Assign   );
+    Operators.Insert("*=" , TOKEN::Multiply_Assign   );
+    Operators.Insert("/=" , TOKEN::Divide_Assign     );
+    Operators.Insert("%=" , TOKEN::Modulus_Assign    );
+    Operators.Insert("^=" , TOKEN::XOR_Assign        );
+    Operators.Insert("&=" , TOKEN::AND_Assign        );
+    Operators.Insert("|=" , TOKEN::OR_Assign         );
+    Operators.Insert("**=", TOKEN::Exponential_Assign);
     Operators.Insert("<<=", TOKEN::Shift_Left_Assign );
     Operators.Insert(">>=", TOKEN::Shift_Right_Assign);
-    Operators.Insert("("  , TOKEN::OpenRound         );
-    Operators.Insert(")"  , TOKEN::CloseRound        );
-    Operators.Insert("["  , TOKEN::OpenSquare        );
-    Operators.Insert("]"  , TOKEN::CloseSquare       );
-    Operators.Insert("{"  , TOKEN::OpenCurly         );
-    Operators.Insert("}"  , TOKEN::CloseCurly        );
-    Operators.Insert(","  , TOKEN::Comma             );
-    Operators.Insert(":"  , TOKEN::Colon             );
-    Operators.Insert(";"  , TOKEN::Semicolon         );
+
+    // Punctuators
+    Operators.Insert("("  , TOKEN::OpenRound  );
+    Operators.Insert(")"  , TOKEN::CloseRound );
+    Operators.Insert("["  , TOKEN::OpenSquare );
+    Operators.Insert("]"  , TOKEN::CloseSquare);
+    Operators.Insert("{"  , TOKEN::OpenCurly  );
+    Operators.Insert("}"  , TOKEN::CloseCurly );
+    Operators.Insert("<"  , TOKEN::OpenAngle  );
+    Operators.Insert(">"  , TOKEN::CloseAngle );
+    Operators.Insert(","  , TOKEN::Comma      );
+    Operators.Insert(":"  , TOKEN::Colon      );
+    Operators.Insert(";"  , TOKEN::Semicolon  );
+
+    // Simulation Operators
+    Operators.Insert("#"  , TOKEN::WaitFor               );
+    Operators.Insert("@"  , TOKEN::WaitUntil             );
+    Operators.Insert("##" , TOKEN::WaitCycles            );
+    Operators.Insert("[*" , TOKEN::SequenceConsecutive   );
+    Operators.Insert("[->", TOKEN::SequenceGoto          );
+    Operators.Insert("[=" , TOKEN::SequenceNonConsecutive);
+    Operators.Insert("|->", TOKEN::AssertImplies         );
+    Operators.Insert("|=>", TOKEN::AssertImpliesNext     );
+    Operators.Insert("||" , TOKEN::Or                    );
+    Operators.Insert("&&" , TOKEN::And                   );
+    Operators.Insert("&&&", TOKEN::Intersect             );
 
     Spaces   .Balance();
     Keywords .Balance();
@@ -175,7 +252,7 @@ SCANNER::SCANNER(){
 
     for(int j = 0; CharacterNames[j]; j += 2){
       Characters.Insert(
-        (byte*)CharacterNames[j  ], // The name
+        (char*)CharacterNames[j  ], // The name
         (void*)CharacterNames[j+1]  // The UTF-8 representation
       );
     }
@@ -222,6 +299,27 @@ bool SCANNER::LineComment(){
     else      Index ++;
   }
   Error("Incomplete line comment");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+bool SCANNER::TodoComment(){
+  int Count;
+
+  if(Buffer[Index] != '!' || Buffer[Index+1] != '!') return false;
+  Index += 2;
+
+  while(Buffer[Index]){
+    if(Spaces.Match(Buffer+Index, &Count) == TOKEN::Newline){
+      Line  ++;
+      Index += Count;
+      return true;
+    }
+
+    if(Count) Index += Count;
+    else      Index ++;
+  }
+  Error("Incomplete todo comment");
   return false;
 }
 //------------------------------------------------------------------------------
@@ -281,7 +379,7 @@ void SCANNER::WhiteSpace(){
   int         Count;
 
   while(Buffer[Index]){
-    while(LineComment() || BlockComment() | NestedComment());
+    while(LineComment() || TodoComment() || BlockComment() | NestedComment());
 
     Type = Spaces.Match(Buffer+Index, &Count);
     switch(Type){
@@ -592,7 +690,7 @@ bool SCANNER::String(TOKEN* Token){
             return false;
           }
           Buffer[j] = 0;
-          s = (byte*)Characters.Find(Buffer+Index);
+          s = (byte*)Characters.Find((const char*)(Buffer+Index));
           if(!s){
             Error("Invalid \\& code");
             return false;

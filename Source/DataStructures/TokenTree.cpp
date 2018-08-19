@@ -59,7 +59,6 @@ TOKEN_TREE::NODE* TOKEN_TREE::Insert(
   if(!Pattern[0]) return Root;
 
   // Keep in vine structure until balancing restructures the tree
-
   NODE* Node;
   NODE* Prev = 0;
   NODE* Temp = Root;
@@ -82,8 +81,13 @@ TOKEN_TREE::NODE* TOKEN_TREE::Insert(
       if(Pattern[1]){
         Temp->Next = Insert(Temp->Next, Pattern+1, Type);
       }else{
-        if(Temp->Type) printf("Duplicate token entry: ...%s = %d\n", Pattern, Type);
-        else           Temp->Type = Type;
+        // If Temp->Type null, this node does not have a token assigned yet
+        // If the types are the same, this is an alias, and therefore valid
+        if(Temp->Type && Temp->Type != Type){
+          error("Duplicate token entry: ...%s = %d", Pattern, Type);
+        }else{
+          Temp->Type = Type;
+        }
       }
       return Root;
     }
@@ -102,7 +106,8 @@ TOKEN_TREE::NODE* TOKEN_TREE::Insert(
     Quentin F Stout and Bette L Warren,
     "Tree rebalancing in optimal space and time"
     Communications of the ACM, September 1986, Volume 29, Number 9
-    http://www.eecs.umich.edu/~qstout/pap/CACM86.pdf */
+    https://web.eecs.umich.edu/~qstout/pap/CACM86.pdf
+    https://deepblue.lib.umich.edu/bitstream/handle/2027.42/7801/bad3920.0001.001.pdf?sequence=5&isAllowed=y */
 
 void TOKEN_TREE::Balance(){
   Root = Balance(Root);

@@ -102,7 +102,7 @@ syn keyword AlchaStructure    class enum struct group alias
 syn keyword AlchaStorageClass input output
 syn keyword AlchaStorageClass public private protected
 syn keyword AlchaConditional  if else
-syn keyword AlchaRepeat       for while loop
+syn keyword AlchaRepeat       for in while loop
 syn keyword AlchaConditional  switch case default
 syn keyword AlchaInclude      import as
 syn keyword AlchaKeyword      return break continue goto

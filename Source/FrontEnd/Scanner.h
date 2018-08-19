@@ -58,6 +58,7 @@ class SCANNER{
     byte*    Buffer;
 
     bool LineComment  ();
+    bool TodoComment  ();
     bool BlockComment ();
     bool NestedComment();
     void WhiteSpace   (); // Ignores spaces, new-lines and comments

@@ -30,147 +30,137 @@ struct TOKEN{
   enum TYPE{
     Unknown = 0, // also used to designate errors, etc.
 
-    // White-space ...............................................................
-    Space,   // These are only used in the scanner
+    // White-space .............................................................
+    Space, // Spaces are only used in the scanner
     Newline,
 
-    // Special keywords ..........................................................
-    FILE,
-    LINE,
-    DATE,
-    TIME,
-    // __CLASS__ and __FUNCTION__ are implemented as special variables
+    // Special keywords ........................................................
+    FILE, LINE, DATE, TIME,
+    // __CLASS__, __FUNCTION__, etc. are implemented as special variables
 
-    // Keywords ..................................................................
-    SetTarget,
+    // Keywords ................................................................
+    Void    , Auto   ,
+    Pin     , Net    ,
+    Byte    , Char   , Num,
+    True    , False  ,
+    Class   , Enum   , Struct   , Group , Alias,
+    Input   , Output ,
+    Public  , Private, Protected,
+    If      , Else   , For, In  , While , Loop ,
+    Switch  , Case   , Default  ,
+    Import  , As     ,
+    Return  , Break  , Continue , Goto  ,
+    Func    , Inline ,
+    RTL     , FSM    , HDL,
+    Stimulus, Emulate, Sequence , Assert, Wait ,
 
-    Void,
-    Auto,
-    Func,
-    Pin,
-    Net,
-    Clk,
+    // Operators ...............................................................
+    TernaryIf,
+    Elvis,
 
-    Byte,
-    Char,
+    Bit_OR,
+    Bit_NOR,
+    Bit_XOR,
+    Bit_XNOR,
+    Bit_AND,
+    Bit_NAND,
 
-    Int,
-    Rat,
-    Float,
-    Complex,
+    Equal,
+    Not_Equal,
+    Less,
+    Greater,
+    Less_Equal,
+    Greater_Equal,
 
-    In,
-    Out,
+    Shift_Left,
+    Shift_Right,
 
-    Class,
-    Enum,
-    Group,
-    Alias,
+    Add,
+    Subtract,
+    Multiply,
+    Divide,
+    Modulus,
+    Exponential,
+    Factorial,
 
-    If,
-    Else,
-    For,
-    While,
-    Loop,
-    Switch,
-    Case,
-    Default,
+    Replicate,
+    Concatenate,
+    ArrayConcatenate,
 
-    Import,
-    As,
+    Stringify,
+    StringifyExpression,
 
-    Return,
-    Break,
-    Continue,
+    To,
 
-    RTL,
-    FSM,
-    HDL,
+    Bit_NOT,
+    Increment,
+    Decrement,
 
-    // Operators .................................................................
-    Increment, // ++
-    Decrement, // --
-    CastOp,    // '
-    To,        // ->
-    Step,      // @
-    Dot,       // .
-    Dot_Curly, // .{
+    AccessMember,
+    AccessMemberSafe,
+    AccessMemberPush,
+    AccessAttribute,
+    AccessNamespace,
 
-    Bit_AND,  //  &
-    Bit_NAND, // ~&
-    Bit_OR,   //  |
-    Bit_NOR,  // ~|
-    Bit_XOR,  //  #
-    Bit_XNOR, // ~#
-    Bit_NOT,  // ~
+    CastOp,
 
-    Bit_Repeat, // \                                                             "
+    Assign,
+    Raw_Assign,
+    Append_Assign,
+    Add_Assign,
+    Subtract_Assign,
+    Multiply_Assign,
+    Divide_Assign,
+    Modulus_Assign,
+    XOR_Assign,
+    AND_Assign,
+    OR_Assign,
+    Exponential_Assign,
+    Shift_Left_Assign,
+    Shift_Right_Assign,
 
-    Add,         // +
-    Subtract,    // -
-    Multiply,    // *
-    Divide,      // /
-    Modulus,     // %
-    Exponential, // ^
+    OpenRound,
+    CloseRound,
+    OpenSquare,
+    CloseSquare,
+    OpenCurly,
+    CloseCurly,
+    Comma,
+    Colon,
+    Semicolon,
 
-    Shift_Left,  // <<
-    Shift_Right, // >>
+    WaitFor,
+    WaitCycles,
+    SequenceConsecutive,
+    SequenceGoto,
+    SequenceNonConsecutive,
+    AssertImplies,
+    AssertImpliesNext,
+    Or,
+    And,
+    Intersect,
 
-    Less,          // <
-    Greater,       // >
-    Less_Equal,    // <=
-    Greater_Equal, // >=
-    Equal,         // ==
-    Not_Equal,      // !=
-
-    Logical_NOT, // !
-    Logical_AND, // &&
-    Logical_OR,  // ||
-
-    Conditional, // ?
-
-    Assign,             //   =
-    Raw_Assign,         //  :=
-    Append_Assign,      //  @=
-    Add_Assign,         //  +=
-    Subtract_Assign,    //  -=
-    Multiply_Assign,    //  *=
-    Divide_Assign,      //  /=
-    Modulus_Assign,     //  %=
-    Exponential_Assign, //  ^=
-    AND_Assign,         //  &=
-    OR_Assign,          //  |=
-    XOR_Assign,         //  #=
-    Shift_Left_Assign,  // <<=
-    Shift_Right_Assign, // >>=
-
-    // Punctuators ...............................................................
-    OpenRound,   // (
-    CloseRound,  // )
-
-    OpenSquare,  // [
-    CloseSquare, // ]
-
-    OpenCurly,   // {
-    CloseCurly,  // }
-
-    Comma,       // ,
-    Colon,       // :
-    Semicolon,   // ;
-
-    // Other types ...............................................................
+    // Other types .............................................................
     Identifier,
     Literal,
     String,
 
-    // Aliases ...................................................................
-    Factorial         = Logical_NOT, // !
-    OpenAngle         = Less,        // <
-    CloseAngle        = Greater,     // >
-    Negate            = Subtract,    // -
-    Bit_Concatenate   = Colon,       // :
-    Array_Concatenate = Bit_NOT      // ~
+    // Aliases .................................................................
+    AND_Reduce  = Bit_AND,
+    NAND_Reduce = Bit_NAND,
+    OR_Reduce   = Bit_OR,
+    NOR_Reduce  = Bit_NOR,
+    XOR_Reduce  = Bit_XOR,
+    XNOR_Reduce = Bit_XNOR,
+    Logical_NOT = Factorial,
+    TernaryElse = Colon,
+    Step        = Colon,
+    RawBits     = Colon,
+    Negate      = Subtract,
+    OpenAngle   = Less,
+    CloseAngle  = Greater,
 
+    WaitUntil   = CastOp
   } Type;
 
   int    Line;  // The line number
@@ -179,6 +169,7 @@ struct TOKEN{
   NUMBER Value; // Literal value
 
   TOKEN();
+  void Display(); // Used for debugging
 };
 //------------------------------------------------------------------------------
 
