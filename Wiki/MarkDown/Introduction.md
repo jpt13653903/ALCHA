@@ -39,6 +39,8 @@ The source is available from the [git repository](https://sourceforge.net/p/alch
 ### Similar Projects
 
 - [Synflow Cx](http://cx-lang.org/)
+- [SpinalHDL](http://spinalhdl.github.io/SpinalDoc/)
+- [CHISEL](https://chisel.eecs.berkeley.edu/)
 - [Migen](https://github.com/m-labs/migen)
 - [MyHDL](http://www.myhdl.org/)
 
