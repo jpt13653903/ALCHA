@@ -71,8 +71,8 @@ net( 8      ) x = e@  8       ;
 net(32, 2*pi) z = e@(32, 2*pi);
 
 a  = b ** c;
-a  = b # c;
-a  = b ~# c;
+a  = b ^ c;
+a  = b ~^ c;
 a  = ^b;
 a  = ~^b;
 a ^= b;

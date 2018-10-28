@@ -1,6 +1,6 @@
 # ALCHA
 
-A New Programming Language for FPGA Projects
+A New Programming Language for FPGA Projects &ndash; currently in pre-alpha
 
 ## Summary
 
