@@ -33,20 +33,21 @@ Postfix = Cast { Array                   | (* Slice *)
 
 Cast    = Primary [CastEpr];
 CastEpr = "@" ( Identifier | Literal
-              | ("(" Expression [(",") Expression] ")") );
+              | ("(" ExpressionList ")") );
 
 (* The "::" and "'" prefixes chooses the global scope *)
 Primary = (["::" | "'"] Identifier) | Literal | "true" | "false"
         | VectorConcat | ArrayConcat | Array | String | ("(" Expression ")");
 
 (* These perform vector or array concatenation *)
-VectorConcat = ":(" Expression {"," Expression} ")";
-ArrayConcat  = ":[" Expression {"," Expression} "]";
+VectorConcat = ":(" ExpressionList ")";
+ArrayConcat  = ":[" ExpressionList "]";
 
 (* This builds an array (an array of arrays when nested) *)
-Array = "[" Expression {"," Expression} "]";
+Array = "[" ExpressionList "]";
 
-ParameterList = [Identifier ("=" | ":=")] Expression {
-            "," [Identifier ("=" | ":=")] Expression };
+ExpressionList = Expression {","  Expression };
+ParameterList  = [Identifier ("=" | ":=")] Expression {
+             "," [Identifier ("=" | ":=")] Expression };
 (*----------------------------------------------------------------------------*)
 

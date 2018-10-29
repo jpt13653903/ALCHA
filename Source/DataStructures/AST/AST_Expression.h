@@ -30,12 +30,16 @@ struct AST_Expression: public AST_Base{
   enum EXPRESSION_TYPE{
     String,
     Literal,
+    Array,
     Identifier,
+
+    VectorConcatenate,
+    ArrayConcatenate,
 
     FunctionCall, // Left is the function name; right is the parameter list
     Slice,
-    Dot,
-    ArrayConcatenate,
+    AccessMember,
+    AccessNamespace,
     Range, // Left = from; Right = to; Right->Next = step
 
     Increment, // If child is on the left, post-increment
@@ -56,7 +60,6 @@ struct AST_Expression: public AST_Base{
 
     Cast,
 
-    Concatenate,
     Replicate,
 
     Multiply,

@@ -19,6 +19,7 @@
 //==============================================================================
 
 #include "AST.h"
+#include "AST_Expression.h"
 //------------------------------------------------------------------------------
 
 AST_Base* AST = 0;
@@ -31,8 +32,10 @@ void* AttributesOnDuplicate(const char* Name, void* Old, void* New){
 //------------------------------------------------------------------------------
 
 void AttributesDisplay(const char* Name, void* Data){
-  STRING* Value = (STRING*)Data;
-  printf(" - %s = \"%s\"\n", Name, Value->String());
+  AST_Expression* Value = (AST_Expression*)Data;
+  printf(" - %s = ", Name);
+  Value->Display();
+  printf("\n");
 }
 //------------------------------------------------------------------------------
 

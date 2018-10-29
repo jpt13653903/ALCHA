@@ -62,7 +62,7 @@ AST_Definition::AST_Definition(
   this->Type           = Definition;
   this->DefinitionType = DefinitionType;
 
-  Direction = Bidirectional;
+  Direction = Inferred;
 
   ClassName = 0;
   Format    = 0;
@@ -89,13 +89,9 @@ void AST_Definition::Display(){
     case Auto   : printf("Auto):\n"    ); break;
     case Pin    : printf("Pin):\n"     ); break;
     case Net    : printf("Net):\n"     ); break;
-    case Clk    : printf("Clock):\n"   ); break;
-    case Byte   : printf("Byte):"     ); break;
-    case Char   : printf("Character):"); break;
-    case Int    : printf("Integer):\n" ); break;
-    case Rat    : printf("Rational):\n"); break;
-    case Float  : printf("Float):\n"   ); break;
-    case Complex: printf("Complex):\n" ); break;
+    case Byte   : printf("Byte):"      ); break;
+    case Char   : printf("Character):" ); break;
+    case Num    : printf("Number):\n"  ); break;
     case Func   : printf("Function):\n"); break;
 
     case ClassInstance:
@@ -110,9 +106,9 @@ void AST_Definition::Display(){
 
   printf(" Direction = ");
   switch(Direction){
-    case In : printf("Input\n"); break;
-    case Out: printf("Output\n"); break;
-    default : printf("Bidirectional\n"); break;
+    case Input : printf("Input\n"); break;
+    case Output: printf("Output\n"); break;
+    default    : printf("Inferred\n"); break;
   }
 
   printf(" Format: ");

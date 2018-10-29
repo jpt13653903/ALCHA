@@ -11,7 +11,7 @@ Group  = "group"  [AttributeList] [Identifier] "{" [Statements] "}";
    validity before use as a name-space, class name or assignment target. *)
 FunctionCall  = Postfix ("," | ";");
 NamespacePush = Postfix ".{" [Statements] "}";
-Assignment    = Concatenation AssignmentOperator Expression ("," | ";");
+Assignment    = Postfix AssignmentOperator Expression ("," | ";");
 
 AssignmentOperator = "="  | ":=" | "~=" | "+="  | "-="  | "*="  | "/="  | "**="
                    | "%=" | "&=" | "|=" | "^=" | "<<=" | ">>=" ; 

@@ -48,7 +48,6 @@ Objects = obj/BackEnd/Altera.o                          \
           obj/DataStructures/AST/AST_Parameter.o        \
           obj/DataStructures/AST/AST_RTL.o              \
           obj/DataStructures/AST/AST_Switch.o           \
-          obj/DataStructures/AST/AST_TargetDefinition.o \
           obj/DataStructures/AST/AST_WhileLoop.o        \
           obj/DataStructures/SymbolTable/Clock.o        \
           obj/DataStructures/SymbolTable/Net.o          \
@@ -81,6 +80,13 @@ Headers = Tools/*.h                      \
 Headers += FrontEnd/CharacterNames.h
 #-------------------------------------------------------------------------------
 
+TestSources = ../Test\ Cases/*                   \
+              ../Test\ Cases/Target/*            \
+              ../Test\ Cases/FrontEnd/*          \
+              ../Test\ Cases/Buttons\ to\ LEDs/* \
+              ../Test\ Cases/Counter/*
+#-------------------------------------------------------------------------------
+
 .PHONY: clean all
 .SECONDARY:
 
@@ -91,8 +97,11 @@ clean:
 	rm -rf obj
 	rm FrontEnd/CharacterNames.h
 
-test: testScanner \
-      testParser
+test: $(TestSources) testScanner testParser
+
+testButtonsToLEDs: bin/testScanner.exe bin/testParser.exe $(TestSources)
+	bin/testScanner.exe "../Test Cases/Buttons to LEDs/main.alc"
+	bin/testParser.exe  "../Test Cases/Buttons to LEDs/main.alc"
 
 test%: bin/test%.exe
 	$<

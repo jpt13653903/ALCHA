@@ -69,18 +69,22 @@ void AST_Expression::Display(){
       else     printf("(Identifier node has no name)");
       break;
 
-    case FunctionCall    : printf("{call}" ); break;
-    case ArrayConcatenate: printf(" ~ "); break;
+    case Array:             printf("{Array}"       ); break;
+    case VectorConcatenate: printf("{VectorConcat}"); break;
+    case ArrayConcatenate:  printf("{ArrayConcat}" ); break;
 
-    case Slice   : printf("{slice}"); break;
+    case FunctionCall: printf("{call}" ); break;
 
-    case Dot: printf("."); break;
+    case Slice: printf("{slice}"); break;
+
+    case AccessMember:    printf("." ); break;
+    case AccessNamespace: printf("::"); break;
 
     case Increment: printf("++"); break;
     case Decrement: printf("--"); break;
     case Factorial: printf("!" ); break;
 
-    case Range: printf("->"); break;
+    case Range: printf(".."); break;
 
     case Negate : printf(" -"); break;
     case Bit_NOT: printf(" ~"); break;
@@ -96,7 +100,6 @@ void AST_Expression::Display(){
 
     case Cast       : printf(" {cast} "); break;
 
-    case Concatenate: printf(":"    ); break;
     case Replicate  : printf("{rep}"); break;
 
     case Exponential: printf(" ^ " ); break;

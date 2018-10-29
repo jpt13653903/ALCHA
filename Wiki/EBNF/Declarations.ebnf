@@ -46,10 +46,10 @@ DefParameter     = [BaseType | TypeIdentifier] Identifier {"[" "]"}
                    [Initialiser];
 
 AttributeList       = "<" AttributeAssignment {, AttributeAssignment} ">";
-AttributeAssignment = Identifier "=" Expression;
+AttributeAssignment = Identifier "=" Primary;
 
 EnumDefinition = "enum" Identifier "{" Identifier {"," Identifier} "}";
 
-TypeIdentifier = Identifier {"." Identifier}; (* NameSpace.TypeName *)
+TypeIdentifier = Identifier {"::" Identifier}; (* NameSpace::TypeName *)
 (*----------------------------------------------------------------------------*)
 

@@ -7,8 +7,8 @@ Space   = ? U+0020 ? | ? U+0009 ? | ? U+00A0 ? | ? U+1680 ? | ? U+2000 ?
         | ? U+202F ? | ? U+200B ? | ? U+205F ? | ? U+3000 ? | ? U+FEFF ? ;
 Newline = ? U+0A U+0D ? | ? U+0D U+0A ? | ? U+0A ? | ? U+0D ? | ? U+0B ? 
         | ? U+0C ? | ? U+85 ? | ? U+2028 ? | ? U+2029 ? ;
-       
-Byte          = ? Any 8-bit unit from the input stream ?;
+
+Byte    = ? Any 8-bit unit from the input stream ?;
 
 B = "0" | "1";
 O = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7";

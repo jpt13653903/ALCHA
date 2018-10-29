@@ -41,12 +41,17 @@ void PARSER::Error(const char* Message){
   if(error) return;
   error = true;
   printf(
-    "%s:%d - " ANSI_FG_RED "Error:" ANSI_FG_MAGENTA " %s" ANSI_RESET "\n",
-    Scanner->Filename.String(),
+    ANSI_FG_BRIGHT_BLACK "Line %05d of %s\n"
+    ANSI_FG_BRIGHT_RED "  Error:"
+    ANSI_FG_YELLOW " %s\n" ANSI_RESET,
     Token.Line,
+    Scanner->Filename.String(),
     Message
   );
-  if(Token.Type) printf("  Token: %s\n", Token.Data.String());
+  if(Token.Type) printf(
+    ANSI_FG_CYAN "  Token: "
+    ANSI_RESET "%s\n", Token.Data.String()
+  );
 }
 //------------------------------------------------------------------------------
 
@@ -88,12 +93,12 @@ bool PARSER::AttributeAssignment(DICTIONARY* Attributes){
   }
   GetToken();
 
-  if(Token.Type != TOKEN::String){
+  AST_Expression* Value = Primary();
+  if(!Value){
     Error("Attribute value expected");
     return false;
   }
-  Attributes->Insert((const char*)Name, new STRING(Token.Data));
-  GetToken();
+  Attributes->Insert((const char*)Name, Value);
 
   return true;
 }
@@ -120,31 +125,6 @@ bool PARSER::AttributeList(DICTIONARY* Attributes){
   }
   Error("Incomplete attribute list");
   return false;
-}
-//------------------------------------------------------------------------------
-
-AST_TargetDefinition* PARSER::TargetDefinition(){
-  // TODO: This is not in the EBNF anymore
-  return 0;
-
-  // if(Token.Type != TOKEN::SetTarget) return 0;
-  // AST_TargetDefinition* Node = new AST_TargetDefinition(
-  //   Token.Line, Scanner->Filename.String()
-  // );
-  // GetToken();
-
-  // if(!AttributeList(&Node->Attributes)){
-  //   Error("Attribute list expected");
-  //   delete Node;
-  //   return 0;
-  // }
-  // if(Token.Type != TOKEN::Semicolon){
-  //   Error("';' expected");
-  //   delete Node;
-  //   return 0;
-  // }
-  // GetToken();
-  // return Node;
 }
 //------------------------------------------------------------------------------
 
@@ -323,7 +303,7 @@ AST_Expression* PARSER::Identifier(){
 }
 //------------------------------------------------------------------------------
 
-AST_Expression* PARSER::ParameterList(){
+AST_Expression* PARSER::ExpressionList(){
   AST_Expression* Head;
   AST_Expression* Node;
 
@@ -344,12 +324,111 @@ AST_Expression* PARSER::ParameterList(){
 }
 //------------------------------------------------------------------------------
 
+AST_Expression* PARSER::ParameterList(){
+  AST_Expression* Head;
+  AST_Expression* Node;
+  
+  // TODO: The new EBNF supports named parameters
+  // eg. Myfunc(A = 3, B := 6, C = abc);
+
+  Head = Node = Expression();
+  if(!Node) return 0;
+
+  while(Token.Type == TOKEN::Comma){
+    GetToken();
+    Node->Next = Expression();
+    Node       = (AST_Expression*)Node->Next;
+    if(!Node){
+      Error("Parameter expression expected");
+      delete Head;
+      return 0;
+    }
+  }
+  return Head;
+}
+//------------------------------------------------------------------------------
+
+AST_Expression* PARSER::Array(){
+  AST_Expression* Node;
+
+  if(Token.Type == TOKEN::OpenSquare){
+    GetToken();
+
+    Node = new AST_Expression(
+      Token.Line, Scanner->Filename.String(), AST_Expression::Array
+    );
+    Node->Right = ExpressionList();
+
+    if(Token.Type != TOKEN::CloseSquare){
+      Error("] expected");
+      delete Node;
+      return 0;
+    }
+    GetToken();
+    return Node;
+  }
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+AST_Expression* PARSER::ArrayConcat(){
+  AST_Expression* Node;
+
+  if(Token.Type == TOKEN::ArrayConcatenate){
+    GetToken();
+
+    Node = new AST_Expression(
+      Token.Line, Scanner->Filename.String(), AST_Expression::ArrayConcatenate
+    );
+    Node->Right = ExpressionList();
+
+    if(Token.Type != TOKEN::CloseSquare){
+      Error("] expected");
+      delete Node;
+      return 0;
+    }
+    GetToken();
+    return Node;
+  }
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+AST_Expression* PARSER::VectorConcat(){
+  AST_Expression* Node;
+
+  if(Token.Type == TOKEN::Concatenate){
+    GetToken();
+
+    Node = new AST_Expression(
+      Token.Line, Scanner->Filename.String(), AST_Expression::VectorConcatenate
+    );
+    Node->Right = ExpressionList();
+
+    if(Token.Type != TOKEN::CloseRound){
+      Error(") expected");
+      delete Node;
+      return 0;
+    }
+    GetToken();
+    return Node;
+  }
+  return 0;
+}
+//------------------------------------------------------------------------------
+
 AST_Expression* PARSER::Primary(){
   AST_Expression* Node;
 
-  Node = Identifier(); if(Node) return Node;
-  Node = Literal   (); if(Node) return Node;
-  Node = String    (); if(Node) return Node;
+  // TODO: More stuff, including global accessors
+  // eg. ::GlobalType and 'global_attribute
+
+  Node = Identifier  (); if(Node) return Node;
+  Node = Literal     (); if(Node) return Node;
+  Node = Array       (); if(Node) return Node;
+  Node = String      (); if(Node) return Node;
+  Node = VectorConcat(); if(Node) return Node;
+  Node = ArrayConcat (); if(Node) return Node;
 
   if(Token.Type == TOKEN::OpenRound){
     GetToken();
@@ -377,7 +456,7 @@ AST_Expression* PARSER::CastEpr(AST_Expression* Node){
 
   if(Token.Type == TOKEN::CastOp){
     Temp = new AST_Expression(
-    Token.Line, Scanner->Filename.String(), AST_Expression::Cast
+      Token.Line, Scanner->Filename.String(), AST_Expression::Cast
     );
     GetToken();
     Temp->Left = Node;
@@ -439,18 +518,16 @@ AST_Expression* PARSER::Postfix(){
       Temp = new AST_Expression(
         Token.Line, Scanner->Filename.String(), AST_Expression::Slice
       );
-      GetToken();
 
       Temp->Left  = Node;
       Temp->Right = Array();
       Node = Temp;
 
-      if(Token.Type != TOKEN::CloseSquare){
-        Error("] expected");
+      if(!Node->Right){
+        Error("Slice array expected");
         delete Node;
         return 0;
       }
-      GetToken();
 
     }else if(Token.Type == TOKEN::OpenRound){ // Function call
       Temp = new AST_Expression(
@@ -471,7 +548,7 @@ AST_Expression* PARSER::Postfix(){
 
     }else if(Token.Type == TOKEN::AccessMember){
       Temp = new AST_Expression(
-        Token.Line, Scanner->Filename.String(), AST_Expression::Dot
+        Token.Line, Scanner->Filename.String(), AST_Expression::AccessMember
       );
       GetToken();
 
@@ -679,32 +756,9 @@ AST_Expression* PARSER::Reduction(){
 }
 //------------------------------------------------------------------------------
 
-AST_Expression* PARSER::Concatenation(){
-  // TODO: This has changed -- it should be implemented with brackets
-
-  // AST_Expression* Temp;
-  AST_Expression* Node;
-
-  Node = Reduction();
-  if(!Node) return 0;
-
-  // while(Token.Type == TOKEN::Bit_Concatenate){
-  //   Temp = new AST_Expression(
-  //     Token.Line, Scanner->Filename.String(), AST_Expression::Concatenate
-  //   );
-  //   GetToken();
-
-  //   Temp->Left = Node;
-  //   Node = Temp;
-
-  //   Node->Right = Reduction();
-  //   if(!Node->Right){
-  //     Error("Reduction expected");
-  //     delete Node;
-  //     return 0;
-  //   }
-  // }
-  return Node;
+AST_Expression* PARSER::Stringification(){
+  // TODO
+  return Reduction();
 }
 //------------------------------------------------------------------------------
 
@@ -712,7 +766,7 @@ AST_Expression* PARSER::Replication(){
   AST_Expression* Temp;
   AST_Expression* Node;
 
-  Node = Concatenation();
+  Node = Stringification();
   if(!Node) return 0;
 
   if(Token.Type == TOKEN::Replicate){
@@ -735,45 +789,11 @@ AST_Expression* PARSER::Replication(){
 }
 //------------------------------------------------------------------------------
 
-AST_Expression* PARSER::Array(){
-  // AST_Expression* Temp;
-  AST_Expression* Node;
-
-  Node = Replication();
-  if(!Node) return 0;
-
-  // TODO: This has been replaced with :[...]
-  // while(Token.Type){
-  //   switch(Token.Type){
-  //     case TOKEN::Array_Concatenate:
-  //       Temp = new AST_Expression(
-  //         Token.Line, Scanner->Filename.String(), AST_Expression::ArrayConcatenate
-  //       );
-  //       break;
-  //     default:
-  //       return Node;
-  //   }
-  //   GetToken();
-
-  //   Temp->Left = Node;
-  //   Node = Temp;
-
-  //   Node->Right = Replication();
-  //   if(!Node->Right){
-  //     Error("Replication expected");
-  //     delete Node;
-  //     return 0;
-  //   }
-  // }
-  return Node;
-}
-//------------------------------------------------------------------------------
-
 AST_Expression* PARSER::Exponential(){
   AST_Expression* Temp;
   AST_Expression* Node;
 
-  Node = Array();
+  Node = Replication();
   if(!Node) return 0;
 
   while(Token.Type){
@@ -791,9 +811,9 @@ AST_Expression* PARSER::Exponential(){
     Temp->Left = Node;
     Node = Temp;
 
-    Node->Right = Array();
+    Node->Right = Replication();
     if(!Node->Right){
-      Error("Array expected");
+      Error("Replication expected");
       delete Node;
       return 0;
     }
@@ -1121,79 +1141,11 @@ AST_Expression* PARSER::BitwiseOR(){
 }
 //------------------------------------------------------------------------------
 
-AST_Expression* PARSER::LogicalAND(){
-  // AST_Expression* Temp;
-  AST_Expression* Node;
-
-  Node = BitwiseOR();
-  if(!Node) return 0;
-
-  // TODO: This feature has been removed
-  // while(Token.Type){
-  //   switch(Token.Type){
-  //     case TOKEN::Logical_AND:
-  //       Temp = new AST_Expression(
-  //         Token.Line, Scanner->Filename.String(), AST_Expression::Logical_AND
-  //       );
-  //       break;
-  //     default:
-  //       return Node;
-  //   }
-  //   GetToken();
-
-  //   Temp->Left = Node;
-  //   Node = Temp;
-
-  //   Node->Right = BitwiseOR();
-  //   if(!Node->Right){
-  //     Error("BitwiseOR expected");
-  //     delete Node;
-  //     return 0;
-  //   }
-  // }
-  return Node;
-}
-//------------------------------------------------------------------------------
-
-AST_Expression* PARSER::LogicalOR(){
-  // AST_Expression* Temp;
-  AST_Expression* Node;
-
-  Node = LogicalAND();
-  if(!Node) return 0;
-
-  // TODO: This feature has been removed
-  // while(Token.Type){
-  //   switch(Token.Type){
-  //     case TOKEN::Logical_OR:
-  //       Temp = new AST_Expression(
-  //         Token.Line, Scanner->Filename.String(), AST_Expression::Logical_OR
-  //       );
-  //       break;
-  //     default:
-  //       return Node;
-  //   }
-  //   GetToken();
-
-  //   Temp->Left = Node;
-  //   Node = Temp;
-
-  //   Node->Right = LogicalAND();
-  //   if(!Node->Right){
-  //     Error("LogicalAND expected");
-  //     delete Node;
-  //     return 0;
-  //   }
-  // }
-  return Node;
-}
-//------------------------------------------------------------------------------
-
 AST_Expression* PARSER::Expression(){
   AST_Expression* Temp;
   AST_Expression* Node;
 
-  Node = LogicalOR();
+  Node = BitwiseOR();
   if(!Node) return 0;
 
   if(Token.Type == TOKEN::TernaryIf){
@@ -1237,9 +1189,9 @@ AST_Expression* PARSER::TypeIdentifier(){
   AST_Expression* Temp;
 
   while(Token.Type){
-    if(Token.Type == TOKEN::AccessMember){
+    if(Token.Type == TOKEN::AccessNamespace){
       Temp = new AST_Expression(
-        Token.Line, Scanner->Filename.String(), AST_Expression::Dot
+        Token.Line, Scanner->Filename.String(), AST_Expression::AccessNamespace
       );
       GetToken();
 
@@ -1525,14 +1477,14 @@ AST_Definition::IDENTIFIER* PARSER::IdentifierList(){
 
 AST_Definition* PARSER::Definition(){
   AST_Definition::DIRECTION Direction =
-    AST_Definition::Bidirectional;
+    AST_Definition::Inferred;
 
   if(Token.Type == TOKEN::Input){
-    Direction = AST_Definition::In;
+    Direction = AST_Definition::Input;
     GetToken();
 
   }else if(Token.Type == TOKEN::Output){
-    Direction = AST_Definition::Out;
+    Direction = AST_Definition::Output;
     GetToken();
   }
 
@@ -1554,11 +1506,6 @@ AST_Definition* PARSER::Definition(){
       Node = new AST_Definition(
         Token.Line, Scanner->Filename.String(), AST_Definition::Net
       ); break;
-    // TODO: Obsolete type
-    // case TOKEN::Clk:
-    //   Node = new AST_Definition(
-    //     Token.Line, Scanner->Filename.String(), AST_Definition::Clk
-    //   ); break;
     case TOKEN::Byte:
       Node = new AST_Definition(
         Token.Line, Scanner->Filename.String(), AST_Definition::Byte
@@ -1567,25 +1514,10 @@ AST_Definition* PARSER::Definition(){
       Node = new AST_Definition(
         Token.Line, Scanner->Filename.String(), AST_Definition::Char
       ); break;
-    // TODO: Obsolete type
-    // case TOKEN::Int:
-    //   Node = new AST_Definition(
-    //     Token.Line, Scanner->Filename.String(), AST_Definition::Int
-    //   ); break;
     case TOKEN::Num:
       Node = new AST_Definition(
-        Token.Line, Scanner->Filename.String(), AST_Definition::Rat
+        Token.Line, Scanner->Filename.String(), AST_Definition::Num
       ); break;
-    // TODO: Obsolete type
-    // case TOKEN::Float:
-    //   Node = new AST_Definition(
-    //     Token.Line, Scanner->Filename.String(), AST_Definition::Float
-    //   ); break;
-    // TODO: Obsolete type
-    // case TOKEN::Complex:
-    //   Node = new AST_Definition(
-    //     Token.Line, Scanner->Filename.String(), AST_Definition::Complex
-    //   ); break;
     case TOKEN::Func:
       Node = new AST_Definition(
         Token.Line, Scanner->Filename.String(), AST_Definition::Func
@@ -1597,7 +1529,18 @@ AST_Definition* PARSER::Definition(){
   Node->Direction = Direction;
   GetToken();
 
-  Node->Format = CastEpr(0);
+  if(Token.Type == TOKEN::OpenRound){
+    GetToken();
+
+    Node->Format = ParameterList();
+
+    if(Token.Type != TOKEN::CloseRound){
+      Error(") expected");
+      delete Node;
+      return 0;
+    }
+    GetToken();
+  }
   if(Node->Format){
     if(Node->DefinitionType == AST_Definition::Void){
       Error("Void cannot have a format");
@@ -1614,12 +1557,6 @@ AST_Definition* PARSER::Definition(){
       delete Node;
       return 0;
     }
-
-    Node->FormatType = Node->Format->ExpressionType;
-    AST_Expression* Temp = Node->Format;
-    Node->Format = Temp->Right;
-    Temp->Right = 0;
-    delete Temp;
   }
 
   AttributeList(&Node->Attributes);
@@ -1652,7 +1589,7 @@ AST_Definition* PARSER::Definition(){
 bool PARSER::ValidNamespaceSpecifier(AST_Expression* Node){
   // Only a few operations are invalid:
   switch(Node->ExpressionType){
-    case AST_Expression::Dot:
+    case AST_Expression::AccessNamespace:
     case AST_Expression::Identifier:
       break;
 
@@ -1673,7 +1610,7 @@ bool PARSER::ValidNamespaceSpecifier(AST_Expression* Node){
 bool PARSER::ValidTypeSpecifier(AST_Expression* Node){
   // Only a few operations are invalid:
   switch(Node->ExpressionType){
-    case AST_Expression::Dot:
+    case AST_Expression::AccessNamespace:
     case AST_Expression::Identifier:
       break;
 
@@ -1702,9 +1639,10 @@ bool PARSER::ValidTypeSpecifier(AST_Expression* Node){
 
 bool PARSER::ValidLHS(AST_Expression* Node){
   switch(Node->ExpressionType){
-    case AST_Expression::Dot:
+    case AST_Expression::AccessMember:
+    case AST_Expression::AccessNamespace:
     case AST_Expression::Identifier:
-    case AST_Expression::Concatenate:
+    case AST_Expression::VectorConcatenate:
     case AST_Expression::ArrayConcatenate:
       break;
 
@@ -1732,7 +1670,9 @@ bool PARSER::ValidLHS(AST_Expression* Node){
 //------------------------------------------------------------------------------
 
 AST_Base* PARSER::Other(){
-  AST_Expression* Expr = Array();
+  // TODO: This whole function needs revision
+
+  AST_Expression* Expr = Postfix();
   if(!Expr) return 0;
 
   if(Token.Type == TOKEN::Semicolon){
@@ -1749,6 +1689,8 @@ AST_Base* PARSER::Other(){
     return Expr;
   }
 
+  // TODO: This should be a path push, not a namespace push...
+  // i.e. it uses ".{", not "::{"
   if(Token.Type == TOKEN::AccessMemberPush){ // Namespace push
     if(!ValidNamespaceSpecifier(Expr)){
       Error("Invalid Name-space specifier expression");
@@ -2308,7 +2250,6 @@ AST_FSM* PARSER::FSM(){
   }
   Node->Statements = StatementBlock();
   return Node;
-  return 0;
 }
 //------------------------------------------------------------------------------
 
@@ -2408,7 +2349,6 @@ AST_HDL* PARSER::HDL(){
 AST_Base* PARSER::Statement(){
   AST_Base* Node;
 
-  Node = TargetDefinition(); if(Node) return Node;
   Node = ClassDefinition (); if(Node) return Node;
   Node = EnumDefinition  (); if(Node) return Node;
   Node = Definition      (); if(Node) return Node;

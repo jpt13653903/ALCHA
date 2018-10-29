@@ -44,7 +44,6 @@
 #include "AST_NamespacePush.h"
 #include "AST_EnumDefinition.h"
 #include "AST_ClassDefinition.h"
-#include "AST_TargetDefinition.h"
 //------------------------------------------------------------------------------
 
 class PARSER{
@@ -64,31 +63,33 @@ class PARSER{
     AST_Expression* Literal   ();
     AST_Expression* Identifier();
 
-    AST_Expression* ParameterList();
+    AST_Expression* ExpressionList ();
+    AST_Expression* ParameterList  ();
 
-    AST_Expression* Primary       ();
-    AST_Expression* CastEpr       (AST_Expression* Node);
-    AST_Expression* Cast          ();
-    AST_Expression* Postfix       ();
-    AST_Expression* Unary         ();
-    AST_Expression* Range         ();
-    AST_Expression* Reduction     ();
-    AST_Expression* Concatenation ();
-    AST_Expression* Replication   ();
-    AST_Expression* Array         ();
-    AST_Expression* Exponential   ();
-    AST_Expression* Multiplicative();
-    AST_Expression* Additive      ();
-    AST_Expression* Shift         ();
-    AST_Expression* Relational    ();
-    AST_Expression* Equality      ();
-    AST_Expression* BitwiseAND    ();
-    AST_Expression* BitwiseXOR    ();
-    AST_Expression* BitwiseOR     ();
-    AST_Expression* LogicalAND    ();
-    AST_Expression* LogicalOR     ();
-    AST_Expression* Expression    (); // AKA Conditional
-    AST_Expression* TypeIdentifier();
+    AST_Expression* Array          ();
+    AST_Expression* ArrayConcat    ();
+    AST_Expression* VectorConcat   ();
+
+    AST_Expression* Primary        ();
+    AST_Expression* CastEpr        (AST_Expression* Node);
+    AST_Expression* Cast           ();
+    AST_Expression* Postfix        ();
+    AST_Expression* Unary          ();
+    AST_Expression* Range          ();
+    AST_Expression* Reduction      ();
+    AST_Expression* Stringification();
+    AST_Expression* Replication    ();
+    AST_Expression* Exponential    ();
+    AST_Expression* Multiplicative ();
+    AST_Expression* Additive       ();
+    AST_Expression* Shift          ();
+    AST_Expression* Relational     ();
+    AST_Expression* Equality       ();
+    AST_Expression* BitwiseAND     ();
+    AST_Expression* BitwiseXOR     ();
+    AST_Expression* BitwiseOR      ();
+    AST_Expression* Expression     (); // AKA Conditional
+    AST_Expression* TypeIdentifier ();
 
     AST_Assignment            * Initialiser    (byte* Identifier);
     AST_Definition::ARRAY     * ArrayDefinition();
@@ -102,7 +103,6 @@ class PARSER{
     bool ValidTypeSpecifier     (AST_Expression* Node); // Used by Other()
     bool ValidLHS               (AST_Expression* Node); // Used by Other()
 
-    AST_TargetDefinition* TargetDefinition();
     AST_ClassDefinition * ClassDefinition();
     AST_EnumDefinition  * EnumDefinition();
     AST_IfStatement     * IfStatement();

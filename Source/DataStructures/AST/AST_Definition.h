@@ -29,8 +29,8 @@
 struct AST_Definition: public AST_Base{
     enum DEFINITION_TYPE{
       Void, Auto, // Used for functions only
-      Pin, Net, Clk,
-      Byte, Char, Int, Rat, Float, Complex,
+      Pin, Net,
+      Byte, Char, Num,
       Func, // Function pointer
       ClassInstance
     } DefinitionType;
@@ -61,7 +61,7 @@ struct AST_Definition: public AST_Base{
      ~IDENTIFIER();
     };
 
-    enum DIRECTION{Bidirectional = 0, In, Out} Direction;
+    enum DIRECTION{Inferred = 0, Input, Output} Direction;
 
     // Expression for fixed-point casts
     AST_Expression::EXPRESSION_TYPE FormatType; // Basic vs. Scaled
