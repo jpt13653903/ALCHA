@@ -23,6 +23,7 @@
 //------------------------------------------------------------------------------
 
 #include "AST_Parameter.h"
+#include "AST_Assignment.h"
 //------------------------------------------------------------------------------
 
 struct AST_ClassDefinition: public AST_Base{
@@ -36,7 +37,7 @@ struct AST_ClassDefinition: public AST_Base{
      ~PARENT(); // Also deletes the rest of the list
     };
 
-    DICTIONARY Attributes;
+    AST_Assignment* Attributes;
 
     byte          * Identifier;
     AST_Parameter * Parameters; // Constructor parameters

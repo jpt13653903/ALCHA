@@ -79,52 +79,73 @@ void PARSER::GetToken(){
 }
 //------------------------------------------------------------------------------
 
-bool PARSER::AttributeAssignment(DICTIONARY* Attributes){
+AST_Assignment* PARSER::AttributeAssignment(){
+  AST_Assignment* Node;
+
   if(Token.Type != TOKEN::Identifier){
     Error("Attribute expected");
-    return false;
+    return 0;
   }
-  byte* Name = Token.ID;
-  GetToken();
+  Node = new AST_Assignment(
+    Token.Line, Scanner->Filename.String(), AST_Assignment::Assign
+  );
+  Node->Left = Identifier();
+  if(!Node->Left){
+    Error("Identifier expected");
+    delete Node;
+    return 0;
+  }
 
   if(Token.Type != TOKEN::Assign){
     Error("'=' expected");
-    return false;
+    delete Node;
+    return 0;
   }
   GetToken();
 
-  AST_Expression* Value = Primary();
-  if(!Value){
+  Node->Right = Primary();
+  if(!Node->Right){
     Error("Attribute value expected");
-    return false;
+    delete Node;
+    return 0;
   }
-  Attributes->Insert((const char*)Name, Value);
 
-  return true;
+  return Node;
 }
 //------------------------------------------------------------------------------
 
-bool PARSER::AttributeList(DICTIONARY* Attributes){
-  if(Token.Type != TOKEN::OpenAngle) return false;
+AST_Assignment* PARSER::AttributeList(){
+  AST_Assignment* Head = 0;
+  AST_Assignment* Tail = 0;
+  AST_Assignment* Node;
+  
+  if(Token.Type != TOKEN::OpenAngle) return 0;
   GetToken();
 
   while(Token.Type){
-    if(!AttributeAssignment(Attributes)){ // At least one
+    Node = AttributeAssignment();
+    if(!Node){
       Error("Attribute assignment expected");
-      return false;
+      return 0;
     }
+    if(Tail) Tail->Next = Node;
+    else     Head       = Node;
+    Tail = Node;
+
     if(Token.Type == TOKEN::CloseAngle){
       GetToken();
-      return true;
+      return Head;
     }
     if(Token.Type != TOKEN::Comma){
       Error("',' expected");
-      return false;
+      delete Head;
+      return 0;
     }
     GetToken();
   }
   Error("Incomplete attribute list");
-  return false;
+  if(Head) delete Head;
+  return 0;
 }
 //------------------------------------------------------------------------------
 
@@ -135,7 +156,7 @@ AST_ClassDefinition* PARSER::ClassDefinition(){
   );
   GetToken();
 
-  AttributeList(&Node->Attributes);
+  Node->Attributes = AttributeList();
 
   if(Token.Type != TOKEN::Identifier){
     Error("Identifier expected");
@@ -1609,7 +1630,7 @@ AST_Definition* PARSER::Definition(){
     }
   }
 
-  AttributeList(&Node->Attributes);
+  Node->Attributes = AttributeList();
   if(error){
     delete Node;
     return 0;
@@ -1780,7 +1801,7 @@ AST_Base* PARSER::Other(){
     }else{
       Def->ClassName = Expr;
     }
-    AttributeList(&Def->Attributes);
+    Def->Attributes  = AttributeList ();
     Def->Identifiers = IdentifierList();
     if(!Def->Identifiers){
       Error("Identifier list expected");
@@ -2199,7 +2220,7 @@ AST_Group* PARSER::Group(){
 
   AST_Group* Node = new AST_Group(Token.Line, Scanner->Filename.String());
   if(Token.Type == TOKEN::OpenAngle){
-    AttributeList(&Node->Attributes);
+    Node->Attributes = AttributeList();
   }
 
   if(Token.Type == TOKEN::Identifier){

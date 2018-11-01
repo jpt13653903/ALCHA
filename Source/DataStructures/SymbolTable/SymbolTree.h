@@ -28,7 +28,7 @@ string.                                                                       */
 #define SymbolTree_h
 //------------------------------------------------------------------------------
 
-#include "Reference.h"
+#include "Object.h"
 //------------------------------------------------------------------------------
 
 class SYMBOL_TREE{
@@ -37,12 +37,12 @@ class SYMBOL_TREE{
       bool  Red;
 
       const byte* Name;   // Name ID taken from IdentifierTree
-      REFERENCE*  Reference; // The object
+      OBJECT*     Object; // The object
 
       NODE* Left;
       NODE* Right;
 
-      NODE(const byte* Name, REFERENCE* Reference);
+      NODE(const byte* Name, OBJECT* Object);
      ~NODE();
     };
 
@@ -54,7 +54,7 @@ class SYMBOL_TREE{
     NODE* RotateRight(NODE* Node);
 
     bool  Duplicate;
-    NODE* Insert(NODE* Node, const byte* Name, REFERENCE* Reference);
+    NODE* Insert(NODE* Node, const byte* Name, OBJECT* Object);
 
   public:
     SYMBOL_TREE();
@@ -62,8 +62,8 @@ class SYMBOL_TREE{
 
     // Name must be an ID obtained from IdentifierTree
     // Insert returns false on duplicate name
-    bool       Insert(const byte* Name, REFERENCE* Reference);
-    REFERENCE* Find  (const byte* Name);
+    bool    Insert(const byte* Name, OBJECT* Object);
+    OBJECT* Find  (const byte* Name);
 };
 //------------------------------------------------------------------------------
 

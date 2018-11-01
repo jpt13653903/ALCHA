@@ -39,8 +39,7 @@ AST_ClassDefinition::AST_ClassDefinition(int Line, const byte* Filename):
 AST_Base(Line, Filename){
   Type = ClassDefinition;
 
-  Attributes.OnDuplicate = AttributesOnDuplicate;
-
+  Attributes = 0;
   Identifier = 0;
   Parameters = 0;
 
@@ -51,10 +50,9 @@ AST_Base(Line, Filename){
 //------------------------------------------------------------------------------
 
 AST_ClassDefinition::~AST_ClassDefinition(){
-  Attributes.Action(AttributesDeleteData);
-
   if(Body      ) delete Body;
   if(Parents   ) delete Parents;
+  if(Attributes) delete Attributes;
   if(Parameters) delete Parameters;
 }
 //------------------------------------------------------------------------------
@@ -62,11 +60,9 @@ AST_ClassDefinition::~AST_ClassDefinition(){
 void AST_ClassDefinition::Display(){
   printf("\n%s:%d -- Class Definition (%s):\n", Filename, Line, Identifier);
 
-  if(Attributes.GetCount()){
-    printf(" Attributes:\n");
-    Attributes.Action(AttributesDisplay);
+  if(Attributes){
+    printf(" Attributes:\n"); Attributes->Display(); printf("\n");
   }
-
   if(Parameters){
     printf(" Parameters:\n"); Parameters->Display(); printf("\n");
   }

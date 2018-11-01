@@ -22,35 +22,35 @@
 #define Pin_h
 //------------------------------------------------------------------------------
 
-#include "MyString.h"
-#include "Reference.h"
-//------------------------------------------------------------------------------
-
-struct PIN: public REFERENCE{
-  STRING Standard;  // The logic standard: CMOS, TTL, HSUL, etc.
-  STRING Number;    // Physical pin number
-  STRING Pair;      // Physical pin number of negative of the differential pair
-
-  double Voltage;   // Nominal logic standard voltage [V]
-  double Current;   // Nominal pin drive strength [A] (0 => use bank default)
-
-  double MinDelay;  // Physical minimum external trace delay [s] (default = 0)
-  double MaxDelay;  // Physical maximum external trace delay [s] (default = 0)
-
-  double Frequency; // Input frequency of a clock pin [Hz] (0 if not clock pin)
-  double Phase;     // Clock phase [degrees]
-  double Jitter;    // Clock peak-to-peak jitter [s]
-
-  // These are references to expressions
-  OBJECT* Enable;
-  OBJECT* Driver;
-
-  PIN();
- ~PIN();
-
-  void Display();
-};
-//------------------------------------------------------------------------------
+// #include "MyString.h"
+// #include "Reference.h"
+// //------------------------------------------------------------------------------
+// 
+// struct PIN: public REFERENCE{
+//   STRING Standard;  // The logic standard: CMOS, TTL, HSUL, etc.
+//   STRING Number;    // Physical pin number
+//   STRING Pair;      // Physical pin number of negative of the differential pair
+// 
+//   double Voltage;   // Nominal logic standard voltage [V]
+//   double Current;   // Nominal pin drive strength [A] (0 => use bank default)
+// 
+//   double MinDelay;  // Physical minimum external trace delay [s] (default = 0)
+//   double MaxDelay;  // Physical maximum external trace delay [s] (default = 0)
+// 
+//   double Frequency; // Input frequency of a clock pin [Hz] (0 if not clock pin)
+//   double Phase;     // Clock phase [degrees]
+//   double Jitter;    // Clock peak-to-peak jitter [s]
+// 
+//   // These are references to expressions
+//   OBJECT* Enable;
+//   OBJECT* Driver;
+// 
+//   PIN();
+//  ~PIN();
+// 
+//   void Display();
+// };
+// //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------

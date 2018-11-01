@@ -22,11 +22,11 @@
 #define AST_Group_h
 //------------------------------------------------------------------------------
 
-#include "AST.h"
+#include "AST_Assignment.h"
 //------------------------------------------------------------------------------
 
 struct AST_Group: public AST_Base{
-  DICTIONARY Attributes;
+  AST_Assignment* Attributes;
 
   byte    * Identifier;
   AST_Base* Body;

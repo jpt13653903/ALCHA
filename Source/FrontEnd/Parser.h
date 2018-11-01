@@ -56,8 +56,8 @@ class PARSER{
 
     void GetToken();
 
-    bool AttributeAssignment(DICTIONARY* Attributes);
-    bool AttributeList      (DICTIONARY* Attributes);
+    AST_Assignment* AttributeAssignment();
+    AST_Assignment* AttributeList      ();
 
     AST_Expression* String    ();
     AST_Expression* Literal   ();

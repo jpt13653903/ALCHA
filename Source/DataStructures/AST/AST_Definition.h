@@ -64,7 +64,7 @@ struct AST_Definition: public AST_Base{
     enum DIRECTION{Inferred = 0, Input, Output} Direction;
 
     AST_Expression* Parameters;
-    DICTIONARY      Attributes;
+    AST_Assignment* Attributes;
     IDENTIFIER*     Identifiers;
 
     AST_Definition(int             Line,

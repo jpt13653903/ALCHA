@@ -66,16 +66,14 @@ AST_Definition::AST_Definition(
 
   ClassName  = 0;
   Parameters = 0;
-
-  Attributes.OnDuplicate = AttributesOnDuplicate;
+  Attributes = 0;
 }
 //------------------------------------------------------------------------------
 
 AST_Definition::~AST_Definition(){
   if(ClassName ) delete ClassName;
   if(Parameters) delete Parameters;
-
-  Attributes.Action(AttributesDeleteData);
+  if(Attributes) delete Attributes;
 }
 //------------------------------------------------------------------------------
 
@@ -117,9 +115,9 @@ void AST_Definition::Display(){
     printf("none / default\n");
   }
 
-  if(Attributes.GetCount()){
-    printf(" Attributes:\n");
-    Attributes.Action(AttributesDisplay);
+  if(Attributes){
+    Attributes->Display();
+    printf("\n");
   }
 
   printf(" Identifiers:\n");

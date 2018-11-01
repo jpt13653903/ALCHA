@@ -19,29 +19,9 @@
 //==============================================================================
 
 #include "AST.h"
-#include "AST_Expression.h"
 //------------------------------------------------------------------------------
 
 AST_Base* AST = 0;
-//------------------------------------------------------------------------------
-
-void* AttributesOnDuplicate(const char* Name, void* Old, void* New){
-  delete (STRING*)Old;
-  return New;
-}
-//------------------------------------------------------------------------------
-
-void AttributesDisplay(const char* Name, void* Data){
-  AST_Expression* Value = (AST_Expression*)Data;
-  printf(" - %s = ", Name);
-  Value->Display();
-  printf("\n");
-}
-//------------------------------------------------------------------------------
-
-void AttributesDeleteData(const char* Name, void* Data){
-  delete (STRING*)Data;
-}
 //------------------------------------------------------------------------------
 
 AST_Base::AST_Base(int Line, const byte* Filename){

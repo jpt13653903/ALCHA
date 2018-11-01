@@ -24,17 +24,15 @@
 AST_Group::AST_Group(int Line, const byte* Filename): AST_Base(Line, Filename){
   Type = Group;
 
-  Attributes.OnDuplicate = AttributesOnDuplicate;
-
+  Attributes = 0;
   Identifier = 0;
   Body       = 0;
 }
 //------------------------------------------------------------------------------
 
 AST_Group::~AST_Group(){
-  Attributes.Action(AttributesDeleteData);
-
-  if(Body) delete Body;
+  if(Attributes) delete Attributes;
+  if(Body      ) delete Body;
 }
 //------------------------------------------------------------------------------
 
@@ -42,8 +40,11 @@ void AST_Group::Display(){
   if(Identifier) printf("\n%s:%d -- Group (%s):\n", Filename, Line, Identifier);
   else           printf("\n%s:%d -- Group:\n"     , Filename, Line);
 
-  printf(" Attributes:\n");
-    Attributes.Action(AttributesDisplay);
+  printf(" Attributes: ");
+  if(Attributes){
+    Attributes->Display();
+    printf("\n");
+  }
 
   printf(" {\n");
   if(Body) Body->Display();

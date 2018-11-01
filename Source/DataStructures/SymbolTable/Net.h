@@ -22,20 +22,20 @@
 #define Net_h
 //------------------------------------------------------------------------------
 
-#include "Reference.h"
-//------------------------------------------------------------------------------
-
-struct NET: public REFERENCE{
-  double Setup; // External setup requirement
-  double Hold;  // External hold requirement
-  double Delay; // External propagation delay
-
-           NET();
-  virtual ~NET();
-
-  virtual void Display();
-};
-//------------------------------------------------------------------------------
+// #include "Reference.h"
+// //------------------------------------------------------------------------------
+// 
+// struct NET: public REFERENCE{
+//   double Setup; // External setup requirement
+//   double Hold;  // External hold requirement
+//   double Delay; // External propagation delay
+// 
+//            NET();
+//   virtual ~NET();
+// 
+//   virtual void Display();
+// };
+// //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------

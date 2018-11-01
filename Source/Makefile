@@ -49,11 +49,9 @@ Objects = obj/BackEnd/Altera.o                          \
           obj/DataStructures/AST/AST_RTL.o              \
           obj/DataStructures/AST/AST_Switch.o           \
           obj/DataStructures/AST/AST_WhileLoop.o        \
-          obj/DataStructures/SymbolTable/Clock.o        \
           obj/DataStructures/SymbolTable/Net.o          \
           obj/DataStructures/SymbolTable/Object.o       \
           obj/DataStructures/SymbolTable/Pin.o          \
-          obj/DataStructures/SymbolTable/Reference.o    \
           obj/DataStructures/SymbolTable/Scope.o        \
           obj/DataStructures/SymbolTable/SymbolTree.o   \
           obj/DataStructures/SymbolTable/Target.o       \
