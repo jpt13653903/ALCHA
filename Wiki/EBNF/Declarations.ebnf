@@ -10,14 +10,14 @@ Statement  = Label | Definition | ClassDefinition | EnumDefinition
 
 Label  = Identifier ":"; (* Only useful within an fsm construct *)
 
-Definition = ( BaseType | TypeIdentifier ) ["(" [ParameterList] ")"]
+Definition = ( BaseType | TypeIdentifier ) [ParameterList]
              [AttributeList] IdentifierList;
 
 ClassDefinition = "class" [AttributeList] Identifier
                   ["(" [DefParameterList] ")"] 
                   [
-                    ":" TypeIdentifier ["(" [ParameterList] ")"]
-                   {"," TypeIdentifier ["(" [ParameterList] ")"]}
+                    ":" TypeIdentifier [ParameterList]
+                   {"," TypeIdentifier [ParameterList]}
                   ]
                   "{" [Statements] "}";
 

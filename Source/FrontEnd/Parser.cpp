@@ -197,18 +197,7 @@ AST_ClassDefinition* PARSER::ClassDefinition(){
         return 0;
       }
 
-      if(Token.Type == TOKEN::OpenRound){
-        GetToken();
-
-        Parent->Parameters = ParameterList();
-
-        if(Token.Type != TOKEN::CloseRound){
-          Error(") expected");
-          delete Node;
-          return 0;
-        }
-        GetToken();
-      }
+      Parent->Parameters = ParameterList();
     }while(Token.Type == TOKEN::Comma);
   }
   if(Token.Type != TOKEN::OpenCurly){
@@ -345,27 +334,76 @@ AST_Expression* PARSER::ExpressionList(){
 }
 //------------------------------------------------------------------------------
 
-AST_Expression* PARSER::ParameterList(){
-  AST_Expression* Head;
-  AST_Expression* Node;
-  
-  // TODO: The new EBNF supports named parameters
-  // eg. Myfunc(A = 3, B := 6, C = abc);
+AST_Base* PARSER::Parameter(){
+  AST_Assignment* Node;
+  AST_Expression* Expr = Expression();
+  if(!Expr) return 0;
 
-  Head = Node = Expression();
-  if(!Node) return 0;
+  if(Expr->ExpressionType == AST_Expression::Identifier){
+    switch(Token.Type){
+      case TOKEN::Assign:
+        Node = new AST_Assignment(
+          Token.Line, Scanner->Filename.String(), AST_Assignment::Assign
+        );
+        break;
 
-  while(Token.Type == TOKEN::Comma){
+      case TOKEN::Raw_Assign:
+        Node = new AST_Assignment(
+          Token.Line, Scanner->Filename.String(), AST_Assignment::Raw_Assign
+        );
+        break;
+
+      default:
+        return Expr;
+    }
     GetToken();
-    Node->Next = Expression();
-    Node       = (AST_Expression*)Node->Next;
+
+    Node->Left  = Expr;
+    Node->Right = Expression();
+    
+    if(!Node->Right){
+      Error("Expression expected");
+      delete Node;
+      return 0;
+    }
+    return Node;
+  }
+  return Expr;
+}
+//------------------------------------------------------------------------------
+
+AST_Base* PARSER::ParameterList(){
+  AST_Base* Head = 0;
+  AST_Base* Tail = 0;
+  AST_Base* Node;
+  
+  if(Token.Type != TOKEN::OpenRound) return 0;
+  GetToken();
+
+  while(Token.Type){
+    Node = Parameter();
     if(!Node){
-      Error("Parameter expression expected");
+      Error("Parameter assignment or expression expected");
+      return 0;
+    }
+    if(Tail) Tail->Next = Node;
+    else     Head       = Node;
+    Tail = Node;
+
+    if(Token.Type == TOKEN::CloseRound){
+      GetToken();
+      return Head;
+    }
+    if(Token.Type != TOKEN::Comma){
+      Error("',' or ')' expected");
       delete Head;
       return 0;
     }
+    GetToken();
   }
-  return Head;
+  Error("Incomplete parameter list");
+  if(Head) delete Head;
+  return 0;
 }
 //------------------------------------------------------------------------------
 
@@ -572,18 +610,10 @@ AST_Expression* PARSER::Postfix(){
       Temp = new AST_Expression(
         Token.Line, Scanner->Filename.String(), AST_Expression::FunctionCall
       );
-      GetToken();
 
       Temp->Left  = Node;
       Temp->Right = ParameterList();
       Node = Temp;
-
-      if(Token.Type != TOKEN::CloseRound){
-        Error(") expected");
-        delete Node;
-        return 0;
-      }
-      GetToken();
 
     }else if(Token.Type == TOKEN::AccessMember){
       Temp = new AST_Expression(
@@ -1350,12 +1380,6 @@ AST_Parameter* PARSER::DefParameter(){
         Token.Line, Scanner->Filename.String(), AST_Parameter::Net
       ); GetToken();
       break;
-    // TODO: Obsolete type
-    // case TOKEN::Clk:
-    //   Node = new AST_Parameter(
-    //     Token.Line, Scanner->Filename.String(), AST_Parameter::Clk
-    //   ); GetToken();
-    //   break;
     case TOKEN::Byte:
       Node = new AST_Parameter(
         Token.Line, Scanner->Filename.String(), AST_Parameter::Byte
@@ -1366,29 +1390,11 @@ AST_Parameter* PARSER::DefParameter(){
         Token.Line, Scanner->Filename.String(), AST_Parameter::Char
       ); GetToken();
       break;
-    // TODO: Obsolete type
-    // case TOKEN::Int:
-    //   Node = new AST_Parameter(
-    //     Token.Line, Scanner->Filename.String(), AST_Parameter::Int
-    //   ); GetToken();
-    //   break;
     case TOKEN::Num:
       Node = new AST_Parameter(
-        Token.Line, Scanner->Filename.String(), AST_Parameter::Rat
+        Token.Line, Scanner->Filename.String(), AST_Parameter::Number
       ); GetToken();
       break;
-    // TODO: Obsolete type
-    // case TOKEN::Float:
-    //   Node = new AST_Parameter(
-    //     Token.Line, Scanner->Filename.String(), AST_Parameter::Float
-    //   ); GetToken();
-    //   break;
-    // TODO: Obsolete type
-    // case TOKEN::Complex:
-    //   Node = new AST_Parameter(
-    //     Token.Line, Scanner->Filename.String(), AST_Parameter::Complex
-    //   ); GetToken();
-    //   break;
     case TOKEN::Func:
       Node = new AST_Parameter(
         Token.Line, Scanner->Filename.String(), AST_Parameter::Func
@@ -1600,18 +1606,8 @@ AST_Definition* PARSER::Definition(){
   Node->Direction = Direction;
   GetToken();
 
-  if(Token.Type == TOKEN::OpenRound){
-    GetToken();
+  Node->Parameters = ParameterList();
 
-    Node->Parameters = ParameterList();
-
-    if(Token.Type != TOKEN::CloseRound){
-      Error(") expected");
-      delete Node;
-      return 0;
-    }
-    GetToken();
-  }
   if(Node->Parameters){
     if(Node->DefinitionType == AST_Definition::Void){
       Error("Void type does not take parameters");
@@ -1672,7 +1668,11 @@ bool PARSER::ValidNamespaceSpecifier(AST_Expression* Node){
     if(!ValidNamespaceSpecifier(Node->Left)) return false;
   }
   if(Node->Right){
-    if(!ValidNamespaceSpecifier(Node->Right)) return false;
+    if(Node->Right->Type == AST_Base::Expression){
+      if(!ValidNamespaceSpecifier((AST_Expression*)Node->Right)) return false;
+    }else{
+      return false;
+    }
   }
   return true;
 }
@@ -1701,8 +1701,13 @@ bool PARSER::ValidTypeSpecifier(AST_Expression* Node){
     if(!ValidTypeSpecifier(Node->Left)) return false;
   }
   if(Node->Right){
-    if(Node->Right->ExpressionType == AST_Expression::FunctionCall) return false;
-    if(!ValidTypeSpecifier(Node->Right)) return false;
+    if(Node->Right->Type == AST_Base::Expression){
+      AST_Expression* Right = (AST_Expression*)Node->Right;
+      if(Right->ExpressionType == AST_Expression::FunctionCall) return false;
+      if(!ValidTypeSpecifier(Right)) return false;
+    }else{
+      return false;
+    }
   }
   return true;
 }
@@ -1732,7 +1737,11 @@ bool PARSER::ValidLHS(AST_Expression* Node){
     if(!ValidLHS(Node->Left)) return false;
   }
   if(Node->Right){
-    if(!ValidLHS(Node->Right)) return false;
+    if(Node->Right->Type == AST_Base::Expression){
+      if(!ValidLHS((AST_Expression*)Node->Right)) return false;
+    }else{
+      return false;
+    }
   }
   if(Node->Next){ // In the case of an array concatenation
     if(!ValidLHS((AST_Expression*)Node->Next)) return false;
@@ -1755,7 +1764,6 @@ AST_Base* PARSER::Other(){
       delete Expr;
       return 0;
     }
-    GetToken();
     return Expr;
   }
 
@@ -2139,24 +2147,25 @@ AST_Switch* PARSER::Switch(){
     GetToken();
 
     if(Token.Type != TOKEN::OpenRound){
-      Error("( expected");
+      Error("'(' expected");
       delete Node;
       return 0;
     }
     GetToken();
 
-    Case->Expressions = ParameterList();
+    Case->Expressions = ExpressionList();
     if(!Case->Expressions){
       Error("Expression list expected");
       delete Node;
       return 0;
     }
     if(Token.Type != TOKEN::CloseRound){
-      Error(") expected");
+      Error("')' expected");
       delete Node;
       return 0;
     }
     GetToken();
+
     Case->Statements = StatementBlock();
   }
 
@@ -2290,18 +2299,7 @@ AST_RTL* PARSER::RTL(){
   AST_RTL* Node = new AST_RTL(Token.Line, Scanner->Filename.String());
   GetToken();
 
-  if(Token.Type == TOKEN::OpenRound){
-    GetToken();
-
-    Node->Parameters = ParameterList();
-
-    if(Token.Type != TOKEN::CloseRound){
-      Error(") expected");
-      delete Node;
-      return 0;
-    }
-    GetToken();
-  }
+  Node->Parameters = ParameterList ();
   Node->Statements = StatementBlock();
   return Node;
 }
@@ -2312,18 +2310,7 @@ AST_FSM* PARSER::FSM(){
   AST_FSM* Node = new AST_FSM(Token.Line, Scanner->Filename.String());
   GetToken();
 
-  if(Token.Type == TOKEN::OpenRound){
-    GetToken();
-
-    Node->Parameters = ParameterList();
-
-    if(Token.Type != TOKEN::CloseRound){
-      Error(") expected");
-      delete Node;
-      return 0;
-    }
-    GetToken();
-  }
+  Node->Parameters = ParameterList ();
   Node->Statements = StatementBlock();
   return Node;
 }

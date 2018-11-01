@@ -23,7 +23,6 @@
 //------------------------------------------------------------------------------
 
 #include "MyString.h"
-#include "Dictionary.h"
 #include "IdentifierTree.h"
 //------------------------------------------------------------------------------
 
@@ -62,11 +61,6 @@ struct AST_Base{ // The base type for AST nodes
 
   virtual void Display() = 0;
 };
-//------------------------------------------------------------------------------
-
-void* AttributesOnDuplicate(const char* Name, void* Old, void* New);
-void  AttributesDisplay    (const char* Name, void* Data);
-void  AttributesDeleteData (const char* Name, void* Data);
 //------------------------------------------------------------------------------
 
 extern AST_Base* AST; // The global AST root

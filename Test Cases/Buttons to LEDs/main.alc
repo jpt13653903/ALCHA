@@ -7,6 +7,5 @@ pin(4) <location = ["M1", "R1", "V5", "AB5"]> Button;
 // Global assignment
 LED := :(Button, Button);
 
-'Name = Value;
-A.B'C = D.E'F;
+MyFunction(A = 3, B := D, E, F);
 

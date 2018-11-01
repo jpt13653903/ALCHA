@@ -115,6 +115,7 @@ void AST_Definition::Display(){
     printf("none / default\n");
   }
 
+  printf(" Attributes: ");
   if(Attributes){
     Attributes->Display();
     printf("\n");

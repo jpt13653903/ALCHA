@@ -102,7 +102,7 @@ struct AST_Expression: public AST_Base{
 
   // Left and Right operands
   AST_Expression* Left;
-  AST_Expression* Right;
+  AST_Base*       Right; // Can be expression or assignment (for function calls)
 
   AST_Expression(
     int             Line,

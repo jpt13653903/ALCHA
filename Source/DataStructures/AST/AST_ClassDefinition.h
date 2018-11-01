@@ -29,7 +29,7 @@
 struct AST_ClassDefinition: public AST_Base{
     struct PARENT{ // Link-list node for parent classes
       AST_Expression* ClassName;  // This class inherits from Parent
-      AST_Expression* Parameters; // Parent constructor call
+      AST_Base*       Parameters; // Parent constructor call
 
       PARENT* Next;
 

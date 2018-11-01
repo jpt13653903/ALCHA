@@ -64,7 +64,8 @@ class PARSER{
     AST_Expression* Identifier();
 
     AST_Expression* ExpressionList ();
-    AST_Expression* ParameterList  ();
+    AST_Base*       Parameter      ();
+    AST_Base*       ParameterList  ();
 
     AST_Expression* Array          ();
     AST_Expression* ArrayConcat    ();

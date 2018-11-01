@@ -22,12 +22,12 @@
 #define AST_RTL_h
 //------------------------------------------------------------------------------
 
-#include "AST_Expression.h"
+#include "AST.h"
 //------------------------------------------------------------------------------
 
 struct AST_RTL: public AST_Base{
-  AST_Expression* Parameters;
-  AST_Base*       Statements;
+  AST_Base* Parameters;
+  AST_Base* Statements;
 
   AST_RTL(int Line, const byte* Filename);
  ~AST_RTL();

@@ -22,12 +22,12 @@
 #define AST_FSM_h
 //------------------------------------------------------------------------------
 
-#include "AST_Expression.h"
+#include "AST.h"
 //------------------------------------------------------------------------------
 
 struct AST_FSM: public AST_Base{
-  AST_Expression* Parameters;
-  AST_Base*       Statements;
+  AST_Base* Parameters;
+  AST_Base* Statements;
 
   AST_FSM(int Line, const byte* Filename);
  ~AST_FSM();

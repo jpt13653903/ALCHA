@@ -19,6 +19,7 @@
 //==============================================================================
 
 #include "AST_Expression.h"
+#include "AST_Assignment.h"
 //------------------------------------------------------------------------------
 
 AST_Expression::AST_Expression(
@@ -33,7 +34,8 @@ AST_Expression::AST_Expression(
   Value    = 0;
   StrValue = 0;
 
-  Left = Right = 0;
+  Left  = 0;
+  Right = 0;
 }
 //------------------------------------------------------------------------------
 
@@ -136,9 +138,27 @@ void AST_Expression::Display(){
   }
 
   if(Right){
-    if(Right->Left || Right->Right || Right->Next) printf("(");
-    Right->Display();
-    if(Right->Left || Right->Right || Right->Next) printf(")");
+    AST_Expression* ExprRight;
+    AST_Assignment* AssignRight;
+    switch(Right->Type){
+      case Expression:
+        ExprRight = (AST_Expression*)Right;
+        if(ExprRight->Left || ExprRight->Right || ExprRight->Next) printf("(");
+        ExprRight->Display();
+        if(ExprRight->Left || ExprRight->Right || ExprRight->Next) printf(")");
+        break;
+
+      case Assignment:
+        AssignRight = (AST_Assignment*)Right;
+        if(AssignRight->Left || AssignRight->Right || AssignRight->Next) printf("(");
+        AssignRight->Display();
+        if(AssignRight->Left || AssignRight->Right || AssignRight->Next) printf(")");
+        break;
+
+      default:
+        error("Invalid type");
+        return;
+    }
   }
 
   if(Next){
