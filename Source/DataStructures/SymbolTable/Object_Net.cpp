@@ -18,15 +18,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Object.h"
+#include "Object_Net.h"
 //------------------------------------------------------------------------------
 
-OBJECT::OBJECT(const byte* Name, TYPE Type){
-  this->Name = Name;
-  this->Type = Type;
+OBJECT_NET::OBJECT_NET(const byte* Name) : OBJECT_SYNTHESISABLE(Name, Net){
+  error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-OBJECT::~OBJECT(){
+OBJECT_NET::~OBJECT_NET(){
 }
 //------------------------------------------------------------------------------
+
+void OBJECT_NET::Display(){
+}
+//------------------------------------------------------------------------------
+

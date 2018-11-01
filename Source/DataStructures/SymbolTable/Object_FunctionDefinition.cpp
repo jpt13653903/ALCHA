@@ -18,15 +18,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Object.h"
+#include "Object_FunctionDefinition.h"
 //------------------------------------------------------------------------------
 
-OBJECT::OBJECT(const byte* Name, TYPE Type){
-  this->Name = Name;
-  this->Type = Type;
+OBJECT_FUNCTION_DEFINITION::OBJECT_FUNCTION_DEFINITION(const byte* Name) : OBJECT(Name, FunctionDefinition){
+  error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-OBJECT::~OBJECT(){
+OBJECT_FUNCTION_DEFINITION::~OBJECT_FUNCTION_DEFINITION(){
 }
 //------------------------------------------------------------------------------
+
+void OBJECT_FUNCTION_DEFINITION::Display(){
+}
+//------------------------------------------------------------------------------
+

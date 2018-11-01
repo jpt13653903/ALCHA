@@ -18,24 +18,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Pin.h"
+#include "Object_ClassDefinition.h"
 //------------------------------------------------------------------------------
 
-// PIN::PIN(): REFERENCE(REFERENCE::Pin){
-//   /// \todo Initialise all the attributes
-// 
-//   Enable = 0;
-//   Driver = 0;
-// }
-// //------------------------------------------------------------------------------
-// 
-// PIN::~PIN(){
-//   /// \todo Decrement the Enable and Driver reference counters, deleting them
-//   ///       as required.
-// }
-// //------------------------------------------------------------------------------
-// 
-// void PIN::Display(){
-//   /// \todo Display the Pin, for debug purposes
-// }
-// //------------------------------------------------------------------------------
+OBJECT_CLASS_DEFINITION::OBJECT_CLASS_DEFINITION(const byte* Name) : OBJECT(Name, ClassDefinition){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+OBJECT_CLASS_DEFINITION::~OBJECT_CLASS_DEFINITION(){
+}
+//------------------------------------------------------------------------------
+
+void OBJECT_CLASS_DEFINITION::Display(){
+}
+//------------------------------------------------------------------------------
+

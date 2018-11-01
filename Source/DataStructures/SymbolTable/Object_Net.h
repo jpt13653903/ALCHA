@@ -18,24 +18,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Target.h"
+#ifndef Object_Net_h
+#define Object_Net_h
 //------------------------------------------------------------------------------
 
-TARGET Target;
+#include "Object_Synthesisable.h"
 //------------------------------------------------------------------------------
 
-TARGET::TARGET(): OBJECT(OBJECT::Target){
-  Type     = Simulation;
-  Language = Verilog;
-  Time     = 1e-6; // 1 μs
-}
+struct OBJECT_NET: public OBJECT_SYNTHESISABLE{
+           OBJECT_NET(const byte* Name);
+  virtual ~OBJECT_NET();
+
+  virtual void Display();
+};
 //------------------------------------------------------------------------------
 
-TARGET::~TARGET(){
-}
-//------------------------------------------------------------------------------
-
-void TARGET::Display(){
-  printf("Target display not yet implemented\n");
-}
+#endif
 //------------------------------------------------------------------------------

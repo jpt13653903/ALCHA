@@ -18,15 +18,18 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
+#ifndef Object_Synthesisable_h
+#define Object_Synthesisable_h
+//------------------------------------------------------------------------------
+
 #include "Object.h"
 //------------------------------------------------------------------------------
 
-OBJECT::OBJECT(const byte* Name, TYPE Type){
-  this->Name = Name;
-  this->Type = Type;
-}
+struct OBJECT_SYNTHESISABLE: public OBJECT{
+           OBJECT_SYNTHESISABLE(const byte* Name, TYPE Type);
+  virtual ~OBJECT_SYNTHESISABLE();
+};
 //------------------------------------------------------------------------------
 
-OBJECT::~OBJECT(){
-}
+#endif
 //------------------------------------------------------------------------------

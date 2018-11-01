@@ -18,15 +18,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
+#ifndef Object_ClassDefinition_h
+#define Object_ClassDefinition_h
+//------------------------------------------------------------------------------
+
 #include "Object.h"
 //------------------------------------------------------------------------------
 
-OBJECT::OBJECT(const byte* Name, TYPE Type){
-  this->Name = Name;
-  this->Type = Type;
-}
+struct OBJECT_CLASS_DEFINITION: public OBJECT{
+           OBJECT_CLASS_DEFINITION(const byte* Name);
+  virtual ~OBJECT_CLASS_DEFINITION();
+
+  virtual void Display();
+};
 //------------------------------------------------------------------------------
 
-OBJECT::~OBJECT(){
-}
+#endif
 //------------------------------------------------------------------------------

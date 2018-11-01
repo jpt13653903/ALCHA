@@ -18,34 +18,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Target_h
-#define Target_h
+#ifndef Object_ClassInstance_h
+#define Object_ClassInstance_h
 //------------------------------------------------------------------------------
 
 #include "Object.h"
-#include "MyString.h"
 //------------------------------------------------------------------------------
 
-struct TARGET: public OBJECT{
-  enum TYPE{Project, Simulation} Type;
+struct OBJECT_CLASS_INSTANCE: public OBJECT{
+           OBJECT_CLASS_INSTANCE(const byte* Name);
+  virtual ~OBJECT_CLASS_INSTANCE();
 
-  STRING Vendor;
-  STRING Series;
-  STRING Device;
-  STRING Board;
-
-  enum LANGUAGE{VHDL, Verilog} Language;
-
-  double Time; // Simulation time
-
-  TARGET();
- ~TARGET();
-
-  void Display();
+  virtual void Display();
 };
-//------------------------------------------------------------------------------
-
-extern TARGET Target; // There is only one target object
 //------------------------------------------------------------------------------
 
 #endif

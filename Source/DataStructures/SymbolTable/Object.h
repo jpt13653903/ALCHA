@@ -27,21 +27,22 @@
 
 struct OBJECT{ // Base class for the symbol table
   enum TYPE{
-    Target,
-
-    // Constants (stores a value)
-    Int, Rat, Float, Complex,
+    // Base types
+    Pin, Net, // Goes via the "Synthesisable" class
+    Number, Byte, Character,
 
     // Others
-    Array, // An array of references
-    Expression,
+    Array, // An array of objects
     Namespace,
     ClassDefinition,
     ClassInstance,
-    Function // The actual function, with parameter definition and body AST
+    FunctionDefinition,
+    FunctionInstance
   } Type;
 
-           OBJECT(TYPE Type);
+  const byte* Name; // ID obtained from IdentifierTree
+
+           OBJECT(const byte* Name, TYPE Type);
   virtual ~OBJECT();
 
   virtual void Display() = 0;

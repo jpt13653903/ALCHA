@@ -18,10 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "General.h"
 #include "Parser.h"
-#include "Altera.h"
-#include "IdentifierTree.h"
+#include "FileSystem.h"
 //------------------------------------------------------------------------------
 
 void Pause(){
@@ -53,63 +51,19 @@ void PrintUsage(){
     "You should have received a copy of the GNU General Public License\n"
     "along with this program.  If not, see <http://www.gnu.org/licenses/>\n"
     "\n"
-    "Usage: ALCHA source1.alc source2.alc ..."
-    "\n"
-    "Call the compiler from within the output folder context.\n",
+    "Usage: ALCHA main_source.alc output_folder\n"
+    "Example: ALCHA main.alc \"My Project Output\"\n"
+    "\n",
     MAJOR_VERSION, MINOR_VERSION // These are defined in the Makefile
   );
   Pause();
 }
 //------------------------------------------------------------------------------
 
-// Function used to set up the Windows terminal
-void SetupTerminal(){
-  #ifdef WINVER
-    #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING 
-      #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
-    #endif
-
-    HANDLE TerminalHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-    if(TerminalHandle == INVALID_HANDLE_VALUE){
-      error("Invalid terminal handle");
-      return;
-    }
-
-    // Set output mode to handle ANSI terminal sequences
-    DWORD dwMode = 0;
-    if(!GetConsoleMode(TerminalHandle, &dwMode)){
-      // This is OK, because the terminal in question is
-      // probably a MinTTY (or similar)
-      return;
-    }
-    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-    if(!SetConsoleMode(TerminalHandle, dwMode)){
-      error("Unable to set terminal mode");
-      return;
-    }
-
-    // Set the console encoding to UTF-8
-    if(!SetConsoleOutputCP(CP_UTF8)){
-      error("Unable to set terminal to UTF-8");
-      return;
-    }
-
-    // Make the console buffer as many lines as the system will allow
-    CONSOLE_SCREEN_BUFFER_INFO Info;
-    GetConsoleScreenBufferInfo(TerminalHandle, &Info);
-    Info.dwSize.Y = 0x7FFF;
-    while(!SetConsoleScreenBufferSize(TerminalHandle, Info.dwSize) &&
-          GetLastError() == ERROR_INVALID_PARAMETER){
-      Info.dwSize.Y--;
-    }
-  #endif
-}
-//------------------------------------------------------------------------------
-
 int main(int argc, char** argv){
   SetupTerminal();
 
-  if(argc < 2){
+  if(argc < 3){
     PrintUsage();
     return 0;
   }
@@ -117,6 +71,23 @@ int main(int argc, char** argv){
   PARSER Parser;
   AST = Parser.Run((byte*)argv[1]);
   if(!AST) return -1;
+
+  FILE_SYSTEM Files;
+  char Filename[0x1000];
+  sprintf(Filename, "%s/Testing.v", argv[2]);
+  Files.Write((const byte*)Filename, (const byte*)
+    "module Test(\n"
+    "  input       Clk,\n"
+    "  input       Reset,\n"
+    "\n"
+    "  input  [3:0]Button,\n"
+    "  output [7:0]LED\n"
+    ");\n"
+    "\n"
+    "assign LED = {Button, Button};\n"
+    "\n"
+    "endmodule\n"
+  );
 
   if(AST) delete AST;
   return 0;

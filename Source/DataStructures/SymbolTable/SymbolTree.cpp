@@ -21,6 +21,9 @@
 #include "SymbolTree.h"
 //------------------------------------------------------------------------------
 
+SYMBOL_TREE SymbolTree; // The global name-space
+//------------------------------------------------------------------------------
+
 SYMBOL_TREE::NODE::NODE(const byte* Name, OBJECT* Object){
   Red  = true;
   Left = Right = 0;

@@ -18,15 +18,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Object.h"
+#include "Object_Array.h"
 //------------------------------------------------------------------------------
 
-OBJECT::OBJECT(const byte* Name, TYPE Type){
-  this->Name = Name;
-  this->Type = Type;
+OBJECT_ARRAY::OBJECT_ARRAY(const byte* Name) : OBJECT(Name, Array){
+  error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-OBJECT::~OBJECT(){
+OBJECT_ARRAY::~OBJECT_ARRAY(){
 }
 //------------------------------------------------------------------------------
+
+void OBJECT_ARRAY::Display(){
+}
+//------------------------------------------------------------------------------
+

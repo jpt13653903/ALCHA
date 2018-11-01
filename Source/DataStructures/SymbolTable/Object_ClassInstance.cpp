@@ -18,15 +18,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Object.h"
+#include "Object_ClassInstance.h"
 //------------------------------------------------------------------------------
 
-OBJECT::OBJECT(const byte* Name, TYPE Type){
-  this->Name = Name;
-  this->Type = Type;
+OBJECT_CLASS_INSTANCE::OBJECT_CLASS_INSTANCE(const byte* Name) : OBJECT(Name, ClassInstance){
+  error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-OBJECT::~OBJECT(){
+OBJECT_CLASS_INSTANCE::~OBJECT_CLASS_INSTANCE(){
 }
 //------------------------------------------------------------------------------
+
+void OBJECT_CLASS_INSTANCE::Display(){
+}
+//------------------------------------------------------------------------------
+

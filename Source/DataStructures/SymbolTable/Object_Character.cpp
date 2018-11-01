@@ -18,15 +18,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Object.h"
+#include "Object_Character.h"
 //------------------------------------------------------------------------------
 
-OBJECT::OBJECT(const byte* Name, TYPE Type){
-  this->Name = Name;
-  this->Type = Type;
+OBJECT_CHARACTER::OBJECT_CHARACTER(const byte* Name) : OBJECT(Name, Character){
+  error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-OBJECT::~OBJECT(){
+OBJECT_CHARACTER::~OBJECT_CHARACTER(){
 }
 //------------------------------------------------------------------------------
+
+void OBJECT_CHARACTER::Display(){
+}
+//------------------------------------------------------------------------------
+

@@ -18,15 +18,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Object.h"
+#include "Object_FunctionInstance.h"
 //------------------------------------------------------------------------------
 
-OBJECT::OBJECT(const byte* Name, TYPE Type){
-  this->Name = Name;
-  this->Type = Type;
+OBJECT_OBJECT_FUNCTION_INSTANCE::OBJECT_OBJECT_FUNCTION_INSTANCE(const byte* Name) : OBJECT(Name, FunctionInstance){
+  error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-OBJECT::~OBJECT(){
+OBJECT_OBJECT_FUNCTION_INSTANCE::~OBJECT_OBJECT_FUNCTION_INSTANCE(){
 }
 //------------------------------------------------------------------------------
+
+void OBJECT_OBJECT_FUNCTION_INSTANCE::Display(){
+}
+//------------------------------------------------------------------------------
+

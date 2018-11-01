@@ -18,24 +18,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Net_h
-#define Net_h
+#include "Object_Synthesisable.h"
 //------------------------------------------------------------------------------
 
-// #include "Reference.h"
-// //------------------------------------------------------------------------------
-// 
-// struct NET: public REFERENCE{
-//   double Setup; // External setup requirement
-//   double Hold;  // External hold requirement
-//   double Delay; // External propagation delay
-// 
-//            NET();
-//   virtual ~NET();
-// 
-//   virtual void Display();
-// };
-// //------------------------------------------------------------------------------
-
-#endif
+OBJECT_SYNTHESISABLE::OBJECT_SYNTHESISABLE(const byte* Name, TYPE Type) : OBJECT(Name, Type){
+  error("Not yet implemented");
+}
 //------------------------------------------------------------------------------
+
+OBJECT_SYNTHESISABLE::~OBJECT_SYNTHESISABLE(){
+}
+//------------------------------------------------------------------------------
+

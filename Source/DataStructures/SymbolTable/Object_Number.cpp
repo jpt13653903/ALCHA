@@ -18,15 +18,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Object.h"
+#include "Object_Number.h"
 //------------------------------------------------------------------------------
 
-OBJECT::OBJECT(const byte* Name, TYPE Type){
-  this->Name = Name;
-  this->Type = Type;
+OBJECT_OBJECT_NUMBER::OBJECT_OBJECT_NUMBER(const byte* Name) : OBJECT(Name, Number){
+  error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-OBJECT::~OBJECT(){
+OBJECT_OBJECT_NUMBER::~OBJECT_OBJECT_NUMBER(){
 }
 //------------------------------------------------------------------------------
+
+void OBJECT_OBJECT_NUMBER::Display(){
+}
+//------------------------------------------------------------------------------
+

@@ -18,15 +18,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Object.h"
+#ifndef Object_Pin_h
+#define Object_Pin_h
 //------------------------------------------------------------------------------
 
-OBJECT::OBJECT(const byte* Name, TYPE Type){
-  this->Name = Name;
-  this->Type = Type;
-}
+#include "Object_Synthesisable.h"
 //------------------------------------------------------------------------------
 
-OBJECT::~OBJECT(){
-}
+struct OBJECT_PIN: public OBJECT_SYNTHESISABLE{
+           OBJECT_PIN(const byte* Name);
+  virtual ~OBJECT_PIN();
+
+  virtual void Display();
+};
+//------------------------------------------------------------------------------
+
+#endif
 //------------------------------------------------------------------------------
