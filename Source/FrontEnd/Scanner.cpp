@@ -199,7 +199,6 @@ SCANNER::SCANNER(){
     Operators.Insert("?." , TOKEN::AccessMemberSafe);
     Operators.Insert(".{" , TOKEN::AccessMemberPush);
     Operators.Insert("'"  , TOKEN::AccessAttribute );
-    Operators.Insert("::" , TOKEN::AccessNamespace );
 
     // Cast
     Operators.Insert("@"  , TOKEN::CastOp);

@@ -77,8 +77,9 @@ void AST_Expression::Display(){
 
     case Slice: printf("{slice}"); break;
 
-    case AccessMember:    printf("." ); break;
-    case AccessNamespace: printf("::"); break;
+    case AccessMember:     printf("." ); break;
+    case AccessMemberSafe: printf("?." ); break;
+    case AccessAttribute:  printf("'" ); break;
 
     case Increment: printf("++"); break;
     case Decrement: printf("--"); break;

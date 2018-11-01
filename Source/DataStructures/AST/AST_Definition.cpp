@@ -64,18 +64,16 @@ AST_Definition::AST_Definition(
 
   Direction = Inferred;
 
-  ClassName = 0;
-  Format    = 0;
-
-  FormatType = AST_Expression::Cast;
+  ClassName  = 0;
+  Parameters = 0;
 
   Attributes.OnDuplicate = AttributesOnDuplicate;
 }
 //------------------------------------------------------------------------------
 
 AST_Definition::~AST_Definition(){
-  if(ClassName) delete ClassName;
-  if(Format   ) delete Format;
+  if(ClassName ) delete ClassName;
+  if(Parameters) delete Parameters;
 
   Attributes.Action(AttributesDeleteData);
 }
@@ -85,10 +83,10 @@ void AST_Definition::Display(){
   printf("\n%s:%d -- Definition (", Filename, Line);
 
   switch(DefinitionType){
-    case Void   : printf("Void):\n"    ); break;
-    case Auto   : printf("Auto):\n"    ); break;
     case Pin    : printf("Pin):\n"     ); break;
     case Net    : printf("Net):\n"     ); break;
+    case Void   : printf("Void):\n"    ); break;
+    case Auto   : printf("Auto):\n"    ); break;
     case Byte   : printf("Byte):"      ); break;
     case Char   : printf("Character):" ); break;
     case Num    : printf("Number):\n"  ); break;
@@ -111,12 +109,12 @@ void AST_Definition::Display(){
     default    : printf("Inferred\n"); break;
   }
 
-  printf(" Format: ");
-  if(Format){
-    Format->Display();
+  printf(" Parameters: ");
+  if(Parameters){
+    Parameters->Display();
     printf("\n");
   }else{
-    printf("1-bit\n");
+    printf("none / default\n");
   }
 
   if(Attributes.GetCount()){

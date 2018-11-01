@@ -100,7 +100,6 @@ struct TOKEN{
     AccessMemberSafe,
     AccessMemberPush,
     AccessAttribute,
-    AccessNamespace,
 
     CastOp,
 

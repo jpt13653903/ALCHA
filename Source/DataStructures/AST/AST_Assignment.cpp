@@ -61,7 +61,7 @@ void AST_Assignment::Display(){
     case Exponential_Assign: printf( " ^= "); break;
     case AND_Assign        : printf( " &= "); break;
     case OR_Assign         : printf( " |= "); break;
-    case XOR_Assign        : printf( " #= "); break;
+    case XOR_Assign        : printf( " ^= "); break;
     case Shift_Left_Assign : printf(" <<= "); break;
     case Shift_Right_Assign: printf(" >>= "); break;
 

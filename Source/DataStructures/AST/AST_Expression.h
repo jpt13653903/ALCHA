@@ -39,7 +39,8 @@ struct AST_Expression: public AST_Base{
     FunctionCall, // Left is the function name; right is the parameter list
     Slice,
     AccessMember,
-    AccessNamespace,
+    AccessMemberSafe,
+    AccessAttribute,
     Range, // Left = from; Right = to; Right->Next = step
 
     Increment, // If child is on the left, post-increment

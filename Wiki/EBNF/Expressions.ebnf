@@ -26,7 +26,6 @@ Postfix = Cast { Array                   | (* Slice *)
                  "."  Identifier         | (* Member reference *)
                  "?." Identifier         | (* Safe member reference *)
                  "'"  Identifier         | (* Attribute reference *)
-                 "::" Identifier         | (* Namespace reference *)
                  "++"                    | (* Increment *)
                  "--"                    | (* Decrement *)
                  "!"                    }; (* Factorial *)
@@ -36,7 +35,7 @@ CastEpr = "@" ( Identifier | Literal
               | ("(" ExpressionList ")") );
 
 (* The "::" and "'" prefixes chooses the global scope *)
-Primary = (["::" | "'"] Identifier) | Literal | "true" | "false"
+Primary = (["'"] Identifier) | Literal | "true" | "false"
         | VectorConcat | ArrayConcat | Array | String | ("(" Expression ")");
 
 (* These perform vector or array concatenation *)

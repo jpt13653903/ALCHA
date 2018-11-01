@@ -419,11 +419,29 @@ AST_Expression* PARSER::VectorConcat(){
 
 AST_Expression* PARSER::Primary(){
   AST_Expression* Node;
+  bool GlobalAttribute = false;
 
-  // TODO: More stuff, including global accessors
-  // eg. ::GlobalType and 'global_attribute
+  if(Token.Type == TOKEN::AccessAttribute){
+    GlobalAttribute = true;
+    GetToken();
+  }
 
-  Node = Identifier  (); if(Node) return Node;
+  Node = Identifier();
+  if(Node){
+    if(GlobalAttribute){
+      AST_Expression* Temp = new AST_Expression(
+        Token.Line, Scanner->Filename.String(), AST_Expression::AccessAttribute
+      );
+      Temp->Right = Node;
+      Node = Temp;
+    }
+    return Node;
+  }
+  if(GlobalAttribute){
+    Error("Identifier expected");
+    return 0;
+  }
+
   Node = Literal     (); if(Node) return Node;
   Node = Array       (); if(Node) return Node;
   Node = String      (); if(Node) return Node;
@@ -549,6 +567,38 @@ AST_Expression* PARSER::Postfix(){
     }else if(Token.Type == TOKEN::AccessMember){
       Temp = new AST_Expression(
         Token.Line, Scanner->Filename.String(), AST_Expression::AccessMember
+      );
+      GetToken();
+
+      Temp->Left  = Node;
+      Temp->Right = Identifier();
+      Node = Temp;
+
+      if(!Node->Right){
+        Error("Identifier expected");
+        delete Node;
+        return 0;
+      }
+
+    }else if(Token.Type == TOKEN::AccessMemberSafe){
+      Temp = new AST_Expression(
+        Token.Line, Scanner->Filename.String(), AST_Expression::AccessMemberSafe
+      );
+      GetToken();
+
+      Temp->Left  = Node;
+      Temp->Right = Identifier();
+      Node = Temp;
+
+      if(!Node->Right){
+        Error("Identifier expected");
+        delete Node;
+        return 0;
+      }
+
+    }else if(Token.Type == TOKEN::AccessAttribute){
+      Temp = new AST_Expression(
+        Token.Line, Scanner->Filename.String(), AST_Expression::AccessAttribute
       );
       GetToken();
 
@@ -1189,9 +1239,9 @@ AST_Expression* PARSER::TypeIdentifier(){
   AST_Expression* Temp;
 
   while(Token.Type){
-    if(Token.Type == TOKEN::AccessNamespace){
+    if(Token.Type == TOKEN::AccessMember){
       Temp = new AST_Expression(
-        Token.Line, Scanner->Filename.String(), AST_Expression::AccessNamespace
+        Token.Line, Scanner->Filename.String(), AST_Expression::AccessMember
       );
       GetToken();
 
@@ -1490,14 +1540,6 @@ AST_Definition* PARSER::Definition(){
 
   AST_Definition* Node = 0;
   switch(Token.Type){
-    case TOKEN::Void:
-      Node = new AST_Definition(
-        Token.Line, Scanner->Filename.String(), AST_Definition::Void
-      ); break;
-    case TOKEN::Auto:
-      Node = new AST_Definition(
-        Token.Line, Scanner->Filename.String(), AST_Definition::Auto
-      ); break;
     case TOKEN::Pin:
       Node = new AST_Definition(
         Token.Line, Scanner->Filename.String(), AST_Definition::Pin
@@ -1505,6 +1547,14 @@ AST_Definition* PARSER::Definition(){
     case TOKEN::Net:
       Node = new AST_Definition(
         Token.Line, Scanner->Filename.String(), AST_Definition::Net
+      ); break;
+    case TOKEN::Void:
+      Node = new AST_Definition(
+        Token.Line, Scanner->Filename.String(), AST_Definition::Void
+      ); break;
+    case TOKEN::Auto:
+      Node = new AST_Definition(
+        Token.Line, Scanner->Filename.String(), AST_Definition::Auto
       ); break;
     case TOKEN::Byte:
       Node = new AST_Definition(
@@ -1532,7 +1582,7 @@ AST_Definition* PARSER::Definition(){
   if(Token.Type == TOKEN::OpenRound){
     GetToken();
 
-    Node->Format = ParameterList();
+    Node->Parameters = ParameterList();
 
     if(Token.Type != TOKEN::CloseRound){
       Error(") expected");
@@ -1541,19 +1591,19 @@ AST_Definition* PARSER::Definition(){
     }
     GetToken();
   }
-  if(Node->Format){
+  if(Node->Parameters){
     if(Node->DefinitionType == AST_Definition::Void){
-      Error("Void cannot have a format");
+      Error("Void type does not take parameters");
       delete Node;
       return 0;
     }
     if(Node->DefinitionType == AST_Definition::Auto){
-      Error("Auto cannot have a format");
+      Error("Auto type does not take parameters");
       delete Node;
       return 0;
     }
     if(Node->DefinitionType == AST_Definition::Func){
-      Error("Function cannot have a format");
+      Error("Func type does not take parameters");
       delete Node;
       return 0;
     }
@@ -1589,7 +1639,7 @@ AST_Definition* PARSER::Definition(){
 bool PARSER::ValidNamespaceSpecifier(AST_Expression* Node){
   // Only a few operations are invalid:
   switch(Node->ExpressionType){
-    case AST_Expression::AccessNamespace:
+    case AST_Expression::AccessMember:
     case AST_Expression::Identifier:
       break;
 
@@ -1610,7 +1660,7 @@ bool PARSER::ValidNamespaceSpecifier(AST_Expression* Node){
 bool PARSER::ValidTypeSpecifier(AST_Expression* Node){
   // Only a few operations are invalid:
   switch(Node->ExpressionType){
-    case AST_Expression::AccessNamespace:
+    case AST_Expression::AccessMember:
     case AST_Expression::Identifier:
       break;
 
@@ -1640,7 +1690,8 @@ bool PARSER::ValidTypeSpecifier(AST_Expression* Node){
 bool PARSER::ValidLHS(AST_Expression* Node){
   switch(Node->ExpressionType){
     case AST_Expression::AccessMember:
-    case AST_Expression::AccessNamespace:
+    case AST_Expression::AccessMemberSafe:
+    case AST_Expression::AccessAttribute:
     case AST_Expression::Identifier:
     case AST_Expression::VectorConcatenate:
     case AST_Expression::ArrayConcatenate:
@@ -1670,8 +1721,6 @@ bool PARSER::ValidLHS(AST_Expression* Node){
 //------------------------------------------------------------------------------
 
 AST_Base* PARSER::Other(){
-  // TODO: This whole function needs revision
-
   AST_Expression* Expr = Postfix();
   if(!Expr) return 0;
 
@@ -1689,8 +1738,6 @@ AST_Base* PARSER::Other(){
     return Expr;
   }
 
-  // TODO: This should be a path push, not a namespace push...
-  // i.e. it uses ".{", not "::{"
   if(Token.Type == TOKEN::AccessMemberPush){ // Namespace push
     if(!ValidNamespaceSpecifier(Expr)){
       Error("Invalid Name-space specifier expression");
@@ -1724,7 +1771,15 @@ AST_Base* PARSER::Other(){
     AST_Definition* Def = new AST_Definition(
       Token.Line, Scanner->Filename.String(), AST_Definition::ClassInstance
     );
-    Def->ClassName = Expr;
+    if(Expr->ExpressionType == AST_Expression::FunctionCall){
+      Def->ClassName  = Expr->Left;
+      Def->Parameters = Expr->Right;
+      Expr->Left  = 0;
+      Expr->Right = 0;
+      delete Expr;
+    }else{
+      Def->ClassName = Expr;
+    }
     AttributeList(&Def->Attributes);
     Def->Identifiers = IdentifierList();
     if(!Def->Identifiers){

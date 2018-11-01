@@ -11,7 +11,7 @@ Statement  = Label | Definition | ClassDefinition | EnumDefinition
 Label  = Identifier ":"; (* Only useful within an fsm construct *)
 
 Definition = ( BaseType | TypeIdentifier ) ["(" [ParameterList] ")"]
-           | ( "void" | "auto" ) [AttributeList] IdentifierList;
+             [AttributeList] IdentifierList;
 
 ClassDefinition = "class" [AttributeList] Identifier
                   ["(" [DefParameterList] ")"] 
@@ -28,6 +28,7 @@ AccessSpecifier    = "public" | "private" | "protected";
 DirectionSpecifier = "input" | "output";
 
 BaseType = "pin"  | "net"          (* Synthesisable types *)
+         | "void" | "auto"         (* Used as function return types *)
          | "byte" | "char" | "num" (* Scripting types     *)
          | "func" ;                (* Function pointer    *)
 
@@ -50,6 +51,6 @@ AttributeAssignment = Identifier "=" Primary;
 
 EnumDefinition = "enum" Identifier "{" Identifier {"," Identifier} "}";
 
-TypeIdentifier = Identifier {"::" Identifier}; (* NameSpace::TypeName *)
+TypeIdentifier = Identifier {"." Identifier}; (* NameSpace.TypeName *)
 (*----------------------------------------------------------------------------*)
 
