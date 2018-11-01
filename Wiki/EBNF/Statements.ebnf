@@ -18,7 +18,7 @@ AssignmentOperator = "="  | ":=" | "~=" | "+="  | "-="  | "*="  | "/="  | "**="
 
 IfStatement = "if" "(" Expression ")" StatementBlock ["else" StatementBlock];
               
-For = "for" "(" Identifier "in" Concatenation ")" StatementBlock;
+For = "for" "(" Identifier "in" Range ")" StatementBlock;
 
 (* For while loops, Expression must evaluate to a boolean *)
 While = "while" "(" Expression ")" StatementBlock);

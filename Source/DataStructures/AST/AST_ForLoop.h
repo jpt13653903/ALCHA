@@ -27,7 +27,7 @@
 
 struct AST_ForLoop: public AST_Base{
   byte          * Identifier;
-  AST_Expression* Array;
+  AST_Expression* Range;
   AST_Base      * Statements;
 
   AST_ForLoop(int Line, const byte* Filename);

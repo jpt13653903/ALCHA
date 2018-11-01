@@ -569,7 +569,7 @@ bool SCANNER::GetNumber(TOKEN* Token, unsigned Base){
     Token->Data << Buffer[Index++];
   }
 
-  if(Buffer[Index] == '.'){
+  if(Buffer[Index] == '.' && Buffer[Index+1] != '.'){
     Token->Data << Buffer[Index++];
     while(Buffer[Index]){
       while(Buffer[Index] == '_') Token->Data << Buffer[Index++];

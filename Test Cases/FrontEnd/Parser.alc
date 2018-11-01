@@ -31,7 +31,6 @@ switch(State){
   }
 }
 
-/+
 pin(STATE) PinState; // Pin enumeration
 net(STATE) SigState; // Net enumeration
 
@@ -78,8 +77,9 @@ a  = ~^b;
 a ^= b;
 
 a = :b + :c;
-a = :b:c;
-a = :b:::c;
+a = :b.c;
+a = :(b, c);
+a = :[b, c];
 
 a = ++x * y--;
 
@@ -136,7 +136,7 @@ A  =  (x+y)*z?A: :(B,C,5@3,9);
 A +=  A.B[5].C(5..3, 7..2:-1);
 A *=  A + B++ - C--;
 A %=  7 << &A.B(7).C[5].D % 3;
-A /=  :(A,B@(3,(7+4)),C`(8+C);
+A /=  :(A,B@(3,(7+4)),C`(8+C));
 A ~=  :[A,B + C,D * F,8..77:2];
 A <<= A[][5..3,7][][5,2,9,A];
 
@@ -296,5 +296,4 @@ fsm(Clk, Reset){
 
   }
 }
-+/
 

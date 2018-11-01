@@ -8,4 +8,7 @@ pin(4) <location = ["M1", "R1", "V5", "AB5"]> Button;
 LED := :(Button, Button);
 
 MyFunction(A = 3, B := D, E, F);
+A(),
+B()
+;
 

@@ -6,7 +6,7 @@ Statement  = Label | Definition | ClassDefinition | EnumDefinition
            | IfStatement | For | While  | Loop | Switch | Jump | GoTo
            | FunctionCall | NamespacePush | Assignment
            | RTL | FSM | HDL 
-           | Stimulus | Emulate | ForkJoin | Assert | Sequence ";";
+           | Stimulus | Emulate | ForkJoin | Assert | Sequence | ";";
 
 Label  = Identifier ":"; (* Only useful within an fsm construct *)
 
@@ -37,7 +37,7 @@ IdentifierList = FunctionDef | (VariableDef {"," VariableDef} ";");
 VariableDef    = Identifier {ArrayDefinition} [Initialiser];
 FunctionDef    = ["inline"] Identifier {ArrayDefinition} 
                  "(" [DefParameterList] ")" 
-                 ( "{" [Statements] "}" | ";");
+                 "{" [Statements] "}" ;
 
 ArrayDefinition  = "[" [Expression] "]";
 Initialiser      = ("=" | ":=") Expression;

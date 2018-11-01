@@ -126,6 +126,7 @@ AST_Assignment* PARSER::AttributeList(){
     Node = AttributeAssignment();
     if(!Node){
       Error("Attribute assignment expected");
+      if(Head) delete Head;
       return 0;
     }
     if(Tail) Tail->Next = Node;
@@ -137,7 +138,7 @@ AST_Assignment* PARSER::AttributeList(){
       return Head;
     }
     if(Token.Type != TOKEN::Comma){
-      Error("',' expected");
+      Error("',' or '>' expected");
       delete Head;
       return 0;
     }
@@ -379,11 +380,16 @@ AST_Base* PARSER::ParameterList(){
   
   if(Token.Type != TOKEN::OpenRound) return 0;
   GetToken();
+  if(Token.Type == TOKEN::CloseRound){
+    GetToken();
+    return 0; // The caller checks for OpenRound if required
+  }
 
   while(Token.Type){
     Node = Parameter();
     if(!Node){
       Error("Parameter assignment or expression expected");
+      if(Head) delete Head;
       return 0;
     }
     if(Tail) Tail->Next = Node;
@@ -1754,16 +1760,22 @@ AST_Base* PARSER::Other(){
   AST_Expression* Expr = Postfix();
   if(!Expr) return 0;
 
-  if(Token.Type == TOKEN::Semicolon){
+  if(Token.Type == TOKEN::Comma || Token.Type == TOKEN::Semicolon){
     if(
       Expr->ExpressionType != AST_Expression::FunctionCall &&
       Expr->ExpressionType != AST_Expression::Increment    &&
       Expr->ExpressionType != AST_Expression::Decrement
     ){
-      Error("Unexpected ;");
+      Error("Unexpected end-of-statement");
       delete Expr;
       return 0;
     }
+    if(Token.Type == TOKEN::Semicolon){
+      Expr->Next = new AST_Fence(
+        Token.Line, Scanner->Filename.String()
+      );
+    }
+    GetToken();
     return Expr;
   }
 
@@ -2050,9 +2062,9 @@ AST_ForLoop* PARSER::ForLoop(){
   }
   GetToken();
 
-  Node->Array = Array();
-  if(!Node->Array){
-    Error("Array expected");
+  Node->Range = Range();
+  if(!Node->Range){
+    Error("Range expected");
     delete Node;
     return 0;
   }
@@ -2374,6 +2386,7 @@ AST_HDL* PARSER::HDL(){
       if(Tail) Tail->Next       = Temp;
       else     Node->Parameters = (AST_Assignment*)Temp;
       Tail = Temp;
+      while(Tail->Next) Tail = Tail->Next;
       Temp = Other();
     }
     if(Token.Type != TOKEN::CloseRound){
@@ -2450,6 +2463,7 @@ AST_Base* PARSER::Statements(){
     if(Tail) Tail->Next = Node;
     else     Head       = Node;
     Tail = Node;
+    while(Tail->Next) Tail = Tail->Next;
   }
   if(error){
     if(Head) delete Head;

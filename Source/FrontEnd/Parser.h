@@ -66,7 +66,6 @@ class PARSER{
     AST_Expression* ExpressionList ();
     AST_Base*       Parameter      ();
     AST_Base*       ParameterList  ();
-
     AST_Expression* Array          ();
     AST_Expression* ArrayConcat    ();
     AST_Expression* VectorConcat   ();

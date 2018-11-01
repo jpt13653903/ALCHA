@@ -26,20 +26,20 @@ AST_Base(Line, Filename){
   this->Type = ForLoop;
 
   Identifier = 0;
-  Array      = 0;
+  Range      = 0;
   Statements = 0;
 }
 //------------------------------------------------------------------------------
 
 AST_ForLoop::~AST_ForLoop(){
-  if(Array     ) delete Array;
+  if(Range     ) delete Range;
   if(Statements) delete Statements;
 }
 //------------------------------------------------------------------------------
 
 void AST_ForLoop::Display(){
   printf("\n%s:%d -- for(%s in ", Filename, Line, Identifier);
-    if(Array) Array->Display();
+    if(Range) Range->Display();
   printf("){\n");
     if(Statements) Statements->Display();
   printf("}\n");
