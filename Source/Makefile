@@ -1,96 +1,98 @@
-CC      = g++
+CompilerPath = C:/TDM-GCC-32/bin
+
+CC      = $(CompilerPath)/g++
 Options = -Wall -fexceptions -O2 -DDEBUG
 #-------------------------------------------------------------------------------
 
 Toolbox = ../Toolbox/Cpp
 #-------------------------------------------------------------------------------
 
-Includes   = -IBackEnd                    \
-             -IDataStructures             \
-             -IDataStructures/AST         \
-             -IDataStructures/SymbolTable \
-             -IFrontEnd                   \
-             -IGlobal                     \
-             -ILibraries/include          \
-             -ITools                      \
-             -I$(Toolbox)
+Includes   = -IBackEnd
+Includes  +=-IDataStructures
+Includes  +=-IDataStructures/AST
+# Includes  +=-IDataStructures/SymbolTable
+Includes  +=-IFrontEnd
+Includes  +=-IGlobal
+Includes  +=-ILibraries/include
+Includes  +=-ITools
+Includes  +=-I$(Toolbox)
 
 Libraries  = -lfftw3 -lgmp -lmpfr
 LibInclude = -LLibraries/lib
 #-------------------------------------------------------------------------------
 
-Version = -DMAJOR_VERSION=1 -DMINOR_VERSION=0
+Version  = -DMAJOR_VERSION=1 -DMINOR_VERSION=0
 
-Objects = obj/BackEnd/Altera.o                                       \
-          obj/BackEnd/ClockTree.o                                    \
-          obj/BackEnd/HDL.o                                          \
-          obj/BackEnd/MemoryTable.o                                  \
-          obj/BackEnd/TimingSpec.o                                   \
-          obj/DataStructures/IdentifierTree.o                        \
-          obj/DataStructures/TokenTree.o                             \
-          obj/DataStructures/AST/AST.o                               \
-          obj/DataStructures/AST/AST_Alias.o                         \
-          obj/DataStructures/AST/AST_Assignment.o                    \
-          obj/DataStructures/AST/AST_ClassDefinition.o               \
-          obj/DataStructures/AST/AST_Definition.o                    \
-          obj/DataStructures/AST/AST_EnumDefinition.o                \
-          obj/DataStructures/AST/AST_Expression.o                    \
-          obj/DataStructures/AST/AST_Fence.o                         \
-          obj/DataStructures/AST/AST_ForLoop.o                       \
-          obj/DataStructures/AST/AST_FSM.o                           \
-          obj/DataStructures/AST/AST_Group.o                         \
-          obj/DataStructures/AST/AST_HDL.o                           \
-          obj/DataStructures/AST/AST_IfStatement.o                   \
-          obj/DataStructures/AST/AST_Import.o                        \
-          obj/DataStructures/AST/AST_Jump.o                          \
-          obj/DataStructures/AST/AST_LoopLoop.o                      \
-          obj/DataStructures/AST/AST_NamespacePush.o                 \
-          obj/DataStructures/AST/AST_Parameter.o                     \
-          obj/DataStructures/AST/AST_RTL.o                           \
-          obj/DataStructures/AST/AST_Switch.o                        \
-          obj/DataStructures/AST/AST_WhileLoop.o                     \
-          obj/DataStructures/SymbolTable/Scope.o                     \
-          obj/DataStructures/SymbolTable/SymbolTree.o                \
-          obj/DataStructures/SymbolTable/Object.o                    \
-          obj/DataStructures/SymbolTable/Object_ClassDefinition.o    \
-          obj/DataStructures/SymbolTable/Object_ClassInstance.o      \
-          obj/DataStructures/SymbolTable/Object_FunctionDefinition.o \
-          obj/DataStructures/SymbolTable/Object_FunctionInstance.o   \
-          obj/DataStructures/SymbolTable/Object_Array.o              \
-          obj/DataStructures/SymbolTable/Object_Synthesisable.o      \
-          obj/DataStructures/SymbolTable/Object_Pin.o                \
-          obj/DataStructures/SymbolTable/Object_Net.o                \
-          obj/DataStructures/SymbolTable/Object_Number.o             \
-          obj/DataStructures/SymbolTable/Object_Byte.o               \
-          obj/DataStructures/SymbolTable/Object_Character.o          \
-          obj/FrontEnd/Parser.o                                      \
-          obj/FrontEnd/Scanner.o                                     \
-          obj/FrontEnd/Token.o                                       \
-          obj/Tools/FileSystem.o                                     \
-          obj/Tools/MyString.o                                       \
-          obj/Tools/Number.o                                         \
-          obj/Toolbox/General.o                                      \
-          obj/Toolbox/Dictionary.o                                   \
-          obj/Resources/resource.res
+# Objects  = obj/BackEnd/Altera.o
+# Objects += obj/BackEnd/ClockTree.o
+# Objects += obj/BackEnd/HDL.o
+# Objects += obj/BackEnd/MemoryTable.o
+# Objects += obj/BackEnd/TimingSpec.o
+Objects += obj/DataStructures/IdentifierTree.o
+Objects += obj/DataStructures/TokenTree.o
+Objects += obj/DataStructures/AST/AST.o
+Objects += obj/DataStructures/AST/AST_Alias.o
+Objects += obj/DataStructures/AST/AST_Assignment.o
+Objects += obj/DataStructures/AST/AST_ClassDefinition.o
+Objects += obj/DataStructures/AST/AST_Definition.o
+Objects += obj/DataStructures/AST/AST_EnumDefinition.o
+Objects += obj/DataStructures/AST/AST_Expression.o
+Objects += obj/DataStructures/AST/AST_Fence.o
+Objects += obj/DataStructures/AST/AST_ForLoop.o
+Objects += obj/DataStructures/AST/AST_FSM.o
+Objects += obj/DataStructures/AST/AST_Group.o
+Objects += obj/DataStructures/AST/AST_HDL.o
+Objects += obj/DataStructures/AST/AST_IfStatement.o
+Objects += obj/DataStructures/AST/AST_Import.o
+Objects += obj/DataStructures/AST/AST_Jump.o
+Objects += obj/DataStructures/AST/AST_LoopLoop.o
+Objects += obj/DataStructures/AST/AST_NamespacePush.o
+Objects += obj/DataStructures/AST/AST_Parameter.o
+Objects += obj/DataStructures/AST/AST_RTL.o
+Objects += obj/DataStructures/AST/AST_Switch.o
+Objects += obj/DataStructures/AST/AST_WhileLoop.o
+# Objects += obj/DataStructures/SymbolTable/Scope.o
+# Objects += obj/DataStructures/SymbolTable/SymbolTree.o
+# Objects += obj/DataStructures/SymbolTable/Object.o
+# Objects += obj/DataStructures/SymbolTable/Object_ClassDefinition.o
+# Objects += obj/DataStructures/SymbolTable/Object_ClassInstance.o
+# Objects += obj/DataStructures/SymbolTable/Object_FunctionDefinition.o
+# Objects += obj/DataStructures/SymbolTable/Object_FunctionInstance.o
+# Objects += obj/DataStructures/SymbolTable/Object_Array.o
+# Objects += obj/DataStructures/SymbolTable/Object_Synthesisable.o
+# Objects += obj/DataStructures/SymbolTable/Object_Pin.o
+# Objects += obj/DataStructures/SymbolTable/Object_Net.o
+# Objects += obj/DataStructures/SymbolTable/Object_Number.o
+# Objects += obj/DataStructures/SymbolTable/Object_Byte.o
+# Objects += obj/DataStructures/SymbolTable/Object_Character.o
+Objects += obj/FrontEnd/Parser.o
+Objects += obj/FrontEnd/Scanner.o
+Objects += obj/FrontEnd/Token.o
+Objects += obj/Tools/FileSystem.o
+Objects += obj/Tools/MyString.o
+Objects += obj/Tools/Number.o
+Objects += obj/Toolbox/General.o
+Objects += obj/Toolbox/Dictionary.o
+Objects += obj/Resources/resource.res
 
-Headers = Tools/*.h                      \
-          BackEnd/*.h                    \
-          FrontEnd/*.h                   \
-          DataStructures/*.h             \
-          DataStructures/AST/*.h         \
-          DataStructures/SymbolTable/*.h \
-          Libraries/include/*.h          \
-          $(Toolbox)/*.h          
+Headers  = Tools/*.h
+# Headers += BackEnd/*.h
+Headers += FrontEnd/*.h
+Headers += DataStructures/*.h
+Headers += DataStructures/AST/*.h
+# Headers += DataStructures/SymbolTable/*.h
+Headers += Libraries/include/*.h
+Headers += $(Toolbox)/*.h          
 
 # Auto-generated headers
 Headers += FrontEnd/CharacterNames.h
 #-------------------------------------------------------------------------------
 
-TestSources = ../Test\ Cases/*                   \
-              ../Test\ Cases/Target/*            \
-              ../Test\ Cases/FrontEnd/*          \
-              ../Test\ Cases/Buttons\ to\ LEDs/* \
-              ../Test\ Cases/Counter/*
+TestSources  = ../Test\ Cases/*
+TestSources += ../Test\ Cases/Target/*
+TestSources += ../Test\ Cases/FrontEnd/*
+TestSources += ../Test\ Cases/Buttons\ to\ LEDs/*
+TestSources += ../Test\ Cases/Counter/*
 #-------------------------------------------------------------------------------
 
 .PHONY: clean all
@@ -141,6 +143,6 @@ FrontEnd/CharacterNames.h: FrontEnd/CharacterNames.json FrontEnd/CharacterNames.
 
 obj/%.res: %.rc
 	mkdir -p $(@D)
-	windres.exe  -J rc -O coff -i $< -o $@
+	$(CompilerPath)/windres.exe  -J rc -O coff -i $< -o $@
 #-------------------------------------------------------------------------------
 
