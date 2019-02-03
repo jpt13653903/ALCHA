@@ -32,7 +32,7 @@ int main(int argc, const char** argv){
   info("InputFile = %s", InputFile);
 
   SCANNER Scanner;
-  if(!Scanner.Open((byte*)InputFile)){
+  if(!Scanner.Open(InputFile)){
     error("Cannot open \"%s\"", InputFile);
     return -1;
   }

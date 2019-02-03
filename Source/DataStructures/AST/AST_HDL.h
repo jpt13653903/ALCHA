@@ -32,7 +32,7 @@ struct AST_HDL: public AST_Base{
   AST_Assignment* Parameters;
   AST_Definition* Ports;
 
-  AST_HDL(int Line, const byte* Filename);
+  AST_HDL(int Line, const char* Filename);
  ~AST_HDL();
 
   void Display();

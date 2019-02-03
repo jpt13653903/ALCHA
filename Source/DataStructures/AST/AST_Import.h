@@ -26,10 +26,10 @@
 //------------------------------------------------------------------------------
 
 struct AST_Import: public AST_Base{
-  STRING File;
-  byte*  Namespace; // Obtained from IdentifierTree
+  std::string File;
+  byte*       Namespace; // Obtained from IdentifierTree
 
-  AST_Import(int Line, const byte* Filename);
+  AST_Import(int Line, const char* Filename);
  ~AST_Import();
 
   void Display();

@@ -21,7 +21,7 @@
 #include "AST_Jump.h"
 //------------------------------------------------------------------------------
 
-AST_Jump::AST_Jump(int Line, const byte* Filename, JUMP_TYPE JumpType):
+AST_Jump::AST_Jump(int Line, const char* Filename, JUMP_TYPE JumpType):
 AST_Base(Line, Filename){
   this->Type     = Jump;
   this->JumpType = JumpType;

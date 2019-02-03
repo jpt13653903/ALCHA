@@ -31,7 +31,7 @@ AST_EnumDefinition::VALUE::~VALUE(){
 }
 //------------------------------------------------------------------------------
 
-AST_EnumDefinition::AST_EnumDefinition(int Line, const byte* Filename):
+AST_EnumDefinition::AST_EnumDefinition(int Line, const char* Filename):
 AST_Base(Line, Filename){
   Type = EnumDefinition;
 

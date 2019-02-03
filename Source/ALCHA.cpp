@@ -19,7 +19,7 @@
 //==============================================================================
 
 #include "Parser.h"
-#include "FileSystem.h"
+#include "FileWrapper.h"
 //------------------------------------------------------------------------------
 
 void Pause(){
@@ -33,7 +33,7 @@ void PrintUsage(){
   printf(
     "\n"
     "ALCHA Compiler, Version %d.%d\n"
-    "Built on "__DATE__" at "__TIME__"\n"
+    "Built on " __DATE__ " at " __TIME__ "\n"
     "\n"
     "Copyright (C) John-Philip Taylor\n"
     "jpt13653903@gmail.com\n"
@@ -69,13 +69,13 @@ int main(int argc, char** argv){
   }
 
   PARSER Parser;
-  AST = Parser.Run((byte*)argv[1]);
+  AST = Parser.Run(argv[1]);
   if(!AST) return -1;
 
-  FILE_SYSTEM Files;
+  FILE_WRAPPER Files;
   char Filename[0x1000];
   sprintf(Filename, "%s/Testing.v", argv[2]);
-  Files.Write((const byte*)Filename, (const byte*)
+  Files.WriteAll(Filename, (const byte*)
     "module Test(\n"
     "  input       Clk,\n"
     "  input       Reset,\n"

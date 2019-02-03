@@ -29,7 +29,7 @@ struct AST_NamespacePush: public AST_Base{
   AST_Expression* Namespace;
   AST_Base      * Statements;
 
-  AST_NamespacePush(int Line, const byte* Filename);
+  AST_NamespacePush(int Line, const char* Filename);
  ~AST_NamespacePush();
 
   void Display();

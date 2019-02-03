@@ -30,7 +30,7 @@ struct AST_ForLoop: public AST_Base{
   AST_Expression* Range;
   AST_Base      * Statements;
 
-  AST_ForLoop(int Line, const byte* Filename);
+  AST_ForLoop(int Line, const char* Filename);
  ~AST_ForLoop();
 
   void Display();

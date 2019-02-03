@@ -38,7 +38,7 @@ struct AST_Parameter: public AST_Base{
   int   ArrayDimensions;
   byte* Identifier; // ID obtained via IdentifierTree
 
-  AST_Parameter(int Line, const byte* Filename, DEFINITION_TYPE DefinitionType);
+  AST_Parameter(int Line, const char* Filename, DEFINITION_TYPE DefinitionType);
  ~AST_Parameter();
 
   void Display();

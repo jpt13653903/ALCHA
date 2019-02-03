@@ -37,6 +37,8 @@ Tokens:
 #define Scanner_h
 //------------------------------------------------------------------------------
 
+#include <map>
+#include <string>
 #include <time.h>
 //------------------------------------------------------------------------------
 
@@ -44,7 +46,7 @@ Tokens:
 #include "Number.h"
 #include "TokenTree.h"
 #include "Dictionary.h"
-#include "FileSystem.h"
+#include "FileWrapper.h"
 #include "IdentifierTree.h"
 //------------------------------------------------------------------------------
 
@@ -81,8 +83,8 @@ class SCANNER{
     SCANNER();
    ~SCANNER();
 
-    STRING Filename; // Read-only
-    bool   Open(const byte* Filename);
+    std::string Filename; // Read-only
+    bool Open(const char* Filename);
 
     bool GetToken(TOKEN* Token);
 };

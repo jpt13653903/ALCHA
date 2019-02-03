@@ -21,7 +21,7 @@
 #include "AST_Alias.h"
 //------------------------------------------------------------------------------
 
-AST_Alias::AST_Alias(int Line, const byte* Filename): AST_Base(Line, Filename){
+AST_Alias::AST_Alias(int Line, const char* Filename): AST_Base(Line, Filename){
   Type = Alias;
 
   Identifier = 0;

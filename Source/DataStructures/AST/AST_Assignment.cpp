@@ -23,7 +23,7 @@
 
 AST_Assignment::AST_Assignment(
   int             Line,
-  const byte*     Filename,
+  const char*     Filename,
   ASSIGNMENT_TYPE AssignmentType
 ): AST_Base(Line, Filename){
   this->Type           = Assignment;

@@ -38,7 +38,7 @@ struct AST_EnumDefinition: public AST_Base{
   byte * Identifier; // Obtained through IdentifierTree
   VALUE* Values;
 
-  AST_EnumDefinition(int Line, const byte* Filename);
+  AST_EnumDefinition(int Line, const char* Filename);
  ~AST_EnumDefinition();
 
   void Display();

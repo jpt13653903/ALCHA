@@ -29,7 +29,7 @@ struct AST_LoopLoop: public AST_Base{
   AST_Expression* Count;
   AST_Base      * Statements;
 
-  AST_LoopLoop(int Line, const byte* Filename);
+  AST_LoopLoop(int Line, const char* Filename);
  ~AST_LoopLoop();
 
   void Display();

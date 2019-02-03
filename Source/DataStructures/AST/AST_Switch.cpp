@@ -35,7 +35,7 @@ AST_Switch::CASE::~CASE(){
 }
 //------------------------------------------------------------------------------
 
-AST_Switch::AST_Switch(int Line, const byte* Filename):
+AST_Switch::AST_Switch(int Line, const char* Filename):
 AST_Base(Line, Filename){
   this->Type = Switch;
 

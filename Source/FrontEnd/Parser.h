@@ -128,7 +128,7 @@ class PARSER{
     PARSER();
    ~PARSER();
 
-    AST_Base* Run(const byte* Filename);
+    AST_Base* Run(const char* Filename);
 };
 //------------------------------------------------------------------------------
 

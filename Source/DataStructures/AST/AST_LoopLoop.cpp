@@ -21,7 +21,7 @@
 #include "AST_LoopLoop.h"
 //------------------------------------------------------------------------------
 
-AST_LoopLoop::AST_LoopLoop(int Line, const byte* Filename):
+AST_LoopLoop::AST_LoopLoop(int Line, const char* Filename):
 AST_Base(Line, Filename){
   this->Type = LoopLoop;
 

@@ -24,7 +24,7 @@
 
 AST_Expression::AST_Expression(
   int             Line,
-  const byte*     Filename,
+  const char*     Filename,
   EXPRESSION_TYPE ExpressionType
 ): AST_Base(Line, Filename){
   this->Type           = Expression;
@@ -57,7 +57,7 @@ void AST_Expression::Display(){
 
   switch(ExpressionType){
     case String:
-      if(StrValue) printf("\"%s\"", StrValue->String());
+      if(StrValue) printf("\"%s\"", StrValue->c_str());
       else         printf("(String literal node has no value)");
       break;
 

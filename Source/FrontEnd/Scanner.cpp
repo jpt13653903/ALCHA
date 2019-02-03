@@ -22,12 +22,17 @@
 #include "CharacterNames.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
+//------------------------------------------------------------------------------
+
 static bool Initialised = false;
 
 static TOKEN_TREE Spaces;
 static TOKEN_TREE Keywords;
 static TOKEN_TREE Operators;
-static DICTIONARY Characters;
+
+typedef map<string, const byte*> CHARACTERS;
+static CHARACTERS Characters;
 //------------------------------------------------------------------------------
 
 SCANNER::SCANNER(){
@@ -250,10 +255,7 @@ SCANNER::SCANNER(){
     Operators.Balance();
 
     for(int j = 0; CharacterNames[j]; j += 2){
-      Characters.Insert(
-        (char*)CharacterNames[j  ], // The name
-        (void*)CharacterNames[j+1]  // The UTF-8 representation
-      );
+      Characters[CharacterNames[j]] = (const byte*)CharacterNames[j+1];
     }
   }
 
@@ -277,7 +279,7 @@ void SCANNER::Error(const char* Message){
     ANSI_FG_BRIGHT_RED "  Error:"
     ANSI_FG_YELLOW " %s\n" ANSI_RESET,
     Line,
-    Filename.String(),
+    Filename.c_str(),
     Message
   );
 }
@@ -422,22 +424,22 @@ bool SCANNER::Identifier(TOKEN* Token){
 
   if(!NonDigit()) return false;
 
-  Token->Data << Buffer[Index++];
+  Token->Data += Buffer[Index++];
   while(Buffer[Index]){
     if(!Digit() && !NonDigit()) break;
-    Token->Data << Buffer[Index++];
+    Token->Data += Buffer[Index++];
   }
-  Token->Type = Keywords.Find(Token->Data.String());
+  Token->Type = Keywords.Find((const byte*)Token->Data.c_str());
 
   switch(Token->Type){
     case 0:
-      Token->ID   = IdentifierTree.GetID(Token->Data.String());
+      Token->ID   = IdentifierTree.GetID((const byte*)Token->Data.c_str());
       Token->Type = TOKEN::Identifier;
       break;
 
     case TOKEN::FILE:
       Token->Type = TOKEN::String;
-      Token->Data = Filename;
+      Token->Data = Filename.c_str();
       break;
 
     case TOKEN::LINE:
@@ -447,31 +449,31 @@ bool SCANNER::Identifier(TOKEN* Token){
 
     case TOKEN::DATE:
       Token->Type = TOKEN::String;
-      Token->Data.Clear();
+      Token->Data.clear();
       time(&Timer);
       Time = localtime(&Timer);
-      Token->Data << Time->tm_year + 1900;
-      Token->Data << "-";
-      if(Time->tm_mon < 9) Token->Data << "0";
-      Token->Data << Time->tm_mon + 1;
-      Token->Data << "-";
-      if(Time->tm_mday < 10) Token->Data << "0";
-      Token->Data << Time->tm_mday;
+      Token->Data += Time->tm_year + 1900;
+      Token->Data += "-";
+      if(Time->tm_mon < 9) Token->Data += "0";
+      Token->Data += Time->tm_mon + 1;
+      Token->Data += "-";
+      if(Time->tm_mday < 10) Token->Data += "0";
+      Token->Data += Time->tm_mday;
       break;
 
     case TOKEN::TIME:
       Token->Type = TOKEN::String;
-      Token->Data.Clear();
+      Token->Data.clear();
       time(&Timer);
       Time = localtime(&Timer);
-      if(Time->tm_hour < 10) Token->Data << "0";
-      Token->Data << Time->tm_hour;
-      Token->Data << ":";
-      if(Time->tm_min < 10) Token->Data << "0";
-      Token->Data << Time->tm_min;
-      Token->Data << ":";
-      if(Time->tm_sec < 10) Token->Data << "0";
-      Token->Data << Time->tm_sec;
+      if(Time->tm_hour < 10) Token->Data += "0";
+      Token->Data += Time->tm_hour;
+      Token->Data += ":";
+      if(Time->tm_min < 10) Token->Data += "0";
+      Token->Data += Time->tm_min;
+      Token->Data += ":";
+      if(Time->tm_sec < 10) Token->Data += "0";
+      Token->Data += Time->tm_sec;
       break;
 
     default:
@@ -487,7 +489,7 @@ bool SCANNER::Operator(TOKEN* Token){
   Token->Type = Operators.Match(Buffer+Index, &Count);
   if(Count){
     while(Count){
-      Token->Data << Buffer[Index++];
+      Token->Data += Buffer[Index++];
       Count--;
     }
     return true;
@@ -516,30 +518,30 @@ bool SCANNER::GetDigit(unsigned* Digit, unsigned Base){
 unsigned SCANNER::GetExponent(bool* Sign, TOKEN* Token){
   unsigned Exponent = 0;
 
-  Token->Data << Buffer[Index++];
-  while(Buffer[Index] == '_') Token->Data << Buffer[Index++];
+  Token->Data += Buffer[Index++];
+  while(Buffer[Index] == '_') Token->Data += Buffer[Index++];
 
   *Sign = false;
   if(Buffer[Index] == '-'){
     *Sign = true;
-    Token->Data << Buffer[Index++];
+    Token->Data += Buffer[Index++];
   }else if(Buffer[Index] == '+'){
-    Token->Data << Buffer[Index++];
+    Token->Data += Buffer[Index++];
   }
 
-  while(Buffer[Index] == '_') Token->Data << Buffer[Index++];
+  while(Buffer[Index] == '_') Token->Data += Buffer[Index++];
   if(Buffer[Index] < '0' || Buffer[Index] > '9'){
     Error("Exponent digit expected");
     return 0;
   }
 
   while(Buffer[Index]){
-    while(Buffer[Index] == '_') Token->Data << Buffer[Index++];
+    while(Buffer[Index] == '_') Token->Data += Buffer[Index++];
 
     if(Buffer[Index] < '0' || Buffer[Index] > '9') break;
 
     Exponent = 10*Exponent + Buffer[Index] - '0';
-    Token->Data << Buffer[Index++];
+    Token->Data += Buffer[Index++];
   }
   return Exponent;
 }
@@ -548,7 +550,7 @@ unsigned SCANNER::GetExponent(bool* Sign, TOKEN* Token){
 bool SCANNER::GetNumber(TOKEN* Token, unsigned Base){
   unsigned Digit;
 
-  while(Buffer[Index] == '_') Token->Data << Buffer[Index++];
+  while(Buffer[Index] == '_') Token->Data += Buffer[Index++];
   if(!GetDigit(&Digit, Base) && Buffer[Index] != '.'){
     Error("Illegal literal format");
     return false;
@@ -560,26 +562,26 @@ bool SCANNER::GetNumber(TOKEN* Token, unsigned Base){
   mpz_init_set_ui(exp, 1);
 
   while(Buffer[Index]){
-    while(Buffer[Index] == '_') Token->Data << Buffer[Index++];
+    while(Buffer[Index] == '_') Token->Data += Buffer[Index++];
 
     if(!GetDigit(&Digit, Base)) break;
 
     mpz_mul_ui(num, num, Base);
     mpz_add_ui(num, num, Digit);
-    Token->Data << Buffer[Index++];
+    Token->Data += Buffer[Index++];
   }
 
   if(Buffer[Index] == '.' && Buffer[Index+1] != '.'){
-    Token->Data << Buffer[Index++];
+    Token->Data += Buffer[Index++];
     while(Buffer[Index]){
-      while(Buffer[Index] == '_') Token->Data << Buffer[Index++];
+      while(Buffer[Index] == '_') Token->Data += Buffer[Index++];
 
       if(!GetDigit(&Digit, Base)) break;
 
       mpz_mul_ui(num, num, Base);
       mpz_mul_ui(den, den, Base);
       mpz_add_ui(num, num, Digit);
-      Token->Data << Buffer[Index++];
+      Token->Data += Buffer[Index++];
     }
   }
 
@@ -601,8 +603,8 @@ bool SCANNER::GetNumber(TOKEN* Token, unsigned Base){
   Token->Value.Set(num, den);
 
   if(Buffer[Index] == 'i' || Buffer[Index] == 'j'){
-    Token->Data << Buffer[Index++];
-    while(Buffer[Index] == '_') Token->Data << Buffer[Index++];
+    Token->Data += Buffer[Index++];
+    while(Buffer[Index] == '_') Token->Data += Buffer[Index++];
     Token->Value.Mul(0, 1);
   }
 
@@ -625,18 +627,18 @@ bool SCANNER::Literal(TOKEN* Token){
   if(Buffer[Index] == '0'){
     switch(Buffer[Index+1]){
       case 'b':
-        Token->Data << Buffer[Index++];
-        Token->Data << Buffer[Index++];
+        Token->Data += Buffer[Index++];
+        Token->Data += Buffer[Index++];
         return GetNumber(Token, 2);
 
       case 'o':
-        Token->Data << Buffer[Index++];
-        Token->Data << Buffer[Index++];
+        Token->Data += Buffer[Index++];
+        Token->Data += Buffer[Index++];
         return GetNumber(Token, 8);
 
       case 'x':
-        Token->Data << Buffer[Index++];
-        Token->Data << Buffer[Index++];
+        Token->Data += Buffer[Index++];
+        Token->Data += Buffer[Index++];
         return GetNumber(Token, 16);
 
       default : break;
@@ -648,8 +650,8 @@ bool SCANNER::Literal(TOKEN* Token){
 
 bool SCANNER::String(TOKEN* Token){
   int      j;
-  byte*    s;
   unsigned Digit, UTF_32;
+  CHARACTERS::iterator s;
 
   if(Buffer[Index] != '"') return false;
 
@@ -671,17 +673,17 @@ bool SCANNER::String(TOKEN* Token){
     if(Buffer[Index] == '\\'){
       Index++;
       switch(Buffer[Index]){
-        case 'n' : Token->Data << '\n'; Index++; break;
-        case 't' : Token->Data << '\t'; Index++; break;
-        case 'v' : Token->Data << '\v'; Index++; break;
-        case 'b' : Token->Data << '\b'; Index++; break;
-        case 'r' : Token->Data << '\r'; Index++; break;
-        case 'f' : Token->Data << '\f'; Index++; break;
-        case 'a' : Token->Data << '\a'; Index++; break;
-        case '\\': Token->Data << '\\'; Index++; break;
-        case '?' : Token->Data << '\?'; Index++; break;
-        case '\'': Token->Data << '\''; Index++; break;
-        case '"' : Token->Data << '\"'; Index++; break;
+        case 'n' : Token->Data += '\n'; Index++; break;
+        case 't' : Token->Data += '\t'; Index++; break;
+        case 'v' : Token->Data += '\v'; Index++; break;
+        case 'b' : Token->Data += '\b'; Index++; break;
+        case 'r' : Token->Data += '\r'; Index++; break;
+        case 'f' : Token->Data += '\f'; Index++; break;
+        case 'a' : Token->Data += '\a'; Index++; break;
+        case '\\': Token->Data += '\\'; Index++; break;
+        case '?' : Token->Data += '\?'; Index++; break;
+        case '\'': Token->Data += '\''; Index++; break;
+        case '"' : Token->Data += '\"'; Index++; break;
 
         case '&': // HTML character name
           Index++;
@@ -691,13 +693,13 @@ bool SCANNER::String(TOKEN* Token){
             return false;
           }
           Buffer[j] = 0;
-          s = (byte*)Characters.Find((const char*)(Buffer+Index));
-          if(!s){
+          s = Characters.find((const char*)(Buffer+Index));
+          if(s == Characters.end()){
             Error("Invalid \\& code");
             return false;
           }
           Index = j+1;
-          Token->Data << s;
+          Token->Data += (const char*)s->second;
           break;
 
         case 'x' : // Hexadecimal number
@@ -711,7 +713,7 @@ bool SCANNER::String(TOKEN* Token){
             UTF_32 = UTF_32*0x10 + Digit;
             Index++;
           }
-          Token->Data.Append_UTF_32(UTF_32);
+          Token->Data.append(UTF_Converter.UTF8((char32_t)UTF_32));
           break;
 
         case 'u' : // 16-bit Unicode
@@ -725,7 +727,7 @@ bool SCANNER::String(TOKEN* Token){
             UTF_32 = UTF_32*0x10 + Digit;
             Index++;
           }
-          Token->Data.Append_UTF_32(UTF_32);
+          Token->Data.append(UTF_Converter.UTF8((char32_t)UTF_32));
           break;
 
         case 'U' : // 32-bit Unicode
@@ -739,7 +741,7 @@ bool SCANNER::String(TOKEN* Token){
             UTF_32 = UTF_32*0x10 + Digit;
             Index++;
           }
-          Token->Data.Append_UTF_32(UTF_32);
+          Token->Data.append(UTF_Converter.UTF8((char32_t)UTF_32));
           break;
 
         default: // Could be an octal number...
@@ -752,18 +754,18 @@ bool SCANNER::String(TOKEN* Token){
             }
             UTF_32 = UTF_32*8 + Buffer[Index++] - '0';
           }
-          Token->Data.Append_UTF_32(UTF_32);
+          Token->Data.append(UTF_Converter.UTF8((char32_t)UTF_32));
           break;
       }
     }else{
       if(Spaces.Match(Buffer+Index, &j) == TOKEN::Newline){
         Line++;
         while(j){
-          Token->Data << Buffer[Index++];
+          Token->Data += Buffer[Index++];
           j--;
         }
       }else{
-        Token->Data << Buffer[Index++];
+        Token->Data += Buffer[Index++];
       }
     }
   }
@@ -772,8 +774,8 @@ bool SCANNER::String(TOKEN* Token){
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::Open(const byte* Filename){
-  FILE_SYSTEM fs;
+bool SCANNER::Open(const char* Filename){
+  FILE_WRAPPER fs;
 
   error = false;
 
@@ -781,7 +783,7 @@ bool SCANNER::Open(const byte* Filename){
 
   this->Filename = Filename;
 
-  Buffer = (byte*)fs.Read(Filename);
+  Buffer = (byte*)fs.ReadAll(Filename);
   if(!Buffer){
     printf("Error reading file: %s\n", Filename);
     return false;
@@ -795,7 +797,7 @@ bool SCANNER::GetToken(TOKEN* Token){
   Token->Line = Line;
   Token->ID   = 0;
   Token->Type = TOKEN::Unknown;
-  Token->Data.Clear();
+  Token->Data.clear();
 
   if(!Buffer[Index]) return false;
   if( error        ) return false;

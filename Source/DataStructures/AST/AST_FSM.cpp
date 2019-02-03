@@ -21,7 +21,7 @@
 #include "AST_FSM.h"
 //------------------------------------------------------------------------------
 
-AST_FSM::AST_FSM(int Line, const byte* Filename): AST_Base(Line, Filename){
+AST_FSM::AST_FSM(int Line, const char* Filename): AST_Base(Line, Filename){
   this->Type = FSM;
 
   Parameters = 0;

@@ -56,7 +56,7 @@ AST_Definition::IDENTIFIER::~IDENTIFIER(){
 
 AST_Definition::AST_Definition(
   int             Line,
-  const byte*     Filename,
+  const char*     Filename,
   DEFINITION_TYPE DefinitionType
 ): AST_Base(Line, Filename){
   this->Type           = Definition;

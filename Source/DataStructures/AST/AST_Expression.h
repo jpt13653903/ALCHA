@@ -96,9 +96,9 @@ struct AST_Expression: public AST_Base{
   } ExpressionType;
 
   // Pointers so that not all expression nodes have instances, wasting space
-  byte  * Name;     // ID obtained from IdentifierTree
-  NUMBER* Value;    // Only used for numerical literals
-  STRING* StrValue; // Only used for string literals
+  byte       * Name;     // ID obtained from IdentifierTree
+  NUMBER     * Value;    // Only used for numerical literals
+  std::string* StrValue; // Only used for string literals
 
   // Left and Right operands
   AST_Expression* Left;
@@ -106,7 +106,7 @@ struct AST_Expression: public AST_Base{
 
   AST_Expression(
     int             Line,
-    const byte*     Filename,
+    const char*     Filename,
     EXPRESSION_TYPE ExpressionType
   );
  ~AST_Expression();

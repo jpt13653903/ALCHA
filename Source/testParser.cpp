@@ -32,7 +32,7 @@ int main(int argc, const char** argv){
   info("InputFile = %s", InputFile);
 
   PARSER Parser;
-  AST = Parser.Run((byte*)InputFile);
+  AST = Parser.Run(InputFile);
   if(!AST){
     error("Error while parsing \"%s\"", InputFile);
     return -1;

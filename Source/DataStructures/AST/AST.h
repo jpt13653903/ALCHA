@@ -22,7 +22,9 @@
 #define AST_h
 //------------------------------------------------------------------------------
 
-#include "MyString.h"
+#include <string>
+//------------------------------------------------------------------------------
+
 #include "IdentifierTree.h"
 //------------------------------------------------------------------------------
 
@@ -56,7 +58,7 @@ struct AST_Base{ // The base type for AST nodes
   byte*     Filename; // Memory handled by IdentifierTree
   AST_Base* Next;     // Next sibling
 
-           AST_Base(int Line, const byte* Filename);
+           AST_Base(int Line, const char* Filename);
   virtual ~AST_Base(); // Also deletes the rest of the linked list
 
   virtual void Display() = 0;

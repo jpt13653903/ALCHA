@@ -21,7 +21,7 @@
 #include "AST_NamespacePush.h"
 //------------------------------------------------------------------------------
 
-AST_NamespacePush::AST_NamespacePush(int Line, const byte* Filename):
+AST_NamespacePush::AST_NamespacePush(int Line, const char* Filename):
 AST_Base(Line, Filename){
   this->Type = NamespacePush;
 

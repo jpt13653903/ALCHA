@@ -35,7 +35,7 @@ AST_ClassDefinition::PARENT::~PARENT(){
 }
 //------------------------------------------------------------------------------
 
-AST_ClassDefinition::AST_ClassDefinition(int Line, const byte* Filename):
+AST_ClassDefinition::AST_ClassDefinition(int Line, const char* Filename):
 AST_Base(Line, Filename){
   Type = ClassDefinition;
 

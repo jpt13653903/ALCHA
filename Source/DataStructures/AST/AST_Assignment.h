@@ -50,7 +50,7 @@ struct AST_Assignment: public AST_Base{
     AST_Expression* Right;
 
     AST_Assignment(int             Line,
-                   const byte*     Filename,
+                   const char*     Filename,
                    ASSIGNMENT_TYPE AssignmentType);
    ~AST_Assignment();
 

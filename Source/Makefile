@@ -1,7 +1,7 @@
 CompilerPath = C:/TDM-GCC-32/bin
 
 CC      = $(CompilerPath)/g++
-Options = -Wall -fexceptions -O2 -DDEBUG
+Options = -std=c++11 -Wall -fexceptions -O2 -DDEBUG
 #-------------------------------------------------------------------------------
 
 Toolbox = ../Toolbox/Cpp
@@ -68,11 +68,11 @@ Objects += obj/DataStructures/AST/AST_WhileLoop.o
 Objects += obj/FrontEnd/Parser.o
 Objects += obj/FrontEnd/Scanner.o
 Objects += obj/FrontEnd/Token.o
-Objects += obj/Tools/FileSystem.o
-Objects += obj/Tools/MyString.o
 Objects += obj/Tools/Number.o
 Objects += obj/Toolbox/General.o
 Objects += obj/Toolbox/Dictionary.o
+Objects += obj/Toolbox/FileWrapper.o
+Objects += obj/Toolbox/UTF_Converter.o
 Objects += obj/Resources/resource.res
 
 Headers  = Tools/*.h

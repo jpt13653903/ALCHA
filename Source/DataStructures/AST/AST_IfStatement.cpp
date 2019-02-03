@@ -21,7 +21,7 @@
 #include "AST_IfStatement.h"
 //------------------------------------------------------------------------------
 
-AST_IfStatement::AST_IfStatement(int Line, const byte* Filename):
+AST_IfStatement::AST_IfStatement(int Line, const char* Filename):
 AST_Base(Line, Filename){
   this->Type = IfStatement;
 

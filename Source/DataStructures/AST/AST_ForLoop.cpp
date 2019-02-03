@@ -21,7 +21,7 @@
 #include "AST_ForLoop.h"
 //------------------------------------------------------------------------------
 
-AST_ForLoop::AST_ForLoop(int Line, const byte* Filename):
+AST_ForLoop::AST_ForLoop(int Line, const char* Filename):
 AST_Base(Line, Filename){
   this->Type = ForLoop;
 

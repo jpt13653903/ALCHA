@@ -21,7 +21,7 @@
 #include "AST_WhileLoop.h"
 //------------------------------------------------------------------------------
 
-AST_WhileLoop::AST_WhileLoop(int Line, const byte* Filename):
+AST_WhileLoop::AST_WhileLoop(int Line, const char* Filename):
 AST_Base(Line, Filename){
   this->Type = WhileLoop;
 

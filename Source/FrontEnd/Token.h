@@ -22,8 +22,11 @@
 #define Token_h
 //------------------------------------------------------------------------------
 
+#include <string>
+//------------------------------------------------------------------------------
+
+#include "General.h"
 #include "Number.h"
-#include "MyString.h"
 //------------------------------------------------------------------------------
 
 struct TOKEN{
@@ -162,10 +165,10 @@ struct TOKEN{
     WaitUntil   = CastOp
   } Type;
 
-  int    Line;  // The line number
-  byte*  ID;    // The identifier ID
-  STRING Data;  // The string contents; otherwise the original token characters
-  NUMBER Value; // Literal value
+  int         Line;  // The line number
+  byte*       ID;    // The identifier ID
+  std::string Data;  // The string contents; otherwise the original token characters
+  NUMBER      Value; // Literal value
 
   TOKEN();
   void Display(); // Used for debugging

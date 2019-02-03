@@ -21,7 +21,7 @@
 #include "AST_HDL.h"
 //------------------------------------------------------------------------------
 
-AST_HDL::AST_HDL(int Line, const byte* Filename): AST_Base(Line, Filename){
+AST_HDL::AST_HDL(int Line, const char* Filename): AST_Base(Line, Filename){
   this->Type = HDL;
 
   Files      = 0;

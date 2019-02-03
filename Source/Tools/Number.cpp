@@ -148,8 +148,11 @@ void NUMBER::Display(){
   double dr = mpq_get_d(Real);
   double di = mpq_get_d(Imag);
 
-  if(r && i) printf("(%s+%sj) (~(%.18lg+%.18lgj))", sr, si, dr, di);
-  else if(i) printf("%sj (~%.18lgj)", si, di);
-  else       printf("%s (~%.18lg)"  , sr, dr);
+  if(r && i) printf("(%s+%sj) (~(%.18g+%.18gj))", sr, si, dr, di);
+  else if(i) printf("%sj (~%.18gj)", si, di);
+  else       printf("%s (~%.18g)"  , sr, dr);
+
+  free(sr);
+  free(si);
 }
 //------------------------------------------------------------------------------

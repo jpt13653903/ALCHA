@@ -23,7 +23,7 @@
 
 AST_Parameter::AST_Parameter(
   int             Line,
-  const byte*     Filename,
+  const char*     Filename,
   DEFINITION_TYPE DefinitionType
 ): AST_Base(Line, Filename){
   this->Type           = Parameter;

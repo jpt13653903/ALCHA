@@ -21,7 +21,7 @@
 #include "AST_Group.h"
 //------------------------------------------------------------------------------
 
-AST_Group::AST_Group(int Line, const byte* Filename): AST_Base(Line, Filename){
+AST_Group::AST_Group(int Line, const char* Filename): AST_Base(Line, Filename){
   Type = Group;
 
   Attributes = 0;
