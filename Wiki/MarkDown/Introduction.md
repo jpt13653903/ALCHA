@@ -57,6 +57,10 @@ Many of the ideas of ALCHA are borrowed from other existing languages.  These in
 ### Publications
 
 - J Taylor and S Winberg
+  [ALCHA: An Alternative Programming Model for FPGA Firmware](http://www.radarconf19.org/)
+  Proceedings of International Radar Conference, Boston, IEEE, April 2019
+
+- J Taylor and S Winberg
   [ALCHA: Introducing Arbitrary Fixed-point and Procedural Programming to FPGA Firmware Design](http://sites.ieee.org/sips2018/)
   Proceedings of International Workshop on Signal Processing Systems, IEEE, October 2018
 
