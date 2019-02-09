@@ -24,8 +24,6 @@
 AST_Import::AST_Import(int Line, const char* Filename):
 AST_Base(Line, Filename){
   this->Type = Import;
-
-  Namespace = 0;
 }
 //------------------------------------------------------------------------------
 
@@ -34,9 +32,9 @@ AST_Import::~AST_Import(){
 //------------------------------------------------------------------------------
 
 void AST_Import::Display(){
-  printf("\n%s:%d -- import \"%s\"", Filename, Line, File.c_str());
-  if(Namespace) printf(" as %s\n", Namespace);
-  else          printf("\n");
+  printf("\n%s:%d -- import \"%s\"", Filename.c_str(), Line, File.c_str());
+  if(Namespace.empty()) printf("\n");
+  else                  printf(" as %s\n", Namespace.c_str());
 
   if(Next) Next->Display();
 }

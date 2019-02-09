@@ -39,8 +39,8 @@ struct AST_ClassDefinition: public AST_Base{
 
     AST_Assignment* Attributes;
 
-    byte          * Identifier;
-    AST_Parameter * Parameters; // Constructor parameters
+    std::string    Identifier;
+    AST_Parameter* Parameters; // Constructor parameters
 
     PARENT* Parents;
 

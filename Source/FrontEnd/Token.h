@@ -166,7 +166,6 @@ struct TOKEN{
   } Type;
 
   int         Line;  // The line number
-  byte*       ID;    // The identifier ID
   std::string Data;  // The string contents; otherwise the original token characters
   NUMBER      Value; // Literal value
 

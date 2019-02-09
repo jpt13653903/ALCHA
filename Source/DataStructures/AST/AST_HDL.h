@@ -27,7 +27,7 @@
 //------------------------------------------------------------------------------
 
 struct AST_HDL: public AST_Base{
-  byte*           Identifier;
+  std::string     Identifier;
   AST_Expression* Files; // Only string constants are allowed
   AST_Assignment* Parameters;
   AST_Definition* Ports;

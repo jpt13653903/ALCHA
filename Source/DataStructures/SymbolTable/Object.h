@@ -40,7 +40,7 @@ struct OBJECT{ // Base class for the symbol table
     FunctionInstance
   } Type;
 
-  const byte* Name; // ID obtained from IdentifierTree
+  std::string Name;
 
            OBJECT(const byte* Name, TYPE Type);
   virtual ~OBJECT();

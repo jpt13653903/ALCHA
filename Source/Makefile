@@ -28,7 +28,7 @@ Version  = -DMAJOR_VERSION=1 -DMINOR_VERSION=0
 # Objects += obj/BackEnd/HDL.o
 # Objects += obj/BackEnd/MemoryTable.o
 # Objects += obj/BackEnd/TimingSpec.o
-Objects += obj/DataStructures/IdentifierTree.o
+# Objects += obj/DataStructures/IdentifierTree.o
 Objects += obj/DataStructures/TokenTree.o
 Objects += obj/DataStructures/AST/AST.o
 Objects += obj/DataStructures/AST/AST_Alias.o

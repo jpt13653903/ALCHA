@@ -53,7 +53,7 @@ AST_Switch::~AST_Switch(){
 //------------------------------------------------------------------------------
 
 void AST_Switch::Display(){
-  printf("\n%s:%d -- switch(", Filename, Line);
+  printf("\n%s:%d -- switch(", Filename.c_str(), Line);
     if(Expression) Expression->Display();
   printf("){\n");
     CASE* Temp = Cases;

@@ -45,8 +45,8 @@ struct AST_Definition: public AST_Base{
     };
 
     struct IDENTIFIER{
-      byte * Identifier; // ID obtained via IdentifierTree
-      ARRAY* Array;      // Null when this is a scalar
+      std::string Identifier;
+      ARRAY*      Array;      // Null when this is a scalar
 
       AST_Assignment* Initialiser;
 

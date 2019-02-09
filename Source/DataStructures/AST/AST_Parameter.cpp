@@ -30,7 +30,6 @@ AST_Parameter::AST_Parameter(
   this->DefinitionType = DefinitionType;
 
   ClassName       = 0;
-  Identifier      = 0;
   ArrayDimensions = 0;
 }
 //------------------------------------------------------------------------------
@@ -61,7 +60,7 @@ void AST_Parameter::Display(){
     default: printf("Invalid definition type:\n");
   }
 
-  printf(" %s", Identifier);
+  printf(" %s", Identifier.c_str());
 
   int j;
   for(j = 0; j < ArrayDimensions; j++) printf("[]");

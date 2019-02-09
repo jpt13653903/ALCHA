@@ -41,7 +41,7 @@ AST_Assignment::~AST_Assignment(){
 //------------------------------------------------------------------------------
 
 void AST_Assignment::Display(){
-  printf("\n%s:%d -- Assignment: ", Filename, Line);
+  printf("\n%s:%d -- Assignment: ", Filename.c_str(), Line);
 
   if(Left){
     if(Left->Left || Left->Right) printf("(");

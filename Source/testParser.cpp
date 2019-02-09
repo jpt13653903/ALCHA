@@ -20,7 +20,6 @@
 
 #include "General.h"
 #include "Parser.h"
-#include "IdentifierTree.h"
 //------------------------------------------------------------------------------
 
 int main(int argc, const char** argv){

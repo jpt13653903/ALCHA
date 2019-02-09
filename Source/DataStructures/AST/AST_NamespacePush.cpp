@@ -37,7 +37,7 @@ AST_NamespacePush::~AST_NamespacePush(){
 //------------------------------------------------------------------------------
 
 void AST_NamespacePush::Display(){
-  printf("\n%s:%d -- NamespacePush:\n ", Filename, Line);
+  printf("\n%s:%d -- NamespacePush:\n ", Filename.c_str(), Line);
 
   if(Namespace){
     if(Namespace->Left || Namespace->Right) printf("(");

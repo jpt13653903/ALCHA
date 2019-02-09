@@ -25,7 +25,6 @@ AST_Group::AST_Group(int Line, const char* Filename): AST_Base(Line, Filename){
   Type = Group;
 
   Attributes = 0;
-  Identifier = 0;
   Body       = 0;
 }
 //------------------------------------------------------------------------------
@@ -37,8 +36,8 @@ AST_Group::~AST_Group(){
 //------------------------------------------------------------------------------
 
 void AST_Group::Display(){
-  if(Identifier) printf("\n%s:%d -- Group (%s):\n", Filename, Line, Identifier);
-  else           printf("\n%s:%d -- Group:\n"     , Filename, Line);
+  if(Identifier.empty()) printf("\n%s:%d -- Group:\n"     , Filename.c_str(), Line);
+  else                   printf("\n%s:%d -- Group (%s):\n", Filename.c_str(), Line, Identifier.c_str());
 
   printf(" Attributes: ");
   if(Attributes){

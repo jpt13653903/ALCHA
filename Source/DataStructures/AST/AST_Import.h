@@ -27,7 +27,7 @@
 
 struct AST_Import: public AST_Base{
   std::string File;
-  byte*       Namespace; // Obtained from IdentifierTree
+  std::string Namespace;
 
   AST_Import(int Line, const char* Filename);
  ~AST_Import();

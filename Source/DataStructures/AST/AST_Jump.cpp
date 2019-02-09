@@ -36,7 +36,7 @@ AST_Jump::~AST_Jump(){
 //------------------------------------------------------------------------------
 
 void AST_Jump::Display(){
-  printf("\n%s:%d -- jump(", Filename, Line);
+  printf("\n%s:%d -- jump(", Filename.c_str(), Line);
   switch(JumpType){
     case Return  : printf("return) "           ); break;
     case Break   : printf("break) "            ); break;

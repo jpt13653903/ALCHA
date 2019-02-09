@@ -167,7 +167,7 @@ AST_ClassDefinition* PARSER::ClassDefinition(){
     delete Node;
     return 0;
   }
-  Node->Identifier = Token.ID;
+  Node->Identifier = Token.Data;
   GetToken();
 
   if(Token.Type == TOKEN::OpenRound){
@@ -236,7 +236,7 @@ AST_EnumDefinition* PARSER::EnumDefinition(){
     delete Node;
     return 0;
   }
-  Node->Identifier = Token.ID;
+  Node->Identifier = Token.Data;
   GetToken();
 
   if(Token.Type != TOKEN::OpenCurly){
@@ -261,7 +261,7 @@ AST_EnumDefinition* PARSER::EnumDefinition(){
       delete Node;
       return 0;
     }
-    Value->Identifier = Token.ID;
+    Value->Identifier = Token.Data;
     GetToken();
   }while(Token.Type == TOKEN::Comma);
 
@@ -310,7 +310,7 @@ AST_Expression* PARSER::Identifier(){
   AST_Expression* Node = new AST_Expression(
     Token.Line, Scanner->Filename.c_str(), AST_Expression::Identifier
   );
-  Node->Name = Token.ID;
+  Node->Name = Token.Data;
 
   GetToken();
   return Node;
@@ -1322,7 +1322,7 @@ AST_Expression* PARSER::TypeIdentifier(){
 }
 //------------------------------------------------------------------------------
 
-AST_Assignment* PARSER::Initialiser(byte* Identifier){
+AST_Assignment* PARSER::Initialiser(std::string& Identifier){
   AST_Assignment* Node;
 
   switch(Token.Type){
@@ -1426,7 +1426,7 @@ AST_Parameter* PARSER::DefParameter(){
   }
 
   if(Token.Type == TOKEN::Identifier){
-    Node->Identifier = Token.ID;
+    Node->Identifier = Token.Data;
     GetToken();
 
   }else{
@@ -1488,7 +1488,7 @@ AST_Definition::IDENTIFIER* PARSER::IdentifierList(){
   if(Token.Type != TOKEN::Identifier) return 0;
 
   Head = Node = new AST_Definition::IDENTIFIER;
-  Node->Identifier = Token.ID;
+  Node->Identifier = Token.Data;
   GetToken();
 
   Node->Array = Array = ArrayDefinition();
@@ -1540,7 +1540,7 @@ AST_Definition::IDENTIFIER* PARSER::IdentifierList(){
     }
     Node->Next = new AST_Definition::IDENTIFIER;
     Node = Node->Next;
-    Node->Identifier = Token.ID;
+    Node->Identifier = Token.Data;
     GetToken();
 
     Node->Array = Array = ArrayDefinition();
@@ -2055,7 +2055,7 @@ AST_ForLoop* PARSER::ForLoop(){
     delete Node;
     return 0;
   }
-  Node->Identifier = Token.ID;
+  Node->Identifier = Token.Data;
   GetToken();
 
   if(Token.Type != TOKEN::In){
@@ -2105,7 +2105,7 @@ AST_Import* PARSER::Import(){
       delete Node;
       return 0;
     }
-    Node->Namespace = Token.ID;
+    Node->Namespace = Token.Data;
     GetToken();
   }
 
@@ -2210,7 +2210,7 @@ AST_Alias* PARSER::Alias(){
     delete Node;
     return 0;
   }
-  Node->Identifier = Token.ID;
+  Node->Identifier = Token.Data;
   GetToken();
 
   if(Token.Type != TOKEN::Assign){
@@ -2248,7 +2248,7 @@ AST_Group* PARSER::Group(){
   }
 
   if(Token.Type == TOKEN::Identifier){
-    Node->Identifier = Token.ID;
+    Node->Identifier = Token.Data;
     GetToken();
   }
 
@@ -2371,7 +2371,7 @@ AST_HDL* PARSER::HDL(){
     delete Node;
     return 0;
   }
-  Node->Identifier = Token.ID;
+  Node->Identifier = Token.Data;
   GetToken();
 
   if(Token.Type == TOKEN::OpenRound){

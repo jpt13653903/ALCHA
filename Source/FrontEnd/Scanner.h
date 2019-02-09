@@ -47,7 +47,6 @@ Tokens:
 #include "TokenTree.h"
 #include "Dictionary.h"
 #include "FileWrapper.h"
-#include "IdentifierTree.h"
 //------------------------------------------------------------------------------
 
 class SCANNER{

@@ -36,7 +36,7 @@ AST_FSM::~AST_FSM(){
 //------------------------------------------------------------------------------
 
 void AST_FSM::Display(){
-  printf("\n%s:%d -- fsm(", Filename, Line);
+  printf("\n%s:%d -- fsm(", Filename.c_str(), Line);
     if(Parameters) Parameters->Display();
   printf("){\n");
     if(Statements) Statements->Display();

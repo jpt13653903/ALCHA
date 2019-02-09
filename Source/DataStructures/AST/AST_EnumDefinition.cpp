@@ -33,10 +33,8 @@ AST_EnumDefinition::VALUE::~VALUE(){
 
 AST_EnumDefinition::AST_EnumDefinition(int Line, const char* Filename):
 AST_Base(Line, Filename){
-  Type = EnumDefinition;
-
-  Identifier = 0;
-  Values     = 0;
+  Type   = EnumDefinition;
+  Values = 0;
 }
 //------------------------------------------------------------------------------
 
@@ -46,12 +44,15 @@ AST_EnumDefinition::~AST_EnumDefinition(){
 //------------------------------------------------------------------------------
 
 void AST_EnumDefinition::Display(){
-  printf("\n%s:%d -- Enum Definition (%s):\n", Filename, Line, Identifier);
+  printf("\n%s:%d -- Enum Definition (%s):\n",
+         Filename.c_str(),
+         Line,
+         Identifier.c_str());
 
   printf(" Values: ");
   VALUE* Value = Values;
   while(Value){
-    printf("%s", Value->Identifier);
+    printf("%s", Value->Identifier.c_str());
     Value = Value->Next;
     if(Value) printf(", ");
     else      printf("\n");

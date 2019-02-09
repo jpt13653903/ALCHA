@@ -23,17 +23,15 @@
 
 TOKEN::TOKEN(){
   Line = 0;
-  ID   = 0;
   Type = Unknown;
 }
 //------------------------------------------------------------------------------
 
 void TOKEN::Display(){
   printf(ANSI_FG_CYAN "Token: " ANSI_RESET);
-  printf(ANSI_FG_BRIGHT_BLACK "Type = "  ANSI_RESET "%3d ", (int)Type);
-  printf(ANSI_FG_BRIGHT_BLACK "Line = "  ANSI_RESET "%5d ", Line);
-  printf(ANSI_FG_BRIGHT_BLACK "ID = "    ANSI_RESET "%-20s ", (char*)ID);
-  printf(ANSI_FG_BRIGHT_BLACK "Data = "  ANSI_RESET "%-40s ", (char*)Data.c_str());
+  printf(ANSI_FG_BRIGHT_BLACK "Type = "  ANSI_RESET "%3d "  , (int)Type);
+  printf(ANSI_FG_BRIGHT_BLACK "Line = "  ANSI_RESET "%5d "  , Line);
+  printf(ANSI_FG_BRIGHT_BLACK "Data = "  ANSI_RESET "%-40s ", Data.c_str());
   printf(ANSI_FG_BRIGHT_BLACK "Value = " ANSI_RESET ""); Value.Display(); printf("\n");
 }
 //------------------------------------------------------------------------------

@@ -27,7 +27,6 @@ AST_HDL::AST_HDL(int Line, const char* Filename): AST_Base(Line, Filename){
   Files      = 0;
   Ports      = 0;
   Parameters = 0;
-  Identifier = 0;
 }
 //------------------------------------------------------------------------------
 
@@ -39,7 +38,7 @@ AST_HDL::~AST_HDL(){
 //------------------------------------------------------------------------------
 
 void AST_HDL::Display(){
-  printf("\n%s:%d -- hdl (%s):\n", Filename, Line, Identifier);
+  printf("\n%s:%d -- hdl (%s):\n", Filename.c_str(), Line, Identifier.c_str());
   printf(" Files:\n  "     ); if(Files     ) Files     ->Display(); printf("\n");
   printf(" Parameters:\n  "); if(Parameters) Parameters->Display();
   printf(" Ports:\n  "     ); if(Ports     ) Ports     ->Display();

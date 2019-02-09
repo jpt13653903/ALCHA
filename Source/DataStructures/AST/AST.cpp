@@ -26,7 +26,7 @@ AST_Base* AST = 0;
 
 AST_Base::AST_Base(int Line, const char* Filename){
   this->Line     = Line;
-  this->Filename = IdentifierTree.GetID((const byte*)Filename);
+  this->Filename = Filename;
   this->Next     = 0;
 }
 //------------------------------------------------------------------------------

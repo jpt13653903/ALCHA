@@ -37,7 +37,7 @@ AST_WhileLoop::~AST_WhileLoop(){
 //------------------------------------------------------------------------------
 
 void AST_WhileLoop::Display(){
-  printf("\n%s:%d -- while(", Filename, Line);
+  printf("\n%s:%d -- while(", Filename.c_str(), Line);
     if(Condition) Condition->Display();
   printf("){\n");
     if(Statements) Statements->Display();

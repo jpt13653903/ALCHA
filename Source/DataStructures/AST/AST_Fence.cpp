@@ -31,7 +31,7 @@ AST_Fence::~AST_Fence(){
 //------------------------------------------------------------------------------
 
 void AST_Fence::Display(){
-  printf("\n%s:%d -- Fence\n", Filename, Line);
+  printf("\n%s:%d -- Fence\n", Filename.c_str(), Line);
 
   if(Next) Next->Display();
 }

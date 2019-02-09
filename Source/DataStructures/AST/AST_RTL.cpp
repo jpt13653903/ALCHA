@@ -36,7 +36,7 @@ AST_RTL::~AST_RTL(){
 //------------------------------------------------------------------------------
 
 void AST_RTL::Display(){
-  printf("\n%s:%d -- rtl(", Filename, Line);
+  printf("\n%s:%d -- rtl(", Filename.c_str(), Line);
     if(Parameters) Parameters->Display();
   printf("){\n");
     if(Statements) Statements->Display();

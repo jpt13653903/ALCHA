@@ -35,8 +35,8 @@ struct AST_Parameter: public AST_Base{
   } DefinitionType;
   AST_Expression* ClassName; // For class instances
 
-  int   ArrayDimensions;
-  byte* Identifier; // ID obtained via IdentifierTree
+  int         ArrayDimensions;
+  std::string Identifier;
 
   AST_Parameter(int Line, const char* Filename, DEFINITION_TYPE DefinitionType);
  ~AST_Parameter();

@@ -91,7 +91,7 @@ class PARSER{
     AST_Expression* Expression     (); // AKA Conditional
     AST_Expression* TypeIdentifier ();
 
-    AST_Assignment            * Initialiser    (byte* Identifier);
+    AST_Assignment            * Initialiser    (std::string& Identifier);
     AST_Definition::ARRAY     * ArrayDefinition();
     AST_Definition::IDENTIFIER* IdentifierList ();
 

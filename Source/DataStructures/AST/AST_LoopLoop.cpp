@@ -37,7 +37,7 @@ AST_LoopLoop::~AST_LoopLoop(){
 //------------------------------------------------------------------------------
 
 void AST_LoopLoop::Display(){
-  printf("\n%s:%d -- loop(", Filename, Line);
+  printf("\n%s:%d -- loop(", Filename.c_str(), Line);
     if(Count) Count->Display();
     else      printf("{inf}");
   printf("){\n");

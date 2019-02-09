@@ -25,7 +25,6 @@ AST_ForLoop::AST_ForLoop(int Line, const char* Filename):
 AST_Base(Line, Filename){
   this->Type = ForLoop;
 
-  Identifier = 0;
   Range      = 0;
   Statements = 0;
 }
@@ -38,7 +37,7 @@ AST_ForLoop::~AST_ForLoop(){
 //------------------------------------------------------------------------------
 
 void AST_ForLoop::Display(){
-  printf("\n%s:%d -- for(%s in ", Filename, Line, Identifier);
+  printf("\n%s:%d -- for(%s in ", Filename.c_str(), Line, Identifier.c_str());
     if(Range) Range->Display();
   printf("){\n");
     if(Statements) Statements->Display();

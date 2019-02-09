@@ -26,9 +26,8 @@
 //------------------------------------------------------------------------------
 
 struct AST_Alias: public AST_Base{
-    byte          * Identifier;
-    AST_Expression* Expression;
-
+    std::string     Identifier;
+    AST_Expression* Expression; 
     AST_Alias(int Line, const char* Filename);
    ~AST_Alias();
 

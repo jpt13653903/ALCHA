@@ -39,7 +39,7 @@ AST_IfStatement::~AST_IfStatement(){
 //------------------------------------------------------------------------------
 
 void AST_IfStatement::Display(){
-  printf("\n%s:%d -- if(", Filename, Line);
+  printf("\n%s:%d -- if(", Filename.c_str(), Line);
     if(Condition) Condition->Display();
   printf("){\n");
     if(TrueStatements) TrueStatements->Display();

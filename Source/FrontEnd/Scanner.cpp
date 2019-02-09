@@ -433,7 +433,6 @@ bool SCANNER::Identifier(TOKEN* Token){
 
   switch(Token->Type){
     case 0:
-      Token->ID   = IdentifierTree.GetID((const byte*)Token->Data.c_str());
       Token->Type = TOKEN::Identifier;
       break;
 
@@ -795,7 +794,6 @@ bool SCANNER::Open(const char* Filename){
 
 bool SCANNER::GetToken(TOKEN* Token){
   Token->Line = Line;
-  Token->ID   = 0;
   Token->Type = TOKEN::Unknown;
   Token->Data.clear();
 

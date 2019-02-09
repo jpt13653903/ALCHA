@@ -40,7 +40,6 @@ AST_Base(Line, Filename){
   Type = ClassDefinition;
 
   Attributes = 0;
-  Identifier = 0;
   Parameters = 0;
 
   Parents = 0;
@@ -58,7 +57,10 @@ AST_ClassDefinition::~AST_ClassDefinition(){
 //------------------------------------------------------------------------------
 
 void AST_ClassDefinition::Display(){
-  printf("\n%s:%d -- Class Definition (%s):\n", Filename, Line, Identifier);
+  printf("\n%s:%d -- Class Definition (%s):\n",
+         Filename.c_str(),
+         Line,
+         Identifier.c_str());
 
   if(Attributes){
     printf(" Attributes:\n"); Attributes->Display(); printf("\n");

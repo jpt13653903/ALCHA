@@ -36,7 +36,6 @@ AST_Definition::ARRAY::~ARRAY(){
 AST_Definition::IDENTIFIER::IDENTIFIER(){
   Next        = 0;
   Array       = 0;
-  Identifier  = 0;
   Initialiser = 0;
 
   Function     = false;
@@ -78,7 +77,7 @@ AST_Definition::~AST_Definition(){
 //------------------------------------------------------------------------------
 
 void AST_Definition::Display(){
-  printf("\n%s:%d -- Definition (", Filename, Line);
+  printf("\n%s:%d -- Definition (", Filename.c_str(), Line);
 
   switch(DefinitionType){
     case Pin    : printf("Pin):\n"     ); break;
@@ -125,7 +124,7 @@ void AST_Definition::Display(){
   IDENTIFIER* Identifier = Identifiers;
   ARRAY     * Array;
   while(Identifier){
-    printf(" - %s", Identifier->Identifier);
+    printf(" - %s", Identifier->Identifier.c_str());
     Array = Identifier->Array;
     while(Array){
       printf("[");

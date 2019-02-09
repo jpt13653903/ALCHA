@@ -28,8 +28,8 @@
 struct AST_Group: public AST_Base{
   AST_Assignment* Attributes;
 
-  byte    * Identifier;
-  AST_Base* Body;
+  std::string Identifier;
+  AST_Base*   Body;
 
   AST_Group(int Line, const char* Filename);
  ~AST_Group();

@@ -27,7 +27,7 @@
 
 struct AST_EnumDefinition: public AST_Base{
   struct VALUE{ // Link-list node for enumeration values
-    byte* Identifier; // Obtained through IdentifierTree
+    std::string Identifier;
 
     VALUE* Next;
 
@@ -35,8 +35,8 @@ struct AST_EnumDefinition: public AST_Base{
    ~VALUE(); // Also deletes the rest of the list
   };
 
-  byte * Identifier; // Obtained through IdentifierTree
-  VALUE* Values;
+  std::string Identifier;
+  VALUE*      Values;
 
   AST_EnumDefinition(int Line, const char* Filename);
  ~AST_EnumDefinition();

@@ -30,7 +30,6 @@ AST_Expression::AST_Expression(
   this->Type           = Expression;
   this->ExpressionType = ExpressionType;
 
-  Name     = 0;
   Value    = 0;
   StrValue = 0;
 
@@ -67,8 +66,8 @@ void AST_Expression::Display(){
       break;
 
     case Identifier:
-      if(Name) printf("%s", Name);
-      else     printf("(Identifier node has no name)");
+      if(Name.empty()) printf("(Identifier node has no name)");
+      else             printf("%s", Name.c_str());
       break;
 
     case Array:             printf("{Array}"       ); break;

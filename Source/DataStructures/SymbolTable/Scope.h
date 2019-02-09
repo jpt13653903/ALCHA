@@ -22,12 +22,16 @@
 #define Scope_h
 //------------------------------------------------------------------------------
 
+#include <map>
+//------------------------------------------------------------------------------
+
 #include "Object.h"
-#include "SymbolTree.h"
 //------------------------------------------------------------------------------
 
 class SCOPE{
   private:
+    typedef std::map<std::string, OBJECT*> SYMBOL_TREE;
+
     struct NODE{
       SYMBOL_TREE Symbols;   // In use when this is a scope
       OBJECT*     Namespace; // In use when this is a name-space (null otherwise)

@@ -25,7 +25,7 @@
 #include <string>
 //------------------------------------------------------------------------------
 
-#include "IdentifierTree.h"
+#include "General.h"
 //------------------------------------------------------------------------------
 
 struct AST_Base{ // The base type for AST nodes
@@ -54,9 +54,9 @@ struct AST_Base{ // The base type for AST nodes
     HDL
   } Type;
 
-  int       Line;
-  byte*     Filename; // Memory handled by IdentifierTree
-  AST_Base* Next;     // Next sibling
+  int         Line;
+  std::string Filename;
+  AST_Base*   Next; // Next sibling
 
            AST_Base(int Line, const char* Filename);
   virtual ~AST_Base(); // Also deletes the rest of the linked list

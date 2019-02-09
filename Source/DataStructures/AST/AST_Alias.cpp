@@ -24,7 +24,6 @@
 AST_Alias::AST_Alias(int Line, const char* Filename): AST_Base(Line, Filename){
   Type = Alias;
 
-  Identifier = 0;
   Expression = 0;
 }
 //------------------------------------------------------------------------------
@@ -35,7 +34,7 @@ AST_Alias::~AST_Alias(){
 //------------------------------------------------------------------------------
 
 void AST_Alias::Display(){
-  printf("\n%s:%d -- Alias (%s):\n", Filename, Line, Identifier);
+  printf("\n%s:%d -- Alias (%s):\n", Filename.c_str(), Line, Identifier.c_str());
 
   Expression->Display();
 
