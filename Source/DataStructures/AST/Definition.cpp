@@ -79,7 +79,8 @@ DEFINITION::~DEFINITION(){
 //------------------------------------------------------------------------------
 
 void DEFINITION::Display(){
-  printf("\n%s:%d -- DEFINITION (", Filename.c_str(), Line);
+  DisplayInfo();
+  printf("Definition (");
 
   switch(DefinitionType){
     case Pin    : printf("Pin):\n"     ); break;

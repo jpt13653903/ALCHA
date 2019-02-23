@@ -40,7 +40,8 @@ IF_STATEMENT::~IF_STATEMENT(){
 //------------------------------------------------------------------------------
 
 void IF_STATEMENT::Display(){
-  printf("\n%s:%d -- if(", Filename.c_str(), Line);
+  DisplayInfo();
+  printf("if(");
     if(Condition) Condition->Display();
   printf("){\n");
     if(TrueStatements) TrueStatements->Display();

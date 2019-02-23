@@ -18,32 +18,21 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "RTL.h"
+#include "Engine.h"
 //------------------------------------------------------------------------------
 
-using namespace AST;
+using namespace std;
 //------------------------------------------------------------------------------
 
-RTL::RTL(int Line, const char* Filename): BASE(Line, Filename, TYPE::RTL){
-  Parameters = 0;
-  Statements = 0;
+ENGINE::ENGINE(){
 }
 //------------------------------------------------------------------------------
 
-RTL::~RTL(){
-  if(Parameters) delete Parameters;
-  if(Statements) delete Statements;
+ENGINE::~ENGINE(){
 }
 //------------------------------------------------------------------------------
 
-void RTL::Display(){
-  DisplayInfo();
-  printf("rtl(");
-    if(Parameters) Parameters->Display();
-  printf("){\n");
-    if(Statements) Statements->Display();
-  printf("}\n");
-
-  if(Next) Next->Display();
+void ENGINE::Run(){
 }
 //------------------------------------------------------------------------------
+

@@ -33,7 +33,8 @@ FENCE::~FENCE(){
 //------------------------------------------------------------------------------
 
 void FENCE::Display(){
-  printf("\n%s:%d -- FENCE\n", Filename.c_str(), Line);
+  DisplayInfo();
+  printf("Fence\n");
 
   if(Next) Next->Display();
 }

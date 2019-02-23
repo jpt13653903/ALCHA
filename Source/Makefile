@@ -20,13 +20,15 @@ LibInclude = -LLibraries/lib
 #-------------------------------------------------------------------------------
 
 Version  = -DMAJOR_VERSION=0 -DMINOR_VERSION=1
+#-------------------------------------------------------------------------------
 
-# Objects  = obj/BackEnd/Altera.o
-# Objects += obj/BackEnd/ClockTree.o
-# Objects += obj/BackEnd/HDL.o
-# Objects += obj/BackEnd/MemoryTable.o
-# Objects += obj/BackEnd/TimingSpec.o
-# Objects += obj/DataStructures/IdentifierTree.o
+Objects  = obj/Tools/Number.o
+
+Objects += obj/Toolbox/General.o
+Objects += obj/Toolbox/Dictionary.o
+Objects += obj/Toolbox/FileWrapper.o
+Objects += obj/Toolbox/UTF_Converter.o
+
 Objects += obj/DataStructures/TokenTree.o
 
 Objects += obj/DataStructures/AST/Base.o
@@ -69,23 +71,28 @@ Objects += obj/FrontEnd/Parser.o
 Objects += obj/FrontEnd/Scanner.o
 Objects += obj/FrontEnd/Token.o
 
-Objects += obj/Tools/Number.o
+Objects += obj/Engine/Engine.o
 
-Objects += obj/Toolbox/General.o
-Objects += obj/Toolbox/Dictionary.o
-Objects += obj/Toolbox/FileWrapper.o
-Objects += obj/Toolbox/UTF_Converter.o
+# Objects += obj/BackEnd/Altera.o
+# Objects += obj/BackEnd/ClockTree.o
+# Objects += obj/BackEnd/HDL.o
+# Objects += obj/BackEnd/MemoryTable.o
+# Objects += obj/BackEnd/TimingSpec.o
 
 Objects += obj/Resources/resource.res
+#-------------------------------------------------------------------------------
 
-Headers  = Tools/*.h
-# Headers += BackEnd/*.h
-Headers += FrontEnd/*.h
+Headers  = Libraries/include/*.h
+
+Headers += Tools/*.h
+Headers += $(Toolbox)/*.h          
 Headers += DataStructures/*.h
 Headers += DataStructures/AST/*.h
 Headers += DataStructures/Objects/*.h
-Headers += Libraries/include/*.h
-Headers += $(Toolbox)/*.h          
+
+Headers += FrontEnd/*.h
+Headers += Engine/*.h
+# Headers += BackEnd/*.h
 
 # Auto-generated headers
 Headers += FrontEnd/CharacterNames.h

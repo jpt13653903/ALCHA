@@ -37,8 +37,10 @@ AST::GROUP::~GROUP(){
 //------------------------------------------------------------------------------
 
 void AST::GROUP::Display(){
-  if(Identifier.empty()) printf("\n%s:%d -- GROUP:\n"     , Filename.c_str(), Line);
-  else                   printf("\n%s:%d -- GROUP (%s):\n", Filename.c_str(), Line, Identifier.c_str());
+  DisplayInfo();
+
+  if(Identifier.empty()) printf("Group:\n");
+  else                   printf("Group (%s):\n", Identifier.c_str());
 
   printf(" Attributes: ");
   if(Attributes){

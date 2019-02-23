@@ -42,7 +42,8 @@ PARAMETER::~PARAMETER(){
 //------------------------------------------------------------------------------
 
 void PARAMETER::Display(){
-  printf(" Line %d -- PARAMETER (", Line);
+  DisplayInfo();
+  printf("Parameter (");
 
   switch(DefinitionType){
     case Auto   : printf("Auto):"     ); break;

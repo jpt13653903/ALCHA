@@ -35,7 +35,8 @@ ALIAS::~ALIAS(){
 //------------------------------------------------------------------------------
 
 void ALIAS::Display(){
-  printf("\n%s:%d -- ALIAS (%s):\n", Filename.c_str(), Line, Identifier.c_str());
+  DisplayInfo();
+  printf("Alias (%s):\n", Identifier.c_str());
 
   Expression->Display();
 

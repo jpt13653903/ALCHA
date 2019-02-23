@@ -22,6 +22,7 @@
 #define Objects_Base_h
 //------------------------------------------------------------------------------
 
+#include <map>
 #include <string>
 //------------------------------------------------------------------------------
 
@@ -44,7 +45,8 @@ namespace OBJECTS{
       FunctionInstance
     } Type;
 
-    std::string Name;
+    std::string                  Name;
+    std::map<std::string, BASE*> Attributes;
 
              BASE(const char* Name, TYPE Type);
     virtual ~BASE();

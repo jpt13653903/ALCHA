@@ -43,7 +43,8 @@ ASSIGNMENT::~ASSIGNMENT(){
 //------------------------------------------------------------------------------
 
 void ASSIGNMENT::Display(){
-  printf("\n%s:%d -- ASSIGNMENT: ", Filename.c_str(), Line);
+  DisplayInfo();
+  printf("Assignment: ");
 
   if(Left){
     if(Left->Left || Left->Right) printf("(");

@@ -38,7 +38,8 @@ WHILE_LOOP::~WHILE_LOOP(){
 //------------------------------------------------------------------------------
 
 void WHILE_LOOP::Display(){
-  printf("\n%s:%d -- while(", Filename.c_str(), Line);
+  DisplayInfo();
+  printf("while(");
     if(Condition) Condition->Display();
   printf("){\n");
     if(Statements) Statements->Display();

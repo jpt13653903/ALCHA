@@ -39,7 +39,8 @@ HDL::~HDL(){
 //------------------------------------------------------------------------------
 
 void HDL::Display(){
-  printf("\n%s:%d -- hdl (%s):\n", Filename.c_str(), Line, Identifier.c_str());
+  DisplayInfo();
+  printf("hdl (%s):\n", Identifier.c_str());
   printf(" Files:\n  "     ); if(Files     ) Files     ->Display(); printf("\n");
   printf(" Parameters:\n  "); if(Parameters) Parameters->Display();
   printf(" Ports:\n  "     ); if(Ports     ) Ports     ->Display();

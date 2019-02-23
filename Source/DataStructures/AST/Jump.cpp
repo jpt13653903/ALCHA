@@ -38,7 +38,8 @@ JUMP::~JUMP(){
 //------------------------------------------------------------------------------
 
 void JUMP::Display(){
-  printf("\n%s:%d -- jump(", Filename.c_str(), Line);
+  DisplayInfo();
+  printf("jump(");
   switch(JumpType){
     case Return  : printf("return) "           ); break;
     case Break   : printf("break) "            ); break;

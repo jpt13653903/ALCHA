@@ -57,10 +57,8 @@ CLASS_DEFINITION::~CLASS_DEFINITION(){
 //------------------------------------------------------------------------------
 
 void CLASS_DEFINITION::Display(){
-  printf("\n%s:%d -- Class Definition (%s):\n",
-         Filename.c_str(),
-         Line,
-         Identifier.c_str());
+  DisplayInfo();
+  printf("Class Definition (%s):\n", Identifier.c_str());
 
   if(Attributes){
     printf(" Attributes:\n"); Attributes->Display(); printf("\n");

@@ -38,7 +38,8 @@ FOR_LOOP::~FOR_LOOP(){
 //------------------------------------------------------------------------------
 
 void FOR_LOOP::Display(){
-  printf("\n%s:%d -- for(%s in ", Filename.c_str(), Line, Identifier.c_str());
+  DisplayInfo();
+  printf("for(%s in ", Identifier.c_str());
     if(Range) Range->Display();
   printf("){\n");
     if(Statements) Statements->Display();

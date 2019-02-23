@@ -38,7 +38,8 @@ LOOP_LOOP::~LOOP_LOOP(){
 //------------------------------------------------------------------------------
 
 void LOOP_LOOP::Display(){
-  printf("\n%s:%d -- loop(", Filename.c_str(), Line);
+  DisplayInfo();
+  printf("loop(");
     if(Count) Count->Display();
     else      printf("{inf}");
   printf("){\n");

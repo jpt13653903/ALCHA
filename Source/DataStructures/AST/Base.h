@@ -64,6 +64,7 @@ namespace AST{
              BASE(int Line, const char* Filename, TYPE Type);
     virtual ~BASE(); // Also deletes the rest of the linked list
 
+            void DisplayInfo();
     virtual void Display() = 0;
   };
   //----------------------------------------------------------------------------

@@ -24,7 +24,7 @@
 namespace OBJECTS{
   std::stack<NAMESPACE*> Stack;
   NAMESPACE              Global;
-  NAMESPACE*             Current = 0;
+  NAMESPACE*             Current = &Global;
 }
 //------------------------------------------------------------------------------
 

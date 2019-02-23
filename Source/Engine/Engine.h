@@ -18,32 +18,31 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "RTL.h"
+/* Description
+
+1. Processes the AST and produces the object tree (OBJECTS::Global).
+2. Processes the scripting statements so that the scripting variables become
+   constants, thereby making the resulting object tree synthesisable.
+------------------------------------------------------------------------------*/
+
+#ifndef Engine_h
+#define Engine_h
 //------------------------------------------------------------------------------
 
-using namespace AST;
+#include "Parser.h"
 //------------------------------------------------------------------------------
 
-RTL::RTL(int Line, const char* Filename): BASE(Line, Filename, TYPE::RTL){
-  Parameters = 0;
-  Statements = 0;
-}
+class ENGINE{
+  private:
+
+  public:
+    ENGINE();
+   ~ENGINE();
+
+    void Run();
+};
 //------------------------------------------------------------------------------
 
-RTL::~RTL(){
-  if(Parameters) delete Parameters;
-  if(Statements) delete Statements;
-}
+#endif
 //------------------------------------------------------------------------------
 
-void RTL::Display(){
-  DisplayInfo();
-  printf("rtl(");
-    if(Parameters) Parameters->Display();
-  printf("){\n");
-    if(Statements) Statements->Display();
-  printf("}\n");
-
-  if(Next) Next->Display();
-}
-//------------------------------------------------------------------------------

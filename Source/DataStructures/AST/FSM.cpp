@@ -37,7 +37,8 @@ FSM::~FSM(){
 //------------------------------------------------------------------------------
 
 void FSM::Display(){
-  printf("\n%s:%d -- fsm(", Filename.c_str(), Line);
+  DisplayInfo();
+  printf("fsm(");
     if(Parameters) Parameters->Display();
   printf("){\n");
     if(Statements) Statements->Display();

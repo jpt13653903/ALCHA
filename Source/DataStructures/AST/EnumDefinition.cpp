@@ -46,10 +46,8 @@ ENUM_DEFINITION::~ENUM_DEFINITION(){
 //------------------------------------------------------------------------------
 
 void ENUM_DEFINITION::Display(){
-  printf("\n%s:%d -- Enum Definition (%s):\n",
-         Filename.c_str(),
-         Line,
-         Identifier.c_str());
+  DisplayInfo();
+  printf("Enum Definition (%s):\n", Identifier.c_str());
 
   printf(" Values: ");
   VALUE* Value = Values;

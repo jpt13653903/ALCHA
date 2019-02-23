@@ -54,7 +54,8 @@ SWITCH::~SWITCH(){
 //------------------------------------------------------------------------------
 
 void SWITCH::Display(){
-  printf("\n%s:%d -- switch(", Filename.c_str(), Line);
+  DisplayInfo();
+  printf("switch(");
     if(Expression) Expression->Display();
   printf("){\n");
     CASE* Temp = Cases;

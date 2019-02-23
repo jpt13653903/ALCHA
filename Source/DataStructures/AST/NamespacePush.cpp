@@ -38,7 +38,8 @@ NAMESPACE_PUSH::~NAMESPACE_PUSH(){
 //------------------------------------------------------------------------------
 
 void NAMESPACE_PUSH::Display(){
-  printf("\n%s:%d -- NAMESPACE_PUSH:\n ", Filename.c_str(), Line);
+  DisplayInfo();
+  printf("NamespacePush:\n ");
 
   if(Namespace){
     if(Namespace->Left || Namespace->Right) printf("(");
