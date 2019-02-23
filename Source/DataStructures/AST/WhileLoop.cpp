@@ -18,26 +18,34 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "General.h"
-#include "Parser.h"
+#include "WhileLoop.h"
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv){
-  SetupTerminal();
+using namespace AST;
+//------------------------------------------------------------------------------
 
-  const char*  InputFile = "../Test Cases/FrontEnd/Parser.alc";
-  if(argc > 1) InputFile = argv[1];
+WHILE_LOOP::WHILE_LOOP(int Line, const char* Filename):
+BASE(Line, Filename){
+  this->Type = TYPE::WhileLoop;
 
-  info("InputFile = %s", InputFile);
+  Condition  = 0;
+  Statements = 0;
+}
+//------------------------------------------------------------------------------
 
-  PARSER Parser;
-  AST::Root = Parser.Run(InputFile);
-  if(!AST::Root){
-    error("Error while parsing \"%s\"", InputFile);
-    return -1;
-  }
-  if(AST::Root) delete AST::Root;
+WHILE_LOOP::~WHILE_LOOP(){
+  if(Condition ) delete Condition;
+  if(Statements) delete Statements;
+}
+//------------------------------------------------------------------------------
 
-  return 0;
+void WHILE_LOOP::Display(){
+  printf("\n%s:%d -- while(", Filename.c_str(), Line);
+    if(Condition) Condition->Display();
+  printf("){\n");
+    if(Statements) Statements->Display();
+  printf("}\n");
+
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

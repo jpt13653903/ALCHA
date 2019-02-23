@@ -18,26 +18,34 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "General.h"
-#include "Parser.h"
+#ifndef Parameter_h
+#define Parameter_h
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv){
-  SetupTerminal();
+#include "Expression.h"
+//------------------------------------------------------------------------------
 
-  const char*  InputFile = "../Test Cases/FrontEnd/Parser.alc";
-  if(argc > 1) InputFile = argv[1];
+namespace AST{
+  struct PARAMETER: public BASE{
+    enum DEFINITION_TYPE{
+      Auto,
+      Pin, Net,
+      Byte, Char, Number,
+      Func, // Function pointer
+      ClassInstance
+    } DefinitionType;
+    EXPRESSION* ClassName; // For class instances
 
-  info("InputFile = %s", InputFile);
+    int         ArrayDimensions;
+    std::string Identifier;
 
-  PARSER Parser;
-  AST::Root = Parser.Run(InputFile);
-  if(!AST::Root){
-    error("Error while parsing \"%s\"", InputFile);
-    return -1;
-  }
-  if(AST::Root) delete AST::Root;
+    PARAMETER(int Line, const char* Filename, DEFINITION_TYPE DefinitionType);
+   ~PARAMETER();
 
-  return 0;
+    void Display();
+  };
 }
+//------------------------------------------------------------------------------
+
+#endif
 //------------------------------------------------------------------------------

@@ -25,25 +25,25 @@
 #include "Scanner.h"
 #include "Dictionary.h"
 
-#include "AST_RTL.h"
-#include "AST_FSM.h"
-#include "AST_HDL.h"
-#include "AST_Jump.h"
-#include "AST_Fence.h"
-#include "AST_Alias.h"
-#include "AST_Group.h"
-#include "AST_Import.h"
-#include "AST_Switch.h"
-#include "AST_ForLoop.h"
-#include "AST_LoopLoop.h"
-#include "AST_WhileLoop.h"
-#include "AST_Parameter.h"
-#include "AST_Definition.h"
-#include "AST_Assignment.h"
-#include "AST_IfStatement.h"
-#include "AST_NamespacePush.h"
-#include "AST_EnumDefinition.h"
-#include "AST_ClassDefinition.h"
+#include "AST/RTL.h"
+#include "AST/FSM.h"
+#include "AST/HDL.h"
+#include "AST/Jump.h"
+#include "AST/Fence.h"
+#include "AST/Alias.h"
+#include "AST/Group.h"
+#include "AST/Import.h"
+#include "AST/Switch.h"
+#include "AST/ForLoop.h"
+#include "AST/LoopLoop.h"
+#include "AST/WhileLoop.h"
+#include "AST/Parameter.h"
+#include "AST/Definition.h"
+#include "AST/Assignment.h"
+#include "AST/IfStatement.h"
+#include "AST/NamespacePush.h"
+#include "AST/EnumDefinition.h"
+#include "AST/ClassDefinition.h"
 //------------------------------------------------------------------------------
 
 class PARSER{
@@ -56,79 +56,79 @@ class PARSER{
 
     void GetToken();
 
-    AST_Assignment* AttributeAssignment();
-    AST_Assignment* AttributeList      ();
+    AST::ASSIGNMENT* AttributeAssignment();
+    AST::ASSIGNMENT* AttributeList      ();
 
-    AST_Expression* String    ();
-    AST_Expression* Literal   ();
-    AST_Expression* Identifier();
+    AST::EXPRESSION* String    ();
+    AST::EXPRESSION* Literal   ();
+    AST::EXPRESSION* Identifier();
 
-    AST_Expression* ExpressionList ();
-    AST_Base*       Parameter      ();
-    AST_Base*       ParameterList  ();
-    AST_Expression* Array          ();
-    AST_Expression* ArrayConcat    ();
-    AST_Expression* VectorConcat   ();
+    AST::EXPRESSION* ExpressionList ();
+    AST::BASE*       Parameter      ();
+    AST::BASE*       ParameterList  ();
+    AST::EXPRESSION* Array          ();
+    AST::EXPRESSION* ArrayConcat    ();
+    AST::EXPRESSION* VectorConcat   ();
 
-    AST_Expression* Primary        ();
-    AST_Expression* CastEpr        (AST_Expression* Node);
-    AST_Expression* Cast           ();
-    AST_Expression* Postfix        ();
-    AST_Expression* Unary          ();
-    AST_Expression* Range          ();
-    AST_Expression* Reduction      ();
-    AST_Expression* Stringification();
-    AST_Expression* Replication    ();
-    AST_Expression* Exponential    ();
-    AST_Expression* Multiplicative ();
-    AST_Expression* Additive       ();
-    AST_Expression* Shift          ();
-    AST_Expression* Relational     ();
-    AST_Expression* Equality       ();
-    AST_Expression* BitwiseAND     ();
-    AST_Expression* BitwiseXOR     ();
-    AST_Expression* BitwiseOR      ();
-    AST_Expression* Expression     (); // AKA Conditional
-    AST_Expression* TypeIdentifier ();
+    AST::EXPRESSION* Primary        ();
+    AST::EXPRESSION* CastEpr        (AST::EXPRESSION* Node);
+    AST::EXPRESSION* Cast           ();
+    AST::EXPRESSION* Postfix        ();
+    AST::EXPRESSION* Unary          ();
+    AST::EXPRESSION* Range          ();
+    AST::EXPRESSION* Reduction      ();
+    AST::EXPRESSION* Stringification();
+    AST::EXPRESSION* Replication    ();
+    AST::EXPRESSION* Exponential    ();
+    AST::EXPRESSION* Multiplicative ();
+    AST::EXPRESSION* Additive       ();
+    AST::EXPRESSION* Shift          ();
+    AST::EXPRESSION* Relational     ();
+    AST::EXPRESSION* Equality       ();
+    AST::EXPRESSION* BitwiseAND     ();
+    AST::EXPRESSION* BitwiseXOR     ();
+    AST::EXPRESSION* BitwiseOR      ();
+    AST::EXPRESSION* Expression     (); // AKA Conditional
+    AST::EXPRESSION* TypeIdentifier ();
 
-    AST_Assignment            * Initialiser    (std::string& Identifier);
-    AST_Definition::ARRAY     * ArrayDefinition();
-    AST_Definition::IDENTIFIER* IdentifierList ();
+    AST::ASSIGNMENT            * Initialiser    (std::string& Identifier);
+    AST::DEFINITION::ARRAY     * ArrayDefinition();
+    AST::DEFINITION::IDENTIFIER* IdentifierList ();
 
     // Define function parameters
-    AST_Parameter* DefParameter    ();
-    AST_Parameter* DefParameterList();
+    AST::PARAMETER* DefParameter    ();
+    AST::PARAMETER* DefParameterList();
 
-    bool ValidNamespaceSpecifier(AST_Expression* Node); // Used by Other()
-    bool ValidTypeSpecifier     (AST_Expression* Node); // Used by Other()
-    bool ValidLHS               (AST_Expression* Node); // Used by Other()
+    bool ValidNamespaceSpecifier(AST::EXPRESSION* Node); // Used by Other()
+    bool ValidTypeSpecifier     (AST::EXPRESSION* Node); // Used by Other()
+    bool ValidLHS               (AST::EXPRESSION* Node); // Used by Other()
 
-    AST_ClassDefinition * ClassDefinition();
-    AST_EnumDefinition  * EnumDefinition();
-    AST_IfStatement     * IfStatement();
-    AST_Definition      * Definition();
-    AST_WhileLoop       * WhileLoop();
-    AST_LoopLoop        * LoopLoop();
-    AST_ForLoop         * ForLoop();
-    AST_Import          * Import();
-    AST_Switch          * Switch();
-    AST_Alias           * Alias();
-    AST_Group           * Group();
-    AST_Base            * Other();
-    AST_Jump            * Jump();
-    AST_RTL             * RTL();
-    AST_FSM             * FSM();
-    AST_HDL             * HDL();
+    AST::CLASS_DEFINITION * ClassDefinition();
+    AST::ENUM_DEFINITION  * EnumDefinition();
+    AST::IF_STATEMENT     * IfStatement();
+    AST::DEFINITION       * Definition();
+    AST::WHILE_LOOP       * WhileLoop();
+    AST::LOOP_LOOP        * LoopLoop();
+    AST::FOR_LOOP         * ForLoop();
+    AST::IMPORT           * Import();
+    AST::SWITCH           * Switch();
+    AST::ALIAS            * Alias();
+    AST::GROUP            * Group();
+    AST::BASE             * Other();
+    AST::JUMP             * Jump();
+    AST::RTL              * RTL();
+    AST::FSM              * FSM();
+    AST::HDL              * HDL();
 
-    AST_Base* Statement     ();
-    AST_Base* Statements    ();
-    AST_Base* StatementBlock();
+    AST::BASE* Statement     ();
+    AST::BASE* Statements    ();
+    AST::BASE* StatementBlock();
 
   public:
     PARSER();
    ~PARSER();
 
-    AST_Base* Run(const char* Filename);
+    AST::BASE* Run(const char* Filename);
 };
 //------------------------------------------------------------------------------
 

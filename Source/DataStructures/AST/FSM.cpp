@@ -18,26 +18,33 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "General.h"
-#include "Parser.h"
+#include "FSM.h"
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv){
-  SetupTerminal();
+using namespace AST;
+//------------------------------------------------------------------------------
 
-  const char*  InputFile = "../Test Cases/FrontEnd/Parser.alc";
-  if(argc > 1) InputFile = argv[1];
+FSM::FSM(int Line, const char* Filename): BASE(Line, Filename){
+  this->Type = TYPE::FSM;
 
-  info("InputFile = %s", InputFile);
+  Parameters = 0;
+  Statements = 0;
+}
+//------------------------------------------------------------------------------
 
-  PARSER Parser;
-  AST::Root = Parser.Run(InputFile);
-  if(!AST::Root){
-    error("Error while parsing \"%s\"", InputFile);
-    return -1;
-  }
-  if(AST::Root) delete AST::Root;
+FSM::~FSM(){
+  if(Parameters) delete Parameters;
+  if(Statements) delete Statements;
+}
+//------------------------------------------------------------------------------
 
-  return 0;
+void FSM::Display(){
+  printf("\n%s:%d -- fsm(", Filename.c_str(), Line);
+    if(Parameters) Parameters->Display();
+  printf("){\n");
+    if(Statements) Statements->Display();
+  printf("}\n");
+
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

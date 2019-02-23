@@ -18,26 +18,34 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "General.h"
-#include "Parser.h"
+#include "HDL.h"
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv){
-  SetupTerminal();
+using namespace AST;
+//------------------------------------------------------------------------------
 
-  const char*  InputFile = "../Test Cases/FrontEnd/Parser.alc";
-  if(argc > 1) InputFile = argv[1];
+HDL::HDL(int Line, const char* Filename): BASE(Line, Filename){
+  this->Type = TYPE::HDL;
 
-  info("InputFile = %s", InputFile);
+  Files      = 0;
+  Ports      = 0;
+  Parameters = 0;
+}
+//------------------------------------------------------------------------------
 
-  PARSER Parser;
-  AST::Root = Parser.Run(InputFile);
-  if(!AST::Root){
-    error("Error while parsing \"%s\"", InputFile);
-    return -1;
-  }
-  if(AST::Root) delete AST::Root;
+HDL::~HDL(){
+  if(Files     ) delete Files;
+  if(Ports     ) delete Ports;
+  if(Parameters) delete Parameters;
+}
+//------------------------------------------------------------------------------
 
-  return 0;
+void HDL::Display(){
+  printf("\n%s:%d -- hdl (%s):\n", Filename.c_str(), Line, Identifier.c_str());
+  printf(" Files:\n  "     ); if(Files     ) Files     ->Display(); printf("\n");
+  printf(" Parameters:\n  "); if(Parameters) Parameters->Display();
+  printf(" Ports:\n  "     ); if(Ports     ) Ports     ->Display();
+
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

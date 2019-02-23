@@ -18,26 +18,34 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "General.h"
-#include "Parser.h"
+#include "ForLoop.h"
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv){
-  SetupTerminal();
+using namespace AST;
+//------------------------------------------------------------------------------
 
-  const char*  InputFile = "../Test Cases/FrontEnd/Parser.alc";
-  if(argc > 1) InputFile = argv[1];
+FOR_LOOP::FOR_LOOP(int Line, const char* Filename):
+BASE(Line, Filename){
+  this->Type = TYPE::ForLoop;
 
-  info("InputFile = %s", InputFile);
+  Range      = 0;
+  Statements = 0;
+}
+//------------------------------------------------------------------------------
 
-  PARSER Parser;
-  AST::Root = Parser.Run(InputFile);
-  if(!AST::Root){
-    error("Error while parsing \"%s\"", InputFile);
-    return -1;
-  }
-  if(AST::Root) delete AST::Root;
+FOR_LOOP::~FOR_LOOP(){
+  if(Range     ) delete Range;
+  if(Statements) delete Statements;
+}
+//------------------------------------------------------------------------------
 
-  return 0;
+void FOR_LOOP::Display(){
+  printf("\n%s:%d -- for(%s in ", Filename.c_str(), Line, Identifier.c_str());
+    if(Range) Range->Display();
+  printf("){\n");
+    if(Statements) Statements->Display();
+  printf("}\n");
+
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

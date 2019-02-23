@@ -18,26 +18,35 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "General.h"
-#include "Parser.h"
+#ifndef EnumDefinition_h
+#define EnumDefinition_h
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv){
-  SetupTerminal();
+#include "Base.h"
+//------------------------------------------------------------------------------
 
-  const char*  InputFile = "../Test Cases/FrontEnd/Parser.alc";
-  if(argc > 1) InputFile = argv[1];
+namespace AST{
+  struct ENUM_DEFINITION: public BASE{
+    struct VALUE{ // Link-list node for enumeration values
+      std::string Identifier;
 
-  info("InputFile = %s", InputFile);
+      VALUE* Next;
 
-  PARSER Parser;
-  AST::Root = Parser.Run(InputFile);
-  if(!AST::Root){
-    error("Error while parsing \"%s\"", InputFile);
-    return -1;
-  }
-  if(AST::Root) delete AST::Root;
+      VALUE();
+     ~VALUE(); // Also deletes the rest of the list
+    };
 
-  return 0;
+    std::string Identifier;
+    VALUE*      Values;
+
+    ENUM_DEFINITION(int Line, const char* Filename);
+   ~ENUM_DEFINITION();
+
+    void Display();
+  };
 }
 //------------------------------------------------------------------------------
+
+#endif
+//------------------------------------------------------------------------------
+

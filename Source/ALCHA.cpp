@@ -69,8 +69,8 @@ int main(int argc, char** argv){
   }
 
   PARSER Parser;
-  AST = Parser.Run(argv[1]);
-  if(!AST) return -1;
+  AST::Root = Parser.Run(argv[1]);
+  if(!AST::Root) return -1;
 
   FILE_WRAPPER Files;
   char Filename[0x1000];
@@ -89,7 +89,7 @@ int main(int argc, char** argv){
     "endmodule\n"
   );
 
-  if(AST) delete AST;
+  if(AST::Root) delete AST::Root;
   return 0;
 }
 //------------------------------------------------------------------------------

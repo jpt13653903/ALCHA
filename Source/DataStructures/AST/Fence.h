@@ -18,26 +18,23 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "General.h"
-#include "Parser.h"
+#ifndef Fence_h
+#define Fence_h
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv){
-  SetupTerminal();
+#include "Base.h"
+//------------------------------------------------------------------------------
 
-  const char*  InputFile = "../Test Cases/FrontEnd/Parser.alc";
-  if(argc > 1) InputFile = argv[1];
+namespace AST{
+  struct FENCE: public BASE{
+      FENCE(int Line, const char* Filename);
+     ~FENCE();
 
-  info("InputFile = %s", InputFile);
-
-  PARSER Parser;
-  AST::Root = Parser.Run(InputFile);
-  if(!AST::Root){
-    error("Error while parsing \"%s\"", InputFile);
-    return -1;
-  }
-  if(AST::Root) delete AST::Root;
-
-  return 0;
+      void Display();
+  };
 }
 //------------------------------------------------------------------------------
+
+#endif
+//------------------------------------------------------------------------------
+

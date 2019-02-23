@@ -18,26 +18,28 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "General.h"
-#include "Parser.h"
+#ifndef Group_h
+#define Group_h
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv){
-  SetupTerminal();
+#include "Assignment.h"
+//------------------------------------------------------------------------------
 
-  const char*  InputFile = "../Test Cases/FrontEnd/Parser.alc";
-  if(argc > 1) InputFile = argv[1];
+namespace AST{
+  struct GROUP: public BASE{
+    ASSIGNMENT* Attributes;
 
-  info("InputFile = %s", InputFile);
+    std::string Identifier;
+    BASE*       Body;
 
-  PARSER Parser;
-  AST::Root = Parser.Run(InputFile);
-  if(!AST::Root){
-    error("Error while parsing \"%s\"", InputFile);
-    return -1;
-  }
-  if(AST::Root) delete AST::Root;
+    GROUP(int Line, const char* Filename);
+   ~GROUP();
 
-  return 0;
+    void Display();
+  };
 }
 //------------------------------------------------------------------------------
+
+#endif
+//------------------------------------------------------------------------------
+

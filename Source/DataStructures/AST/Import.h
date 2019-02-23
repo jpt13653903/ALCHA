@@ -18,26 +18,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "General.h"
-#include "Parser.h"
+#ifndef Import_h
+#define Import_h
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv){
-  SetupTerminal();
+#include "Base.h"
+//------------------------------------------------------------------------------
 
-  const char*  InputFile = "../Test Cases/FrontEnd/Parser.alc";
-  if(argc > 1) InputFile = argv[1];
+namespace AST{
+  struct IMPORT: public BASE{
+    std::string File;
+    std::string Namespace;
 
-  info("InputFile = %s", InputFile);
+    IMPORT(int Line, const char* Filename);
+   ~IMPORT();
 
-  PARSER Parser;
-  AST::Root = Parser.Run(InputFile);
-  if(!AST::Root){
-    error("Error while parsing \"%s\"", InputFile);
-    return -1;
-  }
-  if(AST::Root) delete AST::Root;
-
-  return 0;
+    void Display();
+  };
 }
 //------------------------------------------------------------------------------
+
+#endif
+//------------------------------------------------------------------------------
+

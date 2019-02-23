@@ -18,26 +18,36 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "General.h"
-#include "Parser.h"
+#ifndef Switch_h
+#define Switch_h
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv){
-  SetupTerminal();
+#include "Expression.h"
+//------------------------------------------------------------------------------
 
-  const char*  InputFile = "../Test Cases/FrontEnd/Parser.alc";
-  if(argc > 1) InputFile = argv[1];
+namespace AST{
+  struct SWITCH: public BASE{
+    struct CASE{
+      EXPRESSION* Expressions; // List through the BASE::Next pointer
+      BASE      * Statements;
 
-  info("InputFile = %s", InputFile);
+      CASE* Next; // The next case (this can be turned into a BST later...)
 
-  PARSER Parser;
-  AST::Root = Parser.Run(InputFile);
-  if(!AST::Root){
-    error("Error while parsing \"%s\"", InputFile);
-    return -1;
-  }
-  if(AST::Root) delete AST::Root;
+      CASE();
+     ~CASE();
+    };
+    CASE      * Cases;
+    BASE      * Default;
+    EXPRESSION* Expression;
 
-  return 0;
+    SWITCH(int Line, const char* Filename);
+   ~SWITCH();
+
+    void Display();
+  };
 }
 //------------------------------------------------------------------------------
+
+#endif
+//------------------------------------------------------------------------------
+

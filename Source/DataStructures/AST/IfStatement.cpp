@@ -18,26 +18,38 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "General.h"
-#include "Parser.h"
+#include "IfStatement.h"
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv){
-  SetupTerminal();
+using namespace AST;
+//------------------------------------------------------------------------------
 
-  const char*  InputFile = "../Test Cases/FrontEnd/Parser.alc";
-  if(argc > 1) InputFile = argv[1];
+IF_STATEMENT::IF_STATEMENT(int Line, const char* Filename):
+BASE(Line, Filename){
+  this->Type = TYPE::IfStatement;
 
-  info("InputFile = %s", InputFile);
+  Condition       = 0;
+  TrueStatements  = 0;
+  FalseStatements = 0;
+}
+//------------------------------------------------------------------------------
 
-  PARSER Parser;
-  AST::Root = Parser.Run(InputFile);
-  if(!AST::Root){
-    error("Error while parsing \"%s\"", InputFile);
-    return -1;
-  }
-  if(AST::Root) delete AST::Root;
+IF_STATEMENT::~IF_STATEMENT(){
+  if(Condition      ) delete Condition;
+  if(TrueStatements ) delete TrueStatements;
+  if(FalseStatements) delete FalseStatements;
+}
+//------------------------------------------------------------------------------
 
-  return 0;
+void IF_STATEMENT::Display(){
+  printf("\n%s:%d -- if(", Filename.c_str(), Line);
+    if(Condition) Condition->Display();
+  printf("){\n");
+    if(TrueStatements) TrueStatements->Display();
+  printf("}else{\n");
+    if(FalseStatements) FalseStatements->Display();
+  printf("}\n");
+
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

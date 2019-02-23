@@ -18,26 +18,38 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "General.h"
-#include "Parser.h"
+#include "Jump.h"
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv){
-  SetupTerminal();
+using namespace AST;
+//------------------------------------------------------------------------------
 
-  const char*  InputFile = "../Test Cases/FrontEnd/Parser.alc";
-  if(argc > 1) InputFile = argv[1];
+JUMP::JUMP(int Line, const char* Filename, JUMP_TYPE JumpType):
+BASE(Line, Filename){
+  this->Type     = TYPE::Jump;
+  this->JumpType = JumpType;
 
-  info("InputFile = %s", InputFile);
+  Expression = 0;
+}
+//------------------------------------------------------------------------------
 
-  PARSER Parser;
-  AST::Root = Parser.Run(InputFile);
-  if(!AST::Root){
-    error("Error while parsing \"%s\"", InputFile);
-    return -1;
+JUMP::~JUMP(){
+  if(Expression) delete Expression;
+}
+//------------------------------------------------------------------------------
+
+void JUMP::Display(){
+  printf("\n%s:%d -- jump(", Filename.c_str(), Line);
+  switch(JumpType){
+    case Return  : printf("return) "           ); break;
+    case Break   : printf("break) "            ); break;
+    case Continue: printf("continue) "         ); break;
+    default      : printf("Unknown jump type) "); break;
   }
-  if(AST::Root) delete AST::Root;
+  if(Expression) Expression->Display();
+  else           printf("{default}");
+  printf("\n");
 
-  return 0;
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

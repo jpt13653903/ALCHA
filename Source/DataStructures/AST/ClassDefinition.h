@@ -18,26 +18,43 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "General.h"
-#include "Parser.h"
+#ifndef ClassDefinition_h
+#define ClassDefinition_h
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv){
-  SetupTerminal();
+#include "Parameter.h"
+#include "Assignment.h"
+//------------------------------------------------------------------------------
 
-  const char*  InputFile = "../Test Cases/FrontEnd/Parser.alc";
-  if(argc > 1) InputFile = argv[1];
+namespace AST{
+  struct CLASS_DEFINITION: public BASE{
+      struct PARENT{ // Link-list node for parent classes
+        EXPRESSION* ClassName;  // This class inherits from Parent
+        BASE*       Parameters; // Parent constructor call
 
-  info("InputFile = %s", InputFile);
+        PARENT* Next;
 
-  PARSER Parser;
-  AST::Root = Parser.Run(InputFile);
-  if(!AST::Root){
-    error("Error while parsing \"%s\"", InputFile);
-    return -1;
-  }
-  if(AST::Root) delete AST::Root;
+        PARENT();
+       ~PARENT(); // Also deletes the rest of the list
+      };
 
-  return 0;
+      ASSIGNMENT* Attributes;
+
+      std::string Identifier;
+      PARAMETER*  Parameters; // Constructor parameters
+
+      PARENT* Parents;
+
+      BASE* Body;
+
+      CLASS_DEFINITION(int Line, const char* Filename);
+     ~CLASS_DEFINITION();
+
+      void Display();
+  };
 }
 //------------------------------------------------------------------------------
+
+#endif
+//------------------------------------------------------------------------------
+

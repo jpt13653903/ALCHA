@@ -18,26 +18,40 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "General.h"
-#include "Parser.h"
+#include "NamespacePush.h"
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv){
-  SetupTerminal();
+using namespace AST;
+//------------------------------------------------------------------------------
 
-  const char*  InputFile = "../Test Cases/FrontEnd/Parser.alc";
-  if(argc > 1) InputFile = argv[1];
+NAMESPACE_PUSH::NAMESPACE_PUSH(int Line, const char* Filename):
+BASE(Line, Filename){
+  this->Type = TYPE::NamespacePush;
 
-  info("InputFile = %s", InputFile);
+  Namespace  = 0;
+  Statements = 0;
+}
+//------------------------------------------------------------------------------
 
-  PARSER Parser;
-  AST::Root = Parser.Run(InputFile);
-  if(!AST::Root){
-    error("Error while parsing \"%s\"", InputFile);
-    return -1;
+NAMESPACE_PUSH::~NAMESPACE_PUSH(){
+  if(Namespace ) delete Namespace;
+  if(Statements) delete Statements;
+}
+//------------------------------------------------------------------------------
+
+void NAMESPACE_PUSH::Display(){
+  printf("\n%s:%d -- NAMESPACE_PUSH:\n ", Filename.c_str(), Line);
+
+  if(Namespace){
+    if(Namespace->Left || Namespace->Right) printf("(");
+    Namespace->Display();
+    if(Namespace->Left || Namespace->Right) printf(")");
   }
-  if(AST::Root) delete AST::Root;
 
-  return 0;
+  printf(".{\n");
+    if(Statements) Statements->Display();
+  printf("}\n");
+
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

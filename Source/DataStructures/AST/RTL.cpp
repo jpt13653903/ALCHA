@@ -18,26 +18,33 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "General.h"
-#include "Parser.h"
+#include "RTL.h"
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv){
-  SetupTerminal();
+using namespace AST;
+//------------------------------------------------------------------------------
 
-  const char*  InputFile = "../Test Cases/FrontEnd/Parser.alc";
-  if(argc > 1) InputFile = argv[1];
+RTL::RTL(int Line, const char* Filename): BASE(Line, Filename){
+  this->Type = TYPE::RTL;
 
-  info("InputFile = %s", InputFile);
+  Parameters = 0;
+  Statements = 0;
+}
+//------------------------------------------------------------------------------
 
-  PARSER Parser;
-  AST::Root = Parser.Run(InputFile);
-  if(!AST::Root){
-    error("Error while parsing \"%s\"", InputFile);
-    return -1;
-  }
-  if(AST::Root) delete AST::Root;
+RTL::~RTL(){
+  if(Parameters) delete Parameters;
+  if(Statements) delete Statements;
+}
+//------------------------------------------------------------------------------
 
-  return 0;
+void RTL::Display(){
+  printf("\n%s:%d -- rtl(", Filename.c_str(), Line);
+    if(Parameters) Parameters->Display();
+  printf("){\n");
+    if(Statements) Statements->Display();
+  printf("}\n");
+
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

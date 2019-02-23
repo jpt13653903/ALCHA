@@ -18,26 +18,31 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "General.h"
-#include "Parser.h"
+#include "Base.h"
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv){
-  SetupTerminal();
+namespace AST{ BASE* Root = 0; }
+//------------------------------------------------------------------------------
 
-  const char*  InputFile = "../Test Cases/FrontEnd/Parser.alc";
-  if(argc > 1) InputFile = argv[1];
+using namespace AST;
+//------------------------------------------------------------------------------
 
-  info("InputFile = %s", InputFile);
+BASE::BASE(int Line, const char* Filename){
+  this->Type     = TYPE::Base;
+  this->Line     = Line;
+  this->Filename = Filename;
+  this->Next     = 0;
+}
+//------------------------------------------------------------------------------
 
-  PARSER Parser;
-  AST::Root = Parser.Run(InputFile);
-  if(!AST::Root){
-    error("Error while parsing \"%s\"", InputFile);
-    return -1;
+BASE::~BASE(){
+  // The list might be too long for a recursive formulation.
+  BASE* Temp;
+  while(Next){
+    Temp       = Next;
+    Next       = Temp->Next;
+    Temp->Next = 0;
+    delete Temp;
   }
-  if(AST::Root) delete AST::Root;
-
-  return 0;
 }
 //------------------------------------------------------------------------------

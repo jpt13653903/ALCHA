@@ -18,26 +18,29 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "General.h"
-#include "Parser.h"
+#include "Alias.h"
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv){
-  SetupTerminal();
+using namespace AST;
+//------------------------------------------------------------------------------
 
-  const char*  InputFile = "../Test Cases/FrontEnd/Parser.alc";
-  if(argc > 1) InputFile = argv[1];
+ALIAS::ALIAS(int Line, const char* Filename): BASE(Line, Filename){
+  Type = TYPE::Alias;
 
-  info("InputFile = %s", InputFile);
+  Expression = 0;
+}
+//------------------------------------------------------------------------------
 
-  PARSER Parser;
-  AST::Root = Parser.Run(InputFile);
-  if(!AST::Root){
-    error("Error while parsing \"%s\"", InputFile);
-    return -1;
-  }
-  if(AST::Root) delete AST::Root;
+ALIAS::~ALIAS(){
+  if(Expression) delete Expression;
+}
+//------------------------------------------------------------------------------
 
-  return 0;
+void ALIAS::Display(){
+  printf("\n%s:%d -- ALIAS (%s):\n", Filename.c_str(), Line, Identifier.c_str());
+
+  Expression->Display();
+
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

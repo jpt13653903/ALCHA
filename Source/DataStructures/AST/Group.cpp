@@ -18,26 +18,40 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "General.h"
-#include "Parser.h"
+#include "Group.h"
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv){
-  SetupTerminal();
+using namespace AST;
+//------------------------------------------------------------------------------
 
-  const char*  InputFile = "../Test Cases/FrontEnd/Parser.alc";
-  if(argc > 1) InputFile = argv[1];
+AST::GROUP::GROUP(int Line, const char* Filename): BASE(Line, Filename){
+  Type = TYPE::Group;
 
-  info("InputFile = %s", InputFile);
+  Attributes = 0;
+  Body       = 0;
+}
+//------------------------------------------------------------------------------
 
-  PARSER Parser;
-  AST::Root = Parser.Run(InputFile);
-  if(!AST::Root){
-    error("Error while parsing \"%s\"", InputFile);
-    return -1;
+AST::GROUP::~GROUP(){
+  if(Attributes) delete Attributes;
+  if(Body      ) delete Body;
+}
+//------------------------------------------------------------------------------
+
+void AST::GROUP::Display(){
+  if(Identifier.empty()) printf("\n%s:%d -- GROUP:\n"     , Filename.c_str(), Line);
+  else                   printf("\n%s:%d -- GROUP (%s):\n", Filename.c_str(), Line, Identifier.c_str());
+
+  printf(" Attributes: ");
+  if(Attributes){
+    Attributes->Display();
+    printf("\n");
   }
-  if(AST::Root) delete AST::Root;
 
-  return 0;
+  printf(" {\n");
+  if(Body) Body->Display();
+  printf(" }\n");
+
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

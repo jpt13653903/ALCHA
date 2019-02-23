@@ -18,26 +18,27 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "General.h"
-#include "Parser.h"
+#ifndef IfStatement_h
+#define IfStatement_h
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv){
-  SetupTerminal();
+#include "Expression.h"
+//------------------------------------------------------------------------------
 
-  const char*  InputFile = "../Test Cases/FrontEnd/Parser.alc";
-  if(argc > 1) InputFile = argv[1];
+namespace AST{
+  struct IF_STATEMENT: public BASE{
+    EXPRESSION* Condition;
+    BASE      * TrueStatements;
+    BASE      * FalseStatements;
 
-  info("InputFile = %s", InputFile);
+    IF_STATEMENT(int Line, const char* Filename);
+   ~IF_STATEMENT();
 
-  PARSER Parser;
-  AST::Root = Parser.Run(InputFile);
-  if(!AST::Root){
-    error("Error while parsing \"%s\"", InputFile);
-    return -1;
-  }
-  if(AST::Root) delete AST::Root;
-
-  return 0;
+    void Display();
+  };
 }
 //------------------------------------------------------------------------------
+
+#endif
+//------------------------------------------------------------------------------
+
