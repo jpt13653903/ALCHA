@@ -25,9 +25,7 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 FOR_LOOP::FOR_LOOP(int Line, const char* Filename):
-BASE(Line, Filename){
-  this->Type = TYPE::ForLoop;
-
+BASE(Line, Filename, TYPE::ForLoop){
   Range      = 0;
   Statements = 0;
 }

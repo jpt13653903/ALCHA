@@ -19,7 +19,7 @@ Libraries  = -lfftw3 -lgmp -lmpfr
 LibInclude = -LLibraries/lib
 #-------------------------------------------------------------------------------
 
-Version  = -DMAJOR_VERSION=1 -DMINOR_VERSION=0
+Version  = -DMAJOR_VERSION=0 -DMINOR_VERSION=1
 
 # Objects  = obj/BackEnd/Altera.o
 # Objects += obj/BackEnd/ClockTree.o
@@ -28,6 +28,7 @@ Version  = -DMAJOR_VERSION=1 -DMINOR_VERSION=0
 # Objects += obj/BackEnd/TimingSpec.o
 # Objects += obj/DataStructures/IdentifierTree.o
 Objects += obj/DataStructures/TokenTree.o
+
 Objects += obj/DataStructures/AST/Base.o
 Objects += obj/DataStructures/AST/Alias.o
 Objects += obj/DataStructures/AST/Assignment.o
@@ -49,28 +50,32 @@ Objects += obj/DataStructures/AST/Parameter.o
 Objects += obj/DataStructures/AST/RTL.o
 Objects += obj/DataStructures/AST/Switch.o
 Objects += obj/DataStructures/AST/WhileLoop.o
-# Objects += obj/DataStructures/SymbolTable/Scope.o
-# Objects += obj/DataStructures/SymbolTable/SymbolTree.o
-# Objects += obj/DataStructures/SymbolTable/Object.o
-# Objects += obj/DataStructures/SymbolTable/Object_ClassDefinition.o
-# Objects += obj/DataStructures/SymbolTable/Object_ClassInstance.o
-# Objects += obj/DataStructures/SymbolTable/Object_FunctionDefinition.o
-# Objects += obj/DataStructures/SymbolTable/Object_FunctionInstance.o
-# Objects += obj/DataStructures/SymbolTable/Object_Array.o
-# Objects += obj/DataStructures/SymbolTable/Object_Synthesisable.o
-# Objects += obj/DataStructures/SymbolTable/Object_Pin.o
-# Objects += obj/DataStructures/SymbolTable/Object_Net.o
-# Objects += obj/DataStructures/SymbolTable/Object_Number.o
-# Objects += obj/DataStructures/SymbolTable/Object_Byte.o
-# Objects += obj/DataStructures/SymbolTable/Object_Character.o
+
+Objects += obj/DataStructures/Objects/Base.o
+Objects += obj/DataStructures/Objects/Array.o
+Objects += obj/DataStructures/Objects/Byte.o
+Objects += obj/DataStructures/Objects/Character.o
+Objects += obj/DataStructures/Objects/ClassDefinition.o
+Objects += obj/DataStructures/Objects/ClassInstance.o
+Objects += obj/DataStructures/Objects/FunctionDefinition.o
+Objects += obj/DataStructures/Objects/FunctionInstance.o
+Objects += obj/DataStructures/Objects/Namespace.o
+Objects += obj/DataStructures/Objects/Net.o
+Objects += obj/DataStructures/Objects/Number.o
+Objects += obj/DataStructures/Objects/Pin.o
+Objects += obj/DataStructures/Objects/Synthesisable.o
+
 Objects += obj/FrontEnd/Parser.o
 Objects += obj/FrontEnd/Scanner.o
 Objects += obj/FrontEnd/Token.o
+
 Objects += obj/Tools/Number.o
+
 Objects += obj/Toolbox/General.o
 Objects += obj/Toolbox/Dictionary.o
 Objects += obj/Toolbox/FileWrapper.o
 Objects += obj/Toolbox/UTF_Converter.o
+
 Objects += obj/Resources/resource.res
 
 Headers  = Tools/*.h
@@ -78,7 +83,7 @@ Headers  = Tools/*.h
 Headers += FrontEnd/*.h
 Headers += DataStructures/*.h
 Headers += DataStructures/AST/*.h
-# Headers += DataStructures/SymbolTable/*.h
+Headers += DataStructures/Objects/*.h
 Headers += Libraries/include/*.h
 Headers += $(Toolbox)/*.h          
 

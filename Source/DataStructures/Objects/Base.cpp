@@ -18,20 +18,18 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Object_Array_h
-#define Object_Array_h
+#include "Base.h"
 //------------------------------------------------------------------------------
 
-#include "Object.h"
+using namespace OBJECTS;
 //------------------------------------------------------------------------------
 
-struct OBJECT_ARRAY: public OBJECT{
-           OBJECT_ARRAY(const byte* Name);
-  virtual ~OBJECT_ARRAY();
-
-  virtual void Display();
-};
+BASE::BASE(const char* Name, TYPE Type){
+  this->Name = Name;
+  this->Type = Type;
+}
 //------------------------------------------------------------------------------
 
-#endif
+BASE::~BASE(){
+}
 //------------------------------------------------------------------------------

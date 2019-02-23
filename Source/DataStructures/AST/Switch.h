@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Switch_h
-#define Switch_h
+#ifndef AST_Switch_h
+#define AST_Switch_h
 //------------------------------------------------------------------------------
 
 #include "Expression.h"

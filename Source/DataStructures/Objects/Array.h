@@ -18,19 +18,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Object_Net.h"
+#ifndef Objects_Array_h
+#define Objects_Array_h
 //------------------------------------------------------------------------------
 
-OBJECT_NET::OBJECT_NET(const byte* Name) : OBJECT_SYNTHESISABLE(Name, Net){
-  error("Not yet implemented");
+#include "Base.h"
+//------------------------------------------------------------------------------
+
+namespace OBJECTS{
+  struct ARRAY: public BASE{
+             ARRAY(const char* Name);
+    virtual ~ARRAY();
+
+    virtual void Display();
+  };
 }
 //------------------------------------------------------------------------------
 
-OBJECT_NET::~OBJECT_NET(){
-}
+#endif
 //------------------------------------------------------------------------------
-
-void OBJECT_NET::Display(){
-}
-//------------------------------------------------------------------------------
-

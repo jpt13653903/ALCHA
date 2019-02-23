@@ -18,19 +18,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Object_Number.h"
+#ifndef Objects_Pin_h
+#define Objects_Pin_h
 //------------------------------------------------------------------------------
 
-OBJECT_OBJECT_NUMBER::OBJECT_OBJECT_NUMBER(const byte* Name) : OBJECT(Name, Number){
-  error("Not yet implemented");
+#include "Synthesisable.h"
+//------------------------------------------------------------------------------
+
+namespace OBJECTS{
+  struct PIN: public SYNTHESISABLE{
+             PIN(const char* Name);
+    virtual ~PIN();
+
+    virtual void Display();
+  };
 }
 //------------------------------------------------------------------------------
 
-OBJECT_OBJECT_NUMBER::~OBJECT_OBJECT_NUMBER(){
-}
+#endif
 //------------------------------------------------------------------------------
-
-void OBJECT_OBJECT_NUMBER::Display(){
-}
-//------------------------------------------------------------------------------
-

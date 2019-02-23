@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Import_h
-#define Import_h
+#ifndef AST_Import_h
+#define AST_Import_h
 //------------------------------------------------------------------------------
 
 #include "Base.h"

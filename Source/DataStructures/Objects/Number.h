@@ -18,15 +18,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Object_Synthesisable.h"
+#ifndef Objects_Number_h
+#define Objects_Number_h
 //------------------------------------------------------------------------------
 
-OBJECT_SYNTHESISABLE::OBJECT_SYNTHESISABLE(const byte* Name, TYPE Type) : OBJECT(Name, Type){
-  error("Not yet implemented");
+#include "Base.h"
+//------------------------------------------------------------------------------
+
+namespace OBJECTS{
+  struct NUMBER: public BASE{
+             NUMBER(const char* Name);
+    virtual ~NUMBER();
+
+    virtual void Display();
+  };
 }
 //------------------------------------------------------------------------------
 
-OBJECT_SYNTHESISABLE::~OBJECT_SYNTHESISABLE(){
-}
+#endif
 //------------------------------------------------------------------------------
-

@@ -18,19 +18,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Object_FunctionDefinition.h"
+#ifndef Objects_Synthesisable_h
+#define Objects_Synthesisable_h
 //------------------------------------------------------------------------------
 
-OBJECT_FUNCTION_DEFINITION::OBJECT_FUNCTION_DEFINITION(const byte* Name) : OBJECT(Name, FunctionDefinition){
-  error("Not yet implemented");
+#include "Base.h"
+//------------------------------------------------------------------------------
+
+namespace OBJECTS{
+  struct SYNTHESISABLE: public BASE{
+             SYNTHESISABLE(const char* Name, TYPE Type);
+    virtual ~SYNTHESISABLE();
+  };
 }
 //------------------------------------------------------------------------------
 
-OBJECT_FUNCTION_DEFINITION::~OBJECT_FUNCTION_DEFINITION(){
-}
+#endif
 //------------------------------------------------------------------------------
-
-void OBJECT_FUNCTION_DEFINITION::Display(){
-}
-//------------------------------------------------------------------------------
-

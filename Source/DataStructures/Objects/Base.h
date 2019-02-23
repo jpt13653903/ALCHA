@@ -18,19 +18,42 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Object_Pin.h"
+#ifndef Objects_Base_h
+#define Objects_Base_h
 //------------------------------------------------------------------------------
 
-OBJECT_PIN::OBJECT_PIN(const byte* Name) : OBJECT_SYNTHESISABLE(Name, Pin){
-  error("Not yet implemented");
+#include <string>
+//------------------------------------------------------------------------------
+
+#include "General.h"
+//------------------------------------------------------------------------------
+
+namespace OBJECTS{
+  struct BASE{ // Base class for the symbol table
+    enum class TYPE{
+      // Base types
+      Pin, Net, // Goes via the "Synthesisable" class
+      Number, Byte, Character,
+
+      // Others
+      Array, // An array of objects
+      Namespace,
+      ClassDefinition,
+      ClassInstance,
+      FunctionDefinition,
+      FunctionInstance
+    } Type;
+
+    std::string Name;
+
+             BASE(const char* Name, TYPE Type);
+    virtual ~BASE();
+
+    virtual void Display() = 0;
+  };
 }
 //------------------------------------------------------------------------------
 
-OBJECT_PIN::~OBJECT_PIN(){
-}
-//------------------------------------------------------------------------------
-
-void OBJECT_PIN::Display(){
-}
+#endif
 //------------------------------------------------------------------------------
 

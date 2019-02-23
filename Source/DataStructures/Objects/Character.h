@@ -18,19 +18,21 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Object_Pin_h
-#define Object_Pin_h
+#ifndef Objects_Character_h
+#define Objects_Character_h
 //------------------------------------------------------------------------------
 
-#include "Object_Synthesisable.h"
+#include "Base.h"
 //------------------------------------------------------------------------------
 
-struct OBJECT_PIN: public OBJECT_SYNTHESISABLE{
-           OBJECT_PIN(const byte* Name);
-  virtual ~OBJECT_PIN();
+namespace OBJECTS{
+  struct CHARACTER: public BASE{
+             CHARACTER(const char* Name);
+    virtual ~CHARACTER();
 
-  virtual void Display();
-};
+    virtual void Display();
+  };
+}
 //------------------------------------------------------------------------------
 
 #endif

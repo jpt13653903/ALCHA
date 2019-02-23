@@ -18,19 +18,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Object_Byte.h"
+#include "Net.h"
 //------------------------------------------------------------------------------
 
-OBJECT_BYTE::OBJECT_BYTE(const byte* Name) : OBJECT(Name, Byte){
+using namespace OBJECTS;
+//------------------------------------------------------------------------------
+
+NET::NET(const char* Name) : SYNTHESISABLE(Name, TYPE::Net){
   error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-OBJECT_BYTE::~OBJECT_BYTE(){
+NET::~NET(){
 }
 //------------------------------------------------------------------------------
 
-void OBJECT_BYTE::Display(){
+void NET::Display(){
 }
 //------------------------------------------------------------------------------
 

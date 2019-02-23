@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef HDL_h
-#define HDL_h
+#ifndef AST_HDL_h
+#define AST_HDL_h
 //------------------------------------------------------------------------------
 
 #include "Assignment.h"

@@ -18,19 +18,21 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Object_Byte_h
-#define Object_Byte_h
+#ifndef Objects_Byte_h
+#define Objects_Byte_h
 //------------------------------------------------------------------------------
 
-#include "Object.h"
+#include "Base.h"
 //------------------------------------------------------------------------------
 
-struct OBJECT_BYTE: public OBJECT{
-           OBJECT_BYTE(const byte* Name);
-  virtual ~OBJECT_BYTE();
+namespace OBJECTS{
+  struct BYTE: public BASE{
+             BYTE(const char* Name);
+    virtual ~BYTE();
 
-  virtual void Display();
-};
+    virtual void Display();
+  };
+}
 //------------------------------------------------------------------------------
 
 #endif

@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Alias_h
-#define Alias_h
+#ifndef AST_Alias_h
+#define AST_Alias_h
 //------------------------------------------------------------------------------
 
 #include "Expression.h"

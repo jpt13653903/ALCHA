@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Jump_h
-#define Jump_h
+#ifndef AST_Jump_h
+#define AST_Jump_h
 //------------------------------------------------------------------------------
 
 #include "Expression.h"

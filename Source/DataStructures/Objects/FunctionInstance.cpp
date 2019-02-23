@@ -18,18 +18,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Object_Synthesisable_h
-#define Object_Synthesisable_h
+#include "FunctionInstance.h"
 //------------------------------------------------------------------------------
 
-#include "Object.h"
+using namespace OBJECTS;
 //------------------------------------------------------------------------------
 
-struct OBJECT_SYNTHESISABLE: public OBJECT{
-           OBJECT_SYNTHESISABLE(const byte* Name, TYPE Type);
-  virtual ~OBJECT_SYNTHESISABLE();
-};
+FUNCTION_INSTANCE::FUNCTION_INSTANCE(const char* Name) : BASE(Name, TYPE::FunctionInstance){
+  error("Not yet implemented");
+}
 //------------------------------------------------------------------------------
 
-#endif
+FUNCTION_INSTANCE::~FUNCTION_INSTANCE(){
+}
 //------------------------------------------------------------------------------
+
+void FUNCTION_INSTANCE::Display(){
+}
+//------------------------------------------------------------------------------
+

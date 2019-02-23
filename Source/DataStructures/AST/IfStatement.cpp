@@ -25,9 +25,7 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 IF_STATEMENT::IF_STATEMENT(int Line, const char* Filename):
-BASE(Line, Filename){
-  this->Type = TYPE::IfStatement;
-
+BASE(Line, Filename, TYPE::IfStatement){
   Condition       = 0;
   TrueStatements  = 0;
   FalseStatements = 0;

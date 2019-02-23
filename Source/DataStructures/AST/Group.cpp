@@ -24,9 +24,7 @@
 using namespace AST;
 //------------------------------------------------------------------------------
 
-AST::GROUP::GROUP(int Line, const char* Filename): BASE(Line, Filename){
-  Type = TYPE::Group;
-
+AST::GROUP::GROUP(int Line, const char* Filename): BASE(Line, Filename, TYPE::Group){
   Attributes = 0;
   Body       = 0;
 }

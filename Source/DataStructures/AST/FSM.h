@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef FSM_h
-#define FSM_h
+#ifndef AST_FSM_h
+#define AST_FSM_h
 //------------------------------------------------------------------------------
 
 #include "Base.h"

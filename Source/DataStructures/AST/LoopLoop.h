@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef LoopLoop_h
-#define LoopLoop_h
+#ifndef AST_LoopLoop_h
+#define AST_LoopLoop_h
 //------------------------------------------------------------------------------
 
 #include "Expression.h"

@@ -39,9 +39,7 @@ SWITCH::CASE::~CASE(){
 //------------------------------------------------------------------------------
 
 SWITCH::SWITCH(int Line, const char* Filename):
-BASE(Line, Filename){
-  this->Type = TYPE::Switch;
-
+BASE(Line, Filename, TYPE::Switch){
   Cases      = 0;
   Default    = 0;
   Expression = 0;

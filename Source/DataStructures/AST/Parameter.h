@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Parameter_h
-#define Parameter_h
+#ifndef AST_Parameter_h
+#define AST_Parameter_h
 //------------------------------------------------------------------------------
 
 #include "Expression.h"

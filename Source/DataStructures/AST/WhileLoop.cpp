@@ -25,9 +25,7 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 WHILE_LOOP::WHILE_LOOP(int Line, const char* Filename):
-BASE(Line, Filename){
-  this->Type = TYPE::WhileLoop;
-
+BASE(Line, Filename, TYPE::WhileLoop){
   Condition  = 0;
   Statements = 0;
 }

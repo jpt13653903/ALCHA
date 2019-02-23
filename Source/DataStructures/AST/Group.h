@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Group_h
-#define Group_h
+#ifndef AST_Group_h
+#define AST_Group_h
 //------------------------------------------------------------------------------
 
 #include "Assignment.h"

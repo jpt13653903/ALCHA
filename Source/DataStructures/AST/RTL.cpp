@@ -24,9 +24,7 @@
 using namespace AST;
 //------------------------------------------------------------------------------
 
-RTL::RTL(int Line, const char* Filename): BASE(Line, Filename){
-  this->Type = TYPE::RTL;
-
+RTL::RTL(int Line, const char* Filename): BASE(Line, Filename, TYPE::RTL){
   Parameters = 0;
   Statements = 0;
 }

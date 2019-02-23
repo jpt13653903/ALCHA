@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef WhileLoop_h
-#define WhileLoop_h
+#ifndef AST_WhileLoop_h
+#define AST_WhileLoop_h
 //------------------------------------------------------------------------------
 
 #include "Expression.h"

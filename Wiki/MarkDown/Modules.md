@@ -68,5 +68,11 @@ Specifying the class instance, or name-space, can become tedious.  Instead, the 
   }
 ```
 
+When referring to a symbol, the search progresses as follows:
+
+1. The name-space stack is searched, from top to bottom, without following parent nodes of the name-space tree
+1. The current node of the name-space tree is searched
+1. The name-space tree is traversed from node to parent, following the tree towards the root (which is the global namespace)
+
 [[include repo=code path=Wiki/MarkDown/Footer.md]]
 

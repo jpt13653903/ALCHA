@@ -1047,9 +1047,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8284271"
-     inkscape:cx="338.29295"
-     inkscape:cy="626.36388"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="539.71913"
+     inkscape:cy="516.8669"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -1097,7 +1097,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -1720,7 +1720,7 @@
          style="font-size:3.52777767px;line-height:1.25;fill:#000000;fill-opacity:1;stroke-width:0.28221869"
          y="-353.59146"
          x="-109.07016"
-         sodipodi:role="line">Object</tspan></text>
+         sodipodi:role="line">Base</tspan></text>
     <path
        sodipodi:nodetypes="cc"
        inkscape:connector-curvature="0"
@@ -1925,7 +1925,7 @@
          y="-353.59149"
          x="-149.07016"
          sodipodi:role="line"
-         id="tspan1666-2-3-7">Symbol Table</tspan></text>
+         id="tspan1666-2-3-7">Namespace</tspan></text>
     <path
        sodipodi:nodetypes="cc"
        inkscape:connector-curvature="0"

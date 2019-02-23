@@ -25,9 +25,7 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 NAMESPACE_PUSH::NAMESPACE_PUSH(int Line, const char* Filename):
-BASE(Line, Filename){
-  this->Type = TYPE::NamespacePush;
-
+BASE(Line, Filename, TYPE::NamespacePush){
   Namespace  = 0;
   Statements = 0;
 }

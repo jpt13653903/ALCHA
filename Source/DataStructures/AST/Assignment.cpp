@@ -28,8 +28,7 @@ ASSIGNMENT::ASSIGNMENT(
   int             Line,
   const char*     Filename,
   ASSIGNMENT_TYPE AssignmentType
-): BASE(Line, Filename){
-  this->Type           = TYPE::Assignment;
+): BASE(Line, Filename, TYPE::Assignment){
   this->AssignmentType = AssignmentType;
 
   Fence = false;

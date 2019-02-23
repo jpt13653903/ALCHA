@@ -18,20 +18,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Object_Character_h
-#define Object_Character_h
+#include "Array.h"
 //------------------------------------------------------------------------------
 
-#include "Object.h"
+using namespace OBJECTS;
 //------------------------------------------------------------------------------
 
-struct OBJECT_CHARACTER: public OBJECT{
-           OBJECT_CHARACTER(const byte* Name);
-  virtual ~OBJECT_CHARACTER();
-
-  virtual void Display();
-};
+ARRAY::ARRAY(const char* Name) : BASE(Name, TYPE::Array){
+  error("Not yet implemented");
+}
 //------------------------------------------------------------------------------
 
-#endif
+ARRAY::~ARRAY(){
+}
 //------------------------------------------------------------------------------
+
+void ARRAY::Display(){
+}
+//------------------------------------------------------------------------------
+

@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef RTL_h
-#define RTL_h
+#ifndef AST_RTL_h
+#define AST_RTL_h
 //------------------------------------------------------------------------------
 
 #include "Base.h"

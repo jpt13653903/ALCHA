@@ -18,19 +18,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Object_Character.h"
+#include "ClassInstance.h"
 //------------------------------------------------------------------------------
 
-OBJECT_CHARACTER::OBJECT_CHARACTER(const byte* Name) : OBJECT(Name, Character){
+using namespace OBJECTS;
+//------------------------------------------------------------------------------
+
+CLASS_INSTANCE::CLASS_INSTANCE(const char* Name) : BASE(Name, TYPE::ClassInstance){
   error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-OBJECT_CHARACTER::~OBJECT_CHARACTER(){
+CLASS_INSTANCE::~CLASS_INSTANCE(){
 }
 //------------------------------------------------------------------------------
 
-void OBJECT_CHARACTER::Display(){
+void CLASS_INSTANCE::Display(){
 }
 //------------------------------------------------------------------------------
 

@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef EnumDefinition_h
-#define EnumDefinition_h
+#ifndef AST_EnumDefinition_h
+#define AST_EnumDefinition_h
 //------------------------------------------------------------------------------
 
 #include "Base.h"

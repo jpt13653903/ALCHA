@@ -18,19 +18,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Object_ClassInstance.h"
+#include "FunctionDefinition.h"
 //------------------------------------------------------------------------------
 
-OBJECT_CLASS_INSTANCE::OBJECT_CLASS_INSTANCE(const byte* Name) : OBJECT(Name, ClassInstance){
+using namespace OBJECTS;
+//------------------------------------------------------------------------------
+
+FUNCTION_DEFINITION::FUNCTION_DEFINITION(const char* Name) : BASE(Name, TYPE::FunctionDefinition){
   error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-OBJECT_CLASS_INSTANCE::~OBJECT_CLASS_INSTANCE(){
+FUNCTION_DEFINITION::~FUNCTION_DEFINITION(){
 }
 //------------------------------------------------------------------------------
 
-void OBJECT_CLASS_INSTANCE::Display(){
+void FUNCTION_DEFINITION::Display(){
 }
 //------------------------------------------------------------------------------
 

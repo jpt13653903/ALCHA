@@ -18,37 +18,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Object_h
-#define Object_h
+#ifndef Objects_ClassInstance_h
+#define Objects_ClassInstance_h
 //------------------------------------------------------------------------------
 
-#include "General.h"
+#include "Base.h"
 //------------------------------------------------------------------------------
 
-struct OBJECT{ // Base class for the symbol table
-  enum TYPE{
-    // Base types
-    Pin, Net, // Goes via the "Synthesisable" class
-    Number, Byte, Character,
+namespace OBJECTS{
+  struct CLASS_INSTANCE: public BASE{
+             CLASS_INSTANCE(const char* Name);
+    virtual ~CLASS_INSTANCE();
 
-    // Others
-    Array, // An array of objects
-    Namespace,
-    ClassDefinition,
-    ClassInstance,
-    FunctionDefinition,
-    FunctionInstance
-  } Type;
-
-  std::string Name;
-
-           OBJECT(const byte* Name, TYPE Type);
-  virtual ~OBJECT();
-
-  virtual void Display() = 0;
-};
+    virtual void Display();
+  };
+}
 //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------
-

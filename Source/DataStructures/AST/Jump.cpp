@@ -25,8 +25,7 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 JUMP::JUMP(int Line, const char* Filename, JUMP_TYPE JumpType):
-BASE(Line, Filename){
-  this->Type     = TYPE::Jump;
+BASE(Line, Filename, TYPE::Jump){
   this->JumpType = JumpType;
 
   Expression = 0;

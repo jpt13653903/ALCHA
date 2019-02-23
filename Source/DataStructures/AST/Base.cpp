@@ -27,8 +27,8 @@ namespace AST{ BASE* Root = 0; }
 using namespace AST;
 //------------------------------------------------------------------------------
 
-BASE::BASE(int Line, const char* Filename){
-  this->Type     = TYPE::Base;
+BASE::BASE(int Line, const char* Filename, TYPE Type){
+  this->Type     = Type;
   this->Line     = Line;
   this->Filename = Filename;
   this->Next     = 0;

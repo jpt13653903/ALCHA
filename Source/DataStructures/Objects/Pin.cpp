@@ -18,20 +18,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Object_Net_h
-#define Object_Net_h
+#include "Pin.h"
 //------------------------------------------------------------------------------
 
-#include "Object_Synthesisable.h"
+using namespace OBJECTS;
 //------------------------------------------------------------------------------
 
-struct OBJECT_NET: public OBJECT_SYNTHESISABLE{
-           OBJECT_NET(const byte* Name);
-  virtual ~OBJECT_NET();
-
-  virtual void Display();
-};
+PIN::PIN(const char* Name) : SYNTHESISABLE(Name, TYPE::Pin){
+  error("Not yet implemented");
+}
 //------------------------------------------------------------------------------
 
-#endif
+PIN::~PIN(){
+}
 //------------------------------------------------------------------------------
+
+void PIN::Display(){
+}
+//------------------------------------------------------------------------------
+

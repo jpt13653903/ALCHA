@@ -29,8 +29,7 @@ EXPRESSION::EXPRESSION(
   int             Line,
   const char*     Filename,
   EXPRESSION_TYPE ExpressionType
-): BASE(Line, Filename){
-  this->Type           = TYPE::Expression;
+): BASE(Line, Filename, TYPE::Expression){
   this->ExpressionType = ExpressionType;
 
   Value    = 0;

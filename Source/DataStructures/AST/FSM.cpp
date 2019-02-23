@@ -24,9 +24,7 @@
 using namespace AST;
 //------------------------------------------------------------------------------
 
-FSM::FSM(int Line, const char* Filename): BASE(Line, Filename){
-  this->Type = TYPE::FSM;
-
+FSM::FSM(int Line, const char* Filename): BASE(Line, Filename, TYPE::FSM){
   Parameters = 0;
   Statements = 0;
 }

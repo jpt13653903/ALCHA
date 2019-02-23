@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef ClassDefinition_h
-#define ClassDefinition_h
+#ifndef AST_ClassDefinition_h
+#define AST_ClassDefinition_h
 //------------------------------------------------------------------------------
 
 #include "Parameter.h"

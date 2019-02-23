@@ -24,8 +24,7 @@
 using namespace AST;
 //------------------------------------------------------------------------------
 
-FENCE::FENCE(int Line, const char* Filename): BASE(Line, Filename){
-  this->Type = TYPE::Fence;
+FENCE::FENCE(int Line, const char* Filename): BASE(Line, Filename, TYPE::Fence){
 }
 //------------------------------------------------------------------------------
 

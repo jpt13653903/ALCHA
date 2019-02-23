@@ -60,8 +60,7 @@ DEFINITION::DEFINITION(
   int             Line,
   const char*     Filename,
   DEFINITION_TYPE DefinitionType
-): BASE(Line, Filename){
-  this->Type           = TYPE::Definition;
+): BASE(Line, Filename, TYPE::Definition){
   this->DefinitionType = DefinitionType;
 
   Direction = Inferred;

@@ -24,9 +24,7 @@
 using namespace AST;
 //------------------------------------------------------------------------------
 
-ALIAS::ALIAS(int Line, const char* Filename): BASE(Line, Filename){
-  Type = TYPE::Alias;
-
+ALIAS::ALIAS(int Line, const char* Filename): BASE(Line, Filename, TYPE::Alias){
   Expression = 0;
 }
 //------------------------------------------------------------------------------

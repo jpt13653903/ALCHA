@@ -18,19 +18,34 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Object_ClassDefinition.h"
+#ifndef Objects_Namespace_h
+#define Objects_Namespace_h
 //------------------------------------------------------------------------------
 
-OBJECT_CLASS_DEFINITION::OBJECT_CLASS_DEFINITION(const byte* Name) : OBJECT(Name, ClassDefinition){
-  error("Not yet implemented");
+#include <map>
+#include <stack>
+//------------------------------------------------------------------------------
+
+#include "Base.h"
+//------------------------------------------------------------------------------
+
+namespace OBJECTS{
+  class NAMESPACE{
+    public:
+      NAMESPACE*                   Parent;
+      std::map<std::string, BASE*> Symbols;
+
+      NAMESPACE(NAMESPACE* Parent = 0);
+     ~NAMESPACE(); // Also cleans up the children
+  };
+  //----------------------------------------------------------------------------
+
+  extern std::stack<NAMESPACE*> Stack;   // Used for "with" type statements
+  extern NAMESPACE              Global;  // The root of the namespace tree
+  extern NAMESPACE*             Current; // The current namespace
 }
 //------------------------------------------------------------------------------
 
-OBJECT_CLASS_DEFINITION::~OBJECT_CLASS_DEFINITION(){
-}
-//------------------------------------------------------------------------------
-
-void OBJECT_CLASS_DEFINITION::Display(){
-}
+#endif
 //------------------------------------------------------------------------------
 

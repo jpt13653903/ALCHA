@@ -18,19 +18,21 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Object_FunctionDefinition_h
-#define Object_FunctionDefinition_h
+#ifndef Objects_FunctionInstance_h
+#define Objects_FunctionInstance_h
 //------------------------------------------------------------------------------
 
-#include "Object.h"
+#include "Base.h"
 //------------------------------------------------------------------------------
 
-struct OBJECT_FUNCTION_DEFINITION: public OBJECT{
-           OBJECT_FUNCTION_DEFINITION(const byte* Name);
-  virtual ~OBJECT_FUNCTION_DEFINITION();
+namespace OBJECTS{
+  struct FUNCTION_INSTANCE: public BASE{
+             FUNCTION_INSTANCE(const char* Name);
+    virtual ~FUNCTION_INSTANCE();
 
-  virtual void Display();
-};
+    virtual void Display();
+  };
+}
 //------------------------------------------------------------------------------
 
 #endif

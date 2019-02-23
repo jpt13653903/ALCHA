@@ -35,8 +35,7 @@ ENUM_DEFINITION::VALUE::~VALUE(){
 //------------------------------------------------------------------------------
 
 ENUM_DEFINITION::ENUM_DEFINITION(int Line, const char* Filename):
-BASE(Line, Filename){
-  Type   = TYPE::EnumDefinition;
+BASE(Line, Filename, TYPE::EnumDefinition){
   Values = 0;
 }
 //------------------------------------------------------------------------------

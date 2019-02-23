@@ -24,9 +24,7 @@
 using namespace AST;
 //------------------------------------------------------------------------------
 
-HDL::HDL(int Line, const char* Filename): BASE(Line, Filename){
-  this->Type = TYPE::HDL;
-
+HDL::HDL(int Line, const char* Filename): BASE(Line, Filename, TYPE::HDL){
   Files      = 0;
   Ports      = 0;
   Parameters = 0;

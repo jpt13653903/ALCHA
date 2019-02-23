@@ -38,10 +38,7 @@ CLASS_DEFINITION::PARENT::~PARENT(){
 }
 //------------------------------------------------------------------------------
 
-CLASS_DEFINITION::CLASS_DEFINITION(int Line, const char* Filename):
-BASE(Line, Filename){
-  Type = TYPE::ClassDefinition;
-
+CLASS_DEFINITION::CLASS_DEFINITION(int Line, const char* Filename): BASE(Line, Filename, TYPE::ClassDefinition){
   Attributes = 0;
   Parameters = 0;
 

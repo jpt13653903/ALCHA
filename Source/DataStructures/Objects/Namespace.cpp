@@ -18,19 +18,27 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Object_FunctionInstance.h"
+#include "Namespace.h"
 //------------------------------------------------------------------------------
 
-OBJECT_OBJECT_FUNCTION_INSTANCE::OBJECT_OBJECT_FUNCTION_INSTANCE(const byte* Name) : OBJECT(Name, FunctionInstance){
-  error("Not yet implemented");
+namespace OBJECTS{
+  std::stack<NAMESPACE*> Stack;
+  NAMESPACE              Global;
+  NAMESPACE*             Current = 0;
 }
 //------------------------------------------------------------------------------
 
-OBJECT_OBJECT_FUNCTION_INSTANCE::~OBJECT_OBJECT_FUNCTION_INSTANCE(){
+using namespace std;
+using namespace OBJECTS;
+//------------------------------------------------------------------------------
+
+NAMESPACE::NAMESPACE(NAMESPACE* Parent){
+  this->Parent = Parent;
 }
 //------------------------------------------------------------------------------
 
-void OBJECT_OBJECT_FUNCTION_INSTANCE::Display(){
+NAMESPACE::~NAMESPACE(){
+  for(auto s = Symbols.begin(); s != Symbols.end(); s++) delete s->second;
 }
 //------------------------------------------------------------------------------
 

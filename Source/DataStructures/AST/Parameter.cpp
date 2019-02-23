@@ -28,8 +28,7 @@ PARAMETER::PARAMETER(
   int             Line,
   const char*     Filename,
   DEFINITION_TYPE DefinitionType
-): BASE(Line, Filename){
-  this->Type           = TYPE::Parameter;
+): BASE(Line, Filename, TYPE::Parameter){
   this->DefinitionType = DefinitionType;
 
   ClassName       = 0;

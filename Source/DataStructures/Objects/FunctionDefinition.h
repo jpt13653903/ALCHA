@@ -18,19 +18,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Object_Array.h"
+#ifndef Objects_FunctionDefinition_h
+#define Objects_FunctionDefinition_h
 //------------------------------------------------------------------------------
 
-OBJECT_ARRAY::OBJECT_ARRAY(const byte* Name) : OBJECT(Name, Array){
-  error("Not yet implemented");
+#include "Base.h"
+//------------------------------------------------------------------------------
+
+namespace OBJECTS{
+  struct FUNCTION_DEFINITION: public BASE{
+             FUNCTION_DEFINITION(const char* Name);
+    virtual ~FUNCTION_DEFINITION();
+
+    virtual void Display();
+  };
 }
 //------------------------------------------------------------------------------
 
-OBJECT_ARRAY::~OBJECT_ARRAY(){
-}
+#endif
 //------------------------------------------------------------------------------
-
-void OBJECT_ARRAY::Display(){
-}
-//------------------------------------------------------------------------------
-

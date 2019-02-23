@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef ForLoop_h
-#define ForLoop_h
+#ifndef AST_ForLoop_h
+#define AST_ForLoop_h
 //------------------------------------------------------------------------------
 
 #include "Expression.h"

@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Base_h
-#define Base_h
+#ifndef AST_Base_h
+#define AST_Base_h
 //------------------------------------------------------------------------------
 
 #include <string>
@@ -61,7 +61,7 @@ namespace AST{
     std::string Filename;
     BASE*       Next; // Next sibling
 
-             BASE(int Line, const char* Filename);
+             BASE(int Line, const char* Filename, TYPE Type);
     virtual ~BASE(); // Also deletes the rest of the linked list
 
     virtual void Display() = 0;

@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Fence_h
-#define Fence_h
+#ifndef AST_Fence_h
+#define AST_Fence_h
 //------------------------------------------------------------------------------
 
 #include "Base.h"

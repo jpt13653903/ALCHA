@@ -18,45 +18,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Scope_h
-#define Scope_h
+#ifndef Objects_Net_h
+#define Objects_Net_h
 //------------------------------------------------------------------------------
 
-#include <map>
+#include "Synthesisable.h"
 //------------------------------------------------------------------------------
 
-#include "Object.h"
-//------------------------------------------------------------------------------
+namespace OBJECTS{
+  struct NET: public SYNTHESISABLE{
+             NET(const char* Name);
+    virtual ~NET();
 
-class SCOPE{
-  private:
-    typedef std::map<std::string, OBJECT*> SYMBOL_TREE;
-
-    struct NODE{
-      SYMBOL_TREE Symbols;   // In use when this is a scope
-      OBJECT*     Namespace; // In use when this is a name-space (null otherwise)
-      NODE*       Next;
-
-      NODE();
-     ~NODE();
-    };
-    NODE* Stack;
-
-  public:
-    SYMBOL_TREE* Current; // The current scope (do not change the pointer)
-
-    void New ();                  // Creates new scope (statement blocks, etc.)
-    void Push(OBJECT* Namespace); // Pushes name-space
-    void Pop ();                  // Pops the top scope or name-space
-
-    SCOPE();
-   ~SCOPE();
-};
-//------------------------------------------------------------------------------
-
-extern SCOPE Scope; // The global data structure
+    virtual void Display();
+  };
+}
 //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------
-

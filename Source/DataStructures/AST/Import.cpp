@@ -25,8 +25,7 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 IMPORT::IMPORT(int Line, const char* Filename):
-BASE(Line, Filename){
-  this->Type = TYPE::Import;
+BASE(Line, Filename, TYPE::Import){
 }
 //------------------------------------------------------------------------------
 

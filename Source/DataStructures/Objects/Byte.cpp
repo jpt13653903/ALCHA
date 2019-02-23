@@ -18,20 +18,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Object_Number_h
-#define Object_Number_h
+#include "Byte.h"
 //------------------------------------------------------------------------------
 
-#include "Object.h"
+using namespace OBJECTS;
 //------------------------------------------------------------------------------
 
-struct OBJECT_OBJECT_NUMBER: public OBJECT{
-           OBJECT_OBJECT_NUMBER(const byte* Name);
-  virtual ~OBJECT_OBJECT_NUMBER();
-
-  virtual void Display();
-};
+OBJECTS::BYTE::BYTE(const char* Name) : BASE(Name, TYPE::Byte){
+  error("Not yet implemented");
+}
 //------------------------------------------------------------------------------
 
-#endif
+OBJECTS::BYTE::~BYTE(){
+}
 //------------------------------------------------------------------------------
+
+void OBJECTS::BYTE::Display(){
+}
+//------------------------------------------------------------------------------
+
