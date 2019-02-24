@@ -66,6 +66,16 @@ void EXPRESSION::Display(){
       Value.Display();
       break;
 
+    case Array:
+      printf("[");
+      for(size_t n = 0; n < Elements.size(); n++){
+        if(n > 0) printf(", ");
+        if(Elements[n]) Elements[n]->Display();
+        else            printf("{null}");
+      }
+      printf("]");
+      break;
+
     case Object:
       if(ObjectRef){
         DisplayLongName(ObjectRef);
@@ -84,14 +94,8 @@ void EXPRESSION::Display(){
       printf("%s", Name.c_str());
       break;
 
-    case Array:
-      printf("[");
-      for(size_t n = 0; n < Elements.size(); n++){
-        if(n > 0) printf(", ");
-        if(Elements[n]) Elements[n]->Display();
-        else            printf("{null}");
-      }
-      printf("]");
+    case Alias:
+      printf("{alias %s}", Name.c_str());
       break;
 
     case VectorConcatenate:
@@ -117,10 +121,6 @@ void EXPRESSION::Display(){
     case FunctionCall     : printf("{call}" );        break;
 
     case Slice            : printf("{slice}");        break;
-
-    case AccessMember     : printf("." );             break;
-    case AccessMemberSafe : printf("?." );            break;
-    case AccessAttribute  : printf("'" );             break;
 
     case Increment        : printf("++");             break;
     case Decrement        : printf("--");             break;

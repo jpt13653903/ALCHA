@@ -39,14 +39,13 @@ namespace OBJECTS{
       Object,
       Attribute, // Attribute "Name" of object "ObjectRef"
 
+      Alias,
+
       VectorConcatenate,
       ArrayConcatenate,
 
       FunctionCall, // Left is the function name; right is the parameter list
       Slice,
-      AccessMember,
-      AccessMemberSafe,
-      AccessAttribute,
 
       Increment, // If child is on the left, post-increment
       Decrement, // If child is on the left, post-decrement

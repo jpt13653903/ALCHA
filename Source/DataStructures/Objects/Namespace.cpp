@@ -42,7 +42,14 @@ NAMESPACE::~NAMESPACE(){
 //------------------------------------------------------------------------------
 
 void NAMESPACE::Display(){
-  if(Namespace == &Global) printf("Global namespace:\n");
+  printf("Namespace ");
+
+  if(Namespace == &Global) printf("{Global}:\n");
+  else                     printf("%s", Name.c_str());
+
+  DisplayAttributes(2);
+  printf("\n");
+
   for(auto s = Symbols.begin(); s != Symbols.end(); s++){
     if(s->second){
       s->second->Display();

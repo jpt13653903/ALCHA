@@ -18,51 +18,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Base.h"
-#include "Namespace.h"
-#include "Expression.h"
+#include "Alias.h"
 //------------------------------------------------------------------------------
 
 using namespace OBJECTS;
 //------------------------------------------------------------------------------
 
-BASE::BASE(const char* Name, TYPE Type){
-  this->Name = Name;
-  this->Type = Type;
-
-  this->Namespace = Current;
+ALIAS::ALIAS(const char* Name, AST::EXPRESSION* Expression): BASE(Name, TYPE::Alias){
+  this->Expression = Expression;
 }
 //------------------------------------------------------------------------------
 
-BASE::~BASE(){
-  for(auto a = Attributes.begin(); a != Attributes.end(); a++){
-    delete a->second;
-  }
+ALIAS::~ALIAS(){
 }
 //------------------------------------------------------------------------------
 
-void BASE::DisplayLongName(BASE* Node){
-  if(!Node) return;
-  if(Node->Namespace != &Global){
-    DisplayLongName(Node->Namespace);
-    printf("::");
-  }
-  printf("%s", Node->Name.c_str());
+void ALIAS::Display(){
+  printf("  Alias %s\n", Name.c_str());
+  printf("    ");
+  if(Expression) Expression->Display();
+  printf("\n");
 }
 //------------------------------------------------------------------------------
-
-void BASE::DisplayAttributes(int Indent){
-  for(int n = 0; n < Indent; n++) printf(" ");
-  printf("Attributes:\n");
-
-  for(auto a = Attributes.begin(); a != Attributes.end(); a++){
-    for(int n = 0; n < Indent; n++) printf(" ");
-    printf("  %s = ", a->first.c_str());
-    if(a->second) a->second->Display();
-    else          printf("{null}");
-    printf("\n");
-  }
-}
-//------------------------------------------------------------------------------
-
 

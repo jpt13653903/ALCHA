@@ -93,8 +93,14 @@ OBJECTS::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
     case AST::EXPRESSION::Identifier:{
       auto Object = OBJECTS::Current->Symbols.find(Node->Name);
       if(Object != OBJECTS::Current->Symbols.end()){
-        Result = new OBJECTS::EXPRESSION(OBJECTS::EXPRESSION::Object);
-        Result->ObjectRef = Object->second;
+        if(Object->second &&
+           Object->second->Type == OBJECTS::BASE::TYPE::Alias){
+          auto Alias = (OBJECTS::ALIAS*)Object->second;
+          return Evaluate(Alias->Expression);
+        }else{
+          Result = new OBJECTS::EXPRESSION(OBJECTS::EXPRESSION::Object);
+          Result->ObjectRef = Object->second;
+        }
       }else{
         error("Scope look-up not yet implemented");
         // TODO Remember to first look in the stack, then try the namespace
@@ -141,9 +147,37 @@ OBJECTS::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       error("AccessMemberSafe not yet implemented");
       break;
 
-    case AST::EXPRESSION::AccessAttribute:
-      error("AccessAttribute not yet implemented");
+    case AST::EXPRESSION::AccessAttribute:{
+      OBJECTS::EXPRESSION* Left = 0;
+
+      Result = new OBJECTS::EXPRESSION(OBJECTS::EXPRESSION::Attribute);
+
+      if(Node->Left) Left = Evaluate(Node->Left);
+
+      if(Left){
+        if(Left->ExpressionType == OBJECTS::EXPRESSION::Object){
+          Result->ObjectRef = Left->ObjectRef;
+          delete Left;
+        }else if(Left->ExpressionType == OBJECTS::EXPRESSION::Attribute){
+          Error(Node, "Hierarchical attributes not supported");
+          delete Left;
+          return 0;
+        }else{
+          error("Invalid attribute access expression");
+        }
+      }else{
+        Result->ObjectRef = &OBJECTS::Global;
+      }
+      if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
+        auto Right = (AST::EXPRESSION*)Node->Right;
+        if(Right->ExpressionType == AST::EXPRESSION::Identifier){
+          Result->Name = Right->Name;
+        }else{
+          error("Invalid attribute access expression");
+        }
+      }
       break;
+    }
 
     case AST::EXPRESSION::Range:
       error("Range not yet implemented");
@@ -219,7 +253,7 @@ OBJECTS::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
 
     case AST::EXPRESSION::Multiply:
       Result = new OBJECTS::EXPRESSION(OBJECTS::EXPRESSION::Multiply);
-      if(Node->Left ) Result->Left  = Evaluate(Node->Left );
+      if(Node->Left) Result->Left = Evaluate(Node->Left);
       if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
         Result->Right = Evaluate((AST::EXPRESSION*)Node->Right);
       }
@@ -334,6 +368,36 @@ OBJECTS::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
 }
 //------------------------------------------------------------------------------
 
+bool ENGINE::ApplyAttributes(
+  OBJECTS::BASE*       Object,
+  std::string&         Name,
+  OBJECTS::EXPRESSION* Value,
+  AST::BASE*           Ast
+){
+  if(!Value){
+    Error(Ast, "Invalid attribute expression");
+    return false;
+  }
+
+  switch(Value->ExpressionType){
+    case OBJECTS::EXPRESSION::String:
+    case OBJECTS::EXPRESSION::Literal:
+      break;
+
+    case OBJECTS::EXPRESSION::Array:
+      // TODO Make sure that the array only contains strings or literals
+      break;
+
+    default:
+      Error(Ast, "Attribute values must be strings, literals or arrays");
+      delete Value;
+      return false;
+  }
+  Object->Attributes[Name] = Value;
+  return true;
+}
+//------------------------------------------------------------------------------
+
 bool ENGINE::ApplyAttributes(OBJECTS::BASE* Object, AST::ASSIGNMENT* AttributeList){
   while(AttributeList){
     if(!AttributeList->Left){
@@ -355,27 +419,12 @@ bool ENGINE::ApplyAttributes(OBJECTS::BASE* Object, AST::ASSIGNMENT* AttributeLi
       if(a->second) delete a->second;
     }
 
-    OBJECTS::EXPRESSION* Value = Evaluate(AttributeList->Right);
-    if(!Value){
-      Error(AttributeList, "Invalid attribute expression");
-      return false;
-    }
-
-    switch(Value->ExpressionType){
-      case OBJECTS::EXPRESSION::String:
-      case OBJECTS::EXPRESSION::Literal:
-        break;
-
-      case OBJECTS::EXPRESSION::Array:
-        // TODO Make sure that the array only contains strings or literals
-        break;
-
-      default:
-        Error(AttributeList, "Attribute values must be strings, literals or arrays");
-        delete Value;
-        return false;
-    }
-    Object->Attributes[AttributeList->Left->Name] = Value;
+    if(!ApplyAttributes(
+      Object,
+      AttributeList->Left->Name,
+      Evaluate(AttributeList->Right),
+      AttributeList
+    )) return false;
 
     AttributeList = (AST::ASSIGNMENT*)AttributeList->Next;
   }
@@ -456,14 +505,31 @@ bool ENGINE::ApplyParameters(OBJECTS::SYNTHESISABLE* Object, AST::BASE* Paramete
 }
 //------------------------------------------------------------------------------
 
+bool ENGINE::Alias(AST::ALIAS* Ast){
+  auto Symbol = OBJECTS::Current->Symbols.find(Ast->Identifier);
+  if(Symbol != OBJECTS::Current->Symbols.end()){
+    Error(Ast);
+    printf("Symbol \"%s\" already defined in the current namespace\n",
+           Ast->Identifier.c_str());
+    return false;
+  }
+
+  auto Object = new OBJECTS::ALIAS(Ast->Identifier.c_str(), Ast->Expression);
+
+  OBJECTS::Current->Symbols[Object->Name] = Object;
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 bool ENGINE::Definition(AST::DEFINITION* Ast){
   auto Identifier = Ast->Identifiers;
 
   while(Identifier){
-    auto Object = OBJECTS::Current->Symbols.find(Identifier->Identifier);
-    if(Object != OBJECTS::Current->Symbols.end()){
+    auto Symbol = OBJECTS::Current->Symbols.find(Identifier->Identifier);
+    if(Symbol != OBJECTS::Current->Symbols.end()){
       Error(Ast);
-      printf("Object \"%s\" already defined in the current namespace\n",
+      printf("Symbol \"%s\" already defined in the current namespace\n",
              Identifier->Identifier.c_str());
       return false;
     }
@@ -633,7 +699,15 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
   }
 
   if(Left->ExpressionType == OBJECTS::EXPRESSION::Attribute){
-    error("Not yet implemented");
+    if(Left->ObjectRef){
+      ApplyAttributes(Left->ObjectRef, Left->Name, Right, Ast);
+      // The function above deletes Right if required
+    }else{
+      error("Null object reference");
+      delete Right;
+    }
+    delete Left;
+    return true;
 
   }else{ // Object target
     auto Object = Left->ObjectRef;
@@ -650,7 +724,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
         error("Unimplemented target type: %d", Object->Type);
         delete Left;
         delete Right;
-        return true;
+        return false;
     }
   }
 
@@ -680,7 +754,7 @@ bool ENGINE::Run(){
         break;
 
       case AST::BASE::TYPE::Alias:
-        error("Alias not yet implemented");
+        if(!Alias((AST::ALIAS*)Ast)) return false;
         break;
 
       case AST::BASE::TYPE::TargetDefinition:

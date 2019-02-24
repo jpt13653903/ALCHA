@@ -36,7 +36,12 @@ SYNTHESISABLE::~SYNTHESISABLE(){
 //------------------------------------------------------------------------------
 
 void SYNTHESISABLE::Display(){
-  printf("  %s\n", Name.c_str());
+  switch(Type){
+    case TYPE::Pin: printf("  Pin: "); break;
+    case TYPE::Net: printf("  Net: "); break;
+    default: error ("Unknown synthesisable type"); break;
+  }
+  printf("%s\n", Name.c_str());
   printf("    Width      = %u\n", Width);
   printf("    Full-scale = "); FullScale.Display(); printf("\n");
   printf("    Signed     = %s\n", Signed ? "true" : "false");

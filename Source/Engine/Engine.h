@@ -30,8 +30,9 @@
 //------------------------------------------------------------------------------
 
 #include "Parser.h"
-#include "Objects/Pin.h"
+#include "Objects/Alias.h"
 #include "Objects/Namespace.h"
+#include "Objects/Pin.h"
 //------------------------------------------------------------------------------
 
 class ENGINE{
@@ -44,10 +45,18 @@ class ENGINE{
     OBJECTS::EXPRESSION* Evaluate(AST::EXPRESSION* Node);
 
   private: // AST processing
+    bool ApplyAttributes(
+      OBJECTS::BASE*       Object,
+      std::string&         Name,
+      OBJECTS::EXPRESSION* Value,
+      AST::BASE*           Ast // Used for error messages
+    );
     bool ApplyAttributes(OBJECTS::BASE* Object, AST::ASSIGNMENT* AttributeList);
     bool ApplyParameters(OBJECTS::SYNTHESISABLE* Object, AST::BASE* Parameter);
-    bool Definition     (AST::DEFINITION* Ast);
-    bool Assignment     (AST::ASSIGNMENT* Ast);
+
+    bool Alias     (AST::ALIAS     * Ast);
+    bool Definition(AST::DEFINITION* Ast);
+    bool Assignment(AST::ASSIGNMENT* Ast);
 
   public:
     ENGINE();

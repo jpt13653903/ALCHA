@@ -37,7 +37,7 @@ namespace OBJECTS{
   class BASE{ // Base class for the symbol table
     protected:
       void DisplayLongName  (BASE* Node);
-      void DisplayAttributes();
+      void DisplayAttributes(int Indent);
 
     public:
       enum class TYPE{
@@ -46,6 +46,7 @@ namespace OBJECTS{
         Number, Byte, Character,
 
         // Others
+        Alias,
         Array, // An array of objects
         Expression,
         Namespace,

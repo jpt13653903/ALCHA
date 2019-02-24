@@ -56,7 +56,7 @@ void PIN::Display(){
   else        printf("{open}");
   printf("\n");
 
-  DisplayAttributes();
+  DisplayAttributes(4);
 }
 //------------------------------------------------------------------------------
 

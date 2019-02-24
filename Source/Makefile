@@ -72,6 +72,7 @@ Objects += obj/DataStructures/AST/Switch.o
 Objects += obj/DataStructures/AST/WhileLoop.o
 
 Objects += obj/DataStructures/Objects/Base.o
+Objects += obj/DataStructures/Objects/Alias.o
 Objects += obj/DataStructures/Objects/Array.o
 Objects += obj/DataStructures/Objects/Byte.o
 Objects += obj/DataStructures/Objects/Character.o

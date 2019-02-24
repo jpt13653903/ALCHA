@@ -10,15 +10,15 @@
 
 pin(8) <current  = 8e-3, standard = "LVTTL",
         location = ["M2", "N1", "R2", "T1", "V4", "T6", "AB4", "AA5"]> USER_LED;
-alias LED USER_LED
+alias LED = USER_LED;
 //------------------------------------------------------------------------------
 
 pin(4) <location = ["M1", "R1", "V5", "AB5"]> SW;
-alias Button SW
+alias Button = SW;
 //------------------------------------------------------------------------------
 
 pin<frequency = 50e6, number = "N14"> SYS_CLK;
 pin<frequency = 50e6, number = "N15"> USER_CLK;
-alias Clk SYS_CLK
+alias Clk = SYS_CLK;
 //------------------------------------------------------------------------------
 
