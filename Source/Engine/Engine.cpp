@@ -71,17 +71,17 @@ OBJECTS::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
 
   switch(Node->ExpressionType){
     case AST::EXPRESSION::String:
-      Result = new OBJECTS::EXPRESSION(AST::EXPRESSION::String);
+      Result = new OBJECTS::EXPRESSION(OBJECTS::EXPRESSION::String);
       Result->StrValue = *(Node->StrValue);
       break;
 
     case AST::EXPRESSION::Literal:
-      Result = new OBJECTS::EXPRESSION(AST::EXPRESSION::Literal);
+      Result = new OBJECTS::EXPRESSION(OBJECTS::EXPRESSION::Literal);
       Result->Value = *(Node->Value);
       break;
 
     case AST::EXPRESSION::Array:{
-      Result = new OBJECTS::EXPRESSION(AST::EXPRESSION::Array);
+      Result = new OBJECTS::EXPRESSION(OBJECTS::EXPRESSION::Array);
       auto Element = (AST::EXPRESSION*)Node->Right;
       while(Element){
         Result->Elements.push_back(Evaluate(Element));
@@ -90,17 +90,40 @@ OBJECTS::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
     }
 
-    case AST::EXPRESSION::Identifier:
-      error("Identifier not yet implemented");
+    case AST::EXPRESSION::Identifier:{
+      auto Object = OBJECTS::Current->Symbols.find(Node->Name);
+      if(Object != OBJECTS::Current->Symbols.end()){
+        Result = new OBJECTS::EXPRESSION(OBJECTS::EXPRESSION::Object);
+        Result->ObjectRef = Object->second;
+      }else{
+        error("Scope look-up not yet implemented");
+        // TODO Remember to first look in the stack, then try the namespace
+        //      tree from the current leaf upwards toward the root
+      }
       break;
+    }
 
-    case AST::EXPRESSION::VectorConcatenate:
-      error("VectorConcatenate not yet implemented");
+    case AST::EXPRESSION::VectorConcatenate:{
+      Result = new OBJECTS::EXPRESSION(OBJECTS::EXPRESSION::VectorConcatenate);
+      Result->Raw = true;
+      auto Element = (AST::EXPRESSION*)Node->Right;
+      while(Element){
+        Result->Elements.push_back(Evaluate(Element));
+        Element = (AST::EXPRESSION*)Element->Next;
+      }
       break;
+    }
 
-    case AST::EXPRESSION::ArrayConcatenate:
-      error("ArrayConcatenate not yet implemented");
+    case AST::EXPRESSION::ArrayConcatenate:{
+      Result = new OBJECTS::EXPRESSION(OBJECTS::EXPRESSION::ArrayConcatenate);
+      Result->Raw = true;
+      auto Element = (AST::EXPRESSION*)Node->Right;
+      while(Element){
+        Result->Elements.push_back(Evaluate(Element));
+        Element = (AST::EXPRESSION*)Element->Next;
+      }
       break;
+    }
 
     case AST::EXPRESSION::FunctionCall:
       error("FunctionCall not yet implemented");
@@ -139,11 +162,11 @@ OBJECTS::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
 
     case AST::EXPRESSION::Negate:
-      Result = new OBJECTS::EXPRESSION(AST::EXPRESSION::Negate);
+      Result = new OBJECTS::EXPRESSION(OBJECTS::EXPRESSION::Negate);
       if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression)
         Result->Right = Evaluate((AST::EXPRESSION*)Node->Right);
-      if(Result->Right && Result->Right->ExpressionType == AST::EXPRESSION::Literal){
-        Result->ExpressionType = AST::EXPRESSION::Literal;
+      if(Result->Right && Result->Right->ExpressionType == OBJECTS::EXPRESSION::Literal){
+        Result->ExpressionType = OBJECTS::EXPRESSION::Literal;
         Result->Value = Result->Right->Value;
         Result->Value.Mul(-1);
         delete Result->Right; Result->Right = 0;
@@ -195,13 +218,19 @@ OBJECTS::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
 
     case AST::EXPRESSION::Multiply:
-      Result = new OBJECTS::EXPRESSION(AST::EXPRESSION::Multiply);
+      Result = new OBJECTS::EXPRESSION(OBJECTS::EXPRESSION::Multiply);
       if(Node->Left ) Result->Left  = Evaluate(Node->Left );
-      if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression)
+      if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
         Result->Right = Evaluate((AST::EXPRESSION*)Node->Right);
-      if(Result->Left  && Result->Left ->ExpressionType == AST::EXPRESSION::Literal &&
-         Result->Right && Result->Right->ExpressionType == AST::EXPRESSION::Literal ){
-        Result->ExpressionType = AST::EXPRESSION::Literal;
+      }
+      if(
+        Result->Left  &&
+        Result->Right &&
+        Result->Left ->ExpressionType == OBJECTS::EXPRESSION::Literal &&
+        Result->Right->ExpressionType == OBJECTS::EXPRESSION::Literal
+      ){
+        // TODO: Question -- does "Raw" propagate up the tree?
+        Result->ExpressionType = OBJECTS::EXPRESSION::Literal;
         Result->Value = Result->Left->Value;
         Result->Value.Mul(Result->Right->Value);
         delete Result->Left ; Result->Left  = 0;
@@ -333,11 +362,11 @@ bool ENGINE::ApplyAttributes(OBJECTS::BASE* Object, AST::ASSIGNMENT* AttributeLi
     }
 
     switch(Value->ExpressionType){
-      case AST::EXPRESSION::String:
-      case AST::EXPRESSION::Literal:
+      case OBJECTS::EXPRESSION::String:
+      case OBJECTS::EXPRESSION::Literal:
         break;
 
-      case AST::EXPRESSION::Array:
+      case OBJECTS::EXPRESSION::Array:
         // TODO Make sure that the array only contains strings or literals
         break;
 
@@ -370,7 +399,7 @@ bool ENGINE::ApplyParameters(OBJECTS::SYNTHESISABLE* Object, AST::BASE* Paramete
         }
 
         switch(Param->ExpressionType){
-          case AST::EXPRESSION::Literal:
+          case OBJECTS::EXPRESSION::Literal:
             switch(Position){
               case 0:
                 if(!Param->Value.IsInt()) return false;
@@ -501,10 +530,129 @@ bool ENGINE::Definition(AST::DEFINITION* Ast){
 //------------------------------------------------------------------------------
 
 bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
-  auto Left  = Evaluate(Ast->Left );
-  auto Right = Evaluate(Ast->Right);
+  OBJECTS::EXPRESSION* Left  = Evaluate(Ast->Left );
+  OBJECTS::EXPRESSION* Right = Evaluate(Ast->Right);
+  OBJECTS::EXPRESSION* Temp;
 
-  error("Not yet implemented");
+  if(!Left){
+    error("Null assignment target");
+    if(Left ) delete Left;
+    if(Right) delete Right;
+    return false;
+  }
+  if(!Right){
+    error("Null assignment expression");
+    if(Left ) delete Left;
+    if(Right) delete Right;
+    return false;
+  }
+
+  // The evaluation simplifies the tree as far as possible
+  if(
+    !Left->ObjectRef ||
+    (
+      Left->ExpressionType != OBJECTS::EXPRESSION::Object &&
+      Left->ExpressionType != OBJECTS::EXPRESSION::Attribute
+    )
+  ){
+    Error(Ast, "Illegal assignment target");
+    delete Left;
+    delete Right;
+    return false;
+  }
+
+  switch(Ast->AssignmentType){
+    case AST::ASSIGNMENT::Assign:
+      // Use Right without modification
+      break;
+
+    case AST::ASSIGNMENT::Raw_Assign:
+      Right->Raw = true;
+      break;
+
+    case AST::ASSIGNMENT::Append_Assign:
+      error("Append_Assign not yet implemented");
+      // TODO All these are similar:
+      //   1. Get a reference to the target expression (new function)
+      //   2. Make a new node with the appropriate action
+      //   3. Temp->Left  = The current target expression
+      //   4. Temp->Right = Right
+      //   5. Right = Temp;
+      //   6. Make the current target expression null so that it's not deleted
+      break;
+
+    case AST::ASSIGNMENT::Add_Assign:
+      error("Add_Assign not yet implemented");
+      break;
+
+    case AST::ASSIGNMENT::Subtract_Assign:
+      error("Subtract_Assign not yet implemented");
+      break;
+
+    case AST::ASSIGNMENT::Multiply_Assign:
+      error("Multiply_Assign not yet implemented");
+      break;
+
+    case AST::ASSIGNMENT::Divide_Assign:
+      error("Divide_Assign not yet implemented");
+      break;
+
+    case AST::ASSIGNMENT::Modulus_Assign:
+      error("Modulus_Assign not yet implemented");
+      break;
+
+    case AST::ASSIGNMENT::Exponential_Assign:
+      error("Exponential_Assign not yet implemented");
+      break;
+
+    case AST::ASSIGNMENT::AND_Assign:
+      error("AND_Assign not yet implemented");
+      break;
+
+    case AST::ASSIGNMENT::OR_Assign:
+      error("OR_Assign not yet implemented");
+      break;
+
+    case AST::ASSIGNMENT::XOR_Assign:
+      error("XOR_Assign not yet implemented");
+      break;
+
+    case AST::ASSIGNMENT::Shift_Left_Assign:
+      error("Shift_Left_Assign not yet implemented");
+      break;
+
+    case AST::ASSIGNMENT::Shift_Right_Assign:
+      error("Shift_Right_Assign not yet implemented");
+      break;
+
+    default:
+      error("Unknown assignment type: %d", Ast->AssignmentType);
+      delete Left;
+      delete Right;
+      return false;
+  }
+
+  if(Left->ExpressionType == OBJECTS::EXPRESSION::Attribute){
+    error("Not yet implemented");
+
+  }else{ // Object target
+    auto Object = Left->ObjectRef;
+
+    switch(Object->Type){
+      case OBJECTS::BASE::TYPE::Pin:{
+        auto Pin = (OBJECTS::PIN*)Object;
+        if(Pin->Driver) delete Pin->Driver;
+        Pin->Driver = Right;
+        break;
+      }
+
+      default:
+        error("Unimplemented target type: %d", Object->Type);
+        delete Left;
+        delete Right;
+        return true;
+    }
+  }
 
   return true;
 }

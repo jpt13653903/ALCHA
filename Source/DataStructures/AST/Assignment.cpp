@@ -61,7 +61,7 @@ void ASSIGNMENT::Display(){
     case Multiply_Assign   : printf( " *= "); break;
     case Divide_Assign     : printf( " /= "); break;
     case Modulus_Assign    : printf(" %%= "); break;
-    case Exponential_Assign: printf( " ^= "); break;
+    case Exponential_Assign: printf( "**= "); break;
     case AND_Assign        : printf( " &= "); break;
     case OR_Assign         : printf( " |= "); break;
     case XOR_Assign        : printf( " ^= "); break;

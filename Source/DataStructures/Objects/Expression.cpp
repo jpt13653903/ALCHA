@@ -24,13 +24,15 @@
 using namespace OBJECTS;
 //------------------------------------------------------------------------------
 
-EXPRESSION::EXPRESSION(AST::EXPRESSION::EXPRESSION_TYPE ExpressionType):
+EXPRESSION::EXPRESSION(EXPRESSION_TYPE ExpressionType):
 BASE("", TYPE::Expression){
   this->ExpressionType = ExpressionType;
 
-  Object   = 0;
-  Left     = 0;
-  Right    = 0;
+  ObjectRef = 0;
+  Left      = 0;
+  Right     = 0;
+
+  Raw = false;
 }
 //------------------------------------------------------------------------------
 
@@ -53,22 +55,36 @@ void EXPRESSION::Display(){
     if(Left->Left || Left->Right) printf(")");
   }
 
+  if(Raw) printf("{raw}");
+
   switch(ExpressionType){
-    case AST::EXPRESSION::String:
+    case String:
       printf("\"%s\"", StrValue.c_str());
       break;
 
-    case AST::EXPRESSION::Literal:
+    case Literal:
       Value.Display();
       break;
 
-    case AST::EXPRESSION::Identifier:
-      error("Not yet implemented");
-      // if(Name.empty()) printf("(Identifier node has no name)");
-      // else             printf("%s", Name.c_str());
+    case Object:
+      if(ObjectRef){
+        DisplayLongName(ObjectRef);
+      }else{
+        error("Null object reference");
+      }
       break;
 
-    case AST::EXPRESSION::Array:
+    case Attribute:
+      if(ObjectRef){
+        DisplayLongName(ObjectRef);
+      }else{
+        error("Null object reference");
+      }
+      printf("'");
+      printf("%s", Name.c_str());
+      break;
+
+    case Array:
       printf("[");
       for(size_t n = 0; n < Elements.size(); n++){
         if(n > 0) printf(", ");
@@ -78,67 +94,81 @@ void EXPRESSION::Display(){
       printf("]");
       break;
 
-    case AST::EXPRESSION::VectorConcatenate: printf("{VectorConcat}"); break;
-    case AST::EXPRESSION::ArrayConcatenate : printf("{ArrayConcat}" ); break;
+    case VectorConcatenate:
+      printf(":(");
+      for(size_t n = 0; n < Elements.size(); n++){
+        if(n > 0) printf(", ");
+        if(Elements[n]) Elements[n]->Display();
+        else            printf("{null}");
+      }
+      printf(")");
+      break;
 
-    case AST::EXPRESSION::FunctionCall     : printf("{call}" );        break;
+    case ArrayConcatenate:
+      printf(":[");
+      for(size_t n = 0; n < Elements.size(); n++){
+        if(n > 0) printf(", ");
+        if(Elements[n]) Elements[n]->Display();
+        else            printf("{null}");
+      }
+      printf("]");
+      break;
 
-    case AST::EXPRESSION::Slice            : printf("{slice}");        break;
+    case FunctionCall     : printf("{call}" );        break;
 
-    case AST::EXPRESSION::AccessMember     : printf("." );             break;
-    case AST::EXPRESSION::AccessMemberSafe : printf("?." );            break;
-    case AST::EXPRESSION::AccessAttribute  : printf("'" );             break;
+    case Slice            : printf("{slice}");        break;
 
-    case AST::EXPRESSION::Increment        : printf("++");             break;
-    case AST::EXPRESSION::Decrement        : printf("--");             break;
-    case AST::EXPRESSION::Factorial        : printf("!" );             break;
+    case AccessMember     : printf("." );             break;
+    case AccessMemberSafe : printf("?." );            break;
+    case AccessAttribute  : printf("'" );             break;
 
-    case AST::EXPRESSION::Range            : printf("..");             break;
+    case Increment        : printf("++");             break;
+    case Decrement        : printf("--");             break;
+    case Factorial        : printf("!" );             break;
 
-    case AST::EXPRESSION::Negate           : printf(" -");             break;
-    case AST::EXPRESSION::Bit_NOT          : printf(" ~");             break;
-    case AST::EXPRESSION::Raw              : printf(" :");             break;
+    case Negate           : printf(" -");             break;
+    case Bit_NOT          : printf(" ~");             break;
 
-    case AST::EXPRESSION::AND_Reduce       : printf( " &");            break;
-    case AST::EXPRESSION::NAND_Reduce      : printf(" ~&");            break;
-    case AST::EXPRESSION::OR_Reduce        : printf( " |");            break;
-    case AST::EXPRESSION::NOR_Reduce       : printf(" ~|");            break;
-    case AST::EXPRESSION::XOR_Reduce       : printf( " #");            break;
-    case AST::EXPRESSION::XNOR_Reduce      : printf(" ~#");            break;
-    case AST::EXPRESSION::Logical_NOT      : printf( " !");            break;
+    case AND_Reduce       : printf( " &");            break;
+    case NAND_Reduce      : printf(" ~&");            break;
+    case OR_Reduce        : printf( " |");            break;
+    case NOR_Reduce       : printf(" ~|");            break;
+    case XOR_Reduce       : printf( " #");            break;
+    case XNOR_Reduce      : printf(" ~#");            break;
+    case Logical_NOT      : printf( " !");            break;
 
-    case AST::EXPRESSION::Cast             : printf(" {cast} ");       break;
+    case Cast             : printf(" {cast} ");       break;
 
-    case AST::EXPRESSION::Replicate        : printf("{rep}");          break;
+    case Replicate        : printf("{rep}");          break;
 
-    case AST::EXPRESSION::Exponential      : printf(" ^ " );           break;
-    case AST::EXPRESSION::Multiply         : printf(" * " );           break;
-    case AST::EXPRESSION::Divide           : printf(" / " );           break;
-    case AST::EXPRESSION::Modulus          : printf(" %% ");           break;
-    case AST::EXPRESSION::Add              : printf(" + " );           break;
-    case AST::EXPRESSION::Subtract         : printf(" - " );           break;
+    case Exponential      : printf(" ^ " );           break;
+    case Multiply         : printf(" * " );           break;
+    case Divide           : printf(" / " );           break;
+    case Modulus          : printf(" %% ");           break;
+    case Add              : printf(" + " );           break;
+    case Subtract         : printf(" - " );           break;
 
-    case AST::EXPRESSION::Shift_Left       : printf(" << ");           break;
-    case AST::EXPRESSION::Shift_Right      : printf(" >> ");           break;
+    case Shift_Left       : printf(" << ");           break;
+    case Shift_Right      : printf(" >> ");           break;
 
-    case AST::EXPRESSION::Less             : printf(" < " );           break;
-    case AST::EXPRESSION::Greater          : printf(" > " );           break;
-    case AST::EXPRESSION::Less_Equal       : printf(" <= ");           break;
-    case AST::EXPRESSION::Greater_Equal    : printf(" >= ");           break;
-    case AST::EXPRESSION::Equal            : printf(" == ");           break;
-    case AST::EXPRESSION::Not_Equal        : printf(" != ");           break;
+    case Less             : printf(" < " );           break;
+    case Greater          : printf(" > " );           break;
+    case Less_Equal       : printf(" <= ");           break;
+    case Greater_Equal    : printf(" >= ");           break;
+    case Equal            : printf(" == ");           break;
+    case Not_Equal        : printf(" != ");           break;
 
-    case AST::EXPRESSION::Bit_AND          : printf( " & ");           break;
-    case AST::EXPRESSION::Bit_NAND         : printf(" ~& ");           break;
-    case AST::EXPRESSION::Bit_OR           : printf( " | ");           break;
-    case AST::EXPRESSION::Bit_NOR          : printf(" ~| ");           break;
-    case AST::EXPRESSION::Bit_XOR          : printf( " # ");           break;
-    case AST::EXPRESSION::Bit_XNOR         : printf(" ~# ");           break;
+    case Bit_AND          : printf( " & ");           break;
+    case Bit_NAND         : printf(" ~& ");           break;
+    case Bit_OR           : printf( " | ");           break;
+    case Bit_NOR          : printf(" ~| ");           break;
+    case Bit_XOR          : printf( " # ");           break;
+    case Bit_XNOR         : printf(" ~# ");           break;
 
-    case AST::EXPRESSION::Logical_AND      : printf(" && ");           break;
-    case AST::EXPRESSION::Logical_OR       : printf(" || ");           break;
+    case Logical_AND      : printf(" && ");           break;
+    case Logical_OR       : printf(" || ");           break;
 
-    case AST::EXPRESSION::Conditional      : printf(" ? ");            break;
+    case Conditional      : printf(" ? ");            break;
 
     default: printf("(Unknown expression type: %d)", ExpressionType);
   }

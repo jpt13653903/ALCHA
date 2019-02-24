@@ -19,6 +19,7 @@
 //==============================================================================
 
 #include "Base.h"
+#include "Namespace.h"
 #include "Expression.h"
 //------------------------------------------------------------------------------
 
@@ -28,6 +29,8 @@ using namespace OBJECTS;
 BASE::BASE(const char* Name, TYPE Type){
   this->Name = Name;
   this->Type = Type;
+
+  this->Namespace = Current;
 }
 //------------------------------------------------------------------------------
 
@@ -35,6 +38,16 @@ BASE::~BASE(){
   for(auto a = Attributes.begin(); a != Attributes.end(); a++){
     delete a->second;
   }
+}
+//------------------------------------------------------------------------------
+
+void BASE::DisplayLongName(BASE* Node){
+  if(!Node) return;
+  if(Node->Namespace != &Global){
+    DisplayLongName(Node->Namespace);
+    printf("::");
+  }
+  printf("%s", Node->Name.c_str());
 }
 //------------------------------------------------------------------------------
 

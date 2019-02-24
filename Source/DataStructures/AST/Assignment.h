@@ -30,16 +30,16 @@ namespace AST{
       enum ASSIGNMENT_TYPE{
         Assign,             //   =
         Raw_Assign,         //  :=
-        Append_Assign,      //  @=
+        Append_Assign,      //  ~=
         Add_Assign,         //  +=
         Subtract_Assign,    //  -=
         Multiply_Assign,    //  *=
         Divide_Assign,      //  /=
         Modulus_Assign,     //  %=
-        Exponential_Assign, //  ^=
+        Exponential_Assign, // **=
         AND_Assign,         //  &=
         OR_Assign,          //  |=
-        XOR_Assign,         //  #=
+        XOR_Assign,         //  ^=
         Shift_Left_Assign,  // <<=
         Shift_Right_Assign  // >>=
       } AssignmentType;

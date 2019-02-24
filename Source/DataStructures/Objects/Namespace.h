@@ -32,10 +32,9 @@
 namespace OBJECTS{
   class NAMESPACE: public BASE{
     public:
-      NAMESPACE*                   Parent;
       std::map<std::string, BASE*> Symbols;
 
-      NAMESPACE(const char* Name = "", NAMESPACE* Parent = 0);
+      NAMESPACE(const char* Name = "");
      ~NAMESPACE(); // Also cleans up the children
      
       void Display();

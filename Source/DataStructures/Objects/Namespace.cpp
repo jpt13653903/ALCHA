@@ -32,8 +32,7 @@ using namespace std;
 using namespace OBJECTS;
 //------------------------------------------------------------------------------
 
-NAMESPACE::NAMESPACE(const char* Name, NAMESPACE* Parent): BASE(Name, TYPE::Namespace){
-  this->Parent = Parent;
+NAMESPACE::NAMESPACE(const char* Name): BASE(Name, TYPE::Namespace){
 }
 //------------------------------------------------------------------------------
 
@@ -43,7 +42,7 @@ NAMESPACE::~NAMESPACE(){
 //------------------------------------------------------------------------------
 
 void NAMESPACE::Display(){
-  if(!Parent) printf("Global namespace:\n");
+  if(Namespace == &Global) printf("Global namespace:\n");
   for(auto s = Symbols.begin(); s != Symbols.end(); s++){
     if(s->second){
       s->second->Display();

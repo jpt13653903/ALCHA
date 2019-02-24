@@ -31,10 +31,12 @@
 //------------------------------------------------------------------------------
 
 namespace OBJECTS{
+  class NAMESPACE;
   class EXPRESSION;
   
   class BASE{ // Base class for the symbol table
     protected:
+      void DisplayLongName  (BASE* Node);
       void DisplayAttributes();
 
     public:
@@ -54,6 +56,7 @@ namespace OBJECTS{
       } Type;
 
       std::string                        Name;
+      NAMESPACE*                         Namespace;
       std::map<std::string, EXPRESSION*> Attributes;
 
                BASE(const char* Name, TYPE Type);
