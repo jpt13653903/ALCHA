@@ -7,19 +7,37 @@ Options = -std=c++11 -Wall -fexceptions -O2 -DDEBUG
 Toolbox = ../Toolbox/Cpp
 #-------------------------------------------------------------------------------
 
-Includes   = -IBackEnd
-Includes  +=-IDataStructures
-Includes  +=-IFrontEnd
-Includes  +=-IGlobal
-Includes  +=-ILibraries/include
-Includes  +=-ITools
-Includes  +=-I$(Toolbox)
+Version  = -DMAJOR_VERSION=0 -DMINOR_VERSION=1
+#-------------------------------------------------------------------------------
 
 Libraries  = -lfftw3 -lgmp -lmpfr
 LibInclude = -LLibraries/lib
 #-------------------------------------------------------------------------------
 
-Version  = -DMAJOR_VERSION=0 -DMINOR_VERSION=1
+Includes   = -ILibraries/include
+
+Includes  += -ITools
+Includes  += -I$(Toolbox)
+Includes  += -IDataStructures
+Includes  += -IFrontEnd
+Includes  += -IEngine
+Includes  += -IBackEnd
+#-------------------------------------------------------------------------------
+
+Headers  = Libraries/include/*.h
+
+Headers += Tools/*.h
+Headers += $(Toolbox)/*.h          
+Headers += DataStructures/*.h
+Headers += DataStructures/AST/*.h
+Headers += DataStructures/Objects/*.h
+
+Headers += FrontEnd/*.h
+Headers += Engine/*.h
+# Headers += BackEnd/*.h
+
+# Auto-generated headers
+Headers += FrontEnd/CharacterNames.h
 #-------------------------------------------------------------------------------
 
 Objects  = obj/Tools/Number.o
@@ -59,11 +77,11 @@ Objects += obj/DataStructures/Objects/Byte.o
 Objects += obj/DataStructures/Objects/Character.o
 Objects += obj/DataStructures/Objects/ClassDefinition.o
 Objects += obj/DataStructures/Objects/ClassInstance.o
+Objects += obj/DataStructures/Objects/Expression.o
 Objects += obj/DataStructures/Objects/FunctionDefinition.o
 Objects += obj/DataStructures/Objects/FunctionInstance.o
 Objects += obj/DataStructures/Objects/Namespace.o
 Objects += obj/DataStructures/Objects/Net.o
-Objects += obj/DataStructures/Objects/Number.o
 Objects += obj/DataStructures/Objects/Pin.o
 Objects += obj/DataStructures/Objects/Synthesisable.o
 
@@ -80,22 +98,6 @@ Objects += obj/Engine/Engine.o
 # Objects += obj/BackEnd/TimingSpec.o
 
 Objects += obj/Resources/resource.res
-#-------------------------------------------------------------------------------
-
-Headers  = Libraries/include/*.h
-
-Headers += Tools/*.h
-Headers += $(Toolbox)/*.h          
-Headers += DataStructures/*.h
-Headers += DataStructures/AST/*.h
-Headers += DataStructures/Objects/*.h
-
-Headers += FrontEnd/*.h
-Headers += Engine/*.h
-# Headers += BackEnd/*.h
-
-# Auto-generated headers
-Headers += FrontEnd/CharacterNames.h
 #-------------------------------------------------------------------------------
 
 TestSources  = ../Test\ Cases/*
@@ -117,9 +119,10 @@ clean:
 
 test: $(TestSources) testScanner testParser
 
-testButtonsToLEDs: bin/testScanner.exe bin/testParser.exe $(TestSources)
+testButtonsToLEDs: bin/testScanner.exe bin/testParser.exe bin/ALCHA.exe $(TestSources)
 	bin/testScanner.exe "../Test Cases/Buttons to LEDs/main.alc"
 	bin/testParser.exe  "../Test Cases/Buttons to LEDs/main.alc"
+	bin/ALCHA.exe       "../Test Cases/Buttons to LEDs/main.alc" "../Test Output"
 
 test%: bin/test%.exe
 	$<

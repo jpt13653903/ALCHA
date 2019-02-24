@@ -54,9 +54,11 @@ class NUMBER{
     void operator= (double   d);
     void operator= (NUMBER&  n);
 
-    void Mul(double r, double i);
+    void Mul(double r, double i = 0);
+    void Mul(NUMBER& n);
 
-    bool IsInt();
+    bool IsInt ();
+    bool IsReal();
 
     double GetReal();
     double GetImag();

@@ -59,16 +59,16 @@ void EXPRESSION::Display(){
   switch(ExpressionType){
     case String:
       if(StrValue) printf("\"%s\"", StrValue->c_str());
-      else         printf("(String literal node has no value)");
+      else         error ("(String literal node has no value)");
       break;
 
     case Literal:
       if(Value) Value->Display();
-      else      printf("(Literal node has no value)");
+      else      error("(Literal node has no value)");
       break;
 
     case Identifier:
-      if(Name.empty()) printf("(Identifier node has no name)");
+      if(Name.empty()) error ("(Identifier node has no name)");
       else             printf("%s", Name.c_str());
       break;
 
@@ -135,7 +135,7 @@ void EXPRESSION::Display(){
 
     case Conditional : printf(" ? "); break;
 
-    default: printf("(Unknown expression type: %d)", ExpressionType);
+    default: error("(Unknown expression type: %d)", ExpressionType);
   }
 
   if(Right){

@@ -31,8 +31,6 @@
 namespace AST{
   struct BASE{ // The base type for AST nodes
     enum class TYPE{
-      Base = 0,
-
       Fence, // Empty statement, but also "next-cycle" specifier in FSMs
       Import,
       Group,

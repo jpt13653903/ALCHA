@@ -18,22 +18,39 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Objects_Number_h
-#define Objects_Number_h
+#ifndef Objects_Expression_h
+#define Objects_Expression_h
+//------------------------------------------------------------------------------
+
+#include <vector>
 //------------------------------------------------------------------------------
 
 #include "Base.h"
+#include "Number.h"
+#include "AST/Expression.h"
 //------------------------------------------------------------------------------
 
 namespace OBJECTS{
-  struct NUMBER: public BASE{
-             NUMBER(const char* Name);
-    virtual ~NUMBER();
+  struct EXPRESSION: public BASE{
+    AST::EXPRESSION::EXPRESSION_TYPE ExpressionType;
 
-    virtual void Display();
+    BASE*                    Object;   // Refers to another object
+    NUMBER                   Value;    // Only used for numerical literals
+    std::string              StrValue; // Only used for string literals
+    std::vector<EXPRESSION*> Elements; // Only used for arrays
+
+    // Left and Right operands
+    EXPRESSION* Left;
+    EXPRESSION* Right;
+
+    EXPRESSION(AST::EXPRESSION::EXPRESSION_TYPE ExpressionType);
+   ~EXPRESSION();
+
+    void Display();
   };
 }
 //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------
+

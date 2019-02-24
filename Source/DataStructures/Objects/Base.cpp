@@ -19,6 +19,7 @@
 //==============================================================================
 
 #include "Base.h"
+#include "Expression.h"
 //------------------------------------------------------------------------------
 
 using namespace OBJECTS;
@@ -36,3 +37,17 @@ BASE::~BASE(){
   }
 }
 //------------------------------------------------------------------------------
+
+void BASE::DisplayAttributes(){
+  printf("    Attributes:\n");
+
+  for(auto a = Attributes.begin(); a != Attributes.end(); a++){
+    printf("      %s = ", a->first.c_str());
+    if(a->second) a->second->Display();
+    else          printf("{null}");
+    printf("\n");
+  }
+}
+//------------------------------------------------------------------------------
+
+

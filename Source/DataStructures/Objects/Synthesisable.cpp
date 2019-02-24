@@ -25,11 +25,22 @@ using namespace OBJECTS;
 //------------------------------------------------------------------------------
 
 SYNTHESISABLE::SYNTHESISABLE(const char* Name, TYPE Type) : BASE(Name, Type){
-  error("Not yet implemented");
+  Signed    = false;
+  Width     = 1;
+  FullScale = 2;
 }
 //------------------------------------------------------------------------------
 
 SYNTHESISABLE::~SYNTHESISABLE(){
 }
 //------------------------------------------------------------------------------
+
+void SYNTHESISABLE::Display(){
+  printf("  %s\n", Name.c_str());
+  printf("    Width      = %u\n", Width);
+  printf("    Full-scale = "); FullScale.Display(); printf("\n");
+  printf("    Signed     = %s\n", Signed ? "true" : "false");
+}
+//------------------------------------------------------------------------------
+
 

@@ -27,31 +27,39 @@
 //------------------------------------------------------------------------------
 
 #include "General.h"
+#include "AST/Assignment.h"
 //------------------------------------------------------------------------------
 
 namespace OBJECTS{
-  struct BASE{ // Base class for the symbol table
-    enum class TYPE{
-      // Base types
-      Pin, Net, // Goes via the "Synthesisable" class
-      Number, Byte, Character,
+  class EXPRESSION;
+  
+  class BASE{ // Base class for the symbol table
+    protected:
+      void DisplayAttributes();
 
-      // Others
-      Array, // An array of objects
-      Namespace,
-      ClassDefinition,
-      ClassInstance,
-      FunctionDefinition,
-      FunctionInstance
-    } Type;
+    public:
+      enum class TYPE{
+        // Base types
+        Pin, Net, // Goes via the "Synthesisable" class
+        Number, Byte, Character,
 
-    std::string                  Name;
-    std::map<std::string, BASE*> Attributes;
+        // Others
+        Array, // An array of objects
+        Expression,
+        Namespace,
+        ClassDefinition,
+        ClassInstance,
+        FunctionDefinition,
+        FunctionInstance
+      } Type;
 
-             BASE(const char* Name, TYPE Type);
-    virtual ~BASE();
+      std::string                        Name;
+      std::map<std::string, EXPRESSION*> Attributes;
 
-    virtual void Display() = 0;
+               BASE(const char* Name, TYPE Type);
+      virtual ~BASE();
+
+      virtual void Display() = 0;
   };
 }
 //------------------------------------------------------------------------------

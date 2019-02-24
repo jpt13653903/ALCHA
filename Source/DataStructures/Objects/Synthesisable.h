@@ -23,12 +23,21 @@
 //------------------------------------------------------------------------------
 
 #include "Base.h"
+#include "Number.h"
 //------------------------------------------------------------------------------
 
 namespace OBJECTS{
   struct SYNTHESISABLE: public BASE{
+    bool   Signed;
+    int    Width;
+    NUMBER FullScale;
+
              SYNTHESISABLE(const char* Name, TYPE Type);
     virtual ~SYNTHESISABLE();
+
+    bool ApplyParameters(AST::BASE* Parameter);
+
+    void Display();
   };
 }
 //------------------------------------------------------------------------------

@@ -44,9 +44,12 @@ void PARSER::Error(const char* Message){
   if(error) return;
   error = true;
   printf(
-    ANSI_FG_BRIGHT_BLACK "Line %05d of %s\n"
-    ANSI_FG_BRIGHT_RED "  Error:"
-    ANSI_FG_YELLOW " %s\n" ANSI_RESET,
+    ANSI_FG_BRIGHT_BLACK "Line "
+    ANSI_FG_CYAN         "%05d "
+    ANSI_FG_BRIGHT_BLACK "of "
+    ANSI_FG_YELLOW       "%s\n"
+    ANSI_FG_BRIGHT_RED   "  Error:"
+    ANSI_RESET           " %s\n",
     Token.Line,
     Scanner->Filename.c_str(),
     Message

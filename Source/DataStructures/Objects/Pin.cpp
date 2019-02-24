@@ -25,15 +25,38 @@ using namespace OBJECTS;
 //------------------------------------------------------------------------------
 
 PIN::PIN(const char* Name) : SYNTHESISABLE(Name, TYPE::Pin){
-  error("Not yet implemented");
+  Driver  = 0;
+  Enabled = 0;
 }
 //------------------------------------------------------------------------------
 
 PIN::~PIN(){
+  if(Driver ) delete Driver;
+  if(Enabled) delete Enabled;
 }
 //------------------------------------------------------------------------------
 
 void PIN::Display(){
+  SYNTHESISABLE::Display();
+
+  printf("    Direction  = ");
+  switch(Direction){
+    case AST::DEFINITION::Inferred: printf("Inferred\n"); break;
+    case AST::DEFINITION::Input   : printf("Input\n"   ); break;
+    case AST::DEFINITION::Output  : printf("Output\n"  ); break;
+    default                       : printf("Invalid\n" ); break;
+  }
+  printf("    Driver     = ");
+  if(Driver) Driver->Display();
+  else       printf("{open}");
+  printf("\n");
+
+  printf("    Enabled    = ");
+  if(Enabled) Enabled->Display();
+  else        printf("{open}");
+  printf("\n");
+
+  DisplayAttributes();
 }
 //------------------------------------------------------------------------------
 

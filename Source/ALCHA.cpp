@@ -19,6 +19,7 @@
 //==============================================================================
 
 #include "Parser.h"
+#include "Engine.h"
 #include "FileWrapper.h"
 //------------------------------------------------------------------------------
 
@@ -71,6 +72,10 @@ int main(int argc, char** argv){
   PARSER Parser;
   AST::Root = Parser.Run(argv[1]);
   if(!AST::Root) return -1;
+
+  ENGINE Engine;
+  if(!Engine.Run()) return -2;
+  OBJECTS::Global.Display();
 
   FILE_WRAPPER Files;
   char Filename[0x1000];

@@ -104,8 +104,8 @@ void DEFINITION::Display(){
 
   printf(" Direction = ");
   switch(Direction){
-    case Input : printf("Input\n"); break;
-    case Output: printf("Output\n"); break;
+    case Input : printf("Input\n"   ); break;
+    case Output: printf("Output\n"  ); break;
     default    : printf("Inferred\n"); break;
   }
 

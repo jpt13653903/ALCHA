@@ -22,15 +22,22 @@
 #define Objects_Pin_h
 //------------------------------------------------------------------------------
 
+#include "AST/Definition.h"
 #include "Synthesisable.h"
+#include "Expression.h"
 //------------------------------------------------------------------------------
 
 namespace OBJECTS{
   struct PIN: public SYNTHESISABLE{
-             PIN(const char* Name);
-    virtual ~PIN();
+    EXPRESSION* Driver;
+    EXPRESSION* Enabled;
 
-    virtual void Display();
+    AST::DEFINITION::DIRECTION Direction;
+
+    PIN(const char* Name);
+   ~PIN();
+
+    void Display();
   };
 }
 //------------------------------------------------------------------------------

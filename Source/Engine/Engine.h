@@ -30,16 +30,30 @@
 //------------------------------------------------------------------------------
 
 #include "Parser.h"
+#include "Objects/Pin.h"
+#include "Objects/Namespace.h"
 //------------------------------------------------------------------------------
 
 class ENGINE{
-  private:
+  private: // Massages
+    bool error;
+    void Error  (AST::BASE* Ast, const char* Message = 0);
+    void Warning(AST::BASE* Ast, const char* Message = 0);
+
+  private: // Expression Evaluation
+    OBJECTS::EXPRESSION* Evaluate(AST::EXPRESSION* Node);
+
+  private: // AST processing
+    bool ApplyAttributes(OBJECTS::BASE* Object, AST::ASSIGNMENT* AttributeList);
+    bool ApplyParameters(OBJECTS::SYNTHESISABLE* Object, AST::BASE* Parameter);
+    bool Definition     (AST::DEFINITION* Ast);
+    bool Assignment     (AST::ASSIGNMENT* Ast);
 
   public:
     ENGINE();
    ~ENGINE();
 
-    void Run();
+    bool Run();
 };
 //------------------------------------------------------------------------------
 
