@@ -259,7 +259,6 @@ SCANNER::SCANNER(){
     }
   }
 
-  Next   = 0;
   Line   = 1;
   Index  = 0;
   error  = false;

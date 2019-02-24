@@ -51,8 +51,8 @@ class PARSER{
     bool error;
     void Error(const char* Message);
 
-    TOKEN    Token;    // The current token
-    SCANNER* Scanner;  // The scanner (linked-list based stack)
+    TOKEN   Token; // The current token
+    SCANNER Scanner;
 
     void GetToken();
 

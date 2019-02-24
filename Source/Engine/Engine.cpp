@@ -25,6 +25,7 @@ using namespace std;
 //------------------------------------------------------------------------------
 
 ENGINE::ENGINE(){
+  Ast = 0;
 }
 //------------------------------------------------------------------------------
 
@@ -32,7 +33,7 @@ ENGINE::~ENGINE(){
 }
 //------------------------------------------------------------------------------
 
-void ENGINE::Error(AST::BASE* Ast, const char* Message){
+void ENGINE::Error(const char* Message){
   if(error) return;
   error = true;
   printf(
@@ -49,7 +50,7 @@ void ENGINE::Error(AST::BASE* Ast, const char* Message){
 }
 //------------------------------------------------------------------------------
 
-void ENGINE::Warning(AST::BASE* Ast, const char* Message){
+void ENGINE::Warning(const char* Message){
   printf(
     ANSI_FG_BRIGHT_BLACK "Line "
     ANSI_FG_CYAN         "%05d "
@@ -159,7 +160,7 @@ OBJECTS::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
           Result->ObjectRef = Left->ObjectRef;
           delete Left;
         }else if(Left->ExpressionType == OBJECTS::EXPRESSION::Attribute){
-          Error(Node, "Hierarchical attributes not supported");
+          Error("Hierarchical attributes not supported");
           delete Left;
           return 0;
         }else{
@@ -371,11 +372,10 @@ OBJECTS::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
 bool ENGINE::ApplyAttributes(
   OBJECTS::BASE*       Object,
   std::string&         Name,
-  OBJECTS::EXPRESSION* Value,
-  AST::BASE*           Ast
+  OBJECTS::EXPRESSION* Value
 ){
   if(!Value){
-    Error(Ast, "Invalid attribute expression");
+    Error("Invalid attribute expression");
     return false;
   }
 
@@ -389,7 +389,7 @@ bool ENGINE::ApplyAttributes(
       break;
 
     default:
-      Error(Ast, "Attribute values must be strings, literals or arrays");
+      Error("Attribute values must be strings, literals or arrays");
       delete Value;
       return false;
   }
@@ -414,7 +414,7 @@ bool ENGINE::ApplyAttributes(OBJECTS::BASE* Object, AST::ASSIGNMENT* AttributeLi
     }
     auto a = Object->Attributes.find(AttributeList->Left->Name);
     if(a != Object->Attributes.end()){
-      Warning(AttributeList);
+      Warning();
       printf("Overwriting attribute %s\n", AttributeList->Left->Name.c_str());
       if(a->second) delete a->second;
     }
@@ -422,8 +422,7 @@ bool ENGINE::ApplyAttributes(OBJECTS::BASE* Object, AST::ASSIGNMENT* AttributeLi
     if(!ApplyAttributes(
       Object,
       AttributeList->Left->Name,
-      Evaluate(AttributeList->Right),
-      AttributeList
+      Evaluate(AttributeList->Right)
     )) return false;
 
     AttributeList = (AST::ASSIGNMENT*)AttributeList->Next;
@@ -443,7 +442,7 @@ bool ENGINE::ApplyParameters(OBJECTS::SYNTHESISABLE* Object, AST::BASE* Paramete
 
         OBJECTS::EXPRESSION* Param = Evaluate((AST::EXPRESSION*)Parameter);
         if(!Param){
-          Error(Parameter, "Invalid parameter expression");
+          Error("Invalid parameter expression");
           return false;
         }
 
@@ -467,7 +466,7 @@ bool ENGINE::ApplyParameters(OBJECTS::SYNTHESISABLE* Object, AST::BASE* Paramete
             break;
 
           default:
-            Error(Parameter, "Parameters must be pure scripting expressions");
+            Error("Parameters must be pure scripting expressions");
             delete Param;
             return false;
         }
@@ -505,10 +504,47 @@ bool ENGINE::ApplyParameters(OBJECTS::SYNTHESISABLE* Object, AST::BASE* Paramete
 }
 //------------------------------------------------------------------------------
 
+bool ENGINE::Import(AST::IMPORT* Ast){
+  string Filename;
+
+  if(!Ast->Namespace.empty()){
+    error("Importing into a namespace not yet implemented");
+  }
+
+  string& Path = Ast->Filename;
+  int n;
+  for(n = Path.length()-1; n >= 0; n--){
+    if(Path[n] == '/') break;
+  }
+  if(n >= 0) Filename = Path.substr(0, n+1);
+  Filename += Ast->File;
+  Filename += ".alc";
+  info("Filename = %s", Filename.c_str());
+
+  AST::BASE* Node = Ast->Next;
+
+  PARSER Parser;
+  Node = Parser.Run(Filename.c_str());
+  if(!Node){
+    Error();
+    printf("Cannot import \"%s\"", Filename.c_str());
+    return false;
+  }
+  // TODO This is wrong -- when importing into a namespace,
+  //      run the resulting AST.  Make another Run function for this purpose
+  AST::BASE* Next = Ast->Next;
+  Ast->Next = Node;
+  while(Node->Next) Node = Node->Next;
+  Node->Next = Next;
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 bool ENGINE::Alias(AST::ALIAS* Ast){
   auto Symbol = OBJECTS::Current->Symbols.find(Ast->Identifier);
   if(Symbol != OBJECTS::Current->Symbols.end()){
-    Error(Ast);
+    Error();
     printf("Symbol \"%s\" already defined in the current namespace\n",
            Ast->Identifier.c_str());
     return false;
@@ -528,7 +564,7 @@ bool ENGINE::Definition(AST::DEFINITION* Ast){
   while(Identifier){
     auto Symbol = OBJECTS::Current->Symbols.find(Identifier->Identifier);
     if(Symbol != OBJECTS::Current->Symbols.end()){
-      Error(Ast);
+      Error();
       printf("Symbol \"%s\" already defined in the current namespace\n",
              Identifier->Identifier.c_str());
       return false;
@@ -553,8 +589,8 @@ bool ENGINE::Definition(AST::DEFINITION* Ast){
       case AST::DEFINITION::Pin:{
         auto Pin = new OBJECTS::PIN(Identifier->Identifier.c_str());
         Pin->Direction = Ast->Direction;
-        if(!ApplyParameters(Pin, Ast->Parameters)) Error(Ast, "Invalid parameters");
-        if(!ApplyAttributes(Pin, Ast->Attributes)) Error(Ast, "Invalid attributes");
+        if(!ApplyParameters(Pin, Ast->Parameters)) Error("Invalid parameters");
+        if(!ApplyAttributes(Pin, Ast->Attributes)) Error("Invalid attributes");
         if(Identifier->Initialiser) error("Not yet implemented");
 
         OBJECTS::Current->Symbols[Pin->Name] = Pin;
@@ -601,7 +637,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
   OBJECTS::EXPRESSION* Temp;
 
   if(!Left){
-    error("Null assignment target");
+    Error("Target object not defined");
     if(Left ) delete Left;
     if(Right) delete Right;
     return false;
@@ -621,7 +657,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
       Left->ExpressionType != OBJECTS::EXPRESSION::Attribute
     )
   ){
-    Error(Ast, "Illegal assignment target");
+    Error("Illegal assignment target");
     delete Left;
     delete Right;
     return false;
@@ -700,7 +736,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
 
   if(Left->ExpressionType == OBJECTS::EXPRESSION::Attribute){
     if(Left->ObjectRef){
-      ApplyAttributes(Left->ObjectRef, Left->Name, Right, Ast);
+      ApplyAttributes(Left->ObjectRef, Left->Name, Right);
       // The function above deletes Right if required
     }else{
       error("Null object reference");
@@ -735,7 +771,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
 bool ENGINE::Run(){
   debug("Running the engine...");
 
-  AST::BASE* Ast = AST::Root;
+  Ast = AST::Root;
 
   error = false;
 
@@ -746,7 +782,7 @@ bool ENGINE::Run(){
         break;
 
       case AST::BASE::TYPE::Import:
-        error("Import not yet implemented");
+        if(!Import((AST::IMPORT*)Ast)) return false;
         break;
 
       case AST::BASE::TYPE::Group:

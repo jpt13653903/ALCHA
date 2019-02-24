@@ -25,18 +25,11 @@ using namespace std;
 //------------------------------------------------------------------------------
 
 PARSER::PARSER(){
-  error   = false;
-  Scanner = 0;
+  error = false;
 }
 //------------------------------------------------------------------------------
 
 PARSER::~PARSER(){
-  SCANNER* Temp;
-  while(Scanner){
-    Temp    = Scanner;
-    Scanner = Scanner->Next;
-    delete Temp;
-  }
 }
 //------------------------------------------------------------------------------
 
@@ -51,7 +44,7 @@ void PARSER::Error(const char* Message){
     ANSI_FG_BRIGHT_RED   "  Error:"
     ANSI_RESET           " %s\n",
     Token.Line,
-    Scanner->Filename.c_str(),
+    Scanner.Filename.c_str(),
     Message
   );
   if(Token.Type) printf(
@@ -64,10 +57,10 @@ void PARSER::Error(const char* Message){
 void PARSER::GetToken(){
   if(error) return;
 
-  if(!Scanner->GetToken(&Token)) return;
+  if(!Scanner.GetToken(&Token)) return;
 
   #ifdef DEBUG
-    printf(ANSI_FG_BRIGHT_BLACK "%s:" ANSI_FG_CYAN "%05d  \t" ANSI_RESET, Scanner->Filename.c_str(), Token.Line);
+    printf(ANSI_FG_BRIGHT_BLACK "%s:" ANSI_FG_CYAN "%05d  \t" ANSI_RESET, Scanner.Filename.c_str(), Token.Line);
     switch(Token.Type){
       case TOKEN::Identifier: printf("Identifier\t"            ); break;
       case TOKEN::Literal   : printf("Literal   \t"            ); break;
@@ -93,7 +86,7 @@ AST::ASSIGNMENT* PARSER::AttributeAssignment(){
     return 0;
   }
   Node = new AST::ASSIGNMENT(
-    Token.Line, Scanner->Filename.c_str(), AST::ASSIGNMENT::Assign
+    Token.Line, Scanner.Filename.c_str(), AST::ASSIGNMENT::Assign
   );
   Node->Left = Identifier();
   if(!Node->Left){
@@ -159,7 +152,7 @@ AST::ASSIGNMENT* PARSER::AttributeList(){
 AST::CLASS_DEFINITION* PARSER::ClassDefinition(){
   if(Token.Type != TOKEN::Class) return 0;
   AST::CLASS_DEFINITION* Node = new AST::CLASS_DEFINITION(
-    Token.Line, Scanner->Filename.c_str()
+    Token.Line, Scanner.Filename.c_str()
   );
   GetToken();
 
@@ -230,7 +223,7 @@ AST::CLASS_DEFINITION* PARSER::ClassDefinition(){
 AST::ENUM_DEFINITION* PARSER::EnumDefinition(){
   if(Token.Type != TOKEN::Enum) return 0;
   AST::ENUM_DEFINITION* Node = new AST::ENUM_DEFINITION(
-    Token.Line, Scanner->Filename.c_str()
+    Token.Line, Scanner.Filename.c_str()
   );
   GetToken();
 
@@ -283,7 +276,7 @@ AST::EXPRESSION* PARSER::String(){
   if(Token.Type != TOKEN::String) return 0;
 
   AST::EXPRESSION* Node = new AST::EXPRESSION(
-    Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::String
+    Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::String
   );
 
   Node->StrValue = new string(Token.Data);
@@ -297,7 +290,7 @@ AST::EXPRESSION* PARSER::Literal(){
   if(Token.Type != TOKEN::Literal) return 0;
 
   AST::EXPRESSION* Node = new AST::EXPRESSION(
-    Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Literal
+    Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Literal
   );
 
   Node->Value = new NUMBER(Token.Value);
@@ -311,7 +304,7 @@ AST::EXPRESSION* PARSER::Identifier(){
   if(Token.Type != TOKEN::Identifier) return 0;
 
   AST::EXPRESSION* Node = new AST::EXPRESSION(
-    Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Identifier
+    Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Identifier
   );
   Node->Name = Token.Data;
 
@@ -350,13 +343,13 @@ AST::BASE* PARSER::Parameter(){
     switch(Token.Type){
       case TOKEN::Assign:
         Node = new AST::ASSIGNMENT(
-          Token.Line, Scanner->Filename.c_str(), AST::ASSIGNMENT::Assign
+          Token.Line, Scanner.Filename.c_str(), AST::ASSIGNMENT::Assign
         );
         break;
 
       case TOKEN::Raw_Assign:
         Node = new AST::ASSIGNMENT(
-          Token.Line, Scanner->Filename.c_str(), AST::ASSIGNMENT::Raw_Assign
+          Token.Line, Scanner.Filename.c_str(), AST::ASSIGNMENT::Raw_Assign
         );
         break;
 
@@ -426,7 +419,7 @@ AST::EXPRESSION* PARSER::Array(){
     GetToken();
 
     Node = new AST::EXPRESSION(
-      Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Array
+      Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Array
     );
     Node->Right = ExpressionList();
 
@@ -449,7 +442,7 @@ AST::EXPRESSION* PARSER::ArrayConcat(){
     GetToken();
 
     Node = new AST::EXPRESSION(
-      Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::ArrayConcatenate
+      Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::ArrayConcatenate
     );
     Node->Right = ExpressionList();
 
@@ -472,7 +465,7 @@ AST::EXPRESSION* PARSER::VectorConcat(){
     GetToken();
 
     Node = new AST::EXPRESSION(
-      Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::VectorConcatenate
+      Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::VectorConcatenate
     );
     Node->Right = ExpressionList();
 
@@ -501,7 +494,7 @@ AST::EXPRESSION* PARSER::Primary(){
   if(Node){
     if(GlobalAttribute){
       AST::EXPRESSION* Temp = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::AccessAttribute
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::AccessAttribute
       );
       Temp->Right = Node;
       Node = Temp;
@@ -545,7 +538,7 @@ AST::EXPRESSION* PARSER::CastEpr(AST::EXPRESSION* Node){
 
   if(Token.Type == TOKEN::CastOp){
     Temp = new AST::EXPRESSION(
-      Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Cast
+      Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Cast
     );
     GetToken();
     Temp->Left = Node;
@@ -605,7 +598,7 @@ AST::EXPRESSION* PARSER::Postfix(){
   while(Token.Type){
     if(Token.Type == TOKEN::OpenSquare){ // Array slice
       Temp = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Slice
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Slice
       );
 
       Temp->Left  = Node;
@@ -620,7 +613,7 @@ AST::EXPRESSION* PARSER::Postfix(){
 
     }else if(Token.Type == TOKEN::OpenRound){ // Function call
       Temp = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::FunctionCall
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::FunctionCall
       );
 
       Temp->Left  = Node;
@@ -629,7 +622,7 @@ AST::EXPRESSION* PARSER::Postfix(){
 
     }else if(Token.Type == TOKEN::AccessMember){
       Temp = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::AccessMember
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::AccessMember
       );
       GetToken();
 
@@ -645,7 +638,7 @@ AST::EXPRESSION* PARSER::Postfix(){
 
     }else if(Token.Type == TOKEN::AccessMemberSafe){
       Temp = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::AccessMemberSafe
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::AccessMemberSafe
       );
       GetToken();
 
@@ -661,7 +654,7 @@ AST::EXPRESSION* PARSER::Postfix(){
 
     }else if(Token.Type == TOKEN::AccessAttribute){
       Temp = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::AccessAttribute
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::AccessAttribute
       );
       GetToken();
 
@@ -677,7 +670,7 @@ AST::EXPRESSION* PARSER::Postfix(){
 
     }else if(Token.Type == TOKEN::Increment){
       Temp = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Increment
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Increment
       );
       GetToken();
 
@@ -686,7 +679,7 @@ AST::EXPRESSION* PARSER::Postfix(){
 
     }else if(Token.Type == TOKEN::Decrement){
       Temp = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Decrement
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Decrement
       );
       GetToken();
 
@@ -695,7 +688,7 @@ AST::EXPRESSION* PARSER::Postfix(){
 
     }else if(Token.Type == TOKEN::Factorial){
       Temp = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Factorial
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Factorial
       );
       GetToken();
 
@@ -718,27 +711,27 @@ AST::EXPRESSION* PARSER::Unary(){
   while(Token.Type){
     if(Token.Type == TOKEN::Negate){
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Negate
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Negate
       );
 
     }else if(Token.Type == TOKEN::Bit_NOT){
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Bit_NOT
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Bit_NOT
       );
 
     }else if(Token.Type == TOKEN::Colon){
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Raw
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Raw
       );
 
     }else if(Token.Type == TOKEN::Increment){
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Increment
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Increment
       );
 
     }else if(Token.Type == TOKEN::Decrement){
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Decrement
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Decrement
       );
 
     }else{
@@ -774,7 +767,7 @@ AST::EXPRESSION* PARSER::Range(){
 
   if(Token.Type == TOKEN::To){
     Temp = new AST::EXPRESSION(
-      Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Range
+      Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Range
     );
     GetToken();
 
@@ -805,49 +798,49 @@ AST::EXPRESSION* PARSER::Reduction(){
   switch(Token.Type){
     case TOKEN::Bit_AND:
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::AND_Reduce
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::AND_Reduce
       );
       GetToken();
       break;
 
     case TOKEN::Bit_NAND:
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::NAND_Reduce
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::NAND_Reduce
       );
       GetToken();
       break;
 
     case TOKEN::Bit_OR:
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::OR_Reduce
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::OR_Reduce
       );
       GetToken();
       break;
 
     case TOKEN::Bit_NOR:
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::NOR_Reduce
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::NOR_Reduce
       );
       GetToken();
       break;
 
     case TOKEN::Bit_XOR:
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::XOR_Reduce
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::XOR_Reduce
       );
       GetToken();
       break;
 
     case TOKEN::Bit_XNOR:
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::XNOR_Reduce
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::XNOR_Reduce
       );
       GetToken();
       break;
 
     case TOKEN::Logical_NOT:
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Logical_NOT
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Logical_NOT
       );
       GetToken();
       break;
@@ -884,7 +877,7 @@ AST::EXPRESSION* PARSER::Replication(){
 
   if(Token.Type == TOKEN::Replicate){
     Temp = new AST::EXPRESSION(
-      Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Replicate
+      Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Replicate
     );
     GetToken();
 
@@ -913,7 +906,7 @@ AST::EXPRESSION* PARSER::Exponential(){
     switch(Token.Type){
       case TOKEN::Exponential:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Exponential
+          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Exponential
         );
         break;
       default:
@@ -946,17 +939,17 @@ AST::EXPRESSION* PARSER::Multiplicative(){
     switch(Token.Type){
       case TOKEN::Multiply:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Multiply
+          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Multiply
         );
         break;
       case TOKEN::Divide:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Divide
+          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Divide
         );
         break;
       case TOKEN::Modulus:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Modulus
+          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Modulus
         );
         break;
       default:
@@ -989,12 +982,12 @@ AST::EXPRESSION* PARSER::Additive(){
     switch(Token.Type){
       case TOKEN::Add:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Add
+          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Add
         );
         break;
       case TOKEN::Subtract:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Subtract
+          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Subtract
         );
         break;
       default:
@@ -1027,12 +1020,12 @@ AST::EXPRESSION* PARSER::Shift(){
     switch(Token.Type){
       case TOKEN::Shift_Left:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Shift_Left
+          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Shift_Left
         );
         break;
       case TOKEN::Shift_Right:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Shift_Right
+          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Shift_Right
         );
         break;
       default:
@@ -1065,22 +1058,22 @@ AST::EXPRESSION* PARSER::Relational(){
     switch(Token.Type){
       case TOKEN::Less:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Less
+          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Less
         );
         break;
       case TOKEN::Greater:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Greater
+          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Greater
         );
         break;
       case TOKEN::Less_Equal:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Less_Equal
+          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Less_Equal
         );
         break;
       case TOKEN::Greater_Equal:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Greater_Equal
+          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Greater_Equal
         );
         break;
       default:
@@ -1113,12 +1106,12 @@ AST::EXPRESSION* PARSER::Equality(){
     switch(Token.Type){
       case TOKEN::Equal:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Equal
+          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Equal
         );
         break;
       case TOKEN::Not_Equal:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Not_Equal
+          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Not_Equal
         );
         break;
       default:
@@ -1151,12 +1144,12 @@ AST::EXPRESSION* PARSER::BitwiseAND(){
     switch(Token.Type){
       case TOKEN::Bit_AND:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Bit_AND
+          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Bit_AND
         );
         break;
       case TOKEN::Bit_NAND:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Bit_NAND
+          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Bit_NAND
         );
         break;
       default:
@@ -1189,12 +1182,12 @@ AST::EXPRESSION* PARSER::BitwiseXOR(){
     switch(Token.Type){
       case TOKEN::Bit_XOR:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Bit_XOR
+          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Bit_XOR
         );
         break;
       case TOKEN::Bit_XNOR:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Bit_XNOR
+          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Bit_XNOR
         );
         break;
       default:
@@ -1227,12 +1220,12 @@ AST::EXPRESSION* PARSER::BitwiseOR(){
     switch(Token.Type){
       case TOKEN::Bit_OR:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Bit_OR
+          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Bit_OR
         );
         break;
       case TOKEN::Bit_NOR:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Bit_NOR
+          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Bit_NOR
         );
         break;
       default:
@@ -1263,7 +1256,7 @@ AST::EXPRESSION* PARSER::Expression(){
 
   if(Token.Type == TOKEN::TernaryIf){
     Temp = new AST::EXPRESSION(
-      Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::Conditional
+      Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Conditional
     );
     GetToken();
 
@@ -1304,7 +1297,7 @@ AST::EXPRESSION* PARSER::TypeIdentifier(){
   while(Token.Type){
     if(Token.Type == TOKEN::AccessMember){
       Temp = new AST::EXPRESSION(
-        Token.Line, Scanner->Filename.c_str(), AST::EXPRESSION::AccessMember
+        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::AccessMember
       );
       GetToken();
 
@@ -1331,12 +1324,12 @@ AST::ASSIGNMENT* PARSER::Initialiser(std::string& Identifier){
   switch(Token.Type){
     case TOKEN::Assign:
       Node = new AST::ASSIGNMENT(
-        Token.Line, Scanner->Filename.c_str(), AST::ASSIGNMENT::Assign
+        Token.Line, Scanner.Filename.c_str(), AST::ASSIGNMENT::Assign
       );
       break;
     case TOKEN::Raw_Assign:
       Node = new AST::ASSIGNMENT(
-        Token.Line, Scanner->Filename.c_str(), AST::ASSIGNMENT::Raw_Assign
+        Token.Line, Scanner.Filename.c_str(), AST::ASSIGNMENT::Raw_Assign
       );
       break;
     default:
@@ -1351,7 +1344,7 @@ AST::ASSIGNMENT* PARSER::Initialiser(std::string& Identifier){
     return 0;
   }
   Node->Left       = new AST::EXPRESSION(
-    Node->Line, Scanner->Filename.c_str(), AST::EXPRESSION::Identifier
+    Node->Line, Scanner.Filename.c_str(), AST::EXPRESSION::Identifier
   );
   Node->Left->Name = Identifier;
   return Node;
@@ -1384,37 +1377,37 @@ AST::PARAMETER* PARSER::DefParameter(){
   switch(Token.Type){
     case TOKEN::Pin:
       Node = new AST::PARAMETER(
-        Token.Line, Scanner->Filename.c_str(), AST::PARAMETER::Pin
+        Token.Line, Scanner.Filename.c_str(), AST::PARAMETER::Pin
       ); GetToken();
       break;
     case TOKEN::Net:
       Node = new AST::PARAMETER(
-        Token.Line, Scanner->Filename.c_str(), AST::PARAMETER::Net
+        Token.Line, Scanner.Filename.c_str(), AST::PARAMETER::Net
       ); GetToken();
       break;
     case TOKEN::Byte:
       Node = new AST::PARAMETER(
-        Token.Line, Scanner->Filename.c_str(), AST::PARAMETER::Byte
+        Token.Line, Scanner.Filename.c_str(), AST::PARAMETER::Byte
       ); GetToken();
       break;
     case TOKEN::Char:
       Node = new AST::PARAMETER(
-        Token.Line, Scanner->Filename.c_str(), AST::PARAMETER::Char
+        Token.Line, Scanner.Filename.c_str(), AST::PARAMETER::Char
       ); GetToken();
       break;
     case TOKEN::Num:
       Node = new AST::PARAMETER(
-        Token.Line, Scanner->Filename.c_str(), AST::PARAMETER::Number
+        Token.Line, Scanner.Filename.c_str(), AST::PARAMETER::Number
       ); GetToken();
       break;
     case TOKEN::Func:
       Node = new AST::PARAMETER(
-        Token.Line, Scanner->Filename.c_str(), AST::PARAMETER::Func
+        Token.Line, Scanner.Filename.c_str(), AST::PARAMETER::Func
       ); GetToken();
       break;
     case TOKEN::Identifier:
       Node = new AST::PARAMETER(
-        Token.Line, Scanner->Filename.c_str(), AST::PARAMETER::ClassInstance
+        Token.Line, Scanner.Filename.c_str(), AST::PARAMETER::ClassInstance
       );
       Node->ClassName = TypeIdentifier();
       if(!Node->ClassName){
@@ -1581,35 +1574,35 @@ AST::DEFINITION* PARSER::Definition(){
   switch(Token.Type){
     case TOKEN::Pin:
       Node = new AST::DEFINITION(
-        Token.Line, Scanner->Filename.c_str(), AST::DEFINITION::Pin
+        Token.Line, Scanner.Filename.c_str(), AST::DEFINITION::Pin
       ); break;
     case TOKEN::Net:
       Node = new AST::DEFINITION(
-        Token.Line, Scanner->Filename.c_str(), AST::DEFINITION::Net
+        Token.Line, Scanner.Filename.c_str(), AST::DEFINITION::Net
       ); break;
     case TOKEN::Void:
       Node = new AST::DEFINITION(
-        Token.Line, Scanner->Filename.c_str(), AST::DEFINITION::Void
+        Token.Line, Scanner.Filename.c_str(), AST::DEFINITION::Void
       ); break;
     case TOKEN::Auto:
       Node = new AST::DEFINITION(
-        Token.Line, Scanner->Filename.c_str(), AST::DEFINITION::Auto
+        Token.Line, Scanner.Filename.c_str(), AST::DEFINITION::Auto
       ); break;
     case TOKEN::Byte:
       Node = new AST::DEFINITION(
-        Token.Line, Scanner->Filename.c_str(), AST::DEFINITION::Byte
+        Token.Line, Scanner.Filename.c_str(), AST::DEFINITION::Byte
       ); break;
     case TOKEN::Char:
       Node = new AST::DEFINITION(
-        Token.Line, Scanner->Filename.c_str(), AST::DEFINITION::Char
+        Token.Line, Scanner.Filename.c_str(), AST::DEFINITION::Char
       ); break;
     case TOKEN::Num:
       Node = new AST::DEFINITION(
-        Token.Line, Scanner->Filename.c_str(), AST::DEFINITION::Num
+        Token.Line, Scanner.Filename.c_str(), AST::DEFINITION::Num
       ); break;
     case TOKEN::Func:
       Node = new AST::DEFINITION(
-        Token.Line, Scanner->Filename.c_str(), AST::DEFINITION::Func
+        Token.Line, Scanner.Filename.c_str(), AST::DEFINITION::Func
       ); break;
     default:
       if(Direction) Error("Type name expected");
@@ -1778,7 +1771,7 @@ AST::BASE* PARSER::Other(){
     }
     if(Token.Type == TOKEN::Semicolon){
       Expr->Next = new AST::FENCE(
-        Token.Line, Scanner->Filename.c_str()
+        Token.Line, Scanner.Filename.c_str()
       );
     }
     GetToken();
@@ -1792,7 +1785,7 @@ AST::BASE* PARSER::Other(){
       return 0;
     }
     AST::NAMESPACE_PUSH* Namespace = new AST::NAMESPACE_PUSH(
-      Token.Line, Scanner->Filename.c_str()
+      Token.Line, Scanner.Filename.c_str()
     );
     GetToken();
 
@@ -1816,7 +1809,7 @@ AST::BASE* PARSER::Other(){
     }
 
     AST::DEFINITION* Def = new AST::DEFINITION(
-      Token.Line, Scanner->Filename.c_str(), AST::DEFINITION::ClassInstance
+      Token.Line, Scanner.Filename.c_str(), AST::DEFINITION::ClassInstance
     );
     if(Expr->ExpressionType == AST::EXPRESSION::FunctionCall){
       Def->ClassName  = Expr->Left;
@@ -1846,72 +1839,72 @@ AST::BASE* PARSER::Other(){
   switch(Token.Type){
     case TOKEN::Assign:
       Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner->Filename.c_str(), AST::ASSIGNMENT::Assign
+        Token.Line, Scanner.Filename.c_str(), AST::ASSIGNMENT::Assign
       );
       break;
     case TOKEN::Raw_Assign:
       Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner->Filename.c_str(), AST::ASSIGNMENT::Raw_Assign
+        Token.Line, Scanner.Filename.c_str(), AST::ASSIGNMENT::Raw_Assign
       );
       break;
     case TOKEN::Append_Assign:
       Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner->Filename.c_str(), AST::ASSIGNMENT::Append_Assign
+        Token.Line, Scanner.Filename.c_str(), AST::ASSIGNMENT::Append_Assign
       );
       break;
     case TOKEN::Add_Assign:
       Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner->Filename.c_str(), AST::ASSIGNMENT::Add_Assign
+        Token.Line, Scanner.Filename.c_str(), AST::ASSIGNMENT::Add_Assign
       );
       break;
     case TOKEN::Subtract_Assign:
       Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner->Filename.c_str(), AST::ASSIGNMENT::Subtract_Assign
+        Token.Line, Scanner.Filename.c_str(), AST::ASSIGNMENT::Subtract_Assign
       );
       break;
     case TOKEN::Multiply_Assign:
       Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner->Filename.c_str(), AST::ASSIGNMENT::Multiply_Assign
+        Token.Line, Scanner.Filename.c_str(), AST::ASSIGNMENT::Multiply_Assign
       );
       break;
     case TOKEN::Divide_Assign:
       Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner->Filename.c_str(), AST::ASSIGNMENT::Divide_Assign
+        Token.Line, Scanner.Filename.c_str(), AST::ASSIGNMENT::Divide_Assign
       );
       break;
     case TOKEN::Modulus_Assign:
       Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner->Filename.c_str(), AST::ASSIGNMENT::Modulus_Assign
+        Token.Line, Scanner.Filename.c_str(), AST::ASSIGNMENT::Modulus_Assign
       );
       break;
     case TOKEN::Exponential_Assign:
       Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner->Filename.c_str(), AST::ASSIGNMENT::Exponential_Assign
+        Token.Line, Scanner.Filename.c_str(), AST::ASSIGNMENT::Exponential_Assign
       );
       break;
     case TOKEN::AND_Assign:
       Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner->Filename.c_str(), AST::ASSIGNMENT::AND_Assign
+        Token.Line, Scanner.Filename.c_str(), AST::ASSIGNMENT::AND_Assign
       );
       break;
     case TOKEN::OR_Assign:
       Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner->Filename.c_str(), AST::ASSIGNMENT::OR_Assign
+        Token.Line, Scanner.Filename.c_str(), AST::ASSIGNMENT::OR_Assign
       );
       break;
     case TOKEN::XOR_Assign:
       Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner->Filename.c_str(), AST::ASSIGNMENT::XOR_Assign
+        Token.Line, Scanner.Filename.c_str(), AST::ASSIGNMENT::XOR_Assign
       );
       break;
     case TOKEN::Shift_Left_Assign:
       Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner->Filename.c_str(), AST::ASSIGNMENT::Shift_Left_Assign
+        Token.Line, Scanner.Filename.c_str(), AST::ASSIGNMENT::Shift_Left_Assign
       );
       break;
     case TOKEN::Shift_Right_Assign:
       Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner->Filename.c_str(), AST::ASSIGNMENT::Shift_Right_Assign
+        Token.Line, Scanner.Filename.c_str(), AST::ASSIGNMENT::Shift_Right_Assign
       );
       break;
 
@@ -1946,7 +1939,7 @@ AST::BASE* PARSER::Other(){
 AST::IF_STATEMENT* PARSER::IfStatement(){
   if(Token.Type != TOKEN::If) return 0;
   AST::IF_STATEMENT* Node = new AST::IF_STATEMENT(
-    Token.Line, Scanner->Filename.c_str()
+    Token.Line, Scanner.Filename.c_str()
   );
   GetToken();
 
@@ -1984,7 +1977,7 @@ AST::IF_STATEMENT* PARSER::IfStatement(){
 
 AST::WHILE_LOOP* PARSER::WhileLoop(){
   if(Token.Type != TOKEN::While) return 0;
-  AST::WHILE_LOOP* Node = new AST::WHILE_LOOP(Token.Line, Scanner->Filename.c_str());
+  AST::WHILE_LOOP* Node = new AST::WHILE_LOOP(Token.Line, Scanner.Filename.c_str());
   GetToken();
 
   if(Token.Type != TOKEN::OpenRound){
@@ -2015,7 +2008,7 @@ AST::WHILE_LOOP* PARSER::WhileLoop(){
 
 AST::LOOP_LOOP* PARSER::LoopLoop(){
   if(Token.Type != TOKEN::Loop) return 0;
-  AST::LOOP_LOOP* Node = new AST::LOOP_LOOP(Token.Line, Scanner->Filename.c_str());
+  AST::LOOP_LOOP* Node = new AST::LOOP_LOOP(Token.Line, Scanner.Filename.c_str());
   GetToken();
 
   if(Token.Type == TOKEN::OpenRound){
@@ -2043,7 +2036,7 @@ AST::LOOP_LOOP* PARSER::LoopLoop(){
 
 AST::FOR_LOOP* PARSER::ForLoop(){
   if(Token.Type != TOKEN::For) return 0;
-  AST::FOR_LOOP* Node = new AST::FOR_LOOP(Token.Line, Scanner->Filename.c_str());
+  AST::FOR_LOOP* Node = new AST::FOR_LOOP(Token.Line, Scanner.Filename.c_str());
   GetToken();
 
   if(Token.Type != TOKEN::OpenRound){
@@ -2089,7 +2082,7 @@ AST::FOR_LOOP* PARSER::ForLoop(){
 
 AST::IMPORT* PARSER::Import(){
   if(Token.Type != TOKEN::Import) return 0;
-  AST::IMPORT* Node = new AST::IMPORT(Token.Line, Scanner->Filename.c_str());
+  AST::IMPORT* Node = new AST::IMPORT(Token.Line, Scanner.Filename.c_str());
   GetToken();
 
   if(Token.Type != TOKEN::String){
@@ -2125,7 +2118,7 @@ AST::IMPORT* PARSER::Import(){
 
 AST::SWITCH* PARSER::Switch(){
   if(Token.Type != TOKEN::Switch) return 0;
-  AST::SWITCH* Node = new AST::SWITCH(Token.Line, Scanner->Filename.c_str());
+  AST::SWITCH* Node = new AST::SWITCH(Token.Line, Scanner.Filename.c_str());
   GetToken();
 
   if(Token.Type != TOKEN::OpenRound){
@@ -2206,7 +2199,7 @@ AST::ALIAS* PARSER::Alias(){
   if(Token.Type != TOKEN::Alias) return 0;
   GetToken();
 
-  AST::ALIAS* Node = new AST::ALIAS(Token.Line, Scanner->Filename.c_str());
+  AST::ALIAS* Node = new AST::ALIAS(Token.Line, Scanner.Filename.c_str());
 
   if(Token.Type != TOKEN::Identifier){
     Error("Identifier expected");
@@ -2245,7 +2238,7 @@ AST::GROUP* PARSER::Group(){
   if(Token.Type != TOKEN::Group) return 0;
   GetToken();
 
-  AST::GROUP* Node = new AST::GROUP(Token.Line, Scanner->Filename.c_str());
+  AST::GROUP* Node = new AST::GROUP(Token.Line, Scanner.Filename.c_str());
   if(Token.Type == TOKEN::OpenAngle){
     Node->Attributes = AttributeList();
   }
@@ -2281,17 +2274,17 @@ AST::JUMP* PARSER::Jump(){
   switch(Token.Type){
     case TOKEN::Return:
       Node = new AST::JUMP(
-        Token.Line, Scanner->Filename.c_str(), AST::JUMP::Return
+        Token.Line, Scanner.Filename.c_str(), AST::JUMP::Return
       );
       break;
     case TOKEN::Break:
       Node = new AST::JUMP(
-        Token.Line, Scanner->Filename.c_str(), AST::JUMP::Break
+        Token.Line, Scanner.Filename.c_str(), AST::JUMP::Break
       );
       break;
     case TOKEN::Continue:
       Node = new AST::JUMP(
-        Token.Line, Scanner->Filename.c_str(), AST::JUMP::Continue
+        Token.Line, Scanner.Filename.c_str(), AST::JUMP::Continue
       );
       break;
     default:
@@ -2314,7 +2307,7 @@ AST::JUMP* PARSER::Jump(){
 
 AST::RTL* PARSER::RTL(){
   if(Token.Type != TOKEN::RTL) return 0;
-  AST::RTL* Node = new AST::RTL(Token.Line, Scanner->Filename.c_str());
+  AST::RTL* Node = new AST::RTL(Token.Line, Scanner.Filename.c_str());
   GetToken();
 
   Node->Parameters = ParameterList ();
@@ -2325,7 +2318,7 @@ AST::RTL* PARSER::RTL(){
 
 AST::FSM* PARSER::FSM(){
   if(Token.Type != TOKEN::FSM) return 0;
-  AST::FSM* Node = new AST::FSM(Token.Line, Scanner->Filename.c_str());
+  AST::FSM* Node = new AST::FSM(Token.Line, Scanner.Filename.c_str());
   GetToken();
 
   Node->Parameters = ParameterList ();
@@ -2336,7 +2329,7 @@ AST::FSM* PARSER::FSM(){
 
 AST::HDL* PARSER::HDL(){
   if(Token.Type != TOKEN::HDL) return 0;
-  AST::HDL* Node = new AST::HDL(Token.Line, Scanner->Filename.c_str());
+  AST::HDL* Node = new AST::HDL(Token.Line, Scanner.Filename.c_str());
   GetToken();
 
   if(Token.Type != TOKEN::OpenRound){
@@ -2449,7 +2442,7 @@ AST::BASE* PARSER::Statement(){
   Node = Other           (); if(Node) return Node;
 
   if(Token.Type == TOKEN::Semicolon){
-    Node = new AST::FENCE(Token.Line, Scanner->Filename.c_str());
+    Node = new AST::FENCE(Token.Line, Scanner.Filename.c_str());
     GetToken();
     return Node;
   }
@@ -2502,17 +2495,9 @@ AST::BASE* PARSER::StatementBlock(){
 AST::BASE* PARSER::Run(const char* Filename){
   debug("Building AST for %s...", Filename);
 
-  SCANNER* Temp;
-  while(Scanner){
-    Temp    = Scanner;
-    Scanner = Scanner->Next;
-    delete Temp;
-  }
+  error = false;
 
-  error   = false;
-  Scanner = new SCANNER;
-
-  if(!Scanner->Open(Filename)) return 0;
+  if(!Scanner.Open(Filename)) return 0;
   GetToken();
 
   AST::BASE* AST = Statements();

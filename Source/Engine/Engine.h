@@ -37,9 +37,11 @@
 
 class ENGINE{
   private: // Massages
+    AST::BASE* Ast;
+
     bool error;
-    void Error  (AST::BASE* Ast, const char* Message = 0);
-    void Warning(AST::BASE* Ast, const char* Message = 0);
+    void Error  (const char* Message = 0);
+    void Warning(const char* Message = 0);
 
   private: // Expression Evaluation
     OBJECTS::EXPRESSION* Evaluate(AST::EXPRESSION* Node);
@@ -48,12 +50,12 @@ class ENGINE{
     bool ApplyAttributes(
       OBJECTS::BASE*       Object,
       std::string&         Name,
-      OBJECTS::EXPRESSION* Value,
-      AST::BASE*           Ast // Used for error messages
+      OBJECTS::EXPRESSION* Value
     );
     bool ApplyAttributes(OBJECTS::BASE* Object, AST::ASSIGNMENT* AttributeList);
     bool ApplyParameters(OBJECTS::SYNTHESISABLE* Object, AST::BASE* Parameter);
 
+    bool Import    (AST::IMPORT    * Ast);
     bool Alias     (AST::ALIAS     * Ast);
     bool Definition(AST::DEFINITION* Ast);
     bool Assignment(AST::ASSIGNMENT* Ast);
