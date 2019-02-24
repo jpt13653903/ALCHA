@@ -120,10 +120,8 @@ clean:
 
 test: $(TestSources) testScanner testParser
 
-testButtonsToLEDs: bin/testScanner.exe bin/testParser.exe bin/ALCHA.exe $(TestSources)
-	bin/testScanner.exe "../Test Cases/Buttons to LEDs/main.alc"
-	bin/testParser.exe  "../Test Cases/Buttons to LEDs/main.alc"
-	bin/ALCHA.exe       "../Test Cases/Buttons to LEDs/main.alc" "../Test Output"
+testButtonsToLEDs: bin/ALCHA.exe $(TestSources)
+	bin/ALCHA.exe "../Test Cases/Buttons to LEDs/main.alc" "../Test Output"
 
 test%: bin/test%.exe
 	$<

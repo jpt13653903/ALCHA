@@ -519,7 +519,7 @@ bool ENGINE::Import(AST::IMPORT* Ast){
   if(n >= 0) Filename = Path.substr(0, n+1);
   Filename += Ast->File;
   Filename += ".alc";
-  info("Filename = %s", Filename.c_str());
+  debug("Filename = %s", Filename.c_str());
 
   AST::BASE* Node = Ast->Next;
 

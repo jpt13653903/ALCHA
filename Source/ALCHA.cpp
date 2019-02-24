@@ -75,6 +75,11 @@ int main(int argc, char** argv){
 
   ENGINE Engine;
   if(!Engine.Run()) return -2;
+  printf(
+    ANSI_FG_GREEN "\n----------------------------------------"
+                  "----------------------------------------\n\n"
+    ANSI_RESET
+  );
   OBJECTS::Global.Display();
 
   FILE_WRAPPER Files;

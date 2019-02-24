@@ -42,7 +42,7 @@ NAMESPACE::~NAMESPACE(){
 //------------------------------------------------------------------------------
 
 void NAMESPACE::Display(){
-  printf("Namespace ");
+  printf("\nNamespace ");
 
   if(Namespace == &Global) printf("{Global}:\n");
   else                     printf("%s", Name.c_str());
