@@ -69,12 +69,8 @@ int main(int argc, char** argv){
     return 0;
   }
 
-  PARSER Parser;
-  AST::Root = Parser.Run(argv[1]);
-  if(!AST::Root) return -1;
-
   ENGINE Engine;
-  if(!Engine.Run()) return -2;
+  if(!Engine.Run(argv[1])) return -1;
   printf(
     ANSI_FG_GREEN "\n----------------------------------------"
                   "----------------------------------------\n\n"
@@ -99,7 +95,6 @@ int main(int argc, char** argv){
     "endmodule\n"
   );
 
-  if(AST::Root) delete AST::Root;
   return 0;
 }
 //------------------------------------------------------------------------------

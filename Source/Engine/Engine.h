@@ -37,11 +37,13 @@
 
 class ENGINE{
   private: // Massages
-    AST::BASE* Ast;
+    PARSER Parser;
 
     bool error;
-    void Error  (const char* Message = 0);
-    void Warning(const char* Message = 0);
+    void Error  (AST::BASE* Ast, const char* Message = 0);
+    void Warning(AST::BASE* Ast, const char* Message = 0);
+
+    std::stack<AST::BASE*> AstStack; // Used for clean-up in the destructor
 
   private: // Expression Evaluation
     OBJECTS::EXPRESSION* Evaluate(AST::EXPRESSION* Node);
@@ -50,7 +52,8 @@ class ENGINE{
     bool ApplyAttributes(
       OBJECTS::BASE*       Object,
       std::string&         Name,
-      OBJECTS::EXPRESSION* Value
+      OBJECTS::EXPRESSION* Value,
+      AST::BASE*           Ast
     );
     bool ApplyAttributes(OBJECTS::BASE* Object, AST::ASSIGNMENT* AttributeList);
     bool ApplyParameters(OBJECTS::SYNTHESISABLE* Object, AST::BASE* Parameter);
@@ -64,7 +67,7 @@ class ENGINE{
     ENGINE();
    ~ENGINE();
 
-    bool Run();
+    bool Run(const char* Filename);
 };
 //------------------------------------------------------------------------------
 

@@ -34,7 +34,7 @@ ALIAS::~ALIAS(){
 //------------------------------------------------------------------------------
 
 void ALIAS::Display(){
-  printf("  Alias %s\n", Name.c_str());
+  printf("  Alias: %s\n", Name.c_str());
   printf("    ");
   if(Expression) Expression->Display();
   printf("\n");

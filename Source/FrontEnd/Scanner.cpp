@@ -778,6 +778,8 @@ bool SCANNER::String(TOKEN* Token){
 bool SCANNER::Open(const char* Filename){
   FILE_WRAPPER fs;
 
+  Line  = 1;
+  Index = 0;
   error = false;
 
   if(Buffer) delete[] Buffer;
