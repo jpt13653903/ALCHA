@@ -1,9 +1,9 @@
 ifeq ($(OS), Windows_NT)
   CompilerPath = C:/TDM-GCC-32/bin
-  CC           = $(CompilerPath)/g++
+  CXX          = $(CompilerPath)/g++
 else
   CompilerPath = 
-  CC           = g++
+  CXX          = g++
 endif
 
 Options = -std=c++11 -Wall -fexceptions -O2 -DDEBUG
@@ -18,13 +18,13 @@ Version  = -DMAJOR_VERSION=0 -DMINOR_VERSION=1
 Libraries  = -lfftw3 -lgmp -lmpfr
 
 ifeq ($(OS), Windows_NT)
+  Includes   = -ILibraries/include
   LibInclude = -LLibraries/lib
 else
+  Includes   =
   LibInclude = 
 endif
 #-------------------------------------------------------------------------------
-
-Includes   = -ILibraries/include
 
 Includes  += -ITools
 Includes  += -I$(Toolbox)
@@ -50,66 +50,72 @@ Headers += Engine/*.h
 Headers += FrontEnd/CharacterNames.h
 #-------------------------------------------------------------------------------
 
-Objects  = obj/Tools/Number.o
+ifeq ($(OS), Windows_NT)
+  ObjectPath = obj_windows
+else
+  ObjectPath = obj_linux
+endif
 
-Objects += obj/Toolbox/General.o
-Objects += obj/Toolbox/Dictionary.o
-Objects += obj/Toolbox/FileWrapper.o
-Objects += obj/Toolbox/UTF_Converter.o
+Objects  = $(ObjectPath)/Tools/Number.o
 
-Objects += obj/DataStructures/TokenTree.o
+Objects += $(ObjectPath)/Toolbox/General.o
+Objects += $(ObjectPath)/Toolbox/Dictionary.o
+Objects += $(ObjectPath)/Toolbox/FileWrapper.o
+Objects += $(ObjectPath)/Toolbox/UTF_Converter.o
 
-Objects += obj/DataStructures/AST/Base.o
-Objects += obj/DataStructures/AST/Alias.o
-Objects += obj/DataStructures/AST/Assignment.o
-Objects += obj/DataStructures/AST/ClassDefinition.o
-Objects += obj/DataStructures/AST/Definition.o
-Objects += obj/DataStructures/AST/EnumDefinition.o
-Objects += obj/DataStructures/AST/Expression.o
-Objects += obj/DataStructures/AST/Fence.o
-Objects += obj/DataStructures/AST/ForLoop.o
-Objects += obj/DataStructures/AST/FSM.o
-Objects += obj/DataStructures/AST/Group.o
-Objects += obj/DataStructures/AST/HDL.o
-Objects += obj/DataStructures/AST/IfStatement.o
-Objects += obj/DataStructures/AST/Import.o
-Objects += obj/DataStructures/AST/Jump.o
-Objects += obj/DataStructures/AST/LoopLoop.o
-Objects += obj/DataStructures/AST/NamespacePush.o
-Objects += obj/DataStructures/AST/Parameter.o
-Objects += obj/DataStructures/AST/RTL.o
-Objects += obj/DataStructures/AST/Switch.o
-Objects += obj/DataStructures/AST/WhileLoop.o
+Objects += $(ObjectPath)/DataStructures/TokenTree.o
 
-Objects += obj/DataStructures/Objects/Base.o
-Objects += obj/DataStructures/Objects/Alias.o
-Objects += obj/DataStructures/Objects/Array.o
-Objects += obj/DataStructures/Objects/Byte.o
-Objects += obj/DataStructures/Objects/Character.o
-Objects += obj/DataStructures/Objects/ClassDefinition.o
-Objects += obj/DataStructures/Objects/ClassInstance.o
-Objects += obj/DataStructures/Objects/Expression.o
-Objects += obj/DataStructures/Objects/FunctionDefinition.o
-Objects += obj/DataStructures/Objects/FunctionInstance.o
-Objects += obj/DataStructures/Objects/Namespace.o
-Objects += obj/DataStructures/Objects/Net.o
-Objects += obj/DataStructures/Objects/Pin.o
-Objects += obj/DataStructures/Objects/Synthesisable.o
+Objects += $(ObjectPath)/DataStructures/AST/Base.o
+Objects += $(ObjectPath)/DataStructures/AST/Alias.o
+Objects += $(ObjectPath)/DataStructures/AST/Assignment.o
+Objects += $(ObjectPath)/DataStructures/AST/ClassDefinition.o
+Objects += $(ObjectPath)/DataStructures/AST/Definition.o
+Objects += $(ObjectPath)/DataStructures/AST/EnumDefinition.o
+Objects += $(ObjectPath)/DataStructures/AST/Expression.o
+Objects += $(ObjectPath)/DataStructures/AST/Fence.o
+Objects += $(ObjectPath)/DataStructures/AST/ForLoop.o
+Objects += $(ObjectPath)/DataStructures/AST/FSM.o
+Objects += $(ObjectPath)/DataStructures/AST/Group.o
+Objects += $(ObjectPath)/DataStructures/AST/HDL.o
+Objects += $(ObjectPath)/DataStructures/AST/IfStatement.o
+Objects += $(ObjectPath)/DataStructures/AST/Import.o
+Objects += $(ObjectPath)/DataStructures/AST/Jump.o
+Objects += $(ObjectPath)/DataStructures/AST/LoopLoop.o
+Objects += $(ObjectPath)/DataStructures/AST/NamespacePush.o
+Objects += $(ObjectPath)/DataStructures/AST/Parameter.o
+Objects += $(ObjectPath)/DataStructures/AST/RTL.o
+Objects += $(ObjectPath)/DataStructures/AST/Switch.o
+Objects += $(ObjectPath)/DataStructures/AST/WhileLoop.o
 
-Objects += obj/FrontEnd/Parser.o
-Objects += obj/FrontEnd/Scanner.o
-Objects += obj/FrontEnd/Token.o
+Objects += $(ObjectPath)/DataStructures/Objects/Base.o
+Objects += $(ObjectPath)/DataStructures/Objects/Alias.o
+Objects += $(ObjectPath)/DataStructures/Objects/Array.o
+Objects += $(ObjectPath)/DataStructures/Objects/Byte.o
+Objects += $(ObjectPath)/DataStructures/Objects/Character.o
+Objects += $(ObjectPath)/DataStructures/Objects/ClassDefinition.o
+Objects += $(ObjectPath)/DataStructures/Objects/ClassInstance.o
+Objects += $(ObjectPath)/DataStructures/Objects/Expression.o
+Objects += $(ObjectPath)/DataStructures/Objects/FunctionDefinition.o
+Objects += $(ObjectPath)/DataStructures/Objects/FunctionInstance.o
+Objects += $(ObjectPath)/DataStructures/Objects/Namespace.o
+Objects += $(ObjectPath)/DataStructures/Objects/Net.o
+Objects += $(ObjectPath)/DataStructures/Objects/Pin.o
+Objects += $(ObjectPath)/DataStructures/Objects/Synthesisable.o
 
-Objects += obj/Engine/Engine.o
+Objects += $(ObjectPath)/FrontEnd/Parser.o
+Objects += $(ObjectPath)/FrontEnd/Scanner.o
+Objects += $(ObjectPath)/FrontEnd/Token.o
 
-# Objects += obj/BackEnd/Altera.o
-# Objects += obj/BackEnd/ClockTree.o
-# Objects += obj/BackEnd/HDL.o
-# Objects += obj/BackEnd/MemoryTable.o
-# Objects += obj/BackEnd/TimingSpec.o
+Objects += $(ObjectPath)/Engine/Engine.o
+
+# Objects += $(ObjectPath)/BackEnd/Altera.o
+# Objects += $(ObjectPath)/BackEnd/ClockTree.o
+# Objects += $(ObjectPath)/BackEnd/HDL.o
+# Objects += $(ObjectPath)/BackEnd/MemoryTable.o
+# Objects += $(ObjectPath)/BackEnd/TimingSpec.o
 
 ifeq ($(OS), Windows_NT)
-  Objects += obj/Resources/resource.res
+  Objects += $(ObjectPath)/Resources/resource.res
 endif
 #-------------------------------------------------------------------------------
 
@@ -131,7 +137,7 @@ all: bin/ALCHA$(ext)
 
 clean:
 	rm -rf bin
-	rm -rf obj
+	rm -rf $(ObjectPath)
 	rm FrontEnd/CharacterNames.h
 
 test: $(TestSources) testScanner testParser
@@ -147,18 +153,18 @@ test%: bin/test%$(ext)
 
 bin/%$(ext): %.cpp $(Objects) $(Headers)
 	mkdir -p bin
-	$(CC) $(Options) $(Version) $(Includes) $< $(Objects) -s $(LibInclude) $(Libraries) -o $@
+	$(CXX) $(Options) $(Version) $(Includes) $< $(Objects) -s $(LibInclude) $(Libraries) -o $@
 #-------------------------------------------------------------------------------
 
 # Objects
 
-obj/%.o: %.cpp $(Headers)
+$(ObjectPath)/%.o: %.cpp $(Headers)
 	mkdir -p $(@D)
-	$(CC) $(Options) $(Version) $(Defines) -c $(Includes) $< -o $@
+	$(CXX) $(Options) $(Version) $(Defines) -c $(Includes) $< -o $@
 
-obj/Toolbox/%.o: $(Toolbox)/%.cpp $(Headers)
+$(ObjectPath)/Toolbox/%.o: $(Toolbox)/%.cpp $(Headers)
 	mkdir -p $(@D)
-	$(CC) $(Options) $(Version) $(Defines) -c $(Includes) $< -o $@
+	$(CXX) $(Options) $(Version) $(Defines) -c $(Includes) $< -o $@
 #-------------------------------------------------------------------------------
 
 # Autogen
@@ -169,7 +175,7 @@ FrontEnd/CharacterNames.h: FrontEnd/CharacterNames.json FrontEnd/CharacterNames.
 
 # Resources
 
-obj/%.res: %.rc
+$(ObjectPath)/%.res: %.rc
 	mkdir -p $(@D)
 	$(CompilerPath)/windres.exe  -J rc -O coff -i $< -o $@
 #-------------------------------------------------------------------------------

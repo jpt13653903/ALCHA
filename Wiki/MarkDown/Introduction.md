@@ -20,16 +20,6 @@ Unless specified otherwise, the circuit synthesis process assumes that all regis
 
 Manually specifying multi-cycle paths is a labour-intensive and tedious process. ALCHA performs this task automatically whenever the design is compiled, thereby generating code that is easier to synthesise, resulting in reduced compilation times.
 
-## Implementation Time-frame
-
-The best estimate at present is:
-
-Target Date   | Feature
------------   | -------
-December 2018 | Prototype compiler with elementary simulation
-June 2019     | Compilation to Altera projects
-December 2019 | Compilation to Xilinx projects
-
 ## Source
 
 The source is available from the [git repository](https://sourceforge.net/p/alcha/code) and [GitHub](https://github.com/jpt13653903/ALCHA).
