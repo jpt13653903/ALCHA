@@ -1,6 +1,11 @@
-CompilerPath = C:/TDM-GCC-32/bin
+ifeq ($(OS), Windows_NT)
+  CompilerPath = C:/TDM-GCC-32/bin
+  CC           = $(CompilerPath)/g++
+else
+  CompilerPath = 
+  CC           = g++
+endif
 
-CC      = $(CompilerPath)/g++
 Options = -std=c++11 -Wall -fexceptions -O2 -DDEBUG
 #-------------------------------------------------------------------------------
 
@@ -11,7 +16,12 @@ Version  = -DMAJOR_VERSION=0 -DMINOR_VERSION=1
 #-------------------------------------------------------------------------------
 
 Libraries  = -lfftw3 -lgmp -lmpfr
-LibInclude = -LLibraries/lib
+
+ifeq ($(OS), Windows_NT)
+  LibInclude = -LLibraries/lib
+else
+  LibInclude = 
+endif
 #-------------------------------------------------------------------------------
 
 Includes   = -ILibraries/include
@@ -98,7 +108,9 @@ Objects += obj/Engine/Engine.o
 # Objects += obj/BackEnd/MemoryTable.o
 # Objects += obj/BackEnd/TimingSpec.o
 
-Objects += obj/Resources/resource.res
+ifeq ($(OS), Windows_NT)
+  Objects += obj/Resources/resource.res
+endif
 #-------------------------------------------------------------------------------
 
 TestSources  = ../Test\ Cases/*
@@ -111,7 +123,11 @@ TestSources += ../Test\ Cases/Counter/*
 .PHONY: clean all
 .SECONDARY:
 
-all: bin/ALCHA.exe
+ifeq ($(OS), Windows_NT)
+  ext = .exe
+endif
+
+all: bin/ALCHA$(ext)
 
 clean:
 	rm -rf bin
@@ -120,16 +136,16 @@ clean:
 
 test: $(TestSources) testScanner testParser
 
-testButtonsToLEDs: bin/ALCHA.exe $(TestSources)
-	bin/ALCHA.exe "../Test Cases/Buttons to LEDs/main.alc" "../Test Output"
+testButtonsToLEDs: bin/ALCHA$(ext) $(TestSources)
+	bin/ALCHA$(ext) "../Test Cases/Buttons to LEDs/main.alc" "../Test Output"
 
-test%: bin/test%.exe
+test%: bin/test%$(ext)
 	$<
 #-------------------------------------------------------------------------------
 
 # Binaries
 
-bin/%.exe: %.cpp $(Objects) $(Headers)
+bin/%$(ext): %.cpp $(Objects) $(Headers)
 	mkdir -p bin
 	$(CC) $(Options) $(Version) $(Includes) $< $(Objects) -s $(LibInclude) $(Libraries) -o $@
 #-------------------------------------------------------------------------------

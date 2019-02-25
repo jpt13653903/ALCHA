@@ -757,7 +757,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
       }
 
       default:
-        error("Unimplemented target type: %d", Object->Type);
+        error("Unimplemented target type: %d", (int)Object->Type);
         delete Left;
         delete Right;
         return false;
@@ -862,7 +862,7 @@ bool ENGINE::Run(){
         break;
 
       default:
-        error("Unknown AST type: %d", Ast->Type);
+        error("Unknown AST type: %d", (int)Ast->Type);
         break;
     }
     Ast = Ast->Next;
