@@ -30,7 +30,8 @@ BASE::BASE(const char* Name, TYPE Type){
   this->Name = Name;
   this->Type = Type;
 
-  this->Namespace = Current;
+  if(!Stack.empty()) this->Namespace = Stack.front();
+  else               this->Namespace = 0;
 }
 //------------------------------------------------------------------------------
 

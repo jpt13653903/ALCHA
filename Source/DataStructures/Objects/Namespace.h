@@ -23,7 +23,7 @@
 //------------------------------------------------------------------------------
 
 #include <map>
-#include <stack>
+#include <list>
 //------------------------------------------------------------------------------
 
 #include "Base.h"
@@ -34,16 +34,15 @@ namespace OBJECTS{
     public:
       std::map<std::string, BASE*> Symbols;
 
-      NAMESPACE(const char* Name = "");
-     ~NAMESPACE(); // Also cleans up the children
+               NAMESPACE(const char* Name = "");
+      virtual ~NAMESPACE(); // Also cleans up the children
      
-      void Display();
+      virtual void Display();
   };
   //----------------------------------------------------------------------------
 
-  extern std::stack<NAMESPACE*> Stack;   // Used for "with" type statements
-  extern NAMESPACE              Global;  // The root of the namespace tree
-  extern NAMESPACE*             Current; // The current namespace
+  extern std::list<NAMESPACE*> Stack;  // Used for namespace searches
+  extern NAMESPACE             Global; // The root of the namespace tree
 }
 //------------------------------------------------------------------------------
 

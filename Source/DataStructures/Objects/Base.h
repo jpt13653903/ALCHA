@@ -40,20 +40,24 @@ namespace OBJECTS{
       void DisplayAttributes(int Indent);
 
     public:
+      // Indentation follows the inheritance tree
       enum class TYPE{
-        // Base types
-        Pin, Net, // Goes via the "Synthesisable" class
-        Number, Byte, Character,
+        Synthesisable,
+          Pin,
+          Net,
+        Number,
+        Byte,
+        Character,
 
-        // Others
+        FunctionDefinition,
+        ClassDefinition,
+
         Alias,
         Array, // An array of objects
         Expression,
+        FunctionInstance,
         Namespace,
-        ClassDefinition,
-        ClassInstance,
-        FunctionDefinition,
-        FunctionInstance
+          ClassInstance
       } Type;
 
       std::string                        Name;

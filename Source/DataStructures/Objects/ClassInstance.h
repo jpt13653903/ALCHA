@@ -22,11 +22,11 @@
 #define Objects_ClassInstance_h
 //------------------------------------------------------------------------------
 
-#include "Base.h"
+#include "Namespace.h"
 //------------------------------------------------------------------------------
 
 namespace OBJECTS{
-  struct CLASS_INSTANCE: public BASE{
+  struct CLASS_INSTANCE: public NAMESPACE{
              CLASS_INSTANCE(const char* Name);
     virtual ~CLASS_INSTANCE();
 

@@ -22,6 +22,7 @@
 //------------------------------------------------------------------------------
 
 using namespace std;
+using namespace OBJECTS;
 //------------------------------------------------------------------------------
 
 ENGINE::ENGINE(){
@@ -69,24 +70,24 @@ void ENGINE::Warning(AST::BASE* Ast, const char* Message){
 }
 //------------------------------------------------------------------------------
 
-OBJECTS::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
+EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
   if(!Node) return 0;
 
-  OBJECTS::EXPRESSION* Result = 0;
+  EXPRESSION* Result = 0;
 
   switch(Node->ExpressionType){
     case AST::EXPRESSION::String:
-      Result = new OBJECTS::EXPRESSION(OBJECTS::EXPRESSION::String);
+      Result = new EXPRESSION(EXPRESSION::String);
       Result->StrValue = *(Node->StrValue);
       break;
 
     case AST::EXPRESSION::Literal:
-      Result = new OBJECTS::EXPRESSION(OBJECTS::EXPRESSION::Literal);
+      Result = new EXPRESSION(EXPRESSION::Literal);
       Result->Value = *(Node->Value);
       break;
 
     case AST::EXPRESSION::Array:{
-      Result = new OBJECTS::EXPRESSION(OBJECTS::EXPRESSION::Array);
+      Result = new EXPRESSION(EXPRESSION::Array);
       auto Element = (AST::EXPRESSION*)Node->Right;
       while(Element){
         Result->Elements.push_back(Evaluate(Element));
@@ -96,14 +97,16 @@ OBJECTS::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
     }
 
     case AST::EXPRESSION::Identifier:{
-      auto Object = OBJECTS::Current->Symbols.find(Node->Name);
-      if(Object != OBJECTS::Current->Symbols.end()){
+      auto Object = Stack.front()->Symbols.find(Node->Name);
+      if(Object != Stack.front()->Symbols.end()){
         if(Object->second &&
-           Object->second->Type == OBJECTS::BASE::TYPE::Alias){
-          auto Alias = (OBJECTS::ALIAS*)Object->second;
-          return Evaluate(Alias->Expression);
+           Object->second->Type == BASE::TYPE::Alias){
+          auto Alias = (ALIAS*)Object->second;
+          Stack.push_front(Alias->Namespace);
+            Result = Evaluate(Alias->Expression);
+          Stack.pop_front();
         }else{
-          Result = new OBJECTS::EXPRESSION(OBJECTS::EXPRESSION::Object);
+          Result = new EXPRESSION(EXPRESSION::Object);
           Result->ObjectRef = Object->second;
         }
       }else{
@@ -115,7 +118,7 @@ OBJECTS::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
     }
 
     case AST::EXPRESSION::VectorConcatenate:{
-      Result = new OBJECTS::EXPRESSION(OBJECTS::EXPRESSION::VectorConcatenate);
+      Result = new EXPRESSION(EXPRESSION::VectorConcatenate);
       Result->Raw = true;
       auto Element = (AST::EXPRESSION*)Node->Right;
       while(Element){
@@ -126,7 +129,7 @@ OBJECTS::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
     }
 
     case AST::EXPRESSION::ArrayConcatenate:{
-      Result = new OBJECTS::EXPRESSION(OBJECTS::EXPRESSION::ArrayConcatenate);
+      Result = new EXPRESSION(EXPRESSION::ArrayConcatenate);
       Result->Raw = true;
       auto Element = (AST::EXPRESSION*)Node->Right;
       while(Element){
@@ -144,41 +147,86 @@ OBJECTS::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       error("Slice not yet implemented");
       break;
 
-    case AST::EXPRESSION::AccessMember:
-      error("AccessMember not yet implemented");
+    case AST::EXPRESSION::AccessMember:{
+      EXPRESSION* Left = 0;
+      if(Node->Left) Left = Evaluate(Node->Left);
+
+      if(!Left || !Node->Right || Node->Right->Type != AST::BASE::TYPE::Expression){
+        error("Invalid member access expression");
+        delete Left;
+        return 0;
+      }
+      auto Right = (AST::EXPRESSION*)Node->Right;
+
+      if(Left->ExpressionType == EXPRESSION::Object){
+        if(Left->ObjectRef && (
+           Left->ObjectRef->Type == BASE::TYPE::Namespace ||
+           Left->ObjectRef->Type == BASE::TYPE::ClassInstance)){
+          auto Object = (NAMESPACE*)Left->ObjectRef;
+          auto Found  = Object->Symbols.find(Right->Name);
+          if(Found == Object->Symbols.end()){
+            Error(Node);
+            printf("Object %s not found in namespace %s\n",
+                   Right->Name.c_str(), Object->Name.c_str());
+            delete Left;
+            return 0;
+          }
+          if(Found->second &&
+             Found->second->Type == BASE::TYPE::Alias){
+            auto Alias = (ALIAS*)Found->second;
+            Stack.push_front(Alias->Namespace);
+              Result = Evaluate(Alias->Expression);
+            Stack.pop_front();
+          }else{
+            Result = new EXPRESSION(EXPRESSION::Object);
+            Result->ObjectRef = Found->second;
+          }
+          delete Left;
+        }
+      }else{
+        // TODO Could be a slice expression, which is not supported yet
+        error("Unimplemented attribute access expression");
+        delete Left;
+        return 0;
+      }
       break;
+    }
 
     case AST::EXPRESSION::AccessMemberSafe:
       error("AccessMemberSafe not yet implemented");
       break;
 
     case AST::EXPRESSION::AccessAttribute:{
-      OBJECTS::EXPRESSION* Left = 0;
+      EXPRESSION* Left = 0;
 
-      Result = new OBJECTS::EXPRESSION(OBJECTS::EXPRESSION::Attribute);
+      Result = new EXPRESSION(EXPRESSION::Attribute);
 
       if(Node->Left) Left = Evaluate(Node->Left);
 
       if(Left){
-        if(Left->ExpressionType == OBJECTS::EXPRESSION::Object){
+        if(Left->ExpressionType == EXPRESSION::Object){
           Result->ObjectRef = Left->ObjectRef;
           delete Left;
-        }else if(Left->ExpressionType == OBJECTS::EXPRESSION::Attribute){
+        }else if(Left->ExpressionType == EXPRESSION::Attribute){
           Error(Node, "Hierarchical attributes not supported");
           delete Left;
           return 0;
         }else{
-          error("Invalid attribute access expression");
+          // TODO Could be a slice expression, which is not supported yet
+          error("Unimplemented attribute access expression");
+          delete Left;
+          return 0;
         }
-      }else{
-        Result->ObjectRef = OBJECTS::Current;
+      }else{ // Attribute of the current namespace
+        Result->ObjectRef = Stack.front();
       }
       if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
         auto Right = (AST::EXPRESSION*)Node->Right;
         if(Right->ExpressionType == AST::EXPRESSION::Identifier){
           Result->Name = Right->Name;
         }else{
-          error("Invalid attribute access expression");
+          // TODO Could be a slice expression, which is not supported yet
+          error("Unimplemented attribute access expression");
         }
       }
       break;
@@ -201,11 +249,11 @@ OBJECTS::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
 
     case AST::EXPRESSION::Negate:
-      Result = new OBJECTS::EXPRESSION(OBJECTS::EXPRESSION::Negate);
+      Result = new EXPRESSION(EXPRESSION::Negate);
       if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression)
         Result->Right = Evaluate((AST::EXPRESSION*)Node->Right);
-      if(Result->Right && Result->Right->ExpressionType == OBJECTS::EXPRESSION::Literal){
-        Result->ExpressionType = OBJECTS::EXPRESSION::Literal;
+      if(Result->Right && Result->Right->ExpressionType == EXPRESSION::Literal){
+        Result->ExpressionType = EXPRESSION::Literal;
         Result->Value = Result->Right->Value;
         Result->Value.Mul(-1);
         delete Result->Right; Result->Right = 0;
@@ -257,7 +305,7 @@ OBJECTS::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
 
     case AST::EXPRESSION::Multiply:
-      Result = new OBJECTS::EXPRESSION(OBJECTS::EXPRESSION::Multiply);
+      Result = new EXPRESSION(EXPRESSION::Multiply);
       if(Node->Left) Result->Left = Evaluate(Node->Left);
       if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
         Result->Right = Evaluate((AST::EXPRESSION*)Node->Right);
@@ -265,11 +313,11 @@ OBJECTS::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       if(
         Result->Left  &&
         Result->Right &&
-        Result->Left ->ExpressionType == OBJECTS::EXPRESSION::Literal &&
-        Result->Right->ExpressionType == OBJECTS::EXPRESSION::Literal
+        Result->Left ->ExpressionType == EXPRESSION::Literal &&
+        Result->Right->ExpressionType == EXPRESSION::Literal
       ){
         // TODO: Question -- does "Raw" propagate up the tree?
-        Result->ExpressionType = OBJECTS::EXPRESSION::Literal;
+        Result->ExpressionType = EXPRESSION::Literal;
         Result->Value = Result->Left->Value;
         Result->Value.Mul(Result->Right->Value);
         delete Result->Left ; Result->Left  = 0;
@@ -374,9 +422,9 @@ OBJECTS::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
 //------------------------------------------------------------------------------
 
 bool ENGINE::ApplyAttributes(
-  OBJECTS::BASE*       Object,
+  BASE*       Object,
   std::string&         Name,
-  OBJECTS::EXPRESSION* Value,
+  EXPRESSION* Value,
   AST::BASE*           Ast
 ){
   if(!Value){
@@ -385,11 +433,11 @@ bool ENGINE::ApplyAttributes(
   }
 
   switch(Value->ExpressionType){
-    case OBJECTS::EXPRESSION::String:
-    case OBJECTS::EXPRESSION::Literal:
+    case EXPRESSION::String:
+    case EXPRESSION::Literal:
       break;
 
-    case OBJECTS::EXPRESSION::Array:
+    case EXPRESSION::Array:
       // TODO Make sure that the array only contains strings or literals
       break;
 
@@ -403,7 +451,7 @@ bool ENGINE::ApplyAttributes(
 }
 //------------------------------------------------------------------------------
 
-bool ENGINE::ApplyAttributes(OBJECTS::BASE* Object, AST::ASSIGNMENT* AttributeList){
+bool ENGINE::ApplyAttributes(BASE* Object, AST::ASSIGNMENT* AttributeList){
   while(AttributeList){
     if(!AttributeList->Left){
       error("Null attribute name");
@@ -437,7 +485,7 @@ bool ENGINE::ApplyAttributes(OBJECTS::BASE* Object, AST::ASSIGNMENT* AttributeLi
 }
 //------------------------------------------------------------------------------
 
-bool ENGINE::ApplyParameters(OBJECTS::SYNTHESISABLE* Object, AST::BASE* Parameter){
+bool ENGINE::ApplyParameters(SYNTHESISABLE* Object, AST::BASE* Parameter){
   int  Position          = 0; // Negative => named parameters
   bool ExplicitFullScale = false;
 
@@ -446,14 +494,14 @@ bool ENGINE::ApplyParameters(OBJECTS::SYNTHESISABLE* Object, AST::BASE* Paramete
       case AST::BASE::TYPE::Expression:{
         if(Position < 0) return false; // Mixing named and positional parameters
 
-        OBJECTS::EXPRESSION* Param = Evaluate((AST::EXPRESSION*)Parameter);
+        EXPRESSION* Param = Evaluate((AST::EXPRESSION*)Parameter);
         if(!Param){
           Error(Parameter, "Invalid parameter expression");
           return false;
         }
 
         switch(Param->ExpressionType){
-          case OBJECTS::EXPRESSION::Literal:
+          case EXPRESSION::Literal:
             switch(Position){
               case 0:
                 if(!Param->Value.IsInt()) return false;
@@ -515,16 +563,16 @@ bool ENGINE::Import(AST::IMPORT* Ast){
   bool   OwnNamespace = !Ast->Namespace.empty();
 
   if(OwnNamespace){
-    auto Found = OBJECTS::Current->Symbols.find(Ast->Namespace);
-    if(Found != OBJECTS::Current->Symbols.end()){
+    auto Found = Stack.front()->Symbols.find(Ast->Namespace);
+    if(Found != Stack.front()->Symbols.end()){
       Error(Ast);
       printf("Symbol \"%s\" already exists in the current namespace\n",
              Ast->Namespace.c_str());
       return false;
     }
-    auto Namespace = new OBJECTS::NAMESPACE(Ast->Namespace.c_str());
-    OBJECTS::Current->Symbols[Ast->Namespace] = Namespace;
-    OBJECTS::Current = Namespace;
+    auto Namespace = new NAMESPACE(Ast->Namespace.c_str());
+    Stack.front()->Symbols[Ast->Namespace] = Namespace;
+    Stack.push_front(Namespace);
   }
 
   string& Path = Ast->Filename;
@@ -540,24 +588,24 @@ bool ENGINE::Import(AST::IMPORT* Ast){
   bool Result = Run(Filename.c_str());
 
   if(OwnNamespace){
-    OBJECTS::Current = OBJECTS::Current->Namespace;
+    Stack.pop_front();
   }
   return Result;
 }
 //------------------------------------------------------------------------------
 
 bool ENGINE::Alias(AST::ALIAS* Ast){
-  auto Symbol = OBJECTS::Current->Symbols.find(Ast->Identifier);
-  if(Symbol != OBJECTS::Current->Symbols.end()){
+  auto Symbol = Stack.front()->Symbols.find(Ast->Identifier);
+  if(Symbol != Stack.front()->Symbols.end()){
     Error(Ast);
     printf("Symbol \"%s\" already defined in the current namespace\n",
            Ast->Identifier.c_str());
     return false;
   }
 
-  auto Object = new OBJECTS::ALIAS(Ast->Identifier.c_str(), Ast->Expression);
+  auto Object = new ALIAS(Ast->Identifier.c_str(), Ast->Expression);
 
-  OBJECTS::Current->Symbols[Object->Name] = Object;
+  Stack.front()->Symbols[Object->Name] = Object;
 
   return true;
 }
@@ -567,8 +615,8 @@ bool ENGINE::Definition(AST::DEFINITION* Ast){
   auto Identifier = Ast->Identifiers;
 
   while(Identifier){
-    auto Symbol = OBJECTS::Current->Symbols.find(Identifier->Identifier);
-    if(Symbol != OBJECTS::Current->Symbols.end()){
+    auto Symbol = Stack.front()->Symbols.find(Identifier->Identifier);
+    if(Symbol != Stack.front()->Symbols.end()){
       Error(Ast);
       printf("Symbol \"%s\" already defined in the current namespace\n",
              Identifier->Identifier.c_str());
@@ -592,13 +640,13 @@ bool ENGINE::Definition(AST::DEFINITION* Ast){
         break;
 
       case AST::DEFINITION::Pin:{
-        auto Pin = new OBJECTS::PIN(Identifier->Identifier.c_str());
+        auto Pin = new PIN(Identifier->Identifier.c_str());
         Pin->Direction = Ast->Direction;
         if(!ApplyParameters(Pin, Ast->Parameters)) Error(Ast, "Invalid parameters");
         if(!ApplyAttributes(Pin, Ast->Attributes)) Error(Ast, "Invalid attributes");
         if(Identifier->Initialiser) error("Not yet implemented");
 
-        OBJECTS::Current->Symbols[Pin->Name] = Pin;
+        Stack.front()->Symbols[Pin->Name] = Pin;
         break;
       }
 
@@ -637,9 +685,9 @@ bool ENGINE::Definition(AST::DEFINITION* Ast){
 //------------------------------------------------------------------------------
 
 bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
-  OBJECTS::EXPRESSION* Left  = Evaluate(Ast->Left );
-  OBJECTS::EXPRESSION* Right = Evaluate(Ast->Right);
-  OBJECTS::EXPRESSION* Temp;
+  EXPRESSION* Left  = Evaluate(Ast->Left );
+  EXPRESSION* Right = Evaluate(Ast->Right);
+  EXPRESSION* Temp;
 
   if(!Left){
     Error(Ast, "Target object not defined");
@@ -658,8 +706,8 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
   if(
     !Left->ObjectRef ||
     (
-      Left->ExpressionType != OBJECTS::EXPRESSION::Object &&
-      Left->ExpressionType != OBJECTS::EXPRESSION::Attribute
+      Left->ExpressionType != EXPRESSION::Object &&
+      Left->ExpressionType != EXPRESSION::Attribute
     )
   ){
     Error(Ast, "Illegal assignment target");
@@ -739,7 +787,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
       return false;
   }
 
-  if(Left->ExpressionType == OBJECTS::EXPRESSION::Attribute){
+  if(Left->ExpressionType == EXPRESSION::Attribute){
     if(Left->ObjectRef){
       ApplyAttributes(Left->ObjectRef, Left->Name, Right, Ast);
       // The function above deletes Right if required
@@ -754,8 +802,8 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     auto Object = Left->ObjectRef;
 
     switch(Object->Type){
-      case OBJECTS::BASE::TYPE::Pin:{
-        auto Pin = (OBJECTS::PIN*)Object;
+      case BASE::TYPE::Pin:{
+        auto Pin = (PIN*)Object;
         if(Pin->Driver) delete Pin->Driver;
         Pin->Driver = Right;
         break;
@@ -774,6 +822,8 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
 //------------------------------------------------------------------------------
 
 bool ENGINE::Run(const char* Filename){
+  if(Stack.empty()) Stack.push_front(&Global);
+
   AST::BASE* Ast = Parser.Run(Filename);
   if(Ast) AstStack.push(Ast);
   else    return false;

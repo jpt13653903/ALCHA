@@ -44,6 +44,7 @@ Unary | `++A` | Increment before use
 &nbsp;|  `-A` | Negate
 &nbsp;|  `~A` | Bitwise NOT
 &nbsp;|  `:A` | Cast `A` to raw bits (unsigned integer)
+&nbsp;|  `'A` | Access the global attribute `A`
 ||
 Range | `A .. B`     | Builds an array of elements from `A` to `B`, inclusive
 &nbsp;| `A .. B : C` | Builds an array of elements from `A` to `B`, in steps of `C`
@@ -110,6 +111,10 @@ The unary, arithmetic, shift and relational operators take the fixed-point forma
 The target of an assignment can be an array, array slice or concatenation.
 
 The usual flow-control structures (`if`, `for`, `while`, etc.) are supported.  More detail is provided later.
+
+## Global Attribute Definition and Access
+
+Defining an attribute puts it in the current namespace.  Accessing a namespace runs the hierarchy from the current namespace toward the root of the namespace tree, which is the global attribute.  The current namespace attributes therefore shadow the global attributes.  In addition, global attributes are read-only from within a namespace.
 
 ## Net use Before Assignment
 

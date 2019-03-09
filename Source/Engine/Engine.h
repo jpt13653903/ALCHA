@@ -29,6 +29,9 @@
 #define Engine_h
 //------------------------------------------------------------------------------
 
+#include <stack>
+//------------------------------------------------------------------------------
+
 #include "Parser.h"
 #include "Objects/Alias.h"
 #include "Objects/Namespace.h"
@@ -43,6 +46,7 @@ class ENGINE{
     void Error  (AST::BASE* Ast, const char* Message = 0);
     void Warning(AST::BASE* Ast, const char* Message = 0);
 
+  private: // Internal structures
     std::stack<AST::BASE*> AstStack; // Used for clean-up in the destructor
 
   private: // Expression Evaluation

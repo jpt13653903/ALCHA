@@ -24,7 +24,8 @@
 using namespace OBJECTS;
 //------------------------------------------------------------------------------
 
-CLASS_INSTANCE::CLASS_INSTANCE(const char* Name) : BASE(Name, TYPE::ClassInstance){
+CLASS_INSTANCE::CLASS_INSTANCE(const char* Name) : NAMESPACE(Name){
+  Type = TYPE::ClassInstance;
   error("Not yet implemented");
 }
 //------------------------------------------------------------------------------

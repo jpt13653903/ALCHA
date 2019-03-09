@@ -17,13 +17,14 @@ but without loosing the low-level control that HDLs, such as Verilog, provide.
 
 ## How to build
 
+When cloning the repository, remember to also clone the sub-modules.
+
 ### Windows
 
-1. Install [MinGW](http://tdm-gcc.tdragon.net/).  Currently, only the 32-bit version links to the libraries provided.
-1. Copy `C:\TDM-GCC-32\bin\mingw32-make.exe` to `C:\TDM-GCC-32\bin\make.exe` and add it to the system path.
-1. Open a POSIX-like console (such as [git bash](https://git-scm.com/)).
+1. Install [TDM GCC MinGW](http://tdm-gcc.tdragon.net/).  Currently, only the 32-bit version links to the libraries provided.
+1. Open a POSIX-like terminal (such as [git bash](https://git-scm.com/)).
 1. Change directory to the project folder.
-1. Run `make`
+1. Run `mingw32-make`
 
 ### Linux
 

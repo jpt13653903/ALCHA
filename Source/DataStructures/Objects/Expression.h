@@ -103,7 +103,7 @@ namespace OBJECTS{
     BASE*                    ObjectRef; // Refers to another object
     NUMBER                   Value;     // Only used for numerical literals
     std::string              StrValue;  // Only used for string literals
-    std::vector<EXPRESSION*> Elements;  // Used arrays, concatenation, etc.
+    std::vector<EXPRESSION*> Elements;  // Used for arrays, concatenation, etc.
 
     // Left and Right operands
     EXPRESSION* Left;

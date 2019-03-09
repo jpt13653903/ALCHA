@@ -22,9 +22,8 @@
 //------------------------------------------------------------------------------
 
 namespace OBJECTS{
-  std::stack<NAMESPACE*> Stack;
-  NAMESPACE              Global;
-  NAMESPACE*             Current = &Global;
+  std::list<NAMESPACE*> Stack; // Initialised in Engine::Run()
+  NAMESPACE             Global;
 }
 //------------------------------------------------------------------------------
 
