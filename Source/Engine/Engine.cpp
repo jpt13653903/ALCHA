@@ -97,22 +97,26 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
     }
 
     case AST::EXPRESSION::Identifier:{
-      auto Object = Stack.front()->Symbols.find(Node->Name);
-      if(Object != Stack.front()->Symbols.end()){
-        if(Object->second &&
-           Object->second->Type == BASE::TYPE::Alias){
-          auto Alias = (ALIAS*)Object->second;
-          Stack.push_front(Alias->Namespace);
-            Result = Evaluate(Alias->Expression);
-          Stack.pop_front();
-        }else{
-          Result = new EXPRESSION(EXPRESSION::Object);
-          Result->ObjectRef = Object->second;
+      auto NamespaceIterator = Stack.begin();
+      while(!Result && NamespaceIterator != Stack.end()){
+        NAMESPACE* Namespace = *NamespaceIterator;
+        while(!Result && Namespace){
+          auto Object = Namespace->Symbols.find(Node->Name);
+          if(Object != Namespace->Symbols.end()){
+            if(Object->second &&
+               Object->second->Type == BASE::TYPE::Alias){
+              auto Alias = (ALIAS*)Object->second;
+              Stack.push_front(Alias->Namespace);
+                Result = Evaluate(Alias->Expression);
+              Stack.pop_front();
+            }else{
+              Result = new EXPRESSION(EXPRESSION::Object);
+              Result->ObjectRef = Object->second;
+            }
+          }
+          Namespace = Namespace->Namespace;
         }
-      }else{
-        error("Scope look-up not yet implemented");
-        // TODO Remember to first look in the stack, then try the namespace
-        //      tree from the current leaf upwards toward the root
+        NamespaceIterator++;
       }
       break;
     }

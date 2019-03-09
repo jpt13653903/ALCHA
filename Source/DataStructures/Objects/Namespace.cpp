@@ -50,12 +50,20 @@ void NAMESPACE::Display(){
   DisplayAttributes(2);
   printf("\n");
 
+  list<BASE*> Namespaces;
+
   for(auto s = Symbols.begin(); s != Symbols.end(); s++){
     if(s->second){
-      s->second->Display();
+      if(s->second->Type == TYPE::Namespace) Namespaces.push_back(s->second);
+      else s->second->Display();
     }else{
       printf("- %s: {null}\n", s->first.c_str());
     }
+    printf("\n");
+  }
+
+  for(auto s = Namespaces.begin(); s != Namespaces.end(); s++){
+    (*s)->Display();
     printf("\n");
   }
 }

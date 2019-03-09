@@ -1,10 +1,10 @@
-// import "../Target/Minimal BeMicro Max 10";
-// 
-// // Global assignment
-// LED := :(Button, Button);
-
-import "../Target/Minimal BeMicro Max 10" as Target;
+import "../Target/Minimal BeMicro Max 10";
 
 // Global assignment
-Target.LED := :(Target.Button, Target.Button);
+LED := :(Button, Button);
+
+// import "../Target/Minimal BeMicro Max 10" as Target;
+// 
+// // Global assignment
+// Target.LED := :(Target.Button, Target.Button);
 
