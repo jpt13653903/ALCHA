@@ -99,14 +99,14 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
     case AST::EXPRESSION::Identifier:{
       auto NamespaceIterator = Stack.begin();
       while(!Result && NamespaceIterator != Stack.end()){
-        NAMESPACE* Namespace = *NamespaceIterator;
-        while(!Result && Namespace){
-          auto Object = Namespace->Symbols.find(Node->Name);
-          if(Object != Namespace->Symbols.end()){
+        MODULE* Module = *NamespaceIterator;
+        while(!Result && Module){
+          auto Object = Module->Symbols.find(Node->Name);
+          if(Object != Module->Symbols.end()){
             if(Object->second &&
                Object->second->Type == BASE::TYPE::Alias){
               auto Alias = (ALIAS*)Object->second;
-              Stack.push_front(Alias->Namespace);
+              Stack.push_front(Alias->Module);
                 Result = Evaluate(Alias->Expression);
               Stack.pop_front();
             }else{
@@ -114,7 +114,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
               Result->ObjectRef = Object->second;
             }
           }
-          Namespace = Namespace->Namespace;
+          Module = Module->Module;
         }
         NamespaceIterator++;
       }
@@ -164,9 +164,8 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
 
       if(Left->ExpressionType == EXPRESSION::Object){
         if(Left->ObjectRef && (
-           Left->ObjectRef->Type == BASE::TYPE::Namespace ||
-           Left->ObjectRef->Type == BASE::TYPE::ClassInstance)){
-          auto Object = (NAMESPACE*)Left->ObjectRef;
+           Left->ObjectRef->Type == BASE::TYPE::Module)){
+          auto Object = (MODULE*)Left->ObjectRef;
           auto Found  = Object->Symbols.find(Right->Name);
           if(Found == Object->Symbols.end()){
             Error(Node);
@@ -178,7 +177,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
           if(Found->second &&
              Found->second->Type == BASE::TYPE::Alias){
             auto Alias = (ALIAS*)Found->second;
-            Stack.push_front(Alias->Namespace);
+            Stack.push_front(Alias->Module);
               Result = Evaluate(Alias->Expression);
             Stack.pop_front();
           }else{
@@ -574,9 +573,9 @@ bool ENGINE::Import(AST::IMPORT* Ast){
              Ast->Namespace.c_str());
       return false;
     }
-    auto Namespace = new NAMESPACE(Ast->Namespace.c_str());
-    Stack.front()->Symbols[Ast->Namespace] = Namespace;
-    Stack.push_front(Namespace);
+    auto Module = new MODULE(Ast->Namespace.c_str());
+    Stack.front()->Symbols[Ast->Namespace] = Module;
+    Stack.push_front(Module);
   }
 
   string& Path = Ast->Filename;

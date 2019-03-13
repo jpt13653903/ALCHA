@@ -33,9 +33,9 @@ BACK_END::~BACK_END(){
 }
 //------------------------------------------------------------------------------
 
-bool BACK_END::AssignPinDirections(NAMESPACE* Namespace){
-  for(auto SymbolIterator  = Namespace->Symbols.begin();
-           SymbolIterator != Namespace->Symbols.end  ();
+bool BACK_END::AssignPinDirections(MODULE* Module){
+  for(auto SymbolIterator  = Module->Symbols.begin();
+           SymbolIterator != Module->Symbols.end  ();
            SymbolIterator++){
     switch(SymbolIterator->second->Type){
       case BASE::TYPE::Pin:{
@@ -61,9 +61,8 @@ bool BACK_END::AssignPinDirections(NAMESPACE* Namespace){
         }
         break;
       }
-      case BASE::TYPE::Namespace:
-      case BASE::TYPE::ClassInstance:
-        AssignPinDirections((NAMESPACE*)(SymbolIterator->second));
+      case BASE::TYPE::Module:
+        AssignPinDirections((MODULE*)(SymbolIterator->second));
         break;
 
       default:
@@ -74,7 +73,7 @@ bool BACK_END::AssignPinDirections(NAMESPACE* Namespace){
 }
 //------------------------------------------------------------------------------
 
-bool BACK_END::RoutePorts(NAMESPACE* Namespace){
+bool BACK_END::RoutePorts(MODULE* Module){
   // TODO
   //   At this point, the expressions reference the full name of the symbol 
   //   that forms part of the expression.  This needs to be broken into 
@@ -355,32 +354,31 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression){
 }
 //------------------------------------------------------------------------------
 
-bool BACK_END::BuildHDL(NAMESPACE* Namespace, string Path){
-  bool isGlobal = (Namespace == &Global);
+bool BACK_END::BuildHDL(MODULE* Module, string Path){
+  bool isGlobal = (Module == &Global);
 
   // Recursively generate the modules (each namespace is a module)
-  for(auto SymbolIterator  = Namespace->Symbols.begin();
-           SymbolIterator != Namespace->Symbols.end  ();
+  for(auto SymbolIterator  = Module->Symbols.begin();
+           SymbolIterator != Module->Symbols.end  ();
            SymbolIterator++){
     auto Symbol = SymbolIterator->second;
-    if(Symbol->Type == BASE::TYPE::Namespace    ||
-       Symbol->Type == BASE::TYPE::ClassInstance){
-      auto Child = (NAMESPACE*)Symbol;
+    if(Symbol->Type == BASE::TYPE::Module){
+      auto Child = (MODULE*)Symbol;
       if(isGlobal) BuildHDL(Child, "source");
-      else         BuildHDL(Child, Path + "/" + Namespace->Name);
+      else         BuildHDL(Child, Path + "/" + Module->Name);
     }
   }
   // Generate this module's name
   string Name;
   if(isGlobal) Name = Filename;
-  else         Name = Path + "/" + Namespace->Name;
+  else         Name = Path + "/" + Module->Name;
 
   string Body;
   Body += "module "+ Name +"(\n";
   // Ports
   bool isFirst = true;
-  for(auto SymbolIterator  = Namespace->Symbols.begin();
-           SymbolIterator != Namespace->Symbols.end  ();
+  for(auto SymbolIterator  = Module->Symbols.begin();
+           SymbolIterator != Module->Symbols.end  ();
            SymbolIterator++){
     if(SymbolIterator->second->Type == BASE::TYPE::Pin){
       auto Pin = (PIN*)SymbolIterator->second;
@@ -402,8 +400,8 @@ bool BACK_END::BuildHDL(NAMESPACE* Namespace, string Path){
           "----------------------------------------\n\n";
 
   // Body
-  for(auto SymbolIterator  = Namespace->Symbols.begin();
-           SymbolIterator != Namespace->Symbols.end  ();
+  for(auto SymbolIterator  = Module->Symbols.begin();
+           SymbolIterator != Module->Symbols.end  ();
            SymbolIterator++){
     if(SymbolIterator->second->Type == BASE::TYPE::Pin){
       auto Pin = (PIN*)SymbolIterator->second;

@@ -19,7 +19,7 @@
 //==============================================================================
 
 #include "Base.h"
-#include "Namespace.h"
+#include "Module.h"
 #include "Expression.h"
 //------------------------------------------------------------------------------
 
@@ -31,8 +31,8 @@ BASE::BASE(const char* Name, TYPE Type){
   this->Name = Name;
   this->Type = Type;
 
-  if(Stack.empty()) this->Namespace = 0;
-  else              this->Namespace = Stack.front();
+  if(Stack.empty()) this->Module = 0;
+  else              this->Module = Stack.front();
 }
 //------------------------------------------------------------------------------
 
@@ -45,8 +45,8 @@ BASE::~BASE(){
 
 void BASE::DisplayLongName(BASE* Node){
   if(!Node) return;
-  if(Node->Namespace != &Global){
-    DisplayLongName(Node->Namespace);
+  if(Node->Module != &Global){
+    DisplayLongName(Node->Module);
     printf("::");
   }
   printf("%s", Node->Name.c_str());
@@ -70,7 +70,7 @@ void BASE::DisplayAttributes(int Indent){
 EXPRESSION* BASE::GetAttrib(const string& Key){
   auto Value = Attributes.find(Key);
   if(Value != Attributes.end()) return Value->second;
-  if(Namespace) return Namespace->GetAttrib(Key);
+  if(Module) return Module->GetAttrib(Key);
   return 0;
 }
 //------------------------------------------------------------------------------

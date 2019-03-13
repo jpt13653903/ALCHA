@@ -95,15 +95,11 @@ Objects += $(ObjectPath)/DataStructures/Objects/Alias.o
 Objects += $(ObjectPath)/DataStructures/Objects/Array.o
 Objects += $(ObjectPath)/DataStructures/Objects/Byte.o
 Objects += $(ObjectPath)/DataStructures/Objects/Character.o
-Objects += $(ObjectPath)/DataStructures/Objects/ClassDefinition.o
-Objects += $(ObjectPath)/DataStructures/Objects/ClassInstance.o
 Objects += $(ObjectPath)/DataStructures/Objects/Expression.o
-Objects += $(ObjectPath)/DataStructures/Objects/FunctionDefinition.o
-Objects += $(ObjectPath)/DataStructures/Objects/FunctionInstance.o
-Objects += $(ObjectPath)/DataStructures/Objects/Namespace.o
+Objects += $(ObjectPath)/DataStructures/Objects/Module.o
+Objects += $(ObjectPath)/DataStructures/Objects/Synthesisable.o
 Objects += $(ObjectPath)/DataStructures/Objects/Net.o
 Objects += $(ObjectPath)/DataStructures/Objects/Pin.o
-Objects += $(ObjectPath)/DataStructures/Objects/Synthesisable.o
 
 Objects += $(ObjectPath)/FrontEnd/Parser.o
 Objects += $(ObjectPath)/FrontEnd/Scanner.o

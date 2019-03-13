@@ -41,25 +41,24 @@ bool PROJECT::WriteFile(string& Filename, const char* Ext, string& Body){
 }
 //------------------------------------------------------------------------------
 
-void PROJECT::BuildFileList(string& Body, NAMESPACE* Namespace, string Path){
-  bool isGlobal = (Namespace == &Global);
+void PROJECT::BuildFileList(string& Body, MODULE* Module, string Path){
+  bool isGlobal = (Module == &Global);
 
-  for(auto SymbolIterator  = Namespace->Symbols.begin();
-           SymbolIterator != Namespace->Symbols.end  ();
+  for(auto SymbolIterator  = Module->Symbols.begin();
+           SymbolIterator != Module->Symbols.end  ();
            SymbolIterator++){
     auto Symbol = SymbolIterator->second;
-    if(Symbol->Type == BASE::TYPE::Namespace    ||
-       Symbol->Type == BASE::TYPE::ClassInstance){
-      auto Child = (NAMESPACE*)Symbol;
+    if(Symbol->Type == BASE::TYPE::Module){
+      auto Child = (MODULE*)Symbol;
       if(isGlobal) BuildFileList(Body, Child, "source");
-      else         BuildFileList(Body, Child, Path + "/" + Namespace->Name);
+      else         BuildFileList(Body, Child, Path + "/" + Module->Name);
     }
   }
   if(isGlobal){
     Body += "set_global_assignment -name VERILOG_FILE \""+ Filename +".v\"\n";
   }else{
     Body += "set_global_assignment -name VERILOG_FILE \"" +
-            Path + "/" + Namespace->Name +".v\"\n";
+            Path + "/" + Module->Name +".v\"\n";
   }
 }
 //------------------------------------------------------------------------------

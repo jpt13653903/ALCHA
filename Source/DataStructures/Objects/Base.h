@@ -31,7 +31,7 @@
 //------------------------------------------------------------------------------
 
 namespace OBJECTS{
-  class NAMESPACE;
+  class MODULE;
   class EXPRESSION;
   
   class BASE{ // Base class for the symbol table
@@ -49,19 +49,14 @@ namespace OBJECTS{
         Byte,
         Character,
 
-        FunctionDefinition,
-        ClassDefinition,
-
         Alias,
         Array, // An array of objects
         Expression,
-        FunctionInstance,
-        Namespace,
-          ClassInstance
+        Module
       } Type;
 
       std::string                        Name;
-      NAMESPACE*                         Namespace;
+      MODULE*                            Module;
       std::map<std::string, EXPRESSION*> Attributes;
 
                BASE(const char* Name, TYPE Type);

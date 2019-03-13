@@ -34,7 +34,7 @@
 
 #include "Parser.h"
 #include "Objects/Alias.h"
-#include "Objects/Namespace.h"
+#include "Objects/Module.h"
 #include "Objects/Pin.h"
 //------------------------------------------------------------------------------
 
