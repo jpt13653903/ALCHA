@@ -123,8 +123,11 @@ endif
 TestSources  = ../Test\ Cases/*
 TestSources += ../Test\ Cases/Target/*
 TestSources += ../Test\ Cases/FrontEnd/*
-TestSources += ../Test\ Cases/Buttons\ to\ LEDs/*
+TestSources += ../Test\ Cases/ButtonsToLEDs/*
 TestSources += ../Test\ Cases/Counter/*
+TestSources += ../Test\ Cases/MAX_10_ADC/*
+TestSources += ../Test\ Cases/Pipeline/*
+TestSources += ../Test\ Cases/Scripting/*
 #-------------------------------------------------------------------------------
 
 .PHONY: clean all
@@ -143,11 +146,9 @@ clean:
 
 test: $(TestSources) testScanner testParser
 
-testButtonsToLEDs: bin/ALCHA$(ext) $(TestSources)
-	bin/ALCHA$(ext) "../Test Cases/Buttons to LEDs/main.alc" "../Test Output"
-
-test%: bin/test%$(ext)
-	$<
+test%: ../Test\ Cases/%/main.alc bin/ALCHA$(ext) $(TestSources)
+	- rm -rf "../Test Output"
+	bin/ALCHA$(ext) "$<" "../Test Output"
 #-------------------------------------------------------------------------------
 
 # Binaries

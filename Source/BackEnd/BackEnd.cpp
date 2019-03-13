@@ -116,8 +116,10 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression){
 
     case EXPRESSION::VectorConcatenate:
       Body += "{";
-      for(int n = 0; n < Expression->Elements.size(); n++){
+      for(size_t n = 0; n < Expression->Elements.size(); n++){
+        Body += "(";
         if(!BuildExpression(Body, Expression->Elements[n])) return false;
+        Body += ")";
         if(n < Expression->Elements.size()-1) Body += ", ";
       }
       Body += "}";
@@ -286,11 +288,11 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression){
       break;
 
     case EXPRESSION::Bit_NAND:
-      Body += "(";
+      Body += "~((";
       if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += ")~&(";
+      Body += ")&(";
       if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+      Body += "))";
       break;
 
     case EXPRESSION::Bit_OR:
@@ -302,11 +304,11 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression){
       break;
 
     case EXPRESSION::Bit_NOR:
-      Body += "(";
+      Body += "~((";
       if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += ")~|(";
+      Body += ")|(";
       if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+      Body += "))";
       break;
 
     case EXPRESSION::Bit_XOR:
