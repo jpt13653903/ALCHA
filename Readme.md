@@ -21,7 +21,7 @@ When cloning the repository, remember to also clone the sub-modules.
 
 ### Windows
 
-1. Install [TDM GCC MinGW](http://tdm-gcc.tdragon.net/).  Currently, only the 32-bit version links to the libraries provided.
+1. Install [TDM GCC MinGW](http://tdm-gcc.tdragon.net/) version 5.1.0 or newer.  Currently, only the 32-bit version links to the libraries provided.
 1. Open a POSIX-like terminal (such as [git bash](https://git-scm.com/)).
 1. Change directory to the project folder.
 1. Run `mingw32-make`

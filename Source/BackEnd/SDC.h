@@ -18,46 +18,29 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Pin.h"
+#ifndef SDC_h
+#define SDC_h
 //------------------------------------------------------------------------------
 
-using namespace OBJECTS;
+#include "Engine.h"
+#include "AST/Definition.h"
 //------------------------------------------------------------------------------
 
-PIN::PIN(const char* Name) : SYNTHESISABLE(Name, TYPE::Pin){
-  Driver  = 0;
-  Enabled = 0;
-}
+class SDC{
+  private:
+    std::string Constraints; // The resulting SDC TCL script returned by "Build"
+
+    void BuildClocks();
+    void BuildPorts ();
+
+  public:
+    SDC();
+   ~SDC();
+   
+    std::string& Build();
+};
 //------------------------------------------------------------------------------
 
-PIN::~PIN(){
-  if(Driver ) delete Driver;
-  if(Enabled) delete Enabled;
-}
-//------------------------------------------------------------------------------
-
-void PIN::Display(){
-  SYNTHESISABLE::Display();
-
-  printf("    Direction  = ");
-  switch(Direction){
-    case AST::DEFINITION::Inferred     : printf("Inferred\n"     ); break;
-    case AST::DEFINITION::Input        : printf("Input\n"        ); break;
-    case AST::DEFINITION::Output       : printf("Output\n"       ); break;
-    case AST::DEFINITION::Bidirectional: printf("Bidirectional\n"); break;
-    default                            : printf("Invalid\n"      ); break;
-  }
-  printf("    Driver     = ");
-  if(Driver) Driver->Display();
-  else       printf("{open}");
-  printf("\n");
-
-  printf("    Enabled    = ");
-  if(Enabled) Enabled->Display();
-  else        printf("{open}");
-  printf("\n");
-
-  DisplayAttributes(4);
-}
+#endif
 //------------------------------------------------------------------------------
 

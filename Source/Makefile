@@ -43,8 +43,11 @@ Headers += DataStructures/AST/*.h
 Headers += DataStructures/Objects/*.h
 
 Headers += FrontEnd/*.h
+
 Headers += Engine/*.h
-# Headers += BackEnd/*.h
+
+Headers += BackEnd/*.h
+Headers += BackEnd/Altera/*.h
 
 # Auto-generated headers
 Headers += FrontEnd/CharacterNames.h
@@ -108,11 +111,9 @@ Objects += $(ObjectPath)/FrontEnd/Token.o
 
 Objects += $(ObjectPath)/Engine/Engine.o
 
-# Objects += $(ObjectPath)/BackEnd/Altera.o
-# Objects += $(ObjectPath)/BackEnd/ClockTree.o
-# Objects += $(ObjectPath)/BackEnd/HDL.o
-# Objects += $(ObjectPath)/BackEnd/MemoryTable.o
-# Objects += $(ObjectPath)/BackEnd/TimingSpec.o
+Objects += $(ObjectPath)/BackEnd/BackEnd.o
+Objects += $(ObjectPath)/BackEnd/SDC.o
+Objects += $(ObjectPath)/BackEnd/Altera/Project.o
 
 ifeq ($(OS), Windows_NT)
   Objects += $(ObjectPath)/Resources/resource.res

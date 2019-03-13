@@ -18,62 +18,33 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Objects_Base_h
-#define Objects_Base_h
+#ifndef BackEnd_h
+#define BackEnd_h
 //------------------------------------------------------------------------------
 
-#include <map>
-#include <string>
+#include "AST/Definition.h"
+#include "Altera/Project.h"
 //------------------------------------------------------------------------------
 
-#include "General.h"
-#include "AST/Assignment.h"
-//------------------------------------------------------------------------------
+class BACK_END{
+  private:
+    std::string Path;
+    std::string Filename;
 
-namespace OBJECTS{
-  class NAMESPACE;
-  class EXPRESSION;
-  
-  class BASE{ // Base class for the symbol table
-    protected:
-      void DisplayLongName  (BASE* Node);
-      void DisplayAttributes(int Indent);
+    bool WriteFile(std::string& Filename, const char* Ext, std::string& Body);
 
-    public:
-      // Indentation follows the inheritance tree
-      enum class TYPE{
-        Synthesisable,
-          Pin,
-          Net,
-        Number,
-        Byte,
-        Character,
+    bool AssignPinDirections(OBJECTS::NAMESPACE* Namespace);
+    bool RoutePorts         (OBJECTS::NAMESPACE* Namespace);
 
-        FunctionDefinition,
-        ClassDefinition,
+    bool BuildExpression(std::string& Body, OBJECTS::EXPRESSION* Expression);
+    bool BuildHDL(OBJECTS::NAMESPACE* Namespace, std::string Path);
 
-        Alias,
-        Array, // An array of objects
-        Expression,
-        FunctionInstance,
-        Namespace,
-          ClassInstance
-      } Type;
-
-      std::string                        Name;
-      NAMESPACE*                         Namespace;
-      std::map<std::string, EXPRESSION*> Attributes;
-
-               BASE(const char* Name, TYPE Type);
-      virtual ~BASE();
-
-      virtual void Display() = 0;
-
-      // Access the attribute, but searches up to the root and
-      // returns null when not found
-      EXPRESSION* GetAttrib(const std::string& Key);
-  };
-}
+  public:
+    BACK_END();
+   ~BACK_END();
+   
+    bool BuildAltera(const char* Path, const char* Filename);
+};
 //------------------------------------------------------------------------------
 
 #endif

@@ -94,6 +94,37 @@ void NUMBER::operator= (NUMBER& n){
 }
 //------------------------------------------------------------------------------
 
+bool NUMBER::operator== (int i){
+  if(!IsReal()) return false;
+
+  NUMBER n(i);
+  return operator== (n);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator== (unsigned u){
+  if(!IsReal()) return false;
+
+  NUMBER n(u);
+  return operator== (n);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator== (double d){
+  if(!IsReal()) return false;
+
+  NUMBER n(d);
+  return operator== (n);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator== (NUMBER& n){
+  if(!mpq_equal(Real, n.Real)) return false;
+  if(!mpq_equal(Imag, n.Imag)) return false;
+  return true;
+}
+//------------------------------------------------------------------------------
+
 void NUMBER::Mul(double r, double i){
   mpq_t a, b, c, d;
 

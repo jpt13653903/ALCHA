@@ -54,6 +54,11 @@ class NUMBER{
     void operator= (double   d);
     void operator= (NUMBER&  n);
 
+    bool operator== (int      i);
+    bool operator== (unsigned u);
+    bool operator== (double   d);
+    bool operator== (NUMBER&  n);
+
     void Mul(double r, double i = 0);
     void Mul(NUMBER& n);
 

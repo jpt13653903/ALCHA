@@ -23,6 +23,7 @@
 #include "Expression.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace OBJECTS;
 //------------------------------------------------------------------------------
 
@@ -30,8 +31,8 @@ BASE::BASE(const char* Name, TYPE Type){
   this->Name = Name;
   this->Type = Type;
 
-  if(!Stack.empty()) this->Namespace = Stack.front();
-  else               this->Namespace = 0;
+  if(Stack.empty()) this->Namespace = 0;
+  else              this->Namespace = Stack.front();
 }
 //------------------------------------------------------------------------------
 
@@ -66,4 +67,11 @@ void BASE::DisplayAttributes(int Indent){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* BASE::GetAttrib(const string& Key){
+  auto Value = Attributes.find(Key);
+  if(Value != Attributes.end()) return Value->second;
+  if(Namespace) return Namespace->GetAttrib(Key);
+  return 0;
+}
+//------------------------------------------------------------------------------
 

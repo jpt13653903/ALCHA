@@ -20,7 +20,7 @@
 
 #include "Parser.h"
 #include "Engine.h"
-#include "FileWrapper.h"
+#include "BackEnd.h"
 //------------------------------------------------------------------------------
 
 void Pause(){
@@ -71,30 +71,18 @@ int main(int argc, char** argv){
 
   ENGINE Engine;
   if(!Engine.Run(argv[1])) return -1;
-  printf(
-    ANSI_FG_GREEN "\n----------------------------------------"
-                  "----------------------------------------\n\n"
-    ANSI_RESET
-  );
-  OBJECTS::Global.Display();
 
-  FILE_WRAPPER Files;
-  char Filename[0x1000];
-  sprintf(Filename, "%s/Testing.v", argv[2]);
-  Files.WriteAll(Filename, (const byte*)
-    "module Test(\n"
-    "  input       Clk,\n"
-    "  input       Reset,\n"
-    "\n"
-    "  input  [3:0]Button,\n"
-    "  output [7:0]LED\n"
-    ");\n"
-    "\n"
-    "assign LED = {Button, Button};\n"
-    "\n"
-    "endmodule\n"
-  );
+  // Remove path and extension from input filename
+  int n = strlen(argv[1]);
+  while(n > 0 && argv[1][n] != '.') n--;
+  if(n > 0) argv[1][n] = 0;
+  while(n > 0 && argv[1][n] != '\\' && argv[1][n] != '/') n--;
+  if(n > 0) argv[1] += n+1;
+
+  BACK_END BackEnd;
+  if(!BackEnd.BuildAltera(argv[2], argv[1])) return -1;
 
   return 0;
 }
 //------------------------------------------------------------------------------
+

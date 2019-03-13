@@ -62,7 +62,7 @@ namespace AST{
        ~IDENTIFIER();
       };
 
-      enum DIRECTION{Inferred = 0, Input, Output} Direction;
+      enum DIRECTION{Inferred = 0, Input, Output, Bidirectional} Direction;
 
       BASE*       Parameters; // Expression or Assignment
       ASSIGNMENT* Attributes;
