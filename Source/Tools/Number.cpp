@@ -125,6 +125,46 @@ bool NUMBER::operator== (NUMBER& n){
 }
 //------------------------------------------------------------------------------
 
+void NUMBER::Add(double r, double i){
+  mpq_t a, b;
+
+  mpq_init(a); mpq_set_d(a, r);
+  mpq_init(b); mpq_set_d(b, i);
+
+  mpq_add(Real, Real, a);
+  mpq_add(Imag, Imag, b);
+
+  mpq_clear(a);
+  mpq_clear(b);
+}
+//------------------------------------------------------------------------------
+
+void NUMBER::Add(NUMBER& n){
+  mpq_add(Real, Real, n.Real);
+  mpq_add(Imag, Imag, n.Imag);
+}
+//------------------------------------------------------------------------------
+
+void NUMBER::Sub(double r, double i){
+  mpq_t a, b;
+
+  mpq_init(a); mpq_set_d(a, r);
+  mpq_init(b); mpq_set_d(b, i);
+
+  mpq_sub(Real, Real, a);
+  mpq_sub(Imag, Imag, b);
+
+  mpq_clear(a);
+  mpq_clear(b);
+}
+//------------------------------------------------------------------------------
+
+void NUMBER::Sub(NUMBER& n){
+  mpq_sub(Real, Real, n.Real);
+  mpq_sub(Imag, Imag, n.Imag);
+}
+//------------------------------------------------------------------------------
+
 void NUMBER::Mul(double r, double i){
   mpq_t a, b, c, d;
 
@@ -154,7 +194,24 @@ void NUMBER::Mul(double r, double i){
 //------------------------------------------------------------------------------
 
 void NUMBER::Mul(NUMBER& n){
-  Mul(n.GetReal(), n.GetImag());
+  mpq_t a, b;
+
+  mpq_init(a);
+  mpq_init(b);
+
+  mpq_set(a, Real);
+  mpq_set(b, Imag);
+
+  mpq_mul(Real, a, n.Real);
+  mpq_mul(Imag, b, n.Imag);
+  mpq_sub(Real, Real, Imag);
+
+  mpq_mul(Imag, a, n.Imag);
+  mpq_mul(a   , b, n.Real);
+  mpq_add(Imag, Imag, a);
+
+  mpq_clear(a);
+  mpq_clear(b);
 }
 //------------------------------------------------------------------------------
 

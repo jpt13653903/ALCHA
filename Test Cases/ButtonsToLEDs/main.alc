@@ -5,8 +5,3 @@ LED := :(Button, Button);
 
 LED'current = 4e-3;
 
-// import "../Target/Minimal BeMicro Max 10" as Target;
-// 
-// // Global assignment
-// Target.LED := :(Target.Button, Target.Button);
-

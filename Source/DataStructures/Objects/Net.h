@@ -22,11 +22,14 @@
 #define Objects_Net_h
 //------------------------------------------------------------------------------
 
+#include "Expression.h"
 #include "Synthesisable.h"
 //------------------------------------------------------------------------------
 
 namespace OBJECTS{
   struct NET: public SYNTHESISABLE{
+    EXPRESSION* Value;
+
              NET(const char* Name);
     virtual ~NET();
 

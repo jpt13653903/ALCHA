@@ -1,0 +1,4 @@
+import "../Target/Minimal BeMicro Max 10";
+
+LED := :(Button, ~Button);
+

@@ -31,15 +31,12 @@
 //------------------------------------------------------------------------------
 
 namespace OBJECTS{
-  struct EXPRESSION: public BASE{
+  struct EXPRESSION{
     enum EXPRESSION_TYPE{
       String,
       Literal,
       Array,
       Object,
-      Attribute, // Attribute "Name" of object "ObjectRef"
-
-      Alias,
 
       VectorConcatenate,
       ArrayConcatenate,

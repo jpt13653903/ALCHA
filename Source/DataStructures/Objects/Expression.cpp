@@ -24,8 +24,7 @@
 using namespace OBJECTS;
 //------------------------------------------------------------------------------
 
-EXPRESSION::EXPRESSION(EXPRESSION_TYPE ExpressionType):
-BASE("", TYPE::Expression){
+EXPRESSION::EXPRESSION(EXPRESSION_TYPE ExpressionType){
   this->ExpressionType = ExpressionType;
 
   ObjectRef = 0;
@@ -78,24 +77,10 @@ void EXPRESSION::Display(){
 
     case Object:
       if(ObjectRef){
-        DisplayLongName(ObjectRef);
+        ObjectRef->DisplayLongName();
       }else{
         error("Null object reference");
       }
-      break;
-
-    case Attribute:
-      if(ObjectRef){
-        DisplayLongName(ObjectRef);
-      }else{
-        error("Null object reference");
-      }
-      printf("'");
-      printf("%s", Name.c_str());
-      break;
-
-    case Alias:
-      printf("{alias %s}", Name.c_str());
       break;
 
     case VectorConcatenate:

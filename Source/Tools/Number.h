@@ -59,6 +59,12 @@ class NUMBER{
     bool operator== (double   d);
     bool operator== (NUMBER&  n);
 
+    void Add(double r, double i = 0);
+    void Add(NUMBER& n);
+
+    void Sub(double r, double i = 0);
+    void Sub(NUMBER& n);
+
     void Mul(double r, double i = 0);
     void Mul(NUMBER& n);
 

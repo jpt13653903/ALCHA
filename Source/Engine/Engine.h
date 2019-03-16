@@ -29,6 +29,7 @@
 #define Engine_h
 //------------------------------------------------------------------------------
 
+#include <list>
 #include <stack>
 //------------------------------------------------------------------------------
 
@@ -36,6 +37,7 @@
 #include "Objects/Alias.h"
 #include "Objects/Module.h"
 #include "Objects/Pin.h"
+#include "Objects/Net.h"
 //------------------------------------------------------------------------------
 
 class ENGINE{
@@ -45,12 +47,30 @@ class ENGINE{
     bool error;
     void Error  (AST::BASE* Ast, const char* Message = 0);
     void Warning(AST::BASE* Ast, const char* Message = 0);
+  //----------------------------------------------------------------------------
 
   private: // Internal structures
     std::stack<AST::BASE*> AstStack; // Used for clean-up in the destructor
+  //----------------------------------------------------------------------------
 
   private: // Expression Evaluation
+    // Creates a new node that represents the RHS expression.  Also evaluates 
+    // scripting variables and expressions on the fly.
     OBJECTS::EXPRESSION* Evaluate(AST::EXPRESSION* Node);
+
+    // Populates a list of existing expressions, except when the target is an 
+    // undefined attribute, in which case the attribute is created first.
+    struct TARGET_LIST{
+      OBJECTS::BASE*        Object;
+      OBJECTS::EXPRESSION** Expression;
+    };
+    typedef std::list<TARGET_LIST> target_list;
+    bool    GetLHS_Object(OBJECTS::BASE* Object, target_list& List);
+    bool    GetLHS(AST::EXPRESSION* Node, target_list& List);
+
+    // Simplifies the tree
+    void Simplify(OBJECTS::EXPRESSION* Root);
+  //----------------------------------------------------------------------------
 
   private: // AST processing
     bool ApplyAttributes(
@@ -66,6 +86,7 @@ class ENGINE{
     bool Alias     (AST::ALIAS     * Ast);
     bool Definition(AST::DEFINITION* Ast);
     bool Assignment(AST::ASSIGNMENT* Ast);
+  //----------------------------------------------------------------------------
 
   public:
     ENGINE();

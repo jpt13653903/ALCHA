@@ -25,15 +25,24 @@ using namespace OBJECTS;
 //------------------------------------------------------------------------------
 
 NET::NET(const char* Name) : SYNTHESISABLE(Name, TYPE::Net){
-  error("Not yet implemented");
+  Value = 0;
 }
 //------------------------------------------------------------------------------
 
 NET::~NET(){
+  if(Value) delete Value;
 }
 //------------------------------------------------------------------------------
 
 void NET::Display(){
+  SYNTHESISABLE::Display();
+
+  printf("    Value = ");
+  if(Value) Value->Display();
+  else      printf("{open}");
+  printf("\n");
+
+  DisplayAttributes(4);
 }
 //------------------------------------------------------------------------------
 

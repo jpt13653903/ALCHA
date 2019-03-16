@@ -200,38 +200,41 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
 
     case AST::EXPRESSION::AccessAttribute:{
-      EXPRESSION* Left = 0;
+      error("AccessAttribute not yet implemented");
+      // Result should return the value of the attribute, not the attribute itself
 
-      Result = new EXPRESSION(EXPRESSION::Attribute);
+      // EXPRESSION* Left = 0;
 
-      if(Node->Left) Left = Evaluate(Node->Left);
+      // Result = new EXPRESSION(EXPRESSION::Attribute);
 
-      if(Left){
-        if(Left->ExpressionType == EXPRESSION::Object){
-          Result->ObjectRef = Left->ObjectRef;
-          delete Left;
-        }else if(Left->ExpressionType == EXPRESSION::Attribute){
-          Error(Node, "Hierarchical attributes not supported");
-          delete Left;
-          return 0;
-        }else{
-          // TODO Could be a slice expression, which is not supported yet
-          error("Unimplemented attribute access expression");
-          delete Left;
-          return 0;
-        }
-      }else{ // Attribute of the current namespace
-        Result->ObjectRef = Stack.front();
-      }
-      if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
-        auto Right = (AST::EXPRESSION*)Node->Right;
-        if(Right->ExpressionType == AST::EXPRESSION::Identifier){
-          Result->Name = Right->Name;
-        }else{
-          // TODO Could be a slice expression, which is not supported yet
-          error("Unimplemented attribute access expression");
-        }
-      }
+      // if(Node->Left) Left = Evaluate(Node->Left);
+
+      // if(Left){
+      //   if(Left->ExpressionType == EXPRESSION::Object){
+      //     Result->ObjectRef = Left->ObjectRef;
+      //     delete Left;
+      //   }else if(Left->ExpressionType == EXPRESSION::Attribute){
+      //     Error(Node, "Hierarchical attributes not supported");
+      //     delete Left;
+      //     return 0;
+      //   }else{
+      //     // TODO Could be a slice expression, which is not supported yet
+      //     error("Unimplemented attribute access expression");
+      //     delete Left;
+      //     return 0;
+      //   }
+      // }else{ // Attribute of the current namespace
+      //   Result->ObjectRef = Stack.front();
+      // }
+      // if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
+      //   auto Right = (AST::EXPRESSION*)Node->Right;
+      //   if(Right->ExpressionType == AST::EXPRESSION::Identifier){
+      //     Result->Name = Right->Name;
+      //   }else{
+      //     // TODO Could be a slice expression, which is not supported yet
+      //     error("Unimplemented attribute access expression");
+      //   }
+      // }
       break;
     }
 
@@ -253,18 +256,16 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
 
     case AST::EXPRESSION::Negate:
       Result = new EXPRESSION(EXPRESSION::Negate);
-      if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression)
+      if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
         Result->Right = Evaluate((AST::EXPRESSION*)Node->Right);
-      if(Result->Right && Result->Right->ExpressionType == EXPRESSION::Literal){
-        Result->ExpressionType = EXPRESSION::Literal;
-        Result->Value = Result->Right->Value;
-        Result->Value.Mul(-1);
-        delete Result->Right; Result->Right = 0;
       }
       break;
 
     case AST::EXPRESSION::Bit_NOT:
-      error("Bit_NOT not yet implemented");
+      Result = new EXPRESSION(EXPRESSION::Bit_NOT);
+      if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
+        Result->Right = Evaluate((AST::EXPRESSION*)Node->Right);
+      }
       break;
 
     case AST::EXPRESSION::Raw:
@@ -312,19 +313,6 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       if(Node->Left) Result->Left = Evaluate(Node->Left);
       if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
         Result->Right = Evaluate((AST::EXPRESSION*)Node->Right);
-      }
-      if(
-        Result->Left  &&
-        Result->Right &&
-        Result->Left ->ExpressionType == EXPRESSION::Literal &&
-        Result->Right->ExpressionType == EXPRESSION::Literal
-      ){
-        // TODO: Question -- does "Raw" propagate up the tree?
-        Result->ExpressionType = EXPRESSION::Literal;
-        Result->Value = Result->Left->Value;
-        Result->Value.Mul(Result->Right->Value);
-        delete Result->Left ; Result->Left  = 0;
-        delete Result->Right; Result->Right = 0;
       }
       break;
 
@@ -420,15 +408,16 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       error("Unknown expression type: %d", Node->ExpressionType);
       break;
   }
+  Simplify(Result);
   return Result;
 }
 //------------------------------------------------------------------------------
 
 bool ENGINE::ApplyAttributes(
-  BASE*       Object,
-  std::string&         Name,
-  EXPRESSION* Value,
-  AST::BASE*           Ast
+  BASE*        Object,
+  std::string& Name,
+  EXPRESSION*  Value,
+  AST::BASE*   Ast
 ){
   if(!Value){
     Error(Ast, "Invalid attribute expression");
@@ -687,139 +676,588 @@ bool ENGINE::Definition(AST::DEFINITION* Ast){
 }
 //------------------------------------------------------------------------------
 
+bool ENGINE::GetLHS_Object(BASE* Object, target_list& List){
+  TARGET_LIST ListNode;
+
+  bool Result = false;
+
+  if(Object){
+    switch(Object->Type){
+      case BASE::TYPE::Pin:{
+        auto Pin = (PIN*)Object;
+        ListNode.Object     =  Pin;
+        ListNode.Expression = &Pin->Driver;
+        List.push_back(ListNode);
+        Result = true;
+        break;
+      }
+      case BASE::TYPE::Net:{
+        auto Net = (NET*)Object;
+        ListNode.Object     =  Net;
+        ListNode.Expression = &Net->Value;
+        List.push_back(ListNode);
+        Result = true;
+        break;
+      }
+      case BASE::TYPE::Number:{
+        error("Number assignment not yet implemented");
+        break;
+      }
+      case BASE::TYPE::Byte:{
+        error("Byte assignment not yet implemented");
+        break;
+      }
+      case BASE::TYPE::Character:{
+        error("Character assignment not yet implemented");
+        break;
+      }
+      case BASE::TYPE::Alias:{
+        auto Alias = (ALIAS*)Object;
+        Stack.push_front(Alias->Module);
+          Result = GetLHS(Alias->Expression, List);
+        Stack.pop_front();
+        break;
+      }
+      case BASE::TYPE::Array:{
+        error("Array assignment not yet implemented");
+        break;
+      }
+      case BASE::TYPE::Module:{
+        ListNode.Object     = Object;
+        ListNode.Expression = 0;
+        List.push_back(ListNode);
+        Result = true;
+        break;
+      }
+      default:
+        error("Unknown object type %d", (int)Object->Type);
+        break;
+    }
+  }
+  return Result;
+}
+//------------------------------------------------------------------------------
+
+bool ENGINE::GetLHS(AST::EXPRESSION* Node, target_list& List){
+  if(!Node) return 0;
+
+  bool        Result = false;
+  TARGET_LIST ListNode;
+
+  switch(Node->ExpressionType){
+    case AST::EXPRESSION::Array:{
+      error("Array not yet implemented");
+      // Idea: Simply call GetLHS recursively for each array element
+      //
+      // auto Element = (AST::EXPRESSION*)Node->Right;
+      // while(Element){
+      //   Result->Elements.push_back(Evaluate(Element));
+      //   Element = (AST::EXPRESSION*)Element->Next;
+      // }
+      break;
+    }
+
+    case AST::EXPRESSION::Identifier:{
+      auto NamespaceIterator = Stack.begin();
+      while(!Result && NamespaceIterator != Stack.end()){
+        MODULE* Module = *NamespaceIterator;
+        while(!Result && Module){
+          auto Object = Module->Symbols.find(Node->Name);
+          if(Object != Module->Symbols.end()){
+            Result = GetLHS_Object(Object->second, List);
+          }
+          Module = Module->Module;
+        }
+        NamespaceIterator++;
+      }
+      break;
+    }
+
+    case AST::EXPRESSION::VectorConcatenate:{
+      error("VectorConcatenate not yet implemented");
+      // Result = new EXPRESSION(EXPRESSION::VectorConcatenate);
+      // Result->Raw = true;
+      // auto Element = (AST::EXPRESSION*)Node->Right;
+      // while(Element){
+      //   Result->Elements.push_back(Evaluate(Element));
+      //   Element = (AST::EXPRESSION*)Element->Next;
+      // }
+      break;
+    }
+
+    case AST::EXPRESSION::ArrayConcatenate:{
+      error("ArrayConcatenate not yet implemented");
+      // Result = new EXPRESSION(EXPRESSION::ArrayConcatenate);
+      // Result->Raw = true;
+      // auto Element = (AST::EXPRESSION*)Node->Right;
+      // while(Element){
+      //   Result->Elements.push_back(Evaluate(Element));
+      //   Element = (AST::EXPRESSION*)Element->Next;
+      // }
+      break;
+    }
+
+    case AST::EXPRESSION::Slice:
+      error("Slice not yet implemented");
+      break;
+
+    case AST::EXPRESSION::AccessMember:{
+      if(!Node->Left || !Node->Right || Node->Right->Type != AST::BASE::TYPE::Expression){
+        error("Invalid member access expression");
+        return 0;
+      }
+
+      target_list LeftList;
+      if(!GetLHS(Node->Left, LeftList)) return false;
+      if(LeftList.empty()){
+        error("Empty target list");
+        return false;
+      }
+      if(LeftList.size() > 1){
+        error("Multiple assignment targets not yet supported");
+        return false;
+      }
+      auto Left  = LeftList.front();
+      auto Right = (AST::EXPRESSION*)Node->Right;
+
+      switch(Left.Object->Type){
+        case BASE::TYPE::Pin:{
+          auto Pin = (PIN*)Left.Object;
+          ListNode.Object = Pin;
+          if(Right->ExpressionType != AST::EXPRESSION::Identifier){
+            Error(Node, "Invalid pin member");
+            return false;
+          }
+          if(Right->Name == "driver"){
+            ListNode.Expression = &Pin->Driver;
+          }else if(Right->Name == "enabled"){
+            ListNode.Expression = &Pin->Enabled;
+          }else{
+            Error(Node, "Valid pin members are \"driver\" and \"enabled\" only");
+            return false;
+          }
+          break;
+        }
+        case BASE::TYPE::Module:{
+          auto Module = (MODULE*)Left.Object;
+          auto Object  = Module->Symbols.find(Right->Name);
+          if(Object == Module->Symbols.end()){
+            Error(Node);
+            printf("Object %s not found in namespace %s\n",
+                   Right->Name.c_str(), Module->Name.c_str());
+            return false;
+          }
+          Result = GetLHS_Object(Object->second, List);
+          break;
+        }
+        case BASE::TYPE::Array:{
+          error("Array not yet implemented");
+          return false;
+        }
+        default:
+          Error(Node, "Invalid type for member access");
+          return false;
+      }
+      break;
+    }
+
+    case AST::EXPRESSION::AccessMemberSafe:
+      error("AccessMemberSafe not yet implemented");
+      break;
+
+    case AST::EXPRESSION::AccessAttribute:{
+      if(Node->Left){
+        target_list LeftList;
+        if(!GetLHS(Node->Left, LeftList)) return false;
+        if(LeftList.empty()){
+          error("Empty target list");
+          return false;
+        }
+        if(LeftList.size() > 1){
+          error("Multiple assignment targets not yet supported");
+          return false;
+        }
+        ListNode = LeftList.front();
+      }else{ // An attribute of the current namespace
+        ListNode.Object = Stack.front();
+      }
+
+      if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
+        auto Right = (AST::EXPRESSION*)Node->Right;
+        if(Right->ExpressionType == AST::EXPRESSION::Identifier){
+          ListNode.Expression = &ListNode.Object->Attributes[Right->Name];
+          List.push_back(ListNode);
+          Result = true;
+        }else{
+          // TODO Could be a slice expression, which is not supported yet
+          error("Unimplemented attribute access expression");
+        }
+      }
+      break;
+    }
+
+    default:
+      Error(Node, "Invalid LHS expression");
+      break;
+  }
+  return Result;
+}
+//------------------------------------------------------------------------------
+
+void ENGINE::Simplify(EXPRESSION* Root){
+  if(!Root) return;
+
+  Simplify(Root->Left );
+  Simplify(Root->Right);
+
+  switch(Root->ExpressionType){
+    // Pass these directly
+    case EXPRESSION::String:
+    case EXPRESSION::Literal:
+    case EXPRESSION::Array:
+      break;
+
+    case EXPRESSION::Object:
+      // TODO Could be a number object, in which case the number's value is returned
+      if(Root->ObjectRef && Root->ObjectRef->Type == BASE::TYPE::Number){
+        error("Not yet implemented");
+      }
+      break;
+
+    case EXPRESSION::VectorConcatenate:
+      if(
+        Root->Left  && Root->Left ->ExpressionType == EXPRESSION::Literal &&
+        Root->Right && Root->Right->ExpressionType == EXPRESSION::Literal
+      ){
+        error("Not yet implemented");
+      }
+      break;
+
+    case EXPRESSION::ArrayConcatenate:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::FunctionCall:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Slice:
+      // TODO Returns a new array (or scalar)
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Factorial:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Negate:
+      if(Root->Right && Root->Right->ExpressionType == EXPRESSION::Literal){
+        Root->ExpressionType = EXPRESSION::Literal;
+        Root->Value = Root->Right->Value;
+        Root->Value.Mul(-1);
+        delete Root->Right; Root->Right = 0;
+      }
+      break;
+
+    case EXPRESSION::Bit_NOT:
+      if(Root->Right && Root->Right->ExpressionType == EXPRESSION::Literal){
+        error("Not yet implemented");
+      }
+      break;
+
+    case EXPRESSION::AND_Reduce:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::NAND_Reduce:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::OR_Reduce:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::NOR_Reduce:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::XOR_Reduce:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::XNOR_Reduce:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Logical_NOT:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Cast:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Replicate:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Multiply:
+      if(
+        Root->Left  && Root->Left ->ExpressionType == EXPRESSION::Literal &&
+        Root->Right && Root->Right->ExpressionType == EXPRESSION::Literal
+      ){
+        Root->ExpressionType = EXPRESSION::Literal;
+        Root->Value = Root->Left->Value;
+        Root->Value.Mul(Root->Right->Value);
+        delete Root->Left ; Root->Left  = 0;
+        delete Root->Right; Root->Right = 0;
+      }
+      break;
+
+    case EXPRESSION::Divide:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Modulus:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Exponential:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Add:
+      if(
+        Root->Left  && Root->Left ->ExpressionType == EXPRESSION::Literal &&
+        Root->Right && Root->Right->ExpressionType == EXPRESSION::Literal
+      ){
+        Root->ExpressionType = EXPRESSION::Literal;
+        Root->Value = Root->Left->Value;
+        Root->Value.Add(Root->Right->Value);
+        delete Root->Left ; Root->Left  = 0;
+        delete Root->Right; Root->Right = 0;
+      }
+      break;
+
+    case EXPRESSION::Subtract:
+      if(
+        Root->Left  && Root->Left ->ExpressionType == EXPRESSION::Literal &&
+        Root->Right && Root->Right->ExpressionType == EXPRESSION::Literal
+      ){
+        Root->ExpressionType = EXPRESSION::Literal;
+        Root->Value = Root->Left->Value;
+        Root->Value.Sub(Root->Right->Value);
+        delete Root->Left ; Root->Left  = 0;
+        delete Root->Right; Root->Right = 0;
+      }
+      break;
+
+    case EXPRESSION::Shift_Left:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Shift_Right:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Less:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Greater:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Less_Equal:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Greater_Equal:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Equal:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Not_Equal:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Bit_AND:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Bit_NAND:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Bit_OR:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Bit_NOR:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Bit_XOR:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Bit_XNOR:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Logical_AND:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Logical_OR:
+      error("Not yet implemented");
+      break;
+
+    case EXPRESSION::Conditional:
+      error("Not yet implemented");
+      break;
+
+    default:
+      error("Unexpected expression type %d", Root->ExpressionType);
+      break;
+  }
+}
+//------------------------------------------------------------------------------
+
 bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
-  EXPRESSION* Left  = Evaluate(Ast->Left );
-  EXPRESSION* Right = Evaluate(Ast->Right);
+  target_list Left;
+  EXPRESSION* Right;
   EXPRESSION* Temp;
 
-  if(!Left){
-    Error(Ast, "Target object not defined");
-    if(Left ) delete Left;
-    if(Right) delete Right;
+  if(!GetLHS(Ast->Left, Left)) return false;
+  if(Left.empty()){
+    Error(Ast, "Target object list is empty");
     return false;
   }
+
+  if(Left.size() > 1){
+    error("Multiple assignment targets not supported yet");
+    return false;
+  }
+
+  Right = Evaluate(Ast->Right);
   if(!Right){
     error("Null assignment expression");
-    if(Left ) delete Left;
     if(Right) delete Right;
     return false;
   }
 
-  // The evaluation simplifies the tree as far as possible
-  if(
-    !Left->ObjectRef ||
-    (
-      Left->ExpressionType != EXPRESSION::Object &&
-      Left->ExpressionType != EXPRESSION::Attribute
-    )
-  ){
-    Error(Ast, "Illegal assignment target");
-    delete Left;
-    delete Right;
+  EXPRESSION** Target = Left.front().Expression;
+  if(!Target){
+    error("Unexpected null reference");
     return false;
   }
 
   switch(Ast->AssignmentType){
     case AST::ASSIGNMENT::Assign:
-      // Use Right without modification
+      if(*Target) delete *Target;
+      *Target = Right;
       break;
 
     case AST::ASSIGNMENT::Raw_Assign:
       Right->Raw = true;
+      if(*Target) delete *Target;
+      *Target = Right;
       break;
 
     case AST::ASSIGNMENT::Append_Assign:
-      error("Append_Assign not yet implemented");
-      // TODO All these are similar:
-      //   1. Get a reference to the target expression (new function)
-      //   2. Make a new node with the appropriate action
-      //   3. Temp->Left  = The current target expression
-      //   4. Temp->Right = Right
-      //   5. Right = Temp;
-      //   6. Make the current target expression null so that it's not deleted
+      Temp = new EXPRESSION(EXPRESSION::ArrayConcatenate);
+      Temp->Left  = *Target;
+      Temp->Right = Right;
+      *Target     = Temp;
       break;
 
     case AST::ASSIGNMENT::Add_Assign:
-      error("Add_Assign not yet implemented");
+      Temp = new EXPRESSION(EXPRESSION::Add);
+      Temp->Left  = *Target;
+      Temp->Right = Right;
+      *Target     = Temp;
       break;
 
     case AST::ASSIGNMENT::Subtract_Assign:
-      error("Subtract_Assign not yet implemented");
+      Temp = new EXPRESSION(EXPRESSION::Subtract);
+      Temp->Left  = *Target;
+      Temp->Right = Right;
+      *Target     = Temp;
       break;
 
     case AST::ASSIGNMENT::Multiply_Assign:
-      error("Multiply_Assign not yet implemented");
+      Temp = new EXPRESSION(EXPRESSION::Multiply);
+      Temp->Left  = *Target;
+      Temp->Right = Right;
+      *Target     = Temp;
       break;
 
     case AST::ASSIGNMENT::Divide_Assign:
-      error("Divide_Assign not yet implemented");
+      Temp = new EXPRESSION(EXPRESSION::Divide);
+      Temp->Left  = *Target;
+      Temp->Right = Right;
+      *Target     = Temp;
       break;
 
     case AST::ASSIGNMENT::Modulus_Assign:
-      error("Modulus_Assign not yet implemented");
+      Temp = new EXPRESSION(EXPRESSION::Modulus);
+      Temp->Left  = *Target;
+      Temp->Right = Right;
+      *Target     = Temp;
       break;
 
     case AST::ASSIGNMENT::Exponential_Assign:
-      error("Exponential_Assign not yet implemented");
+      Temp = new EXPRESSION(EXPRESSION::Exponential);
+      Temp->Left  = *Target;
+      Temp->Right = Right;
+      *Target     = Temp;
       break;
 
     case AST::ASSIGNMENT::AND_Assign:
-      error("AND_Assign not yet implemented");
+      Temp = new EXPRESSION(EXPRESSION::Bit_AND);
+      Temp->Left  = *Target;
+      Temp->Right = Right;
+      *Target     = Temp;
       break;
 
     case AST::ASSIGNMENT::OR_Assign:
-      error("OR_Assign not yet implemented");
+      Temp = new EXPRESSION(EXPRESSION::Bit_OR);
+      Temp->Left  = *Target;
+      Temp->Right = Right;
+      *Target     = Temp;
       break;
 
     case AST::ASSIGNMENT::XOR_Assign:
-      error("XOR_Assign not yet implemented");
+      Temp = new EXPRESSION(EXPRESSION::Bit_XOR);
+      Temp->Left  = *Target;
+      Temp->Right = Right;
+      *Target     = Temp;
       break;
 
     case AST::ASSIGNMENT::Shift_Left_Assign:
-      error("Shift_Left_Assign not yet implemented");
+      Temp = new EXPRESSION(EXPRESSION::Shift_Left);
+      Temp->Left  = *Target;
+      Temp->Right = Right;
+      *Target     = Temp;
       break;
 
     case AST::ASSIGNMENT::Shift_Right_Assign:
-      error("Shift_Right_Assign not yet implemented");
+      Temp = new EXPRESSION(EXPRESSION::Shift_Right);
+      Temp->Left  = *Target;
+      Temp->Right = Right;
+      *Target     = Temp;
       break;
 
     default:
       error("Unknown assignment type: %d", Ast->AssignmentType);
-      delete Left;
       delete Right;
       return false;
   }
-
-  if(Left->ExpressionType == EXPRESSION::Attribute){
-    if(Left->ObjectRef){
-      ApplyAttributes(Left->ObjectRef, Left->Name, Right, Ast);
-      // The function above deletes Right if required
-    }else{
-      error("Null object reference");
-      delete Right;
-    }
-    delete Left;
-    return true;
-
-  }else{ // Object target
-    auto Object = Left->ObjectRef;
-
-    switch(Object->Type){
-      case BASE::TYPE::Pin:{
-        auto Pin = (PIN*)Object;
-        if(Pin->Driver) delete Pin->Driver;
-        Pin->Driver = Right;
-        break;
-      }
-
-      default:
-        error("Unimplemented target type: %d", (int)Object->Type);
-        delete Left;
-        delete Right;
-        return false;
-    }
-  }
-
+  Simplify(*Target);
   return true;
 }
 //------------------------------------------------------------------------------

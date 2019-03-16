@@ -36,7 +36,6 @@ namespace OBJECTS{
   
   class BASE{ // Base class for the symbol table
     protected:
-      void DisplayLongName  (BASE* Node);
       void DisplayAttributes(int Indent);
 
     public:
@@ -51,7 +50,6 @@ namespace OBJECTS{
 
         Alias,
         Array, // An array of objects
-        Expression,
         Module
       } Type;
 
@@ -62,7 +60,8 @@ namespace OBJECTS{
                BASE(const char* Name, TYPE Type);
       virtual ~BASE();
 
-      virtual void Display() = 0;
+      virtual void Display        () = 0;
+              void DisplayLongName();
 
       // Access the attribute, but searches up to the root and
       // returns null when not found

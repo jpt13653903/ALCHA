@@ -43,13 +43,12 @@ BASE::~BASE(){
 }
 //------------------------------------------------------------------------------
 
-void BASE::DisplayLongName(BASE* Node){
-  if(!Node) return;
-  if(Node->Module != &Global){
-    DisplayLongName(Node->Module);
+void BASE::DisplayLongName(){
+  if(Module != &Global){
+    Module->DisplayLongName();
     printf("::");
   }
-  printf("%s", Node->Name.c_str());
+  printf("%s", Name.c_str());
 }
 //------------------------------------------------------------------------------
 

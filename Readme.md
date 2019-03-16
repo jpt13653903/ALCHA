@@ -15,7 +15,7 @@ but without loosing the low-level control that HDLs, such as Verilog, provide.
 - Automated timing-requirement generation
 - Bit- and timing-accurate circuit description
 
-## How to build
+## How to Build
 
 When cloning the repository, remember to also clone the sub-modules.
 
@@ -37,7 +37,16 @@ When cloning the repository, remember to also clone the sub-modules.
 1. Change directory to the project folder.
 1. Run `make`
 
-## More information
+## Running Test Cases
+
+To run the test cases, change directory into the `Source` folder, then run `make test????`.  Replace the question-marks with the appropriate subfolder in the `Test Cases` folder.
+
+The functional test-cases at the moment are:
+
+- `make testButtonsToLEDs`: a minimal test-case used to test that the logic of the implemented architecture is working.
+- `make testCombinational`: A more thorough test of combination circuits (and various scripting structures).
+
+## More Information
 
 See the [Wiki](https://sourceforge.net/p/alcha/wiki) for more information.
 
