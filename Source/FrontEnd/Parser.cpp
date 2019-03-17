@@ -287,7 +287,12 @@ AST::EXPRESSION* PARSER::String(){
 //------------------------------------------------------------------------------
 
 AST::EXPRESSION* PARSER::Literal(){
-  if(Token.Type != TOKEN::Literal) return 0;
+  switch(Token.Type){
+    case TOKEN::True   : Token.Value = 1; break;
+    case TOKEN::False  : Token.Value = 0; break;
+    case TOKEN::Literal:                  break;
+    default            : return 0;
+  }
 
   AST::EXPRESSION* Node = new AST::EXPRESSION(
     Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::Literal

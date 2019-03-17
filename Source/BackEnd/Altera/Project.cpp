@@ -129,6 +129,33 @@ bool PROJECT::BuildPins(string& Body){
             Body += '"' + Current->StrValue + '"';
             break;
           default:
+            // TODO Need to also handle arrays (for vector types) correctly
+            error("Unexpected current strength attribute type");
+            break;
+        }
+        Body += " -to "+ Pin->Name;
+        if(Pin->Width > 1) Body += "*";
+        Body += "\n";
+      }
+      auto WeakPullup = Pin->GetAttrib("weak_pullup");
+      if(WeakPullup){
+        Body += "set_instance_assignment "
+                "-name WEAK_PULL_UP_RESISTOR ";
+        switch(WeakPullup->ExpressionType){
+          case EXPRESSION::Literal:{
+            if(!WeakPullup->Value.IsReal()){
+              error("Weak pullup attribute not real");
+              return false;
+            }
+            if(WeakPullup->Value.GetReal() != 0) Body += "ON";
+            else                                 Body += "OFF";
+            break;
+          }
+          case EXPRESSION::String:
+            Body += '"' + WeakPullup->StrValue + '"';
+            break;
+          default:
+            // TODO Need to also handle arrays (for vector types) correctly
             error("Unexpected current strength attribute type");
             break;
         }
