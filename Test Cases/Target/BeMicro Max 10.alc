@@ -36,26 +36,26 @@ group ADT7420{
 //------------------------------------------------------------------------------
 
 group SDRAM{
-  group{
-    pin(13) <location = [
-      "T20" , "T19", "T18", "AA21",
-      "AA22", "U22", "T22", "R22" ,
-      "P20" , "P22", "U21", "P19" , "N20"]> A;
+  pin(13) <location = [
+    "T20" , "T19", "T18", "AA21",
+    "AA22", "U22", "T22", "R22" ,
+    "P20" , "P22", "U21", "P19" , "N20"]> A;
 
-    pin(2) <location = ["R20", "T21"]> BA;
+  pin(2) <location = ["R20", "T21"]> BA;
 
-    pin<location = "N21"> CASn;
-    pin<location = "N22"> CKE;
-    pin<location = "M22"> CLK;
-    pin<location = "P21"> CSn;
-    pin<location = "L22"> DQMH;
-    pin<location = "L20"> DQML;
-    pin<location = "M20"> RASn;
-    pin<location = "M21"> WEn;
-  }
+  pin<location = "N21"> CASn;
+  pin<location = "N22"> CKE;
+  pin<location = "M22"> CLK;
+  pin<location = "P21"> CSn;
+  pin<location = "L22"> DQMH;
+  pin<location = "L20"> DQML;
+  pin<location = "M20"> RASn;
+  pin<location = "M21"> WEn;
+
   pin(16) <location = [
     "C22", "D22", "E22", "F22", "G22", "H22", "J22", "K22",
     "K21", "J21", "H21", "G20", "F21", "E21", "D21", "C21"]> DQ;
+}
 //------------------------------------------------------------------------------
 
 group SFLASH{
@@ -67,7 +67,7 @@ group SFLASH{
 //------------------------------------------------------------------------------
 
 pin(8) <current  = 8e-3, standard = "LVTTL", location = [
-  "M2", "N1", "R2" , "T1", "V4", "T6", "AB4", "AA5"]> USER_LED;
+  "M2", "N1", "R2", "T1", "V4", "T6", "AB4", "AA5"]> USER_LED;
 //------------------------------------------------------------------------------
 
 pin(4) <location = ["M1", "R1", "V5", "AB5"]> SW;
@@ -162,10 +162,10 @@ pin(12) <standard = "LVDS", location = [
 //------------------------------------------------------------------------------
 
 group PMOD{
-  pin(4) location = ["C20", "D19", "D18", "E18"]> A;
-  pin(4) location = ["E19", "F18", "F20", "G19"]> B;
-  pin(4) location = ["U18", "U17", "R18", "P18"]> C;
-  pin(4) location = ["R14", "R15", "P15", "P14"]> D;
+  pin(4) <location = ["C20", "D19", "D18", "E18"]> A;
+  pin(4) <location = ["E19", "F18", "F20", "G19"]> B;
+  pin(4) <location = ["U18", "U17", "R18", "P18"]> C;
+  pin(4) <location = ["R14", "R15", "P15", "P14"]> D;
 }
 //------------------------------------------------------------------------------
 

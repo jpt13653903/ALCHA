@@ -33,8 +33,9 @@ class BACK_END{
 
     bool WriteFile(std::string& Filename, const char* Ext, std::string& Body);
 
-    bool AssignPinDirections(OBJECTS::MODULE* Module);
-    bool RoutePorts         (OBJECTS::MODULE* Module);
+    bool DeleteUnused       (OBJECTS::NAMESPACE* Module);
+    bool AssignPinDirections(OBJECTS::NAMESPACE* Module);
+    bool RoutePorts         (OBJECTS::NAMESPACE* Module);
 
     bool BuildExpression(std::string& Body, OBJECTS::EXPRESSION* Expression);
     bool BuildHDL(OBJECTS::MODULE* Module, std::string Path);

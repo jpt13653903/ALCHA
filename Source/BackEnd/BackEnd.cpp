@@ -33,9 +33,52 @@ BACK_END::~BACK_END(){
 }
 //------------------------------------------------------------------------------
 
-bool BACK_END::AssignPinDirections(MODULE* Module){
-  for(auto SymbolIterator  = Module->Symbols.begin();
-           SymbolIterator != Module->Symbols.end  ();
+bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
+  info("Delete unused...");
+
+  auto SymbolIterator = Namespace->Symbols.begin();
+
+  while(SymbolIterator != Namespace->Symbols.end()){
+    switch(SymbolIterator->second->Type){
+      case BASE::TYPE::Pin:
+      case BASE::TYPE::Net:
+      case BASE::TYPE::Synthesisable:{
+        auto Object = (SYNTHESISABLE*)(SymbolIterator->second);
+        SymbolIterator++;
+        if(!Object->Used){
+          Namespace->Symbols.erase(Object->Name);
+          delete Object;
+        }
+        break;
+      }
+
+      case BASE::TYPE::Module:
+      case BASE::TYPE::Group:
+      case BASE::TYPE::Namespace:{
+        auto Object = (NAMESPACE*)(SymbolIterator->second);
+        DeleteUnused(Object);
+        SymbolIterator++;
+        if(Object->Symbols.empty()){
+          Namespace->Symbols.erase(Object->Name);
+          delete Object;
+        }
+        break;
+      }
+
+      default:
+        SymbolIterator++;
+        break;
+    }
+  }
+  return true;
+}
+//------------------------------------------------------------------------------
+
+bool BACK_END::AssignPinDirections(NAMESPACE* Namespace){
+  info("Assign pin directions...");
+
+  for(auto SymbolIterator  = Namespace->Symbols.begin();
+           SymbolIterator != Namespace->Symbols.end  ();
            SymbolIterator++){
     switch(SymbolIterator->second->Type){
       case BASE::TYPE::Pin:{
@@ -62,7 +105,9 @@ bool BACK_END::AssignPinDirections(MODULE* Module){
         break;
       }
       case BASE::TYPE::Module:
-        AssignPinDirections((MODULE*)(SymbolIterator->second));
+      case BASE::TYPE::Group:
+      case BASE::TYPE::Namespace:
+        AssignPinDirections((NAMESPACE*)(SymbolIterator->second));
         break;
 
       default:
@@ -73,15 +118,53 @@ bool BACK_END::AssignPinDirections(MODULE* Module){
 }
 //------------------------------------------------------------------------------
 
-bool BACK_END::RoutePorts(MODULE* Module){
-  // TODO
-  //   At this point, the expressions reference the full name of the symbol 
-  //   that forms part of the expression.  This needs to be broken into 
-  //   temporary signals throughout the hierarchy and assigned to either 
-  //   module ports or internal signals.  Pins need to be routed to be moved 
-  //   to the top-level entity, and the original replaced with ports.
-  warning("Routing of ports not yet implemented");
+bool BACK_END::RoutePorts(NAMESPACE* Namespace){
+  info("Route ports...");
 
+  // At this point, the expressions use pointers, not names.  Any inter-module 
+  // usage needs to be broken into temporary signals throughout the hierarchy 
+  // and assigned to either module ports or internal signals.  Pins need to be 
+  // routed to be moved to the top-level entity, and the original replaced 
+  // with HDL module ports.
+
+  // Do the children first
+  for(auto SymbolIterator  = Namespace->Symbols.begin();
+           SymbolIterator != Namespace->Symbols.end  ();
+           SymbolIterator++){
+    switch(SymbolIterator->second->Type){
+      case BASE::TYPE::Module:
+      case BASE::TYPE::Group:
+      case BASE::TYPE::Namespace:
+        RoutePorts((NAMESPACE*)(SymbolIterator->second));
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  // If this is the global module, don't go further
+  if(!Namespace->Namespace) return true;
+
+  // After the children routed upwards, route further
+  for(auto SymbolIterator  = Namespace->Symbols.begin();
+           SymbolIterator != Namespace->Symbols.end  ();
+           SymbolIterator++){
+    switch(SymbolIterator->second->Type){
+      case BASE::TYPE::Pin:{
+        auto Pin = (PIN*)(SymbolIterator->second);
+        warning("Pin hierarchical routing not yet implemented");
+        break;
+      }
+      case BASE::TYPE::Net:{
+        auto Net = (NET*)(SymbolIterator->second);
+        warning("Net hierarchical routing not yet implemented");
+        break;
+      }
+      default:
+        break;
+    }
+  }
   return true;
 }
 //------------------------------------------------------------------------------
@@ -435,6 +518,8 @@ bool BACK_END::BuildAltera(const char* Path, const char* Filename){
     ANSI_RESET
   );
   Global.Display();
+
+  if(!DeleteUnused(&Global)) return false;
 
   if(!AssignPinDirections(&Global)) return false;
 

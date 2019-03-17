@@ -34,6 +34,8 @@ SDC::~SDC(){
 //------------------------------------------------------------------------------
 
 void SDC::BuildClocks(){
+  int ClockCount = 0;
+
   for(auto SymbolIterator  = Global.Symbols.begin();
            SymbolIterator != Global.Symbols.end();
            SymbolIterator++){
@@ -55,25 +57,28 @@ void SDC::BuildClocks(){
           " -period "           + to_string(Period)   + "ns"  +
           " -waveform {0ns "    + to_string(Period/2) + "ns}" +
           " [get_ports "        + Pin->Name           + "]\n";
+        ClockCount++;
       }
     }
     // No recursion required -- all pins are top-level at this point
   }
 
   // Create clock groups
-  Constraints += "\nset_clock_groups -asynchronous";
+  if(ClockCount){
+    Constraints += "\nset_clock_groups -asynchronous";
 
-  for(auto SymbolIterator  = Global.Symbols.begin();
-           SymbolIterator != Global.Symbols.end();
-           SymbolIterator++){
-    if(SymbolIterator->second->Type == BASE::TYPE::Pin){
-      auto Pin  = (PIN*)(SymbolIterator->second);
-      auto Freq = Pin->GetAttrib("frequency");
-      // Already checked for validity above, so no need to check again
-      if(Freq) Constraints += " \\\n  -group " + Pin->Name;
+    for(auto SymbolIterator  = Global.Symbols.begin();
+             SymbolIterator != Global.Symbols.end();
+             SymbolIterator++){
+      if(SymbolIterator->second->Type == BASE::TYPE::Pin){
+        auto Pin  = (PIN*)(SymbolIterator->second);
+        auto Freq = Pin->GetAttrib("frequency");
+        // Already checked for validity above, so no need to check again
+        if(Freq) Constraints += " \\\n  -group " + Pin->Name;
+      }
     }
+    Constraints += "\n";
   }
-  Constraints += "\n";
 }
 //------------------------------------------------------------------------------
 

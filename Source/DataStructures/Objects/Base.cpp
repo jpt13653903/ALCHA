@@ -31,8 +31,8 @@ BASE::BASE(const char* Name, TYPE Type){
   this->Name = Name;
   this->Type = Type;
 
-  if(Stack.empty()) this->Module = 0;
-  else              this->Module = Stack.front();
+  if(Stack.empty()) this->Namespace = 0;
+  else              this->Namespace = Stack.front();
 }
 //------------------------------------------------------------------------------
 
@@ -44,8 +44,8 @@ BASE::~BASE(){
 //------------------------------------------------------------------------------
 
 void BASE::DisplayLongName(){
-  if(Module != &Global){
-    Module->DisplayLongName();
+  if(Namespace != (NAMESPACE*)&Global){
+    Namespace->DisplayLongName();
     printf("::");
   }
   printf("%s", Name.c_str());
@@ -69,7 +69,7 @@ void BASE::DisplayAttributes(int Indent){
 EXPRESSION* BASE::GetAttrib(const string& Key){
   auto Value = Attributes.find(Key);
   if(Value != Attributes.end()) return Value->second;
-  if(Module) return Module->GetAttrib(Key);
+  if(Namespace) return Namespace->GetAttrib(Key);
   return 0;
 }
 //------------------------------------------------------------------------------

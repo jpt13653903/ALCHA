@@ -25,6 +25,7 @@ using namespace OBJECTS;
 //------------------------------------------------------------------------------
 
 SYNTHESISABLE::SYNTHESISABLE(const char* Name, TYPE Type) : BASE(Name, Type){
+  Used      = false;
   Signed    = false;
   Width     = 1;
   FullScale = 2;
@@ -42,6 +43,7 @@ void SYNTHESISABLE::Display(){
     default: error ("Unknown synthesisable type"); break;
   }
   printf("%s\n", Name.c_str());
+  printf("    Used       = %s\n", Used   ? "true" : "false");
   printf("    Width      = %u\n", Width);
   printf("    Full-scale = "); FullScale.Display(); printf("\n");
   printf("    Signed     = %s\n", Signed ? "true" : "false");

@@ -1,4 +1,9 @@
-import "../Target/Minimal BeMicro Max 10";
+import "../Target/BeMicro Max 10";
+
+alias LED    = USER_LED;
+alias Button = SW;
 
 LED := :(Button, ~Button);
+
+ADT7420.SCL = AD5681R.SCL;
 

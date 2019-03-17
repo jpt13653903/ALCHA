@@ -99,22 +99,27 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
     case AST::EXPRESSION::Identifier:{
       auto NamespaceIterator = Stack.begin();
       while(!Result && NamespaceIterator != Stack.end()){
-        MODULE* Module = *NamespaceIterator;
-        while(!Result && Module){
-          auto Object = Module->Symbols.find(Node->Name);
-          if(Object != Module->Symbols.end()){
+        NAMESPACE* Namespace = *NamespaceIterator;
+        while(!Result && Namespace){
+          auto Object = Namespace->Symbols.find(Node->Name);
+          if(Object != Namespace->Symbols.end()){
             if(Object->second &&
                Object->second->Type == BASE::TYPE::Alias){
               auto Alias = (ALIAS*)Object->second;
-              Stack.push_front(Alias->Module);
+              Stack.push_front(Alias->Namespace);
                 Result = Evaluate(Alias->Expression);
               Stack.pop_front();
             }else{
               Result = new EXPRESSION(EXPRESSION::Object);
               Result->ObjectRef = Object->second;
+              if(Result->ObjectRef->Type == BASE::TYPE::Pin ||
+                 Result->ObjectRef->Type == BASE::TYPE::Net ){
+                auto Object = (SYNTHESISABLE*)Result->ObjectRef;
+                Object->Used = true;
+              }
             }
           }
-          Module = Module->Module;
+          Namespace = Namespace->Namespace;
         }
         NamespaceIterator++;
       }
@@ -164,8 +169,9 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
 
       if(Left->ExpressionType == EXPRESSION::Object){
         if(Left->ObjectRef && (
-           Left->ObjectRef->Type == BASE::TYPE::Module)){
-          auto Object = (MODULE*)Left->ObjectRef;
+           Left->ObjectRef->Type == BASE::TYPE::Module ||
+           Left->ObjectRef->Type == BASE::TYPE::Group  )){
+          auto Object = (NAMESPACE*)Left->ObjectRef;
           auto Found  = Object->Symbols.find(Right->Name);
           if(Found == Object->Symbols.end()){
             Error(Node);
@@ -177,12 +183,17 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
           if(Found->second &&
              Found->second->Type == BASE::TYPE::Alias){
             auto Alias = (ALIAS*)Found->second;
-            Stack.push_front(Alias->Module);
+            Stack.push_front(Alias->Namespace);
               Result = Evaluate(Alias->Expression);
             Stack.pop_front();
           }else{
             Result = new EXPRESSION(EXPRESSION::Object);
             Result->ObjectRef = Found->second;
+            if(Result->ObjectRef->Type == BASE::TYPE::Pin ||
+               Result->ObjectRef->Type == BASE::TYPE::Net ){
+              auto Object = (SYNTHESISABLE*)Result->ObjectRef;
+              Object->Used = true;
+            }
           }
           delete Left;
         }
@@ -586,6 +597,30 @@ bool ENGINE::Import(AST::IMPORT* Ast){
 }
 //------------------------------------------------------------------------------
 
+bool ENGINE::Group(AST::GROUP* Ast){
+  if(Ast->Identifier.empty()){
+    error("Anonymous groups not supported yet");
+    return false;
+  }
+
+  auto Found = Stack.front()->Symbols.find(Ast->Identifier);
+  if(Found != Stack.front()->Symbols.end()){
+    Error(Ast);
+    printf("Symbol \"%s\" already exists in the current namespace\n",
+           Ast->Identifier.c_str());
+    return false;
+  }
+  auto Object = new OBJECTS::GROUP(Ast->Identifier.c_str());
+  Stack.front()->Symbols[Ast->Identifier] = Object;
+  Stack.push_front(Object);
+
+  bool Result = Run(Ast->Body);
+
+  Stack.pop_front();
+  return Result;
+}
+//------------------------------------------------------------------------------
+
 bool ENGINE::Alias(AST::ALIAS* Ast){
   auto Symbol = Stack.front()->Symbols.find(Ast->Identifier);
   if(Symbol != Stack.front()->Symbols.end()){
@@ -676,7 +711,7 @@ bool ENGINE::Definition(AST::DEFINITION* Ast){
 }
 //------------------------------------------------------------------------------
 
-bool ENGINE::GetLHS_Object(BASE* Object, target_list& List){
+bool ENGINE::GetLHS_Object(BASE* Object, target_list& List, AST::BASE* Ast){
   TARGET_LIST ListNode;
 
   bool Result = false;
@@ -685,6 +720,11 @@ bool ENGINE::GetLHS_Object(BASE* Object, target_list& List){
     switch(Object->Type){
       case BASE::TYPE::Pin:{
         auto Pin = (PIN*)Object;
+        if(Pin->Direction == AST::DEFINITION::Input){
+          Error(Ast, "Cannot assign to an input pin");
+          return false;
+        }
+        Pin->Used = true;
         ListNode.Object     =  Pin;
         ListNode.Expression = &Pin->Driver;
         List.push_back(ListNode);
@@ -713,7 +753,7 @@ bool ENGINE::GetLHS_Object(BASE* Object, target_list& List){
       }
       case BASE::TYPE::Alias:{
         auto Alias = (ALIAS*)Object;
-        Stack.push_front(Alias->Module);
+        Stack.push_front(Alias->Namespace);
           Result = GetLHS(Alias->Expression, List);
         Stack.pop_front();
         break;
@@ -722,7 +762,8 @@ bool ENGINE::GetLHS_Object(BASE* Object, target_list& List){
         error("Array assignment not yet implemented");
         break;
       }
-      case BASE::TYPE::Module:{
+      case BASE::TYPE::Module:
+      case BASE::TYPE::Group:{
         ListNode.Object     = Object;
         ListNode.Expression = 0;
         List.push_back(ListNode);
@@ -760,13 +801,13 @@ bool ENGINE::GetLHS(AST::EXPRESSION* Node, target_list& List){
     case AST::EXPRESSION::Identifier:{
       auto NamespaceIterator = Stack.begin();
       while(!Result && NamespaceIterator != Stack.end()){
-        MODULE* Module = *NamespaceIterator;
-        while(!Result && Module){
-          auto Object = Module->Symbols.find(Node->Name);
-          if(Object != Module->Symbols.end()){
-            Result = GetLHS_Object(Object->second, List);
+        NAMESPACE* Namespace = *NamespaceIterator;
+        while(!Result && Namespace){
+          auto Object = Namespace->Symbols.find(Node->Name);
+          if(Object != Namespace->Symbols.end()){
+            Result = GetLHS_Object(Object->second, List, Node);
           }
-          Module = Module->Module;
+          Namespace = Namespace->Namespace;
         }
         NamespaceIterator++;
       }
@@ -838,16 +879,17 @@ bool ENGINE::GetLHS(AST::EXPRESSION* Node, target_list& List){
           }
           break;
         }
-        case BASE::TYPE::Module:{
-          auto Module = (MODULE*)Left.Object;
-          auto Object  = Module->Symbols.find(Right->Name);
-          if(Object == Module->Symbols.end()){
+        case BASE::TYPE::Module:
+        case BASE::TYPE::Group:{
+          auto Namespace = (NAMESPACE*)Left.Object;
+          auto Object    = Namespace->Symbols.find(Right->Name);
+          if(Object == Namespace->Symbols.end()){
             Error(Node);
             printf("Object %s not found in namespace %s\n",
-                   Right->Name.c_str(), Module->Name.c_str());
+                   Right->Name.c_str(), Namespace->Name.c_str());
             return false;
           }
-          Result = GetLHS_Object(Object->second, List);
+          Result = GetLHS_Object(Object->second, List, Node);
           break;
         }
         case BASE::TYPE::Array:{
@@ -855,7 +897,8 @@ bool ENGINE::GetLHS(AST::EXPRESSION* Node, target_list& List){
           return false;
         }
         default:
-          Error(Node, "Invalid type for member access");
+          Error(Node);
+          printf("Invalid type for member access: %d\n", (int)Left.Object->Type);
           return false;
       }
       break;
@@ -1262,17 +1305,11 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
 }
 //------------------------------------------------------------------------------
 
-bool ENGINE::Run(const char* Filename){
-  if(Stack.empty()) Stack.push_front(&Global);
-
-  AST::BASE* Ast = Parser.Run(Filename);
-  if(Ast) AstStack.push(Ast);
-  else    return false;
-
+bool ENGINE::Run(AST::BASE* Ast){
   while(Ast){
     switch(Ast->Type){
       case AST::BASE::TYPE::Fence:
-        error("Fence not yet implemented");
+        error("Fence not yet implemented"); return false;
         break;
 
       case AST::BASE::TYPE::Import:
@@ -1280,7 +1317,7 @@ bool ENGINE::Run(const char* Filename){
         break;
 
       case AST::BASE::TYPE::Group:
-        error("Group not yet implemented");
+        if(!Group((AST::GROUP*)Ast)) return false;
         break;
 
       case AST::BASE::TYPE::Alias:
@@ -1288,15 +1325,15 @@ bool ENGINE::Run(const char* Filename){
         break;
 
       case AST::BASE::TYPE::TargetDefinition:
-        error("TargetDefinition not yet implemented");
+        error("TargetDefinition not yet implemented"); return false;
         break;
 
       case AST::BASE::TYPE::ClassDefinition:
-        error("ClassDefinition not yet implemented");
+        error("ClassDefinition not yet implemented"); return false;
         break;
 
       case AST::BASE::TYPE::EnumDefinition:
-        error("EnumDefinition not yet implemented");
+        error("EnumDefinition not yet implemented"); return false;
         break;
 
       case AST::BASE::TYPE::Definition:
@@ -1304,11 +1341,11 @@ bool ENGINE::Run(const char* Filename){
         break;
 
       case AST::BASE::TYPE::Parameter:
-        error("Parameter not yet implemented");
+        error("Parameter not yet implemented"); return false;
         break;
 
       case AST::BASE::TYPE::Expression:
-        error("Expression not yet implemented");
+        error("Expression not yet implemented"); return false;
         break;
 
       case AST::BASE::TYPE::Assignment:
@@ -1316,43 +1353,43 @@ bool ENGINE::Run(const char* Filename){
         break;
 
       case AST::BASE::TYPE::NamespacePush:
-        error("NamespacePush not yet implemented");
+        error("NamespacePush not yet implemented"); return false;
         break;
 
       case AST::BASE::TYPE::IfStatement:
-        error("IfStatement not yet implemented");
+        error("IfStatement not yet implemented"); return false;
         break;
 
       case AST::BASE::TYPE::ForLoop:
-        error("ForLoop not yet implemented");
+        error("ForLoop not yet implemented"); return false;
         break;
 
       case AST::BASE::TYPE::LoopLoop:
-        error("LoopLoop not yet implemented");
+        error("LoopLoop not yet implemented"); return false;
         break;
 
       case AST::BASE::TYPE::WhileLoop:
-        error("WhileLoop not yet implemented");
+        error("WhileLoop not yet implemented"); return false;
         break;
 
       case AST::BASE::TYPE::Switch:
-        error("Switch not yet implemented");
+        error("Switch not yet implemented"); return false;
         break;
 
       case AST::BASE::TYPE::Jump:
-        error("Jump not yet implemented");
+        error("Jump not yet implemented"); return false;
         break;
 
       case AST::BASE::TYPE::RTL:
-        error("RTL not yet implemented");
+        error("RTL not yet implemented"); return false;
         break;
 
       case AST::BASE::TYPE::FSM:
-        error("FSM not yet implemented");
+        error("FSM not yet implemented"); return false;
         break;
 
       case AST::BASE::TYPE::HDL:
-        error("HDL not yet implemented");
+        error("HDL not yet implemented"); return false;
         break;
 
       default:
@@ -1362,6 +1399,17 @@ bool ENGINE::Run(const char* Filename){
     Ast = Ast->Next;
   }
   return true;
+}
+//------------------------------------------------------------------------------
+
+bool ENGINE::Run(const char* Filename){
+  if(Stack.empty()) Stack.push_front(&Global);
+
+  AST::BASE* Ast = Parser.Run(Filename);
+  if(Ast) AstStack.push(Ast);
+  else    return false;
+
+  return Run(Ast);
 }
 //------------------------------------------------------------------------------
 

@@ -35,6 +35,7 @@
 
 #include "Parser.h"
 #include "Objects/Alias.h"
+#include "Objects/Group.h"
 #include "Objects/Module.h"
 #include "Objects/Pin.h"
 #include "Objects/Net.h"
@@ -65,7 +66,7 @@ class ENGINE{
       OBJECTS::EXPRESSION** Expression;
     };
     typedef std::list<TARGET_LIST> target_list;
-    bool    GetLHS_Object(OBJECTS::BASE* Object, target_list& List);
+    bool    GetLHS_Object(OBJECTS::BASE* Object, target_list& List, AST::BASE* Ast);
     bool    GetLHS(AST::EXPRESSION* Node, target_list& List);
 
     // Simplifies the tree
@@ -83,9 +84,12 @@ class ENGINE{
     bool ApplyParameters(OBJECTS::SYNTHESISABLE* Object, AST::BASE* Parameter);
 
     bool Import    (AST::IMPORT    * Ast);
+    bool Group     (AST::GROUP     * Ast);
     bool Alias     (AST::ALIAS     * Ast);
     bool Definition(AST::DEFINITION* Ast);
     bool Assignment(AST::ASSIGNMENT* Ast);
+
+    bool Run(AST::BASE* Ast);
   //----------------------------------------------------------------------------
 
   public:

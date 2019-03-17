@@ -2457,6 +2457,7 @@ AST::BASE* PARSER::Statements(){
 
   while(!error && Token.Type){
     Node = Statement();
+    if(error) break;
     if(!Node) return Head;
 
     if(Tail) Tail->Next = Node;
@@ -2508,7 +2509,12 @@ AST::BASE* PARSER::Run(const char* Filename){
   }
 
   #ifdef DEBUG
+    printf(ANSI_FG_GREEN "\nDisplaying AST of %s -------"
+                         "------------------------------\n\n"
+           ANSI_RESET,
+           Filename);
     if(AST) AST->Display();
+    else    info("AST is empty");
   #endif
   return AST;
 }

@@ -70,7 +70,7 @@ int main(int argc, char** argv){
   }
 
   ENGINE Engine;
-  if(!Engine.Run(argv[1])) return -1;
+  if(!Engine.Run(argv[1])) return 1;
 
   // Remove path and extension from input filename
   int n = strlen(argv[1]);
@@ -80,7 +80,7 @@ int main(int argc, char** argv){
   if(n > 0) argv[1] += n+1;
 
   BACK_END BackEnd;
-  if(!BackEnd.BuildAltera(argv[2], argv[1])) return -1;
+  if(!BackEnd.BuildAltera(argv[2], argv[1])) return 1;
 
   return 0;
 }

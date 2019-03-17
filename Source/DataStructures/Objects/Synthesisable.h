@@ -28,6 +28,7 @@
 
 namespace OBJECTS{
   struct SYNTHESISABLE: public BASE{
+    bool   Used; // Actually used in an expression somewhere
     bool   Signed;
     int    Width;
     NUMBER FullScale;
