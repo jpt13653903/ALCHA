@@ -131,40 +131,44 @@ bool BACK_END::RoutePorts(NAMESPACE* Namespace){
   for(auto SymbolIterator  = Namespace->Symbols.begin();
            SymbolIterator != Namespace->Symbols.end  ();
            SymbolIterator++){
-    switch(SymbolIterator->second->Type){
-      case BASE::TYPE::Module:
-      case BASE::TYPE::Group:
-      case BASE::TYPE::Namespace:
-        RoutePorts((NAMESPACE*)(SymbolIterator->second));
-        break;
-
-      default:
-        break;
+    if(SymbolIterator->second->Type == BASE::TYPE::Module ||
+       SymbolIterator->second->Type == BASE::TYPE::Group  ){
+      RoutePorts((MODULE*)(SymbolIterator->second));
     }
   }
 
   // If this is the global module, don't go further
   if(!Namespace->Namespace) return true;
 
-  // After the children routed upwards, route further
-  for(auto SymbolIterator  = Namespace->Symbols.begin();
-           SymbolIterator != Namespace->Symbols.end  ();
-           SymbolIterator++){
-    switch(SymbolIterator->second->Type){
-      case BASE::TYPE::Pin:{
-        auto Pin = (PIN*)(SymbolIterator->second);
-        warning("Pin hierarchical routing not yet implemented");
-        break;
+  // Move group members to the parent namespace
+  if(Namespace->Type == BASE::TYPE::Group){
+    auto SymbolIterator = Namespace->Symbols.begin();
+    while(SymbolIterator != Namespace->Symbols.end()){
+      auto Object = (BASE*)SymbolIterator->second;
+      SymbolIterator++;
+
+      Namespace->Symbols.erase(Object->Name);
+
+      Object->Name = Namespace->Name + "_" + Object->Name;
+      auto Found = Namespace->Namespace->Symbols.find(Object->Name);
+      while(Found != Namespace->Namespace->Symbols.end()){
+        Object->Name += "_";
+        Found = Namespace->Namespace->Symbols.find(Object->Name);
       }
-      case BASE::TYPE::Net:{
-        auto Net = (NET*)(SymbolIterator->second);
-        warning("Net hierarchical routing not yet implemented");
-        break;
+      Object->Namespace = Namespace->Namespace;
+      Namespace->Namespace->Symbols[Object->Name] = Object;
+
+      for(auto AttribIterator  = Namespace->Attributes.begin();
+               AttribIterator != Namespace->Attributes.end  ();
+               AttribIterator++){
+        if(!Object->GetAttrib(AttribIterator->first)){
+          Object->Attributes[AttribIterator->first] = new EXPRESSION(AttribIterator->second);
+        }
       }
-      default:
-        break;
     }
   }
+
+  // Route inter-module connections to the parent
   return true;
 }
 //------------------------------------------------------------------------------
@@ -437,6 +441,41 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression){
 }
 //------------------------------------------------------------------------------
 
+bool BACK_END::AddAssignment(string& Body, BASE* Object){
+  switch(Object->Type){
+    case BASE::TYPE::Pin:{
+      auto Pin = (PIN*)Object;
+      if(Pin->Driver){
+        Body += "assign "+ Pin->Name +" = ";
+        if(Pin->Enabled){
+          Body += "(";
+          if(!BuildExpression(Body, Pin->Enabled)) return false;
+          Body += ") ? (";
+          if(!BuildExpression(Body, Pin->Driver)) return false;
+          Body += ") : " + to_string(Pin->Width) + "'bZ";
+        }else{
+          if(!BuildExpression(Body, Pin->Driver)) return false;
+        }
+        Body += ";\n";
+      }
+      break;
+    }
+    case BASE::TYPE::Net:{
+      auto Net = (NET*)Object;
+      if(Net->Value){
+        Body += "assign "+ Net->Name +" = ";
+        if(!BuildExpression(Body, Net->Value)) return false;
+        Body += ";\n";
+      }
+      break;
+    }
+    default:
+      break;
+  }
+  return true;
+}
+//------------------------------------------------------------------------------
+
 bool BACK_END::BuildHDL(MODULE* Module, string Path){
   bool isGlobal = (Module == &Global);
 
@@ -486,14 +525,7 @@ bool BACK_END::BuildHDL(MODULE* Module, string Path){
   for(auto SymbolIterator  = Module->Symbols.begin();
            SymbolIterator != Module->Symbols.end  ();
            SymbolIterator++){
-    if(SymbolIterator->second->Type == BASE::TYPE::Pin){
-      auto Pin = (PIN*)SymbolIterator->second;
-      if(Pin->Driver){
-        Body += "assign "+ Pin->Name +" = ";
-        if(!BuildExpression(Body, Pin->Driver)) return false;
-        Body += ";\n";
-      }
-    }
+    if(!AddAssignment(Body, SymbolIterator->second)) return false;
   }
 
   Body += "//--------------------------------------"

@@ -107,6 +107,7 @@ namespace OBJECTS{
     EXPRESSION* Right;
 
     EXPRESSION(EXPRESSION_TYPE ExpressionType);
+    EXPRESSION(EXPRESSION* Expression); // Makes a copy
    ~EXPRESSION();
 
     void Display();

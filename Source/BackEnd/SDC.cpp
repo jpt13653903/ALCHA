@@ -96,13 +96,16 @@ void SDC::BuildPorts(){
       if(!Pin->GetAttrib("frequency")){ // Not a clock
         if(Pin->Direction != AST::DEFINITION::Output){ // Input or bidirectional
           Constraints += "set_false_path -to   * -from ";
+          Constraints += "[get_ports " + Pin->Name;
+          if(Pin->Width > 1) Constraints += "*";
+          Constraints += "]\n";
         }
         if(Pin->Direction != AST::DEFINITION::Input){ // Output or bidirectional
           Constraints += "set_false_path -from * -to   ";
+          Constraints += "[get_ports " + Pin->Name;
+          if(Pin->Width > 1) Constraints += "*";
+          Constraints += "]\n";
         }
-        Constraints += "[get_ports " + Pin->Name;
-        if(Pin->Width > 1) Constraints += "*";
-        Constraints += "]\n";
       }
     }
     // No recursion required -- all pins are top-level at this point

@@ -37,6 +37,8 @@ class BACK_END{
     bool AssignPinDirections(OBJECTS::NAMESPACE* Module);
     bool RoutePorts         (OBJECTS::NAMESPACE* Module);
 
+    bool AddAssignment(std::string& Body, OBJECTS::BASE* Object);
+
     bool BuildExpression(std::string& Body, OBJECTS::EXPRESSION* Expression);
     bool BuildHDL(OBJECTS::MODULE* Module, std::string Path);
 

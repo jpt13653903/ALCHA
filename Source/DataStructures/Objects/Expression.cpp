@@ -35,6 +35,32 @@ EXPRESSION::EXPRESSION(EXPRESSION_TYPE ExpressionType){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION::EXPRESSION(EXPRESSION* Expression){
+  ExpressionType = Literal;
+  ObjectRef      = 0;
+  Left           = 0;
+  Right          = 0;
+  Raw            = false;
+
+  if(!Expression) return;
+
+  ExpressionType = Expression->ExpressionType;
+  Raw            = Expression->Raw;
+                                             
+  ObjectRef      = Expression->ObjectRef;
+  Value          = Expression->Value;
+  StrValue       = Expression->StrValue;
+
+  if(Expression->Left ) Left  = new EXPRESSION(Expression->Left );
+  if(Expression->Right) Right = new EXPRESSION(Expression->Right);
+
+  for(size_t n = 0; n < Expression->Elements.size(); n++){
+    if(Expression->Elements[n]) Elements.push_back(new EXPRESSION(Expression->Elements[n]));
+    else                        Elements.push_back(0);
+  }
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION::~EXPRESSION(){
   // Don't delete the Object reference -- it's part of the namespace tree
 

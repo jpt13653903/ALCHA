@@ -611,6 +611,7 @@ bool ENGINE::Group(AST::GROUP* Ast){
     return false;
   }
   auto Object = new OBJECTS::GROUP(Ast->Identifier.c_str());
+  ApplyAttributes(Object, Ast->Attributes);
   Stack.front()->Symbols[Ast->Identifier] = Object;
   Stack.push_front(Object);
 
@@ -869,6 +870,10 @@ bool ENGINE::GetLHS(AST::EXPRESSION* Node, target_list& List){
             Error(Node, "Invalid pin member");
             return false;
           }
+          if(Pin->Direction == AST::DEFINITION::Input){
+            Error(Node, "Cannot assign to an input pin.");
+            return false;
+          }
           if(Right->Name == "driver"){
             ListNode.Expression = &Pin->Driver;
           }else if(Right->Name == "enabled"){
@@ -877,6 +882,8 @@ bool ENGINE::GetLHS(AST::EXPRESSION* Node, target_list& List){
             Error(Node, "Valid pin members are \"driver\" and \"enabled\" only");
             return false;
           }
+          List.push_back(ListNode);
+          Result = true;
           break;
         }
         case BASE::TYPE::Module:

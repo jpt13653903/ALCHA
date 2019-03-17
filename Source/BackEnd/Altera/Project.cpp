@@ -71,8 +71,8 @@ bool PROJECT::BuildPins(string& Body){
       auto Pin = (PIN*)(SymbolIterator->second);
       auto Location = Pin->GetAttrib("location");
       if(!Location){
-        error("Pin without location attribute");
-        return false;
+        warning("Pin without location attribute");
+        continue;
       }
       if(Pin->Width == 1){
         if(Location->ExpressionType != EXPRESSION::String){
