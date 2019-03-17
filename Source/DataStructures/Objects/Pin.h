@@ -22,7 +22,6 @@
 #define Objects_Pin_h
 //------------------------------------------------------------------------------
 
-#include "AST/Definition.h"
 #include "Synthesisable.h"
 #include "Expression.h"
 //------------------------------------------------------------------------------
@@ -31,8 +30,6 @@ namespace OBJECTS{
   struct PIN: public SYNTHESISABLE{
     EXPRESSION* Driver;
     EXPRESSION* Enabled;
-
-    AST::DEFINITION::DIRECTION Direction;
 
     PIN(const char* Name);
    ~PIN();

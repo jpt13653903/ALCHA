@@ -47,6 +47,15 @@ void SYNTHESISABLE::Display(){
   printf("    Width      = %u\n", Width);
   printf("    Full-scale = "); FullScale.Display(); printf("\n");
   printf("    Signed     = %s\n", Signed ? "true" : "false");
+
+  printf("    Direction  = ");
+  switch(Direction){
+    case AST::DEFINITION::Inferred     : printf("Inferred\n"     ); break;
+    case AST::DEFINITION::Input        : printf("Input\n"        ); break;
+    case AST::DEFINITION::Output       : printf("Output\n"       ); break;
+    case AST::DEFINITION::Bidirectional: printf("Bidirectional\n"); break;
+    default                            : printf("Invalid\n"      ); break;
+  }
 }
 //------------------------------------------------------------------------------
 

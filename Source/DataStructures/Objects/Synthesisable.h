@@ -24,6 +24,7 @@
 
 #include "Base.h"
 #include "Number.h"
+#include "AST/Definition.h"
 //------------------------------------------------------------------------------
 
 namespace OBJECTS{
@@ -32,6 +33,8 @@ namespace OBJECTS{
     bool   Signed;
     int    Width;
     NUMBER FullScale;
+
+    AST::DEFINITION::DIRECTION Direction;
 
              SYNTHESISABLE(const char* Name, TYPE Type);
     virtual ~SYNTHESISABLE();

@@ -497,6 +497,7 @@ bool BACK_END::BuildHDL(MODULE* Module, string Path){
 
   string Body;
   Body += "module "+ Name +"(\n";
+
   // Ports
   bool isFirst = true;
   for(auto SymbolIterator  = Module->Symbols.begin();
@@ -518,6 +519,21 @@ bool BACK_END::BuildHDL(MODULE* Module, string Path){
   }
   if(!isFirst) Body += "\n";
   Body += ");\n";
+  Body += "//--------------------------------------"
+          "----------------------------------------\n\n";
+
+  // Nets
+  for(auto SymbolIterator  = Module->Symbols.begin();
+           SymbolIterator != Module->Symbols.end  ();
+           SymbolIterator++){
+    if(SymbolIterator->second->Type == BASE::TYPE::Net){
+      auto Net = (NET*)SymbolIterator->second;
+      Body += "wire ";
+      if(Net->Width > 1) Body += "["+ to_string(Net->Width-1) +":0]";
+      Body += Net->Name + ";";
+    }
+  }
+  if(!isFirst) Body += "\n";
   Body += "//--------------------------------------"
           "----------------------------------------\n\n";
 

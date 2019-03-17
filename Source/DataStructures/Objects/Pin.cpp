@@ -39,14 +39,6 @@ PIN::~PIN(){
 void PIN::Display(){
   SYNTHESISABLE::Display();
 
-  printf("    Direction  = ");
-  switch(Direction){
-    case AST::DEFINITION::Inferred     : printf("Inferred\n"     ); break;
-    case AST::DEFINITION::Input        : printf("Input\n"        ); break;
-    case AST::DEFINITION::Output       : printf("Output\n"       ); break;
-    case AST::DEFINITION::Bidirectional: printf("Bidirectional\n"); break;
-    default                            : printf("Invalid\n"      ); break;
-  }
   printf("    Driver     = ");
   if(Driver) Driver->Display();
   else       printf("{open}");

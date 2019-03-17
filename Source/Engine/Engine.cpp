@@ -678,9 +678,16 @@ bool ENGINE::Definition(AST::DEFINITION* Ast){
         break;
       }
 
-      case AST::DEFINITION::Net:
-        error("Not yet implemented");
+      case AST::DEFINITION::Net:{
+        auto Net = new NET(Identifier->Identifier.c_str());
+        Net->Direction = Ast->Direction;
+        if(!ApplyParameters(Net, Ast->Parameters)) Error(Ast, "Invalid parameters");
+        if(!ApplyAttributes(Net, Ast->Attributes)) Error(Ast, "Invalid attributes");
+        if(Identifier->Initialiser) error("Not yet implemented");
+
+        Stack.front()->Symbols[Net->Name] = Net;
         break;
+      }
 
       case AST::DEFINITION::Byte:
         error("Not yet implemented");

@@ -7,6 +7,11 @@ LED := :(Button, ~Button);
 
 ADT7420.SCL = AD5681R.SCL;
 
+net Data;
+
+Data = 0;
+
 ADT7420.SDA.driver  = 0;
-ADT7420.SDA.enabled = ~AD5681R.SDA;
+ADT7420.SDA.enabled = ~Data;
+
 
