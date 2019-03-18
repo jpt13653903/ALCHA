@@ -143,12 +143,8 @@ bool PROJECT::BuildPins(string& Body){
                 "-name WEAK_PULL_UP_RESISTOR ";
         switch(WeakPullup->ExpressionType){
           case EXPRESSION::Literal:{
-            if(!WeakPullup->Value.IsReal()){
-              error("Weak pullup attribute not real");
-              return false;
-            }
-            if(WeakPullup->Value.GetReal() != 0) Body += "ON";
-            else                                 Body += "OFF";
+            if(WeakPullup->Value == true) Body += "ON";
+            else                          Body += "OFF";
             break;
           }
           case EXPRESSION::String:

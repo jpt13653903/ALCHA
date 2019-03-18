@@ -48,6 +48,13 @@ NUMBER::NUMBER(double d){
 }
 //------------------------------------------------------------------------------
 
+NUMBER::NUMBER(bool b){
+  mpq_init(Real);
+  mpq_init(Imag);
+  operator= (b);
+}
+//------------------------------------------------------------------------------
+
 NUMBER::NUMBER(NUMBER& n){
   mpq_init(Real);
   mpq_init(Imag);
@@ -88,6 +95,11 @@ void NUMBER::operator= (double d){
 }
 //------------------------------------------------------------------------------
 
+void NUMBER::operator= (bool b){
+  operator= (b ? 1 : 0);
+}
+//------------------------------------------------------------------------------
+
 void NUMBER::operator= (NUMBER& n){
   mpq_set(Real, n.Real);
   mpq_set(Imag, n.Imag);
@@ -115,6 +127,11 @@ bool NUMBER::operator== (double d){
 
   NUMBER n(d);
   return operator== (n);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator== (bool b){
+  return (operator== (0)) != b;
 }
 //------------------------------------------------------------------------------
 

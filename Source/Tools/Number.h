@@ -43,6 +43,7 @@ class NUMBER{
     NUMBER(int      i);
     NUMBER(unsigned u);
     NUMBER(double   d);
+    NUMBER(bool     b);
     NUMBER(NUMBER&  n);
    ~NUMBER();
 
@@ -52,11 +53,13 @@ class NUMBER{
     void operator= (int      i);
     void operator= (unsigned u);
     void operator= (double   d);
+    void operator= (bool     b);
     void operator= (NUMBER&  n);
 
     bool operator== (int      i);
     bool operator== (unsigned u);
     bool operator== (double   d);
+    bool operator== (bool     b);
     bool operator== (NUMBER&  n);
 
     void Add(double r, double i = 0);
