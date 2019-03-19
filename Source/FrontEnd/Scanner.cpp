@@ -309,7 +309,8 @@ bool SCANNER::LineComment(){
 //------------------------------------------------------------------------------
 
 bool SCANNER::TodoComment(){
-  int Count;
+  int    Count;
+  string Comment;
 
   if(Buffer[Index] != '!' || Buffer[Index+1] != '!') return false;
   Index += 2;
@@ -318,11 +319,26 @@ bool SCANNER::TodoComment(){
     if(Spaces.Match(Buffer+Index, &Count) == TOKEN::Newline){
       Line  ++;
       Index += Count;
+      if(!Comment.empty()){
+        printf(
+          ANSI_FG_BRIGHT_BLACK   "Line "
+          ANSI_FG_CYAN           "%05d "
+          ANSI_FG_BRIGHT_BLACK   "of "
+          ANSI_FG_YELLOW         "%s\n"
+          ANSI_FG_BRIGHT_MAGENTA "  Todo:"
+          ANSI_RESET             " %s\n",
+          Line,
+          Filename.c_str(),
+          Comment .c_str()
+        );
+      }
       return true;
     }
-
-    if(Count) Index += Count;
-    else      Index ++;
+    if(Count){
+      for(int n = 0; n < Count; n++) Comment += Buffer[Index++];
+    }else{
+      Comment += Buffer[Index++];
+    }
   }
   Error("Incomplete todo comment");
   return false;

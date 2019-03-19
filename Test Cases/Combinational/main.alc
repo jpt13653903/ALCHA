@@ -7,9 +7,8 @@ LED := :(Button, ~Button);
 
 ADT7420.SCL = AD5681R.SCL;
 
-net Data;
-
-Data = 0;
+!! Implement initialisers
+net Data; Data = 0;
 
 ADT7420.SDA'weak_pullup = true;
 ADT7420.SDA.driver      = 0;
