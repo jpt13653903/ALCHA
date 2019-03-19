@@ -20,7 +20,7 @@
 
 /* Description
 
-1. Processes the AST and produces the object tree (OBJECTS::Global).
+1. Processes the AST and produces the object tree (NETLIST::Global).
 2. Processes the scripting statements so that the scripting variables become
    constants, thereby making the resulting object tree synthesisable.
 ------------------------------------------------------------------------------*/
@@ -34,11 +34,11 @@
 //------------------------------------------------------------------------------
 
 #include "Parser.h"
-#include "Objects/Alias.h"
-#include "Objects/Group.h"
-#include "Objects/Module.h"
-#include "Objects/Pin.h"
-#include "Objects/Net.h"
+#include "Netlist/Alias.h"
+#include "Netlist/Group.h"
+#include "Netlist/Module.h"
+#include "Netlist/Pin.h"
+#include "Netlist/Net.h"
 //------------------------------------------------------------------------------
 
 class ENGINE{
@@ -57,31 +57,31 @@ class ENGINE{
   private: // Expression Evaluation
     // Creates a new node that represents the RHS expression.  Also evaluates 
     // scripting variables and expressions on the fly.
-    OBJECTS::EXPRESSION* Evaluate(AST::EXPRESSION* Node);
+    NETLIST::EXPRESSION* Evaluate(AST::EXPRESSION* Node);
 
     // Populates a list of existing expressions, except when the target is an 
     // undefined attribute, in which case the attribute is created first.
     struct TARGET_LIST{
-      OBJECTS::BASE*        Object;
-      OBJECTS::EXPRESSION** Expression;
+      NETLIST::BASE*        Object;
+      NETLIST::EXPRESSION** Expression;
     };
     typedef std::list<TARGET_LIST> target_list;
-    bool    GetLHS_Object(OBJECTS::BASE* Object, target_list& List, AST::BASE* Ast);
+    bool    GetLHS_Object(NETLIST::BASE* Object, target_list& List, AST::BASE* Ast);
     bool    GetLHS(AST::EXPRESSION* Node, target_list& List);
 
     // Simplifies the tree
-    void Simplify(OBJECTS::EXPRESSION* Root);
+    void Simplify(NETLIST::EXPRESSION* Root);
   //----------------------------------------------------------------------------
 
   private: // AST processing
     bool ApplyAttributes(
-      OBJECTS::BASE*       Object,
+      NETLIST::BASE*       Object,
       std::string&         Name,
-      OBJECTS::EXPRESSION* Value,
+      NETLIST::EXPRESSION* Value,
       AST::BASE*           Ast
     );
-    bool ApplyAttributes(OBJECTS::BASE* Object, AST::ASSIGNMENT* AttributeList);
-    bool ApplyParameters(OBJECTS::SYNTHESISABLE* Object, AST::BASE* Parameter);
+    bool ApplyAttributes(NETLIST::BASE* Object, AST::ASSIGNMENT* AttributeList);
+    bool ApplyParameters(NETLIST::SYNTHESISABLE* Object, AST::BASE* Parameter);
 
     bool Import    (AST::IMPORT    * Ast);
     bool Group     (AST::GROUP     * Ast);

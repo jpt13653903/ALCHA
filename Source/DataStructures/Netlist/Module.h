@@ -18,22 +18,32 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Character.h"
+#ifndef Netlist_Module_h
+#define Netlist_Module_h
 //------------------------------------------------------------------------------
 
-using namespace OBJECTS;
+#include <map>
+#include <list>
 //------------------------------------------------------------------------------
 
-CHARACTER::CHARACTER(const char* Name) : BASE(Name, TYPE::Character){
-  error("Not yet implemented");
+#include "Namespace.h"
+//------------------------------------------------------------------------------
+
+namespace NETLIST{
+  class MODULE: public NAMESPACE{
+    public:
+               MODULE(const char* Name = "");
+      virtual ~MODULE(); // Also cleans up the children
+     
+      virtual void Display();
+  };
+  //----------------------------------------------------------------------------
+
+  extern std::list<NAMESPACE*> Stack;  // Used for namespace searches
+  extern MODULE                Global; // The root of the module tree
 }
 //------------------------------------------------------------------------------
 
-CHARACTER::~CHARACTER(){
-}
-//------------------------------------------------------------------------------
-
-void CHARACTER::Display(){
-}
+#endif
 //------------------------------------------------------------------------------
 

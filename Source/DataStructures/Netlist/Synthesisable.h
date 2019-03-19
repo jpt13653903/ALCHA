@@ -18,22 +18,33 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Array.h"
+#ifndef Netlist_Synthesisable_h
+#define Netlist_Synthesisable_h
 //------------------------------------------------------------------------------
 
-using namespace OBJECTS;
+#include "Base.h"
+#include "Number.h"
+#include "AST/Definition.h"
 //------------------------------------------------------------------------------
 
-ARRAY::ARRAY(const char* Name) : BASE(Name, TYPE::Array){
-  error("Not yet implemented");
+namespace NETLIST{
+  struct SYNTHESISABLE: public BASE{
+    bool   Used; // Actually used in an expression somewhere
+    bool   Signed;
+    int    Width;
+    NUMBER FullScale;
+
+    AST::DEFINITION::DIRECTION Direction;
+
+             SYNTHESISABLE(const char* Name, TYPE Type);
+    virtual ~SYNTHESISABLE();
+
+    bool ApplyParameters(AST::BASE* Parameter);
+
+    void Display();
+  };
 }
 //------------------------------------------------------------------------------
 
-ARRAY::~ARRAY(){
-}
+#endif
 //------------------------------------------------------------------------------
-
-void ARRAY::Display(){
-}
-//------------------------------------------------------------------------------
-

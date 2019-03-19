@@ -18,59 +18,60 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Base.h"
-#include "Module.h"
-#include "Expression.h"
+#ifndef Netlist_Base_h
+#define Netlist_Base_h
 //------------------------------------------------------------------------------
 
-using namespace std;
-using namespace OBJECTS;
+#include <map>
+#include <string>
 //------------------------------------------------------------------------------
 
-BASE::BASE(const char* Name, TYPE Type){
-  this->Name = Name;
-  this->Type = Type;
+#include "General.h"
+#include "AST/Assignment.h"
+//------------------------------------------------------------------------------
 
-  if(Stack.empty()) this->Namespace = 0;
-  else              this->Namespace = Stack.front();
+namespace NETLIST{
+  class NAMESPACE;
+  class EXPRESSION;
+  
+  class BASE{ // Base class for the symbol table
+    protected:
+      void DisplayAttributes(int Indent);
+
+    public:
+      // Indentation follows the inheritance tree
+      enum class TYPE{
+        Synthesisable,
+          Pin,
+          Net,
+        Number,
+        Byte,
+        Character,
+
+        Alias,
+        Array, // An array of objects
+        Namespace,
+          Module,
+          Group
+      } Type;
+
+      std::string                        Name;
+      NAMESPACE*                         Namespace;
+      std::map<std::string, EXPRESSION*> Attributes;
+
+               BASE(const char* Name, TYPE Type);
+      virtual ~BASE();
+
+      virtual void Display        () = 0;
+              void DisplayLongName();
+
+      // Access the attribute, but searches up to the root and
+      // returns null when not found
+      EXPRESSION* GetAttrib(const std::string& Key);
+  };
 }
 //------------------------------------------------------------------------------
 
-BASE::~BASE(){
-  for(auto a = Attributes.begin(); a != Attributes.end(); a++){
-    delete a->second;
-  }
-}
-//------------------------------------------------------------------------------
-
-void BASE::DisplayLongName(){
-  if(Namespace != (NAMESPACE*)&Global){
-    Namespace->DisplayLongName();
-    printf("::");
-  }
-  printf("%s", Name.c_str());
-}
-//------------------------------------------------------------------------------
-
-void BASE::DisplayAttributes(int Indent){
-  for(int n = 0; n < Indent; n++) printf(" ");
-  printf("Attributes:\n");
-
-  for(auto a = Attributes.begin(); a != Attributes.end(); a++){
-    for(int n = 0; n < Indent; n++) printf(" ");
-    printf("  %s = ", a->first.c_str());
-    if(a->second) a->second->Display();
-    else          printf("{null}");
-    printf("\n");
-  }
-}
-//------------------------------------------------------------------------------
-
-EXPRESSION* BASE::GetAttrib(const string& Key){
-  auto Value = Attributes.find(Key);
-  if(Value != Attributes.end()) return Value->second;
-  if(Namespace) return Namespace->GetAttrib(Key);
-  return 0;
-}
+#endif
 //------------------------------------------------------------------------------
 

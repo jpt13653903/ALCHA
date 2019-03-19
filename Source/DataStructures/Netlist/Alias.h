@@ -18,60 +18,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Objects_Base_h
-#define Objects_Base_h
+#ifndef Netlist_Alias_h
+#define Netlist_Alias_h
 //------------------------------------------------------------------------------
 
-#include <map>
-#include <string>
+#include "Base.h"
+#include "AST/Expression.h"
 //------------------------------------------------------------------------------
 
-#include "General.h"
-#include "AST/Assignment.h"
-//------------------------------------------------------------------------------
+namespace NETLIST{
+  struct ALIAS: public BASE{
+    AST::EXPRESSION* Expression;
 
-namespace OBJECTS{
-  class NAMESPACE;
-  class EXPRESSION;
-  
-  class BASE{ // Base class for the symbol table
-    protected:
-      void DisplayAttributes(int Indent);
+             ALIAS(const char* Name, AST::EXPRESSION* Expression);
+    virtual ~ALIAS();
 
-    public:
-      // Indentation follows the inheritance tree
-      enum class TYPE{
-        Synthesisable,
-          Pin,
-          Net,
-        Number,
-        Byte,
-        Character,
-
-        Alias,
-        Array, // An array of objects
-        Namespace,
-          Module,
-          Group
-      } Type;
-
-      std::string                        Name;
-      NAMESPACE*                         Namespace;
-      std::map<std::string, EXPRESSION*> Attributes;
-
-               BASE(const char* Name, TYPE Type);
-      virtual ~BASE();
-
-      virtual void Display        () = 0;
-              void DisplayLongName();
-
-      // Access the attribute, but searches up to the root and
-      // returns null when not found
-      EXPRESSION* GetAttrib(const std::string& Key);
+    void Display();
   };
 }
 //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------
-

@@ -18,26 +18,38 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Alias.h"
+#include "Pin.h"
 //------------------------------------------------------------------------------
 
-using namespace OBJECTS;
+using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-ALIAS::ALIAS(const char* Name, AST::EXPRESSION* Expression): BASE(Name, TYPE::Alias){
-  this->Expression = Expression;
+PIN::PIN(const char* Name) : SYNTHESISABLE(Name, TYPE::Pin){
+  Driver  = 0;
+  Enabled = 0;
 }
 //------------------------------------------------------------------------------
 
-ALIAS::~ALIAS(){
+PIN::~PIN(){
+  if(Driver ) delete Driver;
+  if(Enabled) delete Enabled;
 }
 //------------------------------------------------------------------------------
 
-void ALIAS::Display(){
-  printf("  Alias: %s\n", Name.c_str());
-  printf("    ");
-  if(Expression) Expression->Display();
+void PIN::Display(){
+  SYNTHESISABLE::Display();
+
+  printf("    Driver     = ");
+  if(Driver) Driver->Display();
+  else       printf("{open}");
   printf("\n");
+
+  printf("    Enabled    = ");
+  if(Enabled) Enabled->Display();
+  else        printf("{open}");
+  printf("\n");
+
+  DisplayAttributes(4);
 }
 //------------------------------------------------------------------------------
 

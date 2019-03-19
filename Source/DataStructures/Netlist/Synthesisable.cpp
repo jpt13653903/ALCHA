@@ -18,38 +18,45 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef BackEnd_h
-#define BackEnd_h
+#include "Synthesisable.h"
 //------------------------------------------------------------------------------
 
-#include "AST/Definition.h"
-#include "Altera/Project.h"
+using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-class BACK_END{
-  private:
-    std::string Path;
-    std::string Filename;
-
-    bool WriteFile(std::string& Filename, const char* Ext, std::string& Body);
-
-    bool DeleteUnused       (NETLIST::NAMESPACE* Module);
-    bool AssignPinDirections(NETLIST::NAMESPACE* Module);
-    bool RoutePorts         (NETLIST::NAMESPACE* Module);
-
-    bool AddAssignment(std::string& Body, NETLIST::BASE* Object);
-
-    bool BuildExpression(std::string& Body, NETLIST::EXPRESSION* Expression);
-    bool BuildHDL(NETLIST::MODULE* Module, std::string Path);
-
-  public:
-    BACK_END();
-   ~BACK_END();
-   
-    bool BuildAltera(const char* Path, const char* Filename);
-};
+SYNTHESISABLE::SYNTHESISABLE(const char* Name, TYPE Type) : BASE(Name, Type){
+  Used      = false;
+  Signed    = false;
+  Width     = 1;
+  FullScale = 2;
+}
 //------------------------------------------------------------------------------
 
-#endif
+SYNTHESISABLE::~SYNTHESISABLE(){
+}
 //------------------------------------------------------------------------------
+
+void SYNTHESISABLE::Display(){
+  switch(Type){
+    case TYPE::Pin: printf("  Pin: "); break;
+    case TYPE::Net: printf("  Net: "); break;
+    default: error ("Unknown synthesisable type"); break;
+  }
+  printf("%s\n", Name.c_str());
+  printf("    Used       = %s\n", Used   ? "true" : "false");
+  printf("    Width      = %u\n", Width);
+  printf("    Full-scale = "); FullScale.Display(); printf("\n");
+  printf("    Signed     = %s\n", Signed ? "true" : "false");
+
+  printf("    Direction  = ");
+  switch(Direction){
+    case AST::DEFINITION::Inferred     : printf("Inferred\n"     ); break;
+    case AST::DEFINITION::Input        : printf("Input\n"        ); break;
+    case AST::DEFINITION::Output       : printf("Output\n"       ); break;
+    case AST::DEFINITION::Bidirectional: printf("Bidirectional\n"); break;
+    default                            : printf("Invalid\n"      ); break;
+  }
+}
+//------------------------------------------------------------------------------
+
 

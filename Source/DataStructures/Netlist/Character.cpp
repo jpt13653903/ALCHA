@@ -18,26 +18,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Objects_Pin_h
-#define Objects_Pin_h
+#include "Character.h"
 //------------------------------------------------------------------------------
 
-#include "Synthesisable.h"
-#include "Expression.h"
+using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-namespace OBJECTS{
-  struct PIN: public SYNTHESISABLE{
-    EXPRESSION* Driver;
-    EXPRESSION* Enabled;
-
-    PIN(const char* Name);
-   ~PIN();
-
-    void Display();
-  };
+CHARACTER::CHARACTER(const char* Name) : BASE(Name, TYPE::Character){
+  error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-#endif
+CHARACTER::~CHARACTER(){
+}
 //------------------------------------------------------------------------------
+
+void CHARACTER::Display(){
+}
+//------------------------------------------------------------------------------
+

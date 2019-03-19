@@ -18,36 +18,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef BackEnd_h
-#define BackEnd_h
+#ifndef Netlist_Namespace_h
+#define Netlist_Namespace_h
 //------------------------------------------------------------------------------
 
-#include "AST/Definition.h"
-#include "Altera/Project.h"
+#include <map>
+#include <list>
 //------------------------------------------------------------------------------
 
-class BACK_END{
-  private:
-    std::string Path;
-    std::string Filename;
+#include "Base.h"
+//------------------------------------------------------------------------------
 
-    bool WriteFile(std::string& Filename, const char* Ext, std::string& Body);
+namespace NETLIST{
+  class NAMESPACE: public BASE{
+    public:
+      std::map<std::string, BASE*> Symbols;
 
-    bool DeleteUnused       (NETLIST::NAMESPACE* Module);
-    bool AssignPinDirections(NETLIST::NAMESPACE* Module);
-    bool RoutePorts         (NETLIST::NAMESPACE* Module);
-
-    bool AddAssignment(std::string& Body, NETLIST::BASE* Object);
-
-    bool BuildExpression(std::string& Body, NETLIST::EXPRESSION* Expression);
-    bool BuildHDL(NETLIST::MODULE* Module, std::string Path);
-
-  public:
-    BACK_END();
-   ~BACK_END();
-   
-    bool BuildAltera(const char* Path, const char* Filename);
-};
+               NAMESPACE(const char* Name = "");
+      virtual ~NAMESPACE(); // Also cleans up the children
+  };
+}
 //------------------------------------------------------------------------------
 
 #endif

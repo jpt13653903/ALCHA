@@ -40,7 +40,7 @@ Headers += Tools/*.h
 Headers += $(Toolbox)/*.h          
 Headers += DataStructures/*.h
 Headers += DataStructures/AST/*.h
-Headers += DataStructures/Objects/*.h
+Headers += DataStructures/Netlist/*.h
 
 Headers += FrontEnd/*.h
 
@@ -90,18 +90,18 @@ Objects += $(ObjectPath)/DataStructures/AST/RTL.o
 Objects += $(ObjectPath)/DataStructures/AST/Switch.o
 Objects += $(ObjectPath)/DataStructures/AST/WhileLoop.o
 
-Objects += $(ObjectPath)/DataStructures/Objects/Base.o
-Objects += $(ObjectPath)/DataStructures/Objects/Alias.o
-Objects += $(ObjectPath)/DataStructures/Objects/Array.o
-Objects += $(ObjectPath)/DataStructures/Objects/Byte.o
-Objects += $(ObjectPath)/DataStructures/Objects/Character.o
-Objects += $(ObjectPath)/DataStructures/Objects/Expression.o
-Objects += $(ObjectPath)/DataStructures/Objects/Namespace.o
-Objects += $(ObjectPath)/DataStructures/Objects/Group.o
-Objects += $(ObjectPath)/DataStructures/Objects/Module.o
-Objects += $(ObjectPath)/DataStructures/Objects/Synthesisable.o
-Objects += $(ObjectPath)/DataStructures/Objects/Net.o
-Objects += $(ObjectPath)/DataStructures/Objects/Pin.o
+Objects += $(ObjectPath)/DataStructures/Netlist/Base.o
+Objects += $(ObjectPath)/DataStructures/Netlist/Alias.o
+Objects += $(ObjectPath)/DataStructures/Netlist/Array.o
+Objects += $(ObjectPath)/DataStructures/Netlist/Byte.o
+Objects += $(ObjectPath)/DataStructures/Netlist/Character.o
+Objects += $(ObjectPath)/DataStructures/Netlist/Expression.o
+Objects += $(ObjectPath)/DataStructures/Netlist/Namespace.o
+Objects += $(ObjectPath)/DataStructures/Netlist/Group.o
+Objects += $(ObjectPath)/DataStructures/Netlist/Module.o
+Objects += $(ObjectPath)/DataStructures/Netlist/Synthesisable.o
+Objects += $(ObjectPath)/DataStructures/Netlist/Net.o
+Objects += $(ObjectPath)/DataStructures/Netlist/Pin.o
 
 Objects += $(ObjectPath)/FrontEnd/Parser.o
 Objects += $(ObjectPath)/FrontEnd/Scanner.o

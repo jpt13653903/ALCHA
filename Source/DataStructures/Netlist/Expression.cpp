@@ -21,7 +21,7 @@
 #include "Expression.h"
 //------------------------------------------------------------------------------
 
-using namespace OBJECTS;
+using namespace NETLIST;
 //------------------------------------------------------------------------------
 
 EXPRESSION::EXPRESSION(EXPRESSION_TYPE ExpressionType){

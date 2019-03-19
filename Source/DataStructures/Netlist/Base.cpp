@@ -18,45 +18,59 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Synthesisable.h"
+#include "Base.h"
+#include "Module.h"
+#include "Expression.h"
 //------------------------------------------------------------------------------
 
-using namespace OBJECTS;
+using namespace std;
+using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-SYNTHESISABLE::SYNTHESISABLE(const char* Name, TYPE Type) : BASE(Name, Type){
-  Used      = false;
-  Signed    = false;
-  Width     = 1;
-  FullScale = 2;
+BASE::BASE(const char* Name, TYPE Type){
+  this->Name = Name;
+  this->Type = Type;
+
+  if(Stack.empty()) this->Namespace = 0;
+  else              this->Namespace = Stack.front();
 }
 //------------------------------------------------------------------------------
 
-SYNTHESISABLE::~SYNTHESISABLE(){
-}
-//------------------------------------------------------------------------------
-
-void SYNTHESISABLE::Display(){
-  switch(Type){
-    case TYPE::Pin: printf("  Pin: "); break;
-    case TYPE::Net: printf("  Net: "); break;
-    default: error ("Unknown synthesisable type"); break;
-  }
-  printf("%s\n", Name.c_str());
-  printf("    Used       = %s\n", Used   ? "true" : "false");
-  printf("    Width      = %u\n", Width);
-  printf("    Full-scale = "); FullScale.Display(); printf("\n");
-  printf("    Signed     = %s\n", Signed ? "true" : "false");
-
-  printf("    Direction  = ");
-  switch(Direction){
-    case AST::DEFINITION::Inferred     : printf("Inferred\n"     ); break;
-    case AST::DEFINITION::Input        : printf("Input\n"        ); break;
-    case AST::DEFINITION::Output       : printf("Output\n"       ); break;
-    case AST::DEFINITION::Bidirectional: printf("Bidirectional\n"); break;
-    default                            : printf("Invalid\n"      ); break;
+BASE::~BASE(){
+  for(auto a = Attributes.begin(); a != Attributes.end(); a++){
+    delete a->second;
   }
 }
 //------------------------------------------------------------------------------
 
+void BASE::DisplayLongName(){
+  if(Namespace != (NAMESPACE*)&Global){
+    Namespace->DisplayLongName();
+    printf("::");
+  }
+  printf("%s", Name.c_str());
+}
+//------------------------------------------------------------------------------
+
+void BASE::DisplayAttributes(int Indent){
+  for(int n = 0; n < Indent; n++) printf(" ");
+  printf("Attributes:\n");
+
+  for(auto a = Attributes.begin(); a != Attributes.end(); a++){
+    for(int n = 0; n < Indent; n++) printf(" ");
+    printf("  %s = ", a->first.c_str());
+    if(a->second) a->second->Display();
+    else          printf("{null}");
+    printf("\n");
+  }
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* BASE::GetAttrib(const string& Key){
+  auto Value = Attributes.find(Key);
+  if(Value != Attributes.end()) return Value->second;
+  if(Namespace) return Namespace->GetAttrib(Key);
+  return 0;
+}
+//------------------------------------------------------------------------------
 

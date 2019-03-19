@@ -18,22 +18,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Objects_Alias_h
-#define Objects_Alias_h
+#ifndef Netlist_Character_h
+#define Netlist_Character_h
 //------------------------------------------------------------------------------
 
 #include "Base.h"
-#include "AST/Expression.h"
 //------------------------------------------------------------------------------
 
-namespace OBJECTS{
-  struct ALIAS: public BASE{
-    AST::EXPRESSION* Expression;
+namespace NETLIST{
+  struct CHARACTER: public BASE{
+             CHARACTER(const char* Name);
+    virtual ~CHARACTER();
 
-             ALIAS(const char* Name, AST::EXPRESSION* Expression);
-    virtual ~ALIAS();
-
-    void Display();
+    virtual void Display();
   };
 }
 //------------------------------------------------------------------------------

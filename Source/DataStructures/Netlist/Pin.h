@@ -18,19 +18,23 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Objects_Byte_h
-#define Objects_Byte_h
+#ifndef Netlist_Pin_h
+#define Netlist_Pin_h
 //------------------------------------------------------------------------------
 
-#include "Base.h"
+#include "Synthesisable.h"
+#include "Expression.h"
 //------------------------------------------------------------------------------
 
-namespace OBJECTS{
-  struct BYTE: public BASE{
-             BYTE(const char* Name);
-    virtual ~BYTE();
+namespace NETLIST{
+  struct PIN: public SYNTHESISABLE{
+    EXPRESSION* Driver;
+    EXPRESSION* Enabled;
 
-    virtual void Display();
+    PIN(const char* Name);
+   ~PIN();
+
+    void Display();
   };
 }
 //------------------------------------------------------------------------------

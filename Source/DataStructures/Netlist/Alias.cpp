@@ -18,22 +18,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Byte.h"
+#include "Alias.h"
 //------------------------------------------------------------------------------
 
-using namespace OBJECTS;
+using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-OBJECTS::BYTE::BYTE(const char* Name) : BASE(Name, TYPE::Byte){
-  error("Not yet implemented");
+ALIAS::ALIAS(const char* Name, AST::EXPRESSION* Expression): BASE(Name, TYPE::Alias){
+  this->Expression = Expression;
 }
 //------------------------------------------------------------------------------
 
-OBJECTS::BYTE::~BYTE(){
+ALIAS::~ALIAS(){
 }
 //------------------------------------------------------------------------------
 
-void OBJECTS::BYTE::Display(){
+void ALIAS::Display(){
+  printf("  Alias: %s\n", Name.c_str());
+  printf("    ");
+  if(Expression) Expression->Display();
+  printf("\n");
 }
 //------------------------------------------------------------------------------
 

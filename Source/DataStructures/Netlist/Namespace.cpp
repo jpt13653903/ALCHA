@@ -18,22 +18,18 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Objects_Array_h
-#define Objects_Array_h
+#include "Namespace.h"
 //------------------------------------------------------------------------------
 
-#include "Base.h"
+using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-namespace OBJECTS{
-  struct ARRAY: public BASE{
-             ARRAY(const char* Name);
-    virtual ~ARRAY();
-
-    virtual void Display();
-  };
+NAMESPACE::NAMESPACE(const char* Name): BASE(Name, TYPE::Namespace){
 }
 //------------------------------------------------------------------------------
 
-#endif
+NAMESPACE::~NAMESPACE(){
+  for(auto s = Symbols.begin(); s != Symbols.end(); s++) delete s->second;
+}
 //------------------------------------------------------------------------------
+

@@ -18,25 +18,38 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Objects_Net_h
-#define Objects_Net_h
+#include "Group.h"
 //------------------------------------------------------------------------------
 
-#include "Expression.h"
-#include "Synthesisable.h"
+using namespace std;
+using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-namespace OBJECTS{
-  struct NET: public SYNTHESISABLE{
-    EXPRESSION* Value;
-
-             NET(const char* Name);
-    virtual ~NET();
-
-    virtual void Display();
-  };
+NETLIST::GROUP::GROUP(const char* Name): NAMESPACE(Name){
+  Type = TYPE::Group;
 }
 //------------------------------------------------------------------------------
 
-#endif
+NETLIST::GROUP::~GROUP(){
+}
 //------------------------------------------------------------------------------
+
+void NETLIST::GROUP::Display(){
+  printf("\n  Group: ");
+
+  if(Name.empty()) printf("{Anonymous}");
+  else             DisplayLongName();
+  printf("{\n");
+
+  DisplayAttributes(4);
+  printf("\n");
+
+  for(auto s = Symbols.begin(); s != Symbols.end(); s++){
+    if(s->second) s->second->Display();
+    else          printf("    - %s: {null}\n", s->first.c_str());
+    printf("\n");
+  }
+  printf("  }\n");
+}
+//------------------------------------------------------------------------------
+

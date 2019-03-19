@@ -18,38 +18,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef BackEnd_h
-#define BackEnd_h
+#include "Array.h"
 //------------------------------------------------------------------------------
 
-#include "AST/Definition.h"
-#include "Altera/Project.h"
+using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-class BACK_END{
-  private:
-    std::string Path;
-    std::string Filename;
-
-    bool WriteFile(std::string& Filename, const char* Ext, std::string& Body);
-
-    bool DeleteUnused       (NETLIST::NAMESPACE* Module);
-    bool AssignPinDirections(NETLIST::NAMESPACE* Module);
-    bool RoutePorts         (NETLIST::NAMESPACE* Module);
-
-    bool AddAssignment(std::string& Body, NETLIST::BASE* Object);
-
-    bool BuildExpression(std::string& Body, NETLIST::EXPRESSION* Expression);
-    bool BuildHDL(NETLIST::MODULE* Module, std::string Path);
-
-  public:
-    BACK_END();
-   ~BACK_END();
-   
-    bool BuildAltera(const char* Path, const char* Filename);
-};
+ARRAY::ARRAY(const char* Name) : BASE(Name, TYPE::Array){
+  error("Not yet implemented");
+}
 //------------------------------------------------------------------------------
 
-#endif
+ARRAY::~ARRAY(){
+}
+//------------------------------------------------------------------------------
+
+void ARRAY::Display(){
+}
 //------------------------------------------------------------------------------
 

@@ -18,33 +18,54 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Objects_Synthesisable_h
-#define Objects_Synthesisable_h
+#include "Module.h"
 //------------------------------------------------------------------------------
 
-#include "Base.h"
-#include "Number.h"
-#include "AST/Definition.h"
-//------------------------------------------------------------------------------
-
-namespace OBJECTS{
-  struct SYNTHESISABLE: public BASE{
-    bool   Used; // Actually used in an expression somewhere
-    bool   Signed;
-    int    Width;
-    NUMBER FullScale;
-
-    AST::DEFINITION::DIRECTION Direction;
-
-             SYNTHESISABLE(const char* Name, TYPE Type);
-    virtual ~SYNTHESISABLE();
-
-    bool ApplyParameters(AST::BASE* Parameter);
-
-    void Display();
-  };
+namespace NETLIST{
+  std::list<NAMESPACE*> Stack; // Initialised in Engine::Run()
+  MODULE                Global;
 }
 //------------------------------------------------------------------------------
 
-#endif
+using namespace std;
+using namespace NETLIST;
 //------------------------------------------------------------------------------
+
+MODULE::MODULE(const char* Name): NAMESPACE(Name){
+  Type = TYPE::Module;
+}
+//------------------------------------------------------------------------------
+
+MODULE::~MODULE(){
+}
+//------------------------------------------------------------------------------
+
+void MODULE::Display(){
+  printf("\nModule: ");
+
+  if(this == &Global) printf("{Global}");
+  else                DisplayLongName();
+  printf("\n");
+
+  DisplayAttributes(2);
+  printf("\n");
+
+  list<BASE*> Modules;
+
+  for(auto s = Symbols.begin(); s != Symbols.end(); s++){
+    if(s->second){
+      if(s->second->Type == TYPE::Module) Modules.push_back(s->second);
+      else s->second->Display();
+    }else{
+      printf("- %s: {null}\n", s->first.c_str());
+    }
+    printf("\n");
+  }
+
+  for(auto s = Modules.begin(); s != Modules.end(); s++){
+    (*s)->Display();
+    printf("\n");
+  }
+}
+//------------------------------------------------------------------------------
+

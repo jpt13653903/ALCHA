@@ -21,7 +21,7 @@
 #include "Net.h"
 //------------------------------------------------------------------------------
 
-using namespace OBJECTS;
+using namespace NETLIST;
 //------------------------------------------------------------------------------
 
 NET::NET(const char* Name) : SYNTHESISABLE(Name, TYPE::Net){

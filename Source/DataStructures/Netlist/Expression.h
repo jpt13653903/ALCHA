@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Objects_Expression_h
-#define Objects_Expression_h
+#ifndef Netlist_Expression_h
+#define Netlist_Expression_h
 //------------------------------------------------------------------------------
 
 #include <vector>
@@ -30,7 +30,7 @@
 #include "AST/Expression.h"
 //------------------------------------------------------------------------------
 
-namespace OBJECTS{
+namespace NETLIST{
   struct EXPRESSION{
     enum EXPRESSION_TYPE{
       String,

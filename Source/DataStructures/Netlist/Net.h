@@ -18,38 +18,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Pin.h"
+#ifndef Netlist_Net_h
+#define Netlist_Net_h
 //------------------------------------------------------------------------------
 
-using namespace OBJECTS;
+#include "Expression.h"
+#include "Synthesisable.h"
 //------------------------------------------------------------------------------
 
-PIN::PIN(const char* Name) : SYNTHESISABLE(Name, TYPE::Pin){
-  Driver  = 0;
-  Enabled = 0;
+namespace NETLIST{
+  struct NET: public SYNTHESISABLE{
+    EXPRESSION* Value;
+
+             NET(const char* Name);
+    virtual ~NET();
+
+    virtual void Display();
+  };
 }
 //------------------------------------------------------------------------------
 
-PIN::~PIN(){
-  if(Driver ) delete Driver;
-  if(Enabled) delete Enabled;
-}
+#endif
 //------------------------------------------------------------------------------
-
-void PIN::Display(){
-  SYNTHESISABLE::Display();
-
-  printf("    Driver     = ");
-  if(Driver) Driver->Display();
-  else       printf("{open}");
-  printf("\n");
-
-  printf("    Enabled    = ");
-  if(Enabled) Enabled->Display();
-  else        printf("{open}");
-  printf("\n");
-
-  DisplayAttributes(4);
-}
-//------------------------------------------------------------------------------
-

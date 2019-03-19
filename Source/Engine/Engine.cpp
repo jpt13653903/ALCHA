@@ -22,7 +22,7 @@
 //------------------------------------------------------------------------------
 
 using namespace std;
-using namespace OBJECTS;
+using namespace NETLIST;
 //------------------------------------------------------------------------------
 
 ENGINE::ENGINE(){
@@ -610,7 +610,7 @@ bool ENGINE::Group(AST::GROUP* Ast){
            Ast->Identifier.c_str());
     return false;
   }
-  auto Object = new OBJECTS::GROUP(Ast->Identifier.c_str());
+  auto Object = new NETLIST::GROUP(Ast->Identifier.c_str());
   ApplyAttributes(Object, Ast->Attributes);
   Stack.front()->Symbols[Ast->Identifier] = Object;
   Stack.push_front(Object);

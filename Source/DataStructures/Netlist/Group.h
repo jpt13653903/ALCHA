@@ -18,22 +18,28 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Objects_Character_h
-#define Objects_Character_h
+#ifndef Netlist_Group_h
+#define Netlist_Group_h
 //------------------------------------------------------------------------------
 
-#include "Base.h"
+#include <map>
+#include <list>
 //------------------------------------------------------------------------------
 
-namespace OBJECTS{
-  struct CHARACTER: public BASE{
-             CHARACTER(const char* Name);
-    virtual ~CHARACTER();
+#include "Namespace.h"
+//------------------------------------------------------------------------------
 
-    virtual void Display();
+namespace NETLIST{
+  class GROUP: public NAMESPACE{
+    public:
+               GROUP(const char* Name = "");
+      virtual ~GROUP(); // Also cleans up the children
+     
+      virtual void Display();
   };
 }
 //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------
+

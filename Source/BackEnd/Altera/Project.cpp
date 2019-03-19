@@ -23,7 +23,7 @@
 
 using namespace std;
 using namespace ALTERA;
-using namespace OBJECTS;
+using namespace NETLIST;
 //------------------------------------------------------------------------------
 
 PROJECT::PROJECT(){
