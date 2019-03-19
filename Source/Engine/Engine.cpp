@@ -869,6 +869,11 @@ bool ENGINE::GetLHS(AST::EXPRESSION* Node, target_list& List){
       auto Left  = LeftList.front();
       auto Right = (AST::EXPRESSION*)Node->Right;
 
+      if(Left.isAttribute){
+        Error(Node, "Attributes cannot be structures");
+        return false;
+      }
+
       switch(Left.Object->Type){
         case BASE::TYPE::Pin:{
           auto Pin = (PIN*)Left.Object;
@@ -938,11 +943,16 @@ bool ENGINE::GetLHS(AST::EXPRESSION* Node, target_list& List){
       }else{ // An attribute of the current namespace
         ListNode.Object = Stack.front();
       }
+      if(ListNode.isAttribute){
+        Error(Node, "Attributes are not hierarchical");
+        return false;
+      }
 
       if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
         auto Right = (AST::EXPRESSION*)Node->Right;
         if(Right->ExpressionType == AST::EXPRESSION::Identifier){
           ListNode.Expression = &ListNode.Object->Attributes[Right->Name];
+          ListNode.isAttribute = true;
           List.push_back(ListNode);
           Result = true;
         }else{

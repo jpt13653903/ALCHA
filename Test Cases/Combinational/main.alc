@@ -15,4 +15,3 @@ ADT7420.SDA'weak_pullup = true;
 ADT7420.SDA.driver      = 0;
 ADT7420.SDA.enabled     = ~Data;
 
-

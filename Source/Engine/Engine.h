@@ -20,9 +20,9 @@
 
 /* Description
 
-1. Processes the AST and produces the object tree (NETLIST::Global).
+1. Processes the AST and produces the netlist tree (NETLIST::Global).
 2. Processes the scripting statements so that the scripting variables become
-   constants, thereby making the resulting object tree synthesisable.
+   constants, thereby making the resulting netlist tree synthesisable.
 ------------------------------------------------------------------------------*/
 
 #ifndef Engine_h
@@ -62,8 +62,10 @@ class ENGINE{
     // Populates a list of existing expressions, except when the target is an 
     // undefined attribute, in which case the attribute is created first.
     struct TARGET_LIST{
+      bool                  isAttribute;
       NETLIST::BASE*        Object;
       NETLIST::EXPRESSION** Expression;
+      TARGET_LIST(){ isAttribute = false; }
     };
     typedef std::list<TARGET_LIST> target_list;
     bool    GetLHS_Object(NETLIST::BASE* Object, target_list& List, AST::BASE* Ast);
