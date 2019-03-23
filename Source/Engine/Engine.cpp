@@ -103,19 +103,28 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
         while(!Result && Namespace){
           auto Object = Namespace->Symbols.find(Node->Name);
           if(Object != Namespace->Symbols.end()){
-            if(Object->second &&
-               Object->second->Type == BASE::TYPE::Alias){
-              auto Alias = (ALIAS*)Object->second;
-              NamespaceStack.push_front(Alias->Namespace);
-                Result = Evaluate(Alias->Expression);
-              NamespaceStack.pop_front();
-            }else{
-              Result = new EXPRESSION(EXPRESSION::Object);
-              Result->ObjectRef = Object->second;
-              if(Result->ObjectRef->Type == BASE::TYPE::Pin ||
-                 Result->ObjectRef->Type == BASE::TYPE::Net ){
-                auto Object = (SYNTHESISABLE*)Result->ObjectRef;
-                Object->Used = true;
+            if(Object->second){
+              switch(Object->second->Type){
+                case BASE::TYPE::Alias:{
+                  auto Alias = (ALIAS*)Object->second;
+                  NamespaceStack.push_front(Alias->Namespace);
+                    Result = Evaluate(Alias->Expression);
+                  NamespaceStack.pop_front();
+                  break;
+                }
+                case BASE::TYPE::Pin:
+                case BASE::TYPE::Net:{
+                  Result = new EXPRESSION(EXPRESSION::Object);
+                  Result->ObjectRef = Object->second;
+                  auto Synthesisable = (SYNTHESISABLE*)Result->ObjectRef;
+                  Synthesisable->Used = true;
+                  break;
+                }
+                default:{
+                  Result = new EXPRESSION(EXPRESSION::Object);
+                  Result->ObjectRef = Object->second;
+                  break;
+                }
               }
             }
           }
@@ -168,38 +177,58 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       auto Right = (AST::EXPRESSION*)Node->Right;
 
       if(Left->ExpressionType == EXPRESSION::Object){
-        if(Left->ObjectRef && (
-           Left->ObjectRef->Type == BASE::TYPE::Module ||
-           Left->ObjectRef->Type == BASE::TYPE::Group  )){
-          auto Object = (NAMESPACE*)Left->ObjectRef;
-          auto Found  = Object->Symbols.find(Right->Name);
-          if(Found == Object->Symbols.end()){
-            Error(Node);
-            printf("Object %s not found in namespace %s\n",
-                   Right->Name.c_str(), Object->Name.c_str());
-            delete Left;
-            return 0;
-          }
-          if(Found->second &&
-             Found->second->Type == BASE::TYPE::Alias){
-            auto Alias = (ALIAS*)Found->second;
-            NamespaceStack.push_front(Alias->Namespace);
-              Result = Evaluate(Alias->Expression);
-            NamespaceStack.pop_front();
-          }else{
-            Result = new EXPRESSION(EXPRESSION::Object);
-            Result->ObjectRef = Found->second;
-            if(Result->ObjectRef->Type == BASE::TYPE::Pin ||
-               Result->ObjectRef->Type == BASE::TYPE::Net ){
-              auto Object = (SYNTHESISABLE*)Result->ObjectRef;
-              Object->Used = true;
+        if(Left->ObjectRef){
+          switch(Left->ObjectRef->Type){
+            case BASE::TYPE::Pin:{
+              auto Pin = (PIN*)Left->ObjectRef;
+              // TODO Implement explicit "driver", "enabled" and "pin" access
+              error("Not yet implemented");
+              delete Left;
+              return 0;
+            }
+            case BASE::TYPE::Module:
+            case BASE::TYPE::Group:{
+              auto Namespace = (NAMESPACE*)Left->ObjectRef;
+              auto Found  = Namespace->Symbols.find(Right->Name);
+              if(Found == Namespace->Symbols.end()){
+                Error(Node);
+                printf("Object %s not found in namespace %s\n",
+                       Right->Name.c_str(), Namespace->Name.c_str());
+                delete Left;
+                return 0;
+              }
+              if(Found->second &&
+                 Found->second->Type == BASE::TYPE::Alias){
+                auto Alias = (ALIAS*)Found->second;
+                NamespaceStack.push_front(Alias->Namespace);
+                  Result = Evaluate(Alias->Expression);
+                NamespaceStack.pop_front();
+              }else{
+                Result = new EXPRESSION(EXPRESSION::Object);
+                Result->ObjectRef = Found->second;
+                if(Result->ObjectRef->Type == BASE::TYPE::Pin ||
+                   Result->ObjectRef->Type == BASE::TYPE::Net ){
+                  auto Object = (SYNTHESISABLE*)Result->ObjectRef;
+                  Object->Used = true;
+                }
+              }
+              delete Left;
+              break;
+            }
+            default:{
+              Error(Node, "Invalid member access");
+              delete Left;
+              return 0;
             }
           }
+        }else{
+          error("Unexpected null expression");
           delete Left;
+          return 0;
         }
       }else{
         // TODO Could be a slice expression, which is not supported yet
-        error("Unimplemented attribute access expression");
+        error("Unimplemented member access expression");
         delete Left;
         return 0;
       }
@@ -211,41 +240,34 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
 
     case AST::EXPRESSION::AccessAttribute:{
-      error("AccessAttribute not yet implemented");
-      // Result should return the value of the attribute, not the attribute itself
+      EXPRESSION* Left = 0;
+      if(Node->Left) Left = Evaluate(Node->Left);
 
-      // EXPRESSION* Left = 0;
+      if(!Left || !Node->Right || Node->Right->Type != AST::BASE::TYPE::Expression){
+        error("Invalid attribute access expression");
+        delete Left;
+        return 0;
+      }
+      auto Right = (AST::EXPRESSION*)Node->Right;
 
-      // Result = new EXPRESSION(EXPRESSION::Attribute);
-
-      // if(Node->Left) Left = Evaluate(Node->Left);
-
-      // if(Left){
-      //   if(Left->ExpressionType == EXPRESSION::Object){
-      //     Result->ObjectRef = Left->ObjectRef;
-      //     delete Left;
-      //   }else if(Left->ExpressionType == EXPRESSION::Attribute){
-      //     Error(Node, "Hierarchical attributes not supported");
-      //     delete Left;
-      //     return 0;
-      //   }else{
-      //     // TODO Could be a slice expression, which is not supported yet
-      //     error("Unimplemented attribute access expression");
-      //     delete Left;
-      //     return 0;
-      //   }
-      // }else{ // Attribute of the current namespace
-      //   Result->ObjectRef = NamespaceStack.front();
-      // }
-      // if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
-      //   auto Right = (AST::EXPRESSION*)Node->Right;
-      //   if(Right->ExpressionType == AST::EXPRESSION::Identifier){
-      //     Result->Name = Right->Name;
-      //   }else{
-      //     // TODO Could be a slice expression, which is not supported yet
-      //     error("Unimplemented attribute access expression");
-      //   }
-      // }
+      if(Left->ExpressionType == EXPRESSION::Object){
+        auto Object = Left->ObjectRef;
+        auto Found  = Object->GetAttrib(Right->Name);
+        if(!Found){
+          Error(Node);
+          printf("Attribute %s not found in object %s\n",
+                 Right->Name.c_str(), Object->Name.c_str());
+          delete Left;
+          return 0;
+        }
+        Result = new EXPRESSION(Found);
+        delete Left;
+      }else{
+        // TODO Could be a slice expression, which is not supported yet
+        error("Unimplemented attribute access expression");
+        delete Left;
+        return 0;
+      }
       break;
     }
 
@@ -1212,6 +1234,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
 
   Right = Evaluate(Ast->Right);
   if(!Right){
+    // This is ok -- generally caused by a syntax or semantic error
     error("Null assignment expression");
     if(Right) delete Right;
     return false;

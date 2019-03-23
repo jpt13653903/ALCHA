@@ -53,7 +53,7 @@ string& BASE::HDL_Name(){
   switch(Namespace->Type){
     case TYPE::Module:
       return Name;
-      
+
     case TYPE::Group:
       Result = Namespace->HDL_Name() + "_" + Name;
       break;

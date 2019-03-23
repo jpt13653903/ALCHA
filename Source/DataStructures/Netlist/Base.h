@@ -33,7 +33,7 @@
 namespace NETLIST{
   class NAMESPACE;
   class EXPRESSION;
-  
+
   class BASE{ // Base class for the symbol table
     protected:
       void DisplayAttributes(int Indent);
@@ -62,7 +62,7 @@ namespace NETLIST{
                BASE(const char* Name, TYPE Type);
       virtual ~BASE();
 
-      // Generates a name based on the parent group(s), if it is not directly 
+      // Generates a name based on the parent group(s), if it is not directly
       // part of the module.  This is the name used in the output HDL.
       std::string& HDL_Name();
 
