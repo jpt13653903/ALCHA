@@ -39,6 +39,9 @@
 #include "Netlist/Module.h"
 #include "Netlist/Pin.h"
 #include "Netlist/Net.h"
+#include "Netlist/Byte.h"
+#include "Netlist/Character.h"
+#include "Netlist/Num.h"
 //------------------------------------------------------------------------------
 
 class ENGINE{

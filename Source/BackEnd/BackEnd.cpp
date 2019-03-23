@@ -40,6 +40,16 @@ bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
 
   while(SymbolIterator != Namespace->Symbols.end()){
     switch(SymbolIterator->second->Type){
+      case BASE::TYPE::Byte:
+      case BASE::TYPE::Character:
+      case BASE::TYPE::Number:{
+        auto Object = (SYNTHESISABLE*)(SymbolIterator->second);
+        SymbolIterator++;
+        Namespace->Symbols.erase(Object->Name);
+        delete Object;
+        break;
+      }
+
       case BASE::TYPE::Pin:
       case BASE::TYPE::Net:
       case BASE::TYPE::Synthesisable:{

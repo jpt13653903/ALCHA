@@ -13,6 +13,8 @@ ADT7420.SDA'pullup  = true;
 ADT7420.SDA.driver  = 0;
 ADT7420.SDA.enabled = ~Data;
 
+num MyNumber = 123;
+
 !! Testing virtual pins
-pin(7) Testing = 123;
+pin(7) Testing = MyNumber;
 

@@ -695,7 +695,9 @@ bool ENGINE::Definition(AST::DEFINITION* Ast){
         if(!ApplyParameters(Pin, Ast->Parameters)) Error(Ast, "Invalid parameters");
         if(!ApplyAttributes(Pin, Ast->Attributes)) Error(Ast, "Invalid attributes");
         NamespaceStack.front()->Symbols[Pin->Name] = Pin;
-        if(Identifier->Initialiser) Assignment(Identifier->Initialiser);
+        if(Identifier->Initialiser){
+          if(!Assignment(Identifier->Initialiser)) return false;
+        }
         break;
       }
 
@@ -705,21 +707,41 @@ bool ENGINE::Definition(AST::DEFINITION* Ast){
         if(!ApplyParameters(Net, Ast->Parameters)) Error(Ast, "Invalid parameters");
         if(!ApplyAttributes(Net, Ast->Attributes)) Error(Ast, "Invalid attributes");
         NamespaceStack.front()->Symbols[Net->Name] = Net;
-        if(Identifier->Initialiser) Assignment(Identifier->Initialiser);
+        if(Identifier->Initialiser){
+          if(!Assignment(Identifier->Initialiser)) return false;
+        }
         break;
       }
 
-      case AST::DEFINITION::Byte:
-        error("Not yet implemented");
+      case AST::DEFINITION::Byte:{
+        auto Byte = new NETLIST::BYTE(Identifier->Identifier.c_str());
+        if(!ApplyAttributes(Byte, Ast->Attributes)) Error(Ast, "Invalid attributes");
+        NamespaceStack.front()->Symbols[Byte->Name] = Byte;
+        if(Identifier->Initialiser){
+          if(!Assignment(Identifier->Initialiser)) return false;
+        }
         break;
+      }
 
-      case AST::DEFINITION::Char:
-        error("Not yet implemented");
+      case AST::DEFINITION::Char:{
+        auto Char = new CHARACTER(Identifier->Identifier.c_str());
+        if(!ApplyAttributes(Char, Ast->Attributes)) Error(Ast, "Invalid attributes");
+        NamespaceStack.front()->Symbols[Char->Name] = Char;
+        if(Identifier->Initialiser){
+          if(!Assignment(Identifier->Initialiser)) return false;
+        }
         break;
+      }
 
-      case AST::DEFINITION::Num:
-        error("Not yet implemented");
+      case AST::DEFINITION::Num:{
+        auto Number = new NUM(Identifier->Identifier.c_str());
+        if(!ApplyAttributes(Number, Ast->Attributes)) Error(Ast, "Invalid attributes");
+        NamespaceStack.front()->Symbols[Number->Name] = Number;
+        if(Identifier->Initialiser){
+          if(!Assignment(Identifier->Initialiser)) return false;
+        }
         break;
+      }
 
       case AST::DEFINITION::Func:
         error("Not yet implemented");
@@ -767,16 +789,13 @@ bool ENGINE::GetLHS_Object(BASE* Object, target_list& List, AST::BASE* Ast){
         Result = true;
         break;
       }
-      case BASE::TYPE::Number:{
-        error("Number assignment not yet implemented");
-        break;
-      }
-      case BASE::TYPE::Byte:{
-        error("Byte assignment not yet implemented");
-        break;
-      }
+      case BASE::TYPE::Number:
+      case BASE::TYPE::Byte:
       case BASE::TYPE::Character:{
-        error("Character assignment not yet implemented");
+        ListNode.Object = Object;
+        ListNode.Expression = 0;
+        List.push_back(ListNode);
+        Result = true;
         break;
       }
       case BASE::TYPE::Alias:{
@@ -1005,9 +1024,26 @@ void ENGINE::Simplify(EXPRESSION* Root){
       break;
 
     case EXPRESSION::Object:
-      // TODO Could be a number object, in which case the number's value is returned
-      if(Root->ObjectRef && Root->ObjectRef->Type == BASE::TYPE::Number){
-        error("Not yet implemented");
+      if(Root->ObjectRef){
+        switch(Root->ObjectRef->Type){
+          case BASE::TYPE::Byte:{
+            auto Byte = (NETLIST::BYTE*)Root->ObjectRef;
+            Root->ExpressionType = EXPRESSION::Literal;
+            Root->Value = Byte->Value;
+          }
+          case BASE::TYPE::Character:{
+            auto Char = (CHARACTER*)Root->ObjectRef;
+            Root->ExpressionType = EXPRESSION::Literal;
+            Root->Value = Char->Value;
+          }
+          case BASE::TYPE::Number:{
+            auto Num = (NUM*)Root->ObjectRef;
+            Root->ExpressionType = EXPRESSION::Literal;
+            Root->Value = Num->Value;
+          }
+          default:
+            break;
+        }
       }
       break;
 
@@ -1238,10 +1274,29 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     return false;
   }
 
-  EXPRESSION** Target = Left.front().Expression;
-  if(!Target){
+
+  BASE* Object = Left.front().Object;
+  if(!Object){
     error("Unexpected null reference");
     return false;
+  }
+
+  EXPRESSION*  ScriptTarget = 0;
+  EXPRESSION** Target = Left.front().Expression;
+  if(!Target){
+    switch(Object->Type){
+      case BASE::TYPE::Byte:
+      case BASE::TYPE::Character:
+      case BASE::TYPE::Number:
+        ScriptTarget = new EXPRESSION(EXPRESSION::Object);
+        ScriptTarget->ObjectRef = Object;
+        Target = &ScriptTarget;
+        break;
+
+      default:
+        error("Unexpected null reference");
+        return false;
+    }
   }
 
   switch(Ast->AssignmentType){
@@ -1346,6 +1401,46 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
       return false;
   }
   Simplify(*Target);
+
+  if(ScriptTarget){
+    switch(Object->Type){
+      case BASE::TYPE::Byte:{
+        auto Byte = (NETLIST::BYTE*)Object;
+        if(ScriptTarget->ExpressionType == EXPRESSION::Literal){
+          Byte->Value = ScriptTarget->Value.GetReal();
+        }else{
+          // TODO Could be an array, for instance
+          error("Not yet implemented");
+        }
+        break;
+      }
+      case BASE::TYPE::Character:{
+        auto Char = (CHARACTER*)Object;
+        if(ScriptTarget->ExpressionType == EXPRESSION::Literal){
+          Char->Value = ScriptTarget->Value.GetReal();
+        }else{
+          // TODO Could be an array, for instance
+          error("Not yet implemented");
+        }
+        break;
+      }
+      case BASE::TYPE::Number:{
+        auto Num = (NUM*)Object;
+        if(ScriptTarget->ExpressionType == EXPRESSION::Literal){
+          Num->Value = ScriptTarget->Value;
+        }else{
+          // TODO Could be an array, for instance
+          error("Not yet implemented");
+          delete ScriptTarget;
+          return false;
+        }
+        break;
+      }
+      default:
+        break;
+    }
+    delete ScriptTarget;
+  }
   return true;
 }
 //------------------------------------------------------------------------------

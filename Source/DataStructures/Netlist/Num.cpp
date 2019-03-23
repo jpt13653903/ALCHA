@@ -18,24 +18,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Byte.h"
+#include "Num.h"
 //------------------------------------------------------------------------------
 
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-NETLIST::BYTE::BYTE(const char* Name) : BASE(Name, TYPE::Byte){
+NUM::NUM(const char* Name) : BASE(Name, TYPE::Number){
   Value = 0;
 }
 //------------------------------------------------------------------------------
 
-NETLIST::BYTE::~BYTE(){
+NUM::~NUM(){
 }
 //------------------------------------------------------------------------------
 
-void NETLIST::BYTE::Display(){
-  printf("  Byte: %s\n", Name.c_str());
-  printf("    Value = 0x%02X\n", Value);
+void NUM::Display(){
+  printf("  Num: %s\n", Name.c_str());
+  printf("    Value = ");
+  Value.Display();
+  printf("\n");
 }
 //------------------------------------------------------------------------------
 

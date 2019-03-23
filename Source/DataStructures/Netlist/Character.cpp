@@ -25,7 +25,7 @@ using namespace NETLIST;
 //------------------------------------------------------------------------------
 
 CHARACTER::CHARACTER(const char* Name) : BASE(Name, TYPE::Character){
-  error("Not yet implemented");
+  Value = 0;
 }
 //------------------------------------------------------------------------------
 
@@ -34,6 +34,8 @@ CHARACTER::~CHARACTER(){
 //------------------------------------------------------------------------------
 
 void CHARACTER::Display(){
+  printf("  Character: %s\n", Name.c_str());
+  printf("    Value = '%s' (%d)\n", UTF_Converter.UTF8(Value).c_str(), Value);
 }
 //------------------------------------------------------------------------------
 

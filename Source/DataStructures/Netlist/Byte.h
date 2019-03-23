@@ -27,6 +27,8 @@
 
 namespace NETLIST{
   struct BYTE: public BASE{
+    uint8_t Value;
+
              BYTE(const char* Name);
     virtual ~BYTE();
 
