@@ -7,11 +7,12 @@ LED := :(Button, ~Button);
 
 ADT7420.SCL = AD5681R.SCL;
 
-!! Implement initialisers
-net Data; Data = SYS_CLK'frequency;
+net Data = 0;
 
 ADT7420.SDA'pullup  = true;
 ADT7420.SDA.driver  = 0;
 ADT7420.SDA.enabled = ~Data;
 
+!! Testing virtual pins
+pin(7) Testing = 123;
 

@@ -71,34 +71,38 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
       case BASE::TYPE::Pin:{
         auto Pin = (PIN*)(SymbolIterator->second);
         auto Location = Pin->GetAttrib("location");
-        if(!Location){
-          warning("Pin without location attribute");
-          continue;
-        }
-        if(Pin->Width == 1){
-          if(Location->ExpressionType != EXPRESSION::String){
-            error("Scalar pin location not a string");
-            return false;
-          }
-          Body += "set_location_assignment PIN_"+ Location->StrValue +
-                  " -to "+ Pin->HDL_Name() +"\n";
-        }else{
-          if(Location->ExpressionType != EXPRESSION::Array){
-            error("Vector pin location not an array");
-            return false;
-          }
-          if(Location->Elements.size() != (size_t)Pin->Width){
-            error("Vector pin location array of wrong size");
-            return false;
-          }
-          for(int n = 0; n < Pin->Width; n++){
-            if(Location->Elements[n]->ExpressionType != EXPRESSION::String){
-              error("Pin location not a string");
+        if(Location){
+          if(Pin->Width == 1){
+            if(Location->ExpressionType != EXPRESSION::String){
+              error("Scalar pin location not a string");
               return false;
             }
-            Body += "set_location_assignment PIN_"+ Location->Elements[n]->StrValue +
-                    " -to "+ Pin->HDL_Name() +"["+ to_string(Pin->Width-1-n) +"]\n";
+            Body += "set_location_assignment PIN_"+ Location->StrValue +
+                    " -to "+ Pin->HDL_Name() +"\n";
+          }else{
+            if(Location->ExpressionType != EXPRESSION::Array){
+              error("Vector pin location not an array");
+              return false;
+            }
+            if(Location->Elements.size() != (size_t)Pin->Width){
+              error("Vector pin location array of wrong size");
+              return false;
+            }
+            for(int n = 0; n < Pin->Width; n++){
+              if(Location->Elements[n]->ExpressionType != EXPRESSION::String){
+                error("Pin location not a string");
+                return false;
+              }
+              Body += "set_location_assignment PIN_"+ Location->Elements[n]->StrValue +
+                      " -to "+ Pin->HDL_Name() +"["+ to_string(Pin->Width-1-n) +"]\n";
+            }
           }
+        }else{
+          warning("Pin without location attribute, creating virtual pin");
+          Body += "set_instance_assignment "
+                  "-name VIRTUAL_PIN ON -to "+ Pin->HDL_Name();
+          if(Pin->Width > 1) Body += "*";
+          Body += "\n";
         }
         auto Standard = Pin->GetAttrib("standard");
         if(Standard){

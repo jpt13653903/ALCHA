@@ -694,9 +694,8 @@ bool ENGINE::Definition(AST::DEFINITION* Ast){
         Pin->Direction = Ast->Direction;
         if(!ApplyParameters(Pin, Ast->Parameters)) Error(Ast, "Invalid parameters");
         if(!ApplyAttributes(Pin, Ast->Attributes)) Error(Ast, "Invalid attributes");
-        if(Identifier->Initialiser) error("Not yet implemented");
-
         NamespaceStack.front()->Symbols[Pin->Name] = Pin;
+        if(Identifier->Initialiser) Assignment(Identifier->Initialiser);
         break;
       }
 
@@ -705,9 +704,8 @@ bool ENGINE::Definition(AST::DEFINITION* Ast){
         Net->Direction = Ast->Direction;
         if(!ApplyParameters(Net, Ast->Parameters)) Error(Ast, "Invalid parameters");
         if(!ApplyAttributes(Net, Ast->Attributes)) Error(Ast, "Invalid attributes");
-        if(Identifier->Initialiser) error("Not yet implemented");
-
         NamespaceStack.front()->Symbols[Net->Name] = Net;
+        if(Identifier->Initialiser) Assignment(Identifier->Initialiser);
         break;
       }
 
