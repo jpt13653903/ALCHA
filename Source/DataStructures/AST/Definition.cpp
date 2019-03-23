@@ -80,75 +80,75 @@ DEFINITION::~DEFINITION(){
 
 void DEFINITION::Display(){
   DisplayInfo();
-  printf("Definition (");
+  Debug.print("Definition (");
 
   switch(DefinitionType){
-    case Pin    : printf("Pin):\n"     ); break;
-    case Net    : printf("Net):\n"     ); break;
-    case Void   : printf("Void):\n"    ); break;
-    case Auto   : printf("Auto):\n"    ); break;
-    case Byte   : printf("Byte):"      ); break;
-    case Char   : printf("Character):" ); break;
-    case Num    : printf("Number):\n"  ); break;
-    case Func   : printf("Function):\n"); break;
+    case Pin    : Debug.print("Pin):\n"     ); break;
+    case Net    : Debug.print("Net):\n"     ); break;
+    case Void   : Debug.print("Void):\n"    ); break;
+    case Auto   : Debug.print("Auto):\n"    ); break;
+    case Byte   : Debug.print("Byte):"      ); break;
+    case Char   : Debug.print("Character):" ); break;
+    case Num    : Debug.print("Number):\n"  ); break;
+    case Func   : Debug.print("Function):\n"); break;
 
     case ClassInstance:
-      printf("Class instance definition (");
+      Debug.print("Class instance definition (");
       if(ClassName) ClassName->Display();
-      else          printf("Class instance with no class name");
-      printf("):\n");
+      else          Debug.print("Class instance with no class name");
+      Debug.print("):\n");
       break;
 
-    default: printf("Invalid definition type:\n");
+    default: Debug.print("Invalid definition type:\n");
   }
 
-  printf(" Direction = ");
+  Debug.print(" Direction = ");
   switch(Direction){
-    case Input : printf("Input\n"   ); break;
-    case Output: printf("Output\n"  ); break;
-    default    : printf("Inferred\n"); break;
+    case Input : Debug.print("Input\n"   ); break;
+    case Output: Debug.print("Output\n"  ); break;
+    default    : Debug.print("Inferred\n"); break;
   }
 
-  printf(" Parameters: ");
+  Debug.print(" Parameters: ");
   if(Parameters){
     Parameters->Display();
-    printf("\n");
+    Debug.print("\n");
   }else{
-    printf("none / default\n");
+    Debug.print("none / default\n");
   }
 
-  printf(" Attributes: ");
+  Debug.print(" Attributes: ");
   if(Attributes){
     Attributes->Display();
-    printf("\n");
+    Debug.print("\n");
   }
 
-  printf(" Identifiers:\n");
+  Debug.print(" Identifiers:\n");
   IDENTIFIER* Identifier = Identifiers;
   ARRAY     * Array;
   while(Identifier){
-    printf(" - %s", Identifier->Identifier.c_str());
+    Debug.print(" - %s", Identifier->Identifier.c_str());
     Array = Identifier->Array;
     while(Array){
-      printf("[");
+      Debug.print("[");
       if(Array->Size) Array->Size->Display();
-      printf("]");
+      Debug.print("]");
       Array = Array->Next;
     }
 
     if(Identifier->Function){
-      printf(" -- function:\n  Parameters: (\n");
+      Debug.print(" -- function:\n  Parameters: (\n");
       if(Identifier->Parameters) Identifier->Parameters->Display();
-      printf(" )\n  Body:{\n");
+      Debug.print(" )\n  Body:{\n");
       if(Identifier->FunctionBody) Identifier->FunctionBody->Display();
-      printf("  }\n");
+      Debug.print("  }\n");
     }
     if(Identifier->Initialiser){
-      printf(" -- initialiser:");
+      Debug.print(" -- initialiser:");
       Identifier->Initialiser->Display();
     }
 
-    printf("\n");
+    Debug.print("\n");
     Identifier = Identifier->Next;
   }
 

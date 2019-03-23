@@ -39,11 +39,11 @@ WHILE_LOOP::~WHILE_LOOP(){
 
 void WHILE_LOOP::Display(){
   DisplayInfo();
-  printf("while(");
+  Debug.print("while(");
     if(Condition) Condition->Display();
-  printf("){\n");
+  Debug.print("){\n");
     if(Statements) Statements->Display();
-  printf("}\n");
+  Debug.print("}\n");
 
   if(Next) Next->Display();
 }

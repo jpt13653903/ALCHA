@@ -39,18 +39,18 @@ AST::GROUP::~GROUP(){
 void AST::GROUP::Display(){
   DisplayInfo();
 
-  if(Identifier.empty()) printf("Group:\n");
-  else                   printf("Group (%s):\n", Identifier.c_str());
+  if(Identifier.empty()) Debug.print("Group:\n");
+  else                   Debug.print("Group (%s):\n", Identifier.c_str());
 
-  printf(" Attributes: ");
+  Debug.print(" Attributes: ");
   if(Attributes){
     Attributes->Display();
-    printf("\n");
+    Debug.print("\n");
   }
 
-  printf(" {\n");
+  Debug.print(" {\n");
   if(Body) Body->Display();
-  printf(" }\n");
+  Debug.print(" }\n");
 
   if(Next) Next->Display();
 }

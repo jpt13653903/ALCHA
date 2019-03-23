@@ -41,14 +41,14 @@ MODULE::~MODULE(){
 //------------------------------------------------------------------------------
 
 void MODULE::Display(){
-  printf("\nModule: ");
+  Debug.print("\nModule: ");
 
-  if(this == &Global) printf("{Global}");
+  if(this == &Global) Debug.print("{Global}");
   else                DisplayLongName();
-  printf("\n");
+  Debug.print("\n");
 
   DisplayAttributes(2);
-  printf("\n");
+  Debug.print("\n");
 
   list<BASE*> Modules;
 
@@ -57,14 +57,14 @@ void MODULE::Display(){
       if(s->second->Type == TYPE::Module) Modules.push_back(s->second);
       else s->second->Display();
     }else{
-      printf("- %s: {null}\n", s->first.c_str());
+      Debug.print("- %s: {null}\n", s->first.c_str());
     }
-    printf("\n");
+    Debug.print("\n");
   }
 
   for(auto s = Modules.begin(); s != Modules.end(); s++){
     (*s)->Display();
-    printf("\n");
+    Debug.print("\n");
   }
 }
 //------------------------------------------------------------------------------

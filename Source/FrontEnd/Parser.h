@@ -22,6 +22,8 @@
 #define Parser_h
 //------------------------------------------------------------------------------
 
+#include "Logger.h"
+
 #include "Scanner.h"
 #include "Dictionary.h"
 

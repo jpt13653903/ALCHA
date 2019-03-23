@@ -75,30 +75,30 @@ EXPRESSION::~EXPRESSION(){
 
 void EXPRESSION::Display(){
   if(Left){
-    if(Left->Left || Left->Right) printf("(");
+    if(Left->Left || Left->Right) Debug.print("(");
     Left->Display();
-    if(Left->Left || Left->Right) printf(")");
+    if(Left->Left || Left->Right) Debug.print(")");
   }
 
-  if(Raw) printf("{raw}");
+  if(Raw) Debug.print("{raw}");
 
   switch(ExpressionType){
     case String:
-      printf("\"%s\"", StrValue.c_str());
+      Debug.print("\"%s\"", StrValue.c_str());
       break;
 
     case Literal:
-      Value.Display();
+      Debug.print(Value.GetString());
       break;
 
     case Array:
-      printf("[");
+      Debug.print("[");
       for(size_t n = 0; n < Elements.size(); n++){
-        if(n > 0) printf(", ");
+        if(n > 0) Debug.print(", ");
         if(Elements[n]) Elements[n]->Display();
-        else            printf("{null}");
+        else            Debug.print("{null}");
       }
-      printf("]");
+      Debug.print("]");
       break;
 
     case Object:
@@ -110,84 +110,84 @@ void EXPRESSION::Display(){
       break;
 
     case VectorConcatenate:
-      printf(":(");
+      Debug.print(":(");
       for(size_t n = 0; n < Elements.size(); n++){
-        if(n > 0) printf(", ");
+        if(n > 0) Debug.print(", ");
         if(Elements[n]) Elements[n]->Display();
-        else            printf("{null}");
+        else            Debug.print("{null}");
       }
-      printf(")");
+      Debug.print(")");
       break;
 
     case ArrayConcatenate:
-      printf(":[");
+      Debug.print(":[");
       for(size_t n = 0; n < Elements.size(); n++){
-        if(n > 0) printf(", ");
+        if(n > 0) Debug.print(", ");
         if(Elements[n]) Elements[n]->Display();
-        else            printf("{null}");
+        else            Debug.print("{null}");
       }
-      printf("]");
+      Debug.print("]");
       break;
 
-    case FunctionCall     : printf("{call}" );        break;
+    case FunctionCall     : Debug.print("{call}" );        break;
 
-    case Slice            : printf("{slice}");        break;
+    case Slice            : Debug.print("{slice}");        break;
 
-    case Increment        : printf("++");             break;
-    case Decrement        : printf("--");             break;
-    case Factorial        : printf("!" );             break;
+    case Increment        : Debug.print("++");             break;
+    case Decrement        : Debug.print("--");             break;
+    case Factorial        : Debug.print("!" );             break;
 
-    case Negate           : printf(" -");             break;
-    case Bit_NOT          : printf(" ~");             break;
+    case Negate           : Debug.print(" -");             break;
+    case Bit_NOT          : Debug.print(" ~");             break;
 
-    case AND_Reduce       : printf( " &");            break;
-    case NAND_Reduce      : printf(" ~&");            break;
-    case OR_Reduce        : printf( " |");            break;
-    case NOR_Reduce       : printf(" ~|");            break;
-    case XOR_Reduce       : printf( " #");            break;
-    case XNOR_Reduce      : printf(" ~#");            break;
-    case Logical_NOT      : printf( " !");            break;
+    case AND_Reduce       : Debug.print( " &");            break;
+    case NAND_Reduce      : Debug.print(" ~&");            break;
+    case OR_Reduce        : Debug.print( " |");            break;
+    case NOR_Reduce       : Debug.print(" ~|");            break;
+    case XOR_Reduce       : Debug.print( " #");            break;
+    case XNOR_Reduce      : Debug.print(" ~#");            break;
+    case Logical_NOT      : Debug.print( " !");            break;
 
-    case Cast             : printf(" {cast} ");       break;
+    case Cast             : Debug.print(" {cast} ");       break;
 
-    case Replicate        : printf("{rep}");          break;
+    case Replicate        : Debug.print("{rep}");          break;
 
-    case Exponential      : printf(" ^ " );           break;
-    case Multiply         : printf(" * " );           break;
-    case Divide           : printf(" / " );           break;
-    case Modulus          : printf(" %% ");           break;
-    case Add              : printf(" + " );           break;
-    case Subtract         : printf(" - " );           break;
+    case Exponential      : Debug.print(" ^ " );           break;
+    case Multiply         : Debug.print(" * " );           break;
+    case Divide           : Debug.print(" / " );           break;
+    case Modulus          : Debug.print(" %% ");           break;
+    case Add              : Debug.print(" + " );           break;
+    case Subtract         : Debug.print(" - " );           break;
 
-    case Shift_Left       : printf(" << ");           break;
-    case Shift_Right      : printf(" >> ");           break;
+    case Shift_Left       : Debug.print(" << ");           break;
+    case Shift_Right      : Debug.print(" >> ");           break;
 
-    case Less             : printf(" < " );           break;
-    case Greater          : printf(" > " );           break;
-    case Less_Equal       : printf(" <= ");           break;
-    case Greater_Equal    : printf(" >= ");           break;
-    case Equal            : printf(" == ");           break;
-    case Not_Equal        : printf(" != ");           break;
+    case Less             : Debug.print(" < " );           break;
+    case Greater          : Debug.print(" > " );           break;
+    case Less_Equal       : Debug.print(" <= ");           break;
+    case Greater_Equal    : Debug.print(" >= ");           break;
+    case Equal            : Debug.print(" == ");           break;
+    case Not_Equal        : Debug.print(" != ");           break;
 
-    case Bit_AND          : printf( " & ");           break;
-    case Bit_NAND         : printf(" ~& ");           break;
-    case Bit_OR           : printf( " | ");           break;
-    case Bit_NOR          : printf(" ~| ");           break;
-    case Bit_XOR          : printf( " # ");           break;
-    case Bit_XNOR         : printf(" ~# ");           break;
+    case Bit_AND          : Debug.print( " & ");           break;
+    case Bit_NAND         : Debug.print(" ~& ");           break;
+    case Bit_OR           : Debug.print( " | ");           break;
+    case Bit_NOR          : Debug.print(" ~| ");           break;
+    case Bit_XOR          : Debug.print( " # ");           break;
+    case Bit_XNOR         : Debug.print(" ~# ");           break;
 
-    case Logical_AND      : printf(" && ");           break;
-    case Logical_OR       : printf(" || ");           break;
+    case Logical_AND      : Debug.print(" && ");           break;
+    case Logical_OR       : Debug.print(" || ");           break;
 
-    case Conditional      : printf(" ? ");            break;
+    case Conditional      : Debug.print(" ? ");            break;
 
-    default: printf("(Unknown expression type: %d)", ExpressionType);
+    default: Debug.print("(Unknown expression type: %d)", ExpressionType);
   }
 
   if(Right){
-    if(Right->Left || Right->Right) printf("(");
+    if(Right->Left || Right->Right) Debug.print("(");
     Right->Display();
-    if(Right->Left || Right->Right) printf(")");
+    if(Right->Left || Right->Right) Debug.print(")");
   }
 }
 //------------------------------------------------------------------------------

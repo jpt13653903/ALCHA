@@ -21,6 +21,9 @@
 #include "Number.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
+//------------------------------------------------------------------------------
+
 NUMBER::NUMBER(){
   mpq_init(Real);
   mpq_init(Imag);
@@ -254,7 +257,10 @@ double NUMBER::GetImag(){
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::Display(){
+string& NUMBER::GetString(){
+  static string Result;
+  Result.clear();
+
   bool   r = mpq_cmp_ui(Real, 0, 1);
   bool   i = mpq_cmp_ui(Imag, 0, 1);
 
@@ -264,11 +270,17 @@ void NUMBER::Display(){
   double dr = mpq_get_d(Real);
   double di = mpq_get_d(Imag);
 
-  if(r && i) printf("(%s+%sj) (~(%.18g+%.18gj))", sr, si, dr, di);
-  else if(i) printf("%sj (~%.18gj)", si, di);
-  else       printf("%s (~%.18g)"  , sr, dr);
+  char* s = new char[1<<20];
+  if(r && i) sprintf(s, "(%s+%sj) (~(%.18g+%.18gj))", sr, si, dr, di);
+  else if(i) sprintf(s, "%sj (~%.18gj)", si, di);
+  else       sprintf(s, "%s (~%.18g)"  , sr, dr);
+  Result += s;
 
   free(sr);
   free(si);
+
+  delete[] s;
+
+  return Result;
 }
 //------------------------------------------------------------------------------

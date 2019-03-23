@@ -38,11 +38,11 @@ FSM::~FSM(){
 
 void FSM::Display(){
   DisplayInfo();
-  printf("fsm(");
+  Debug.print("fsm(");
     if(Parameters) Parameters->Display();
-  printf("){\n");
+  Debug.print("){\n");
     if(Statements) Statements->Display();
-  printf("}\n");
+  Debug.print("}\n");
 
   if(Next) Next->Display();
 }

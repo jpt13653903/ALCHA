@@ -39,17 +39,17 @@ NAMESPACE_PUSH::~NAMESPACE_PUSH(){
 
 void NAMESPACE_PUSH::Display(){
   DisplayInfo();
-  printf("NamespacePush:\n ");
+  Debug.print("NamespacePush:\n ");
 
   if(Namespace){
-    if(Namespace->Left || Namespace->Right) printf("(");
+    if(Namespace->Left || Namespace->Right) Debug.print("(");
     Namespace->Display();
-    if(Namespace->Left || Namespace->Right) printf(")");
+    if(Namespace->Left || Namespace->Right) Debug.print(")");
   }
 
-  printf(".{\n");
+  Debug.print(".{\n");
     if(Statements) Statements->Display();
-  printf("}\n");
+  Debug.print("}\n");
 
   if(Next) Next->Display();
 }

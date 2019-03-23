@@ -68,22 +68,22 @@ string& BASE::HDL_Name(){
 void BASE::DisplayLongName(){
   if(Namespace != (NAMESPACE*)&Global){
     Namespace->DisplayLongName();
-    printf("::");
+    Debug.print("::");
   }
-  printf("%s", Name.c_str());
+  Debug.print("%s", Name.c_str());
 }
 //------------------------------------------------------------------------------
 
 void BASE::DisplayAttributes(int Indent){
-  for(int n = 0; n < Indent; n++) printf(" ");
-  printf("Attributes:\n");
+  for(int n = 0; n < Indent; n++) Debug.print(" ");
+  Debug.print("Attributes:\n");
 
   for(auto a = Attributes.begin(); a != Attributes.end(); a++){
-    for(int n = 0; n < Indent; n++) printf(" ");
-    printf("  %s = ", a->first.c_str());
+    for(int n = 0; n < Indent; n++) Debug.print(" ");
+    Debug.print("  %s = ", a->first.c_str());
     if(a->second) a->second->Display();
-    else          printf("{null}");
-    printf("\n");
+    else          Debug.print("{null}");
+    Debug.print("\n");
   }
 }
 //------------------------------------------------------------------------------

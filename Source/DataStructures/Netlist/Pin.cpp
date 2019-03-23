@@ -39,15 +39,15 @@ PIN::~PIN(){
 void PIN::Display(){
   SYNTHESISABLE::Display();
 
-  printf("    Driver     = ");
+  Debug.print("    Driver     = ");
   if(Driver) Driver->Display();
-  else       printf("{open}");
-  printf("\n");
+  else       Debug.print("{open}");
+  Debug.print("\n");
 
-  printf("    Enabled    = ");
+  Debug.print("    Enabled    = ");
   if(Enabled) Enabled->Display();
-  else        printf("{open}");
-  printf("\n");
+  else        Debug.print("{open}");
+  Debug.print("\n");
 
   DisplayAttributes(4);
 }

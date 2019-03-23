@@ -582,7 +582,7 @@ bool BACK_END::BuildAltera(const char* Path, const char* Filename){
   this->Path     = Path;
   this->Filename = Filename;
 
-  printf(
+  Debug.print(
     ANSI_FG_GREEN "\nStarting BackEnd -----------------------"
                   "----------------------------------------\n\n"
     ANSI_RESET
@@ -595,7 +595,7 @@ bool BACK_END::BuildAltera(const char* Path, const char* Filename){
 
   if(!RoutePorts(&Global)) return false;
 
-  printf(
+  Debug.print(
     ANSI_FG_GREEN "\nBuilding Project -----------------------"
                   "----------------------------------------\n\n"
     ANSI_RESET

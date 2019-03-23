@@ -38,11 +38,11 @@ RTL::~RTL(){
 
 void RTL::Display(){
   DisplayInfo();
-  printf("rtl(");
+  Debug.print("rtl(");
     if(Parameters) Parameters->Display();
-  printf("){\n");
+  Debug.print("){\n");
     if(Statements) Statements->Display();
-  printf("}\n");
+  Debug.print("}\n");
 
   if(Next) Next->Display();
 }

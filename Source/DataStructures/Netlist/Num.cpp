@@ -34,10 +34,10 @@ NUM::~NUM(){
 //------------------------------------------------------------------------------
 
 void NUM::Display(){
-  printf("  Num: %s\n", Name.c_str());
-  printf("    Value = ");
-  Value.Display();
-  printf("\n");
+  Debug.print("  Num: %s\n", Name.c_str());
+  Debug.print("    Value = ");
+  Debug.print(Value.GetString());
+  Debug.print("\n");
 }
 //------------------------------------------------------------------------------
 

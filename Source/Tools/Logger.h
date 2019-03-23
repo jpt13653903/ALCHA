@@ -18,38 +18,38 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Jump.h"
+/**
+  Class wrapper for GNU MP rational numbers
+*/
 //------------------------------------------------------------------------------
 
-using namespace AST;
+#ifndef Logger_h
+#define Logger_h
 //------------------------------------------------------------------------------
 
-JUMP::JUMP(int Line, const char* Filename, JUMP_TYPE JumpType):
-BASE(Line, Filename, TYPE::Jump){
-  this->JumpType = JumpType;
-
-  Expression = 0;
-}
+#include <stdio.h>
+#include <string>
 //------------------------------------------------------------------------------
 
-JUMP::~JUMP(){
-  if(Expression) delete Expression;
-}
+class LOGGER{
+  private:
+    FILE* File;
+
+  public:
+    LOGGER(const char* Filename);
+   ~LOGGER();
+
+    void print(const char*        String);
+    void print(const std::string& String);
+    void print(const char* Format, int i);
+    void print(const char* Format, unsigned u);
+    void print(const char* Format, const char* s);
+    void print(const char* Format, const std::string& s);
+};
 //------------------------------------------------------------------------------
 
-void JUMP::Display(){
-  DisplayInfo();
-  Debug.print("jump(");
-  switch(JumpType){
-    case Return  : Debug.print("return) "           ); break;
-    case Break   : Debug.print("break) "            ); break;
-    case Continue: Debug.print("continue) "         ); break;
-    default      : Debug.print("Unknown jump type) "); break;
-  }
-  if(Expression) Expression->Display();
-  else           Debug.print("{default}");
-  Debug.print("\n");
+extern LOGGER Debug;
+//------------------------------------------------------------------------------
 
-  if(Next) Next->Display();
-}
+#endif
 //------------------------------------------------------------------------------

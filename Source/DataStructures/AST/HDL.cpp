@@ -40,10 +40,10 @@ HDL::~HDL(){
 
 void HDL::Display(){
   DisplayInfo();
-  printf("hdl (%s):\n", Identifier.c_str());
-  printf(" Files:\n  "     ); if(Files     ) Files     ->Display(); printf("\n");
-  printf(" Parameters:\n  "); if(Parameters) Parameters->Display();
-  printf(" Ports:\n  "     ); if(Ports     ) Ports     ->Display();
+  Debug.print("hdl (%s):\n", Identifier.c_str());
+  Debug.print(" Files:\n  "     ); if(Files     ) Files     ->Display(); Debug.print("\n");
+  Debug.print(" Parameters:\n  "); if(Parameters) Parameters->Display();
+  Debug.print(" Ports:\n  "     ); if(Ports     ) Ports     ->Display();
 
   if(Next) Next->Display();
 }

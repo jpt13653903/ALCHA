@@ -34,8 +34,8 @@ NETLIST::BYTE::~BYTE(){
 //------------------------------------------------------------------------------
 
 void NETLIST::BYTE::Display(){
-  printf("  Byte: %s\n", Name.c_str());
-  printf("    Value = 0x%02X\n", Value);
+  Debug.print("  Byte: %s\n", Name.c_str());
+  Debug.print("    Value = 0x%02X\n", Value);
 }
 //------------------------------------------------------------------------------
 

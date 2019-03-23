@@ -608,7 +608,7 @@ bool ENGINE::Import(AST::IMPORT* Ast){
   if(n >= 0) Filename = Path.substr(0, n+1);
   Filename += Ast->File;
   Filename += ".alc";
-  debug("Filename = %s", Filename.c_str());
+  Debug.print("\nFilename = %s\n", Filename);
 
   bool Result = Run(Filename.c_str());
 

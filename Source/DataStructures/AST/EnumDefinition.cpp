@@ -47,15 +47,15 @@ ENUM_DEFINITION::~ENUM_DEFINITION(){
 
 void ENUM_DEFINITION::Display(){
   DisplayInfo();
-  printf("Enum Definition (%s):\n", Identifier.c_str());
+  Debug.print("Enum Definition (%s):\n", Identifier.c_str());
 
-  printf(" Values: ");
+  Debug.print(" Values: ");
   VALUE* Value = Values;
   while(Value){
-    printf("%s", Value->Identifier.c_str());
+    Debug.print("%s", Value->Identifier.c_str());
     Value = Value->Next;
-    if(Value) printf(", ");
-    else      printf("\n");
+    if(Value) Debug.print(", ");
+    else      Debug.print("\n");
   }
 
   if(Next) Next->Display();

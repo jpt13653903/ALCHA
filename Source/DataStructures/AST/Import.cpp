@@ -35,9 +35,9 @@ IMPORT::~IMPORT(){
 
 void IMPORT::Display(){
   DisplayInfo();
-  printf("import \"%s\"", File.c_str());
-  if(Namespace.empty()) printf("\n");
-  else                  printf(" as %s\n", Namespace.c_str());
+  Debug.print("import \"%s\"", File.c_str());
+  if(Namespace.empty()) Debug.print("\n");
+  else                  Debug.print(" as %s\n", Namespace.c_str());
 
   if(Next) Next->Display();
 }

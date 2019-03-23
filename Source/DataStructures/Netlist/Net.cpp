@@ -37,10 +37,10 @@ NET::~NET(){
 void NET::Display(){
   SYNTHESISABLE::Display();
 
-  printf("    Value = ");
+  Debug.print("    Value = ");
   if(Value) Value->Display();
-  else      printf("{open}");
-  printf("\n");
+  else      Debug.print("{open}");
+  Debug.print("\n");
 
   DisplayAttributes(4);
 }

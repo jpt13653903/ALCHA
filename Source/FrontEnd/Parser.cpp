@@ -60,20 +60,24 @@ void PARSER::GetToken(){
   if(!Scanner.GetToken(&Token)) return;
 
   #ifdef DEBUG
-    printf(ANSI_FG_BRIGHT_BLACK "%s:" ANSI_FG_CYAN "%05d  \t" ANSI_RESET, Scanner.Filename.c_str(), Token.Line);
+    Debug.print(ANSI_FG_BRIGHT_BLACK);
+    Debug.print(Scanner.Filename.c_str());
+    Debug.print(":" ANSI_FG_CYAN "");
+    Debug.print("%05d", Token.Line);
+    Debug.print("  \t" ANSI_RESET);
     switch(Token.Type){
-      case TOKEN::Identifier: printf("Identifier\t"            ); break;
-      case TOKEN::Literal   : printf("Literal   \t"            ); break;
-      case TOKEN::String    : printf("String    \t\""          ); break;
-      default               : printf("Token %d  \t", Token.Type); break;
+      case TOKEN::Identifier: Debug.print("Identifier\t"            ); break;
+      case TOKEN::Literal   : Debug.print("Literal   \t"            ); break;
+      case TOKEN::String    : Debug.print("String    \t\""          ); break;
+      default               : Debug.print("Token %d  \t", Token.Type); break;
     }
-    printf("%s", Token.Data.c_str());
+    Debug.print(Token.Data.c_str());
     switch(Token.Type){
-      case TOKEN::Literal: printf(" = "); Token.Value.Display(); break;
-      case TOKEN::String : printf("\""); break;
+      case TOKEN::Literal: Debug.print(" = %s", Token.Value.GetString()); break;
+      case TOKEN::String : Debug.print("\""); break;
       default            : break;
     }
-    printf("\n");
+    Debug.print("\n");
   #endif
 }
 //------------------------------------------------------------------------------
@@ -2499,7 +2503,9 @@ AST::BASE* PARSER::StatementBlock(){
 //------------------------------------------------------------------------------
 
 AST::BASE* PARSER::Run(const char* Filename){
-  debug("Building AST for %s...", Filename);
+  Debug.print("Building AST for ");
+  Debug.print(Filename);
+  Debug.print("...\n");
 
   error = false;
 
@@ -2514,12 +2520,11 @@ AST::BASE* PARSER::Run(const char* Filename){
   }
 
   #ifdef DEBUG
-    printf(ANSI_FG_GREEN "\nDisplaying AST of %s -------"
-                         "------------------------------\n\n"
-           ANSI_RESET,
-           Filename);
+    Debug.print(ANSI_FG_GREEN "\nDisplaying AST of ");
+    Debug.print(Filename);
+    Debug.print(" -------------------------------------\n\n" ANSI_RESET);
     if(AST) AST->Display();
-    else    info("AST is empty");
+    else    Debug.print("AST is empty\n");
   #endif
   return AST;
 }

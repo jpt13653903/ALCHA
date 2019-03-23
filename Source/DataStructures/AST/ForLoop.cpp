@@ -39,11 +39,11 @@ FOR_LOOP::~FOR_LOOP(){
 
 void FOR_LOOP::Display(){
   DisplayInfo();
-  printf("for(%s in ", Identifier.c_str());
+  Debug.print("for(%s in ", Identifier.c_str());
     if(Range) Range->Display();
-  printf("){\n");
+  Debug.print("){\n");
     if(Statements) Statements->Display();
-  printf("}\n");
+  Debug.print("}\n");
 
   if(Next) Next->Display();
 }

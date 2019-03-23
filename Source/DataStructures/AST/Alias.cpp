@@ -36,7 +36,7 @@ ALIAS::~ALIAS(){
 
 void ALIAS::Display(){
   DisplayInfo();
-  printf("Alias (%s):\n", Identifier.c_str());
+  Debug.print("Alias (%s):\n", Identifier.c_str());
 
   Expression->Display();
 

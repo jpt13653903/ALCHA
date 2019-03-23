@@ -44,42 +44,42 @@ ASSIGNMENT::~ASSIGNMENT(){
 
 void ASSIGNMENT::Display(){
   DisplayInfo();
-  printf("Assignment: ");
+  Debug.print("Assignment: ");
 
   if(Left){
-    if(Left->Left || Left->Right) printf("(");
+    if(Left->Left || Left->Right) Debug.print("(");
     Left->Display();
-    if(Left->Left || Left->Right) printf(")");
+    if(Left->Left || Left->Right) Debug.print(")");
   }
 
   switch(AssignmentType){
-    case Assign            : printf(  " = "); break;
-    case Raw_Assign        : printf( " := "); break;
-    case Append_Assign     : printf( " ~= "); break;
-    case Add_Assign        : printf( " += "); break;
-    case Subtract_Assign   : printf( " -= "); break;
-    case Multiply_Assign   : printf( " *= "); break;
-    case Divide_Assign     : printf( " /= "); break;
-    case Modulus_Assign    : printf(" %%= "); break;
-    case Exponential_Assign: printf( "**= "); break;
-    case AND_Assign        : printf( " &= "); break;
-    case OR_Assign         : printf( " |= "); break;
-    case XOR_Assign        : printf( " ^= "); break;
-    case Shift_Left_Assign : printf(" <<= "); break;
-    case Shift_Right_Assign: printf(" >>= "); break;
+    case Assign            : Debug.print(  " = "); break;
+    case Raw_Assign        : Debug.print( " := "); break;
+    case Append_Assign     : Debug.print( " ~= "); break;
+    case Add_Assign        : Debug.print( " += "); break;
+    case Subtract_Assign   : Debug.print( " -= "); break;
+    case Multiply_Assign   : Debug.print( " *= "); break;
+    case Divide_Assign     : Debug.print( " /= "); break;
+    case Modulus_Assign    : Debug.print(" %%= "); break;
+    case Exponential_Assign: Debug.print( "**= "); break;
+    case AND_Assign        : Debug.print( " &= "); break;
+    case OR_Assign         : Debug.print( " |= "); break;
+    case XOR_Assign        : Debug.print( " ^= "); break;
+    case Shift_Left_Assign : Debug.print(" <<= "); break;
+    case Shift_Right_Assign: Debug.print(" >>= "); break;
 
-    default: printf("(Unknown assignment type)");
+    default: Debug.print("(Unknown assignment type)");
   }
 
   if(Right){
-    if(Right->Left || Right->Right) printf("(");
+    if(Right->Left || Right->Right) Debug.print("(");
     Right->Display();
-    if(Right->Left || Right->Right) printf(")");
+    if(Right->Left || Right->Right) Debug.print(")");
   }
 
-  if(Fence) printf("{Fence}");
+  if(Fence) Debug.print("{Fence}");
 
-  printf("\n");
+  Debug.print("\n");
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

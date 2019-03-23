@@ -51,89 +51,89 @@ EXPRESSION::~EXPRESSION(){
 
 void EXPRESSION::Display(){
   if(Left){
-    if(Left->Left || Left->Right) printf("(");
+    if(Left->Left || Left->Right) Debug.print("(");
     Left->Display();
-    if(Left->Left || Left->Right) printf(")");
+    if(Left->Left || Left->Right) Debug.print(")");
   }
 
   switch(ExpressionType){
     case String:
-      if(StrValue) printf("\"%s\"", StrValue->c_str());
+      if(StrValue) Debug.print("\"%s\"", StrValue->c_str());
       else         error ("(String literal node has no value)");
       break;
 
     case Literal:
-      if(Value) Value->Display();
+      if(Value) Debug.print(Value->GetString());
       else      error("(Literal node has no value)");
       break;
 
     case Identifier:
       if(Name.empty()) error ("(Identifier node has no name)");
-      else             printf("%s", Name.c_str());
+      else             Debug.print("%s", Name.c_str());
       break;
 
-    case Array:             printf("{Array}"       ); break;
-    case VectorConcatenate: printf("{VectorConcat}"); break;
-    case ArrayConcatenate:  printf("{ArrayConcat}" ); break;
+    case Array:             Debug.print("{Array}"       ); break;
+    case VectorConcatenate: Debug.print("{VectorConcat}"); break;
+    case ArrayConcatenate:  Debug.print("{ArrayConcat}" ); break;
 
-    case FunctionCall: printf("{call}" ); break;
+    case FunctionCall: Debug.print("{call}" ); break;
 
-    case Slice: printf("{slice}"); break;
+    case Slice: Debug.print("{slice}"); break;
 
-    case AccessMember:     printf("." ); break;
-    case AccessMemberSafe: printf("?." ); break;
-    case AccessAttribute:  printf("'" ); break;
+    case AccessMember:     Debug.print("." ); break;
+    case AccessMemberSafe: Debug.print("?." ); break;
+    case AccessAttribute:  Debug.print("'" ); break;
 
-    case Increment: printf("++"); break;
-    case Decrement: printf("--"); break;
-    case Factorial: printf("!" ); break;
+    case Increment: Debug.print("++"); break;
+    case Decrement: Debug.print("--"); break;
+    case Factorial: Debug.print("!" ); break;
 
-    case Range: printf(".."); break;
+    case Range: Debug.print(".."); break;
 
-    case Negate : printf(" -"); break;
-    case Bit_NOT: printf(" ~"); break;
-    case Raw    : printf(" :"); break;
+    case Negate : Debug.print(" -"); break;
+    case Bit_NOT: Debug.print(" ~"); break;
+    case Raw    : Debug.print(" :"); break;
 
-    case AND_Reduce : printf( " &"); break;
-    case NAND_Reduce: printf(" ~&"); break;
-    case OR_Reduce  : printf( " |"); break;
-    case NOR_Reduce : printf(" ~|"); break;
-    case XOR_Reduce : printf( " #"); break;
-    case XNOR_Reduce: printf(" ~#"); break;
-    case Logical_NOT: printf( " !"); break;
+    case AND_Reduce : Debug.print( " &"); break;
+    case NAND_Reduce: Debug.print(" ~&"); break;
+    case OR_Reduce  : Debug.print( " |"); break;
+    case NOR_Reduce : Debug.print(" ~|"); break;
+    case XOR_Reduce : Debug.print( " #"); break;
+    case XNOR_Reduce: Debug.print(" ~#"); break;
+    case Logical_NOT: Debug.print( " !"); break;
 
-    case Cast       : printf(" {cast} "); break;
+    case Cast       : Debug.print(" {cast} "); break;
 
-    case Replicate  : printf("{rep}"); break;
+    case Replicate  : Debug.print("{rep}"); break;
 
-    case Exponential: printf(" ^ " ); break;
-    case Multiply   : printf(" * " ); break;
-    case Divide     : printf(" / " ); break;
-    case Modulus    : printf(" %% "); break;
-    case Add        : printf(" + " ); break;
-    case Subtract   : printf(" - " ); break;
+    case Exponential: Debug.print(" ^ " ); break;
+    case Multiply   : Debug.print(" * " ); break;
+    case Divide     : Debug.print(" / " ); break;
+    case Modulus    : Debug.print(" %% "); break;
+    case Add        : Debug.print(" + " ); break;
+    case Subtract   : Debug.print(" - " ); break;
 
-    case Shift_Left : printf(" << "); break;
-    case Shift_Right: printf(" >> "); break;
+    case Shift_Left : Debug.print(" << "); break;
+    case Shift_Right: Debug.print(" >> "); break;
 
-    case Less         : printf(" < " ); break;
-    case Greater      : printf(" > " ); break;
-    case Less_Equal   : printf(" <= "); break;
-    case Greater_Equal: printf(" >= "); break;
-    case Equal        : printf(" == "); break;
-    case Not_Equal    : printf(" != "); break;
+    case Less         : Debug.print(" < " ); break;
+    case Greater      : Debug.print(" > " ); break;
+    case Less_Equal   : Debug.print(" <= "); break;
+    case Greater_Equal: Debug.print(" >= "); break;
+    case Equal        : Debug.print(" == "); break;
+    case Not_Equal    : Debug.print(" != "); break;
 
-    case Bit_AND : printf( " & "); break;
-    case Bit_NAND: printf(" ~& "); break;
-    case Bit_OR  : printf( " | "); break;
-    case Bit_NOR : printf(" ~| "); break;
-    case Bit_XOR : printf( " # "); break;
-    case Bit_XNOR: printf(" ~# "); break;
+    case Bit_AND : Debug.print( " & "); break;
+    case Bit_NAND: Debug.print(" ~& "); break;
+    case Bit_OR  : Debug.print( " | "); break;
+    case Bit_NOR : Debug.print(" ~| "); break;
+    case Bit_XOR : Debug.print( " # "); break;
+    case Bit_XNOR: Debug.print(" ~# "); break;
 
-    case Logical_AND: printf(" && "); break;
-    case Logical_OR : printf(" || "); break;
+    case Logical_AND: Debug.print(" && "); break;
+    case Logical_OR : Debug.print(" || "); break;
 
-    case Conditional : printf(" ? "); break;
+    case Conditional : Debug.print(" ? "); break;
 
     default: error("(Unknown expression type: %d)", ExpressionType);
   }
@@ -144,16 +144,16 @@ void EXPRESSION::Display(){
     switch(Right->Type){
       case TYPE::Expression:
         ExprRight = (EXPRESSION*)Right;
-        if(ExprRight->Left || ExprRight->Right || ExprRight->Next) printf("(");
+        if(ExprRight->Left || ExprRight->Right || ExprRight->Next) Debug.print("(");
         ExprRight->Display();
-        if(ExprRight->Left || ExprRight->Right || ExprRight->Next) printf(")");
+        if(ExprRight->Left || ExprRight->Right || ExprRight->Next) Debug.print(")");
         break;
 
       case TYPE::Assignment:
         AssignRight = (ASSIGNMENT*)Right;
-        if(AssignRight->Left || AssignRight->Right || AssignRight->Next) printf("(");
+        if(AssignRight->Left || AssignRight->Right || AssignRight->Next) Debug.print("(");
         AssignRight->Display();
-        if(AssignRight->Left || AssignRight->Right || AssignRight->Next) printf(")");
+        if(AssignRight->Left || AssignRight->Right || AssignRight->Next) Debug.print(")");
         break;
 
       default:
@@ -163,7 +163,7 @@ void EXPRESSION::Display(){
   }
 
   if(Next){
-    printf(", ");
+    Debug.print(", ");
     Next->Display();
   }
 }

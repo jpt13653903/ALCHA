@@ -39,12 +39,12 @@ LOOP_LOOP::~LOOP_LOOP(){
 
 void LOOP_LOOP::Display(){
   DisplayInfo();
-  printf("loop(");
+  Debug.print("loop(");
     if(Count) Count->Display();
-    else      printf("{inf}");
-  printf("){\n");
+    else      Debug.print("{inf}");
+  Debug.print("){\n");
     if(Statements) Statements->Display();
-  printf("}\n");
+  Debug.print("}\n");
 
   if(Next) Next->Display();
 }

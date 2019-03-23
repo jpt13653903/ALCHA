@@ -55,22 +55,22 @@ SWITCH::~SWITCH(){
 
 void SWITCH::Display(){
   DisplayInfo();
-  printf("switch(");
+  Debug.print("switch(");
     if(Expression) Expression->Display();
-  printf("){\n");
+  Debug.print("){\n");
     CASE* Temp = Cases;
     while(Temp){
-      printf(" case(");
+      Debug.print(" case(");
         if(Temp->Expressions) Temp->Expressions->Display();
-      printf("){\n");
+      Debug.print("){\n");
         if(Temp->Statements) Temp->Statements->Display();
-      printf(" }\n");
+      Debug.print(" }\n");
       Temp = Temp->Next;
     }
-    printf(" default{\n");
+    Debug.print(" default{\n");
       if(Default) Default->Display();
-    printf(" }\n");
-  printf("}\n");
+    Debug.print(" }\n");
+  Debug.print("}\n");
 
   if(Next) Next->Display();
 }

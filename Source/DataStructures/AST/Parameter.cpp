@@ -43,32 +43,32 @@ PARAMETER::~PARAMETER(){
 
 void PARAMETER::Display(){
   DisplayInfo();
-  printf("Parameter (");
+  Debug.print("Parameter (");
 
   switch(DefinitionType){
-    case Auto   : printf("Auto):"     ); break;
-    case Pin    : printf("Pin):"      ); break;
-    case Net    : printf("Net):"      ); break;
-    case Byte   : printf("Byte):"     ); break;
-    case Char   : printf("Char):"     ); break;
-    case Number : printf("Number):"   ); break;
-    case Func   : printf("Function):" ); break;
+    case Auto   : Debug.print("Auto):"     ); break;
+    case Pin    : Debug.print("Pin):"      ); break;
+    case Net    : Debug.print("Net):"      ); break;
+    case Byte   : Debug.print("Byte):"     ); break;
+    case Char   : Debug.print("Char):"     ); break;
+    case Number : Debug.print("Number):"   ); break;
+    case Func   : Debug.print("Function):" ); break;
 
     case ClassInstance:
       if(ClassName) ClassName->Display();
-      else          printf("Class instance with no class name");
-      printf("):");
+      else          Debug.print("Class instance with no class name");
+      Debug.print("):");
       break;
 
-    default: printf("Invalid definition type:\n");
+    default: Debug.print("Invalid definition type:\n");
   }
 
-  printf(" %s", Identifier.c_str());
+  Debug.print(" %s", Identifier.c_str());
 
   int j;
-  for(j = 0; j < ArrayDimensions; j++) printf("[]");
+  for(j = 0; j < ArrayDimensions; j++) Debug.print("[]");
 
-  printf("\n");
+  Debug.print("\n");
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

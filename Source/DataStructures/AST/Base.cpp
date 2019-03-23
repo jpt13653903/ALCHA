@@ -45,14 +45,8 @@ BASE::~BASE(){
 //------------------------------------------------------------------------------
 
 void BASE::DisplayInfo(){
-  printf(
-    "\n"
-    ANSI_FG_BRIGHT_BLACK "%s:"
-    ANSI_FG_CYAN         "%05d"
-    ANSI_FG_YELLOW       " -- "
-    ANSI_RESET,
-    Filename.c_str(), Line
-  );
+  Debug.print("\n" ANSI_FG_BRIGHT_BLACK "%s:", Filename.c_str());
+  Debug.print(ANSI_FG_CYAN "%05d" ANSI_FG_YELLOW " -- " ANSI_RESET, Line);
 }
 //------------------------------------------------------------------------------
 

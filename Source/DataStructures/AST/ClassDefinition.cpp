@@ -58,27 +58,27 @@ CLASS_DEFINITION::~CLASS_DEFINITION(){
 
 void CLASS_DEFINITION::Display(){
   DisplayInfo();
-  printf("Class Definition (%s):\n", Identifier.c_str());
+  Debug.print("Class Definition (%s):\n", Identifier.c_str());
 
   if(Attributes){
-    printf(" Attributes:\n"); Attributes->Display(); printf("\n");
+    Debug.print(" Attributes:\n"); Attributes->Display(); Debug.print("\n");
   }
   if(Parameters){
-    printf(" Parameters:\n"); Parameters->Display(); printf("\n");
+    Debug.print(" Parameters:\n"); Parameters->Display(); Debug.print("\n");
   }
 
-  if(Parents) printf(" Parents:\n");
+  if(Parents) Debug.print(" Parents:\n");
   PARENT* Parent = Parents;
   while(Parent){
-    printf(" - ");
-    if(Parent->ClassName ) Parent->ClassName ->Display(); printf("(");
-    if(Parent->Parameters) Parent->Parameters->Display(); printf(")\n");
+    Debug.print(" - ");
+    if(Parent->ClassName ) Parent->ClassName ->Display(); Debug.print("(");
+    if(Parent->Parameters) Parent->Parameters->Display(); Debug.print(")\n");
     Parent = Parent->Next;
   }
 
-  printf(" {\n");
+  Debug.print(" {\n");
   if(Body) Body->Display();
-  printf(" }\n");
+  Debug.print(" }\n");
 
   if(Next) Next->Display();
 }

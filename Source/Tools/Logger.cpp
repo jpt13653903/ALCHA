@@ -18,38 +18,52 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Jump.h"
+#include "Logger.h"
 //------------------------------------------------------------------------------
 
-using namespace AST;
+using namespace std;
 //------------------------------------------------------------------------------
 
-JUMP::JUMP(int Line, const char* Filename, JUMP_TYPE JumpType):
-BASE(Line, Filename, TYPE::Jump){
-  this->JumpType = JumpType;
+LOGGER Debug("Debug.log");
+//------------------------------------------------------------------------------
 
-  Expression = 0;
+LOGGER::LOGGER(const char* Filename){
+  File = fopen(Filename, "wb");
 }
 //------------------------------------------------------------------------------
 
-JUMP::~JUMP(){
-  if(Expression) delete Expression;
+LOGGER::~LOGGER(){
+  fclose(File);
 }
 //------------------------------------------------------------------------------
 
-void JUMP::Display(){
-  DisplayInfo();
-  Debug.print("jump(");
-  switch(JumpType){
-    case Return  : Debug.print("return) "           ); break;
-    case Break   : Debug.print("break) "            ); break;
-    case Continue: Debug.print("continue) "         ); break;
-    default      : Debug.print("Unknown jump type) "); break;
-  }
-  if(Expression) Expression->Display();
-  else           Debug.print("{default}");
-  Debug.print("\n");
-
-  if(Next) Next->Display();
+void LOGGER::print(const char* String){
+  fprintf(File, "%s", String);
 }
 //------------------------------------------------------------------------------
+
+void LOGGER::print(const std::string& String){
+  fprintf(File, "%s", String.c_str());
+}
+//------------------------------------------------------------------------------
+
+void LOGGER::print(const char* Format, int i){
+  fprintf(File, Format, i);
+}
+//------------------------------------------------------------------------------
+
+void LOGGER::print(const char* Format, unsigned u){
+  fprintf(File, Format, u);
+}
+//------------------------------------------------------------------------------
+
+void LOGGER::print(const char* Format, const char* s){
+  fprintf(File, Format, s);
+}
+//------------------------------------------------------------------------------
+
+void LOGGER::print(const char* Format, const string& s){
+  fprintf(File, Format, s.c_str());
+}
+//------------------------------------------------------------------------------
+

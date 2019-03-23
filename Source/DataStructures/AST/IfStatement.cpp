@@ -41,13 +41,13 @@ IF_STATEMENT::~IF_STATEMENT(){
 
 void IF_STATEMENT::Display(){
   DisplayInfo();
-  printf("if(");
+  Debug.print("if(");
     if(Condition) Condition->Display();
-  printf("){\n");
+  Debug.print("){\n");
     if(TrueStatements) TrueStatements->Display();
-  printf("}else{\n");
+  Debug.print("}else{\n");
     if(FalseStatements) FalseStatements->Display();
-  printf("}\n");
+  Debug.print("}\n");
 
   if(Next) Next->Display();
 }

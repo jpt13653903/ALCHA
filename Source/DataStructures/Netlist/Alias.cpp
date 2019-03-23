@@ -34,10 +34,10 @@ ALIAS::~ALIAS(){
 //------------------------------------------------------------------------------
 
 void ALIAS::Display(){
-  printf("  Alias: %s\n", Name.c_str());
-  printf("    ");
+  Debug.print("  Alias: %s\n", Name.c_str());
+  Debug.print("    ");
   if(Expression) Expression->Display();
-  printf("\n");
+  Debug.print("\n");
 }
 //------------------------------------------------------------------------------
 

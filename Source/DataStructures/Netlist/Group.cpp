@@ -35,21 +35,21 @@ NETLIST::GROUP::~GROUP(){
 //------------------------------------------------------------------------------
 
 void NETLIST::GROUP::Display(){
-  printf("\n  Group: ");
+  Debug.print("\n  Group: ");
 
-  if(Name.empty()) printf("{Anonymous}");
+  if(Name.empty()) Debug.print("{Anonymous}");
   else             DisplayLongName();
-  printf("{\n");
+  Debug.print("{\n");
 
   DisplayAttributes(4);
-  printf("\n");
+  Debug.print("\n");
 
   for(auto s = Symbols.begin(); s != Symbols.end(); s++){
     if(s->second) s->second->Display();
-    else          printf("    - %s: {null}\n", s->first.c_str());
-    printf("\n");
+    else          Debug.print("    - %s: {null}\n", s->first.c_str());
+    Debug.print("\n");
   }
-  printf("  }\n");
+  Debug.print("  }\n");
 }
 //------------------------------------------------------------------------------
 

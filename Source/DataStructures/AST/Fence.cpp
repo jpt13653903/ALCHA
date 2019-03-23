@@ -34,7 +34,7 @@ FENCE::~FENCE(){
 
 void FENCE::Display(){
   DisplayInfo();
-  printf("Fence\n");
+  Debug.print("Fence\n");
 
   if(Next) Next->Display();
 }

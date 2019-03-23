@@ -38,23 +38,23 @@ SYNTHESISABLE::~SYNTHESISABLE(){
 
 void SYNTHESISABLE::Display(){
   switch(Type){
-    case TYPE::Pin: printf("  Pin: "); break;
-    case TYPE::Net: printf("  Net: "); break;
+    case TYPE::Pin: Debug.print("  Pin: "); break;
+    case TYPE::Net: Debug.print("  Net: "); break;
     default: error ("Unknown synthesisable type"); break;
   }
-  printf("%s\n", Name.c_str());
-  printf("    Used       = %s\n", Used   ? "true" : "false");
-  printf("    Width      = %u\n", Width);
-  printf("    Full-scale = "); FullScale.Display(); printf("\n");
-  printf("    Signed     = %s\n", Signed ? "true" : "false");
+  Debug.print("%s\n", Name.c_str());
+  Debug.print("    Used       = %s\n", Used   ? "true" : "false");
+  Debug.print("    Width      = %u\n", Width);
+  Debug.print("    Full-scale = %s\n", FullScale.GetString()); 
+  Debug.print("    Signed     = %s\n", Signed ? "true" : "false");
 
-  printf("    Direction  = ");
+  Debug.print("    Direction  = ");
   switch(Direction){
-    case AST::DEFINITION::Inferred     : printf("Inferred\n"     ); break;
-    case AST::DEFINITION::Input        : printf("Input\n"        ); break;
-    case AST::DEFINITION::Output       : printf("Output\n"       ); break;
-    case AST::DEFINITION::Bidirectional: printf("Bidirectional\n"); break;
-    default                            : printf("Invalid\n"      ); break;
+    case AST::DEFINITION::Inferred     : Debug.print("Inferred\n"     ); break;
+    case AST::DEFINITION::Input        : Debug.print("Input\n"        ); break;
+    case AST::DEFINITION::Output       : Debug.print("Output\n"       ); break;
+    case AST::DEFINITION::Bidirectional: Debug.print("Bidirectional\n"); break;
+    default                            : Debug.print("Invalid\n"      ); break;
   }
 }
 //------------------------------------------------------------------------------
