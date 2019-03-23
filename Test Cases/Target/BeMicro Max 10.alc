@@ -18,7 +18,7 @@ group ADXL362{
 }
 //------------------------------------------------------------------------------
 
-group AD5681R{
+group<standard = "3.3-V LVCMOS"> AD5681R{
   pin<location = "N18"> LDACn;
   pin<location = "L15"> RSTn;
   pin<location = "G17"> SCL;
@@ -27,7 +27,7 @@ group AD5681R{
 }
 //------------------------------------------------------------------------------
 
-group ADT7420{
+group<standard = "3.3-V LVCMOS"> ADT7420{
   input  pin<location = "P13" > CT;
   input  pin<location = "AB14"> INT;
   output pin<location = "W13" > SCL;
@@ -145,9 +145,9 @@ pin(36) <location = [
   "E16", "E15", "K14", "K15"]> GPIO;
 
 pin(12) <standard = "LVDS", location = [
-  "K14:K15", "E16:E15", "D17:C17", "H14:J13",
-  "C14:C13", "A14:B14", "D14:E13", "E12:D13",
-  "H12:J11", "B10:C9" , "A9 :B8" , "A7 :A8" ]> DIFF_RX_P;
+  "K14-K15", "E16-E15", "D17-C17", "H14-J13",
+  "C14-C13", "A14-B14", "D14-E13", "E12-D13",
+  "H12-J11", "B10-C9" , "A9 -B8" , "A7 -A8" ]> DIFF_RX_P;
 
 group I2C{
   pin<location = "AA14"> SDA;
@@ -156,9 +156,9 @@ group I2C{
 pin<location = "AA15"> GPIO_A;
 pin<location = "Y16" > GPIO_B;
 pin(12) <standard = "LVDS", location = [
-  "V17:W17", "V16 :U15", "W15:V14", "W14:V13",
-  "Y14:Y13", "AA10:Y10", "V10:V9" , "AA7:AA6",
-  "W8 :W7" , "U7  :U6" , "W6 :W5" , "W3 :W4" ]> LVDS_TX;
+  "V17-W17", "V16 -U15", "W15-V14", "W14-V13",
+  "Y14-Y13", "AA10-Y10", "V10-V9" , "AA7-AA6",
+  "W8 -W7" , "U7  -U6" , "W6 -W5" , "W3 -W4" ]> LVDS_TX;
 //------------------------------------------------------------------------------
 
 group PMOD{

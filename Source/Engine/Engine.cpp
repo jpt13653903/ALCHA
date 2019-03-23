@@ -97,8 +97,8 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
     }
 
     case AST::EXPRESSION::Identifier:{
-      auto NamespaceIterator = Stack.begin();
-      while(!Result && NamespaceIterator != Stack.end()){
+      auto NamespaceIterator = NamespaceStack.begin();
+      while(!Result && NamespaceIterator != NamespaceStack.end()){
         NAMESPACE* Namespace = *NamespaceIterator;
         while(!Result && Namespace){
           auto Object = Namespace->Symbols.find(Node->Name);
@@ -106,9 +106,9 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
             if(Object->second &&
                Object->second->Type == BASE::TYPE::Alias){
               auto Alias = (ALIAS*)Object->second;
-              Stack.push_front(Alias->Namespace);
+              NamespaceStack.push_front(Alias->Namespace);
                 Result = Evaluate(Alias->Expression);
-              Stack.pop_front();
+              NamespaceStack.pop_front();
             }else{
               Result = new EXPRESSION(EXPRESSION::Object);
               Result->ObjectRef = Object->second;
@@ -183,9 +183,9 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
           if(Found->second &&
              Found->second->Type == BASE::TYPE::Alias){
             auto Alias = (ALIAS*)Found->second;
-            Stack.push_front(Alias->Namespace);
+            NamespaceStack.push_front(Alias->Namespace);
               Result = Evaluate(Alias->Expression);
-            Stack.pop_front();
+            NamespaceStack.pop_front();
           }else{
             Result = new EXPRESSION(EXPRESSION::Object);
             Result->ObjectRef = Found->second;
@@ -235,7 +235,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       //     return 0;
       //   }
       // }else{ // Attribute of the current namespace
-      //   Result->ObjectRef = Stack.front();
+      //   Result->ObjectRef = NamespaceStack.front();
       // }
       // if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
       //   auto Right = (AST::EXPRESSION*)Node->Right;
@@ -566,16 +566,16 @@ bool ENGINE::Import(AST::IMPORT* Ast){
   bool   OwnNamespace = !Ast->Namespace.empty();
 
   if(OwnNamespace){
-    auto Found = Stack.front()->Symbols.find(Ast->Namespace);
-    if(Found != Stack.front()->Symbols.end()){
+    auto Found = NamespaceStack.front()->Symbols.find(Ast->Namespace);
+    if(Found != NamespaceStack.front()->Symbols.end()){
       Error(Ast);
       printf("Symbol \"%s\" already exists in the current namespace\n",
              Ast->Namespace.c_str());
       return false;
     }
     auto Module = new MODULE(Ast->Namespace.c_str());
-    Stack.front()->Symbols[Ast->Namespace] = Module;
-    Stack.push_front(Module);
+    NamespaceStack.front()->Symbols[Ast->Namespace] = Module;
+    NamespaceStack.push_front(Module);
   }
 
   string& Path = Ast->Filename;
@@ -591,7 +591,7 @@ bool ENGINE::Import(AST::IMPORT* Ast){
   bool Result = Run(Filename.c_str());
 
   if(OwnNamespace){
-    Stack.pop_front();
+    NamespaceStack.pop_front();
   }
   return Result;
 }
@@ -603,8 +603,8 @@ bool ENGINE::Group(AST::GROUP* Ast){
     return false;
   }
 
-  auto Found = Stack.front()->Symbols.find(Ast->Identifier);
-  if(Found != Stack.front()->Symbols.end()){
+  auto Found = NamespaceStack.front()->Symbols.find(Ast->Identifier);
+  if(Found != NamespaceStack.front()->Symbols.end()){
     Error(Ast);
     printf("Symbol \"%s\" already exists in the current namespace\n",
            Ast->Identifier.c_str());
@@ -612,19 +612,19 @@ bool ENGINE::Group(AST::GROUP* Ast){
   }
   auto Object = new NETLIST::GROUP(Ast->Identifier.c_str());
   ApplyAttributes(Object, Ast->Attributes);
-  Stack.front()->Symbols[Ast->Identifier] = Object;
-  Stack.push_front(Object);
+  NamespaceStack.front()->Symbols[Ast->Identifier] = Object;
+  NamespaceStack.push_front(Object);
 
   bool Result = Run(Ast->Body);
 
-  Stack.pop_front();
+  NamespaceStack.pop_front();
   return Result;
 }
 //------------------------------------------------------------------------------
 
 bool ENGINE::Alias(AST::ALIAS* Ast){
-  auto Symbol = Stack.front()->Symbols.find(Ast->Identifier);
-  if(Symbol != Stack.front()->Symbols.end()){
+  auto Symbol = NamespaceStack.front()->Symbols.find(Ast->Identifier);
+  if(Symbol != NamespaceStack.front()->Symbols.end()){
     Error(Ast);
     printf("Symbol \"%s\" already defined in the current namespace\n",
            Ast->Identifier.c_str());
@@ -633,7 +633,7 @@ bool ENGINE::Alias(AST::ALIAS* Ast){
 
   auto Object = new ALIAS(Ast->Identifier.c_str(), Ast->Expression);
 
-  Stack.front()->Symbols[Object->Name] = Object;
+  NamespaceStack.front()->Symbols[Object->Name] = Object;
 
   return true;
 }
@@ -643,8 +643,8 @@ bool ENGINE::Definition(AST::DEFINITION* Ast){
   auto Identifier = Ast->Identifiers;
 
   while(Identifier){
-    auto Symbol = Stack.front()->Symbols.find(Identifier->Identifier);
-    if(Symbol != Stack.front()->Symbols.end()){
+    auto Symbol = NamespaceStack.front()->Symbols.find(Identifier->Identifier);
+    if(Symbol != NamespaceStack.front()->Symbols.end()){
       Error(Ast);
       printf("Symbol \"%s\" already defined in the current namespace\n",
              Identifier->Identifier.c_str());
@@ -674,7 +674,7 @@ bool ENGINE::Definition(AST::DEFINITION* Ast){
         if(!ApplyAttributes(Pin, Ast->Attributes)) Error(Ast, "Invalid attributes");
         if(Identifier->Initialiser) error("Not yet implemented");
 
-        Stack.front()->Symbols[Pin->Name] = Pin;
+        NamespaceStack.front()->Symbols[Pin->Name] = Pin;
         break;
       }
 
@@ -685,7 +685,7 @@ bool ENGINE::Definition(AST::DEFINITION* Ast){
         if(!ApplyAttributes(Net, Ast->Attributes)) Error(Ast, "Invalid attributes");
         if(Identifier->Initialiser) error("Not yet implemented");
 
-        Stack.front()->Symbols[Net->Name] = Net;
+        NamespaceStack.front()->Symbols[Net->Name] = Net;
         break;
       }
 
@@ -761,9 +761,9 @@ bool ENGINE::GetLHS_Object(BASE* Object, target_list& List, AST::BASE* Ast){
       }
       case BASE::TYPE::Alias:{
         auto Alias = (ALIAS*)Object;
-        Stack.push_front(Alias->Namespace);
+        NamespaceStack.push_front(Alias->Namespace);
           Result = GetLHS(Alias->Expression, List);
-        Stack.pop_front();
+        NamespaceStack.pop_front();
         break;
       }
       case BASE::TYPE::Array:{
@@ -807,8 +807,8 @@ bool ENGINE::GetLHS(AST::EXPRESSION* Node, target_list& List){
     }
 
     case AST::EXPRESSION::Identifier:{
-      auto NamespaceIterator = Stack.begin();
-      while(!Result && NamespaceIterator != Stack.end()){
+      auto NamespaceIterator = NamespaceStack.begin();
+      while(!Result && NamespaceIterator != NamespaceStack.end()){
         NAMESPACE* Namespace = *NamespaceIterator;
         while(!Result && Namespace){
           auto Object = Namespace->Symbols.find(Node->Name);
@@ -941,7 +941,7 @@ bool ENGINE::GetLHS(AST::EXPRESSION* Node, target_list& List){
         }
         ListNode = LeftList.front();
       }else{ // An attribute of the current namespace
-        ListNode.Object = Stack.front();
+        ListNode.Object = NamespaceStack.front();
       }
       if(ListNode.isAttribute){
         Error(Node, "Attributes are not hierarchical");
@@ -1427,7 +1427,7 @@ bool ENGINE::Run(AST::BASE* Ast){
 //------------------------------------------------------------------------------
 
 bool ENGINE::Run(const char* Filename){
-  if(Stack.empty()) Stack.push_front(&Global);
+  if(NamespaceStack.empty()) NamespaceStack.push_front(&Global);
 
   AST::BASE* Ast = Parser.Run(Filename);
   if(Ast) AstStack.push(Ast);

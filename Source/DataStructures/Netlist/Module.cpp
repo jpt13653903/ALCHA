@@ -22,7 +22,7 @@
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
-  std::list<NAMESPACE*> Stack; // Initialised in Engine::Run()
+  std::list<NAMESPACE*> NamespaceStack; // Initialised in Engine::Run()
   MODULE                Global;
 }
 //------------------------------------------------------------------------------

@@ -31,7 +31,7 @@ class SDC{
     std::string Constraints; // The resulting SDC TCL script returned by "Build"
 
     void BuildClocks();
-    void BuildPorts ();
+    void BuildPorts (NETLIST::NAMESPACE* Namespace);
 
   public:
     SDC();

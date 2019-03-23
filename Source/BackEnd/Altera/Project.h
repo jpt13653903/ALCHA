@@ -53,8 +53,8 @@ namespace ALTERA{
 
       bool WriteFile(std::string& Filename, const char* Ext, std::string& Body);
 
-      void BuildFileList(std::string& Body, NETLIST::MODULE* Module, std::string Path);
-      bool BuildPins    (std::string& Body);
+      void BuildFileList(std::string& Body, NETLIST::MODULE   * Module, std::string Path);
+      bool BuildPins    (std::string& Body, NETLIST::NAMESPACE* Namespace);
 
       bool BuildProject          ();
       bool BuildSettings         ();

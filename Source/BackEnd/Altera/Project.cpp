@@ -51,114 +51,123 @@ void PROJECT::BuildFileList(string& Body, MODULE* Module, string Path){
     if(Symbol->Type == BASE::TYPE::Module){
       auto Child = (MODULE*)Symbol;
       if(isGlobal) BuildFileList(Body, Child, "source");
-      else         BuildFileList(Body, Child, Path + "/" + Module->Name);
+      else         BuildFileList(Body, Child, Path + "/" + Module->HDL_Name());
     }
   }
   if(isGlobal){
     Body += "set_global_assignment -name VERILOG_FILE \""+ Filename +".v\"\n";
   }else{
     Body += "set_global_assignment -name VERILOG_FILE \"" +
-            Path + "/" + Module->Name +".v\"\n";
+            Path + "/" + Module->HDL_Name() +".v\"\n";
   }
 }
 //------------------------------------------------------------------------------
 
-bool PROJECT::BuildPins(string& Body){
-  for(auto SymbolIterator  = Global.Symbols.begin();
-           SymbolIterator != Global.Symbols.end  ();
+bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
+  for(auto SymbolIterator  = Namespace->Symbols.begin();
+           SymbolIterator != Namespace->Symbols.end  ();
            SymbolIterator++){
-    if(SymbolIterator->second->Type == BASE::TYPE::Pin){
-      auto Pin = (PIN*)(SymbolIterator->second);
-      auto Location = Pin->GetAttrib("location");
-      if(!Location){
-        warning("Pin without location attribute");
-        continue;
-      }
-      if(Pin->Width == 1){
-        if(Location->ExpressionType != EXPRESSION::String){
-          error("Scalar pin location not a string");
-          return false;
+    switch(SymbolIterator->second->Type){
+      case BASE::TYPE::Pin:{
+        auto Pin = (PIN*)(SymbolIterator->second);
+        auto Location = Pin->GetAttrib("location");
+        if(!Location){
+          warning("Pin without location attribute");
+          continue;
         }
-        Body += "set_location_assignment PIN_"+ Location->StrValue +
-                " -to "+ Pin->Name +"\n";
-      }else{
-        if(Location->ExpressionType != EXPRESSION::Array){
-          error("Vector pin location not an array");
-          return false;
-        }
-        if(Location->Elements.size() != (size_t)Pin->Width){
-          error("Vector pin location array of wrong size");
-          return false;
-        }
-        for(int n = 0; n < Pin->Width; n++){
-          if(Location->Elements[n]->ExpressionType != EXPRESSION::String){
-            error("Pin location not a string");
+        if(Pin->Width == 1){
+          if(Location->ExpressionType != EXPRESSION::String){
+            error("Scalar pin location not a string");
             return false;
           }
-          Body += "set_location_assignment PIN_"+ Location->Elements[n]->StrValue +
-                  " -to "+ Pin->Name +"["+ to_string(Pin->Width-1-n) +"]\n";
-        }
-      }
-      auto Standard = Pin->GetAttrib("standard");
-      if(Standard){
-        if(Standard->ExpressionType != EXPRESSION::String){
-          error("Standard attribute not a string");
-          return false;
-        }
-        Body += "set_instance_assignment -name "
-                "IO_STANDARD \""+ Standard->StrValue +"\" -to "+ Pin->Name;
-        if(Pin->Width > 1) Body += "*";
-        Body += "\n";
-      }
-      auto Current = Pin->GetAttrib("current");
-      if(Current){
-        Body += "set_instance_assignment "
-                "-name CURRENT_STRENGTH_NEW ";
-        switch(Current->ExpressionType){
-          case EXPRESSION::Literal:{
-            if(!Current->Value.IsReal()){
-              error("Current attribute not real");
+          Body += "set_location_assignment PIN_"+ Location->StrValue +
+                  " -to "+ Pin->HDL_Name() +"\n";
+        }else{
+          if(Location->ExpressionType != EXPRESSION::Array){
+            error("Vector pin location not an array");
+            return false;
+          }
+          if(Location->Elements.size() != (size_t)Pin->Width){
+            error("Vector pin location array of wrong size");
+            return false;
+          }
+          for(int n = 0; n < Pin->Width; n++){
+            if(Location->Elements[n]->ExpressionType != EXPRESSION::String){
+              error("Pin location not a string");
               return false;
             }
-            NUMBER mA = Current->Value;
-            mA.Mul(1e3);
-            Body += to_string((int)mA.GetReal()) + "MA";
-            break;
+            Body += "set_location_assignment PIN_"+ Location->Elements[n]->StrValue +
+                    " -to "+ Pin->HDL_Name() +"["+ to_string(Pin->Width-1-n) +"]\n";
           }
-          case EXPRESSION::String:
-            Body += '"' + Current->StrValue + '"';
-            break;
-          default:
-            // TODO Need to also handle arrays (for vector types) correctly
-            error("Unexpected current strength attribute type");
-            break;
         }
-        Body += " -to "+ Pin->Name;
-        if(Pin->Width > 1) Body += "*";
-        Body += "\n";
-      }
-      auto WeakPullup = Pin->GetAttrib("weak_pullup");
-      if(WeakPullup){
-        Body += "set_instance_assignment "
-                "-name WEAK_PULL_UP_RESISTOR ";
-        switch(WeakPullup->ExpressionType){
-          case EXPRESSION::Literal:{
-            if(WeakPullup->Value == true) Body += "ON";
-            else                          Body += "OFF";
-            break;
+        auto Standard = Pin->GetAttrib("standard");
+        if(Standard){
+          if(Standard->ExpressionType != EXPRESSION::String){
+            error("Standard attribute not a string");
+            return false;
           }
-          case EXPRESSION::String:
-            Body += '"' + WeakPullup->StrValue + '"';
-            break;
-          default:
-            // TODO Need to also handle arrays (for vector types) correctly
-            error("Unexpected current strength attribute type");
-            break;
+          Body += "set_instance_assignment -name "
+                  "IO_STANDARD \""+ Standard->StrValue +"\" -to "+ Pin->HDL_Name();
+          if(Pin->Width > 1) Body += "*";
+          Body += "\n";
         }
-        Body += " -to "+ Pin->Name;
-        if(Pin->Width > 1) Body += "*";
-        Body += "\n";
+        auto Current = Pin->GetAttrib("current");
+        if(Current){
+          Body += "set_instance_assignment "
+                  "-name CURRENT_STRENGTH_NEW ";
+          switch(Current->ExpressionType){
+            case EXPRESSION::Literal:{
+              if(!Current->Value.IsReal()){
+                error("Current attribute not real");
+                return false;
+              }
+              NUMBER mA = Current->Value;
+              mA.Mul(1e3);
+              Body += to_string((int)mA.GetReal()) + "MA";
+              break;
+            }
+            case EXPRESSION::String:
+              Body += '"' + Current->StrValue + '"';
+              break;
+            default:
+              // TODO Need to also handle arrays (for vector types) correctly
+              error("Unexpected current strength attribute type");
+              break;
+          }
+          Body += " -to "+ Pin->HDL_Name();
+          if(Pin->Width > 1) Body += "*";
+          Body += "\n";
+        }
+        auto WeakPullup = Pin->GetAttrib("pullup");
+        if(WeakPullup){
+          Body += "set_instance_assignment "
+                  "-name WEAK_PULL_UP_RESISTOR ";
+          switch(WeakPullup->ExpressionType){
+            case EXPRESSION::Literal:{
+              if(WeakPullup->Value == true) Body += "ON";
+              else                          Body += "OFF";
+              break;
+            }
+            case EXPRESSION::String:
+              Body += '"' + WeakPullup->StrValue + '"';
+              break;
+            default:
+              // TODO Need to also handle arrays (for vector types) correctly
+              error("Unexpected current strength attribute type");
+              break;
+          }
+          Body += " -to "+ Pin->HDL_Name();
+          if(Pin->Width > 1) Body += "*";
+          Body += "\n";
+        }
+        break;
       }
+      case BASE::TYPE::Group:{
+        BuildPins(Body, (NAMESPACE*)SymbolIterator->second);
+        break;
+      }
+      default:
+        break;
     }
   }
   return true;
@@ -237,7 +246,7 @@ bool PROJECT::BuildSettings(){
     "#-------------------------------------------------------------------------------\n"
     "\n";
 
-  if(!BuildPins(Body)) return false;
+  if(!BuildPins(Body, &Global)) return false;
   Body +=
     "#-------------------------------------------------------------------------------\n"
     "\n";

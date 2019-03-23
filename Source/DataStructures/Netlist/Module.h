@@ -39,8 +39,8 @@ namespace NETLIST{
   };
   //----------------------------------------------------------------------------
 
-  extern std::list<NAMESPACE*> Stack;  // Used for namespace searches
-  extern MODULE                Global; // The root of the module tree
+  extern std::list<NAMESPACE*> NamespaceStack; // Used for namespace searches
+  extern MODULE                Global;         // The root of the module tree
 }
 //------------------------------------------------------------------------------
 

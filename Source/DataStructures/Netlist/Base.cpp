@@ -28,11 +28,11 @@ using namespace NETLIST;
 //------------------------------------------------------------------------------
 
 BASE::BASE(const char* Name, TYPE Type){
-  this->Name = Name;
-  this->Type = Type;
+  this->Type      = Type;
+  this->Name      = Name;
+  this->Namespace = 0;
 
-  if(Stack.empty()) this->Namespace = 0;
-  else              this->Namespace = Stack.front();
+  if(!NamespaceStack.empty()) Namespace = NamespaceStack.front();
 }
 //------------------------------------------------------------------------------
 
@@ -40,6 +40,28 @@ BASE::~BASE(){
   for(auto a = Attributes.begin(); a != Attributes.end(); a++){
     delete a->second;
   }
+}
+//------------------------------------------------------------------------------
+
+string& BASE::HDL_Name(){
+  static string Result;
+
+  if(!Namespace) return Name;
+
+  Result.clear();
+
+  switch(Namespace->Type){
+    case TYPE::Module:
+      return Name;
+      
+    case TYPE::Group:
+      Result = Namespace->HDL_Name() + "_" + Name;
+      break;
+
+    default:
+      break;
+  }
+  return Result;
 }
 //------------------------------------------------------------------------------
 

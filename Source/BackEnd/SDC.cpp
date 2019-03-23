@@ -53,10 +53,10 @@ void SDC::BuildClocks(){
         }
         double Period = 1e9/Freq->Value.GetReal(); // ns
         Constraints +=
-          "create_clock -name " + Pin->Name           +
+          "create_clock -name " + Pin->HDL_Name()     +
           " -period "           + to_string(Period)   + "ns"  +
           " -waveform {0ns "    + to_string(Period/2) + "ns}" +
-          " [get_ports "        + Pin->Name           + "]\n";
+          " [get_ports "        + Pin->HDL_Name()     + "]\n";
         ClockCount++;
       }
     }
@@ -74,7 +74,7 @@ void SDC::BuildClocks(){
         auto Pin  = (PIN*)(SymbolIterator->second);
         auto Freq = Pin->GetAttrib("frequency");
         // Already checked for validity above, so no need to check again
-        if(Freq) Constraints += " \\\n  -group " + Pin->Name;
+        if(Freq) Constraints += " \\\n  -group " + Pin->HDL_Name();
       }
     }
     Constraints += "\n";
@@ -82,31 +82,38 @@ void SDC::BuildClocks(){
 }
 //------------------------------------------------------------------------------
 
-void SDC::BuildPorts(){
+void SDC::BuildPorts(NETLIST::NAMESPACE* Namespace){
   // TODO: Handle the input and output delays properly
   warning("input_delay and output_delay not yet implemented");
 
-  Constraints += "# Ignore Timing Path\n";
-
-  for(auto SymbolIterator  = Global.Symbols.begin();
-           SymbolIterator != Global.Symbols.end();
+  for(auto SymbolIterator  = Namespace->Symbols.begin();
+           SymbolIterator != Namespace->Symbols.end();
            SymbolIterator++){
-    if(SymbolIterator->second->Type == BASE::TYPE::Pin){
-      auto Pin = (PIN*)(SymbolIterator->second);
-      if(!Pin->GetAttrib("frequency")){ // Not a clock
-        if(Pin->Direction != AST::DEFINITION::Output){ // Input or bidirectional
-          Constraints += "set_false_path -to   * -from ";
-          Constraints += "[get_ports " + Pin->Name;
-          if(Pin->Width > 1) Constraints += "*";
-          Constraints += "]\n";
+    switch(SymbolIterator->second->Type){
+      case BASE::TYPE::Pin:{
+        auto Pin = (PIN*)(SymbolIterator->second);
+        if(!Pin->GetAttrib("frequency")){ // Not a clock
+          if(Pin->Direction != AST::DEFINITION::Output){ // Input or bidirectional
+            Constraints += "set_false_path -to   * -from ";
+            Constraints += "[get_ports " + Pin->HDL_Name();
+            if(Pin->Width > 1) Constraints += "*";
+            Constraints += "]\n";
+          }
+          if(Pin->Direction != AST::DEFINITION::Input){ // Output or bidirectional
+            Constraints += "set_false_path -from * -to   ";
+            Constraints += "[get_ports " + Pin->HDL_Name();
+            if(Pin->Width > 1) Constraints += "*";
+            Constraints += "]\n";
+          }
         }
-        if(Pin->Direction != AST::DEFINITION::Input){ // Output or bidirectional
-          Constraints += "set_false_path -from * -to   ";
-          Constraints += "[get_ports " + Pin->Name;
-          if(Pin->Width > 1) Constraints += "*";
-          Constraints += "]\n";
-        }
+        break;
       }
+      case BASE::TYPE::Group:{
+        BuildPorts((NAMESPACE*)SymbolIterator->second);
+        break;
+      }
+      default:
+        break;
     }
     // No recursion required -- all pins are top-level at this point
   }
@@ -127,7 +134,7 @@ string& SDC::Build(){
     "derive_clock_uncertainty\n"
     "#-------------------------------------------------------------------------------\n"
     "\n";
-  BuildPorts();
+  BuildPorts(&Global);
   Constraints +=
     "#-------------------------------------------------------------------------------\n";
 

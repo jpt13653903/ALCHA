@@ -40,6 +40,9 @@ class BACK_END{
     bool AddAssignment(std::string& Body, NETLIST::BASE* Object);
 
     bool BuildExpression(std::string& Body, NETLIST::EXPRESSION* Expression);
+    void BuildPorts     (std::string& Body, NETLIST::NAMESPACE*  Namespace, bool& isFirst);
+    void BuildNets      (std::string& Body, NETLIST::NAMESPACE*  Namespace);
+
     bool BuildHDL(NETLIST::MODULE* Module, std::string Path);
 
   public:

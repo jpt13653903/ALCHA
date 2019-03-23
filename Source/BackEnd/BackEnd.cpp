@@ -140,34 +140,6 @@ bool BACK_END::RoutePorts(NAMESPACE* Namespace){
   // If this is the global module, don't go further
   if(!Namespace->Namespace) return true;
 
-  // Move group members to the parent namespace
-  if(Namespace->Type == BASE::TYPE::Group){
-    auto SymbolIterator = Namespace->Symbols.begin();
-    while(SymbolIterator != Namespace->Symbols.end()){
-      auto Object = (BASE*)SymbolIterator->second;
-      SymbolIterator++;
-
-      Namespace->Symbols.erase(Object->Name);
-
-      Object->Name = Namespace->Name + "_" + Object->Name;
-      auto Found = Namespace->Namespace->Symbols.find(Object->Name);
-      while(Found != Namespace->Namespace->Symbols.end()){
-        Object->Name += "_";
-        Found = Namespace->Namespace->Symbols.find(Object->Name);
-      }
-      Object->Namespace = Namespace->Namespace;
-      Namespace->Namespace->Symbols[Object->Name] = Object;
-
-      for(auto AttribIterator  = Namespace->Attributes.begin();
-               AttribIterator != Namespace->Attributes.end  ();
-               AttribIterator++){
-        if(!Object->GetAttrib(AttribIterator->first)){
-          Object->Attributes[AttribIterator->first] = new EXPRESSION(AttribIterator->second);
-        }
-      }
-    }
-  }
-
   // Route inter-module connections to the parent
   return true;
 }
@@ -189,7 +161,11 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression){
         error("non-real literal");
         return false;
       }
-      Body += to_string((unsigned)Expression->Value.IsReal());
+      // TODO Format the number properly -- it could be of arbitrary length
+      warning("Large numbers not implemented yet");
+      // TODO The number needs to be converted to the target scaling (or not)
+      warning("Fixed-point scaling not implemented yet");
+      Body += to_string((unsigned)Expression->Value.GetReal());
       break;
 
     case EXPRESSION::Object:
@@ -197,7 +173,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression){
         error("Null object reference");
         return false;
       }
-      Body += Expression->ObjectRef->Name;
+      Body += Expression->ObjectRef->HDL_Name();
       break;
 
     case EXPRESSION::VectorConcatenate:
@@ -446,7 +422,7 @@ bool BACK_END::AddAssignment(string& Body, BASE* Object){
     case BASE::TYPE::Pin:{
       auto Pin = (PIN*)Object;
       if(Pin->Driver){
-        Body += "assign "+ Pin->Name +" = ";
+        Body += "assign "+ Pin->HDL_Name() +" = ";
         if(Pin->Enabled){
           Body += "(";
           if(!BuildExpression(Body, Pin->Enabled)) return false;
@@ -463,9 +439,18 @@ bool BACK_END::AddAssignment(string& Body, BASE* Object){
     case BASE::TYPE::Net:{
       auto Net = (NET*)Object;
       if(Net->Value){
-        Body += "assign "+ Net->Name +" = ";
+        Body += "assign "+ Net->HDL_Name() +" = ";
         if(!BuildExpression(Body, Net->Value)) return false;
         Body += ";\n";
+      }
+      break;
+    }
+    case BASE::TYPE::Group:{
+      auto Namespace = (NAMESPACE*)Object;
+      for(auto SymbolIterator  = Namespace->Symbols.begin();
+               SymbolIterator != Namespace->Symbols.end  ();
+               SymbolIterator++){
+        if(!AddAssignment(Body, SymbolIterator->second)) return false;
       }
       break;
     }
@@ -473,6 +458,59 @@ bool BACK_END::AddAssignment(string& Body, BASE* Object){
       break;
   }
   return true;
+}
+//------------------------------------------------------------------------------
+
+void BACK_END::BuildPorts(string& Body, NAMESPACE* Namespace, bool& isFirst){
+  for(auto SymbolIterator  = Namespace->Symbols.begin();
+           SymbolIterator != Namespace->Symbols.end  ();
+           SymbolIterator++){
+    switch(SymbolIterator->second->Type){
+      case BASE::TYPE::Pin:{
+        auto Pin = (PIN*)SymbolIterator->second;
+        if(!isFirst) Body += ",\n";
+        isFirst = false;
+
+        switch(Pin->Direction){
+          case AST::DEFINITION::Input : Body += "  input  "; break;
+          case AST::DEFINITION::Output: Body += "  output "; break;
+          default                     : Body += "  inout  "; break;
+        }
+        if(Pin->Width > 1) Body += "["+ to_string(Pin->Width-1) +":0]";
+        Body += Pin->HDL_Name();
+        break;
+      }
+      case BASE::TYPE::Group:{
+        BuildPorts(Body, (NAMESPACE*)SymbolIterator->second, isFirst);
+        break;
+      }
+      default:
+        break;
+    }
+  }
+}
+//------------------------------------------------------------------------------
+
+void BACK_END::BuildNets(string& Body, NAMESPACE* Namespace){
+  for(auto SymbolIterator  = Namespace->Symbols.begin();
+           SymbolIterator != Namespace->Symbols.end  ();
+           SymbolIterator++){
+    switch(SymbolIterator->second->Type){
+      case BASE::TYPE::Net:{
+        auto Net = (NET*)SymbolIterator->second;
+        Body += "wire ";
+        if(Net->Width > 1) Body += "["+ to_string(Net->Width-1) +":0]";
+        Body += Net->HDL_Name() + ";";
+        break;
+      }
+      case BASE::TYPE::Group:{
+        BuildNets(Body, (NAMESPACE*)SymbolIterator->second);
+        break;
+      }
+      default:
+        break;
+    }
+  }
 }
 //------------------------------------------------------------------------------
 
@@ -487,54 +525,28 @@ bool BACK_END::BuildHDL(MODULE* Module, string Path){
     if(Symbol->Type == BASE::TYPE::Module){
       auto Child = (MODULE*)Symbol;
       if(isGlobal) BuildHDL(Child, "source");
-      else         BuildHDL(Child, Path + "/" + Module->Name);
+      else         BuildHDL(Child, Path + "/" + Module->HDL_Name());
     }
   }
   // Generate this module's name
   string Name;
   if(isGlobal) Name = Filename;
-  else         Name = Path + "/" + Module->Name;
+  else         Name = Path + "/" + Module->HDL_Name();
 
   string Body;
   Body += "module "+ Name +"(\n";
 
   // Ports
   bool isFirst = true;
-  for(auto SymbolIterator  = Module->Symbols.begin();
-           SymbolIterator != Module->Symbols.end  ();
-           SymbolIterator++){
-    if(SymbolIterator->second->Type == BASE::TYPE::Pin){
-      auto Pin = (PIN*)SymbolIterator->second;
-      if(!isFirst) Body += ",\n";
-      isFirst = false;
-
-      switch(Pin->Direction){
-        case AST::DEFINITION::Input : Body += "  input  "; break;
-        case AST::DEFINITION::Output: Body += "  output "; break;
-        default                     : Body += "  inout  "; break;
-      }
-      if(Pin->Width > 1) Body += "["+ to_string(Pin->Width-1) +":0]";
-      Body += Pin->Name;
-    }
-  }
+  BuildPorts(Body, Module, isFirst);
   if(!isFirst) Body += "\n";
   Body += ");\n";
   Body += "//--------------------------------------"
           "----------------------------------------\n\n";
 
   // Nets
-  for(auto SymbolIterator  = Module->Symbols.begin();
-           SymbolIterator != Module->Symbols.end  ();
-           SymbolIterator++){
-    if(SymbolIterator->second->Type == BASE::TYPE::Net){
-      auto Net = (NET*)SymbolIterator->second;
-      Body += "wire ";
-      if(Net->Width > 1) Body += "["+ to_string(Net->Width-1) +":0]";
-      Body += Net->Name + ";";
-    }
-  }
-  if(!isFirst) Body += "\n";
-  Body += "//--------------------------------------"
+  BuildNets (Body, Module);
+  Body += "\n//--------------------------------------"
           "----------------------------------------\n\n";
 
   // Body
