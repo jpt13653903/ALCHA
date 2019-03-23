@@ -63,6 +63,31 @@ void PROJECT::BuildFileList(string& Body, MODULE* Module, string Path){
 }
 //------------------------------------------------------------------------------
 
+void PROJECT::AssignPin(string& Body, const string& Location, const string& Name){
+  string P, N;
+  bool Diff = false;
+
+  for(size_t n = 0; n < Location.length(); n++){
+    switch(Location[n]){
+      case ' ':
+      case '\t':
+        break;
+      case '-':
+        Diff = true;
+        break;
+      default:
+        if(Diff) N += Location[n];
+        else     P += Location[n];
+        break;
+    }
+  }
+  Body += "set_location_assignment PIN_"+ P + " -to \""+ Name +"\"\n";
+  if(Diff){
+    Body += "set_location_assignment PIN_"+ N + " -to \""+ Name +"(n)\"\n";
+  }
+}
+//------------------------------------------------------------------------------
+
 bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
   for(auto SymbolIterator  = Namespace->Symbols.begin();
            SymbolIterator != Namespace->Symbols.end  ();
@@ -70,6 +95,17 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
     switch(SymbolIterator->second->Type){
       case BASE::TYPE::Pin:{
         auto Pin = (PIN*)(SymbolIterator->second);
+        auto Standard = Pin->GetAttrib("standard");
+        if(Standard){
+          if(Standard->ExpressionType != EXPRESSION::String){
+            error("Standard attribute not a string");
+            return false;
+          }
+          Body += "set_instance_assignment -name "
+                  "IO_STANDARD \""+ Standard->StrValue +"\" -to "+ Pin->HDL_Name();
+          if(Pin->Width > 1) Body += "*";
+          Body += "\n";
+        }
         auto Location = Pin->GetAttrib("location");
         if(Location){
           if(Pin->Width == 1){
@@ -77,8 +113,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
               error("Scalar pin location not a string");
               return false;
             }
-            Body += "set_location_assignment PIN_"+ Location->StrValue +
-                    " -to "+ Pin->HDL_Name() +"\n";
+            AssignPin(Body, Location->StrValue, Pin->HDL_Name());
           }else{
             if(Location->ExpressionType != EXPRESSION::Array){
               error("Vector pin location not an array");
@@ -93,25 +128,15 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
                 error("Pin location not a string");
                 return false;
               }
-              Body += "set_location_assignment PIN_"+ Location->Elements[n]->StrValue +
-                      " -to "+ Pin->HDL_Name() +"["+ to_string(Pin->Width-1-n) +"]\n";
+              AssignPin(Body,
+                        Location->Elements[n]->StrValue,
+                        Pin->HDL_Name() +"["+ to_string(Pin->Width-1-n) +"]");
             }
           }
         }else{
           warning("Pin without location attribute, creating virtual pin");
           Body += "set_instance_assignment "
                   "-name VIRTUAL_PIN ON -to "+ Pin->HDL_Name();
-          if(Pin->Width > 1) Body += "*";
-          Body += "\n";
-        }
-        auto Standard = Pin->GetAttrib("standard");
-        if(Standard){
-          if(Standard->ExpressionType != EXPRESSION::String){
-            error("Standard attribute not a string");
-            return false;
-          }
-          Body += "set_instance_assignment -name "
-                  "IO_STANDARD \""+ Standard->StrValue +"\" -to "+ Pin->HDL_Name();
           if(Pin->Width > 1) Body += "*";
           Body += "\n";
         }

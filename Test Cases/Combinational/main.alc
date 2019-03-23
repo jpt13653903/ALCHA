@@ -18,3 +18,5 @@ num MyNumber = 123;
 !! Testing virtual pins
 pin(7) Testing = MyNumber;
 
+LVDS_TX = 0xABC;
+

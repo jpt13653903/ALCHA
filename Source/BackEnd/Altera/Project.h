@@ -54,6 +54,7 @@ namespace ALTERA{
       bool WriteFile(std::string& Filename, const char* Ext, std::string& Body);
 
       void BuildFileList(std::string& Body, NETLIST::MODULE   * Module, std::string Path);
+      void AssignPin    (std::string& Body, const std::string& Location, const std::string& Name);
       bool BuildPins    (std::string& Body, NETLIST::NAMESPACE* Namespace);
 
       bool BuildProject          ();

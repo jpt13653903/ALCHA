@@ -6,6 +6,8 @@
 'target_series = "MAX 10";
 'target_device = "10M08DAF484C8GES";
 'target_board  = "BeMicro Max 10";
+
+'standard = "2.5 V";
 //------------------------------------------------------------------------------
 
 group ADXL362{
@@ -18,7 +20,7 @@ group ADXL362{
 }
 //------------------------------------------------------------------------------
 
-group<standard = "3.3-V LVCMOS"> AD5681R{
+group AD5681R{
   pin<location = "N18"> LDACn;
   pin<location = "L15"> RSTn;
   pin<location = "G17"> SCL;
@@ -27,7 +29,7 @@ group<standard = "3.3-V LVCMOS"> AD5681R{
 }
 //------------------------------------------------------------------------------
 
-group<standard = "3.3-V LVCMOS"> ADT7420{
+group ADT7420{
   input  pin<location = "P13" > CT;
   input  pin<location = "AB14"> INT;
   output pin<location = "W13" > SCL;
@@ -66,7 +68,7 @@ group SFLASH{
 }
 //------------------------------------------------------------------------------
 
-pin(8) <current  = 8e-3, standard = "LVTTL", location = [
+pin(8) <current = 8e-3, location = [
   "M2", "N1", "R2", "T1", "V4", "T6", "AB4", "AA5"]> USER_LED;
 //------------------------------------------------------------------------------
 
