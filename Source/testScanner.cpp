@@ -25,7 +25,7 @@
 int main(int argc, const char** argv){
   SetupTerminal();
 
-  const char*  InputFile = "../TestCases/FrontEnd/Parser.alc";
+  const char*  InputFile = "../TestCases/FrontEnd/Scanner.alc";
   if(argc > 1) InputFile = argv[1];
 
   info("InputFile = %s", InputFile);

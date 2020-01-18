@@ -5,7 +5,7 @@ alias LED    = USER_LED;
 import "BeMicro Max 10";
 //------------------------------------------------------------------------------
 
-net<frequency = 10e6> ADC_Clk(Clk);
+net<frequency = 10e6> ADC_Clk(Clk); !! This is wrong -- should actually be PLL instance
 pin                   Reset;
 //------------------------------------------------------------------------------
 

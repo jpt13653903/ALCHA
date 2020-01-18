@@ -31,12 +31,12 @@ int main(int argc, const char** argv){
   info("InputFile = %s", InputFile);
 
   PARSER Parser;
-  AST::Root = Parser.Run(InputFile);
-  if(!AST::Root){
+  AST::BASE* Root = Parser.Run(InputFile);
+  if(!Root){
     error("Error while parsing \"%s\"", InputFile);
     return -1;
   }
-  if(AST::Root) delete AST::Root;
+  if(Root) delete Root;
 
   return 0;
 }

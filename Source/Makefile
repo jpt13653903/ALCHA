@@ -1,10 +1,7 @@
 ifeq ($(OS), Windows_NT)
   # libgmp and libmpfr for Windows only works under 32-bit compilation
   CXX     = mingw32-g++
-  windres = c:/TDM-GCC-32/bin/windres.exe
-
-  # CXX     = g++
-  # windres = windres
+  windres = C:/TDM-GCC-32/bin/windres.exe
 else
   CXX = g++
 endif
@@ -23,12 +20,19 @@ Version  = -DMAJOR_VERSION=0 -DMINOR_VERSION=1
 #-------------------------------------------------------------------------------
 
 Libraries  = -lgmp
-Libraries += -lmpfr
+# Libraries += -lmpfr
 # Libraries += -lfftw3
 
 ifeq ($(OS), Windows_NT)
-  Includes   = -ILibraries/include
-  LibInclude = -LLibraries/lib
+  Includes    = -ILibraries/include
+  Headers    += Libraries/include/gmp.h
+  # Headers    += Libraries/include/mpfr.h
+  # Headers    += Libraries/include/fftw3.h
+
+  LibInclude  = -LLibraries/lib
+  Objects    += Libraries/lib/libgmp.a
+  # Objects    += Libraries/lib/libmpfr.a
+  # Objects    += Libraries/lib/libfftw3.a
 else
   Includes   =
   LibInclude = 
@@ -42,8 +46,6 @@ Includes  += -IFrontEnd
 Includes  += -IEngine
 Includes  += -IBackEnd
 #-------------------------------------------------------------------------------
-
-Headers  = Libraries/include/*.h
 
 Headers += Tools/*.h
 Headers += $(Toolbox)/*.h          
@@ -68,7 +70,7 @@ else
   ObjectPath = obj_linux
 endif
 
-Objects  = $(ObjectPath)/Tools/Logger.o
+Objects += $(ObjectPath)/Tools/Logger.o
 Objects += $(ObjectPath)/Tools/Number.o
 
 Objects += $(ObjectPath)/Toolbox/General.o
@@ -153,7 +155,7 @@ clean:
 	- rm -rf $(ObjectPath)
 	- rm FrontEnd/CharacterNames.h
 
-test: $(TestSources) testScanner testParser
+test: $(TestSources) bin/testScanner$(ext) bin/testParser$(ext)
 
 test%: ../TestCases/%/main.alc bin/ALCHA$(ext) $(TestSources)
 	- rm -rf "../Test Output"
