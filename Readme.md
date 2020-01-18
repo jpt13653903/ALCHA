@@ -39,7 +39,7 @@ When cloning the repository, remember to also clone the sub-modules.
 
 ## Running Test Cases
 
-To run the test cases, change directory into the `Source` folder, then run `make test????`.  Replace the question-marks with the appropriate subfolder in the `Test Cases` folder.
+To run the test cases, change directory into the `Source` folder, then run `make test????`.  Replace the question-marks with the appropriate subfolder in the `TestCases` folder.
 
 The functional test-cases at the moment are:
 

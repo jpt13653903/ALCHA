@@ -1,12 +1,19 @@
 ifeq ($(OS), Windows_NT)
-  CompilerPath = C:/TDM-GCC-32/bin
-  CXX          = $(CompilerPath)/g++
+  # libgmp and libmpfr for Windows only works under 32-bit compilation
+  CXX     = mingw32-g++
+  windres = c:/TDM-GCC-32/bin/windres.exe
+
+  # CXX     = g++
+  # windres = windres
 else
-  CompilerPath = 
-  CXX          = g++
+  CXX = g++
 endif
 
-Options = -std=c++11 -Wall -fexceptions -O2 -DDEBUG
+Options  = -std=c++11
+Options += -fdiagnostics-color=always
+Options += -Wall
+Options += -O2
+Options += -DDEBUG
 #-------------------------------------------------------------------------------
 
 Toolbox = ../Toolbox/Cpp
@@ -15,7 +22,9 @@ Toolbox = ../Toolbox/Cpp
 Version  = -DMAJOR_VERSION=0 -DMINOR_VERSION=1
 #-------------------------------------------------------------------------------
 
-Libraries  = -lfftw3 -lgmp -lmpfr
+Libraries  = -lgmp
+Libraries += -lmpfr
+# Libraries += -lfftw3
 
 ifeq ($(OS), Windows_NT)
   Includes   = -ILibraries/include
@@ -120,14 +129,14 @@ ifeq ($(OS), Windows_NT)
 endif
 #-------------------------------------------------------------------------------
 
-TestSources  = ../Test\ Cases/*
-TestSources += ../Test\ Cases/Target/*
-TestSources += ../Test\ Cases/FrontEnd/*
-TestSources += ../Test\ Cases/ButtonsToLEDs/*
-TestSources += ../Test\ Cases/Counter/*
-TestSources += ../Test\ Cases/MAX_10_ADC/*
-TestSources += ../Test\ Cases/Pipeline/*
-TestSources += ../Test\ Cases/Scripting/*
+TestSources  = ../TestCases/*
+TestSources += ../TestCases/Target/*
+TestSources += ../TestCases/FrontEnd/*
+TestSources += ../TestCases/ButtonsToLEDs/*
+TestSources += ../TestCases/Counter/*
+TestSources += ../TestCases/MAX_10_ADC/*
+TestSources += ../TestCases/Pipeline/*
+TestSources += ../TestCases/Scripting/*
 #-------------------------------------------------------------------------------
 
 .PHONY: clean all
@@ -140,13 +149,13 @@ endif
 all: bin/ALCHA$(ext)
 
 clean:
-	rm -rf bin
-	rm -rf $(ObjectPath)
-	rm FrontEnd/CharacterNames.h
+	- rm -rf bin/ALCHA$(ext)
+	- rm -rf $(ObjectPath)
+	- rm FrontEnd/CharacterNames.h
 
 test: $(TestSources) testScanner testParser
 
-test%: ../Test\ Cases/%/main.alc bin/ALCHA$(ext) $(TestSources)
+test%: ../TestCases/%/main.alc bin/ALCHA$(ext) $(TestSources)
 	- rm -rf "../Test Output"
 	bin/ALCHA$(ext) "$<" "../Test Output"
 #-------------------------------------------------------------------------------
@@ -179,6 +188,6 @@ FrontEnd/CharacterNames.h: FrontEnd/CharacterNames.json FrontEnd/CharacterNames.
 
 $(ObjectPath)/%.res: %.rc
 	mkdir -p $(@D)
-	$(CompilerPath)/windres.exe  -J rc -O coff -i $< -o $@
+	$(windres) -J rc -O coff -i $< -o $@
 #-------------------------------------------------------------------------------
 

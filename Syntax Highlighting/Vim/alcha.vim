@@ -111,7 +111,7 @@ syn keyword AlchaKeyword      rtl fsm hdl
 syn keyword AlchaKeyword      stimulus emulate sequence assert wait
 
 " Strings
-syn match  AlchaEscape contained "\\n\|\\t\|\\v\|\\b\|\\r\|\\f\|\\a\|\\\\\|\\?\|\\'\|\\\"\|\\x\x\{2}\|\\u\x\{4}\|\\U\x\{8}\|\\\o\{1,11}\|\\&\(\d\|\a\)\{-};"
+syn match  AlchaEscape contained "\\\(n\|t\|v\|b\|r\|f\|a\|\\\|?\|'\|\"\|x\x\{2}\|u\x\{4}\|U\x\{8}\|\o\{1,11}\|&\(\d\|\a\)\{-};\)"
 syn region AlchaString start=/"/ skip=/\\"/ end=/"/ contains=@Spell,AlchaEscape
 
 " Comment
