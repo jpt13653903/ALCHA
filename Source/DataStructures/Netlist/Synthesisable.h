@@ -18,6 +18,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
+/* This class is used as a base for PIN and NET
+ * 
+ */
+//------------------------------------------------------------------------------
+
 #ifndef Netlist_Synthesisable_h
 #define Netlist_Synthesisable_h
 //------------------------------------------------------------------------------

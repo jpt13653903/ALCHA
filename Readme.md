@@ -30,10 +30,10 @@ When cloning the repository, remember to also clone the sub-modules.
 
 1. Install a C++11 capable version of GCC.
 1. Open a bash (or sh) terminal.
-1. Install the development versions of `libfftw3`, `libgmp` and `libmpfr`.  On Ubuntu, this can be achieved with:
-    - `sudo apt-get install libfftw3-dev`
+1. Install the development versions of `libgmp`, `libmpfr` and `libfftw3`.  On Ubuntu, this can be achieved with:
     - `sudo apt-get install libgmp-dev`
     - `sudo apt-get install libmpfr-dev`
+    - `sudo apt-get install libfftw3-dev`
 1. Change directory to the project folder.
 1. Run `make`
 

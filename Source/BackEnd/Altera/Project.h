@@ -18,15 +18,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-/**
-This is a binary search tree to optimise the scanner.  It facilitates the
-greedy match operation.  The tree is only balanced once, so something like
-a red-black tree is not required.
-
-It consists of a balanced BST of the first character, each containing a
-balanced sub-tree of the next character, etc.                                 */
-//------------------------------------------------------------------------------
-
 #ifndef Altera_Project_h
 #define Altera_Project_h
 //------------------------------------------------------------------------------

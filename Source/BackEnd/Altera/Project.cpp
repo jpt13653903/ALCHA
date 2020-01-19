@@ -81,9 +81,9 @@ void PROJECT::AssignPin(string& Body, const string& Location, const string& Name
         break;
     }
   }
-  Body += "set_location_assignment PIN_"+ P + " -to \""+ Name +"\"\n";
+  Body += "set_location_assignment PIN_"+ P + " -to "+ Name +"\n";
   if(Diff){
-    Body += "set_location_assignment PIN_"+ N + " -to \""+ Name +"(n)\"\n";
+    Body += "set_location_assignment PIN_"+ N + " -to "+ Name +"(n)\n";
   }
 }
 //------------------------------------------------------------------------------
@@ -103,7 +103,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
           }
           Body += "set_instance_assignment -name "
                   "IO_STANDARD \""+ Standard->StrValue +"\" -to "+ Pin->HDL_Name();
-          if(Pin->Width > 1) Body += "*";
+          if(Pin->Width > 1) Body += "[*]";
           Body += "\n";
         }
         auto Location = Pin->GetAttrib("location");
@@ -137,7 +137,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
           warning("Pin without location attribute, creating virtual pin");
           Body += "set_instance_assignment "
                   "-name VIRTUAL_PIN ON -to "+ Pin->HDL_Name();
-          if(Pin->Width > 1) Body += "*";
+          if(Pin->Width > 1) Body += "[*]";
           Body += "\n";
         }
         auto Current = Pin->GetAttrib("current");
@@ -164,7 +164,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
               break;
           }
           Body += " -to "+ Pin->HDL_Name();
-          if(Pin->Width > 1) Body += "*";
+          if(Pin->Width > 1) Body += "[*]";
           Body += "\n";
         }
         auto WeakPullup = Pin->GetAttrib("pullup");
@@ -186,7 +186,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
               break;
           }
           Body += " -to "+ Pin->HDL_Name();
-          if(Pin->Width > 1) Body += "*";
+          if(Pin->Width > 1) Body += "[*]";
           Body += "\n";
         }
         break;
@@ -248,32 +248,26 @@ bool PROJECT::BuildSettings(){
     "set_global_assignment -name FAMILY \""+ Series +"\"\n"
     "set_global_assignment -name DEVICE "+ Device +"\n"
     "set_global_assignment -name TOP_LEVEL_ENTITY "+ Filename +"\n"
-    "set_global_assignment -name ORIGINAL_QUARTUS_VERSION 16.1.0\n"
     "set_global_assignment -name PROJECT_CREATION_TIME_DATE \""+ Time +"\"\n"
-    "set_global_assignment -name LAST_QUARTUS_VERSION 16.1.0\n"
     "set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files\n"
-    "set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0\n"
-    "set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85\n"
-    "set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 256\n"
     "set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top\n"
     "set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top\n"
     "set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top\n"
-    "set_global_assignment -name STRATIX_DEVICE_IO_STANDARD \"3.3-V LVCMOS\"\n"
-    "set_global_assignment -name POWER_PRESET_COOLING_SOLUTION \"23 MM HEAT SINK WITH 200 LFPM AIRFLOW\"\n"
-    "set_global_assignment -name POWER_BOARD_THERMAL_MODEL \"NONE (CONSERVATIVE)\"\n"
-    "set_global_assignment -name ENABLE_OCT_DONE OFF\n"
-    "set_global_assignment -name EXTERNAL_FLASH_FALLBACK_ADDRESS 00000000\n"
-    "set_global_assignment -name USE_CONFIGURATION_DEVICE OFF\n"
-    "set_global_assignment -name CRC_ERROR_OPEN_DRAIN OFF\n"
-    "set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS \"HALF VCCIO\" -rise\n"
-    "set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS \"HALF VCCIO\" -fall\n"
-    "set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS \"HALF SIGNAL SWING\" -rise\n"
-    "set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS \"HALF SIGNAL SWING\" -fall\n"
     "set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005\n"
-    "set_global_assignment -name VERILOG_SHOW_LMF_MAPPING_MESSAGES OFF\n"
-    "set_global_assignment -name INTERNAL_FLASH_UPDATE_MODE \"SINGLE COMP IMAGE\"\n"
     "#-------------------------------------------------------------------------------\n"
     "\n";
+
+  auto Standard = Global.GetAttrib("standard");
+  Body += "set_global_assignment -name STRATIX_DEVICE_IO_STANDARD ";
+  if(Standard){
+    if(Standard->ExpressionType != EXPRESSION::String){
+      error("Standard attribute not a string");
+      return false;
+    }
+    Body += "\""+ Standard->StrValue +"\"\n\n";
+  }else{
+    Body += "\"3.3-V LVCMOS\"\n\n";
+  }
 
   if(!BuildPins(Body, &Global)) return false;
   Body +=
@@ -291,8 +285,8 @@ bool PROJECT::BuildSettings(){
 
   Body += // Tail end
     "\n"
-    "set_global_assignment -name SDC_FILE "+ Filename +".sdc\n"
-    "set_global_assignment -name CDF_FILE "+ Filename +".cdf\n"
+    "set_global_assignment -name SDC_FILE \""+ Filename +".sdc\"\n"
+    "set_global_assignment -name CDF_FILE \""+ Filename +".cdf\"\n"
     "#-------------------------------------------------------------------------------\n"
     "\n"
     "set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top\n";
