@@ -95,7 +95,12 @@ namespace NETLIST{
       Conditional
     } ExpressionType;
 
-    bool Raw; // The literal has been cast to raw bits
+    bool RawAssign; // Raw assignment must be applied to the target pin or net
+
+    // The resulting fixed-point type of the expression (if appropriate)
+    bool   Signed;
+    int    Width; // 0 => not applicable
+    NUMBER FullScale;
 
     BASE*                    ObjectRef; // Refers to another object
     NUMBER                   Value;     // Only used for numerical literals

@@ -63,7 +63,7 @@ void EXPRESSION::Display(){
       break;
 
     case Literal:
-      if(Value) Debug.print(Value->GetString());
+      if(Value) Debug.print(Value->Display());
       else      error("(Literal node has no value)");
       break;
 

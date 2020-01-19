@@ -32,7 +32,7 @@ void TOKEN::Display(){
   Debug.print(ANSI_FG_BRIGHT_BLACK "Type = "  ANSI_RESET "%3d "  , (int)Type);
   Debug.print(ANSI_FG_BRIGHT_BLACK "Line = "  ANSI_RESET "%5d "  , Line);
   Debug.print(ANSI_FG_BRIGHT_BLACK "Data = "  ANSI_RESET "%-40s ", Data.c_str());
-  Debug.print(ANSI_FG_BRIGHT_BLACK "Value = " ANSI_RESET "%s\n", Value.GetString());
+  Debug.print(ANSI_FG_BRIGHT_BLACK "Value = " ANSI_RESET "%s\n"  , Value.Display());
 }
 //------------------------------------------------------------------------------
 

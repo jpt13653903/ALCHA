@@ -36,7 +36,7 @@ NUM::~NUM(){
 void NUM::Display(){
   Debug.print("  Num: %s\n", Name.c_str());
   Debug.print("    Value = ");
-  Debug.print(Value.GetString());
+  Debug.print(Value.Display());
   Debug.print("\n");
 }
 //------------------------------------------------------------------------------

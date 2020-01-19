@@ -162,21 +162,41 @@ bool BACK_END::WriteFile(string& Filename, const char* Ext, string& Body){
 }
 //------------------------------------------------------------------------------
 
-bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression){
+bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, SYNTHESISABLE* Target){
   if(!Expression) return false;
 
   switch(Expression->ExpressionType){
-    case EXPRESSION::Literal:
+    case EXPRESSION::Literal:{
       if(!Expression->Value.IsReal()){
         error("non-real literal");
         return false;
       }
-      // TODO Format the number properly -- it could be of arbitrary length
-      warning("Large numbers not implemented yet");
-      // TODO The number needs to be converted to the target scaling (or not)
-      warning("Fixed-point scaling not implemented yet");
-      Body += to_string((unsigned)Expression->Value.GetReal());
+      if(!Target){
+        error("Unexpected null target");
+        return false;
+      }
+      if(Expression->RawAssign){
+        error("Raw assignment of literals not yet implemented");
+        return false;
+      }
+      if(Target->Signed) Body += to_string(Target->Width+1) + "'h";
+      else               Body += to_string(Target->Width  ) + "'h";
+      NUMBER Result(Expression->Value);
+      Result.Div(Target->FullScale);
+      Result.BinScale(Target->Width);
+      Result.Round();
+      if(!Result.IsPositive()){
+        if(Target->Signed){
+          NUMBER FS(1);
+          FS.BinScale(Target->Width+1);
+          Result.Add(FS);
+        }else{
+          Result = 0;
+        }
+      }
+      Body += Result.GetString(16);
       break;
+    }
 
     case EXPRESSION::Object:
       if(!Expression->ObjectRef){
@@ -203,13 +223,13 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression){
 
     case EXPRESSION::Negate:
       Body += "-(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
+      if(!BuildExpression(Body, Expression->Right, Target)) return false;
       Body += ")";
       break;
 
     case EXPRESSION::Bit_NOT:
       Body += "~(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
+      if(!BuildExpression(Body, Expression->Right, Target)) return false;
       Body += ")";
       break;
 
@@ -435,12 +455,12 @@ bool BACK_END::AddAssignment(string& Body, BASE* Object){
         Body += "assign "+ Pin->HDL_Name() +" = ";
         if(Pin->Enabled){
           Body += "(";
-          if(!BuildExpression(Body, Pin->Enabled)) return false;
+          if(!BuildExpression(Body, Pin->Enabled, (PIN*)Object)) return false;
           Body += ") ? (";
-          if(!BuildExpression(Body, Pin->Driver)) return false;
+          if(!BuildExpression(Body, Pin->Driver, (PIN*)Object)) return false;
           Body += ") : " + to_string(Pin->Width) + "'bZ";
         }else{
-          if(!BuildExpression(Body, Pin->Driver)) return false;
+          if(!BuildExpression(Body, Pin->Driver, (PIN*)Object)) return false;
         }
         Body += ";\n";
       }
@@ -450,7 +470,7 @@ bool BACK_END::AddAssignment(string& Body, BASE* Object){
       auto Net = (NET*)Object;
       if(Net->Value){
         Body += "assign "+ Net->HDL_Name() +" = ";
-        if(!BuildExpression(Body, Net->Value)) return false;
+        if(!BuildExpression(Body, Net->Value, (NET*)Object)) return false;
         Body += ";\n";
       }
       break;

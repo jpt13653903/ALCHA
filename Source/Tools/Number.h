@@ -28,6 +28,7 @@
 //------------------------------------------------------------------------------
 
 #include <stdlib.h>
+#include <string.h>
 #include <string>
 //------------------------------------------------------------------------------
 
@@ -72,13 +73,22 @@ class NUMBER{
     void Mul(double r, double i = 0);
     void Mul(NUMBER& n);
 
-    bool IsInt ();
-    bool IsReal();
+    void Div(double r, double i = 0);
+    void Div(NUMBER& n);
+
+    void BinScale(int N); // *= 2^N
+
+    void Round();
+
+    bool IsInt     (); // Imag == 0 && Real.Denominator == 1
+    bool IsReal    (); // Imag == 0
+    bool IsPositive(); // Imag == 0 && Real >= 0
 
     double GetReal();
     double GetImag();
 
-    std::string& GetString();
+    std::string& GetString(int Base = 10); // Format "123/456"
+    std::string& Display  ();              // Format "123/456 (~0.269737)"
 };
 //------------------------------------------------------------------------------
 

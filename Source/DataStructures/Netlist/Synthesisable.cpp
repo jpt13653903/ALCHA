@@ -45,7 +45,7 @@ void SYNTHESISABLE::Display(){
   Debug.print("%s\n", Name.c_str());
   Debug.print("    Used       = %s\n", Used   ? "true" : "false");
   Debug.print("    Width      = %u\n", Width);
-  Debug.print("    Full-scale = %s\n", FullScale.GetString()); 
+  Debug.print("    Full-scale = %s\n", FullScale.Display()); 
   Debug.print("    Signed     = %s\n", Signed ? "true" : "false");
 
   Debug.print("    Direction  = ");

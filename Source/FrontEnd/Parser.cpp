@@ -73,7 +73,7 @@ void PARSER::GetToken(){
     }
     Debug.print(Token.Data.c_str());
     switch(Token.Type){
-      case TOKEN::Literal: Debug.print(" = %s", Token.Value.GetString()); break;
+      case TOKEN::Literal: Debug.print(" = %s", Token.Value.Display()); break;
       case TOKEN::String : Debug.print("\""); break;
       default            : break;
     }

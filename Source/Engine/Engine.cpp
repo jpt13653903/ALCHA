@@ -114,9 +114,12 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
                 }
                 case BASE::TYPE::Pin:
                 case BASE::TYPE::Net:{
+                  auto Synthesisable = (SYNTHESISABLE*)Object->second;
                   Result = new EXPRESSION(EXPRESSION::Object);
-                  Result->ObjectRef = Object->second;
-                  auto Synthesisable = (SYNTHESISABLE*)Result->ObjectRef;
+                  Result->ObjectRef = Synthesisable;
+                  Result->Signed    = Synthesisable->Signed;
+                  Result->Width     = Synthesisable->Width;
+                  Result->FullScale = Synthesisable->FullScale;
                   Synthesisable->Used = true;
                   break;
                 }
@@ -137,18 +140,27 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
 
     case AST::EXPRESSION::VectorConcatenate:{
       Result = new EXPRESSION(EXPRESSION::VectorConcatenate);
-      Result->Raw = true;
       auto Element = (AST::EXPRESSION*)Node->Right;
       while(Element){
-        Result->Elements.push_back(Evaluate(Element));
+        auto EvaluatedElement = Evaluate(Element);
+        Result->Elements.push_back(EvaluatedElement);
+        if(EvaluatedElement->Width){
+          Result->Width += EvaluatedElement->Width;
+        }else{
+          Error(Element, "Vector element has undefined width\n");
+          delete Result;
+          return 0;
+        }
         Element = (AST::EXPRESSION*)Element->Next;
       }
+      Result->Signed    = false;
+      Result->FullScale = 1;
+      Result->FullScale.BinScale(Result->Width);
       break;
     }
 
     case AST::EXPRESSION::ArrayConcatenate:{
       Result = new EXPRESSION(EXPRESSION::ArrayConcatenate);
-      Result->Raw = true;
       auto Element = (AST::EXPRESSION*)Node->Right;
       while(Element){
         Result->Elements.push_back(Evaluate(Element));
@@ -209,7 +221,10 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
                 if(Result->ObjectRef->Type == BASE::TYPE::Pin ||
                    Result->ObjectRef->Type == BASE::TYPE::Net ){
                   auto Object = (SYNTHESISABLE*)Result->ObjectRef;
-                  Object->Used = true;
+                  Object->Used      = true;
+                  Result->Signed    = Object->Signed;
+                  Result->Width     = Object->Width;
+                  Result->FullScale = Object->FullScale;
                 }
               }
               delete Left;
@@ -292,6 +307,9 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
         Result->Right = Evaluate((AST::EXPRESSION*)Node->Right);
       }
+      Result->Signed    = Result->Right->Signed;
+      Result->Width     = Result->Right->Width;
+      Result->FullScale = Result->Right->FullScale;
       break;
 
     case AST::EXPRESSION::Bit_NOT:
@@ -299,10 +317,15 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
         Result->Right = Evaluate((AST::EXPRESSION*)Node->Right);
       }
+      Result->Signed    = Result->Right->Signed;
+      Result->Width     = Result->Right->Width;
+      Result->FullScale = Result->Right->FullScale;
       break;
 
     case AST::EXPRESSION::Raw:
       error("Raw not yet implemented");
+      // TODO: Implement as a cast to (N, 2^N) for unsigned
+      //       and (N+1, 2^(N+1)) for signed
       break;
 
     case AST::EXPRESSION::AND_Reduce:
@@ -864,7 +887,6 @@ bool ENGINE::GetLHS(AST::EXPRESSION* Node, target_list& List){
     case AST::EXPRESSION::VectorConcatenate:{
       error("VectorConcatenate not yet implemented");
       // Result = new EXPRESSION(EXPRESSION::VectorConcatenate);
-      // Result->Raw = true;
       // auto Element = (AST::EXPRESSION*)Node->Right;
       // while(Element){
       //   Result->Elements.push_back(Evaluate(Element));
@@ -876,7 +898,6 @@ bool ENGINE::GetLHS(AST::EXPRESSION* Node, target_list& List){
     case AST::EXPRESSION::ArrayConcatenate:{
       error("ArrayConcatenate not yet implemented");
       // Result = new EXPRESSION(EXPRESSION::ArrayConcatenate);
-      // Result->Raw = true;
       // auto Element = (AST::EXPRESSION*)Node->Right;
       // while(Element){
       //   Result->Elements.push_back(Evaluate(Element));
@@ -990,6 +1011,8 @@ bool ENGINE::GetLHS(AST::EXPRESSION* Node, target_list& List){
       if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
         auto Right = (AST::EXPRESSION*)Node->Right;
         if(Right->ExpressionType == AST::EXPRESSION::Identifier){
+          // The process of adding an entry initialises the pointer to null.
+          // The default constructor of the pointer type is called.
           ListNode.Expression = &ListNode.Object->Attributes[Right->Name];
           ListNode.isAttribute = true;
           List.push_back(ListNode);
@@ -1274,7 +1297,6 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     return false;
   }
 
-
   BASE* Object = Left.front().Object;
   if(!Object){
     error("Unexpected null reference");
@@ -1301,17 +1323,19 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
 
   switch(Ast->AssignmentType){
     case AST::ASSIGNMENT::Assign:
+      Right->RawAssign = false;
       if(*Target) delete *Target;
       *Target = Right;
       break;
 
     case AST::ASSIGNMENT::Raw_Assign:
-      Right->Raw = true;
+      Right->RawAssign = true;
       if(*Target) delete *Target;
       *Target = Right;
       break;
 
     case AST::ASSIGNMENT::Append_Assign:
+      Right->RawAssign = false;
       Temp = new EXPRESSION(EXPRESSION::ArrayConcatenate);
       Temp->Left  = *Target;
       Temp->Right = Right;
@@ -1319,6 +1343,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
       break;
 
     case AST::ASSIGNMENT::Add_Assign:
+      Right->RawAssign = false;
       Temp = new EXPRESSION(EXPRESSION::Add);
       Temp->Left  = *Target;
       Temp->Right = Right;
@@ -1326,6 +1351,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
       break;
 
     case AST::ASSIGNMENT::Subtract_Assign:
+      Right->RawAssign = false;
       Temp = new EXPRESSION(EXPRESSION::Subtract);
       Temp->Left  = *Target;
       Temp->Right = Right;
@@ -1333,6 +1359,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
       break;
 
     case AST::ASSIGNMENT::Multiply_Assign:
+      Right->RawAssign = false;
       Temp = new EXPRESSION(EXPRESSION::Multiply);
       Temp->Left  = *Target;
       Temp->Right = Right;
@@ -1340,6 +1367,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
       break;
 
     case AST::ASSIGNMENT::Divide_Assign:
+      Right->RawAssign = false;
       Temp = new EXPRESSION(EXPRESSION::Divide);
       Temp->Left  = *Target;
       Temp->Right = Right;
@@ -1347,6 +1375,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
       break;
 
     case AST::ASSIGNMENT::Modulus_Assign:
+      Right->RawAssign = false;
       Temp = new EXPRESSION(EXPRESSION::Modulus);
       Temp->Left  = *Target;
       Temp->Right = Right;
@@ -1354,6 +1383,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
       break;
 
     case AST::ASSIGNMENT::Exponential_Assign:
+      Right->RawAssign = false;
       Temp = new EXPRESSION(EXPRESSION::Exponential);
       Temp->Left  = *Target;
       Temp->Right = Right;
@@ -1361,6 +1391,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
       break;
 
     case AST::ASSIGNMENT::AND_Assign:
+      Right->RawAssign = true;
       Temp = new EXPRESSION(EXPRESSION::Bit_AND);
       Temp->Left  = *Target;
       Temp->Right = Right;
@@ -1368,6 +1399,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
       break;
 
     case AST::ASSIGNMENT::OR_Assign:
+      Right->RawAssign = true;
       Temp = new EXPRESSION(EXPRESSION::Bit_OR);
       Temp->Left  = *Target;
       Temp->Right = Right;
@@ -1375,6 +1407,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
       break;
 
     case AST::ASSIGNMENT::XOR_Assign:
+      Right->RawAssign = true;
       Temp = new EXPRESSION(EXPRESSION::Bit_XOR);
       Temp->Left  = *Target;
       Temp->Right = Right;
@@ -1382,6 +1415,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
       break;
 
     case AST::ASSIGNMENT::Shift_Left_Assign:
+      Right->RawAssign = true;
       Temp = new EXPRESSION(EXPRESSION::Shift_Left);
       Temp->Left  = *Target;
       Temp->Right = Right;
@@ -1389,6 +1423,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
       break;
 
     case AST::ASSIGNMENT::Shift_Right_Assign:
+      Right->RawAssign = true;
       Temp = new EXPRESSION(EXPRESSION::Shift_Right);
       Temp->Left  = *Target;
       Temp->Right = Right;
