@@ -175,25 +175,18 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, SYNTHESISAB
         error("Unexpected null target");
         return false;
       }
-      if(Expression->RawAssign){
-        error("Raw assignment of literals not yet implemented");
-        return false;
+      NUMBER Result(Expression->Value);
+      if(!Result.IsPositive()){
+        Body += "-";
+        Result.Mul(-1);
       }
       if(Target->Signed) Body += to_string(Target->Width+1) + "'h";
       else               Body += to_string(Target->Width  ) + "'h";
-      NUMBER Result(Expression->Value);
-      Result.Div(Target->FullScale);
-      Result.BinScale(Target->Width);
-      Result.Round();
-      if(!Result.IsPositive()){
-        if(Target->Signed){
-          NUMBER FS(1);
-          FS.BinScale(Target->Width+1);
-          Result.Add(FS);
-        }else{
-          Result = 0;
-        }
+      if(!Expression->RawAssign){
+        Result.Div(Target->FullScale);
+        Result.BinScale(Target->Width);
       }
+      Result.Round();
       Body += Result.GetString(16);
       break;
     }
@@ -506,7 +499,10 @@ void BACK_END::BuildPorts(string& Body, NAMESPACE* Namespace, bool& isFirst){
           case AST::DEFINITION::Output: Body += "  output "; break;
           default                     : Body += "  inout  "; break;
         }
-        if(Pin->Width > 1) Body += "["+ to_string(Pin->Width-1) +":0]";
+        if(Pin->Width > 1){
+          if(Pin->Signed) Body += "["+ to_string(Pin->Width  ) +":0]";
+          else            Body += "["+ to_string(Pin->Width-1) +":0]";
+        }
         Body += Pin->HDL_Name();
         break;
       }
@@ -529,7 +525,10 @@ void BACK_END::BuildNets(string& Body, NAMESPACE* Namespace){
       case BASE::TYPE::Net:{
         auto Net = (NET*)SymbolIterator->second;
         Body += "wire ";
-        if(Net->Width > 1) Body += "["+ to_string(Net->Width-1) +":0]";
+        if(Net->Width > 1){
+          if(Net->Signed) Body += "["+ to_string(Net->Width  ) +":0]";
+          else            Body += "["+ to_string(Net->Width-1) +":0]";
+        }
         Body += Net->HDL_Name() + ";";
         break;
       }

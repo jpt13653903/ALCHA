@@ -394,6 +394,12 @@ string& NUMBER::GetString(int Base){
   if(r && i) sprintf(s, "(%s+%sj)", sr, si);
   else if(i) sprintf(s, "%sj"     , si);
   else       sprintf(s, "%s"      , sr);
+
+  if(Base > 10){
+    for(int n = 0; s[n]; n++){
+      if(s[n] >= 'a' && s[n] <= 'z') s[n] += 'A' - 'a';
+    }
+  }
   Result += s;
 
   free(sr);
