@@ -135,6 +135,10 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
         }
         NamespaceIterator++;
       }
+      if(!Result){
+        Error(Node);
+        printf("Identifier \"%s\" not defined\n", Node->Name.c_str());
+      }
       break;
     }
 
@@ -143,11 +147,15 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       auto Element = (AST::EXPRESSION*)Node->Right;
       while(Element){
         auto EvaluatedElement = Evaluate(Element);
+        if(!EvaluatedElement){
+          delete Result;
+          return 0;
+        }
         Result->Elements.push_back(EvaluatedElement);
         if(EvaluatedElement->Width){
           Result->Width += EvaluatedElement->Width;
         }else{
-          Error(Element, "Vector element has undefined width\n");
+          Error(Element, "Vector element has undefined width");
           delete Result;
           return 0;
         }
@@ -209,22 +217,23 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
                 delete Left;
                 return 0;
               }
-              if(Found->second &&
-                 Found->second->Type == BASE::TYPE::Alias){
-                auto Alias = (ALIAS*)Found->second;
-                NamespaceStack.push_front(Alias->Namespace);
-                  Result = Evaluate(Alias->Expression);
-                NamespaceStack.pop_front();
-              }else{
-                Result = new EXPRESSION(EXPRESSION::Object);
-                Result->ObjectRef = Found->second;
-                if(Result->ObjectRef->Type == BASE::TYPE::Pin ||
-                   Result->ObjectRef->Type == BASE::TYPE::Net ){
-                  auto Object = (SYNTHESISABLE*)Result->ObjectRef;
-                  Object->Used      = true;
-                  Result->Signed    = Object->Signed;
-                  Result->Width     = Object->Width;
-                  Result->FullScale = Object->FullScale;
+              if(Found->second){
+                if(Found->second->Type == BASE::TYPE::Alias){
+                  auto Alias = (ALIAS*)Found->second;
+                  NamespaceStack.push_front(Alias->Namespace);
+                    Result = Evaluate(Alias->Expression);
+                  NamespaceStack.pop_front();
+                }else{
+                  Result = new EXPRESSION(EXPRESSION::Object);
+                  Result->ObjectRef = Found->second;
+                  if(Result->ObjectRef->Type == BASE::TYPE::Pin ||
+                     Result->ObjectRef->Type == BASE::TYPE::Net ){
+                    auto Object = (SYNTHESISABLE*)Result->ObjectRef;
+                    Object->Used      = true;
+                    Result->Signed    = Object->Signed;
+                    Result->Width     = Object->Width;
+                    Result->FullScale = Object->FullScale;
+                  }
                 }
               }
               delete Left;
@@ -307,6 +316,10 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
         Result->Right = Evaluate((AST::EXPRESSION*)Node->Right);
       }
+      if(!Result->Right){
+        delete Result;
+        return 0;
+      }
       Result->Signed    = Result->Right->Signed;
       Result->Width     = Result->Right->Width;
       Result->FullScale = Result->Right->FullScale;
@@ -316,6 +329,10 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       Result = new EXPRESSION(EXPRESSION::Bit_NOT);
       if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
         Result->Right = Evaluate((AST::EXPRESSION*)Node->Right);
+      }
+      if(!Result->Right){
+        delete Result;
+        return 0;
       }
       Result->Signed    = Result->Right->Signed;
       Result->Width     = Result->Right->Width;
@@ -600,7 +617,7 @@ bool ENGINE::ApplyParameters(SYNTHESISABLE* Object, AST::BASE* Parameter){
   }
   if(Object->FullScale.IsReal() && (Object->FullScale.GetReal() < 0)){
     Object->FullScale.Mul(-1);
-    Object->Signed     = true;
+    Object->Signed = true;
   }
   return true;
 }
@@ -1291,9 +1308,8 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
 
   Right = Evaluate(Ast->Right);
   if(!Right){
-    // This is ok -- generally caused by a syntax or semantic error
-    error("Null assignment expression");
-    if(Right) delete Right;
+    // This is ok -- generally caused by a syntax or semantic error, but should
+    // halt further compilation anyway
     return false;
   }
 
