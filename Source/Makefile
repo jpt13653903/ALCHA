@@ -1,13 +1,13 @@
 ifeq ($(OS), Windows_NT)
   # libgmp and libmpfr for Windows only works under 32-bit compilation
-  CXX     = mingw32-g++
-  windres = C:/TDM-GCC-32/bin/windres.exe
+  CXX      = mingw32-g++
+  Options += -fdiagnostics-color=always
+  windres  = C:/TDM-GCC-32/bin/windres.exe
 else
   CXX = g++
 endif
 
-Options  = -std=c++11
-Options += -fdiagnostics-color=always
+Options += -std=c++11
 Options += -Wall
 Options += -O2
 Options += -DDEBUG
