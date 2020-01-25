@@ -62,6 +62,10 @@ class ENGINE{
     // scripting variables and expressions on the fly.
     NETLIST::EXPRESSION* Evaluate(AST::EXPRESSION* Node);
 
+    // Called when the identifier cannot be found in the namespace stack
+    std::map<std::string, NUMBER> Constants;
+    bool GetConstant(const std::string& Name, NUMBER* Constant);
+
     // Populates a list of existing expressions, except when the target is an
     // undefined attribute, in which case the attribute is created first.
     struct TARGET_LIST{

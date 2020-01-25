@@ -27,6 +27,11 @@ using namespace NETLIST;
 
 ENGINE::ENGINE(){
   error = false;
+
+  // TODO: Maybe pull constants into a class of their own?
+  Constants["e" ] = 2.718281828459045235360;
+  Constants["π" ] = 3.141592653589793238463;
+  Constants["pi"] = 3.141592653589793238463;
 }
 //------------------------------------------------------------------------------
 
@@ -136,8 +141,14 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
         NamespaceIterator++;
       }
       if(!Result){
-        Error(Node);
-        printf("Identifier \"%s\" not defined\n", Node->Name.c_str());
+        NUMBER Constant;
+        if(GetConstant(Node->Name.c_str(), &Constant)){
+          Result = new EXPRESSION(EXPRESSION::Literal);
+          Result->Value = Constant;
+        }else{
+          Error(Node);
+          printf("Identifier \"%s\" not defined\n", Node->Name.c_str());
+        }
       }
       break;
     }
@@ -483,6 +494,16 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
   }
   Simplify(Result);
   return Result;
+}
+//------------------------------------------------------------------------------
+
+bool ENGINE::GetConstant(const string& Name, NUMBER* Constant){
+  auto Result = Constants.find(Name);
+  if(Result == Constants.end()) return false;
+
+  *Constant = Result->second;
+
+  return true;
 }
 //------------------------------------------------------------------------------
 

@@ -42,39 +42,39 @@ class NUMBER{
 
   public:
     NUMBER();
-    NUMBER(int      i);
-    NUMBER(unsigned u);
-    NUMBER(double   d);
-    NUMBER(bool     b);
-    NUMBER(NUMBER&  n);
+    NUMBER(int           i);
+    NUMBER(unsigned      u);
+    NUMBER(double        d);
+    NUMBER(bool          b);
+    NUMBER(const NUMBER& n);
    ~NUMBER();
 
     void Set(mpz_t Numerator, mpz_t Denominator);
 
     // Operators
-    void operator= (int      i);
-    void operator= (unsigned u);
-    void operator= (double   d);
-    void operator= (bool     b);
-    void operator= (NUMBER&  n);
+    void operator= (int           i);
+    void operator= (unsigned      u);
+    void operator= (double        d);
+    void operator= (bool          b);
+    void operator= (const NUMBER& n);
 
-    bool operator== (int      i);
-    bool operator== (unsigned u);
-    bool operator== (double   d);
-    bool operator== (bool     b);
-    bool operator== (NUMBER&  n);
+    bool operator== (int           i);
+    bool operator== (unsigned      u);
+    bool operator== (double        d);
+    bool operator== (bool          b);
+    bool operator== (const NUMBER& n);
 
     void Add(double r, double i = 0);
-    void Add(NUMBER& n);
+    void Add(const NUMBER& n);
 
     void Sub(double r, double i = 0);
-    void Sub(NUMBER& n);
+    void Sub(const NUMBER& n);
 
     void Mul(double r, double i = 0);
-    void Mul(NUMBER& n);
+    void Mul(const NUMBER& n);
 
     void Div(double r, double i = 0);
-    void Div(NUMBER& n);
+    void Div(const NUMBER& n);
 
     void BinScale(int N); // *= 2^N
 

@@ -58,7 +58,7 @@ NUMBER::NUMBER(bool b){
 }
 //------------------------------------------------------------------------------
 
-NUMBER::NUMBER(NUMBER& n){
+NUMBER::NUMBER(const NUMBER& n){
   mpq_init(Real);
   mpq_init(Imag);
   operator= (n);
@@ -103,7 +103,7 @@ void NUMBER::operator= (bool b){
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::operator= (NUMBER& n){
+void NUMBER::operator= (const NUMBER& n){
   mpq_set(Real, n.Real);
   mpq_set(Imag, n.Imag);
 }
@@ -138,7 +138,7 @@ bool NUMBER::operator== (bool b){
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator== (NUMBER& n){
+bool NUMBER::operator== (const NUMBER& n){
   if(!mpq_equal(Real, n.Real)) return false;
   if(!mpq_equal(Imag, n.Imag)) return false;
   return true;
@@ -159,7 +159,7 @@ void NUMBER::Add(double r, double i){
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::Add(NUMBER& n){
+void NUMBER::Add(const NUMBER& n){
   mpq_add(Real, Real, n.Real);
   mpq_add(Imag, Imag, n.Imag);
 }
@@ -179,7 +179,7 @@ void NUMBER::Sub(double r, double i){
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::Sub(NUMBER& n){
+void NUMBER::Sub(const NUMBER& n){
   mpq_sub(Real, Real, n.Real);
   mpq_sub(Imag, Imag, n.Imag);
 }
@@ -213,7 +213,7 @@ void NUMBER::Mul(double r, double i){
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::Mul(NUMBER& n){
+void NUMBER::Mul(const NUMBER& n){
   mpq_t a, b;
 
   mpq_init(a);
@@ -269,7 +269,7 @@ void NUMBER::Div(double r, double i){
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::Div(NUMBER& n){
+void NUMBER::Div(const NUMBER& n){
   mpq_t a, b, c, d;
 
   mpq_init(a);
