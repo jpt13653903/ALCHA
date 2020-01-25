@@ -24,7 +24,7 @@
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-NETLIST::BYTE::BYTE(const char* Name) : BASE(Name, TYPE::Byte){
+NETLIST::BYTE::BYTE(int Line, const std::string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Byte){
   Value = 0;
 }
 //------------------------------------------------------------------------------

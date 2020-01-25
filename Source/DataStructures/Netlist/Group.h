@@ -32,7 +32,7 @@
 namespace NETLIST{
   class GROUP: public NAMESPACE{
     public:
-               GROUP(const char* Name = "");
+               GROUP(int Line, const std::string& Filename, const char* Name = "");
       virtual ~GROUP(); // Also cleans up the children
 
       virtual void Display();

@@ -24,7 +24,7 @@
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-SYNTHESISABLE::SYNTHESISABLE(const char* Name, TYPE Type) : BASE(Name, Type){
+SYNTHESISABLE::SYNTHESISABLE(int Line, const std::string& Filename, const char* Name, TYPE Type) : BASE(Line, Filename, Name, Type){
   Used      = false;
   Signed    = false;
   Width     = 1;

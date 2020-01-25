@@ -24,7 +24,7 @@
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-NUM::NUM(const char* Name) : BASE(Name, TYPE::Number){
+NUM::NUM(int Line, const std::string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Number){
   Value = 0;
 }
 //------------------------------------------------------------------------------

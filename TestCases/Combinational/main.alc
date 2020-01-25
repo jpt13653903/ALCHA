@@ -13,6 +13,8 @@ ADT7420.SDA'pullup  = true;
 ADT7420.SDA.driver  = 0;
 ADT7420.SDA.enabled = ~Data;
 
+pin(16) ADT7420_SDA = 123;
+
 num MyNumber = -1.23456;
 
 !! Testing virtual pins
@@ -20,12 +22,9 @@ pin(14, -pi) Testing = MyNumber;
 
 LVDS_TX = 0xABC;
 
-pin(16)YEAR    = __YEAR__;
-pin(16)MONTH   = __MONTH__;
-pin(16)DAY     = __DAY__;
-pin(16)HOUR    = __HOUR__;
-pin(16)MINUTE  = __MINUTE__;
-pin(16)SECOND  = __SECOND__;
-pin(16)WEEKDAY = __WEEKDAY__;
-pin(16)YEARDAY = __YEARDAY__;
+SDRAM.A = 123;
+
+group ΓρεεκΓροθπ{
+  pin(16) ΜυΓρεεκΝαμε = 1234;
+}
 

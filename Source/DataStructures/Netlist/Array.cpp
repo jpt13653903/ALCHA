@@ -24,7 +24,7 @@
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-ARRAY::ARRAY(const char* Name) : BASE(Name, TYPE::Array){
+ARRAY::ARRAY(int Line, const std::string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Array){
   error("Not yet implemented");
 }
 //------------------------------------------------------------------------------

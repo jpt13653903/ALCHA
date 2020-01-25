@@ -41,7 +41,6 @@ SCANNER::SCANNER(){
 
     Spaces.Insert("\x20"        , TOKEN::Space); // U+0020: Space
     Spaces.Insert("\x09"        , TOKEN::Space); // U+0009: Character Tabulation
-    Spaces.Insert("\xA0"        , TOKEN::Space); // U+00A0: No-break Space
     Spaces.Insert("\xC2\xA0"    , TOKEN::Space); // U+00A0: No-break Space
     Spaces.Insert("\xE1\x9A\x80", TOKEN::Space); // U+1680: Ogham Space Mark
     Spaces.Insert("\xE2\x80\x80", TOKEN::Space); // U+2000: En Quad
@@ -67,7 +66,6 @@ SCANNER::SCANNER(){
     Spaces.Insert("\n\r"        , TOKEN::Newline);
     Spaces.Insert("\x0B"        , TOKEN::Newline); // Vertical Tab
     Spaces.Insert("\x0C"        , TOKEN::Newline); // Form Feed
-    Spaces.Insert("\x85"        , TOKEN::Newline); // Next Line (NEL)
     Spaces.Insert("\xC2\x85"    , TOKEN::Newline); // U+0085: NEL
     Spaces.Insert("\xE2\x80\xA8", TOKEN::Newline); // U+2028: Line Separator
     Spaces.Insert("\xE2\x80\xA9", TOKEN::Newline); // U+2029: Paragraph Separator
@@ -317,8 +315,6 @@ bool SCANNER::TodoComment(){
 
   while(Buffer[Index]){
     if(Spaces.Match(Buffer+Index, &Count) == TOKEN::Newline){
-      Line  ++;
-      Index += Count;
       if(!Comment.empty()){
         printf(
           ANSI_FG_BRIGHT_BLACK   "Line "
@@ -332,6 +328,8 @@ bool SCANNER::TodoComment(){
           Comment .c_str()
         );
       }
+      Line  ++;
+      Index += Count;
       return true;
     }
     if(Count){

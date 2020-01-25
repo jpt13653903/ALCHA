@@ -31,6 +31,10 @@ class BACK_END{
     std::string Path;
     std::string Filename;
 
+    bool error;
+    void Error  (NETLIST::EXPRESSION* Expression, const char* Message = 0);
+    void Warning(NETLIST::EXPRESSION* Expression, const char* Message = 0);
+
     bool WriteFile(std::string& Filename, const char* Ext, std::string& Body);
 
     bool DeleteUnused       (NETLIST::NAMESPACE* Module);

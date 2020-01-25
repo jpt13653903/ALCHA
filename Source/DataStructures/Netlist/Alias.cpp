@@ -24,7 +24,7 @@
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-ALIAS::ALIAS(const char* Name, AST::EXPRESSION* Expression): BASE(Name, TYPE::Alias){
+ALIAS::ALIAS(int Line, const std::string& Filename, const char* Name, AST::EXPRESSION* Expression): BASE(Line, Filename, Name, TYPE::Alias){
   this->Expression = Expression;
 }
 //------------------------------------------------------------------------------

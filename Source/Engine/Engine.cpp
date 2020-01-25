@@ -100,17 +100,17 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
 
   switch(Node->ExpressionType){
     case AST::EXPRESSION::String:
-      Result = new EXPRESSION(EXPRESSION::String);
+      Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::String);
       Result->StrValue = *(Node->StrValue);
       break;
 
     case AST::EXPRESSION::Literal:
-      Result = new EXPRESSION(EXPRESSION::Literal);
+      Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::Literal);
       Result->Value = *(Node->Value);
       break;
 
     case AST::EXPRESSION::Array:{
-      Result = new EXPRESSION(EXPRESSION::Array);
+      Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::Array);
       auto Element = (AST::EXPRESSION*)Node->Right;
       while(Element){
         Result->Elements.push_back(Evaluate(Element));
@@ -138,7 +138,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
                 case BASE::TYPE::Pin:
                 case BASE::TYPE::Net:{
                   auto Synthesisable = (SYNTHESISABLE*)Object->second;
-                  Result = new EXPRESSION(EXPRESSION::Object);
+                  Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::Object);
                   Result->ObjectRef = Synthesisable;
                   Result->Signed    = Synthesisable->Signed;
                   Result->Width     = Synthesisable->Width;
@@ -147,7 +147,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
                   break;
                 }
                 default:{
-                  Result = new EXPRESSION(EXPRESSION::Object);
+                  Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::Object);
                   Result->ObjectRef = Object->second;
                   break;
                 }
@@ -161,7 +161,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       if(!Result){
         NUMBER Constant;
         if(GetConstant(Node->Name.c_str(), &Constant)){
-          Result = new EXPRESSION(EXPRESSION::Literal);
+          Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::Literal);
           Result->Value = Constant;
         }else{
           Error(Node);
@@ -172,7 +172,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
     }
 
     case AST::EXPRESSION::VectorConcatenate:{
-      Result = new EXPRESSION(EXPRESSION::VectorConcatenate);
+      Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::VectorConcatenate);
       auto Element = (AST::EXPRESSION*)Node->Right;
       while(Element){
         auto EvaluatedElement = Evaluate(Element);
@@ -197,7 +197,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
     }
 
     case AST::EXPRESSION::ArrayConcatenate:{
-      Result = new EXPRESSION(EXPRESSION::ArrayConcatenate);
+      Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::ArrayConcatenate);
       auto Element = (AST::EXPRESSION*)Node->Right;
       while(Element){
         Result->Elements.push_back(Evaluate(Element));
@@ -253,7 +253,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
                     Result = Evaluate(Alias->Expression);
                   NamespaceStack.pop_front();
                 }else{
-                  Result = new EXPRESSION(EXPRESSION::Object);
+                  Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::Object);
                   Result->ObjectRef = Found->second;
                   if(Result->ObjectRef->Type == BASE::TYPE::Pin ||
                      Result->ObjectRef->Type == BASE::TYPE::Net ){
@@ -314,6 +314,8 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
           return 0;
         }
         Result = new EXPRESSION(Found);
+        Result->Line     = Node->Line;
+        Result->Filename = Node->Filename;
         delete Left;
       }else{
         // TODO Could be a slice expression, which is not supported yet
@@ -341,7 +343,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
 
     case AST::EXPRESSION::Negate:
-      Result = new EXPRESSION(EXPRESSION::Negate);
+      Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::Negate);
       if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
         Result->Right = Evaluate((AST::EXPRESSION*)Node->Right);
       }
@@ -355,7 +357,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
 
     case AST::EXPRESSION::Bit_NOT:
-      Result = new EXPRESSION(EXPRESSION::Bit_NOT);
+      Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::Bit_NOT);
       if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
         Result->Right = Evaluate((AST::EXPRESSION*)Node->Right);
       }
@@ -411,7 +413,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
 
     case AST::EXPRESSION::Multiply:
-      Result = new EXPRESSION(EXPRESSION::Multiply);
+      Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::Multiply);
       if(Node->Left) Result->Left = Evaluate(Node->Left);
       if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
         Result->Right = Evaluate((AST::EXPRESSION*)Node->Right);
@@ -662,6 +664,50 @@ bool ENGINE::ApplyParameters(SYNTHESISABLE* Object, AST::BASE* Parameter){
 }
 //------------------------------------------------------------------------------
 
+void ENGINE::SimplifyFilename(string& Filename){
+  int  LastSlash;
+  int  n, c;
+  bool Changes;
+
+  do{
+    Changes   = false;
+    LastSlash = -1;
+
+    for(n = 0; Filename[n]; n++){
+      if(Filename[n] == '/'
+        #ifdef WINVER
+          || Filename[n] == '\\'
+        #endif
+      ){
+        if(
+          Filename[n+1] == '.' &&
+          Filename[n+2] == '.' && (
+            Filename[n+3] == '/'
+            #ifdef WINVER
+              || Filename[n+3] == '\\'
+            #endif
+          ) && (
+            n > LastSlash+3 ||
+            Filename[LastSlash+1] != '.' ||
+            Filename[LastSlash+2] != '.'
+          )
+        ){
+          n += 4;
+          for(c = LastSlash+1; Filename[n]; c++, n++) Filename[c] = Filename[n];
+          Filename[c] = 0;
+          Changes = true;
+          break;
+        }else{
+          LastSlash = n;
+        }
+      }
+    }
+  }while(Changes);
+
+  Filename.resize(n);
+}
+//------------------------------------------------------------------------------
+
 bool ENGINE::Import(AST::IMPORT* Ast){
   string Filename;
   bool   OwnNamespace = !Ast->Namespace.empty();
@@ -674,7 +720,7 @@ bool ENGINE::Import(AST::IMPORT* Ast){
              Ast->Namespace.c_str());
       return false;
     }
-    auto Module = new MODULE(Ast->Namespace.c_str());
+    auto Module = new MODULE(Ast->Line, Ast->Filename, Ast->Namespace.c_str());
     NamespaceStack.front()->Symbols[Ast->Namespace] = Module;
     NamespaceStack.push_front(Module);
   }
@@ -687,6 +733,7 @@ bool ENGINE::Import(AST::IMPORT* Ast){
   if(n >= 0) Filename = Path.substr(0, n+1);
   Filename += Ast->File;
   Filename += ".alc";
+  SimplifyFilename(Filename);
   Debug.print("\nFilename = %s\n", Filename);
 
   bool Result = Run(Filename.c_str());
@@ -711,7 +758,7 @@ bool ENGINE::Group(AST::GROUP* Ast){
            Ast->Identifier.c_str());
     return false;
   }
-  auto Object = new NETLIST::GROUP(Ast->Identifier.c_str());
+  auto Object = new NETLIST::GROUP(Ast->Line, Ast->Filename, Ast->Identifier.c_str());
   ApplyAttributes(Object, Ast->Attributes);
   NamespaceStack.front()->Symbols[Ast->Identifier] = Object;
   NamespaceStack.push_front(Object);
@@ -732,7 +779,7 @@ bool ENGINE::Alias(AST::ALIAS* Ast){
     return false;
   }
 
-  auto Object = new ALIAS(Ast->Identifier.c_str(), Ast->Expression);
+  auto Object = new ALIAS(Ast->Line, Ast->Filename, Ast->Identifier.c_str(), Ast->Expression);
 
   NamespaceStack.front()->Symbols[Object->Name] = Object;
 
@@ -769,7 +816,7 @@ bool ENGINE::Definition(AST::DEFINITION* Ast){
         break;
 
       case AST::DEFINITION::Pin:{
-        auto Pin = new PIN(Identifier->Identifier.c_str());
+        auto Pin = new PIN(Ast->Line, Ast->Filename, Identifier->Identifier.c_str());
         Pin->Direction = Ast->Direction;
         if(!ApplyParameters(Pin, Ast->Parameters)) Error(Ast, "Invalid parameters");
         if(!ApplyAttributes(Pin, Ast->Attributes)) Error(Ast, "Invalid attributes");
@@ -781,7 +828,7 @@ bool ENGINE::Definition(AST::DEFINITION* Ast){
       }
 
       case AST::DEFINITION::Net:{
-        auto Net = new NET(Identifier->Identifier.c_str());
+        auto Net = new NET(Ast->Line, Ast->Filename, Identifier->Identifier.c_str());
         Net->Direction = Ast->Direction;
         if(!ApplyParameters(Net, Ast->Parameters)) Error(Ast, "Invalid parameters");
         if(!ApplyAttributes(Net, Ast->Attributes)) Error(Ast, "Invalid attributes");
@@ -793,7 +840,7 @@ bool ENGINE::Definition(AST::DEFINITION* Ast){
       }
 
       case AST::DEFINITION::Byte:{
-        auto Byte = new NETLIST::BYTE(Identifier->Identifier.c_str());
+        auto Byte = new NETLIST::BYTE(Ast->Line, Ast->Filename, Identifier->Identifier.c_str());
         if(!ApplyAttributes(Byte, Ast->Attributes)) Error(Ast, "Invalid attributes");
         NamespaceStack.front()->Symbols[Byte->Name] = Byte;
         if(Identifier->Initialiser){
@@ -803,7 +850,7 @@ bool ENGINE::Definition(AST::DEFINITION* Ast){
       }
 
       case AST::DEFINITION::Char:{
-        auto Char = new CHARACTER(Identifier->Identifier.c_str());
+        auto Char = new CHARACTER(Ast->Line, Ast->Filename, Identifier->Identifier.c_str());
         if(!ApplyAttributes(Char, Ast->Attributes)) Error(Ast, "Invalid attributes");
         NamespaceStack.front()->Symbols[Char->Name] = Char;
         if(Identifier->Initialiser){
@@ -813,7 +860,7 @@ bool ENGINE::Definition(AST::DEFINITION* Ast){
       }
 
       case AST::DEFINITION::Num:{
-        auto Number = new NUM(Identifier->Identifier.c_str());
+        auto Number = new NUM(Ast->Line, Ast->Filename, Identifier->Identifier.c_str());
         if(!ApplyAttributes(Number, Ast->Attributes)) Error(Ast, "Invalid attributes");
         NamespaceStack.front()->Symbols[Number->Name] = Number;
         if(Identifier->Initialiser){
@@ -942,7 +989,7 @@ bool ENGINE::GetLHS(AST::EXPRESSION* Node, target_list& List){
 
     case AST::EXPRESSION::VectorConcatenate:{
       error("VectorConcatenate not yet implemented");
-      // Result = new EXPRESSION(EXPRESSION::VectorConcatenate);
+      // Result = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::VectorConcatenate);
       // auto Element = (AST::EXPRESSION*)Node->Right;
       // while(Element){
       //   Result->Elements.push_back(Evaluate(Element));
@@ -953,7 +1000,7 @@ bool ENGINE::GetLHS(AST::EXPRESSION* Node, target_list& List){
 
     case AST::EXPRESSION::ArrayConcatenate:{
       error("ArrayConcatenate not yet implemented");
-      // Result = new EXPRESSION(EXPRESSION::ArrayConcatenate);
+      // Result = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::ArrayConcatenate);
       // auto Element = (AST::EXPRESSION*)Node->Right;
       // while(Element){
       //   Result->Elements.push_back(Evaluate(Element));
@@ -1214,6 +1261,8 @@ void ENGINE::Simplify(EXPRESSION* Root){
         delete Root->Left ; Root->Left  = 0;
         delete Root->Right; Root->Right = 0;
       }
+      // TODO When multiplying an expression with a literal, simply scale the
+      //      full-scale of the expression
       break;
 
     case EXPRESSION::Divide:
@@ -1239,6 +1288,8 @@ void ENGINE::Simplify(EXPRESSION* Root){
         delete Root->Left ; Root->Left  = 0;
         delete Root->Right; Root->Right = 0;
       }
+      // TODO When adding an expression to a literal, follow the rules
+      //      in the SIPS article
       break;
 
     case EXPRESSION::Subtract:
@@ -1252,6 +1303,8 @@ void ENGINE::Simplify(EXPRESSION* Root){
         delete Root->Left ; Root->Left  = 0;
         delete Root->Right; Root->Right = 0;
       }
+      // TODO When subtracting an expression from a literal (or vice versa),
+      //      follow the rules in the SIPS article
       break;
 
     case EXPRESSION::Shift_Left:
@@ -1365,7 +1418,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
       case BASE::TYPE::Byte:
       case BASE::TYPE::Character:
       case BASE::TYPE::Number:
-        ScriptTarget = new EXPRESSION(EXPRESSION::Object);
+        ScriptTarget = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Object);
         ScriptTarget->ObjectRef = Object;
         Target = &ScriptTarget;
         break;
@@ -1391,7 +1444,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
 
     case AST::ASSIGNMENT::Append_Assign:
       Right->RawAssign = false;
-      Temp = new EXPRESSION(EXPRESSION::ArrayConcatenate);
+      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::ArrayConcatenate);
       Temp->Left  = *Target;
       Temp->Right = Right;
       *Target     = Temp;
@@ -1399,7 +1452,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
 
     case AST::ASSIGNMENT::Add_Assign:
       Right->RawAssign = false;
-      Temp = new EXPRESSION(EXPRESSION::Add);
+      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Add);
       Temp->Left  = *Target;
       Temp->Right = Right;
       *Target     = Temp;
@@ -1407,7 +1460,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
 
     case AST::ASSIGNMENT::Subtract_Assign:
       Right->RawAssign = false;
-      Temp = new EXPRESSION(EXPRESSION::Subtract);
+      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Subtract);
       Temp->Left  = *Target;
       Temp->Right = Right;
       *Target     = Temp;
@@ -1415,7 +1468,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
 
     case AST::ASSIGNMENT::Multiply_Assign:
       Right->RawAssign = false;
-      Temp = new EXPRESSION(EXPRESSION::Multiply);
+      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Multiply);
       Temp->Left  = *Target;
       Temp->Right = Right;
       *Target     = Temp;
@@ -1423,7 +1476,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
 
     case AST::ASSIGNMENT::Divide_Assign:
       Right->RawAssign = false;
-      Temp = new EXPRESSION(EXPRESSION::Divide);
+      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Divide);
       Temp->Left  = *Target;
       Temp->Right = Right;
       *Target     = Temp;
@@ -1431,7 +1484,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
 
     case AST::ASSIGNMENT::Modulus_Assign:
       Right->RawAssign = false;
-      Temp = new EXPRESSION(EXPRESSION::Modulus);
+      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Modulus);
       Temp->Left  = *Target;
       Temp->Right = Right;
       *Target     = Temp;
@@ -1439,7 +1492,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
 
     case AST::ASSIGNMENT::Exponential_Assign:
       Right->RawAssign = false;
-      Temp = new EXPRESSION(EXPRESSION::Exponential);
+      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Exponential);
       Temp->Left  = *Target;
       Temp->Right = Right;
       *Target     = Temp;
@@ -1447,7 +1500,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
 
     case AST::ASSIGNMENT::AND_Assign:
       Right->RawAssign = true;
-      Temp = new EXPRESSION(EXPRESSION::Bit_AND);
+      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Bit_AND);
       Temp->Left  = *Target;
       Temp->Right = Right;
       *Target     = Temp;
@@ -1455,7 +1508,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
 
     case AST::ASSIGNMENT::OR_Assign:
       Right->RawAssign = true;
-      Temp = new EXPRESSION(EXPRESSION::Bit_OR);
+      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Bit_OR);
       Temp->Left  = *Target;
       Temp->Right = Right;
       *Target     = Temp;
@@ -1463,7 +1516,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
 
     case AST::ASSIGNMENT::XOR_Assign:
       Right->RawAssign = true;
-      Temp = new EXPRESSION(EXPRESSION::Bit_XOR);
+      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Bit_XOR);
       Temp->Left  = *Target;
       Temp->Right = Right;
       *Target     = Temp;
@@ -1471,7 +1524,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
 
     case AST::ASSIGNMENT::Shift_Left_Assign:
       Right->RawAssign = true;
-      Temp = new EXPRESSION(EXPRESSION::Shift_Left);
+      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Shift_Left);
       Temp->Left  = *Target;
       Temp->Right = Right;
       *Target     = Temp;
@@ -1479,7 +1532,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
 
     case AST::ASSIGNMENT::Shift_Right_Assign:
       Right->RawAssign = true;
-      Temp = new EXPRESSION(EXPRESSION::Shift_Right);
+      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Shift_Right);
       Temp->Left  = *Target;
       Temp->Right = Right;
       *Target     = Temp;

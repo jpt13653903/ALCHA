@@ -30,7 +30,7 @@ namespace NETLIST{
   struct NET: public SYNTHESISABLE{
     EXPRESSION* Value;
 
-             NET(const char* Name);
+             NET(int Line, const std::string& Filename, const char* Name);
     virtual ~NET();
 
     virtual void Display();

@@ -29,7 +29,7 @@ namespace NETLIST{
   struct BYTE: public BASE{
     uint8_t Value;
 
-             BYTE(const char* Name);
+             BYTE(int Line, const std::string& Filename, const char* Name);
     virtual ~BYTE();
 
     virtual void Display();

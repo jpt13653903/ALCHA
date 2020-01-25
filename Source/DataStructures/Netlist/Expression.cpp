@@ -24,7 +24,9 @@
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-EXPRESSION::EXPRESSION(EXPRESSION_TYPE ExpressionType){
+EXPRESSION::EXPRESSION(int Line, const std::string& Filename, EXPRESSION_TYPE ExpressionType){
+  this->Line           = Line;
+  this->Filename       = Filename;
   this->ExpressionType = ExpressionType;
 
   ObjectRef = 0;
@@ -46,6 +48,8 @@ EXPRESSION::EXPRESSION(EXPRESSION* Expression){
 
   if(!Expression) return;
 
+  Line           = Expression->Line;
+  Filename       = Expression->Filename;
   ExpressionType = Expression->ExpressionType;
   RawAssign      = Expression->RawAssign;
   Signed         = Expression->Signed;

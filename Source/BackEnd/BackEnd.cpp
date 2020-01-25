@@ -26,10 +26,43 @@ using namespace NETLIST;
 //------------------------------------------------------------------------------
 
 BACK_END::BACK_END(){
+  error = false;
 }
 //------------------------------------------------------------------------------
 
 BACK_END::~BACK_END(){
+}
+//------------------------------------------------------------------------------
+
+void BACK_END::Error(EXPRESSION* Expression, const char* Message){
+  if(error) return;
+  error = true;
+  printf(
+    ANSI_FG_BRIGHT_BLACK "Line "
+    ANSI_FG_CYAN         "%05d "
+    ANSI_FG_BRIGHT_BLACK "of "
+    ANSI_FG_YELLOW       "%s\n"
+    ANSI_FG_BRIGHT_RED   "  Error: "
+    ANSI_RESET,
+    Expression->Line,
+    Expression->Filename.c_str()
+  );
+  if(Message) printf("%s\n", Message);
+}
+//------------------------------------------------------------------------------
+
+void BACK_END::Warning(EXPRESSION* Expression, const char* Message){
+  printf(
+    ANSI_FG_BRIGHT_BLACK "Line "
+    ANSI_FG_CYAN         "%05d "
+    ANSI_FG_BRIGHT_BLACK "of "
+    ANSI_FG_YELLOW       "%s\n"
+    ANSI_FG_MAGENTA      "  Warning: "
+    ANSI_RESET,
+    Expression->Line,
+    Expression->Filename.c_str()
+  );
+  if(Message) printf("%s\n", Message);
 }
 //------------------------------------------------------------------------------
 
@@ -168,7 +201,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, SYNTHESISAB
   switch(Expression->ExpressionType){
     case EXPRESSION::Literal:{
       if(!Expression->Value.IsReal()){
-        error("non-real literal");
+        Error(Expression, "non-real literal");
         return false;
       }
       if(!Target){
@@ -188,6 +221,12 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, SYNTHESISAB
       }
       Result.Round();
       Body += Result.GetString(16);
+      Result.BinScale(-Target->Width);
+      Result.Sub(1);
+      if(Result.IsPositive()){
+        Error(Expression, "The literal does not fit in the target full-scale");
+        return false;
+      }
       break;
     }
 
@@ -196,7 +235,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, SYNTHESISAB
         error("Null object reference");
         return false;
       }
-      Body += Expression->ObjectRef->HDL_Name();
+      Body += Expression->ObjectRef->EscapedName();
       break;
 
     case EXPRESSION::VectorConcatenate:
@@ -445,7 +484,7 @@ bool BACK_END::AddAssignment(string& Body, BASE* Object){
     case BASE::TYPE::Pin:{
       auto Pin = (PIN*)Object;
       if(Pin->Driver){
-        Body += "assign "+ Pin->HDL_Name() +" = ";
+        Body += "assign "+ Pin->EscapedName() +" = ";
         if(Pin->Enabled){
           Body += "(";
           if(!BuildExpression(Body, Pin->Enabled, (PIN*)Object)) return false;
@@ -462,7 +501,7 @@ bool BACK_END::AddAssignment(string& Body, BASE* Object){
     case BASE::TYPE::Net:{
       auto Net = (NET*)Object;
       if(Net->Value){
-        Body += "assign "+ Net->HDL_Name() +" = ";
+        Body += "assign "+ Net->EscapedName() +" = ";
         if(!BuildExpression(Body, Net->Value, (NET*)Object)) return false;
         Body += ";\n";
       }
@@ -503,7 +542,7 @@ void BACK_END::BuildPorts(string& Body, NAMESPACE* Namespace, bool& isFirst){
           if(Pin->Signed) Body += "["+ to_string(Pin->Width  ) +":0]";
           else            Body += "["+ to_string(Pin->Width-1) +":0]";
         }
-        Body += Pin->HDL_Name();
+        Body += Pin->EscapedName();
         break;
       }
       case BASE::TYPE::Group:{
@@ -529,7 +568,7 @@ void BACK_END::BuildNets(string& Body, NAMESPACE* Namespace){
           if(Net->Signed) Body += "["+ to_string(Net->Width  ) +":0]";
           else            Body += "["+ to_string(Net->Width-1) +":0]";
         }
-        Body += Net->HDL_Name() + ";";
+        Body += Net->EscapedName() + ";";
         break;
       }
       case BASE::TYPE::Group:{
@@ -560,7 +599,7 @@ bool BACK_END::BuildHDL(MODULE* Module, string Path){
   // Generate this module's name
   string Name;
   if(isGlobal) Name = Filename;
-  else         Name = Path + "/" + Module->HDL_Name();
+  else         Name = Module->EscapedName();
 
   string Body;
   Body += "module "+ Name +"(\n";
@@ -591,6 +630,8 @@ bool BACK_END::BuildHDL(MODULE* Module, string Path){
   Body += "//--------------------------------------"
           "----------------------------------------\n\n";
 
+  if(isGlobal) Name = Filename;
+  else         Name = Path + "/" + Module->HDL_Name();
   WriteFile(Name, "v", Body);
 
   return true;

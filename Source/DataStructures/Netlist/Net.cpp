@@ -24,7 +24,7 @@
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-NET::NET(const char* Name) : SYNTHESISABLE(Name, TYPE::Net){
+NET::NET(int Line, const std::string& Filename, const char* Name) : SYNTHESISABLE(Line, Filename, Name, TYPE::Net){
   Value = 0;
 }
 //------------------------------------------------------------------------------

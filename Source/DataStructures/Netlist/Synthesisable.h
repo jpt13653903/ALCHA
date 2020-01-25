@@ -41,7 +41,7 @@ namespace NETLIST{
 
     AST::DEFINITION::DIRECTION Direction;
 
-             SYNTHESISABLE(const char* Name, TYPE Type);
+             SYNTHESISABLE(int Line, const std::string& Filename, const char* Name, TYPE Type);
     virtual ~SYNTHESISABLE();
 
     bool ApplyParameters(AST::BASE* Parameter);

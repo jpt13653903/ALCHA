@@ -23,7 +23,7 @@
 
 namespace NETLIST{
   std::list<NAMESPACE*> NamespaceStack; // Initialised in Engine::Run()
-  MODULE                Global;
+  MODULE                Global(0, "");
 }
 //------------------------------------------------------------------------------
 
@@ -31,7 +31,7 @@ using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-MODULE::MODULE(const char* Name): NAMESPACE(Name){
+MODULE::MODULE(int Line, const std::string& Filename, const char* Name): NAMESPACE(Line, Filename, Name){
   Type = TYPE::Module;
 }
 //------------------------------------------------------------------------------

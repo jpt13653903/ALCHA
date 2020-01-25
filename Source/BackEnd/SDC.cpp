@@ -53,10 +53,10 @@ void SDC::BuildClocks(){
         }
         double Period = 1e9/Freq->Value.GetReal(); // ns
         Constraints +=
-          "create_clock -name " + Pin->HDL_Name()     +
-          " -period "           + to_string(Period)   + "ns"  +
-          " -waveform {0ns "    + to_string(Period/2) + "ns}" +
-          " [get_ports "        + Pin->HDL_Name()     + "]\n";
+          "create_clock -name {" + Pin->HDL_Name()     + "}"   +
+          " -period "            + to_string(Period)   + "ns"  +
+          " -waveform {0ns "     + to_string(Period/2) + "ns}" +
+          " [get_ports {"        + Pin->HDL_Name()     + "}]\n";
         ClockCount++;
       }
     }
@@ -74,7 +74,7 @@ void SDC::BuildClocks(){
         auto Pin  = (PIN*)(SymbolIterator->second);
         auto Freq = Pin->GetAttrib("frequency");
         // Already checked for validity above, so no need to check again
-        if(Freq) Constraints += " \\\n  -group " + Pin->HDL_Name();
+        if(Freq) Constraints += " \\\n  -group {"+ Pin->HDL_Name() +"}";
       }
     }
     Constraints += "\n";

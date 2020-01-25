@@ -30,7 +30,7 @@ namespace NETLIST{
   struct CHARACTER: public BASE{
     char32_t Value;
 
-             CHARACTER(const char* Name);
+             CHARACTER(int Line, const std::string& Filename, const char* Name);
     virtual ~CHARACTER();
 
     virtual void Display();

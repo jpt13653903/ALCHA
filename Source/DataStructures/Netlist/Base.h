@@ -56,16 +56,21 @@ namespace NETLIST{
           Group
       } Type;
 
+      // The line and filename that resulted in this object, used for error reporting
+      int         Line;
+      std::string Filename;
+
       std::string                        Name;
       NAMESPACE*                         Namespace;
       std::map<std::string, EXPRESSION*> Attributes;
 
-               BASE(const char* Name, TYPE Type);
+               BASE(int Line, const std::string& Filename, const char* Name, TYPE Type);
       virtual ~BASE();
 
       // Generates a name based on the parent group(s), if it is not directly
       // part of the module.  This is the name used in the output HDL.
       std::string& HDL_Name();
+      std::string& EscapedName(); // Inserts '\' in front if required
 
       virtual void Display        () = 0;
               void DisplayLongName();

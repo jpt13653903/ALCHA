@@ -95,11 +95,15 @@ namespace NETLIST{
       Conditional
     } ExpressionType;
 
+    // The line and filename that resulted in this node, used for error reporting
+    int         Line;
+    std::string Filename;
+
     bool RawAssign; // Raw assignment must be applied to the target pin or net
 
     // The resulting fixed-point type of the expression (if appropriate)
     bool   Signed;
-    int    Width; // 0 => not applicable
+    int    Width; // 0 => not applicable or not defined
     NUMBER FullScale;
 
     BASE*                    ObjectRef; // Refers to another object
@@ -111,9 +115,9 @@ namespace NETLIST{
     EXPRESSION* Left;
     EXPRESSION* Right;
 
-    EXPRESSION(EXPRESSION_TYPE ExpressionType);
+    EXPRESSION(int Line, const std::string& Filename, EXPRESSION_TYPE ExpressionType);
     EXPRESSION(EXPRESSION* Expression); // Makes a copy
-   ~EXPRESSION();
+   ~EXPRESSION(); // Also deletes Left, Right and Elements
 
     void Display();
   };

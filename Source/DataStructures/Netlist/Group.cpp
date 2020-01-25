@@ -25,7 +25,7 @@ using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-NETLIST::GROUP::GROUP(const char* Name): NAMESPACE(Name){
+NETLIST::GROUP::GROUP(int Line, const std::string& Filename, const char* Name): NAMESPACE(Line, Filename, Name){
   Type = TYPE::Group;
 }
 //------------------------------------------------------------------------------

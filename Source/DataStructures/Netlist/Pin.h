@@ -31,7 +31,7 @@ namespace NETLIST{
     EXPRESSION* Driver;
     EXPRESSION* Enabled;
 
-    PIN(const char* Name);
+    PIN(int Line, const std::string& Filename, const char* Name);
    ~PIN();
 
     void Display();

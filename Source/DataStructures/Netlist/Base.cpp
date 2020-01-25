@@ -27,9 +27,11 @@ using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-BASE::BASE(const char* Name, TYPE Type){
-  this->Type      = Type;
+BASE::BASE(int Line, const string& Filename, const char* Name, TYPE Type){
+  this->Line      = Line;
+  this->Filename  = Filename;
   this->Name      = Name;
+  this->Type      = Type;
   this->Namespace = 0;
 
   if(!NamespaceStack.empty()) Namespace = NamespaceStack.front();
@@ -45,22 +47,54 @@ BASE::~BASE(){
 
 string& BASE::HDL_Name(){
   static string Result;
+  string SafeName; // Unicode converted to hex
 
-  if(!Namespace) return Name;
-
-  Result.clear();
-
-  switch(Namespace->Type){
-    case TYPE::Module:
-      return Name;
-
-    case TYPE::Group:
-      Result = Namespace->HDL_Name() + "_" + Name;
-      break;
-
-    default:
-      break;
+  int n;
+  for(n = 0; Name[n]; n++){
+    if(Name[n] & 0x80) break;
   }
+  if(Name[n]){ // Escape Unicode characters
+    SafeName = "#";
+    for(int n = 0; Name[n]; n++){
+      char s[8];
+      if((uint8_t)Name[n] < 0x80){
+        SafeName += Name[n];
+      }else{
+        sprintf(s, "%02X", (unsigned)((uint8_t)Name[n]));
+        SafeName += s;
+      }
+    }
+  }else{
+    SafeName = Name;
+  }
+
+  if(Namespace){
+    switch(Namespace->Type){
+      case TYPE::Module: Result = SafeName; break;
+      case TYPE::Group:  Result = Namespace->HDL_Name() + "." + SafeName; break;
+      default:;
+    }
+  }else{
+    Result = SafeName;
+  }
+  return Result;
+}
+//------------------------------------------------------------------------------
+
+string& BASE::EscapedName(){
+  static string Result;
+
+  string Name(HDL_Name());
+
+  for(int n = 0; Name[n]; n++){
+    if(Name[n] >= '0' && Name[n] <= '9' && n > 0) continue;
+    if(Name[n] >= 'a' && Name[n] <= 'z') continue;
+    if(Name[n] >= 'A' && Name[n] <= 'Z') continue;
+    if(Name[n] == '_') continue;
+    Result = "\\" + Name + " ";
+    return Result;
+  }
+  Result = Name;
   return Result;
 }
 //------------------------------------------------------------------------------
@@ -75,6 +109,12 @@ void BASE::DisplayLongName(){
 //------------------------------------------------------------------------------
 
 void BASE::DisplayAttributes(int Indent){
+  for(int n = 0; n < Indent; n++) Debug.print(" ");
+  Debug.print("Line       = %d\n", Line);
+
+  for(int n = 0; n < Indent; n++) Debug.print(" ");
+  Debug.print("Filename   = \"%s\"\n", Filename);
+
   for(int n = 0; n < Indent; n++) Debug.print(" ");
   Debug.print("Attributes:\n");
 

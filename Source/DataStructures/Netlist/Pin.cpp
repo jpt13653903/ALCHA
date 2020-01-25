@@ -24,7 +24,7 @@
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-PIN::PIN(const char* Name) : SYNTHESISABLE(Name, TYPE::Pin){
+PIN::PIN(int Line, const std::string& Filename, const char* Name) : SYNTHESISABLE(Line, Filename, Name, TYPE::Pin){
   Driver  = 0;
   Enabled = 0;
 }

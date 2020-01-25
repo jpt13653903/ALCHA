@@ -34,7 +34,7 @@ namespace NETLIST{
     public:
       std::map<std::string, BASE*> Symbols;
 
-               NAMESPACE(const char* Name = "");
+               NAMESPACE(int Line, const std::string& Filename, const char* Name = "");
       virtual ~NAMESPACE(); // Also cleans up the children
   };
 }

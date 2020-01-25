@@ -32,7 +32,7 @@
 namespace NETLIST{
   class MODULE: public NAMESPACE{
     public:
-               MODULE(const char* Name = "");
+               MODULE(int Line, const std::string& Filename, const char* Name = "");
       virtual ~MODULE(); // Also cleans up the children
 
       virtual void Display();

@@ -30,7 +30,7 @@ namespace NETLIST{
   struct ALIAS: public BASE{
     AST::EXPRESSION* Expression;
 
-             ALIAS(const char* Name, AST::EXPRESSION* Expression);
+             ALIAS(int Line, const std::string& Filename, const char* Name, AST::EXPRESSION* Expression);
     virtual ~ALIAS();
 
     void Display();

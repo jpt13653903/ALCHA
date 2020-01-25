@@ -92,6 +92,10 @@ class ENGINE{
     bool ApplyAttributes(NETLIST::BASE* Object, AST::ASSIGNMENT* AttributeList);
     bool ApplyParameters(NETLIST::SYNTHESISABLE* Object, AST::BASE* Parameter);
 
+    // Replaces "path/../" patterns with "/".
+    // In Windows, '\' is also an accepted path specifier.
+    void SimplifyFilename(std::string& Filename);
+
     bool Import    (AST::IMPORT    * Ast);
     bool Group     (AST::GROUP     * Ast);
     bool Alias     (AST::ALIAS     * Ast);

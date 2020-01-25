@@ -27,7 +27,7 @@
 
 namespace NETLIST{
   struct ARRAY: public BASE{
-             ARRAY(const char* Name);
+             ARRAY(int Line, const std::string& Filename, const char* Name);
     virtual ~ARRAY();
 
     virtual void Display();
