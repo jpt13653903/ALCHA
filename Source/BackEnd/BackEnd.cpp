@@ -631,7 +631,7 @@ bool BACK_END::BuildHDL(MODULE* Module, string Path){
           "----------------------------------------\n\n";
 
   if(isGlobal) Name = Filename;
-  else         Name = Path + "/" + Module->HDL_Name();
+  else         Name = Path + "/" + Module->Name;
   WriteFile(Name, "v", Body);
 
   return true;

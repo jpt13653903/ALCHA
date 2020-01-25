@@ -54,15 +54,11 @@ string& BASE::HDL_Name(){
     if(Name[n] & 0x80) break;
   }
   if(Name[n]){ // Escape Unicode characters
-    SafeName = "#";
+    char s[16];
+    SafeName = "u..";
     for(int n = 0; Name[n]; n++){
-      char s[8];
-      if((uint8_t)Name[n] < 0x80){
-        SafeName += Name[n];
-      }else{
-        sprintf(s, "%02X", (unsigned)((uint8_t)Name[n]));
-        SafeName += s;
-      }
+      sprintf(s, "%02X", (unsigned)((uint8_t)Name[n]));
+      SafeName += s;
     }
   }else{
     SafeName = Name;

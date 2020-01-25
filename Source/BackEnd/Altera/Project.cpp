@@ -58,7 +58,7 @@ void PROJECT::BuildFileList(string& Body, MODULE* Module, string Path){
     Body += "set_global_assignment -name VERILOG_FILE \""+ Filename +".v\"\n";
   }else{
     Body += "set_global_assignment -name VERILOG_FILE \"" +
-            Path + "/" + Module->HDL_Name() +".v\"\n";
+            Path + "/" + Module->Name +".v\"\n";
   }
 }
 //------------------------------------------------------------------------------
