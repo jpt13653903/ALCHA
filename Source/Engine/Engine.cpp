@@ -339,6 +339,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
 
     case AST::EXPRESSION::Factorial:
+      // TODO: Assign the expression to Left
       error("Factorial not yet implemented");
       break;
 
@@ -405,6 +406,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
 
     case AST::EXPRESSION::Cast:
+      // TODO: Root has the target type; Root->Right has the original expression
       error("Cast not yet implemented");
       break;
 
@@ -505,6 +507,8 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
 
     case AST::EXPRESSION::Conditional:
+      // TODO: There should be a third component...  Left and Right of Right?
+      //       Or break it down to an if-statement?
       error("Conditional not yet implemented");
       break;
 
@@ -1136,8 +1140,10 @@ bool ENGINE::GetLHS(AST::EXPRESSION* Node, target_list& List){
 }
 //------------------------------------------------------------------------------
 
-void ENGINE::Simplify(EXPRESSION* Root){
+void ENGINE::Simplify(EXPRESSION*& Root){
   if(!Root) return;
+
+  EXPRESSION* Temp;
 
   Simplify(Root->Left );
   Simplify(Root->Right);
@@ -1174,113 +1180,229 @@ void ENGINE::Simplify(EXPRESSION* Root){
       break;
 
     case EXPRESSION::VectorConcatenate:
-      if(
-        Root->Left  && Root->Left ->ExpressionType == EXPRESSION::Literal &&
-        Root->Right && Root->Right->ExpressionType == EXPRESSION::Literal
-      ){
-        error("Not yet implemented");
+      if(Root->Elements.empty()){
+        error("Unexpected null pointer");
+        break;
       }
+      // TODO: Check members for literals
       break;
 
     case EXPRESSION::ArrayConcatenate:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::FunctionCall:
+      if(!Root->Left){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Slice:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       // TODO Returns a new array (or scalar)
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Factorial:
+      if(!Root->Left){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Negate:
-      if(Root->Right && Root->Right->ExpressionType == EXPRESSION::Literal){
-        Root->ExpressionType = EXPRESSION::Literal;
-        Root->Value = Root->Right->Value;
+      if(!Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
+      if(Root->Right->ExpressionType == EXPRESSION::Literal){
+        Temp = Root->Right;
+        Root->Right = 0;
+        delete Root;
+        Root = Temp;
         Root->Value.Mul(-1);
-        delete Root->Right; Root->Right = 0;
       }
       break;
 
     case EXPRESSION::Bit_NOT:
-      if(Root->Right && Root->Right->ExpressionType == EXPRESSION::Literal){
+      if(!Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
+      if(Root->Right->ExpressionType == EXPRESSION::Literal){
         error("Not yet implemented");
+        // TODO: Literals require a length, so it must have been cast to a
+        //       specific length for this to be valid
       }
       break;
 
     case EXPRESSION::AND_Reduce:
+      if(!Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::NAND_Reduce:
+      if(!Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::OR_Reduce:
+      if(!Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::NOR_Reduce:
+      if(!Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::XOR_Reduce:
+      if(!Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::XNOR_Reduce:
+      if(!Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Logical_NOT:
+      if(!Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Cast:
+      // TODO: Root has the target type; Root->Right has the original expression
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Replicate:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Multiply:
-      if(
-        Root->Left  && Root->Left ->ExpressionType == EXPRESSION::Literal &&
-        Root->Right && Root->Right->ExpressionType == EXPRESSION::Literal
-      ){
-        Root->ExpressionType = EXPRESSION::Literal;
-        Root->Value = Root->Left->Value;
-        Root->Value.Mul(Root->Right->Value);
-        delete Root->Left ; Root->Left  = 0;
-        delete Root->Right; Root->Right = 0;
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
+      if(Root->Left->ExpressionType == EXPRESSION::Literal){
+        NUMBER Num = Root->Left->Value;
+
+        if(Num.IsReal() && Num.GetReal() == 0.0){
+          Temp = Root->Left; // Keep the literal and make it zero
+          Root->Left = 0;
+          delete Root;
+          Root = Temp;
+          Root->Value = 0;
+        }else{
+          Temp = Root->Right; // Keep the expression and modify the full-scale
+          Root->Right = 0;
+          delete Root;
+          Root = Temp;
+          if(Root->ExpressionType == EXPRESSION::Literal){
+            Root->Value.Mul(Num);
+          }else{
+            if(Root->Width == 0) error("Unexpected 0 width");
+            Root->FullScale.Mul(Num);
+          }
+        }
+      }else if(Root->Right->ExpressionType == EXPRESSION::Literal){
+        NUMBER Num = Root->Right->Value;
+
+        if(Num.IsReal() && Num.GetReal() == 0.0){
+          Temp = Root->Right; // Keep the literal and make it zero
+          Root->Right = 0;
+          delete Root;
+          Root = Temp;
+          Root->Value = 0;
+        }else{
+          Temp = Root->Left; // Keep the expression and modify the full-scale
+          Root->Left = 0;
+          delete Root;
+          Root = Temp;
+          if(Root->ExpressionType == EXPRESSION::Literal){
+            Root->Value.Mul(Num);
+          }else{
+            if(Root->Width == 0) error("Unexpected 0 width");
+            Root->FullScale.Mul(Num);
+          }
+        }
       }
       // TODO When multiplying an expression with a literal, simply scale the
       //      full-scale of the expression
       break;
 
     case EXPRESSION::Divide:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Modulus:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Exponential:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Add:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       if(
-        Root->Left  && Root->Left ->ExpressionType == EXPRESSION::Literal &&
-        Root->Right && Root->Right->ExpressionType == EXPRESSION::Literal
+        Root->Left ->ExpressionType == EXPRESSION::Literal &&
+        Root->Right->ExpressionType == EXPRESSION::Literal
       ){
         Root->ExpressionType = EXPRESSION::Literal;
         Root->Value = Root->Left->Value;
@@ -1293,9 +1415,13 @@ void ENGINE::Simplify(EXPRESSION* Root){
       break;
 
     case EXPRESSION::Subtract:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       if(
-        Root->Left  && Root->Left ->ExpressionType == EXPRESSION::Literal &&
-        Root->Right && Root->Right->ExpressionType == EXPRESSION::Literal
+        Root->Left ->ExpressionType == EXPRESSION::Literal &&
+        Root->Right->ExpressionType == EXPRESSION::Literal
       ){
         Root->ExpressionType = EXPRESSION::Literal;
         Root->Value = Root->Left->Value;
@@ -1308,70 +1434,140 @@ void ENGINE::Simplify(EXPRESSION* Root){
       break;
 
     case EXPRESSION::Shift_Left:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Shift_Right:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Less:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Greater:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Less_Equal:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Greater_Equal:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Equal:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Not_Equal:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Bit_AND:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Bit_NAND:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Bit_OR:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Bit_NOR:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Bit_XOR:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Bit_XNOR:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Logical_AND:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Logical_OR:
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
     case EXPRESSION::Conditional:
+      // TODO: There should be a third component...  Left and Right of Right?
+      //       Or break it down to an if-statement?
+      if(!Root->Left || !Root->Right){
+        error("Unexpected null pointer");
+        break;
+      }
       error("Not yet implemented");
       break;
 
@@ -1429,121 +1625,238 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     }
   }
 
+  bool RawAssign = true;
+
   switch(Ast->AssignmentType){
     case AST::ASSIGNMENT::Assign:
-      Right->RawAssign = false;
+      RawAssign = false;
       if(*Target) delete *Target;
       *Target = Right;
       break;
 
     case AST::ASSIGNMENT::Raw_Assign:
-      Right->RawAssign = true;
+      RawAssign = true;
       if(*Target) delete *Target;
       *Target = Right;
       break;
 
     case AST::ASSIGNMENT::Append_Assign:
-      Right->RawAssign = false;
-      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::ArrayConcatenate);
-      Temp->Left  = *Target;
-      Temp->Right = Right;
-      *Target     = Temp;
-      break;
+      RawAssign = false;
+      if(*Target){
+        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::ArrayConcatenate);
+        Temp->Left  = *Target;
+        Temp->Right = Right;
+        *Target     = Temp;
+        break;
+      }else{
+        Error(Ast, "Append-Assign with null target");
+        delete Right;
+        if(ScriptTarget) delete ScriptTarget;
+        return false;
+      }
 
     case AST::ASSIGNMENT::Add_Assign:
-      Right->RawAssign = false;
-      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Add);
-      Temp->Left  = *Target;
-      Temp->Right = Right;
-      *Target     = Temp;
-      break;
+      RawAssign = false;
+      if(*Target){
+        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Add);
+        Temp->Left  = *Target;
+        Temp->Right = Right;
+        *Target     = Temp;
+        break;
+      }else{
+        Error(Ast, "Add-Assign with null target");
+        delete Right;
+        if(ScriptTarget) delete ScriptTarget;
+        return false;
+      }
 
     case AST::ASSIGNMENT::Subtract_Assign:
-      Right->RawAssign = false;
-      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Subtract);
-      Temp->Left  = *Target;
-      Temp->Right = Right;
-      *Target     = Temp;
-      break;
+      RawAssign = false;
+      if(*Target){
+        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Subtract);
+        Temp->Left  = *Target;
+        Temp->Right = Right;
+        *Target     = Temp;
+        break;
+      }else{
+        Error(Ast, "Subtract-Assign with null target");
+        delete Right;
+        if(ScriptTarget) delete ScriptTarget;
+        return false;
+      }
 
     case AST::ASSIGNMENT::Multiply_Assign:
-      Right->RawAssign = false;
-      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Multiply);
-      Temp->Left  = *Target;
-      Temp->Right = Right;
-      *Target     = Temp;
-      break;
+      RawAssign = false;
+      if(*Target){
+        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Multiply);
+        Temp->Left  = *Target;
+        Temp->Right = Right;
+        *Target     = Temp;
+        break;
+      }else{
+        Error(Ast, "Multiply-Assign with null target");
+        delete Right;
+        if(ScriptTarget) delete ScriptTarget;
+        return false;
+      }
 
     case AST::ASSIGNMENT::Divide_Assign:
-      Right->RawAssign = false;
-      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Divide);
-      Temp->Left  = *Target;
-      Temp->Right = Right;
-      *Target     = Temp;
-      break;
+      RawAssign = false;
+      if(*Target){
+        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Divide);
+        Temp->Left  = *Target;
+        Temp->Right = Right;
+        *Target     = Temp;
+        break;
+      }else{
+        Error(Ast, "Divide-Assign with null target");
+        delete Right;
+        if(ScriptTarget) delete ScriptTarget;
+        return false;
+      }
 
     case AST::ASSIGNMENT::Modulus_Assign:
-      Right->RawAssign = false;
-      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Modulus);
-      Temp->Left  = *Target;
-      Temp->Right = Right;
-      *Target     = Temp;
-      break;
+      RawAssign = false;
+      if(*Target){
+        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Modulus);
+        Temp->Left  = *Target;
+        Temp->Right = Right;
+        *Target     = Temp;
+        break;
+      }else{
+        Error(Ast, "Modulus-Assign with null target");
+        delete Right;
+        if(ScriptTarget) delete ScriptTarget;
+        return false;
+      }
 
     case AST::ASSIGNMENT::Exponential_Assign:
-      Right->RawAssign = false;
-      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Exponential);
-      Temp->Left  = *Target;
-      Temp->Right = Right;
-      *Target     = Temp;
-      break;
+      RawAssign = false;
+      if(*Target){
+        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Exponential);
+        Temp->Left  = *Target;
+        Temp->Right = Right;
+        *Target     = Temp;
+        break;
+      }else{
+        Error(Ast, "Exponential-Assign with null target");
+        delete Right;
+        if(ScriptTarget) delete ScriptTarget;
+        return false;
+      }
 
     case AST::ASSIGNMENT::AND_Assign:
-      Right->RawAssign = true;
-      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Bit_AND);
-      Temp->Left  = *Target;
-      Temp->Right = Right;
-      *Target     = Temp;
-      break;
+      RawAssign = true;
+      if(*Target){
+        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Bit_AND);
+        Temp->Left  = *Target;
+        Temp->Right = Right;
+        *Target     = Temp;
+        break;
+      }else{
+        Error(Ast, "AND-Assign with null target");
+        delete Right;
+        if(ScriptTarget) delete ScriptTarget;
+        return false;
+      }
 
     case AST::ASSIGNMENT::OR_Assign:
-      Right->RawAssign = true;
-      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Bit_OR);
-      Temp->Left  = *Target;
-      Temp->Right = Right;
-      *Target     = Temp;
-      break;
+      RawAssign = true;
+      if(*Target){
+        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Bit_OR);
+        Temp->Left  = *Target;
+        Temp->Right = Right;
+        *Target     = Temp;
+        break;
+      }else{
+        Error(Ast, "OR-Assign with null target");
+        delete Right;
+        if(ScriptTarget) delete ScriptTarget;
+        return false;
+      }
 
     case AST::ASSIGNMENT::XOR_Assign:
-      Right->RawAssign = true;
-      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Bit_XOR);
-      Temp->Left  = *Target;
-      Temp->Right = Right;
-      *Target     = Temp;
-      break;
+      RawAssign = true;
+      if(*Target){
+        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Bit_XOR);
+        Temp->Left  = *Target;
+        Temp->Right = Right;
+        *Target     = Temp;
+        break;
+      }else{
+        Error(Ast, "XOR-Assign with null target");
+        delete Right;
+        if(ScriptTarget) delete ScriptTarget;
+        return false;
+      }
 
     case AST::ASSIGNMENT::Shift_Left_Assign:
-      Right->RawAssign = true;
-      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Shift_Left);
-      Temp->Left  = *Target;
-      Temp->Right = Right;
-      *Target     = Temp;
-      break;
+      RawAssign = true;
+      if(*Target){
+        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Shift_Left);
+        Temp->Left  = *Target;
+        Temp->Right = Right;
+        *Target     = Temp;
+        break;
+      }else{
+        Error(Ast, "Shift-Assign with null target");
+        delete Right;
+        if(ScriptTarget) delete ScriptTarget;
+        return false;
+      }
 
     case AST::ASSIGNMENT::Shift_Right_Assign:
-      Right->RawAssign = true;
-      Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Shift_Right);
-      Temp->Left  = *Target;
-      Temp->Right = Right;
-      *Target     = Temp;
-      break;
+      RawAssign = true;
+      if(*Target){
+        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Shift_Right);
+        Temp->Left  = *Target;
+        Temp->Right = Right;
+        *Target     = Temp;
+        break;
+      }else{
+        Error(Ast, "Shift-Assign with null target");
+        delete Right;
+        if(ScriptTarget) delete ScriptTarget;
+        return false;
+      }
 
     default:
       error("Unknown assignment type: %d", Ast->AssignmentType);
       delete Right;
+      if(ScriptTarget) delete ScriptTarget;
       return false;
   }
   Simplify(*Target);
+
+  if(*Target){
+    Right = *Target;
+    if(RawAssign){
+      if(Object->Type == BASE::TYPE::Pin || Object->Type == BASE::TYPE::Net){
+        SYNTHESISABLE* Synth = (SYNTHESISABLE*)Object;
+        Right->Signed    = Synth->Signed;
+        Right->Width     = Synth->Width;
+        Right->FullScale = Synth->FullScale;
+      }
+    }else{
+      if(Object->Type == BASE::TYPE::Pin || Object->Type == BASE::TYPE::Net){
+        SYNTHESISABLE* Synth = (SYNTHESISABLE*)Object;
+        if(Right->ExpressionType == EXPRESSION::Literal){
+          Right->Value.Div     (Synth->FullScale);
+          Right->Value.BinScale(Synth->Width);
+          Right->Signed    = Synth->Signed;
+          Right->Width     = Synth->Width;
+          Right->FullScale = Synth->FullScale;
+        }else{
+          if(Right->Signed    != Synth->Signed ||
+             Right->Width     != Synth->Width  ||
+           !(Right->FullScale == Synth->FullScale)){
+            error("Expression fixed-point scaling not yet implemented");
+            Error(Ast, "");
+          }
+        }
+      }
+    }
+  }
 
   if(ScriptTarget){
     switch(Object->Type){
@@ -1553,6 +1866,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
           Byte->Value = ScriptTarget->Value.GetReal();
         }else{
           // TODO Could be an array, for instance
+          // TODO Check that the RHS is non-synthesisable
           error("Not yet implemented");
         }
         break;
@@ -1563,6 +1877,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
           Char->Value = ScriptTarget->Value.GetReal();
         }else{
           // TODO Could be an array, for instance
+          // TODO Check that the RHS is non-synthesisable
           error("Not yet implemented");
         }
         break;
@@ -1573,6 +1888,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
           Num->Value = ScriptTarget->Value;
         }else{
           // TODO Could be an array, for instance
+          // TODO Check that the RHS is non-synthesisable
           error("Not yet implemented");
           delete ScriptTarget;
           return false;

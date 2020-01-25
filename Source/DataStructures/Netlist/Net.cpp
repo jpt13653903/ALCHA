@@ -37,7 +37,7 @@ NET::~NET(){
 void NET::Display(){
   SYNTHESISABLE::Display();
 
-  Debug.print("    Value = ");
+  Debug.print("    Value      = ");
   if(Value) Value->Display();
   else      Debug.print("{open}");
   Debug.print("\n");

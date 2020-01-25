@@ -33,7 +33,6 @@ EXPRESSION::EXPRESSION(int Line, const std::string& Filename, EXPRESSION_TYPE Ex
   Left      = 0;
   Right     = 0;
 
-  RawAssign = false;
   Signed    = false;
   Width     = 0;
   FullScale = 0;
@@ -51,7 +50,6 @@ EXPRESSION::EXPRESSION(EXPRESSION* Expression){
   Line           = Expression->Line;
   Filename       = Expression->Filename;
   ExpressionType = Expression->ExpressionType;
-  RawAssign      = Expression->RawAssign;
   Signed         = Expression->Signed;
   Width          = Expression->Width;
   FullScale      = Expression->FullScale;
@@ -83,8 +81,7 @@ EXPRESSION::~EXPRESSION(){
 //------------------------------------------------------------------------------
 
 void EXPRESSION::Display(){
-  if(RawAssign) Debug.print(ANSI_FG_BRIGHT_BLACK "{raw}" ANSI_RESET);
-  if(Width    ) Debug.print(ANSI_FG_BRIGHT_GREEN "(" ANSI_RESET);
+  if(Width) Debug.print(ANSI_FG_BRIGHT_GREEN "(" ANSI_RESET);
 
   if(Left){
     if(Left->Left || Left->Right) Debug.print(ANSI_FG_BRIGHT_GREEN "(" ANSI_RESET);

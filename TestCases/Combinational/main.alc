@@ -18,13 +18,8 @@ pin(16) ADT7420_SDA = 123;
 num MyNumber = -1.23456;
 
 !! Testing virtual pins
-pin(14, -pi) Testing = MyNumber;
+net(14, -3) TestNet = MyNumber;
+pin(14,  3) Testing = 2*TestNet;
 
 LVDS_TX = 0xABC;
-
-SDRAM.A = 123;
-
-group ΓρεεκΓροθπ{
-  pin(16) ΜυΓρεabcdeεκΝαμε = 1234;
-}
 

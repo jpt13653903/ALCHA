@@ -79,7 +79,7 @@ class ENGINE{
     bool    GetLHS(AST::EXPRESSION* Node, target_list& List);
 
     // Simplifies the tree
-    void Simplify(NETLIST::EXPRESSION* Root);
+    void Simplify(NETLIST::EXPRESSION*& Root);
   //----------------------------------------------------------------------------
 
   private: // AST processing

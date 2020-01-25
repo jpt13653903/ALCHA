@@ -195,7 +195,7 @@ bool BACK_END::WriteFile(string& Filename, const char* Ext, string& Body){
 }
 //------------------------------------------------------------------------------
 
-bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, SYNTHESISABLE* Target){
+bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression){
   if(!Expression) return false;
 
   switch(Expression->ExpressionType){
@@ -204,27 +204,23 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, SYNTHESISAB
         Error(Expression, "non-real literal");
         return false;
       }
-      if(!Target){
-        error("Unexpected null target");
-        return false;
-      }
       NUMBER Result(Expression->Value);
       if(!Result.IsPositive()){
+        if(!Expression->Signed){
+          Error(Expression, "Cannot store a negative literal to an unsigned target");
+          return false;
+        }
         Body += "-";
         Result.Mul(-1);
       }
-      if(Target->Signed) Body += to_string(Target->Width+1) + "'h";
-      else               Body += to_string(Target->Width  ) + "'h";
-      if(!Expression->RawAssign){
-        Result.Div(Target->FullScale);
-        Result.BinScale(Target->Width);
-      }
+      if(Expression->Signed) Body += to_string(Expression->Width+1) + "'h";
+      else                   Body += to_string(Expression->Width  ) + "'h";
       Result.Round();
       Body += Result.GetString(16);
-      Result.BinScale(-Target->Width);
+      Result.BinScale(-Expression->Width);
       Result.Sub(1);
       if(Result.IsPositive()){
-        Error(Expression, "The literal does not fit in the target full-scale");
+        Error(Expression, "The literal does not fit in its full-scale range");
         return false;
       }
       break;
@@ -255,13 +251,13 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, SYNTHESISAB
 
     case EXPRESSION::Negate:
       Body += "-(";
-      if(!BuildExpression(Body, Expression->Right, Target)) return false;
+      if(!BuildExpression(Body, Expression->Right)) return false;
       Body += ")";
       break;
 
     case EXPRESSION::Bit_NOT:
       Body += "~(";
-      if(!BuildExpression(Body, Expression->Right, Target)) return false;
+      if(!BuildExpression(Body, Expression->Right)) return false;
       Body += ")";
       break;
 
@@ -487,12 +483,12 @@ bool BACK_END::AddAssignment(string& Body, BASE* Object){
         Body += "assign "+ Pin->EscapedName() +" = ";
         if(Pin->Enabled){
           Body += "(";
-          if(!BuildExpression(Body, Pin->Enabled, (PIN*)Object)) return false;
+          if(!BuildExpression(Body, Pin->Enabled)) return false;
           Body += ") ? (";
-          if(!BuildExpression(Body, Pin->Driver, (PIN*)Object)) return false;
+          if(!BuildExpression(Body, Pin->Driver)) return false;
           Body += ") : " + to_string(Pin->Width) + "'bZ";
         }else{
-          if(!BuildExpression(Body, Pin->Driver, (PIN*)Object)) return false;
+          if(!BuildExpression(Body, Pin->Driver)) return false;
         }
         Body += ";\n";
       }
@@ -502,7 +498,7 @@ bool BACK_END::AddAssignment(string& Body, BASE* Object){
       auto Net = (NET*)Object;
       if(Net->Value){
         Body += "assign "+ Net->EscapedName() +" = ";
-        if(!BuildExpression(Body, Net->Value, (NET*)Object)) return false;
+        if(!BuildExpression(Body, Net->Value)) return false;
         Body += ";\n";
       }
       break;
