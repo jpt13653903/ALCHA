@@ -1488,6 +1488,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
         break;
       }
       default:
+        error("Unexpected default case");
         break;
     }
     delete ScriptTarget;

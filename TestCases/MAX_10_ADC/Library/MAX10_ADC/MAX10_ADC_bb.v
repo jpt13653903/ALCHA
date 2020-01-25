@@ -13,7 +13,7 @@ module MAX10_ADC (
 	response_channel,
 	response_data,
 	response_startofpacket,
-	response_endofpacket);	
+	response_endofpacket);
 
 	input		clock_clk;
 	input		reset_sink_reset_n;

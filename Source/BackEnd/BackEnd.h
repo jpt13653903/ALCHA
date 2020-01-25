@@ -48,7 +48,7 @@ class BACK_END{
   public:
     BACK_END();
    ~BACK_END();
-   
+
     bool BuildAltera(const char* Path, const char* Filename);
 };
 //------------------------------------------------------------------------------

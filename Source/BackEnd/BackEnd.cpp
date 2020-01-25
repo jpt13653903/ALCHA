@@ -131,10 +131,10 @@ bool BACK_END::AssignPinDirections(NAMESPACE* Namespace){
 bool BACK_END::RoutePorts(NAMESPACE* Namespace){
   info("Route ports...");
 
-  // At this point, the expressions use pointers, not names.  Any inter-module 
-  // usage needs to be broken into temporary signals throughout the hierarchy 
-  // and assigned to either module ports or internal signals.  Pins need to be 
-  // routed to be moved to the top-level entity, and the original replaced 
+  // At this point, the expressions use pointers, not names.  Any inter-module
+  // usage needs to be broken into temporary signals throughout the hierarchy
+  // and assigned to either module ports or internal signals.  Pins need to be
+  // routed to be moved to the top-level entity, and the original replaced
   // with HDL module ports.
 
   // Do the children first
@@ -623,7 +623,7 @@ bool BACK_END::BuildAltera(const char* Path, const char* Filename){
 
   ALTERA::PROJECT Project;
   Project.Build(Path, Filename);
-  
+
   if(!BuildHDL(&Global, "")) return false;
 
   return true;

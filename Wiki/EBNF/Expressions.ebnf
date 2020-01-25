@@ -12,9 +12,9 @@ Exponential    = Replication    { "**"                      Replication   };
 Replication    = Stringification ["`" Primary];   (* Vector replication  *)
 
 (* When used as a function, the second parameter must evaluate to a string *)
-Stringification = ["$"] Reduction 
+Stringification = ["$"] Reduction
                 |  "$(" Reduction ["," Expression] ")";
-                
+
 Reduction = ["&" | "~&" | "|" | "~|" | "^" | "~^" | "!"] Range;
 
 Range = Unary [".." Unary [":" Unary]];

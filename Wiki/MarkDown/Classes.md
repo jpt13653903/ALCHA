@@ -91,7 +91,7 @@ ALCHA classes support multiple inheritance.  The parent classes are specified by
       fsm(GlobalClock, GlobalReset){
         // A state-machine that implements the ADC's SPI interface.
 
-        // This state-machine can be called externally to the ADC class as 
+        // This state-machine can be called externally to the ADC class as
         // well as from within.
       }
     }

@@ -16,7 +16,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
-//============================================================================== 
+//==============================================================================
 
 module Debounce #(
  parameter N = 1, // Number of signals
@@ -41,7 +41,7 @@ always @(posedge Clk) begin
    Output  <= Input_1;
    Counter <= 0;
   end
-  
+
  end else begin
   Counter <= Counter + 1'b1;
  end

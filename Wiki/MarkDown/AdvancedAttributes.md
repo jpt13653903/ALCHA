@@ -18,7 +18,7 @@ In large designs, it is often useful to specify the physical location of each en
   set_global_assignment -name LL_RESERVED OFF    -section_id MyDSP
   set_global_assignment -name LL_CORE_ONLY OFF   -section_id MyDSP
   set_global_assignment -name LL_PR_REGION OFF   -section_id MyDSP
-  
+
   set_instance_assignment -name       LL_MEMBER_OF MyDSP \
                           -to         *MyDSP*            \
                           -section_id MyDSP
@@ -79,13 +79,13 @@ The concept is illustrated below.  The rounding operation includes an addition, 
   net(8, 16) A, B;
   net(8,  1) C, D;
   net(8,  4) X = 0.11; // binary "00.000111"
-    
+
   A'rounding = "nearest";
   // B is using default "truncate" rounding
-    
+
   C'overflow = "clip";
   // D is using the default "wrap" overflow
-    
+
   A = X; B = X; C = X; D = X;
 ```
 
@@ -95,9 +95,9 @@ The Verilog equivalent of the above is:
   wire [ 3:-4] A, B;
   wire [-1:-8] C, D;
   wire [ 1:-6] X = 8'b00_000111;
-    
+
   // Round to nearest:
-  assign A = {2'd0, X[1:-4]} + X[-5]; 
+  assign A = {2'd0, X[1:-4]} + X[-5];
   // Truncate:
   assign B = {2'd0, X[1:-4]};
 
@@ -110,7 +110,7 @@ The Verilog equivalent of the above is:
       else         C = {X[-1:-6], 2'd0};
     end
   end
-    
+
   // Stripping the most significant bits
   assign D = {X[-1:-6], 2'd0};
 ```

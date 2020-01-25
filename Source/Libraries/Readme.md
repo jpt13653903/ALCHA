@@ -4,8 +4,8 @@
 
 ## Linux
 
-These libraries are intended for Windows only.  On Linux, install the 
-development versions of libgmp, libmprf and libfftw3.  On Ubuntu, this can be 
+These libraries are intended for Windows only.  On Linux, install the
+development versions of libgmp, libmprf and libfftw3.  On Ubuntu, this can be
 achieved by means of the following instructions:
 
 - `sudo apt-get install libgmp-dev`

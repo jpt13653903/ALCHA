@@ -121,7 +121,7 @@ AST::ASSIGNMENT* PARSER::AttributeList(){
   AST::ASSIGNMENT* Head = 0;
   AST::ASSIGNMENT* Tail = 0;
   AST::ASSIGNMENT* Node;
-  
+
   if(Token.Type != TOKEN::OpenAngle) return 0;
   GetToken();
 
@@ -369,7 +369,7 @@ AST::BASE* PARSER::Parameter(){
 
     Node->Left  = Expr;
     Node->Right = Expression();
-    
+
     if(!Node->Right){
       Error("Expression expected");
       delete Node;
@@ -385,7 +385,7 @@ AST::BASE* PARSER::ParameterList(){
   AST::BASE* Head = 0;
   AST::BASE* Tail = 0;
   AST::BASE* Node;
-  
+
   if(Token.Type != TOKEN::OpenRound) return 0;
   GetToken();
   if(Token.Type == TOKEN::CloseRound){

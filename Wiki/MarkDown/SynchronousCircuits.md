@@ -194,7 +194,7 @@ This state machine has two states and translates to the following Verilog:
 
 All reset signals are localised to the state machine.  All signals that enter the `fsm` construct with a value (that must evaluate to a run-time constant) are reset to that value.
 
-The ALCHA `if` and `while` statements follow the same syntax as in C.  The state (or cycle) boundaries are controlled by means of semicolons (`;`).  
+The ALCHA `if` and `while` statements follow the same syntax as in C.  The state (or cycle) boundaries are controlled by means of semicolons (`;`).
 
 The `for` loop is used to iterate through elements in an array, as follows:
 

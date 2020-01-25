@@ -51,7 +51,7 @@ EXPRESSION::EXPRESSION(EXPRESSION* Expression){
   Signed         = Expression->Signed;
   Width          = Expression->Width;
   FullScale      = Expression->FullScale;
-                                             
+
   ObjectRef      = Expression->ObjectRef;
   Value          = Expression->Value;
   StrValue       = Expression->StrValue;

@@ -12,9 +12,9 @@ Megafunctions and other external HDL modules can be imported into the ALCHA proj
 
 ```C++
   hdl("Library/RS232.v", "Library/RS232_Rx.v", "Library/RS232_Tx.v") RS232_V(
-    CountBits =  5; // Parameters 
-    Count0_5  =  8; 
-    Count1    = 17; 
+    CountBits =  5; // Parameters
+    Count0_5  =  8;
+    Count1    = 17;
     Count1_5  = 25;
   ){
     net    nReset;

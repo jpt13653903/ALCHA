@@ -16,7 +16,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
-//============================================================================== 
+//==============================================================================
 
 module Butterfly(
  input  Clk,
@@ -91,7 +91,7 @@ always @(posedge Clk) begin
   B2 <= real_B_1;
  end
 //------------------------------------------------------------------------------
- 
+
  // Stage 2 -- Wait for multiplier and pipeline A
  if(Data_Valid[2]) begin
   real_A_2 <= real_A_1;

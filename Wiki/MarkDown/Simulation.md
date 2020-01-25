@@ -26,9 +26,9 @@ In order to perform a unit test, the module under test must have its inputs stim
     @(posedge Clk); // Wait until the positive edge of the Clk signal
     loop #7 C++;    // Forever afterwards, wait 7 time-steps and increment C
   }
-  
+
   // Clock-based stimulus
-  stimulus(1e-9, Clk){ // Use nanoseconds as the basic time-step, 
+  stimulus(1e-9, Clk){ // Use nanoseconds as the basic time-step,
                        // and Clk as the default clock
     #7  A = 5;    // Wait 7 ns, then make A = 5
     ##3 B = 7;    // After 3 rising-edges of Clk, make B = 7
@@ -57,12 +57,12 @@ It is often useful to split stimulus execution into multiple threads without usi
     // fork ... join_any
     { /* The first  fork */ } ||
     { /* The second fork */ } ;
-    
+
     // fork ... join_none
     { /* The first  fork */ } ||
     { /* The second fork */ } || {};
     /* The rest of the stimulus body */
-    
+
     // Wait for Condition, or a delay, and stop the other thread when done
     {wait(Condition); break;} || {#100 break;} ;
   }
@@ -89,11 +89,11 @@ It has the same syntax and semantics as the `stimulus` construct, but allows the
     net(31, -1) Input   [256];
     net(31, -1) Output_I[256];
     net(31, -1) Output_Q[256];
-    
+
     net Go, Busy;
-    
+
     !! RTL implementation of the FFT...
-    
+
     // This is run during simulation, instead of the RTL above
     emulate(1e-9, Clk){
       loop{
@@ -136,7 +136,7 @@ The same construct can be used to emulated imported HDL.  The ALCHA simulator do
 
   class CPU_ROM(net(16) Opcodes[4096]){
     !! Use scripting to write Opcodes to "CPU_ROM.mif"
-    
+
     // Instantiate the ROM block
     private altsyncram ROM = altsyncram(init_file = "CPU_ROM.mif");
 
@@ -146,7 +146,7 @@ The same construct can be used to emulated imported HDL.  The ALCHA simulator do
         loop ##1 q_a = Opcodes[address_a];
       }
     }
-    
+
     // Declare local signals (for the convenience of users of this class)
     net     Clk;
     net(12) Address;
@@ -274,7 +274,7 @@ As an example, consider the case of a simplified floating-point operation.  Each
 
   // Instance of the FPU_Div class
   FPU_Div(Clk, A, B, Y) MyDiv;
-  
+
   // Define coverage bins
   coverbins FloatingPointFunctions(x){
     NAN      =               x.exponent == 0xFF & x.fraction >  0;

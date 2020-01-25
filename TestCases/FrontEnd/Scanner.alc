@@ -23,10 +23,10 @@ asdkljfa
 
 Some text and !! a to-do comment
 
-tar Testing the scanner for while if            
-ςιτη σομε γρεεκ ψηαραψτερσ τηροςν ιν.              
-      
-And some numbers:           
+tar Testing the scanner for while if
+ςιτη σομε γρεεκ ψηαραψτερσ τηροςν ιν.
+
+And some numbers:
     ABC
 
 0b1001_1010_1011_0101_1010_1000p-6
@@ -44,16 +44,16 @@ Or different style numbers:
 
 
 
-Hello    
-     
-     
-     
-     
-     
-    
-       
-   
-    
+Hello
+
+
+
+
+
+
+
+
+
 "A string \" with escaped \" stuff"
 "Ω""\n";
 
@@ -69,15 +69,15 @@ Base.Member();
 Identifier.with.structure.and.u0837.stuff
 
 a = b/c;
-      
-"This string "       
+
+"This string "
 // This is a comment
 "should be concatenated with this one"
 
   import "Some Header File"
 
 /* This
-is a 
+is a
 multi-
 line
 comment */

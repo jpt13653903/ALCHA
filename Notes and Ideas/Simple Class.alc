@@ -7,7 +7,7 @@ class Adder(num N){
 }
 
 net(8      ) A;        // Unsigned
-net(7, -128) A_signed; // 2's compliment signed 8-bit 
+net(7, -128) A_signed; // 2's compliment signed 8-bit
 net(8      ) B;
 net(8      ) C;
 

@@ -16,7 +16,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
-//============================================================================== 
+//==============================================================================
 
 module PWM(
  input Clk,
@@ -54,14 +54,14 @@ always @(posedge Clk) begin
   for(j = 0; j < 3; j = j + 1) begin
    if(Direction[j]) Counter[j] <= Counter[j] + 1'b1;
    else             Counter[j] <= Counter[j] - 1'b1;
- 
+
    if(&Counter[j] || ~|Counter[j]) begin
     case(j)
      0: Duty[0] <= A;
      1: Duty[1] <= B;
      2: Duty[2] <= C;
     endcase
- 
+
     if(Direction[j]) Counter[j] <= Counter[j] - 1'b1;
     else             Counter[j] <= Counter[j] + 1'b1;
 

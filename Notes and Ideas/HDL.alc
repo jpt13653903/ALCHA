@@ -1,7 +1,7 @@
 hdl("Library/RS232.v", "Library/RS232_Rx.v", "Library/RS232_Tx.v") RS232_V(
-  num CountBits =  5, 
-  num Count0_5  =  8, 
-  num Count1    = 17, 
+  num CountBits =  5,
+  num Count0_5  =  8,
+  num Count1    = 17,
   num Count1_5  = 25
 ){
   input  net    nReset;
@@ -14,7 +14,7 @@ hdl("Library/RS232.v", "Library/RS232_Rx.v", "Library/RS232_Tx.v") RS232_V(
   output net    DataReady;
   output net(8) RxData;
   input  net    Ack;
-  
+
   output net Tx;
   input  net Rx;
 }

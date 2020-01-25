@@ -5,7 +5,7 @@ Statement  = Label | Definition | ClassDefinition | EnumDefinition
            | Alias | Import | Struct | Group | AccessDirectionGroup
            | IfStatement | For | While  | Loop | Switch | Jump | GoTo
            | FunctionCall | NamespacePush | Assignment
-           | RTL | FSM | HDL 
+           | RTL | FSM | HDL
            | Stimulus | Emulate | ForkJoin | Assert | Sequence | ";";
 
 Label  = Identifier ":"; (* Only useful within an fsm construct *)
@@ -14,7 +14,7 @@ Definition = ( BaseType | TypeIdentifier ) [ParameterList]
              [AttributeList] IdentifierList;
 
 ClassDefinition = "class" [AttributeList] Identifier
-                  ["(" [DefParameterList] ")"] 
+                  ["(" [DefParameterList] ")"]
                   [
                     ":" TypeIdentifier [ParameterList]
                    {"," TypeIdentifier [ParameterList]}
@@ -35,15 +35,15 @@ BaseType = "pin"  | "net"          (* Synthesisable types *)
 IdentifierList = FunctionDef | (VariableDef {"," VariableDef} ";");
 
 VariableDef    = Identifier {ArrayDefinition} [Initialiser];
-FunctionDef    = ["inline"] Identifier {ArrayDefinition} 
-                 "(" [DefParameterList] ")" 
+FunctionDef    = ["inline"] Identifier {ArrayDefinition}
+                 "(" [DefParameterList] ")"
                  "{" [Statements] "}" ;
 
 ArrayDefinition  = "[" [Expression] "]";
 Initialiser      = ("=" | ":=") Expression;
 
 DefParameterList = DefParameter {"," DefParameter};
-DefParameter     = [BaseType | TypeIdentifier] Identifier {"[" "]"} 
+DefParameter     = [BaseType | TypeIdentifier] Identifier {"[" "]"}
                    [Initialiser];
 
 AttributeList       = "<" AttributeAssignment {, AttributeAssignment} ">";

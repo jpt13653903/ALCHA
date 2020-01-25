@@ -3,7 +3,7 @@ Bugs:
 
 Todo:
 - Mealy vs. Moore machine?
- - non-reset signals must go into a case-statement of its own to remove the 
+ - non-reset signals must go into a case-statement of its own to remove the
    reset dependence.
  - In journal article, concentrate on common things often neglected by
    developers:
@@ -18,13 +18,13 @@ Notes...
 - Abstract the time between signals so that Alcha automatically generate the
   counters, etc. for something like the timing generator.
 - For compiler: look at MD5 sum, not the modification date.
-- For the PhD: take the case study design and break it up into components.  
-  Fixed-point operations, streaming interfaces (with and without back-pressure), 
-  register / control bus (i.e. memory-mapped PIO), clock domain crossing, etc...  
+- For the PhD: take the case study design and break it up into components.
+  Fixed-point operations, streaming interfaces (with and without back-pressure),
+  register / control bus (i.e. memory-mapped PIO), clock domain crossing, etc...
   Count the lines if code of each type of primitive, and how much it would save
   if the language provided built-in support...
 
-- A class is a collection of instructions and members.  So is a namespace, but 
+- A class is a collection of instructions and members.  So is a namespace, but
   a namespace is the instance, whereas a class must still be instanced...
 - Strip out all the definitions and leave the AST
 
@@ -52,7 +52,7 @@ Notes...
     the overall circuit smaller
   - The "busy" flag can be put around the whole state machine, so that it is
     routed to the clock-enable...
-  
+
 - Synthesisable recursive functions are legal, as long as they are
   declared with a "stacksize" attribute.
   - Combinational functions are fine without this attribute
@@ -69,8 +69,8 @@ Notes...
     Xilinx)
 
 - PLL-type clocks need a tolerance property:
-  - You cannot get 133 MHz and 10 MHz out of the same PLL on older devices, 
-    but if the 133 MHz is specified with a -3->+1 tolerance, the 
+  - You cannot get 133 MHz and 10 MHz out of the same PLL on older devices,
+    but if the 133 MHz is specified with a -3->+1 tolerance, the
     ALCHA compiler can make it work.
 
 - Clock groups:
@@ -81,4 +81,4 @@ Notes...
 
 - Is it possible to handle "don't care" conditions in if-statements and case
   statements?
-    
+

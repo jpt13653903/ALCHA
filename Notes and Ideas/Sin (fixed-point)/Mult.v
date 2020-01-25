@@ -16,7 +16,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
-//============================================================================== 
+//==============================================================================
 
 module Mult(
  input      [18:0]A, // 19-bit, 2's compliment

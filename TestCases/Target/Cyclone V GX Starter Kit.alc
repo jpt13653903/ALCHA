@@ -130,8 +130,8 @@ group<voltage            = 3.3,
 
 group HDMI_TX{
   output pin(24) <voltage = 3.3, location = [
-    "V23", "AA26", "W25",  "W26",  "V24",  "V25",  "U24",  "T23", 
-    "T24",  "T26", "R23",  "R25",  "P22",  "P23",  "N25",  "P26", 
+    "V23", "AA26", "W25",  "W26",  "V24",  "V25",  "U24",  "T23",
+    "T24",  "T26", "R23",  "R25",  "P22",  "P23",  "N25",  "P26",
     "P21",  "R24", "R26", "AB26", "AA24", "AB25", "AC25", "AD25"]> D;
 
   output pin<voltage = 3.3, location = "Y25"> CLK;

@@ -226,7 +226,7 @@ Which is equivalent to:
               State     <= Done;
             end
             bit <= bit - 1'b1;
-          end  
+          end
         end
         //----------------------------------------------------------------------
 

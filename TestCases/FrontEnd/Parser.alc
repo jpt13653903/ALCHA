@@ -241,22 +241,22 @@ fsm{
 fsm(Clk, Reset) Count++;
 
 hdl("Library/RS232.v", "Library/RS232_Rx.v", "Library/RS232_Tx.v") RS232_V(
-  CountBits =  5; // Parameters 
-  Count0_5  =  8; 
-  Count1    = 17; 
+  CountBits =  5; // Parameters
+  Count0_5  =  8;
+  Count1    = 17;
   Count1_5  = 25;
 ){
   input net nReset;
   input net Clk;
- 
+
   input  net(8) TxData;
   input  net    Send;
   output net    Busy;
- 
+
   output net    DataReady;
   output net(8) RxData;
   input  net    Ack;
- 
+
   output net    Tx;
   input  net    Rx;
 }

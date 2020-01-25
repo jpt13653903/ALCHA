@@ -166,7 +166,7 @@ The same location can be assigned to different pin objects.  This is useful when
   pin(4) <
     standard    = "LVDS",
     termination =  true,
-    location    = ["L12-K11", "H18-H17", "M11-L11", "N12-M12"], 
+    location    = ["L12-K11", "H18-H17", "M11-L11", "N12-M12"],
   > HSMC_RX;
 
   group <standard = "LVCMOS">{
@@ -259,10 +259,10 @@ A variable declared as an enumeration can only take values from that enumeration
 
 ```C++
   enum Enum{A, B, C}
-  
+
   num  a;
   Enum e, n;
-  
+
   a = A;          // Illegal: A does not exist in this name-space
   a = Enum.A;     // Legal  : A represents an integer value
   e = B;          // Legal  : assigning a value to the enumeration

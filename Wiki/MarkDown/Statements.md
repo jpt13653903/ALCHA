@@ -54,7 +54,7 @@ The while-loop syntax is presented below.  The body of the loop is evaluated for
 
 ### for
 
-The for-loop syntax is presented below.  `A` must evaluate to an array.  For every element of the array, `x` becomes a reference to that element and the loop is evaluated.  
+The for-loop syntax is presented below.  `A` must evaluate to an array.  For every element of the array, `x` becomes a reference to that element and the loop is evaluated.
 
 ```C++
   for(x in A){

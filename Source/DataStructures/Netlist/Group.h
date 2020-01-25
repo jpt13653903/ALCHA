@@ -34,7 +34,7 @@ namespace NETLIST{
     public:
                GROUP(const char* Name = "");
       virtual ~GROUP(); // Also cleans up the children
-     
+
       virtual void Display();
   };
 }

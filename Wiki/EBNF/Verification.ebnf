@@ -2,19 +2,19 @@
    gets to the verification features.  The end result will be very
    similar to SystemVerilog. *)
 
-Stimulus = "stimulus" [AttributeList] ["(" [ParameterList] ")"]  [Identifier] 
+Stimulus = "stimulus" [AttributeList] ["(" [ParameterList] ")"]  [Identifier]
            StatementBlock;
-Emulate  = "emulate" [AttributeList] ["(" [ParameterList] ")"]  [Identifier] 
+Emulate  = "emulate" [AttributeList] ["(" [ParameterList] ")"]  [Identifier]
            StatementBlock;
 ForkJoin = "{" [Statements] "}" {("||" | "&&") "{" [Statements] "}"}
 Wait     = ("wait" "(" Sequence        ")")
          | ("@("       SensitivityList ")")
          | (("#" | "##")  Primary) ;
 
-SensitivityList = 
+SensitivityList =
 
-Assert   = 
-Sequence = (* Put sequence expressions in here, 
+Assert   =
+Sequence = (* Put sequence expressions in here,
               with "Expression" at the leaves of the tree *)
 (*----------------------------------------------------------------------------*)
 

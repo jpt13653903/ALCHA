@@ -35,7 +35,7 @@ ifeq ($(OS), Windows_NT)
   # Objects    += Libraries/lib/libfftw3.a
 else
   Includes   =
-  LibInclude = 
+  LibInclude =
 endif
 #-------------------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ Includes  += -IBackEnd
 #-------------------------------------------------------------------------------
 
 Headers += Tools/*.h
-Headers += $(Toolbox)/*.h          
+Headers += $(Toolbox)/*.h
 Headers += DataStructures/*.h
 Headers += DataStructures/AST/*.h
 Headers += DataStructures/Netlist/*.h

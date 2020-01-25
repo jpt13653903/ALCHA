@@ -58,11 +58,11 @@ class ENGINE{
   //----------------------------------------------------------------------------
 
   private: // Expression Evaluation
-    // Creates a new node that represents the RHS expression.  Also evaluates 
+    // Creates a new node that represents the RHS expression.  Also evaluates
     // scripting variables and expressions on the fly.
     NETLIST::EXPRESSION* Evaluate(AST::EXPRESSION* Node);
 
-    // Populates a list of existing expressions, except when the target is an 
+    // Populates a list of existing expressions, except when the target is an
     // undefined attribute, in which case the attribute is created first.
     struct TARGET_LIST{
       bool                  isAttribute;

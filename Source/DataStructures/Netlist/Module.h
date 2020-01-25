@@ -34,7 +34,7 @@ namespace NETLIST{
     public:
                MODULE(const char* Name = "");
       virtual ~MODULE(); // Also cleans up the children
-     
+
       virtual void Display();
   };
   //----------------------------------------------------------------------------

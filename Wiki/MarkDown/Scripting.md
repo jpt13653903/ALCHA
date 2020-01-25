@@ -16,7 +16,7 @@ The user can, for example, use a scripting `for` loop to generate a `switch`-sta
   net( 5) x;
   net(32) y;
   num     n;
-  
+
   switch(x){
     for(n in 0..31){
       case(n) y = (2**32-1) >> (31-n);
@@ -67,7 +67,7 @@ ALCHA supports two types of file access: binary and text-based.  Binary files ma
 ```C++
   byte Data[] = read("MyDataFile.dat");
   char Log [] = "";  // An array of UTF-32 characters
-  
+
   byte data;
   for(data in Data){
     !! Do some stuff, possibly appending to the Log array
@@ -106,12 +106,12 @@ It is similarly useful to be able to convert `byte` arrays to `num` types, and v
 ```C++
   byte b[4] = [1, 2, 3, 4]; // b[0] = 1; b[1] = 2; ...
   num  n;
-  
+
   n = b;      // assigns 0x01020304 to n
   n = b[0..3] // assigns 0x01020304 to n
   n = b[3..0] // assigns 0x04030201 to n
   n = b[3, 1] // assigns 0x00000402 to n
-  
+
   n       = 0x05060708;
   b       = n; // assigns b[0] = 5; b[1] = 6; ...
   b[3..0] = n; // assigns b[3] = 5; b[2] = 6; ...
@@ -142,11 +142,11 @@ External commands can be called by means of the `shell` function.  It returns th
 
 ```C++
   !! Dynamically build the register addresses here
-  
+
   textwrite("RegDefs.h", RegDefs);
   if(shell("gcc main.c -o bin/MyCPU")) error("Cannot compile MyCPU");
   byte MyCPU[] = read("bin/MyCPU");
-  
+
   !! Initialise the CPU ROM here
 ```
 

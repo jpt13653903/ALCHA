@@ -16,7 +16,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
-//============================================================================== 
+//==============================================================================
 
 module Sin(
  input Clk,
@@ -91,9 +91,9 @@ always @(posedge Clk) begin
 
    Sin_Start: begin
     case(x[17:0])
-     18'h10000, 
-     18'h10001, 
-     18'h10010, 
+     18'h10000,
+     18'h10001,
+     18'h10010,
      18'h10011: begin
       A     <= Amplitude;
       B     <= 19'h3_FFFF;
@@ -109,35 +109,35 @@ always @(posedge Clk) begin
      end
     endcase
    end
-   
+
    Sin_1: begin
     A     <= x;
     B     <= x;
     State <= Sin_2;
    end
-   
+
    Sin_2: begin
     A     <= AB[35:18];
     B     <= 19'd614;
     State <= Sin_3;
    end
-   
+
    Sin_3: begin
     B     <= 19'd10445 - AB[36:18];
     State <= Sin_4;
    end
-   
+
    Sin_4: begin
     B     <= 19'd84668 - AB[36:18];
     State <= Sin_5;
    end
-   
+
    Sin_5: begin
     A     <= x;
     B     <= 19'd205887 - AB[36:18];
     State <= Sin_6;
    end
-   
+
    Sin_6: begin
     A     <= Amplitude;
     B     <= AB[35:17]; // No clipping required
@@ -145,7 +145,7 @@ always @(posedge Clk) begin
    end
 //------------------------------------------------------------------------------
 
-   default:;   
+   default:;
   endcase
  end
 end

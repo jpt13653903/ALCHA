@@ -28,7 +28,7 @@
 namespace AST{
   struct ALIAS: public BASE{
       std::string Identifier;
-      EXPRESSION* Expression; 
+      EXPRESSION* Expression;
       ALIAS(int Line, const char* Filename);
      ~ALIAS();
 
