@@ -16,7 +16,16 @@ ADT7420.SDA.enabled = ~Data;
 num MyNumber = -1.23456;
 
 !! Testing virtual pins
-pin(14, -π) Testing = MyNumber;
+pin(14, -pi) Testing = MyNumber;
 
 LVDS_TX = 0xABC;
+
+pin(16)YEAR    = __YEAR__;
+pin(16)MONTH   = __MONTH__;
+pin(16)DAY     = __DAY__;
+pin(16)HOUR    = __HOUR__;
+pin(16)MINUTE  = __MINUTE__;
+pin(16)SECOND  = __SECOND__;
+pin(16)WEEKDAY = __WEEKDAY__;
+pin(16)YEARDAY = __YEARDAY__;
 

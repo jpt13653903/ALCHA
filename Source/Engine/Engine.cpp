@@ -32,6 +32,24 @@ ENGINE::ENGINE(){
   Constants["e" ] = 2.718281828459045235360;
   Constants["π" ] = 3.141592653589793238463;
   Constants["pi"] = 3.141592653589793238463;
+  Constants["i" ].Add(0, 1);
+  Constants["j" ].Add(0, 1);
+
+  time_t RawTime;
+  struct tm* Time;
+
+  time(&RawTime);
+  Time = localtime(&RawTime);
+
+  Constants["__YEAR__"   ] = Time->tm_year+1900;
+  Constants["__MONTH__"  ] = Time->tm_mon+1;
+  Constants["__DAY__"    ] = Time->tm_mday;
+  Constants["__HOUR__"   ] = Time->tm_hour;
+  Constants["__MINUTE__" ] = Time->tm_min;
+  Constants["__SECOND__" ] = Time->tm_sec;
+
+  Constants["__WEEKDAY__"] = ((Time->tm_wday+6)%7)+1;
+  Constants["__YEARDAY__"] = Time->tm_yday+1;
 }
 //------------------------------------------------------------------------------
 

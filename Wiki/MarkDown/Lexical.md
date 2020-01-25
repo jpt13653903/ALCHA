@@ -59,13 +59,21 @@ Identifiers start with a non-digit, which may then be followed with any digit or
 
 ## Predefined Constants
 
-The following constants are predefined in the same precision as the surrounding variables.  They can be redefined by the developer, following the scoping rules.
+The following constants are predefined with double precision.  They can be redefined by the developer, following the scoping rules.
 
-Symbol                        | Description            | Value
-------                        | -----------            | -----
-`pi` or &pi; (`U+0C30`)       | &pi;                   | 3.141 592 653 ...
-`e`                           | Natural base           | 2.718 281 828 ...
-`i` or `j`                    | Imaginary constant     | &radic;(-1)
+Symbol                  | Description                  | Value
+------                  | -----------                  | -----
+`pi` or &pi; (`U+0C30`) | &pi;                         | 3.141 592 653 ...
+`e`                     | Natural base                 | 2.718 281 828 ...
+`i` or `j`              | Imaginary constant           | &radic;(-1)
+`__YEAR__`              | The current year             | Compile-time dependent
+`__MONTH__`             | The current month            | Compile-time dependent (1..12)
+`__DAY__`               | The current day of the month | Compile-time dependent (1..31)
+`__HOUR__`              | The current hour             | Compile-time dependent (0..23)
+`__MINUTE__`            | The current minute           | Compile-time dependent (0..59)
+`__SECOND__`            | The current second           | Compile-time dependent (0..61)
+`__WEEKDAY__`           | The current day of the week  | Compile-time dependent (1..7 => Monday..Sunday)
+`__YEARDAY__`           | The current day of the year  | Compile-time dependent (1..366)
 
 ## Special Keywords
 
