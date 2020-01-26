@@ -476,6 +476,10 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression){
       NUMBER Factor = From->FullScale;
       Factor.Div(To->FullScale);
       Factor.BinScale(To->Width - From->Width);
+      if(Factor == 0){
+        error("Unexpected 0 full-scale");
+        return false;
+      }
 
       NUMBER Limit(1);
       Limit.BinScale(To->Width);
@@ -608,11 +612,15 @@ void BACK_END::BuildPorts(string& Body, NAMESPACE* Namespace, bool& isFirst){
 //------------------------------------------------------------------------------
 
 void BACK_END::BuildNets(string& Body, NAMESPACE* Namespace){
+  bool isFirst = true;
+
   for(auto SymbolIterator  = Namespace->Symbols.begin();
            SymbolIterator != Namespace->Symbols.end  ();
            SymbolIterator++){
     switch(SymbolIterator->second->Type){
       case BASE::TYPE::Net:{
+        if(!isFirst) Body += "\n";
+        isFirst = false;
         auto Net = (NET*)SymbolIterator->second;
         Body += "wire ";
         if(Net->Width > 1){

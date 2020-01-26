@@ -1693,7 +1693,12 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
         Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Multiply);
         Temp->Left  = *Target;
         Temp->Right = Right;
-        *Target     = Temp;
+        if(Temp->Left->Width && Temp->Right->Width){
+          Temp->Width     = Temp->Left->Width + Temp->Right->Width;
+          Temp->FullScale = Temp->Left->FullScale;
+          Temp->FullScale.Mul(Temp->Right->Width);
+        }
+        *Target = Temp;
         break;
       }else{
         Error(Ast, "Multiply-Assign with null target");

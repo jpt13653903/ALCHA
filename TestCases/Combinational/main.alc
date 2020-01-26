@@ -16,16 +16,25 @@ ADT7420.SDA.enabled = ~Data;
 num MyNumber = 1.23456;
 
 !! Testing virtual pins
-net(14, 3) TestNet = MyNumber;
-pin(14, 3) Testing1 =  0.1 *TestNet;
-pin(14, 3) Testing2 = 10   *TestNet;
-pin(14, 3) Testing3 =  4   *TestNet;
-pin(14, 3) Testing4 =  0.25*TestNet;
+net(14, 3 ) TestNet  = GPIO;
+
+pin(14, 3 ) Testing1 =  0.1 *TestNet;
+pin(14, 3 ) Testing2 = 10   *TestNet;
+pin(14, 3 ) Testing3 =  4   *TestNet;
+pin(14, 3 ) Testing4 =  0.25*TestNet;
 
 pin(14, pi) Testing5 =  0.1 *TestNet;
 pin(14, pi) Testing6 = 10   *TestNet;
 pin(14, pi) Testing7 =  4   *TestNet;
 pin(14, pi) Testing8 =  0.25*TestNet;
 
+Testing5 *= TestNet;
+
 LVDS_TX = 0xABC;
+
+net(16, 1) a  = 0.123;
+pin(32, 1) b  = 2*a;
+pin(32, 1) c := 2*a;
+
+GPIO := Testing5;
 
