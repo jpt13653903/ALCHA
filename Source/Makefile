@@ -71,6 +71,7 @@ else
 endif
 
 Objects += $(ObjectPath)/Tools/Logger.o
+Objects += $(ObjectPath)/Tools/Messages.o
 Objects += $(ObjectPath)/Tools/Number.o
 
 Objects += $(ObjectPath)/Toolbox/General.o

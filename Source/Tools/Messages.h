@@ -18,45 +18,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef BackEnd_h
-#define BackEnd_h
+#ifndef Messages_h
+#define Messages_h
 //------------------------------------------------------------------------------
 
-#include "Messages.h"
-#include "AST/Definition.h"
-#include "Altera/Project.h"
+#include <string>
 //------------------------------------------------------------------------------
 
-class BACK_END{
-  private:
-    std::string Path;
-    std::string Filename;
+#include "General.h"
+//------------------------------------------------------------------------------
 
-    void Error  (NETLIST::EXPRESSION* Expression, const char* Message = 0);
-    void Warning(NETLIST::EXPRESSION* Expression, const char* Message = 0);
-
-    bool WriteFile(std::string& Filename, const char* Ext, std::string& Body);
-
-    bool DeleteUnused       (NETLIST::NAMESPACE* Module);
-    bool AssignPinDirections(NETLIST::NAMESPACE* Module);
-    bool RoutePorts         (NETLIST::NAMESPACE* Module);
-
-    bool AddAssignment(std::string& Body, NETLIST::BASE* Object);
-
-    bool BuildExpression(std::string& Body, NETLIST::EXPRESSION* Expression);
-    void BuildPorts     (std::string& Body, NETLIST::NAMESPACE*  Namespace, bool& isFirst);
-    void BuildNets      (std::string& Body, NETLIST::NAMESPACE*  Namespace);
-
-    bool BuildHDL(NETLIST::MODULE* Module, std::string Path);
-
-  public:
-    BACK_END();
-   ~BACK_END();
-
-    bool BuildAltera(const char* Path, const char* Filename);
-};
+void Error  (int Line, const std::string& Filename, const char* Message = 0);
+void Warning(int Line, const std::string& Filename, const char* Message = 0);
 //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------
-

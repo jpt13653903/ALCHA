@@ -26,8 +26,6 @@ using namespace NETLIST;
 //------------------------------------------------------------------------------
 
 ENGINE::ENGINE(){
-  error = false;
-
   // TODO: Maybe pull constants into a class of their own?
   Constants["e" ] = 2.718281828459045235360;
   Constants["π" ] = 3.141592653589793238463;
@@ -62,34 +60,12 @@ ENGINE::~ENGINE(){
 //------------------------------------------------------------------------------
 
 void ENGINE::Error(AST::BASE* Ast, const char* Message){
-  if(error) return;
-  error = true;
-  printf(
-    ANSI_FG_BRIGHT_BLACK "Line "
-    ANSI_FG_CYAN         "%05d "
-    ANSI_FG_BRIGHT_BLACK "of "
-    ANSI_FG_YELLOW       "%s\n"
-    ANSI_FG_BRIGHT_RED   "  Error: "
-    ANSI_RESET,
-    Ast->Line,
-    Ast->Filename.c_str()
-  );
-  if(Message) printf("%s\n", Message);
+  ::Error(Ast->Line, Ast->Filename.c_str(), Message);
 }
 //------------------------------------------------------------------------------
 
 void ENGINE::Warning(AST::BASE* Ast, const char* Message){
-  printf(
-    ANSI_FG_BRIGHT_BLACK "Line "
-    ANSI_FG_CYAN         "%05d "
-    ANSI_FG_BRIGHT_BLACK "of "
-    ANSI_FG_YELLOW       "%s\n"
-    ANSI_FG_MAGENTA      "  Warning: "
-    ANSI_RESET,
-    Ast->Line,
-    Ast->Filename.c_str()
-  );
-  if(Message) printf("%s\n", Message);
+  ::Warning(Ast->Line, Ast->Filename.c_str(), Message);
 }
 //------------------------------------------------------------------------------
 

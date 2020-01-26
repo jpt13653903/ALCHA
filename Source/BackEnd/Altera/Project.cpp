@@ -34,6 +34,36 @@ PROJECT::~PROJECT(){
 }
 //------------------------------------------------------------------------------
 
+void PROJECT::Error(const char* Message){
+  ::Error(0, "", Message);
+}
+//------------------------------------------------------------------------------
+
+void PROJECT::Warning(const char* Message){
+  ::Warning(0, "", Message);
+}
+//------------------------------------------------------------------------------
+
+void PROJECT::Error(BASE* Netlist, const char* Message){
+  ::Error(Netlist->Line, Netlist->Filename.c_str(), Message);
+}
+//------------------------------------------------------------------------------
+
+void PROJECT::Warning(BASE* Netlist, const char* Message){
+  ::Warning(Netlist->Line, Netlist->Filename.c_str(), Message);
+}
+//------------------------------------------------------------------------------
+
+void PROJECT::Error(EXPRESSION* Expression, const char* Message){
+  ::Error(Expression->Line, Expression->Filename.c_str(), Message);
+}
+//------------------------------------------------------------------------------
+
+void PROJECT::Warning(EXPRESSION* Expression, const char* Message){
+  ::Warning(Expression->Line, Expression->Filename.c_str(), Message);
+}
+//------------------------------------------------------------------------------
+
 bool PROJECT::WriteFile(string& Filename, const char* Ext, string& Body){
   FILE_WRAPPER Files;
   string Fullname = Path + "/" + Filename + "." + Ext;
@@ -98,7 +128,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
         auto Standard = Pin->GetAttrib("standard");
         if(Standard){
           if(Standard->ExpressionType != EXPRESSION::String){
-            error("Standard attribute not a string");
+            Error(Standard, "Standard attribute not a string");
             return false;
           }
           Body += "set_instance_assignment -name "
@@ -110,22 +140,22 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
         if(Location){
           if(Pin->Width == 1){
             if(Location->ExpressionType != EXPRESSION::String){
-              error("Scalar pin location not a string");
+              Error(Location, "Scalar pin location not a string");
               return false;
             }
             AssignPin(Body, Location->StrValue, Pin->HDL_Name());
           }else{
             if(Location->ExpressionType != EXPRESSION::Array){
-              error("Vector pin location not an array");
+              Error(Location, "Vector pin location not an array");
               return false;
             }
             if(Location->Elements.size() != (size_t)Pin->Width){
-              error("Vector pin location array of wrong size");
+              Error(Location, "Vector pin location array of wrong size");
               return false;
             }
             for(int n = 0; n < Pin->Width; n++){
               if(Location->Elements[n]->ExpressionType != EXPRESSION::String){
-                error("Pin location not a string");
+                Error(Location->Elements[n], "Pin location not a string");
                 return false;
               }
               AssignPin(Body,
@@ -134,7 +164,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
             }
           }
         }else{
-          warning("Pin without location attribute, creating virtual pin");
+          Warning(Pin, "Pin without location attribute, creating virtual pin");
           Body += "set_instance_assignment "
                   "-name VIRTUAL_PIN ON -to "+ Pin->HDL_Name();
           if(Pin->Width > 1) Body += "[*]";
@@ -147,7 +177,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
           switch(Current->ExpressionType){
             case EXPRESSION::Literal:{
               if(!Current->Value.IsReal()){
-                error("Current attribute not real");
+                Error(Current, "Current attribute not real");
                 return false;
               }
               NUMBER mA = Current->Value;
@@ -160,7 +190,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
               break;
             default:
               // TODO Need to also handle arrays (for vector types) correctly
-              error("Unexpected current strength attribute type");
+              Error(Current, "Unexpected current strength attribute type");
               break;
           }
           Body += " -to "+ Pin->HDL_Name();
@@ -182,7 +212,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
               break;
             default:
               // TODO Need to also handle arrays (for vector types) correctly
-              error("Unexpected current strength attribute type");
+              Error(WeakPullup, "Unexpected current strength attribute type");
               break;
           }
           Body += " -to "+ Pin->HDL_Name();
@@ -261,7 +291,7 @@ bool PROJECT::BuildSettings(){
   Body += "set_global_assignment -name STRATIX_DEVICE_IO_STANDARD ";
   if(Standard){
     if(Standard->ExpressionType != EXPRESSION::String){
-      error("Standard attribute not a string");
+      Error(Standard, "Standard attribute not a string");
       return false;
     }
     Body += "\""+ Standard->StrValue +"\"\n\n";
@@ -336,22 +366,22 @@ bool PROJECT::Build(const char* Path, const char* Filename){
 
   auto Device = Global.GetAttrib("target_device");
   if(!Device){
-    error("Global attribute \"target_device\" not defined");
+    Error("Global attribute \"target_device\" not defined");
     return false;
   }
   if(Device->ExpressionType != EXPRESSION::String){
-    error("Global attribute \"target_device\" not a string");
+    Error(Device, "Global attribute \"target_device\" not a string");
     return false;
   }
   this->Device = Device->StrValue;
 
   auto Series = Global.GetAttrib("target_series");
   if(!Series){
-    error("Global attribute \"target_series\" not defined");
+    Error("Global attribute \"target_series\" not defined");
     return false;
   }
   if(Series->ExpressionType != EXPRESSION::String){
-    error("Global attribute \"target_series\" not a string");
+    Error(Series, "Global attribute \"target_series\" not a string");
     return false;
   }
   this->Series = Series->StrValue;

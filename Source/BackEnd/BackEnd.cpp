@@ -26,7 +26,6 @@ using namespace NETLIST;
 //------------------------------------------------------------------------------
 
 BACK_END::BACK_END(){
-  error = false;
 }
 //------------------------------------------------------------------------------
 
@@ -35,34 +34,12 @@ BACK_END::~BACK_END(){
 //------------------------------------------------------------------------------
 
 void BACK_END::Error(EXPRESSION* Expression, const char* Message){
-  if(error) return;
-  error = true;
-  printf(
-    ANSI_FG_BRIGHT_BLACK "Line "
-    ANSI_FG_CYAN         "%05d "
-    ANSI_FG_BRIGHT_BLACK "of "
-    ANSI_FG_YELLOW       "%s\n"
-    ANSI_FG_BRIGHT_RED   "  Error: "
-    ANSI_RESET,
-    Expression->Line,
-    Expression->Filename.c_str()
-  );
-  if(Message) printf("%s\n", Message);
+  ::Error(Expression->Line, Expression->Filename, Message);
 }
 //------------------------------------------------------------------------------
 
 void BACK_END::Warning(EXPRESSION* Expression, const char* Message){
-  printf(
-    ANSI_FG_BRIGHT_BLACK "Line "
-    ANSI_FG_CYAN         "%05d "
-    ANSI_FG_BRIGHT_BLACK "of "
-    ANSI_FG_YELLOW       "%s\n"
-    ANSI_FG_MAGENTA      "  Warning: "
-    ANSI_RESET,
-    Expression->Line,
-    Expression->Filename.c_str()
-  );
-  if(Message) printf("%s\n", Message);
+  ::Warning(Expression->Line, Expression->Filename.c_str(), Message);
 }
 //------------------------------------------------------------------------------
 

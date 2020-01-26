@@ -44,6 +44,7 @@ Tokens:
 
 #include "Token.h"
 #include "Number.h"
+#include "Messages.h"
 #include "TokenTree.h"
 #include "Dictionary.h"
 #include "FileWrapper.h"

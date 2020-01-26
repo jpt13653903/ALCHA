@@ -34,6 +34,7 @@
 //------------------------------------------------------------------------------
 
 #include "Parser.h"
+#include "Messages.h"
 #include "Netlist/Alias.h"
 #include "Netlist/Group.h"
 #include "Netlist/Module.h"
@@ -48,7 +49,6 @@ class ENGINE{
   private: // Massages
     PARSER Parser;
 
-    bool error;
     void Error  (AST::BASE* Ast, const char* Message = 0);
     void Warning(AST::BASE* Ast, const char* Message = 0);
   //----------------------------------------------------------------------------
