@@ -406,7 +406,8 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
 
     case AST::EXPRESSION::Cast:
-      // TODO: Root has the target type; Root->Right has the original expression
+      // TODO: Root has the target type; Root->Left has the original expression
+      //       Root->Right is optional and carry the class name (when applicable)
       error("Cast not yet implemented");
       break;
 
@@ -1303,8 +1304,9 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       break;
 
     case EXPRESSION::Cast:
-      // TODO: Root has the target type; Root->Right has the original expression
-      if(!Root->Left || !Root->Right){
+      // TODO: Root has the target type; Root->Left has the original expression
+      //       Root->Right is optional and carry the class name (when applicable)
+      if(!Root->Left){
         error("Unexpected null pointer");
         break;
       }
@@ -1829,29 +1831,33 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
   Simplify(*Target);
 
   if(*Target){
-    Right = *Target;
     if(RawAssign){
       if(Object->Type == BASE::TYPE::Pin || Object->Type == BASE::TYPE::Net){
         SYNTHESISABLE* Synth = (SYNTHESISABLE*)Object;
-        Right->Signed    = Synth->Signed;
-        Right->Width     = Synth->Width;
-        Right->FullScale = Synth->FullScale;
+        (*Target)->Signed    = Synth->Signed;
+        (*Target)->Width     = Synth->Width;
+        (*Target)->FullScale = Synth->FullScale;
       }
     }else{
       if(Object->Type == BASE::TYPE::Pin || Object->Type == BASE::TYPE::Net){
         SYNTHESISABLE* Synth = (SYNTHESISABLE*)Object;
-        if(Right->ExpressionType == EXPRESSION::Literal){
-          Right->Value.Div     (Synth->FullScale);
-          Right->Value.BinScale(Synth->Width);
-          Right->Signed    = Synth->Signed;
-          Right->Width     = Synth->Width;
-          Right->FullScale = Synth->FullScale;
+        if((*Target)->ExpressionType == EXPRESSION::Literal){
+          (*Target)->Value.Div     (Synth->FullScale);
+          (*Target)->Value.BinScale(Synth->Width);
+          (*Target)->Signed    = Synth->Signed;
+          (*Target)->Width     = Synth->Width;
+          (*Target)->FullScale = Synth->FullScale;
         }else{
-          if(Right->Signed    != Synth->Signed ||
-             Right->Width     != Synth->Width  ||
-           !(Right->FullScale == Synth->FullScale)){
-            error("Expression fixed-point scaling not yet implemented");
-            Error(Ast, "");
+          if((*Target)->Signed    != Synth->Signed ||
+             (*Target)->Width     != Synth->Width  ||
+             (*Target)->FullScale != Synth->FullScale){
+            // Inject a cast expression and let the back-end sort it out
+            Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::Cast);
+            Temp->Left      = *Target;
+            Temp->Signed    = Synth->Signed;
+            Temp->Width     = Synth->Width;
+            Temp->FullScale = Synth->FullScale;
+            *Target = Temp;
           }
         }
       }

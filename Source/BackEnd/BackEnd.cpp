@@ -218,8 +218,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression){
       Result.Round();
       Body += Result.GetString(16);
       Result.BinScale(-Expression->Width);
-      Result.Sub(1);
-      if(Result.IsPositive()){
+      if(Result > 1){
         Error(Expression, "The literal does not fit in its full-scale range");
         return false;
       }
@@ -462,6 +461,62 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression){
       if(!BuildExpression(Body, Expression->Right)) return false;
       Body += ")";
       break;
+
+    case EXPRESSION::Cast:{
+      if(!Expression->Left){
+        error("Unexpected null reference");
+        return false;
+      }
+      if(Expression->Right){
+        error("Unexpected cast to class");
+        return false;
+      }
+      EXPRESSION* From = Expression->Left;
+      EXPRESSION* To   = Expression;
+      NUMBER Factor = From->FullScale;
+      Factor.Div(To->FullScale);
+      Factor.BinScale(To->Width - From->Width);
+
+      NUMBER Limit(1);
+      Limit.BinScale(To->Width);
+      int Shift = 0;
+      while(Factor.IsInt()){
+        Factor.BinScale(-1);
+        Shift--;
+      }
+      while(!Factor.IsInt() && (Factor < Limit)){
+        Factor.BinScale(1);
+        Shift++;
+      }
+      while(Factor >= Limit){
+        Factor.BinScale(-1);
+        Shift--;
+      }
+      Factor.Round();
+      int Width = 0;
+      NUMBER Num(Factor);
+      while(Num >= 1){
+        Num.BinScale(-1);
+        Width++;
+      }
+
+      if(Factor == 1){
+        if(Shift) Body += "(";
+        if(!BuildExpression(Body, Expression->Left)) return false;
+        if     (Shift > 0) Body += ") >> " + to_string( Shift);
+        else if(Shift < 0) Body += ") << " + to_string(-Shift);
+      }else{
+        Warning(Expression, "Non power-of-two scaling factor: synthesising a multiplier");
+        if(Shift == 0) Body += "(";
+        else           Body += "((";
+        if(!BuildExpression(Body, Expression->Left)) return false;
+        Body += ")*" + to_string(Width) + "'h";
+        Body += Factor.GetString(16);
+        if     (Shift > 0) Body += ") >> " + to_string( Shift);
+        else if(Shift < 0) Body += ") << " + to_string(-Shift);
+      }
+      break;
+    }
 
     case EXPRESSION::Conditional:
       error("Not yet implemented");

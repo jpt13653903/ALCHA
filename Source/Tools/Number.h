@@ -52,17 +52,46 @@ class NUMBER{
     void Set(mpz_t Numerator, mpz_t Denominator);
 
     // Operators
-    void operator= (int           i);
-    void operator= (unsigned      u);
-    void operator= (double        d);
-    void operator= (bool          b);
-    void operator= (const NUMBER& n);
+    void operator=  (int           i);
+    void operator=  (unsigned      u);
+    void operator=  (double        d);
+    void operator=  (bool          b);
+    void operator=  (const NUMBER& n);
 
     bool operator== (int           i);
     bool operator== (unsigned      u);
     bool operator== (double        d);
     bool operator== (bool          b);
     bool operator== (const NUMBER& n);
+
+    bool operator!= (int           i);
+    bool operator!= (unsigned      u);
+    bool operator!= (double        d);
+    bool operator!= (bool          b);
+    bool operator!= (const NUMBER& n);
+
+    // Relational comparisons for complex numbers follow the rules presented in
+    // https://www.cut-the-knot.org/do_you_know/complex_compare.shtml
+    // i.e. (a + ib) < (c + id), provided either a < c or a = c and b < d. 
+    bool operator<  (int           i);
+    bool operator<  (unsigned      u);
+    bool operator<  (double        d);
+    bool operator<  (const NUMBER& n);
+
+    bool operator<= (int           i);
+    bool operator<= (unsigned      u);
+    bool operator<= (double        d);
+    bool operator<= (const NUMBER& n);
+
+    bool operator>  (int           i);
+    bool operator>  (unsigned      u);
+    bool operator>  (double        d);
+    bool operator>  (const NUMBER& n);
+
+    bool operator>= (int           i);
+    bool operator>= (unsigned      u);
+    bool operator>= (double        d);
+    bool operator>= (const NUMBER& n);
 
     void Add(double r, double i = 0);
     void Add(const NUMBER& n);

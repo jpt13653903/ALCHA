@@ -13,13 +13,19 @@ ADT7420.SDA'pullup  = true;
 ADT7420.SDA.driver  = 0;
 ADT7420.SDA.enabled = ~Data;
 
-pin(16) ADT7420_SDA = 123;
-
-num MyNumber = -1.23456;
+num MyNumber = 1.23456;
 
 !! Testing virtual pins
-net(14, -3) TestNet = MyNumber;
-pin(14,  3) Testing = 2*TestNet;
+net(14, 3) TestNet = MyNumber;
+pin(14, 3) Testing1 =  0.1 *TestNet;
+pin(14, 3) Testing2 = 10   *TestNet;
+pin(14, 3) Testing3 =  4   *TestNet;
+pin(14, 3) Testing4 =  0.25*TestNet;
+
+pin(14, pi) Testing5 =  0.1 *TestNet;
+pin(14, pi) Testing6 = 10   *TestNet;
+pin(14, pi) Testing7 =  4   *TestNet;
+pin(14, pi) Testing8 =  0.25*TestNet;
 
 LVDS_TX = 0xABC;
 

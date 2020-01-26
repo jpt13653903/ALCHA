@@ -145,6 +145,118 @@ bool NUMBER::operator== (const NUMBER& n){
 }
 //------------------------------------------------------------------------------
 
+bool NUMBER::operator!= (int i){
+  return !operator==(i);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator!= (unsigned u){
+  return !operator==(u);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator!= (double d){
+  return !operator==(d);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator!= (bool b){
+  return !operator==(b);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator!= (const NUMBER& n){
+  return !operator==(n);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator< (int i){
+  NUMBER n(i);
+  return operator<(n);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator< (unsigned u){
+  NUMBER n(u);
+  return operator<(n);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator< (double d){
+  NUMBER n(d);
+  return operator<(n);
+}
+//------------------------------------------------------------------------------
+
+#include "General.h"
+bool NUMBER::operator< (const NUMBER& n){
+  int Result = mpq_cmp(Real, n.Real);
+  if(Result < 0) return true;
+  if(Result > 0) return false;
+  return mpq_cmp(Imag, n.Imag) < 0;
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator<= (int i){
+  return operator<(i) || operator==(i);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator<= (unsigned u){
+  return operator<(u) || operator==(u);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator<= (double d){
+  return operator<(d) || operator==(d);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator<= (const NUMBER& n){
+  return operator<(n) || operator==(n);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator> (int i){
+  return !operator<(i) && !operator==(i);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator> (unsigned u){
+  return !operator<(u) && !operator==(u);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator> (double d){
+  return !operator<(d) && !operator==(d);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator> (const NUMBER& n){
+  return !operator<(n) && !operator==(n);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator>= (int i){
+  return !operator<(i);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator>= (unsigned u){
+  return !operator<(u);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator>= (double d){
+  return !operator<(d);
+}
+//------------------------------------------------------------------------------
+
+bool NUMBER::operator>= (const NUMBER& n){
+  return !operator<(n);
+}
+//------------------------------------------------------------------------------
+
 void NUMBER::Add(double r, double i){
   mpq_t a, b;
 
