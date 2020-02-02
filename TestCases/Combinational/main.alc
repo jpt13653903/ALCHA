@@ -14,9 +14,6 @@ ADT7420.SDA.driver  = 0;
 ADT7420.SDA.enabled = ~Data;
 
 num MyNumber = 1.23456;
-num Pi = pi;
-num E  = e;
-num I  = i;
 
 !! Testing virtual pins
 net(14, 3 ) TestNet  = GPIO;
@@ -38,6 +35,9 @@ LVDS_TX = 0xABC;
 net(16, 1) a  = 0.123;
 pin(32, 1) b  = 2*a;
 pin(32, 1) c := 2*a;
+
+// pin( 8) d = 123;
+// pin(40) e = a`5;
 
 GPIO := Testing5;
 

@@ -41,11 +41,12 @@ class BACK_END{
     bool AssignPinDirections(NETLIST::NAMESPACE* Module);
     bool RoutePorts         (NETLIST::NAMESPACE* Module);
 
-    bool AddAssignment(std::string& Body, NETLIST::BASE* Object);
+    const char* GetTemporaryName();
 
-    bool BuildExpression(std::string& Body, NETLIST::EXPRESSION* Expression);
-    void BuildPorts     (std::string& Body, NETLIST::NAMESPACE*  Namespace, bool& isFirst);
-    void BuildNets      (std::string& Body, NETLIST::NAMESPACE*  Namespace);
+    bool BuildExpression (std::string& Body, NETLIST::EXPRESSION* Expression, std::string& Temporary);
+    bool BuildAssignments(std::string& Body, NETLIST::NAMESPACE*  Namespace);
+    void BuildPorts      (std::string& Body, NETLIST::NAMESPACE*  Namespace, bool& isFirst);
+    void BuildNets       (std::string& Body, NETLIST::NAMESPACE*  Namespace);
 
     bool BuildHDL(NETLIST::MODULE* Module, std::string Path);
 

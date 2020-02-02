@@ -33,12 +33,6 @@ ENGINE::ENGINE(){
   Constants["i" ].Set_i ();
   Constants["j" ].Set_i ();
 
-  debug("e  = %s", Constants["e" ].Display().c_str());
-  debug("π  = %s", Constants["π" ].Display().c_str());
-  debug("pi = %s", Constants["pi"].Display().c_str());
-  debug("i  = %s", Constants["i" ].Display().c_str());
-  debug("j  = %s", Constants["j" ].Display().c_str());
-
   time_t RawTime;
   struct tm* Time;
 
@@ -1678,7 +1672,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
         if(Temp->Left->Width && Temp->Right->Width){
           Temp->Width     = Temp->Left->Width + Temp->Right->Width;
           Temp->FullScale = Temp->Left->FullScale;
-          Temp->FullScale.Mul(Temp->Right->Width);
+          Temp->FullScale.Mul(Temp->Right->FullScale);
         }
         *Target = Temp;
         break;

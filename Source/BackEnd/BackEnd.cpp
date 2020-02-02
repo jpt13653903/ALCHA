@@ -172,7 +172,16 @@ bool BACK_END::WriteFile(string& Filename, const char* Ext, string& Body){
 }
 //------------------------------------------------------------------------------
 
-bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression){
+const char* BACK_END::GetTemporaryName(){
+  static unsigned Count = 0;
+  static char     Name[0x10];
+  sprintf(Name, "\\t..%d ", Count++);
+  return Name;
+}
+//------------------------------------------------------------------------------
+
+// TODO: Rename "Temporary" -- it can also return the literal, for instance
+bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Temporary){
   if(!Expression) return false;
 
   switch(Expression->ExpressionType){
@@ -187,13 +196,13 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression){
           Error(Expression, "Cannot store a negative literal to an unsigned target");
           return false;
         }
-        Body += "-";
+        Temporary += "-";
         Result.Mul(-1);
       }
-      if(Expression->Signed) Body += to_string(Expression->Width+1) + "'h";
-      else                   Body += to_string(Expression->Width  ) + "'h";
+      if(Expression->Signed) Temporary += to_string(Expression->Width+1) + "'h";
+      else                   Temporary += to_string(Expression->Width  ) + "'h";
       Result.Round();
-      Body += Result.GetString(16);
+      Temporary += Result.GetString(16);
       Result.BinScale(-Expression->Width);
       if(Result > 1){
         Error(Expression, "The literal does not fit in its full-scale range");
@@ -207,237 +216,332 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression){
         error("Null object reference");
         return false;
       }
-      Body += Expression->ObjectRef->EscapedName();
+      Temporary += Expression->ObjectRef->EscapedName();
       break;
 
-    case EXPRESSION::VectorConcatenate:
-      Body += "{";
+    case EXPRESSION::VectorConcatenate:{
+      vector<string> Elements;
+      Elements.resize(Expression->Elements.size());
+
       for(size_t n = 0; n < Expression->Elements.size(); n++){
-        Body += "(";
-        if(!BuildExpression(Body, Expression->Elements[n])) return false;
-        Body += ")";
+        if(!BuildExpression(Body, Expression->Elements[n], Elements[n])) return false;
+      }
+      Temporary = GetTemporaryName();
+      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      else                      Body += "wire ";
+      Body += Temporary +"= {";
+      for(size_t n = 0; n < Expression->Elements.size(); n++){
+        Body += Elements[n];
         if(n < Expression->Elements.size()-1) Body += ", ";
       }
-      Body += "}";
+      Body += "};\n";
       break;
+    }
 
     case EXPRESSION::Slice:
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::Negate:
-      Body += "-(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::Negate:{
+      string Right;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      else                      Body += "wire ";
+      Body += Temporary +"= -("+ Right +");\n";
       break;
+    }
 
-    case EXPRESSION::Bit_NOT:
-      Body += "~(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::Bit_NOT:{
+      string Right;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      else                      Body += "wire ";
+      Body += Temporary +"= ~("+ Right +");\n";
       break;
+    }
 
-    case EXPRESSION::AND_Reduce:
-      Body += "&(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::AND_Reduce:{
+      string Right;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      Body += "wire ";
+      Body += Temporary +"= &("+ Right +");\n";
       break;
+    }
 
-    case EXPRESSION::NAND_Reduce:
-      Body += "~&(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::NAND_Reduce:{
+      string Right;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      Body += "wire ";
+      Body += Temporary +"= ~&("+ Right +");\n";
       break;
+    }
 
-    case EXPRESSION::OR_Reduce:
-      Body += "|(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::OR_Reduce:{
+      string Right;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      Body += "wire ";
+      Body += Temporary +"= |("+ Right +");\n";
       break;
+    }
 
-    case EXPRESSION::NOR_Reduce:
-      Body += "~|(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::NOR_Reduce:{
+      string Right;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      Body += "wire ";
+      Body += Temporary +"= ~|("+ Right +");\n";
       break;
+    }
 
-    case EXPRESSION::XOR_Reduce:
-      Body += "^(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::XOR_Reduce:{
+      string Right;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      Body += "wire ";
+      Body += Temporary +"= ^("+ Right +");\n";
       break;
+    }
 
-    case EXPRESSION::XNOR_Reduce:
-      Body += "~^(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::XNOR_Reduce:{
+      string Right;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      Body += "wire ";
+      Body += Temporary +"= ~^("+ Right +");\n";
       break;
+    }
 
-    case EXPRESSION::Logical_NOT:
-      Body += "!(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::Logical_NOT:{
+      string Right;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      Body += "wire ";
+      Body += Temporary +"= !("+ Right +");\n";
       break;
+    }
 
-    case EXPRESSION::Replicate:
-      Body += "{(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += "){";
-      if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += "}}";
-      break;
+    case EXPRESSION::Replicate:{ // TODO: Test
+      string Left, Right;
 
-    case EXPRESSION::Multiply:
-      Body += "(";
-      if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += ")*(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
-      break;
+      if(Expression->Right->ExpressionType != EXPRESSION::Literal){
+        Error(Expression, "Replication count must break down to a run-time constant");
+        return false;
+      }
+      if(!Expression->Right->Value.IsInt()){
+        Error(Expression, "Replication count must be an integer");
+        return false;
+      }
+      if(!Expression->Right->Value.IsPositive()){
+        Error(Expression, "Replication count must be real and positive");
+        return false;
+      }
+      if(!BuildExpression(Body, Expression->Left, Left)) return false;
+      Right = Expression->Right->Value.GetString(10);
 
-    case EXPRESSION::Add:
-      Body += "(";
-      if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += ")+(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+      Temporary = GetTemporaryName();
+      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      else                      Body += "wire ";
+      Body += Temporary +"= {"+ Right +"{"+ Left +"}};\n";
       break;
+    }
 
-    case EXPRESSION::Subtract:
-      Body += "(";
-      if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += ")-(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::Multiply:{
+      string Left, Right;
+      if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      else                      Body += "wire ";
+      Body += Temporary +"= "+ Left +" * "+ Right +";\n";
       break;
+    }
 
-    case EXPRESSION::Shift_Left:
-      Body += "(";
-      if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += ")<<(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::Add:{
+      string Left, Right;
+      if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      else                      Body += "wire ";
+      Body += Temporary +"= "+ Left +" + "+ Right +";\n";
       break;
+    }
 
-    case EXPRESSION::Shift_Right:
-      Body += "(";
-      if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += ")>>(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::Subtract:{
+      string Left, Right;
+      if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      else                      Body += "wire ";
+      Body += Temporary +"= "+ Left +" - "+ Right +";\n";
       break;
+    }
 
-    case EXPRESSION::Less:
-      Body += "(";
-      if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += ")<(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::Shift_Left:{
+      string Left, Right;
+      if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      else                      Body += "wire ";
+      Body += Temporary +"= "+ Left +" << "+ Right +";\n";
       break;
+    }
 
-    case EXPRESSION::Greater:
-      Body += "(";
-      if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += ")>(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::Shift_Right:{
+      string Left, Right;
+      if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      else                      Body += "wire ";
+      Body += Temporary +"= "+ Left +" >> "+ Right +";\n";
       break;
+    }
 
-    case EXPRESSION::Less_Equal:
-      Body += "(";
-      if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += ")<=(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::Less:{
+      string Left, Right;
+      if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      Body += "wire "+ Temporary +"= "+ Left +" < "+ Right +";\n";
       break;
+    }
 
-    case EXPRESSION::Greater_Equal:
-      Body += "(";
-      if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += ")>=(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::Greater:{
+      string Left, Right;
+      if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      Body += "wire "+ Temporary +"= "+ Left +" > "+ Right +";\n";
       break;
+    }
 
-    case EXPRESSION::Equal:
-      Body += "(";
-      if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += ")==(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::Less_Equal:{
+      string Left, Right;
+      if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      Body += "wire "+ Temporary +"= "+ Left +" <= "+ Right +";\n";
       break;
+    }
 
-    case EXPRESSION::Not_Equal:
-      Body += "(";
-      if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += ")!=(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::Greater_Equal:{
+      string Left, Right;
+      if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      Body += "wire "+ Temporary +"= "+ Left +" >= "+ Right +";\n";
       break;
+    }
 
-    case EXPRESSION::Bit_AND:
-      Body += "(";
-      if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += ")&(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::Equal:{
+      string Left, Right;
+      if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      Body += "wire "+ Temporary +"= "+ Left +" == "+ Right +";\n";
       break;
+    }
 
-    case EXPRESSION::Bit_NAND:
-      Body += "~((";
-      if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += ")&(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += "))";
+    case EXPRESSION::Not_Equal:{
+      string Left, Right;
+      if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      Body += "wire "+ Temporary +"= "+ Left +" != "+ Right +";\n";
       break;
+    }
 
-    case EXPRESSION::Bit_OR:
-      Body += "(";
-      if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += ")|(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::Bit_AND:{
+      string Left, Right;
+      if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      else                      Body += "wire ";
+      Body += Temporary +"= "+ Left +" & "+ Right +";\n";
       break;
+    }
 
-    case EXPRESSION::Bit_NOR:
-      Body += "~((";
-      if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += ")|(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += "))";
+    case EXPRESSION::Bit_NAND:{
+      string Left, Right;
+      if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      else                      Body += "wire ";
+      Body += Temporary +"= ~("+ Left +" & "+ Right +");\n";
       break;
+    }
 
-    case EXPRESSION::Bit_XOR:
-      Body += "(";
-      if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += ")^(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::Bit_OR:{
+      string Left, Right;
+      if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      else                      Body += "wire ";
+      Body += Temporary +"= "+ Left +" | "+ Right +";\n";
       break;
+    }
 
-    case EXPRESSION::Bit_XNOR:
-      Body += "(";
-      if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += ")~^(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::Bit_NOR:{
+      string Left, Right;
+      if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      else                      Body += "wire ";
+      Body += Temporary +"= ~("+ Left +" | "+ Right +");\n";
       break;
+    }
 
-    case EXPRESSION::Logical_AND:
-      Body += "(";
-      if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += ")&&(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::Bit_XOR:{
+      string Left, Right;
+      if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      else                      Body += "wire ";
+      Body += Temporary +"= "+ Left +" ^ "+ Right +";\n";
       break;
+    }
 
-    case EXPRESSION::Logical_OR:
-      Body += "(";
-      if(!BuildExpression(Body, Expression->Left)) return false;
-      Body += ")||(";
-      if(!BuildExpression(Body, Expression->Right)) return false;
-      Body += ")";
+    case EXPRESSION::Bit_XNOR:{
+      string Left, Right;
+      if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      else                      Body += "wire ";
+      Body += Temporary +"= "+ Left +" ~^ "+ Right +";\n";
       break;
+    }
+
+    case EXPRESSION::Logical_AND:{
+      string Left, Right;
+      if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      Body += "wire "+ Temporary +"= "+ Left +" && "+ Right +";\n";
+      break;
+    }
+
+    case EXPRESSION::Logical_OR:{
+      string Left, Right;
+      if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      Temporary = GetTemporaryName();
+      Body += "wire "+ Temporary +"= "+ Left +" || "+ Right +";\n";
+      break;
+    }
 
     case EXPRESSION::Cast:{
       if(!Expression->Left){
@@ -481,20 +585,43 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression){
         Width++;
       }
 
+      string FromString;
+      if(!BuildExpression(Body, From, FromString)) return false;
+
       if(Factor == 1){
-        if(Shift) Body += "(";
-        if(!BuildExpression(Body, Expression->Left)) return false;
-        if     (Shift > 0) Body += ") >> " + to_string( Shift);
-        else if(Shift < 0) Body += ") << " + to_string(-Shift);
+        Body += "wire ";
+        if(To->Width > 1){
+          if(To->Signed) Body += "["+ to_string(To->Width  ) +":0] ";
+          else           Body += "["+ to_string(To->Width-1) +":0] ";
+        }
+        Temporary = GetTemporaryName();
+        Body += Temporary +"= ";
+        if     (Shift > 0) Body += FromString +" >> "+ to_string( Shift);
+        else if(Shift < 0) Body += FromString +" << "+ to_string(-Shift);
+        Body += ";\n";
+
       }else{
         Warning(Expression, "Non power-of-two scaling factor: synthesising a multiplier");
-        if(Shift == 0) Body += "(";
-        else           Body += "((";
-        if(!BuildExpression(Body, Expression->Left)) return false;
-        Body += ")*" + to_string(Width) + "'h";
+        string MulTemporaryName = GetTemporaryName();
+
+        // TODO: Signed
+        Body += "wire ["+ to_string(From->Width + Width - 1) +":0] ";
+        Body += MulTemporaryName +"= "+ FromString + " * ";
+
+        Body += to_string(Width) + "'h";
         Body += Factor.GetString(16);
-        if     (Shift > 0) Body += ") >> " + to_string( Shift);
-        else if(Shift < 0) Body += ") << " + to_string(-Shift);
+        Body += ";\n";
+
+        Body += "wire ";
+        if(To->Width > 1){
+          if(To->Signed) Body += "["+ to_string(To->Width  ) +":0] ";
+          else           Body += "["+ to_string(To->Width-1) +":0] ";
+        }
+        Temporary = GetTemporaryName();
+        Body += Temporary +"= ";
+        if     (Shift > 0) Body += MulTemporaryName +" >> "+ to_string( Shift);
+        else if(Shift < 0) Body += MulTemporaryName +" << "+ to_string(-Shift);
+        Body += ";\n";
       }
       break;
     }
@@ -511,45 +638,46 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression){
 }
 //------------------------------------------------------------------------------
 
-bool BACK_END::AddAssignment(string& Body, BASE* Object){
-  switch(Object->Type){
-    case BASE::TYPE::Pin:{
-      auto Pin = (PIN*)Object;
-      if(Pin->Driver){
-        Body += "assign "+ Pin->EscapedName() +" = ";
-        if(Pin->Enabled){
-          Body += "(";
-          if(!BuildExpression(Body, Pin->Enabled)) return false;
-          Body += ") ? (";
-          if(!BuildExpression(Body, Pin->Driver)) return false;
-          Body += ") : " + to_string(Pin->Width) + "'bZ";
-        }else{
-          if(!BuildExpression(Body, Pin->Driver)) return false;
+bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
+  for(auto SymbolIterator  = Namespace->Symbols.begin();
+           SymbolIterator != Namespace->Symbols.end  ();
+           SymbolIterator++){
+    auto Object = SymbolIterator->second;
+    switch(Object->Type){
+      case BASE::TYPE::Pin:{
+        auto Pin = (PIN*)Object;
+        if(Pin->Driver){
+          string Driver;
+          if(!BuildExpression(Body, Pin->Driver, Driver)) return false;
+          if(Pin->Enabled){
+            string Enabled;
+            if(!BuildExpression(Body, Pin->Enabled, Enabled)) return false;
+            Body += "assign "+ Pin->EscapedName() +
+                    " = |("+ Enabled + ")"
+                    " ? ("+ Driver + ")"
+                    " : " + to_string(Pin->Width) + "'bZ;\n\n";
+          }else{
+            Body += "assign "+ Pin->EscapedName() +" = "+ Driver + ";\n\n";
+          }
         }
-        Body += ";\n";
+        break;
       }
-      break;
-    }
-    case BASE::TYPE::Net:{
-      auto Net = (NET*)Object;
-      if(Net->Value){
-        Body += "assign "+ Net->EscapedName() +" = ";
-        if(!BuildExpression(Body, Net->Value)) return false;
-        Body += ";\n";
+      case BASE::TYPE::Net:{
+        auto Net = (NET*)Object;
+        if(Net->Value){
+          string Value;
+          if(!BuildExpression(Body, Net->Value, Value)) return false;
+          Body += "assign "+ Net->EscapedName() +" = "+ Value +";\n\n";
+        }
+        break;
       }
-      break;
-    }
-    case BASE::TYPE::Group:{
-      auto Namespace = (NAMESPACE*)Object;
-      for(auto SymbolIterator  = Namespace->Symbols.begin();
-               SymbolIterator != Namespace->Symbols.end  ();
-               SymbolIterator++){
-        if(!AddAssignment(Body, SymbolIterator->second)) return false;
+      case BASE::TYPE::Group:{
+        if(!BuildAssignments(Body, (NAMESPACE*)Object)) return false;
+        break;
       }
-      break;
+      default:
+        break;
     }
-    default:
-      break;
   }
   return true;
 }
@@ -559,16 +687,17 @@ void BACK_END::BuildPorts(string& Body, NAMESPACE* Namespace, bool& isFirst){
   for(auto SymbolIterator  = Namespace->Symbols.begin();
            SymbolIterator != Namespace->Symbols.end  ();
            SymbolIterator++){
-    switch(SymbolIterator->second->Type){
+    auto Object = SymbolIterator->second;
+    switch(Object->Type){
       case BASE::TYPE::Pin:{
-        auto Pin = (PIN*)SymbolIterator->second;
+        auto Pin = (PIN*)Object;
         if(!isFirst) Body += ",\n";
         isFirst = false;
 
         switch(Pin->Direction){
-          case AST::DEFINITION::Input : Body += "  input  "; break;
-          case AST::DEFINITION::Output: Body += "  output "; break;
-          default                     : Body += "  inout  "; break;
+          case AST::DEFINITION::Input : Body += "  input  logic "; break;
+          case AST::DEFINITION::Output: Body += "  output logic "; break;
+          default                     : Body += "  inout  logic "; break;
         }
         if(Pin->Width > 1){
           if(Pin->Signed) Body += "["+ to_string(Pin->Width  ) +":0]";
@@ -578,7 +707,7 @@ void BACK_END::BuildPorts(string& Body, NAMESPACE* Namespace, bool& isFirst){
         break;
       }
       case BASE::TYPE::Group:{
-        BuildPorts(Body, (NAMESPACE*)SymbolIterator->second, isFirst);
+        BuildPorts(Body, (NAMESPACE*)Object, isFirst);
         break;
       }
       default:
@@ -589,22 +718,18 @@ void BACK_END::BuildPorts(string& Body, NAMESPACE* Namespace, bool& isFirst){
 //------------------------------------------------------------------------------
 
 void BACK_END::BuildNets(string& Body, NAMESPACE* Namespace){
-  bool isFirst = true;
-
   for(auto SymbolIterator  = Namespace->Symbols.begin();
            SymbolIterator != Namespace->Symbols.end  ();
            SymbolIterator++){
     switch(SymbolIterator->second->Type){
       case BASE::TYPE::Net:{
-        if(!isFirst) Body += "\n";
-        isFirst = false;
         auto Net = (NET*)SymbolIterator->second;
-        Body += "wire ";
+        Body += "logic ";
         if(Net->Width > 1){
           if(Net->Signed) Body += "["+ to_string(Net->Width  ) +":0]";
           else            Body += "["+ to_string(Net->Width-1) +":0]";
         }
-        Body += Net->EscapedName() + ";";
+        Body += Net->EscapedName() + ";\n";
         break;
       }
       case BASE::TYPE::Group:{
@@ -637,7 +762,15 @@ bool BACK_END::BuildHDL(MODULE* Module, string Path){
   if(isGlobal) Name = Filename;
   else         Name = Module->EscapedName();
 
+  // Header
   string Body;
+  Body = "// Auto-generated by ALCHA "
+         "Version "+ to_string(MAJOR_VERSION) +"."+ to_string(MINOR_VERSION) +" ("
+         "Built on " __DATE__ " at " __TIME__ ")\n"
+         "//--------------------------------------"
+         "----------------------------------------\n\n";
+
+  // Module Definition
   Body += "module "+ Name +"(\n";
 
   // Ports
@@ -649,16 +782,12 @@ bool BACK_END::BuildHDL(MODULE* Module, string Path){
           "----------------------------------------\n\n";
 
   // Nets
-  BuildNets (Body, Module);
-  Body += "\n//--------------------------------------"
+  BuildNets(Body, Module);
+  Body += "//--------------------------------------"
           "----------------------------------------\n\n";
 
-  // Body
-  for(auto SymbolIterator  = Module->Symbols.begin();
-           SymbolIterator != Module->Symbols.end  ();
-           SymbolIterator++){
-    if(!AddAssignment(Body, SymbolIterator->second)) return false;
-  }
+  // Assignments
+  if(!BuildAssignments(Body, Module)) return false;
 
   Body += "//--------------------------------------"
           "----------------------------------------\n\n";
