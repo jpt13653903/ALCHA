@@ -20,9 +20,18 @@
 
 #include "Expression.h"
 #include "Assignment.h"
+#include "Netlist/Base.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
+//------------------------------------------------------------------------------
+
+EXPRESSION::EXPRESSION(
+  int             Line,
+  const string&   Filename,
+  EXPRESSION_TYPE ExpressionType
+): EXPRESSION(Line, Filename.c_str(), ExpressionType){}
 //------------------------------------------------------------------------------
 
 EXPRESSION::EXPRESSION(
@@ -35,12 +44,19 @@ EXPRESSION::EXPRESSION(
   Value    = 0;
   StrValue = 0;
 
-  Left  = 0;
-  Right = 0;
+  ObjectRef = 0;
+  Left      = 0;
+  Right     = 0;
+
+  Signed    = false;
+  Width     = 0;
+  FullScale = 0;
 }
 //------------------------------------------------------------------------------
 
 EXPRESSION::~EXPRESSION(){
+  // Don't delete the Object reference -- it's part of the namespace tree
+
   if(Value   ) delete Value;
   if(StrValue) delete StrValue;
 
@@ -50,6 +66,8 @@ EXPRESSION::~EXPRESSION(){
 //------------------------------------------------------------------------------
 
 void EXPRESSION::Display(){
+  if(Width) Debug.print(ANSI_FG_BRIGHT_GREEN "(" ANSI_RESET);
+
   if(Left){
     if(Left->Left || Left->Right) Debug.print("(");
     Left->Display();
@@ -70,6 +88,16 @@ void EXPRESSION::Display(){
     case EXPRESSION_TYPE::Identifier:
       if(Name.empty()) error ("(Identifier node has no name)");
       else             Debug.print("%s", Name.c_str());
+      break;
+
+    case EXPRESSION_TYPE::Object:
+      if(ObjectRef){
+        // TODO: Display the width here, because it should be a property
+        //       of the target object, not the expression itself
+        ObjectRef->DisplayLongName();
+      }else{
+        error("Null object reference");
+      }
       break;
 
     case EXPRESSION_TYPE::Array            : Debug.print("{Array}"       ); break;
@@ -165,6 +193,14 @@ void EXPRESSION::Display(){
   if(Next){
     Debug.print(", ");
     Next->Display();
+  }
+
+  if(Width){
+    Debug.print(ANSI_FG_BRIGHT_GREEN ")");
+    Debug.print(ANSI_FG_BRIGHT_BLACK "@(");
+    Debug.print("%d", Width);
+    Debug.print(", %s", Signed ? "-" : "");
+    Debug.print("%s)" ANSI_RESET, FullScale.Display());
   }
 }
 //------------------------------------------------------------------------------

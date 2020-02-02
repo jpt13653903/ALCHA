@@ -31,9 +31,13 @@
 #include "AST/Assignment.h"
 //------------------------------------------------------------------------------
 
+namespace AST{
+  class EXPRESSION;
+}
+//------------------------------------------------------------------------------
+
 namespace NETLIST{
   class NAMESPACE;
-  class EXPRESSION;
 
   class BASE{ // Base class for the symbol table
     protected:
@@ -60,9 +64,9 @@ namespace NETLIST{
       int         Line;
       std::string Filename;
 
-      std::string                        Name;
-      NAMESPACE*                         Namespace;
-      std::map<std::string, EXPRESSION*> Attributes;
+      std::string                             Name;
+      NAMESPACE*                              Namespace;
+      std::map<std::string, AST::EXPRESSION*> Attributes;
 
                BASE(int Line, const std::string& Filename, const char* Name, TYPE Type);
       virtual ~BASE();
@@ -77,7 +81,7 @@ namespace NETLIST{
 
       // Access the attribute, but searches up to the root and
       // returns null when not found
-      EXPRESSION* GetAttrib(const std::string& Key);
+      AST::EXPRESSION* GetAttrib(const std::string& Key);
   };
 }
 //------------------------------------------------------------------------------

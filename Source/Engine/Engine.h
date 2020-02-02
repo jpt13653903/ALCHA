@@ -60,7 +60,7 @@ class ENGINE{
   private: // Expression Evaluation
     // Creates a new node that represents the RHS expression.  Also evaluates
     // scripting variables and expressions on the fly.
-    NETLIST::EXPRESSION* Evaluate(AST::EXPRESSION* Node);
+    bool Evaluate(AST::EXPRESSION*& Node);
 
     // Called when the identifier cannot be found in the namespace stack
     std::map<std::string, NUMBER> Constants;
@@ -69,9 +69,9 @@ class ENGINE{
     // Populates a list of existing expressions, except when the target is an
     // undefined attribute, in which case the attribute is created first.
     struct TARGET_LIST{
-      bool                  isAttribute;
-      NETLIST::BASE*        Object;
-      NETLIST::EXPRESSION** Expression;
+      bool              isAttribute;
+      NETLIST::BASE*    Object;
+      AST::EXPRESSION** Expression;
       TARGET_LIST(){ isAttribute = false; }
     };
     typedef std::list<TARGET_LIST> target_list;
@@ -79,15 +79,15 @@ class ENGINE{
     bool    GetLHS(AST::EXPRESSION* Node, target_list& List);
 
     // Simplifies the tree
-    void Simplify(NETLIST::EXPRESSION*& Root);
+    void Simplify(AST::EXPRESSION*& Root);
   //----------------------------------------------------------------------------
 
   private: // AST processing
     bool ApplyAttributes(
-      NETLIST::BASE*       Object,
-      std::string&         Name,
-      NETLIST::EXPRESSION* Value,
-      AST::BASE*           Ast
+      NETLIST::BASE*   Object,
+      std::string&     Name,
+      AST::EXPRESSION* Value,
+      AST::BASE*       Ast
     );
     bool ApplyAttributes(NETLIST::BASE* Object, AST::ASSIGNMENT* AttributeList);
     bool ApplyParameters(NETLIST::SYNTHESISABLE* Object, AST::BASE* Parameter);

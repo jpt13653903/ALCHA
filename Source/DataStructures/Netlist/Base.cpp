@@ -20,7 +20,7 @@
 
 #include "Base.h"
 #include "Module.h"
-#include "Expression.h"
+#include "AST/Expression.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -124,7 +124,7 @@ void BASE::DisplayAttributes(int Indent){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* BASE::GetAttrib(const string& Key){
+AST::EXPRESSION* BASE::GetAttrib(const string& Key){
   auto Value = Attributes.find(Key);
   if(Value != Attributes.end()) return Value->second;
   if(Namespace) return Namespace->GetAttrib(Key);

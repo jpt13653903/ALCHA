@@ -26,6 +26,11 @@
 #include "Number.h"
 //------------------------------------------------------------------------------
 
+namespace NETLIST{
+  class BASE;
+}
+//------------------------------------------------------------------------------
+
 namespace AST{
   struct EXPRESSION: public BASE{
     enum class EXPRESSION_TYPE{
@@ -33,6 +38,7 @@ namespace AST{
       Literal,
       Array,
       Identifier,
+      Object,
 
       VectorConcatenate,
       ArrayConcatenate,
@@ -96,14 +102,29 @@ namespace AST{
       Conditional
     } ExpressionType;
 
-    std::string  Name;
-    NUMBER     * Value;    // Only used for numerical literals
-    std::string* StrValue; // Only used for string literals
+    // The resulting fixed-point type of the expression (if appropriate)
+    // If Width is not 0, the contents is in binary representation.
+    // If this is a literal, Value is real-world when Width is 0, else Value
+    // is the binary representation (but still in rational form).
+    bool   Signed;
+    int    Width; // 0 => not applicable or not defined
+    NUMBER FullScale;
+    // TODO: Move the type def above to the symbol table definition...
+
+    std::string    Name;      // Used for identifiers
+    NUMBER       * Value;     // Only used for numerical literals
+    std::string  * StrValue;  // Only used for string literals
+    NETLIST::BASE* ObjectRef; // Used for "Object" type
 
     // Left and Right operands
     EXPRESSION* Left;
     BASE*       Right; // Can be expression or assignment (for function calls)
 
+    EXPRESSION(
+      int                Line,
+      const std::string& Filename,
+      EXPRESSION_TYPE    ExpressionType
+    );
     EXPRESSION(
       int             Line,
       const char*     Filename,

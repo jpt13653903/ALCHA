@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Expression.h"
+#include "__Expression.h"
 //------------------------------------------------------------------------------
 
 using namespace NETLIST;

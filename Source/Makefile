@@ -108,7 +108,6 @@ Objects += $(ObjectPath)/DataStructures/Netlist/Alias.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Array.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Byte.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Character.o
-Objects += $(ObjectPath)/DataStructures/Netlist/Expression.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Namespace.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Num.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Group.o

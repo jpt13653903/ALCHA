@@ -69,24 +69,21 @@ void ENGINE::Warning(AST::BASE* Ast, const char* Message){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
-  if(!Node) return 0;
-
-  EXPRESSION* Result = 0;
-
+// TODO: Instead of building a new tree, do it in-place
+bool ENGINE::Evaluate(AST::EXPRESSION*& Node){
   switch(Node->ExpressionType){
     case AST::EXPRESSION::EXPRESSION_TYPE::String:
-      Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::EXPRESSION_TYPE::String);
-      Result->StrValue = *(Node->StrValue);
+      Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::String);
+      Result->StrValue = new string(*(Node->StrValue));
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Literal:
-      Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::EXPRESSION_TYPE::Literal);
-      Result->Value = *(Node->Value);
+      Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Literal);
+      Result->Value = new NUMBER(*(Node->Value));
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Array:{
-      Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::EXPRESSION_TYPE::Array);
+      Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Array);
       auto Element = (AST::EXPRESSION*)Node->Right;
       while(Element){
         Result->Elements.push_back(Evaluate(Element));
@@ -114,7 +111,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
                 case BASE::TYPE::Pin:
                 case BASE::TYPE::Net:{
                   auto Synthesisable = (SYNTHESISABLE*)Object->second;
-                  Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::EXPRESSION_TYPE::Object);
+                  Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Object);
                   Result->ObjectRef = Synthesisable;
                   Result->Signed    = Synthesisable->Signed;
                   Result->Width     = Synthesisable->Width;
@@ -123,7 +120,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
                   break;
                 }
                 default:{
-                  Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::EXPRESSION_TYPE::Object);
+                  Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Object);
                   Result->ObjectRef = Object->second;
                   break;
                 }
@@ -137,7 +134,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       if(!Result){
         NUMBER Constant;
         if(GetConstant(Node->Name.c_str(), &Constant)){
-          Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::EXPRESSION_TYPE::Literal);
+          Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Literal);
           Result->Value = Constant;
         }else{
           Error(Node);
@@ -148,7 +145,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::VectorConcatenate:{
-      Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::EXPRESSION_TYPE::VectorConcatenate);
+      Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::VectorConcatenate);
       auto Element = (AST::EXPRESSION*)Node->Right;
       while(Element){
         auto EvaluatedElement = Evaluate(Element);
@@ -173,7 +170,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::ArrayConcatenate:{
-      Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::EXPRESSION_TYPE::ArrayConcatenate);
+      Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::ArrayConcatenate);
       auto Element = (AST::EXPRESSION*)Node->Right;
       while(Element){
         Result->Elements.push_back(Evaluate(Element));
@@ -191,7 +188,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::AccessMember:{
-      EXPRESSION* Left = 0;
+      AST::EXPRESSION* Left = 0;
       if(Node->Left) Left = Evaluate(Node->Left);
 
       if(!Left || !Node->Right || Node->Right->Type != AST::BASE::TYPE::Expression){
@@ -201,7 +198,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       }
       auto Right = (AST::EXPRESSION*)Node->Right;
 
-      if(Left->ExpressionType == EXPRESSION::EXPRESSION_TYPE::Object){
+      if(Left->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Object){
         if(Left->ObjectRef){
           switch(Left->ObjectRef->Type){
             case BASE::TYPE::Pin:{
@@ -229,7 +226,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
                     Result = Evaluate(Alias->Expression);
                   NamespaceStack.pop_front();
                 }else{
-                  Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::EXPRESSION_TYPE::Object);
+                  Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Object);
                   Result->ObjectRef = Found->second;
                   if(Result->ObjectRef->Type == BASE::TYPE::Pin ||
                      Result->ObjectRef->Type == BASE::TYPE::Net ){
@@ -269,7 +266,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::AccessAttribute:{
-      EXPRESSION* Left = 0;
+      AST::EXPRESSION* Left = 0;
       if(Node->Left) Left = Evaluate(Node->Left);
 
       if(!Left || !Node->Right || Node->Right->Type != AST::BASE::TYPE::Expression){
@@ -279,7 +276,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       }
       auto Right = (AST::EXPRESSION*)Node->Right;
 
-      if(Left->ExpressionType == EXPRESSION::EXPRESSION_TYPE::Object){
+      if(Left->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Object){
         auto Object = Left->ObjectRef;
         auto Found  = Object->GetAttrib(Right->Name);
         if(!Found){
@@ -289,7 +286,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
           delete Left;
           return 0;
         }
-        Result = new EXPRESSION(Found);
+        Result = new AST::EXPRESSION(Found);
         Result->Line     = Node->Line;
         Result->Filename = Node->Filename;
         delete Left;
@@ -320,7 +317,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Negate:
-      Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::EXPRESSION_TYPE::Negate);
+      Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Negate);
       if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
         Result->Right = Evaluate((AST::EXPRESSION*)Node->Right);
       }
@@ -334,7 +331,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Bit_NOT:
-      Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::EXPRESSION_TYPE::Bit_NOT);
+      Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Bit_NOT);
       if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
         Result->Right = Evaluate((AST::EXPRESSION*)Node->Right);
       }
@@ -392,7 +389,7 @@ EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Multiply:
-      Result = new EXPRESSION(Node->Line, Node->Filename, EXPRESSION::EXPRESSION_TYPE::Multiply);
+      Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Multiply);
       if(Node->Left) Result->Left = Evaluate(Node->Left);
       if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
         Result->Right = Evaluate((AST::EXPRESSION*)Node->Right);
@@ -511,7 +508,7 @@ bool ENGINE::GetConstant(const string& Name, NUMBER* Constant){
 bool ENGINE::ApplyAttributes(
   BASE*        Object,
   std::string& Name,
-  EXPRESSION*  Value,
+  AST::EXPRESSION*  Value,
   AST::BASE*   Ast
 ){
   if(!Value){
@@ -520,11 +517,11 @@ bool ENGINE::ApplyAttributes(
   }
 
   switch(Value->ExpressionType){
-    case EXPRESSION::EXPRESSION_TYPE::String:
-    case EXPRESSION::EXPRESSION_TYPE::Literal:
+    case AST::EXPRESSION::EXPRESSION_TYPE::String:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Literal:
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Array:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Array:
       // TODO Make sure that the array only contains strings or literals
       break;
 
@@ -581,14 +578,14 @@ bool ENGINE::ApplyParameters(SYNTHESISABLE* Object, AST::BASE* Parameter){
       case AST::BASE::TYPE::Expression:{
         if(Position < 0) return false; // Mixing named and positional parameters
 
-        EXPRESSION* Param = Evaluate((AST::EXPRESSION*)Parameter);
+        AST::EXPRESSION* Param = Evaluate((AST::EXPRESSION*)Parameter);
         if(!Param){
           Error(Parameter, "Invalid parameter expression");
           return false;
         }
 
         switch(Param->ExpressionType){
-          case EXPRESSION::EXPRESSION_TYPE::Literal:
+          case AST::EXPRESSION::EXPRESSION_TYPE::Literal:
             switch(Position){
               case 0:
                 if(!Param->Value.IsInt()) return false;
@@ -970,7 +967,7 @@ bool ENGINE::GetLHS(AST::EXPRESSION* Node, target_list& List){
 
     case AST::EXPRESSION::EXPRESSION_TYPE::VectorConcatenate:{
       error("VectorConcatenate not yet implemented");
-      // Result = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::EXPRESSION_TYPE::VectorConcatenate);
+      // Result = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::EXPRESSION::EXPRESSION_TYPE::VectorConcatenate);
       // auto Element = (AST::EXPRESSION*)Node->Right;
       // while(Element){
       //   Result->Elements.push_back(Evaluate(Element));
@@ -981,7 +978,7 @@ bool ENGINE::GetLHS(AST::EXPRESSION* Node, target_list& List){
 
     case AST::EXPRESSION::EXPRESSION_TYPE::ArrayConcatenate:{
       error("ArrayConcatenate not yet implemented");
-      // Result = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::EXPRESSION_TYPE::ArrayConcatenate);
+      // Result = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::EXPRESSION::EXPRESSION_TYPE::ArrayConcatenate);
       // auto Element = (AST::EXPRESSION*)Node->Right;
       // while(Element){
       //   Result->Elements.push_back(Evaluate(Element));
@@ -1117,37 +1114,37 @@ bool ENGINE::GetLHS(AST::EXPRESSION* Node, target_list& List){
 }
 //------------------------------------------------------------------------------
 
-void ENGINE::Simplify(EXPRESSION*& Root){
+void ENGINE::Simplify(AST::EXPRESSION*& Root){
   if(!Root) return;
 
-  EXPRESSION* Temp;
+  AST::EXPRESSION* Temp;
 
   Simplify(Root->Left );
   Simplify(Root->Right);
 
   switch(Root->ExpressionType){
     // Pass these directly
-    case EXPRESSION::EXPRESSION_TYPE::String:
-    case EXPRESSION::EXPRESSION_TYPE::Literal:
-    case EXPRESSION::EXPRESSION_TYPE::Array:
+    case AST::EXPRESSION::EXPRESSION_TYPE::String:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Literal:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Array:
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Object:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Object:
       if(Root->ObjectRef){
         switch(Root->ObjectRef->Type){
           case BASE::TYPE::Byte:{
             auto Byte = (NETLIST::BYTE*)Root->ObjectRef;
-            Root->ExpressionType = EXPRESSION::EXPRESSION_TYPE::Literal;
+            Root->ExpressionType = AST::EXPRESSION::EXPRESSION_TYPE::Literal;
             Root->Value = Byte->Value;
           }
           case BASE::TYPE::Character:{
             auto Char = (CHARACTER*)Root->ObjectRef;
-            Root->ExpressionType = EXPRESSION::EXPRESSION_TYPE::Literal;
+            Root->ExpressionType = AST::EXPRESSION::EXPRESSION_TYPE::Literal;
             Root->Value = Char->Value;
           }
           case BASE::TYPE::Number:{
             auto Num = (NUM*)Root->ObjectRef;
-            Root->ExpressionType = EXPRESSION::EXPRESSION_TYPE::Literal;
+            Root->ExpressionType = AST::EXPRESSION::EXPRESSION_TYPE::Literal;
             Root->Value = Num->Value;
           }
           default:
@@ -1156,7 +1153,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       }
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::VectorConcatenate:
+    case AST::EXPRESSION::EXPRESSION_TYPE::VectorConcatenate:
       if(Root->Elements.empty()){
         error("Unexpected null pointer");
         break;
@@ -1164,7 +1161,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       // TODO: Check members for literals
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::ArrayConcatenate:
+    case AST::EXPRESSION::EXPRESSION_TYPE::ArrayConcatenate:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1172,7 +1169,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::FunctionCall:
+    case AST::EXPRESSION::EXPRESSION_TYPE::FunctionCall:
       if(!Root->Left){
         error("Unexpected null pointer");
         break;
@@ -1180,7 +1177,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Slice:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Slice:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1189,7 +1186,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Factorial:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Factorial:
       if(!Root->Left){
         error("Unexpected null pointer");
         break;
@@ -1197,12 +1194,12 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Negate:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Negate:
       if(!Root->Right){
         error("Unexpected null pointer");
         break;
       }
-      if(Root->Right->ExpressionType == EXPRESSION::EXPRESSION_TYPE::Literal){
+      if(Root->Right->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
         Temp = Root->Right;
         Root->Right = 0;
         delete Root;
@@ -1211,19 +1208,19 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       }
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Bit_NOT:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Bit_NOT:
       if(!Root->Right){
         error("Unexpected null pointer");
         break;
       }
-      if(Root->Right->ExpressionType == EXPRESSION::EXPRESSION_TYPE::Literal){
+      if(Root->Right->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
         error("Not yet implemented");
         // TODO: Literals require a length, so it must have been cast to a
         //       specific length for this to be valid
       }
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::AND_Reduce:
+    case AST::EXPRESSION::EXPRESSION_TYPE::AND_Reduce:
       if(!Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1231,7 +1228,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::NAND_Reduce:
+    case AST::EXPRESSION::EXPRESSION_TYPE::NAND_Reduce:
       if(!Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1239,7 +1236,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::OR_Reduce:
+    case AST::EXPRESSION::EXPRESSION_TYPE::OR_Reduce:
       if(!Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1247,7 +1244,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::NOR_Reduce:
+    case AST::EXPRESSION::EXPRESSION_TYPE::NOR_Reduce:
       if(!Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1255,7 +1252,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::XOR_Reduce:
+    case AST::EXPRESSION::EXPRESSION_TYPE::XOR_Reduce:
       if(!Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1263,7 +1260,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::XNOR_Reduce:
+    case AST::EXPRESSION::EXPRESSION_TYPE::XNOR_Reduce:
       if(!Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1271,7 +1268,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Logical_NOT:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Logical_NOT:
       if(!Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1279,7 +1276,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Cast:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Cast:
       // TODO: Root has the target type; Root->Left has the original expression
       //       Root->Right is optional and carry the class name (when applicable)
       if(!Root->Left){
@@ -1289,7 +1286,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Replicate:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Replicate:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1297,12 +1294,12 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Multiply:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Multiply:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
       }
-      if(Root->Left->ExpressionType == EXPRESSION::EXPRESSION_TYPE::Literal){
+      if(Root->Left->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
         NUMBER Num = Root->Left->Value;
 
         if(Num.IsReal() && Num.GetReal() == 0.0){
@@ -1316,14 +1313,14 @@ void ENGINE::Simplify(EXPRESSION*& Root){
           Root->Right = 0;
           delete Root;
           Root = Temp;
-          if(Root->ExpressionType == EXPRESSION::EXPRESSION_TYPE::Literal){
+          if(Root->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
             Root->Value.Mul(Num);
           }else{
             if(Root->Width == 0) error("Unexpected 0 width");
             Root->FullScale.Mul(Num);
           }
         }
-      }else if(Root->Right->ExpressionType == EXPRESSION::EXPRESSION_TYPE::Literal){
+      }else if(Root->Right->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
         NUMBER Num = Root->Right->Value;
 
         if(Num.IsReal() && Num.GetReal() == 0.0){
@@ -1337,7 +1334,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
           Root->Left = 0;
           delete Root;
           Root = Temp;
-          if(Root->ExpressionType == EXPRESSION::EXPRESSION_TYPE::Literal){
+          if(Root->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
             Root->Value.Mul(Num);
           }else{
             if(Root->Width == 0) error("Unexpected 0 width");
@@ -1349,7 +1346,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       //      full-scale of the expression
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Divide:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Divide:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1357,7 +1354,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Modulus:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Modulus:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1365,7 +1362,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Exponential:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Exponential:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1373,16 +1370,16 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Add:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Add:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
       }
       if(
-        Root->Left ->ExpressionType == EXPRESSION::EXPRESSION_TYPE::Literal &&
-        Root->Right->ExpressionType == EXPRESSION::EXPRESSION_TYPE::Literal
+        Root->Left ->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal &&
+        Root->Right->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal
       ){
-        Root->ExpressionType = EXPRESSION::EXPRESSION_TYPE::Literal;
+        Root->ExpressionType = AST::EXPRESSION::EXPRESSION_TYPE::Literal;
         Root->Value = Root->Left->Value;
         Root->Value.Add(Root->Right->Value);
         delete Root->Left ; Root->Left  = 0;
@@ -1392,16 +1389,16 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       //      in the SIPS article
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Subtract:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Subtract:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
       }
       if(
-        Root->Left ->ExpressionType == EXPRESSION::EXPRESSION_TYPE::Literal &&
-        Root->Right->ExpressionType == EXPRESSION::EXPRESSION_TYPE::Literal
+        Root->Left ->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal &&
+        Root->Right->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal
       ){
-        Root->ExpressionType = EXPRESSION::EXPRESSION_TYPE::Literal;
+        Root->ExpressionType = AST::EXPRESSION::EXPRESSION_TYPE::Literal;
         Root->Value = Root->Left->Value;
         Root->Value.Sub(Root->Right->Value);
         delete Root->Left ; Root->Left  = 0;
@@ -1411,7 +1408,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       //      follow the rules in the SIPS article
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Shift_Left:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Shift_Left:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1419,7 +1416,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Shift_Right:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Shift_Right:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1427,7 +1424,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Less:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Less:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1435,7 +1432,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Greater:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Greater:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1443,7 +1440,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Less_Equal:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Less_Equal:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1451,7 +1448,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Greater_Equal:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Greater_Equal:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1459,7 +1456,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Equal:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Equal:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1467,7 +1464,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Not_Equal:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Not_Equal:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1475,7 +1472,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Bit_AND:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Bit_AND:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1483,7 +1480,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Bit_NAND:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Bit_NAND:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1491,7 +1488,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Bit_OR:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Bit_OR:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1499,7 +1496,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Bit_NOR:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Bit_NOR:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1507,7 +1504,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Bit_XOR:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Bit_XOR:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1515,7 +1512,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Bit_XNOR:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Bit_XNOR:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1523,7 +1520,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Logical_AND:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Logical_AND:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1531,7 +1528,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Logical_OR:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Logical_OR:
       if(!Root->Left || !Root->Right){
         error("Unexpected null pointer");
         break;
@@ -1539,7 +1536,7 @@ void ENGINE::Simplify(EXPRESSION*& Root){
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Conditional:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Conditional:
       // TODO: There should be a third component...  Left and Right of Right?
       //       Or break it down to an if-statement?
       if(!Root->Left || !Root->Right){
@@ -1558,8 +1555,8 @@ void ENGINE::Simplify(EXPRESSION*& Root){
 
 bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
   target_list Left;
-  EXPRESSION* Right;
-  EXPRESSION* Temp;
+  AST::EXPRESSION* Right;
+  AST::EXPRESSION* Temp;
 
   if(!GetLHS(Ast->Left, Left)) return false;
   if(Left.empty()){
@@ -1585,14 +1582,14 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     return false;
   }
 
-  EXPRESSION*  ScriptTarget = 0;
-  EXPRESSION** Target = Left.front().Expression;
+  AST::EXPRESSION*  ScriptTarget = 0;
+  AST::EXPRESSION** Target = Left.front().Expression;
   if(!Target){
     switch(Object->Type){
       case BASE::TYPE::Byte:
       case BASE::TYPE::Character:
       case BASE::TYPE::Number:
-        ScriptTarget = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::EXPRESSION_TYPE::Object);
+        ScriptTarget = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Object);
         ScriptTarget->ObjectRef = Object;
         Target = &ScriptTarget;
         break;
@@ -1621,7 +1618,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::Append_Assign:
       RawAssign = false;
       if(*Target){
-        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::EXPRESSION_TYPE::ArrayConcatenate);
+        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::EXPRESSION::EXPRESSION_TYPE::ArrayConcatenate);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -1636,7 +1633,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::Add_Assign:
       RawAssign = false;
       if(*Target){
-        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::EXPRESSION_TYPE::Add);
+        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Add);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -1651,7 +1648,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::Subtract_Assign:
       RawAssign = false;
       if(*Target){
-        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::EXPRESSION_TYPE::Subtract);
+        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Subtract);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -1666,7 +1663,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::Multiply_Assign:
       RawAssign = false;
       if(*Target){
-        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::EXPRESSION_TYPE::Multiply);
+        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Multiply);
         Temp->Left  = *Target;
         Temp->Right = Right;
         if(Temp->Left->Width && Temp->Right->Width){
@@ -1686,7 +1683,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::Divide_Assign:
       RawAssign = false;
       if(*Target){
-        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::EXPRESSION_TYPE::Divide);
+        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Divide);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -1701,7 +1698,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::Modulus_Assign:
       RawAssign = false;
       if(*Target){
-        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::EXPRESSION_TYPE::Modulus);
+        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Modulus);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -1716,7 +1713,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::Exponential_Assign:
       RawAssign = false;
       if(*Target){
-        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::EXPRESSION_TYPE::Exponential);
+        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Exponential);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -1731,7 +1728,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::AND_Assign:
       RawAssign = true;
       if(*Target){
-        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::EXPRESSION_TYPE::Bit_AND);
+        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Bit_AND);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -1746,7 +1743,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::OR_Assign:
       RawAssign = true;
       if(*Target){
-        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::EXPRESSION_TYPE::Bit_OR);
+        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Bit_OR);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -1761,7 +1758,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::XOR_Assign:
       RawAssign = true;
       if(*Target){
-        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::EXPRESSION_TYPE::Bit_XOR);
+        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Bit_XOR);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -1776,7 +1773,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::Shift_Left_Assign:
       RawAssign = true;
       if(*Target){
-        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::EXPRESSION_TYPE::Shift_Left);
+        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Shift_Left);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -1791,7 +1788,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::Shift_Right_Assign:
       RawAssign = true;
       if(*Target){
-        Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::EXPRESSION_TYPE::Shift_Right);
+        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Shift_Right);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -1822,7 +1819,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     }else{
       if(Object->Type == BASE::TYPE::Pin || Object->Type == BASE::TYPE::Net){
         SYNTHESISABLE* Synth = (SYNTHESISABLE*)Object;
-        if((*Target)->ExpressionType == EXPRESSION::EXPRESSION_TYPE::Literal){
+        if((*Target)->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
           (*Target)->Value.Div     (Synth->FullScale);
           (*Target)->Value.BinScale(Synth->Width);
           (*Target)->Signed    = Synth->Signed;
@@ -1833,7 +1830,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
              (*Target)->Width     != Synth->Width  ||
              (*Target)->FullScale != Synth->FullScale){
             // Inject a cast expression and let the back-end sort it out
-            Temp = new EXPRESSION(Ast->Line, Ast->Filename, EXPRESSION::EXPRESSION_TYPE::Cast);
+            Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Cast);
             Temp->Left      = *Target;
             Temp->Signed    = Synth->Signed;
             Temp->Width     = Synth->Width;
@@ -1849,7 +1846,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     switch(Object->Type){
       case BASE::TYPE::Byte:{
         auto Byte = (NETLIST::BYTE*)Object;
-        if(ScriptTarget->ExpressionType == EXPRESSION::EXPRESSION_TYPE::Literal){
+        if(ScriptTarget->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
           Byte->Value = ScriptTarget->Value.GetReal();
         }else{
           // TODO Could be an array, for instance
@@ -1860,7 +1857,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
       }
       case BASE::TYPE::Character:{
         auto Char = (CHARACTER*)Object;
-        if(ScriptTarget->ExpressionType == EXPRESSION::EXPRESSION_TYPE::Literal){
+        if(ScriptTarget->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
           Char->Value = ScriptTarget->Value.GetReal();
         }else{
           // TODO Could be an array, for instance
@@ -1871,7 +1868,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
       }
       case BASE::TYPE::Number:{
         auto Num = (NUM*)Object;
-        if(ScriptTarget->ExpressionType == EXPRESSION::EXPRESSION_TYPE::Literal){
+        if(ScriptTarget->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
           Num->Value = ScriptTarget->Value;
         }else{
           // TODO Could be an array, for instance

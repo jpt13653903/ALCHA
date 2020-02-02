@@ -22,13 +22,13 @@
 #define Netlist_Net_h
 //------------------------------------------------------------------------------
 
-#include "Expression.h"
+#include "AST/Expression.h"
 #include "Synthesisable.h"
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
   struct NET: public SYNTHESISABLE{
-    EXPRESSION* Value;
+    AST::EXPRESSION* Value;
 
              NET(int Line, const std::string& Filename, const char* Name);
     virtual ~NET();

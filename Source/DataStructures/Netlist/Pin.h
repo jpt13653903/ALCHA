@@ -23,13 +23,13 @@
 //------------------------------------------------------------------------------
 
 #include "Synthesisable.h"
-#include "Expression.h"
+#include "AST/Expression.h"
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
   struct PIN: public SYNTHESISABLE{
-    EXPRESSION* Driver;
-    EXPRESSION* Enabled;
+    AST::EXPRESSION* Driver;
+    AST::EXPRESSION* Enabled;
 
     PIN(int Line, const std::string& Filename, const char* Name);
    ~PIN();
