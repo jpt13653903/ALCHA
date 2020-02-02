@@ -666,9 +666,11 @@ bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
         auto Pin = (PIN*)Object;
         if(Pin->Driver){
           string Driver;
+          Body += "// " + Pin->Driver->Filename +" +"+ to_string(Pin->Driver->Line) + "\n";
           if(!BuildExpression(Body, Pin->Driver, Driver)) return false;
           if(Pin->Enabled){
             string Enabled;
+            Body += "// " + Pin->Enabled->Filename +" +"+ to_string(Pin->Enabled->Line) + "\n";
             if(!BuildExpression(Body, Pin->Enabled, Enabled)) return false;
             Body += "assign "+ Pin->EscapedName() +
                     " = |("+ Enabled + ")"
@@ -684,6 +686,7 @@ bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
         auto Net = (NET*)Object;
         if(Net->Value){
           string Value;
+          Body += "// " + Net->Value->Filename +" +"+ to_string(Net->Value->Line) + "\n";
           if(!BuildExpression(Body, Net->Value, Value)) return false;
           Body += "assign "+ Net->EscapedName() +" = "+ Value +";\n\n";
         }
