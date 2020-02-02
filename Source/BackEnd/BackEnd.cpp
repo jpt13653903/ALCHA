@@ -172,7 +172,7 @@ bool BACK_END::WriteFile(string& Filename, const char* Ext, string& Body){
 }
 //------------------------------------------------------------------------------
 
-const char* BACK_END::GetTemporaryName(){
+const char* BACK_END::GetWireName(){
   static unsigned Count = 0;
   static char     Name[0x10];
   sprintf(Name, "\\t..%d ", Count++);
@@ -180,8 +180,7 @@ const char* BACK_END::GetTemporaryName(){
 }
 //------------------------------------------------------------------------------
 
-// TODO: Rename "Temporary" -- it can also return the literal, for instance
-bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Temporary){
+bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Wire){
   if(!Expression) return false;
 
   switch(Expression->ExpressionType){
@@ -196,13 +195,13 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
           Error(Expression, "Cannot store a negative literal to an unsigned target");
           return false;
         }
-        Temporary += "-";
+        Wire += "-";
         Result.Mul(-1);
       }
-      if(Expression->Signed) Temporary += to_string(Expression->Width+1) + "'h";
-      else                   Temporary += to_string(Expression->Width  ) + "'h";
+      if(Expression->Signed) Wire += to_string(Expression->Width+1) + "'h";
+      else                   Wire += to_string(Expression->Width  ) + "'h";
       Result.Round();
-      Temporary += Result.GetString(16);
+      Wire += Result.GetString(16);
       Result.BinScale(-Expression->Width);
       if(Result > 1){
         Error(Expression, "The literal does not fit in its full-scale range");
@@ -216,7 +215,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
         error("Null object reference");
         return false;
       }
-      Temporary += Expression->ObjectRef->EscapedName();
+      Wire += Expression->ObjectRef->EscapedName();
       break;
 
     case EXPRESSION::EXPRESSION_TYPE::VectorConcatenate:{
@@ -226,10 +225,10 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       for(size_t n = 0; n < Expression->Elements.size(); n++){
         if(!BuildExpression(Body, Expression->Elements[n], Elements[n])) return false;
       }
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
-      Body += Temporary +"= {";
+      Body += Wire +"= {";
       for(size_t n = 0; n < Expression->Elements.size(); n++){
         Body += Elements[n];
         if(n < Expression->Elements.size()-1) Body += ", ";
@@ -245,83 +244,83 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
     case EXPRESSION::EXPRESSION_TYPE::Negate:{
       string Right;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
-      Body += Temporary +"= -("+ Right +");\n";
+      Body += Wire +"= -("+ Right +");\n";
       break;
     }
 
     case EXPRESSION::EXPRESSION_TYPE::Bit_NOT:{
       string Right;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
-      Body += Temporary +"= ~("+ Right +");\n";
+      Body += Wire +"= ~("+ Right +");\n";
       break;
     }
 
     case EXPRESSION::EXPRESSION_TYPE::AND_Reduce:{
       string Right;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       Body += "wire ";
-      Body += Temporary +"= &("+ Right +");\n";
+      Body += Wire +"= &("+ Right +");\n";
       break;
     }
 
     case EXPRESSION::EXPRESSION_TYPE::NAND_Reduce:{
       string Right;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       Body += "wire ";
-      Body += Temporary +"= ~&("+ Right +");\n";
+      Body += Wire +"= ~&("+ Right +");\n";
       break;
     }
 
     case EXPRESSION::EXPRESSION_TYPE::OR_Reduce:{
       string Right;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       Body += "wire ";
-      Body += Temporary +"= |("+ Right +");\n";
+      Body += Wire +"= |("+ Right +");\n";
       break;
     }
 
     case EXPRESSION::EXPRESSION_TYPE::NOR_Reduce:{
       string Right;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       Body += "wire ";
-      Body += Temporary +"= ~|("+ Right +");\n";
+      Body += Wire +"= ~|("+ Right +");\n";
       break;
     }
 
     case EXPRESSION::EXPRESSION_TYPE::XOR_Reduce:{
       string Right;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       Body += "wire ";
-      Body += Temporary +"= ^("+ Right +");\n";
+      Body += Wire +"= ^("+ Right +");\n";
       break;
     }
 
     case EXPRESSION::EXPRESSION_TYPE::XNOR_Reduce:{
       string Right;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       Body += "wire ";
-      Body += Temporary +"= ~^("+ Right +");\n";
+      Body += Wire +"= ~^("+ Right +");\n";
       break;
     }
 
     case EXPRESSION::EXPRESSION_TYPE::Logical_NOT:{
       string Right;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       Body += "wire ";
-      Body += Temporary +"= !("+ Right +");\n";
+      Body += Wire +"= !("+ Right +");\n";
       break;
     }
 
@@ -343,10 +342,10 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       if(!BuildExpression(Body, Expression->Left, Left)) return false;
       Right = Expression->Right->Value.GetString(10);
 
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
-      Body += Temporary +"= {"+ Right +"{"+ Left +"}};\n";
+      Body += Wire +"= {"+ Right +"{"+ Left +"}};\n";
       break;
     }
 
@@ -354,10 +353,10 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
-      Body += Temporary +"= "+ Left +" * "+ Right +";\n";
+      Body += Wire +"= "+ Left +" * "+ Right +";\n";
       break;
     }
 
@@ -365,10 +364,10 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
-      Body += Temporary +"= "+ Left +" + "+ Right +";\n";
+      Body += Wire +"= "+ Left +" + "+ Right +";\n";
       break;
     }
 
@@ -376,10 +375,10 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
-      Body += Temporary +"= "+ Left +" - "+ Right +";\n";
+      Body += Wire +"= "+ Left +" - "+ Right +";\n";
       break;
     }
 
@@ -387,10 +386,10 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
-      Body += Temporary +"= "+ Left +" << "+ Right +";\n";
+      Body += Wire +"= "+ Left +" << "+ Right +";\n";
       break;
     }
 
@@ -398,10 +397,10 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
-      Body += Temporary +"= "+ Left +" >> "+ Right +";\n";
+      Body += Wire +"= "+ Left +" >> "+ Right +";\n";
       break;
     }
 
@@ -409,8 +408,8 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
-      Body += "wire "+ Temporary +"= "+ Left +" < "+ Right +";\n";
+      Wire = GetWireName();
+      Body += "wire "+ Wire +"= "+ Left +" < "+ Right +";\n";
       break;
     }
 
@@ -418,8 +417,8 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
-      Body += "wire "+ Temporary +"= "+ Left +" > "+ Right +";\n";
+      Wire = GetWireName();
+      Body += "wire "+ Wire +"= "+ Left +" > "+ Right +";\n";
       break;
     }
 
@@ -427,8 +426,8 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
-      Body += "wire "+ Temporary +"= "+ Left +" <= "+ Right +";\n";
+      Wire = GetWireName();
+      Body += "wire "+ Wire +"= "+ Left +" <= "+ Right +";\n";
       break;
     }
 
@@ -436,8 +435,8 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
-      Body += "wire "+ Temporary +"= "+ Left +" >= "+ Right +";\n";
+      Wire = GetWireName();
+      Body += "wire "+ Wire +"= "+ Left +" >= "+ Right +";\n";
       break;
     }
 
@@ -445,8 +444,8 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
-      Body += "wire "+ Temporary +"= "+ Left +" == "+ Right +";\n";
+      Wire = GetWireName();
+      Body += "wire "+ Wire +"= "+ Left +" == "+ Right +";\n";
       break;
     }
 
@@ -454,8 +453,8 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
-      Body += "wire "+ Temporary +"= "+ Left +" != "+ Right +";\n";
+      Wire = GetWireName();
+      Body += "wire "+ Wire +"= "+ Left +" != "+ Right +";\n";
       break;
     }
 
@@ -463,10 +462,10 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
-      Body += Temporary +"= "+ Left +" & "+ Right +";\n";
+      Body += Wire +"= "+ Left +" & "+ Right +";\n";
       break;
     }
 
@@ -474,10 +473,10 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
-      Body += Temporary +"= ~("+ Left +" & "+ Right +");\n";
+      Body += Wire +"= ~("+ Left +" & "+ Right +");\n";
       break;
     }
 
@@ -485,10 +484,10 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
-      Body += Temporary +"= "+ Left +" | "+ Right +";\n";
+      Body += Wire +"= "+ Left +" | "+ Right +";\n";
       break;
     }
 
@@ -496,10 +495,10 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
-      Body += Temporary +"= ~("+ Left +" | "+ Right +");\n";
+      Body += Wire +"= ~("+ Left +" | "+ Right +");\n";
       break;
     }
 
@@ -507,10 +506,10 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
-      Body += Temporary +"= "+ Left +" ^ "+ Right +";\n";
+      Body += Wire +"= "+ Left +" ^ "+ Right +";\n";
       break;
     }
 
@@ -518,10 +517,10 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
+      Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
-      Body += Temporary +"= "+ Left +" ~^ "+ Right +";\n";
+      Body += Wire +"= "+ Left +" ~^ "+ Right +";\n";
       break;
     }
 
@@ -529,8 +528,8 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
-      Body += "wire "+ Temporary +"= "+ Left +" && "+ Right +";\n";
+      Wire = GetWireName();
+      Body += "wire "+ Wire +"= "+ Left +" && "+ Right +";\n";
       break;
     }
 
@@ -538,8 +537,8 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Temporary = GetTemporaryName();
-      Body += "wire "+ Temporary +"= "+ Left +" || "+ Right +";\n";
+      Wire = GetWireName();
+      Body += "wire "+ Wire +"= "+ Left +" || "+ Right +";\n";
       break;
     }
 
@@ -612,19 +611,19 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
           if(To->Signed) Body += "["+ to_string(To->Width  ) +":0] ";
           else           Body += "["+ to_string(To->Width-1) +":0] ";
         }
-        Temporary = GetTemporaryName();
-        Body += Temporary +"= ";
+        Wire = GetWireName();
+        Body += Wire +"= ";
         if     (Shift > 0) Body += FromString +" >> "+ to_string( Shift);
         else if(Shift < 0) Body += FromString +" << "+ to_string(-Shift);
         Body += ";\n";
 
       }else{
         Warning(Expression, "Non power-of-two scaling factor: synthesising a multiplier");
-        string MulTemporaryName = GetTemporaryName();
+        string MulWireName = GetWireName();
 
         // TODO: Signed
         Body += "wire ["+ to_string(From->Width + Width - 1) +":0] ";
-        Body += MulTemporaryName +"= "+ FromString + " * ";
+        Body += MulWireName +"= "+ FromString + " * ";
 
         Body += to_string(Width) + "'h";
         Body += Factor.GetString(16);
@@ -635,10 +634,10 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
           if(To->Signed) Body += "["+ to_string(To->Width  ) +":0] ";
           else           Body += "["+ to_string(To->Width-1) +":0] ";
         }
-        Temporary = GetTemporaryName();
-        Body += Temporary +"= ";
-        if     (Shift > 0) Body += MulTemporaryName +" >> "+ to_string( Shift);
-        else if(Shift < 0) Body += MulTemporaryName +" << "+ to_string(-Shift);
+        Wire = GetWireName();
+        Body += Wire +"= ";
+        if     (Shift > 0) Body += MulWireName +" >> "+ to_string( Shift);
+        else if(Shift < 0) Body += MulWireName +" << "+ to_string(-Shift);
         Body += ";\n";
       }
       break;
