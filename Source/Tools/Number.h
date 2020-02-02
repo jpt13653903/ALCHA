@@ -50,6 +50,9 @@ class NUMBER{
    ~NUMBER();
 
     void Set(mpz_t Numerator, mpz_t Denominator);
+    void Set_e (); // First 43 terms of the series e = sum(1/n!)
+    void Set_pi(); // 100th fraction approximation
+    void Set_i ();
 
     // Operators
     void operator=  (int           i);

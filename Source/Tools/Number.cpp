@@ -80,6 +80,45 @@ void NUMBER::Set(mpz_t Numerator, mpz_t Denominator){
 }
 //------------------------------------------------------------------------------
 
+void NUMBER::Set_e(){
+  mpq_set_ui(Real, 2, 1);
+  mpq_set_ui(Imag, 0, 1);
+
+  mpq_t t, n;
+  mpq_init(t);
+  mpq_init(n);
+  mpq_set_ui(t, 1, 1);
+
+  // 43 terms provide about 52 decimal digits of accuracy.  It was chosen so
+  // that the "Display" functions for e and pi result in the same string length
+  for(int nn = 2; nn < 43; nn++){
+    mpq_set_ui(n, nn, 1);
+    mpq_div(t, t, n);
+    mpq_add(Real, Real, t);
+  }
+
+  mpq_clear(n);
+  mpq_clear(t);
+}
+//------------------------------------------------------------------------------
+
+// Numerator:   https://oeis.org/A002485/b002485.txt
+// Denominator: https://oeis.org/A002486/b002486.txt
+void NUMBER::Set_pi(){
+  mpq_set_str(Real,
+              "394372834342725903069943709807632345074473102456264/"
+              "125532772013612015195543173729505082616186012726141", 10);
+  mpq_canonicalize(Real);
+  mpq_set_ui(Imag, 0, 1);
+}
+//------------------------------------------------------------------------------
+
+void NUMBER::Set_i(){
+  mpq_set_ui(Real, 0, 1);
+  mpq_set_ui(Imag, 1, 1);
+}
+//------------------------------------------------------------------------------
+
 void NUMBER::operator= (int i){
   mpq_set_si(Real, i, 1);
   mpq_set_ui(Imag, 0, 1);

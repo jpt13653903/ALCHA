@@ -27,11 +27,17 @@ using namespace NETLIST;
 
 ENGINE::ENGINE(){
   // TODO: Maybe pull constants into a class of their own?
-  Constants["e" ] = 2.718281828459045235360;
-  Constants["π" ] = 3.141592653589793238463;
-  Constants["pi"] = 3.141592653589793238463;
-  Constants["i" ].Add(0, 1);
-  Constants["j" ].Add(0, 1);
+  Constants["e" ].Set_e ();
+  Constants["π" ].Set_pi();
+  Constants["pi"].Set_pi();
+  Constants["i" ].Set_i ();
+  Constants["j" ].Set_i ();
+
+  debug("e  = %s", Constants["e" ].Display().c_str());
+  debug("π  = %s", Constants["π" ].Display().c_str());
+  debug("pi = %s", Constants["pi"].Display().c_str());
+  debug("i  = %s", Constants["i" ].Display().c_str());
+  debug("j  = %s", Constants["j" ].Display().c_str());
 
   time_t RawTime;
   struct tm* Time;
