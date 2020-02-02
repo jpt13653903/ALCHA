@@ -40,7 +40,7 @@ EXPRESSION::EXPRESSION(int Line, const std::string& Filename, EXPRESSION_TYPE Ex
 //------------------------------------------------------------------------------
 
 EXPRESSION::EXPRESSION(EXPRESSION* Expression){
-  ExpressionType = Literal;
+  ExpressionType = EXPRESSION_TYPE::Literal;
   ObjectRef      = 0;
   Left           = 0;
   Right          = 0;
@@ -90,15 +90,15 @@ void EXPRESSION::Display(){
   }
 
   switch(ExpressionType){
-    case String:
+    case EXPRESSION_TYPE::String:
       Debug.print(ANSI_FG_CYAN "\"%s\"" ANSI_RESET, StrValue.c_str());
       break;
 
-    case Literal:
+    case EXPRESSION_TYPE::Literal:
       Debug.print(Value.Display());
       break;
 
-    case Array:
+    case EXPRESSION_TYPE::Array:
       Debug.print(ANSI_FG_BRIGHT_BLUE "[" ANSI_RESET);
       for(size_t n = 0; n < Elements.size(); n++){
         if(n > 0) Debug.print(", ");
@@ -108,7 +108,7 @@ void EXPRESSION::Display(){
       Debug.print(ANSI_FG_BRIGHT_BLUE "]" ANSI_RESET);
       break;
 
-    case Object:
+    case EXPRESSION_TYPE::Object:
       if(ObjectRef){
         ObjectRef->DisplayLongName();
       }else{
@@ -116,7 +116,7 @@ void EXPRESSION::Display(){
       }
       break;
 
-    case VectorConcatenate:
+    case EXPRESSION_TYPE::VectorConcatenate:
       Debug.print(ANSI_FG_BRIGHT_BLUE ":(" ANSI_RESET);
       for(size_t n = 0; n < Elements.size(); n++){
         if(n > 0) Debug.print(", ");
@@ -126,7 +126,7 @@ void EXPRESSION::Display(){
       Debug.print(ANSI_FG_BRIGHT_BLUE ")" ANSI_RESET);
       break;
 
-    case ArrayConcatenate:
+    case EXPRESSION_TYPE::ArrayConcatenate:
       Debug.print(ANSI_FG_BRIGHT_BLUE ":[" ANSI_RESET);
       for(size_t n = 0; n < Elements.size(); n++){
         if(n > 0) Debug.print(", ");
@@ -136,59 +136,59 @@ void EXPRESSION::Display(){
       Debug.print(ANSI_FG_BRIGHT_BLUE "]" ANSI_RESET);
       break;
 
-    case FunctionCall : Debug.print(ANSI_FG_BRIGHT_BLUE "{call}" ANSI_RESET);   break;
+    case EXPRESSION_TYPE::FunctionCall : Debug.print(ANSI_FG_BRIGHT_BLUE "{call}" ANSI_RESET);   break;
 
-    case Slice        : Debug.print(ANSI_FG_BRIGHT_BLUE "{slice}" ANSI_RESET);  break;
+    case EXPRESSION_TYPE::Slice        : Debug.print(ANSI_FG_BRIGHT_BLUE "{slice}" ANSI_RESET);  break;
 
-    case Increment    : Debug.print(ANSI_FG_BRIGHT_BLUE "++" ANSI_RESET);       break;
-    case Decrement    : Debug.print(ANSI_FG_BRIGHT_BLUE "--" ANSI_RESET);       break;
-    case Factorial    : Debug.print(ANSI_FG_BRIGHT_BLUE "!"  ANSI_RESET);       break;
+    case EXPRESSION_TYPE::Increment    : Debug.print(ANSI_FG_BRIGHT_BLUE "++" ANSI_RESET);       break;
+    case EXPRESSION_TYPE::Decrement    : Debug.print(ANSI_FG_BRIGHT_BLUE "--" ANSI_RESET);       break;
+    case EXPRESSION_TYPE::Factorial    : Debug.print(ANSI_FG_BRIGHT_BLUE "!"  ANSI_RESET);       break;
 
-    case Negate       : Debug.print(ANSI_FG_BRIGHT_BLUE " -" ANSI_RESET);       break;
-    case Bit_NOT      : Debug.print(ANSI_FG_BRIGHT_BLUE " ~" ANSI_RESET);       break;
+    case EXPRESSION_TYPE::Negate       : Debug.print(ANSI_FG_BRIGHT_BLUE " -" ANSI_RESET);       break;
+    case EXPRESSION_TYPE::Bit_NOT      : Debug.print(ANSI_FG_BRIGHT_BLUE " ~" ANSI_RESET);       break;
 
-    case AND_Reduce   : Debug.print(ANSI_FG_BRIGHT_BLUE  " &" ANSI_RESET);      break;
-    case NAND_Reduce  : Debug.print(ANSI_FG_BRIGHT_BLUE " ~&" ANSI_RESET);      break;
-    case OR_Reduce    : Debug.print(ANSI_FG_BRIGHT_BLUE  " |" ANSI_RESET);      break;
-    case NOR_Reduce   : Debug.print(ANSI_FG_BRIGHT_BLUE " ~|" ANSI_RESET);      break;
-    case XOR_Reduce   : Debug.print(ANSI_FG_BRIGHT_BLUE  " #" ANSI_RESET);      break;
-    case XNOR_Reduce  : Debug.print(ANSI_FG_BRIGHT_BLUE " ~#" ANSI_RESET);      break;
-    case Logical_NOT  : Debug.print(ANSI_FG_BRIGHT_BLUE  " !" ANSI_RESET);      break;
+    case EXPRESSION_TYPE::AND_Reduce   : Debug.print(ANSI_FG_BRIGHT_BLUE  " &" ANSI_RESET);      break;
+    case EXPRESSION_TYPE::NAND_Reduce  : Debug.print(ANSI_FG_BRIGHT_BLUE " ~&" ANSI_RESET);      break;
+    case EXPRESSION_TYPE::OR_Reduce    : Debug.print(ANSI_FG_BRIGHT_BLUE  " |" ANSI_RESET);      break;
+    case EXPRESSION_TYPE::NOR_Reduce   : Debug.print(ANSI_FG_BRIGHT_BLUE " ~|" ANSI_RESET);      break;
+    case EXPRESSION_TYPE::XOR_Reduce   : Debug.print(ANSI_FG_BRIGHT_BLUE  " #" ANSI_RESET);      break;
+    case EXPRESSION_TYPE::XNOR_Reduce  : Debug.print(ANSI_FG_BRIGHT_BLUE " ~#" ANSI_RESET);      break;
+    case EXPRESSION_TYPE::Logical_NOT  : Debug.print(ANSI_FG_BRIGHT_BLUE  " !" ANSI_RESET);      break;
 
-    case Cast         : Debug.print(ANSI_FG_BRIGHT_BLUE " {cast} " ANSI_RESET); break;
+    case EXPRESSION_TYPE::Cast         : Debug.print(ANSI_FG_BRIGHT_BLUE " {cast} " ANSI_RESET); break;
 
-    case Replicate    : Debug.print(ANSI_FG_BRIGHT_BLUE "{rep}" ANSI_RESET);    break;
+    case EXPRESSION_TYPE::Replicate    : Debug.print(ANSI_FG_BRIGHT_BLUE "{rep}" ANSI_RESET);    break;
 
-    case Exponential  : Debug.print(ANSI_FG_BRIGHT_BLUE " ^ "  ANSI_RESET);     break;
-    case Multiply     : Debug.print(ANSI_FG_BRIGHT_BLUE " * "  ANSI_RESET);     break;
-    case Divide       : Debug.print(ANSI_FG_BRIGHT_BLUE " / "  ANSI_RESET);     break;
-    case Modulus      : Debug.print(ANSI_FG_BRIGHT_BLUE " %% " ANSI_RESET);     break;
-    case Add          : Debug.print(ANSI_FG_BRIGHT_BLUE " + "  ANSI_RESET);     break;
-    case Subtract     : Debug.print(ANSI_FG_BRIGHT_BLUE " - "  ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Exponential  : Debug.print(ANSI_FG_BRIGHT_BLUE " ^ "  ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Multiply     : Debug.print(ANSI_FG_BRIGHT_BLUE " * "  ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Divide       : Debug.print(ANSI_FG_BRIGHT_BLUE " / "  ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Modulus      : Debug.print(ANSI_FG_BRIGHT_BLUE " %% " ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Add          : Debug.print(ANSI_FG_BRIGHT_BLUE " + "  ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Subtract     : Debug.print(ANSI_FG_BRIGHT_BLUE " - "  ANSI_RESET);     break;
 
-    case Shift_Left   : Debug.print(ANSI_FG_BRIGHT_BLUE " << " ANSI_RESET);     break;
-    case Shift_Right  : Debug.print(ANSI_FG_BRIGHT_BLUE " >> " ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Shift_Left   : Debug.print(ANSI_FG_BRIGHT_BLUE " << " ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Shift_Right  : Debug.print(ANSI_FG_BRIGHT_BLUE " >> " ANSI_RESET);     break;
 
-    case Less         : Debug.print(ANSI_FG_BRIGHT_BLUE " < "  ANSI_RESET);     break;
-    case Greater      : Debug.print(ANSI_FG_BRIGHT_BLUE " > "  ANSI_RESET);     break;
-    case Less_Equal   : Debug.print(ANSI_FG_BRIGHT_BLUE " <= " ANSI_RESET);     break;
-    case Greater_Equal: Debug.print(ANSI_FG_BRIGHT_BLUE " >= " ANSI_RESET);     break;
-    case Equal        : Debug.print(ANSI_FG_BRIGHT_BLUE " == " ANSI_RESET);     break;
-    case Not_Equal    : Debug.print(ANSI_FG_BRIGHT_BLUE " != " ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Less         : Debug.print(ANSI_FG_BRIGHT_BLUE " < "  ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Greater      : Debug.print(ANSI_FG_BRIGHT_BLUE " > "  ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Less_Equal   : Debug.print(ANSI_FG_BRIGHT_BLUE " <= " ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Greater_Equal: Debug.print(ANSI_FG_BRIGHT_BLUE " >= " ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Equal        : Debug.print(ANSI_FG_BRIGHT_BLUE " == " ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Not_Equal    : Debug.print(ANSI_FG_BRIGHT_BLUE " != " ANSI_RESET);     break;
 
-    case Bit_AND      : Debug.print(ANSI_FG_BRIGHT_BLUE  " & " ANSI_RESET);     break;
-    case Bit_NAND     : Debug.print(ANSI_FG_BRIGHT_BLUE " ~& " ANSI_RESET);     break;
-    case Bit_OR       : Debug.print(ANSI_FG_BRIGHT_BLUE  " | " ANSI_RESET);     break;
-    case Bit_NOR      : Debug.print(ANSI_FG_BRIGHT_BLUE " ~| " ANSI_RESET);     break;
-    case Bit_XOR      : Debug.print(ANSI_FG_BRIGHT_BLUE  " # " ANSI_RESET);     break;
-    case Bit_XNOR     : Debug.print(ANSI_FG_BRIGHT_BLUE " ~# " ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Bit_AND      : Debug.print(ANSI_FG_BRIGHT_BLUE  " & " ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Bit_NAND     : Debug.print(ANSI_FG_BRIGHT_BLUE " ~& " ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Bit_OR       : Debug.print(ANSI_FG_BRIGHT_BLUE  " | " ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Bit_NOR      : Debug.print(ANSI_FG_BRIGHT_BLUE " ~| " ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Bit_XOR      : Debug.print(ANSI_FG_BRIGHT_BLUE  " # " ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Bit_XNOR     : Debug.print(ANSI_FG_BRIGHT_BLUE " ~# " ANSI_RESET);     break;
 
-    case Logical_AND  : Debug.print(ANSI_FG_BRIGHT_BLUE " && " ANSI_RESET);     break;
-    case Logical_OR   : Debug.print(ANSI_FG_BRIGHT_BLUE " || " ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Logical_AND  : Debug.print(ANSI_FG_BRIGHT_BLUE " && " ANSI_RESET);     break;
+    case EXPRESSION_TYPE::Logical_OR   : Debug.print(ANSI_FG_BRIGHT_BLUE " || " ANSI_RESET);     break;
 
-    case Conditional  : Debug.print(ANSI_FG_BRIGHT_BLUE " ? " ANSI_RESET);      break;
+    case EXPRESSION_TYPE::Conditional  : Debug.print(ANSI_FG_BRIGHT_BLUE " ? " ANSI_RESET);      break;
 
-    default: Debug.print(ANSI_FG_BRIGHT_RED "(Unknown expression type: %d)" ANSI_RESET, ExpressionType);
+    default: Debug.print(ANSI_FG_BRIGHT_RED "(Unknown expression type: %d)" ANSI_RESET, (int)ExpressionType);
   }
 
   if(Right){

@@ -31,7 +31,7 @@
 //------------------------------------------------------------------------------
 
 struct TOKEN{
-  enum TYPE{
+  enum class TYPE{
     Unknown = 0, // also used to designate errors, etc.
 
     // White-space .............................................................

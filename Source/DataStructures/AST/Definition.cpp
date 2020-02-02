@@ -63,7 +63,7 @@ DEFINITION::DEFINITION(
 ): BASE(Line, Filename, TYPE::Definition){
   this->DefinitionType = DefinitionType;
 
-  Direction = Inferred;
+  Direction = DIRECTION::Inferred;
 
   ClassName  = 0;
   Parameters = 0;
@@ -83,16 +83,16 @@ void DEFINITION::Display(){
   Debug.print("Definition (");
 
   switch(DefinitionType){
-    case Pin    : Debug.print("Pin):\n"     ); break;
-    case Net    : Debug.print("Net):\n"     ); break;
-    case Void   : Debug.print("Void):\n"    ); break;
-    case Auto   : Debug.print("Auto):\n"    ); break;
-    case Byte   : Debug.print("Byte):"      ); break;
-    case Char   : Debug.print("Character):" ); break;
-    case Num    : Debug.print("Number):\n"  ); break;
-    case Func   : Debug.print("Function):\n"); break;
+    case DEFINITION_TYPE::Pin : Debug.print("Pin):\n"     ); break;
+    case DEFINITION_TYPE::Net : Debug.print("Net):\n"     ); break;
+    case DEFINITION_TYPE::Void: Debug.print("Void):\n"    ); break;
+    case DEFINITION_TYPE::Auto: Debug.print("Auto):\n"    ); break;
+    case DEFINITION_TYPE::Byte: Debug.print("Byte):"      ); break;
+    case DEFINITION_TYPE::Char: Debug.print("Character):" ); break;
+    case DEFINITION_TYPE::Num : Debug.print("Number):\n"  ); break;
+    case DEFINITION_TYPE::Func: Debug.print("Function):\n"); break;
 
-    case ClassInstance:
+    case DEFINITION_TYPE::ClassInstance:
       Debug.print("Class instance definition (");
       if(ClassName) ClassName->Display();
       else          Debug.print("Class instance with no class name");
@@ -104,9 +104,9 @@ void DEFINITION::Display(){
 
   Debug.print(" Direction = ");
   switch(Direction){
-    case Input : Debug.print("Input\n"   ); break;
-    case Output: Debug.print("Output\n"  ); break;
-    default    : Debug.print("Inferred\n"); break;
+    case DIRECTION::Input : Debug.print("Input\n"   ); break;
+    case DIRECTION::Output: Debug.print("Output\n"  ); break;
+    default               : Debug.print("Inferred\n"); break;
   }
 
   Debug.print(" Parameters: ");

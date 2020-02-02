@@ -57,85 +57,85 @@ void EXPRESSION::Display(){
   }
 
   switch(ExpressionType){
-    case String:
+    case EXPRESSION_TYPE::String:
       if(StrValue) Debug.print("\"%s\"", StrValue->c_str());
       else         error ("(String literal node has no value)");
       break;
 
-    case Literal:
+    case EXPRESSION_TYPE::Literal:
       if(Value) Debug.print(Value->Display());
       else      error("(Literal node has no value)");
       break;
 
-    case Identifier:
+    case EXPRESSION_TYPE::Identifier:
       if(Name.empty()) error ("(Identifier node has no name)");
       else             Debug.print("%s", Name.c_str());
       break;
 
-    case Array:             Debug.print("{Array}"       ); break;
-    case VectorConcatenate: Debug.print("{VectorConcat}"); break;
-    case ArrayConcatenate:  Debug.print("{ArrayConcat}" ); break;
+    case EXPRESSION_TYPE::Array            : Debug.print("{Array}"       ); break;
+    case EXPRESSION_TYPE::VectorConcatenate: Debug.print("{VectorConcat}"); break;
+    case EXPRESSION_TYPE::ArrayConcatenate : Debug.print("{ArrayConcat}" ); break;
 
-    case FunctionCall: Debug.print("{call}" ); break;
+    case EXPRESSION_TYPE::FunctionCall: Debug.print("{call}" ); break;
 
-    case Slice: Debug.print("{slice}"); break;
+    case EXPRESSION_TYPE::Slice: Debug.print("{slice}"); break;
 
-    case AccessMember:     Debug.print("." ); break;
-    case AccessMemberSafe: Debug.print("?." ); break;
-    case AccessAttribute:  Debug.print("'" ); break;
+    case EXPRESSION_TYPE::AccessMember:     Debug.print("." ); break;
+    case EXPRESSION_TYPE::AccessMemberSafe: Debug.print("?." ); break;
+    case EXPRESSION_TYPE::AccessAttribute:  Debug.print("'" ); break;
 
-    case Increment: Debug.print("++"); break;
-    case Decrement: Debug.print("--"); break;
-    case Factorial: Debug.print("!" ); break;
+    case EXPRESSION_TYPE::Increment: Debug.print("++"); break;
+    case EXPRESSION_TYPE::Decrement: Debug.print("--"); break;
+    case EXPRESSION_TYPE::Factorial: Debug.print("!" ); break;
 
-    case Range: Debug.print(".."); break;
+    case EXPRESSION_TYPE::Range: Debug.print(".."); break;
 
-    case Negate : Debug.print(" -"); break;
-    case Bit_NOT: Debug.print(" ~"); break;
-    case Raw    : Debug.print(" :"); break;
+    case EXPRESSION_TYPE::Negate : Debug.print(" -"); break;
+    case EXPRESSION_TYPE::Bit_NOT: Debug.print(" ~"); break;
+    case EXPRESSION_TYPE::Raw    : Debug.print(" :"); break;
 
-    case AND_Reduce : Debug.print( " &"); break;
-    case NAND_Reduce: Debug.print(" ~&"); break;
-    case OR_Reduce  : Debug.print( " |"); break;
-    case NOR_Reduce : Debug.print(" ~|"); break;
-    case XOR_Reduce : Debug.print( " #"); break;
-    case XNOR_Reduce: Debug.print(" ~#"); break;
-    case Logical_NOT: Debug.print( " !"); break;
+    case EXPRESSION_TYPE::AND_Reduce : Debug.print( " &"); break;
+    case EXPRESSION_TYPE::NAND_Reduce: Debug.print(" ~&"); break;
+    case EXPRESSION_TYPE::OR_Reduce  : Debug.print( " |"); break;
+    case EXPRESSION_TYPE::NOR_Reduce : Debug.print(" ~|"); break;
+    case EXPRESSION_TYPE::XOR_Reduce : Debug.print( " #"); break;
+    case EXPRESSION_TYPE::XNOR_Reduce: Debug.print(" ~#"); break;
+    case EXPRESSION_TYPE::Logical_NOT: Debug.print( " !"); break;
 
-    case Cast       : Debug.print(" {cast} "); break;
+    case EXPRESSION_TYPE::Cast       : Debug.print(" {cast} "); break;
 
-    case Replicate  : Debug.print("{rep}"); break;
+    case EXPRESSION_TYPE::Replicate  : Debug.print("{rep}"); break;
 
-    case Exponential: Debug.print(" ^ " ); break;
-    case Multiply   : Debug.print(" * " ); break;
-    case Divide     : Debug.print(" / " ); break;
-    case Modulus    : Debug.print(" %% "); break;
-    case Add        : Debug.print(" + " ); break;
-    case Subtract   : Debug.print(" - " ); break;
+    case EXPRESSION_TYPE::Exponential: Debug.print(" ^ " ); break;
+    case EXPRESSION_TYPE::Multiply   : Debug.print(" * " ); break;
+    case EXPRESSION_TYPE::Divide     : Debug.print(" / " ); break;
+    case EXPRESSION_TYPE::Modulus    : Debug.print(" %% "); break;
+    case EXPRESSION_TYPE::Add        : Debug.print(" + " ); break;
+    case EXPRESSION_TYPE::Subtract   : Debug.print(" - " ); break;
 
-    case Shift_Left : Debug.print(" << "); break;
-    case Shift_Right: Debug.print(" >> "); break;
+    case EXPRESSION_TYPE::Shift_Left : Debug.print(" << "); break;
+    case EXPRESSION_TYPE::Shift_Right: Debug.print(" >> "); break;
 
-    case Less         : Debug.print(" < " ); break;
-    case Greater      : Debug.print(" > " ); break;
-    case Less_Equal   : Debug.print(" <= "); break;
-    case Greater_Equal: Debug.print(" >= "); break;
-    case Equal        : Debug.print(" == "); break;
-    case Not_Equal    : Debug.print(" != "); break;
+    case EXPRESSION_TYPE::Less         : Debug.print(" < " ); break;
+    case EXPRESSION_TYPE::Greater      : Debug.print(" > " ); break;
+    case EXPRESSION_TYPE::Less_Equal   : Debug.print(" <= "); break;
+    case EXPRESSION_TYPE::Greater_Equal: Debug.print(" >= "); break;
+    case EXPRESSION_TYPE::Equal        : Debug.print(" == "); break;
+    case EXPRESSION_TYPE::Not_Equal    : Debug.print(" != "); break;
 
-    case Bit_AND : Debug.print( " & "); break;
-    case Bit_NAND: Debug.print(" ~& "); break;
-    case Bit_OR  : Debug.print( " | "); break;
-    case Bit_NOR : Debug.print(" ~| "); break;
-    case Bit_XOR : Debug.print( " # "); break;
-    case Bit_XNOR: Debug.print(" ~# "); break;
+    case EXPRESSION_TYPE::Bit_AND : Debug.print( " & "); break;
+    case EXPRESSION_TYPE::Bit_NAND: Debug.print(" ~& "); break;
+    case EXPRESSION_TYPE::Bit_OR  : Debug.print( " | "); break;
+    case EXPRESSION_TYPE::Bit_NOR : Debug.print(" ~| "); break;
+    case EXPRESSION_TYPE::Bit_XOR : Debug.print( " # "); break;
+    case EXPRESSION_TYPE::Bit_XNOR: Debug.print(" ~# "); break;
 
-    case Logical_AND: Debug.print(" && "); break;
-    case Logical_OR : Debug.print(" || "); break;
+    case EXPRESSION_TYPE::Logical_AND: Debug.print(" && "); break;
+    case EXPRESSION_TYPE::Logical_OR : Debug.print(" || "); break;
 
-    case Conditional : Debug.print(" ? "); break;
+    case EXPRESSION_TYPE::Conditional : Debug.print(" ? "); break;
 
-    default: error("(Unknown expression type: %d)", ExpressionType);
+    default: error("(Unknown expression type: %d)", (int)ExpressionType);
   }
 
   if(Right){

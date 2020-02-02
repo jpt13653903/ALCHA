@@ -28,7 +28,7 @@
 
 namespace AST{
   struct EXPRESSION: public BASE{
-    enum EXPRESSION_TYPE{
+    enum class EXPRESSION_TYPE{
       String,
       Literal,
       Array,

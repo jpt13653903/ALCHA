@@ -27,7 +27,7 @@
 
 namespace AST{
   struct JUMP: public BASE{
-    enum JUMP_TYPE{
+    enum class JUMP_TYPE{
       Return,
       Break,
       Continue

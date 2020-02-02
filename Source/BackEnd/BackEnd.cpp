@@ -103,22 +103,22 @@ bool BACK_END::AssignPinDirections(NAMESPACE* Namespace){
     switch(SymbolIterator->second->Type){
       case BASE::TYPE::Pin:{
         auto Pin = (PIN*)(SymbolIterator->second);
-        if(Pin->Direction == AST::DEFINITION::Inferred){
+        if(Pin->Direction == AST::DEFINITION::DIRECTION::Inferred){
           if(Pin->Enabled){ // Possible bidirectional
-            if(Pin->Enabled->ExpressionType == EXPRESSION::Literal){
+            if(Pin->Enabled->ExpressionType == EXPRESSION::EXPRESSION_TYPE::Literal){
               if(Pin->Enabled->Value == 0){
-                Pin->Direction = AST::DEFINITION::Input;
+                Pin->Direction = AST::DEFINITION::DIRECTION::Input;
               }else{
-                Pin->Direction = AST::DEFINITION::Output;
+                Pin->Direction = AST::DEFINITION::DIRECTION::Output;
               }
             }else{
-              Pin->Direction = AST::DEFINITION::Bidirectional;
+              Pin->Direction = AST::DEFINITION::DIRECTION::Bidirectional;
             }
           }else{ // Enabled is undefined
             if(Pin->Driver){
-              Pin->Direction = AST::DEFINITION::Output;
+              Pin->Direction = AST::DEFINITION::DIRECTION::Output;
             }else{
-              Pin->Direction = AST::DEFINITION::Input;
+              Pin->Direction = AST::DEFINITION::DIRECTION::Input;
             }
           }
         }
@@ -185,7 +185,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
   if(!Expression) return false;
 
   switch(Expression->ExpressionType){
-    case EXPRESSION::Literal:{
+    case EXPRESSION::EXPRESSION_TYPE::Literal:{
       if(!Expression->Value.IsReal()){
         Error(Expression, "non-real literal");
         return false;
@@ -211,7 +211,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Object:
+    case EXPRESSION::EXPRESSION_TYPE::Object:
       if(!Expression->ObjectRef){
         error("Null object reference");
         return false;
@@ -219,7 +219,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       Temporary += Expression->ObjectRef->EscapedName();
       break;
 
-    case EXPRESSION::VectorConcatenate:{
+    case EXPRESSION::EXPRESSION_TYPE::VectorConcatenate:{
       vector<string> Elements;
       Elements.resize(Expression->Elements.size());
 
@@ -238,11 +238,11 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Slice:
+    case EXPRESSION::EXPRESSION_TYPE::Slice:
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::Negate:{
+    case EXPRESSION::EXPRESSION_TYPE::Negate:{
       string Right;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
       Temporary = GetTemporaryName();
@@ -252,7 +252,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Bit_NOT:{
+    case EXPRESSION::EXPRESSION_TYPE::Bit_NOT:{
       string Right;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
       Temporary = GetTemporaryName();
@@ -262,7 +262,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::AND_Reduce:{
+    case EXPRESSION::EXPRESSION_TYPE::AND_Reduce:{
       string Right;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
       Temporary = GetTemporaryName();
@@ -271,7 +271,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::NAND_Reduce:{
+    case EXPRESSION::EXPRESSION_TYPE::NAND_Reduce:{
       string Right;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
       Temporary = GetTemporaryName();
@@ -280,7 +280,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::OR_Reduce:{
+    case EXPRESSION::EXPRESSION_TYPE::OR_Reduce:{
       string Right;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
       Temporary = GetTemporaryName();
@@ -289,7 +289,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::NOR_Reduce:{
+    case EXPRESSION::EXPRESSION_TYPE::NOR_Reduce:{
       string Right;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
       Temporary = GetTemporaryName();
@@ -298,7 +298,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::XOR_Reduce:{
+    case EXPRESSION::EXPRESSION_TYPE::XOR_Reduce:{
       string Right;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
       Temporary = GetTemporaryName();
@@ -307,7 +307,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::XNOR_Reduce:{
+    case EXPRESSION::EXPRESSION_TYPE::XNOR_Reduce:{
       string Right;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
       Temporary = GetTemporaryName();
@@ -316,7 +316,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Logical_NOT:{
+    case EXPRESSION::EXPRESSION_TYPE::Logical_NOT:{
       string Right;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
       Temporary = GetTemporaryName();
@@ -325,10 +325,10 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Replicate:{ // TODO: Test
+    case EXPRESSION::EXPRESSION_TYPE::Replicate:{ // TODO: Test
       string Left, Right;
 
-      if(Expression->Right->ExpressionType != EXPRESSION::Literal){
+      if(Expression->Right->ExpressionType != EXPRESSION::EXPRESSION_TYPE::Literal){
         Error(Expression, "Replication count must break down to a run-time constant");
         return false;
       }
@@ -350,7 +350,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Multiply:{
+    case EXPRESSION::EXPRESSION_TYPE::Multiply:{
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
@@ -361,7 +361,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Add:{
+    case EXPRESSION::EXPRESSION_TYPE::Add:{
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
@@ -372,7 +372,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Subtract:{
+    case EXPRESSION::EXPRESSION_TYPE::Subtract:{
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
@@ -383,7 +383,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Shift_Left:{
+    case EXPRESSION::EXPRESSION_TYPE::Shift_Left:{
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
@@ -394,7 +394,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Shift_Right:{
+    case EXPRESSION::EXPRESSION_TYPE::Shift_Right:{
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
@@ -405,7 +405,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Less:{
+    case EXPRESSION::EXPRESSION_TYPE::Less:{
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
@@ -414,7 +414,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Greater:{
+    case EXPRESSION::EXPRESSION_TYPE::Greater:{
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
@@ -423,7 +423,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Less_Equal:{
+    case EXPRESSION::EXPRESSION_TYPE::Less_Equal:{
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
@@ -432,7 +432,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Greater_Equal:{
+    case EXPRESSION::EXPRESSION_TYPE::Greater_Equal:{
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
@@ -441,7 +441,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Equal:{
+    case EXPRESSION::EXPRESSION_TYPE::Equal:{
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
@@ -450,7 +450,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Not_Equal:{
+    case EXPRESSION::EXPRESSION_TYPE::Not_Equal:{
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
@@ -459,7 +459,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Bit_AND:{
+    case EXPRESSION::EXPRESSION_TYPE::Bit_AND:{
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
@@ -470,7 +470,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Bit_NAND:{
+    case EXPRESSION::EXPRESSION_TYPE::Bit_NAND:{
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
@@ -481,7 +481,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Bit_OR:{
+    case EXPRESSION::EXPRESSION_TYPE::Bit_OR:{
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
@@ -492,7 +492,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Bit_NOR:{
+    case EXPRESSION::EXPRESSION_TYPE::Bit_NOR:{
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
@@ -503,7 +503,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Bit_XOR:{
+    case EXPRESSION::EXPRESSION_TYPE::Bit_XOR:{
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
@@ -514,7 +514,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Bit_XNOR:{
+    case EXPRESSION::EXPRESSION_TYPE::Bit_XNOR:{
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
@@ -525,7 +525,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Logical_AND:{
+    case EXPRESSION::EXPRESSION_TYPE::Logical_AND:{
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
@@ -534,7 +534,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Logical_OR:{
+    case EXPRESSION::EXPRESSION_TYPE::Logical_OR:{
       string Left, Right;
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
       if(!BuildExpression(Body, Expression->Right, Right)) return false;
@@ -543,7 +543,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Cast:{
+    case EXPRESSION::EXPRESSION_TYPE::Cast:{
       if(!Expression->Left){
         error("Unexpected null reference");
         return false;
@@ -644,7 +644,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
       break;
     }
 
-    case EXPRESSION::Conditional:
+    case EXPRESSION::EXPRESSION_TYPE::Conditional:
       error("Not yet implemented");
       break;
 
@@ -716,9 +716,9 @@ void BACK_END::BuildPorts(string& Body, NAMESPACE* Namespace, bool& isFirst){
         isFirst = false;
 
         switch(Pin->Direction){
-          case AST::DEFINITION::Input : Body += "  input  logic "; break;
-          case AST::DEFINITION::Output: Body += "  output logic "; break;
-          default                     : Body += "  inout  logic "; break;
+          case AST::DEFINITION::DIRECTION::Input : Body += "  input  logic "; break;
+          case AST::DEFINITION::DIRECTION::Output: Body += "  output logic "; break;
+          default                                : Body += "  inout  logic "; break;
         }
         if(Pin->Width > 1){
           if(Pin->Signed) Body += "["+ to_string(Pin->Width  ) +":0]";

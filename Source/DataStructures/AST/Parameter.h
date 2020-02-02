@@ -27,7 +27,7 @@
 
 namespace AST{
   struct PARAMETER: public BASE{
-    enum DEFINITION_TYPE{
+    enum class DEFINITION_TYPE{
       Auto,
       Pin, Net,
       Byte, Char, Number,

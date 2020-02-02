@@ -127,7 +127,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
         auto Pin = (PIN*)(SymbolIterator->second);
         auto Standard = Pin->GetAttrib("standard");
         if(Standard){
-          if(Standard->ExpressionType != EXPRESSION::String){
+          if(Standard->ExpressionType != EXPRESSION::EXPRESSION_TYPE::String){
             Error(Standard, "Standard attribute not a string");
             return false;
           }
@@ -139,13 +139,13 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
         auto Location = Pin->GetAttrib("location");
         if(Location){
           if(Pin->Width == 1){
-            if(Location->ExpressionType != EXPRESSION::String){
+            if(Location->ExpressionType != EXPRESSION::EXPRESSION_TYPE::String){
               Error(Location, "Scalar pin location not a string");
               return false;
             }
             AssignPin(Body, Location->StrValue, Pin->HDL_Name());
           }else{
-            if(Location->ExpressionType != EXPRESSION::Array){
+            if(Location->ExpressionType != EXPRESSION::EXPRESSION_TYPE::Array){
               Error(Location, "Vector pin location not an array");
               return false;
             }
@@ -154,7 +154,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
               return false;
             }
             for(int n = 0; n < Pin->Width; n++){
-              if(Location->Elements[n]->ExpressionType != EXPRESSION::String){
+              if(Location->Elements[n]->ExpressionType != EXPRESSION::EXPRESSION_TYPE::String){
                 Error(Location->Elements[n], "Pin location not a string");
                 return false;
               }
@@ -175,7 +175,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
           Body += "set_instance_assignment "
                   "-name CURRENT_STRENGTH_NEW ";
           switch(Current->ExpressionType){
-            case EXPRESSION::Literal:{
+            case EXPRESSION::EXPRESSION_TYPE::Literal:{
               if(!Current->Value.IsReal()){
                 Error(Current, "Current attribute not real");
                 return false;
@@ -185,7 +185,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
               Body += to_string((int)mA.GetReal()) + "MA";
               break;
             }
-            case EXPRESSION::String:
+            case EXPRESSION::EXPRESSION_TYPE::String:
               Body += '"' + Current->StrValue + '"';
               break;
             default:
@@ -202,12 +202,12 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
           Body += "set_instance_assignment "
                   "-name WEAK_PULL_UP_RESISTOR ";
           switch(WeakPullup->ExpressionType){
-            case EXPRESSION::Literal:{
+            case EXPRESSION::EXPRESSION_TYPE::Literal:{
               if(WeakPullup->Value == true) Body += "ON";
               else                          Body += "OFF";
               break;
             }
-            case EXPRESSION::String:
+            case EXPRESSION::EXPRESSION_TYPE::String:
               Body += '"' + WeakPullup->StrValue + '"';
               break;
             default:
@@ -290,7 +290,7 @@ bool PROJECT::BuildSettings(){
   auto Standard = Global.GetAttrib("standard");
   Body += "set_global_assignment -name STRATIX_DEVICE_IO_STANDARD ";
   if(Standard){
-    if(Standard->ExpressionType != EXPRESSION::String){
+    if(Standard->ExpressionType != EXPRESSION::EXPRESSION_TYPE::String){
       Error(Standard, "Standard attribute not a string");
       return false;
     }
@@ -369,7 +369,7 @@ bool PROJECT::Build(const char* Path, const char* Filename){
     Error("Global attribute \"target_device\" not defined");
     return false;
   }
-  if(Device->ExpressionType != EXPRESSION::String){
+  if(Device->ExpressionType != EXPRESSION::EXPRESSION_TYPE::String){
     Error(Device, "Global attribute \"target_device\" not a string");
     return false;
   }
@@ -380,7 +380,7 @@ bool PROJECT::Build(const char* Path, const char* Filename){
     Error("Global attribute \"target_series\" not defined");
     return false;
   }
-  if(Series->ExpressionType != EXPRESSION::String){
+  if(Series->ExpressionType != EXPRESSION::EXPRESSION_TYPE::String){
     Error(Series, "Global attribute \"target_series\" not a string");
     return false;
   }

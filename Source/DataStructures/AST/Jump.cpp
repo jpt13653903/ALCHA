@@ -41,10 +41,10 @@ void JUMP::Display(){
   DisplayInfo();
   Debug.print("jump(");
   switch(JumpType){
-    case Return  : Debug.print("return) "           ); break;
-    case Break   : Debug.print("break) "            ); break;
-    case Continue: Debug.print("continue) "         ); break;
-    default      : Debug.print("Unknown jump type) "); break;
+    case JUMP_TYPE::Return  : Debug.print("return) "           ); break;
+    case JUMP_TYPE::Break   : Debug.print("break) "            ); break;
+    case JUMP_TYPE::Continue: Debug.print("continue) "         ); break;
+    default                 : Debug.print("Unknown jump type) "); break;
   }
   if(Expression) Expression->Display();
   else           Debug.print("{default}");

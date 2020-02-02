@@ -53,20 +53,20 @@ void ASSIGNMENT::Display(){
   }
 
   switch(AssignmentType){
-    case Assign            : Debug.print(  " = "); break;
-    case Raw_Assign        : Debug.print( " := "); break;
-    case Append_Assign     : Debug.print( " ~= "); break;
-    case Add_Assign        : Debug.print( " += "); break;
-    case Subtract_Assign   : Debug.print( " -= "); break;
-    case Multiply_Assign   : Debug.print( " *= "); break;
-    case Divide_Assign     : Debug.print( " /= "); break;
-    case Modulus_Assign    : Debug.print(" %%= "); break;
-    case Exponential_Assign: Debug.print( "**= "); break;
-    case AND_Assign        : Debug.print( " &= "); break;
-    case OR_Assign         : Debug.print( " |= "); break;
-    case XOR_Assign        : Debug.print( " ^= "); break;
-    case Shift_Left_Assign : Debug.print(" <<= "); break;
-    case Shift_Right_Assign: Debug.print(" >>= "); break;
+    case ASSIGNMENT_TYPE::Assign            : Debug.print(  " = "); break;
+    case ASSIGNMENT_TYPE::Raw_Assign        : Debug.print( " := "); break;
+    case ASSIGNMENT_TYPE::Append_Assign     : Debug.print( " ~= "); break;
+    case ASSIGNMENT_TYPE::Add_Assign        : Debug.print( " += "); break;
+    case ASSIGNMENT_TYPE::Subtract_Assign   : Debug.print( " -= "); break;
+    case ASSIGNMENT_TYPE::Multiply_Assign   : Debug.print( " *= "); break;
+    case ASSIGNMENT_TYPE::Divide_Assign     : Debug.print( " /= "); break;
+    case ASSIGNMENT_TYPE::Modulus_Assign    : Debug.print(" %%= "); break;
+    case ASSIGNMENT_TYPE::Exponential_Assign: Debug.print( "**= "); break;
+    case ASSIGNMENT_TYPE::AND_Assign        : Debug.print( " &= "); break;
+    case ASSIGNMENT_TYPE::OR_Assign         : Debug.print( " |= "); break;
+    case ASSIGNMENT_TYPE::XOR_Assign        : Debug.print( " ^= "); break;
+    case ASSIGNMENT_TYPE::Shift_Left_Assign : Debug.print(" <<= "); break;
+    case ASSIGNMENT_TYPE::Shift_Right_Assign: Debug.print(" >>= "); break;
 
     default: Debug.print("(Unknown assignment type)");
   }

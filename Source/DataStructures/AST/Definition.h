@@ -28,7 +28,7 @@
 
 namespace AST{
   struct DEFINITION: public BASE{
-      enum DEFINITION_TYPE{
+      enum class DEFINITION_TYPE{
         Void, Auto, // Used for functions only
         Pin, Net,
         Byte, Char, Num,
@@ -62,7 +62,7 @@ namespace AST{
        ~IDENTIFIER();
       };
 
-      enum DIRECTION{Inferred = 0, Input, Output, Bidirectional} Direction;
+      enum class DIRECTION{Inferred = 0, Input, Output, Bidirectional} Direction;
 
       BASE*       Parameters; // Expression or Assignment
       ASSIGNMENT* Attributes;

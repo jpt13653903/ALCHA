@@ -25,7 +25,7 @@ TOKEN_TREE::NODE::NODE(byte Char){
   Left = Right = Next = 0;
 
   this->Char = Char;
-  this->Type = TOKEN::Unknown;
+  this->Type = TOKEN::TYPE::Unknown;
 }
 //------------------------------------------------------------------------------
 
@@ -83,8 +83,8 @@ TOKEN_TREE::NODE* TOKEN_TREE::Insert(
       }else{
         // If Temp->Type null, this node does not have a token assigned yet
         // If the types are the same, this is an alias, and therefore valid
-        if(Temp->Type && Temp->Type != Type){
-          error("Duplicate token entry: ...%s = %d", Pattern, Type);
+        if((Temp->Type != TOKEN::TYPE::Unknown) && (Temp->Type != Type)){
+          error("Duplicate token entry: ...%s = %d", Pattern, (int)Type);
         }else{
           Temp->Type = Type;
         }
@@ -176,7 +176,7 @@ void TOKEN_TREE::SubBalance(NODE* Node){
 
 TOKEN::TYPE TOKEN_TREE::Match(const byte* Pattern, int* Count){
   int         N    = 0;
-  TOKEN::TYPE Type = TOKEN::Unknown;
+  TOKEN::TYPE Type = TOKEN::TYPE::Unknown;
 
   *Count = 0;
 
@@ -191,7 +191,7 @@ TOKEN::TYPE TOKEN_TREE::Match(const byte* Pattern, int* Count){
 
     }else{
       N++;
-      if(Node->Type){ // Keep track of the best option
+      if(Node->Type != TOKEN::TYPE::Unknown){ // Keep track of the best option
         *Count = N;
         Type   = Node->Type;
       }
@@ -226,6 +226,6 @@ TOKEN::TYPE TOKEN_TREE::Find(const byte* Pattern){
       }
     }
   }
-  return TOKEN::Unknown;
+  return TOKEN::TYPE::Unknown;
 }
 //------------------------------------------------------------------------------

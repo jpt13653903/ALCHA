@@ -50,11 +50,11 @@ void SYNTHESISABLE::Display(){
 
   Debug.print("    Direction  = ");
   switch(Direction){
-    case AST::DEFINITION::Inferred     : Debug.print("Inferred\n"     ); break;
-    case AST::DEFINITION::Input        : Debug.print("Input\n"        ); break;
-    case AST::DEFINITION::Output       : Debug.print("Output\n"       ); break;
-    case AST::DEFINITION::Bidirectional: Debug.print("Bidirectional\n"); break;
-    default                            : Debug.print("Invalid\n"      ); break;
+    case AST::DEFINITION::DIRECTION::Inferred     : Debug.print("Inferred\n"     ); break;
+    case AST::DEFINITION::DIRECTION::Input        : Debug.print("Input\n"        ); break;
+    case AST::DEFINITION::DIRECTION::Output       : Debug.print("Output\n"       ); break;
+    case AST::DEFINITION::DIRECTION::Bidirectional: Debug.print("Bidirectional\n"); break;
+    default                                       : Debug.print("Invalid\n"      ); break;
   }
 }
 //------------------------------------------------------------------------------

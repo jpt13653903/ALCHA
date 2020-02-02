@@ -32,7 +32,7 @@
 
 namespace NETLIST{
   struct EXPRESSION{
-    enum EXPRESSION_TYPE{
+    enum class EXPRESSION_TYPE{
       String,
       Literal,
       Array,

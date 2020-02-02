@@ -46,15 +46,15 @@ void PARAMETER::Display(){
   Debug.print("Parameter (");
 
   switch(DefinitionType){
-    case Auto   : Debug.print("Auto):"     ); break;
-    case Pin    : Debug.print("Pin):"      ); break;
-    case Net    : Debug.print("Net):"      ); break;
-    case Byte   : Debug.print("Byte):"     ); break;
-    case Char   : Debug.print("Char):"     ); break;
-    case Number : Debug.print("Number):"   ); break;
-    case Func   : Debug.print("Function):" ); break;
+    case DEFINITION_TYPE::Auto   : Debug.print("Auto):"     ); break;
+    case DEFINITION_TYPE::Pin    : Debug.print("Pin):"      ); break;
+    case DEFINITION_TYPE::Net    : Debug.print("Net):"      ); break;
+    case DEFINITION_TYPE::Byte   : Debug.print("Byte):"     ); break;
+    case DEFINITION_TYPE::Char   : Debug.print("Char):"     ); break;
+    case DEFINITION_TYPE::Number : Debug.print("Number):"   ); break;
+    case DEFINITION_TYPE::Func   : Debug.print("Function):" ); break;
 
-    case ClassInstance:
+    case DEFINITION_TYPE::ClassInstance:
       if(ClassName) ClassName->Display();
       else          Debug.print("Class instance with no class name");
       Debug.print("):");

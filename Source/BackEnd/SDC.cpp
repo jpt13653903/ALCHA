@@ -43,7 +43,7 @@ void SDC::BuildClocks(){
       auto Pin  = (PIN*)(SymbolIterator->second);
       auto Freq = Pin->GetAttrib("frequency");
       if(Freq){
-        if(Freq->ExpressionType != EXPRESSION::Literal){
+        if(Freq->ExpressionType != EXPRESSION::EXPRESSION_TYPE::Literal){
           error("frequency attribute not a literal");
           return;
         }
@@ -93,13 +93,13 @@ void SDC::BuildPorts(NETLIST::NAMESPACE* Namespace){
       case BASE::TYPE::Pin:{
         auto Pin = (PIN*)(SymbolIterator->second);
         if(!Pin->GetAttrib("frequency")){ // Not a clock
-          if(Pin->Direction != AST::DEFINITION::Output){ // Input or bidirectional
+          if(Pin->Direction != AST::DEFINITION::DIRECTION::Output){ // Input or bidirectional
             Constraints += "set_false_path -to   * -from ";
             Constraints += "[get_ports {" + Pin->HDL_Name();
             if(Pin->Width > 1) Constraints += "[*]";
             Constraints += "} ]\n";
           }
-          if(Pin->Direction != AST::DEFINITION::Input){ // Output or bidirectional
+          if(Pin->Direction != AST::DEFINITION::DIRECTION::Input){ // Output or bidirectional
             Constraints += "set_false_path -from * -to   ";
             Constraints += "[get_ports {" + Pin->HDL_Name();
             if(Pin->Width > 1) Constraints += "[*]";

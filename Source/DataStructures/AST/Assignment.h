@@ -27,7 +27,7 @@
 
 namespace AST{
   struct ASSIGNMENT: public BASE{
-      enum ASSIGNMENT_TYPE{
+      enum class ASSIGNMENT_TYPE{
         Assign,             //   =
         Raw_Assign,         //  :=
         Append_Assign,      //  ~=
