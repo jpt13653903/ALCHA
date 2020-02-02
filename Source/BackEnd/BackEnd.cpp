@@ -562,8 +562,12 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
         return false;
       }
 
+      // Calculate the limit of the inferred multiplier size.  Most FPGAs have 
+      // 18-bit multipliers, so make that the minimum limit, otherwise use the 
+      // target width as the limit so that no to little resolution is lost.
       NUMBER Limit(1);
-      Limit.BinScale(To->Width);
+      if(To->Width < 18) Limit.BinScale(18);
+      else               Limit.BinScale(To->Width);
       int Shift = 0;
       while(Factor.IsInt()){
         Factor.BinScale(-1);
@@ -577,7 +581,21 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Tem
         Factor.BinScale(-1);
         Shift--;
       }
+      NUMBER FullFactor(Factor);
       Factor.Round();
+      if(Factor != FullFactor){
+        Warning(Expression, "Rounding the scaling factor - this can be fixed "
+                            "with an explicit scaling multiplication.");
+        while(Factor.IsInt()){ // Make sure it's still minimised after rounding
+          Factor.BinScale(-1);
+          Shift--;
+        }
+        while(!Factor.IsInt()){
+          Factor.BinScale(1);
+          Shift++;
+        }
+      }
+
       int Width = 0;
       NUMBER Num(Factor);
       while(Num >= 1){

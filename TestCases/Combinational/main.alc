@@ -28,6 +28,11 @@ pin(14, pi) Testing6 = 10   *TestNet;
 pin(14, pi) Testing7 =  4   *TestNet;
 pin(14, pi) Testing8 =  0.25*TestNet;
 
+net(14)        TestNet2 = 123;
+pin(14, 1p100) Testing9 = TestNet2;
+
+pin(14, 255.99999999999) Testing10 = TestNet2;
+
 Testing5 *= TestNet;
 
 LVDS_TX = 0xABC;
