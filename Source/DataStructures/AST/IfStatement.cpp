@@ -39,6 +39,17 @@ IF_STATEMENT::~IF_STATEMENT(){
 }
 //------------------------------------------------------------------------------
 
+BASE* IF_STATEMENT::Copy(){
+  IF_STATEMENT* Copy = new IF_STATEMENT(Line, Filename.c_str());
+
+  if(Condition      ) Copy->Condition       = (decltype(Condition      ))Condition      ->Copy();
+  if(TrueStatements ) Copy->TrueStatements  = (decltype(TrueStatements ))TrueStatements ->Copy();
+  if(FalseStatements) Copy->FalseStatements = (decltype(FalseStatements))FalseStatements->Copy();
+
+  return Copy;
+}
+//------------------------------------------------------------------------------
+
 void IF_STATEMENT::Display(){
   DisplayInfo();
   Debug.print("if(");

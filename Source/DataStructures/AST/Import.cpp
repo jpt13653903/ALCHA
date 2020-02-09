@@ -33,6 +33,16 @@ IMPORT::~IMPORT(){
 }
 //------------------------------------------------------------------------------
 
+BASE* IMPORT::Copy(){
+  IMPORT* Copy = new IMPORT(Line, Filename.c_str());
+  
+  Copy->File      = File;
+  Copy->Namespace = Namespace;
+
+  return Copy;
+}
+//------------------------------------------------------------------------------
+
 void IMPORT::Display(){
   DisplayInfo();
   Debug.print("import \"%s\"", File.c_str());

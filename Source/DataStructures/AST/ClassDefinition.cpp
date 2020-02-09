@@ -31,6 +31,17 @@ CLASS_DEFINITION::PARENT::PARENT(){
 }
 //------------------------------------------------------------------------------
 
+CLASS_DEFINITION::PARENT::PARENT(const PARENT& Parent){
+  ClassName  = 0;
+  Parameters = 0;
+  Next       = 0;
+
+  if(Parent.ClassName ) ClassName  = (decltype(Parent.ClassName ))Parent.ClassName ->Copy();
+  if(Parent.Parameters) Parameters = (decltype(Parent.Parameters))Parent.Parameters->Copy();
+  if(Parent.Next      ) Next       = new PARENT(*Parent.Next);
+}
+//------------------------------------------------------------------------------
+
 CLASS_DEFINITION::PARENT::~PARENT(){
   if(ClassName ) delete ClassName;
   if(Parameters) delete Parameters;
@@ -53,6 +64,20 @@ CLASS_DEFINITION::~CLASS_DEFINITION(){
   if(Parents   ) delete Parents;
   if(Attributes) delete Attributes;
   if(Parameters) delete Parameters;
+}
+//------------------------------------------------------------------------------
+
+BASE* CLASS_DEFINITION::Copy(){
+  CLASS_DEFINITION* Copy = new CLASS_DEFINITION(Line, Filename.c_str());
+
+  Copy->Identifier = Identifier;
+
+  if(Parents   ) Copy->Parents    = new PARENT(*Parents);
+  if(Body      ) Copy->Body       = (decltype(Body      ))Body      ->Copy();
+  if(Attributes) Copy->Attributes = (decltype(Attributes))Attributes->Copy();
+  if(Parameters) Copy->Parameters = (decltype(Parameters))Parameters->Copy();
+
+  return Copy;
 }
 //------------------------------------------------------------------------------
 

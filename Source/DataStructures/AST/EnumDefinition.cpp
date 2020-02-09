@@ -29,6 +29,13 @@ ENUM_DEFINITION::VALUE::VALUE(){
 }
 //------------------------------------------------------------------------------
 
+ENUM_DEFINITION::VALUE::VALUE(const VALUE& Value){
+  Next = 0;
+
+  if(Value.Next) Next = new VALUE(*Value.Next);
+}
+//------------------------------------------------------------------------------
+
 ENUM_DEFINITION::VALUE::~VALUE(){
   if(Next) delete Next;
 }
@@ -42,6 +49,17 @@ BASE(Line, Filename, TYPE::EnumDefinition){
 
 ENUM_DEFINITION::~ENUM_DEFINITION(){
   if(Values) delete Values;
+}
+//------------------------------------------------------------------------------
+
+BASE* ENUM_DEFINITION::Copy(){
+  ENUM_DEFINITION* Copy = new ENUM_DEFINITION(Line, Filename.c_str());
+
+  Copy->Identifier = Identifier;
+
+  if(Values) Copy->Values = new VALUE(*Values);
+
+  return Copy;
 }
 //------------------------------------------------------------------------------
 

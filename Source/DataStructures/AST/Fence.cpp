@@ -32,6 +32,13 @@ FENCE::~FENCE(){
 }
 //------------------------------------------------------------------------------
 
+BASE* FENCE::Copy(){
+  FENCE* Copy = new FENCE(Line, Filename.c_str());
+
+  return Copy;
+}
+//------------------------------------------------------------------------------
+
 void FENCE::Display(){
   DisplayInfo();
   Debug.print("Fence\n");

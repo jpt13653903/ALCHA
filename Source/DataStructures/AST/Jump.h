@@ -37,6 +37,9 @@ namespace AST{
     JUMP(int Line, const char* Filename, JUMP_TYPE JumpType);
    ~JUMP();
 
+    // Returns a copy of this instance
+    virtual BASE* Copy();
+
     void Display();
   };
 }

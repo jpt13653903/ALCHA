@@ -28,52 +28,57 @@
 
 namespace AST{
   struct DEFINITION: public BASE{
-      enum class DEFINITION_TYPE{
-        Void, Auto, // Used for functions only
-        Pin, Net,
-        Byte, Char, Num,
-        Func, // Function pointer
-        ClassInstance
-      } DefinitionType;
-      EXPRESSION* ClassName; // For class instances
+    enum class DEFINITION_TYPE{
+      Void, Auto, // Used for functions only
+      Pin, Net,
+      Byte, Char, Num,
+      Func, // Function pointer
+      ClassInstance
+    } DefinitionType;
+    EXPRESSION* ClassName; // For class instances
 
-      struct ARRAY{
-        EXPRESSION* Size;
-        ARRAY     * Next; // Next dimension of the array
+    struct ARRAY{
+      EXPRESSION* Size;
+      ARRAY     * Next; // Next dimension of the array
 
-        ARRAY();
-       ~ARRAY();
-      };
+      ARRAY();
+      ARRAY(const ARRAY& Array);
+     ~ARRAY();
+    };
 
-      struct IDENTIFIER{
-        std::string Identifier;
-        ARRAY*      Array;      // Null when this is a scalar
+    struct IDENTIFIER{
+      std::string Identifier;
+      ARRAY*      Array;      // Null when this is a scalar
 
-        ASSIGNMENT* Initialiser;
+      ASSIGNMENT* Initialiser;
 
-        // These are used for function definitions.
-        bool       Function; // True when this is a function definition
-        PARAMETER* Parameters; // List of identifiers (calls are duck-typed)
-        BASE     * FunctionBody;
+      // These are used for function definitions.
+      bool       Function; // True when this is a function definition
+      PARAMETER* Parameters; // List of identifiers (calls are duck-typed)
+      BASE     * FunctionBody;
 
-        IDENTIFIER* Next;
+      IDENTIFIER* Next;
 
-        IDENTIFIER();
-       ~IDENTIFIER();
-      };
+      IDENTIFIER();
+      IDENTIFIER(const IDENTIFIER& Identifier);
+     ~IDENTIFIER();
+    };
 
-      enum class DIRECTION{Inferred = 0, Input, Output, Bidirectional} Direction;
+    enum class DIRECTION{Inferred = 0, Input, Output, Bidirectional} Direction;
 
-      BASE*       Parameters; // Expression or Assignment
-      ASSIGNMENT* Attributes;
-      IDENTIFIER* Identifiers;
+    BASE*       Parameters; // Expression or Assignment
+    ASSIGNMENT* Attributes;
+    IDENTIFIER* Identifiers;
 
-      DEFINITION(int             Line,
-                 const char*     Filename,
-                 DEFINITION_TYPE DefinitionType);
-     ~DEFINITION();
+    DEFINITION(int             Line,
+               const char*     Filename,
+               DEFINITION_TYPE DefinitionType);
+   ~DEFINITION();
 
-      void Display();
+    // Returns a copy of this instance
+    virtual BASE* Copy();
+
+    void Display();
   };
 }
 //------------------------------------------------------------------------------

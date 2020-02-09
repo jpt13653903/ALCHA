@@ -33,6 +33,9 @@ namespace AST{
     NAMESPACE_PUSH(int Line, const char* Filename);
    ~NAMESPACE_PUSH();
 
+    // Returns a copy of this instance
+    virtual BASE* Copy();
+
     void Display();
   };
 }

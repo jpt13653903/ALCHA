@@ -42,6 +42,18 @@ ASSIGNMENT::~ASSIGNMENT(){
 }
 //------------------------------------------------------------------------------
 
+BASE* ASSIGNMENT::Copy(){
+  ASSIGNMENT* Copy = new ASSIGNMENT(Line, Filename.c_str(), AssignmentType);
+
+  Copy->Fence = Fence;
+
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+
+  return Copy;
+}
+//------------------------------------------------------------------------------
+
 void ASSIGNMENT::Display(){
   DisplayInfo();
   Debug.print("Assignment: ");

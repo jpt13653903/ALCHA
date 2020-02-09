@@ -43,7 +43,7 @@ void SDC::BuildClocks(){
       auto Pin  = (PIN*)(SymbolIterator->second);
       auto Freq = Pin->GetAttrib("frequency");
       if(Freq){
-        if(Freq->ExpressionType != EXPRESSION::EXPRESSION_TYPE::Literal){
+        if(Freq->ExpressionType != AST::EXPRESSION::EXPRESSION_TYPE::Literal){
           error("frequency attribute not a literal");
           return;
         }

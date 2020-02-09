@@ -37,6 +37,15 @@ JUMP::~JUMP(){
 }
 //------------------------------------------------------------------------------
 
+BASE* JUMP::Copy(){
+  JUMP* Copy = new JUMP(Line, Filename.c_str(), JumpType);
+
+  if(Expression) Copy->Expression = (decltype(Expression))Expression->Copy();
+
+  return Copy;
+}
+//------------------------------------------------------------------------------
+
 void JUMP::Display(){
   DisplayInfo();
   Debug.print("jump(");

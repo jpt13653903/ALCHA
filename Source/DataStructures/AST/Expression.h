@@ -112,8 +112,8 @@ namespace AST{
     // TODO: Move the type def above to the symbol table definition...
 
     std::string    Name;      // Used for identifiers
-    NUMBER       * Value;     // Only used for numerical literals
-    std::string  * StrValue;  // Only used for string literals
+    NUMBER         Value;     // Only used for numerical literals
+    std::string    StrValue;  // Only used for string literals
     NETLIST::BASE* ObjectRef; // Used for "Object" type
 
     // Left and Right operands
@@ -131,6 +131,13 @@ namespace AST{
       EXPRESSION_TYPE ExpressionType
     );
    ~EXPRESSION();
+
+    // These functions work on the linked list stored in Right
+    BASE* Element(int n);
+    int   ElementCount();
+
+    // Returns a copy of this instance
+    virtual BASE* Copy();
 
     void Display();
   };

@@ -60,7 +60,7 @@ class ENGINE{
   private: // Expression Evaluation
     // Creates a new node that represents the RHS expression.  Also evaluates
     // scripting variables and expressions on the fly.
-    bool Evaluate(AST::EXPRESSION*& Node);
+    AST::EXPRESSION* Evaluate(AST::EXPRESSION* Node);
 
     // Called when the identifier cannot be found in the namespace stack
     std::map<std::string, NUMBER> Constants;

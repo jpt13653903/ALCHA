@@ -41,6 +41,18 @@ PARAMETER::~PARAMETER(){
 }
 //------------------------------------------------------------------------------
 
+BASE* PARAMETER::Copy(){
+  PARAMETER* Copy = new PARAMETER(Line, Filename.c_str(), DefinitionType);
+
+  Copy->ArrayDimensions = ArrayDimensions;
+  Copy->Identifier      = Identifier;
+
+  if(ClassName) Copy->ClassName = (decltype(ClassName))ClassName->Copy();
+
+  return Copy;
+}
+//------------------------------------------------------------------------------
+
 void PARAMETER::Display(){
   DisplayInfo();
   Debug.print("Parameter (");

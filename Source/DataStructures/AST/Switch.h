@@ -34,6 +34,7 @@ namespace AST{
       CASE* Next; // The next case (this can be turned into a BST later...)
 
       CASE();
+      CASE(const CASE& Case);
      ~CASE();
     };
     CASE      * Cases;
@@ -42,6 +43,9 @@ namespace AST{
 
     SWITCH(int Line, const char* Filename);
    ~SWITCH();
+
+    // Returns a copy of this instance
+    virtual BASE* Copy();
 
     void Display();
   };

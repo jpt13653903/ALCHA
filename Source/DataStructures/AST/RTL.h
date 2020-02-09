@@ -33,6 +33,9 @@ namespace AST{
     RTL(int Line, const char* Filename);
    ~RTL();
 
+    // Returns a copy of this instance
+    virtual BASE* Copy();
+
     void Display();
   };
 }

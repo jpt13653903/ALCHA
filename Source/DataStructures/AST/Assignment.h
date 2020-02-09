@@ -27,35 +27,38 @@
 
 namespace AST{
   struct ASSIGNMENT: public BASE{
-      enum class ASSIGNMENT_TYPE{
-        Assign,             //   =
-        Raw_Assign,         //  :=
-        Append_Assign,      //  ~=
-        Add_Assign,         //  +=
-        Subtract_Assign,    //  -=
-        Multiply_Assign,    //  *=
-        Divide_Assign,      //  /=
-        Modulus_Assign,     //  %=
-        Exponential_Assign, // **=
-        AND_Assign,         //  &=
-        OR_Assign,          //  |=
-        XOR_Assign,         //  ^=
-        Shift_Left_Assign,  // <<=
-        Shift_Right_Assign  // >>=
-      } AssignmentType;
+    enum class ASSIGNMENT_TYPE{
+      Assign,             //   =
+      Raw_Assign,         //  :=
+      Append_Assign,      //  ~=
+      Add_Assign,         //  +=
+      Subtract_Assign,    //  -=
+      Multiply_Assign,    //  *=
+      Divide_Assign,      //  /=
+      Modulus_Assign,     //  %=
+      Exponential_Assign, // **=
+      AND_Assign,         //  &=
+      OR_Assign,          //  |=
+      XOR_Assign,         //  ^=
+      Shift_Left_Assign,  // <<=
+      Shift_Right_Assign  // >>=
+    } AssignmentType;
 
-      bool Fence; // Assignment terminates in a ";" and not a ","
+    bool Fence; // Assignment terminates in a ";" and not a ","
 
-      // Left and Right operands
-      EXPRESSION* Left;
-      EXPRESSION* Right;
+    // Left and Right operands
+    EXPRESSION* Left;
+    EXPRESSION* Right;
 
-      ASSIGNMENT(int             Line,
-                 const char*     Filename,
-                 ASSIGNMENT_TYPE AssignmentType);
-     ~ASSIGNMENT();
+    ASSIGNMENT(int             Line,
+               const char*     Filename,
+               ASSIGNMENT_TYPE AssignmentType);
+   ~ASSIGNMENT();
 
-      void Display();
+    // Returns a copy of this instance
+    virtual BASE* Copy();
+
+    void Display();
   };
 }
 //------------------------------------------------------------------------------

@@ -36,6 +36,16 @@ FSM::~FSM(){
 }
 //------------------------------------------------------------------------------
 
+BASE* FSM::Copy(){
+  FSM* Copy = new FSM(Line, Filename.c_str());
+
+  if(Parameters) Copy->Parameters = (decltype(Parameters))Parameters->Copy();
+  if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy();
+
+  return Copy;
+}
+//------------------------------------------------------------------------------
+
 void FSM::Display(){
   DisplayInfo();
   Debug.print("fsm(");

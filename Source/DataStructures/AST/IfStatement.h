@@ -34,6 +34,9 @@ namespace AST{
     IF_STATEMENT(int Line, const char* Filename);
    ~IF_STATEMENT();
 
+    // Returns a copy of this instance
+    virtual BASE* Copy();
+
     void Display();
   };
 }

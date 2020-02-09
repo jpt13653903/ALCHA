@@ -37,6 +37,16 @@ WHILE_LOOP::~WHILE_LOOP(){
 }
 //------------------------------------------------------------------------------
 
+BASE* WHILE_LOOP::Copy(){
+  WHILE_LOOP* Copy = new WHILE_LOOP(Line, Filename.c_str());
+
+  if(Condition)  Copy->Condition  = (decltype(Condition ))Condition ->Copy();
+  if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy();
+
+  return Copy;
+}
+//------------------------------------------------------------------------------
+
 void WHILE_LOOP::Display(){
   DisplayInfo();
   Debug.print("while(");

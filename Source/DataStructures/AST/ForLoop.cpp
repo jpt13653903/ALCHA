@@ -37,6 +37,18 @@ FOR_LOOP::~FOR_LOOP(){
 }
 //------------------------------------------------------------------------------
 
+BASE* FOR_LOOP::Copy(){
+  FOR_LOOP* Copy = new FOR_LOOP(Line, Filename.c_str());
+
+  Copy->Identifier = Identifier;
+
+  if(Range     ) Copy->Range      = (decltype(Range     ))Range     ->Copy();
+  if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy();
+
+  return Copy;
+}
+//------------------------------------------------------------------------------
+
 void FOR_LOOP::Display(){
   DisplayInfo();
   Debug.print("for(%s in ", Identifier.c_str());

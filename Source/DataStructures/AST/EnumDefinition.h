@@ -33,6 +33,7 @@ namespace AST{
       VALUE* Next;
 
       VALUE();
+      VALUE(const VALUE& Value);
      ~VALUE(); // Also deletes the rest of the list
     };
 
@@ -41,6 +42,9 @@ namespace AST{
 
     ENUM_DEFINITION(int Line, const char* Filename);
    ~ENUM_DEFINITION();
+
+    // Returns a copy of this instance
+    virtual BASE* Copy();
 
     void Display();
   };

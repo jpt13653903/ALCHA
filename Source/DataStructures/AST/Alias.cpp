@@ -34,6 +34,17 @@ ALIAS::~ALIAS(){
 }
 //------------------------------------------------------------------------------
 
+BASE* ALIAS::Copy(){
+  ALIAS* Copy = new ALIAS(Line, Filename.c_str());
+
+  Copy->Identifier = Identifier;
+
+  if(Expression) Copy->Expression = (decltype(Expression))Expression->Copy();
+
+  return Copy;
+}
+//------------------------------------------------------------------------------
+
 void ALIAS::Display(){
   DisplayInfo();
   Debug.print("Alias (%s):\n", Identifier.c_str());

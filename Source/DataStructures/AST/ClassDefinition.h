@@ -28,29 +28,33 @@
 
 namespace AST{
   struct CLASS_DEFINITION: public BASE{
-      struct PARENT{ // Link-list node for parent classes
-        EXPRESSION* ClassName;  // This class inherits from Parent
-        BASE*       Parameters; // Parent constructor call
+    struct PARENT{ // Link-list node for parent classes
+      EXPRESSION* ClassName;  // This class inherits from Parent
+      BASE*       Parameters; // Parent constructor call
 
-        PARENT* Next;
+      PARENT* Next;
 
-        PARENT();
-       ~PARENT(); // Also deletes the rest of the list
-      };
+      PARENT();
+      PARENT(const PARENT& Parent);
+     ~PARENT(); // Also deletes the rest of the list
+    };
 
-      ASSIGNMENT* Attributes;
+    ASSIGNMENT* Attributes;
 
-      std::string Identifier;
-      PARAMETER*  Parameters; // Constructor parameters
+    std::string Identifier;
+    PARAMETER*  Parameters; // Constructor parameters
 
-      PARENT* Parents;
+    PARENT* Parents;
 
-      BASE* Body;
+    BASE* Body;
 
-      CLASS_DEFINITION(int Line, const char* Filename);
-     ~CLASS_DEFINITION();
+    CLASS_DEFINITION(int Line, const char* Filename);
+   ~CLASS_DEFINITION();
 
-      void Display();
+    // Returns a copy of this instance
+    virtual BASE* Copy();
+
+    void Display();
   };
 }
 //------------------------------------------------------------------------------

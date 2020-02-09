@@ -36,6 +36,9 @@ namespace AST{
     HDL(int Line, const char* Filename);
    ~HDL();
 
+    // Returns a copy of this instance
+    virtual BASE* Copy();
+
     void Display();
   };
 }

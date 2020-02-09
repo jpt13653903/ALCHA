@@ -33,6 +33,9 @@ namespace AST{
     WHILE_LOOP(int Line, const char* Filename);
    ~WHILE_LOOP();
 
+    // Returns a copy of this instance
+    virtual BASE* Copy();
+
     void Display();
   };
 }

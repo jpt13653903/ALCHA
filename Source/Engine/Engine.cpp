@@ -69,26 +69,22 @@ void ENGINE::Warning(AST::BASE* Ast, const char* Message){
 }
 //------------------------------------------------------------------------------
 
-// TODO: Instead of building a new tree, do it in-place
-bool ENGINE::Evaluate(AST::EXPRESSION*& Node){
+AST::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
+  if(!Node) return 0;
+
+  AST::EXPRESSION* Result = 0;
+
   switch(Node->ExpressionType){
     case AST::EXPRESSION::EXPRESSION_TYPE::String:
-      Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::String);
-      Result->StrValue = new string(*(Node->StrValue));
+      Result = (AST::EXPRESSION*)Node->Copy();
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Literal:
-      Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Literal);
-      Result->Value = new NUMBER(*(Node->Value));
+      Result = (AST::EXPRESSION*)Node->Copy();
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Array:{
-      Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Array);
-      auto Element = (AST::EXPRESSION*)Node->Right;
-      while(Element){
-        Result->Elements.push_back(Evaluate(Element));
-        Element = (AST::EXPRESSION*)Element->Next;
-      }
+      Result = (AST::EXPRESSION*)Node->Copy();
       break;
     }
 
@@ -135,7 +131,7 @@ bool ENGINE::Evaluate(AST::EXPRESSION*& Node){
         NUMBER Constant;
         if(GetConstant(Node->Name.c_str(), &Constant)){
           Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Literal);
-          Result->Value = Constant;
+          Result->Value = new NUMBER(Constant);
         }else{
           Error(Node);
           printf("Identifier \"%s\" not defined\n", Node->Name.c_str());
@@ -145,15 +141,14 @@ bool ENGINE::Evaluate(AST::EXPRESSION*& Node){
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::VectorConcatenate:{
-      Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::VectorConcatenate);
-      auto Element = (AST::EXPRESSION*)Node->Right;
+      Result = (AST::EXPRESSION*)Node->Copy();
+      auto Element = (AST::EXPRESSION*)Result->Right;
       while(Element){
         auto EvaluatedElement = Evaluate(Element);
         if(!EvaluatedElement){
           delete Result;
           return 0;
         }
-        Result->Elements.push_back(EvaluatedElement);
         if(EvaluatedElement->Width){
           Result->Width += EvaluatedElement->Width;
         }else{
@@ -170,12 +165,7 @@ bool ENGINE::Evaluate(AST::EXPRESSION*& Node){
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::ArrayConcatenate:{
-      Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::ArrayConcatenate);
-      auto Element = (AST::EXPRESSION*)Node->Right;
-      while(Element){
-        Result->Elements.push_back(Evaluate(Element));
-        Element = (AST::EXPRESSION*)Element->Next;
-      }
+      Result = (AST::EXPRESSION*)Node->Copy();
       break;
     }
 
@@ -286,9 +276,8 @@ bool ENGINE::Evaluate(AST::EXPRESSION*& Node){
           delete Left;
           return 0;
         }
-        Result = new AST::EXPRESSION(Found);
-        Result->Line     = Node->Line;
-        Result->Filename = Node->Filename;
+        Result = (AST::EXPRESSION*)Found->Copy();
+        assert(Result->Type == AST::BASE::TYPE::Expression);
         delete Left;
       }else{
         // TODO Could be a slice expression, which is not supported yet
@@ -317,31 +306,33 @@ bool ENGINE::Evaluate(AST::EXPRESSION*& Node){
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Negate:
-      Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Negate);
-      if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
-        Result->Right = Evaluate((AST::EXPRESSION*)Node->Right);
-      }
+      Result = (AST::EXPRESSION*)Node->Copy();
       if(!Result->Right){
         delete Result;
         return 0;
       }
-      Result->Signed    = Result->Right->Signed;
-      Result->Width     = Result->Right->Width;
-      Result->FullScale = Result->Right->FullScale;
+      assert(Result->Right->Type == AST::BASE::TYPE::Expression,
+        delete Result;
+        return 0;
+      );
+      Result->Signed    = ((AST::EXPRESSION*)Result->Right)->Signed;
+      Result->Width     = ((AST::EXPRESSION*)Result->Right)->Width;
+      Result->FullScale = ((AST::EXPRESSION*)Result->Right)->FullScale;
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Bit_NOT:
-      Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Bit_NOT);
-      if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
-        Result->Right = Evaluate((AST::EXPRESSION*)Node->Right);
-      }
+      Result = (AST::EXPRESSION*)Node->Copy();
       if(!Result->Right){
         delete Result;
         return 0;
       }
-      Result->Signed    = Result->Right->Signed;
-      Result->Width     = Result->Right->Width;
-      Result->FullScale = Result->Right->FullScale;
+      assert(Result->Right->Type == AST::BASE::TYPE::Expression,
+        delete Result;
+        return 0;
+      );
+      Result->Signed    = ((AST::EXPRESSION*)Result->Right)->Signed;
+      Result->Width     = ((AST::EXPRESSION*)Result->Right)->Width;
+      Result->FullScale = ((AST::EXPRESSION*)Result->Right)->FullScale;
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Raw:
@@ -389,11 +380,7 @@ bool ENGINE::Evaluate(AST::EXPRESSION*& Node){
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Multiply:
-      Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Multiply);
-      if(Node->Left) Result->Left = Evaluate(Node->Left);
-      if(Node->Right && Node->Right->Type == AST::BASE::TYPE::Expression){
-        Result->Right = Evaluate((AST::EXPRESSION*)Node->Right);
-      }
+      Result = (AST::EXPRESSION*)Node->Copy();
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Divide:
@@ -967,23 +954,13 @@ bool ENGINE::GetLHS(AST::EXPRESSION* Node, target_list& List){
 
     case AST::EXPRESSION::EXPRESSION_TYPE::VectorConcatenate:{
       error("VectorConcatenate not yet implemented");
-      // Result = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::EXPRESSION::EXPRESSION_TYPE::VectorConcatenate);
-      // auto Element = (AST::EXPRESSION*)Node->Right;
-      // while(Element){
-      //   Result->Elements.push_back(Evaluate(Element));
-      //   Element = (AST::EXPRESSION*)Element->Next;
-      // }
+      // Result = (AST::EXPRESSION*)Node->Copy();
       break;
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::ArrayConcatenate:{
       error("ArrayConcatenate not yet implemented");
-      // Result = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::EXPRESSION::EXPRESSION_TYPE::ArrayConcatenate);
-      // auto Element = (AST::EXPRESSION*)Node->Right;
-      // while(Element){
-      //   Result->Elements.push_back(Evaluate(Element));
-      //   Element = (AST::EXPRESSION*)Element->Next;
-      // }
+      // Result = (AST::EXPRESSION*)Node->Copy();
       break;
     }
 
@@ -1120,7 +1097,13 @@ void ENGINE::Simplify(AST::EXPRESSION*& Root){
   AST::EXPRESSION* Temp;
 
   Simplify(Root->Left );
-  Simplify(Root->Right);
+
+  {
+    assert(Root->Right->Type == AST::BASE::TYPE::Expression, return);
+    auto Right = (AST::EXPRESSION*)Root->Right;
+    Simplify(Right);
+    Root->Right = Right;
+  }
 
   switch(Root->ExpressionType){
     // Pass these directly
@@ -1154,66 +1137,49 @@ void ENGINE::Simplify(AST::EXPRESSION*& Root){
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::VectorConcatenate:
-      if(Root->Elements.empty()){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Right, return);
       // TODO: Check members for literals
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::ArrayConcatenate:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::FunctionCall:
-      if(!Root->Left){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Slice:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       // TODO Returns a new array (or scalar)
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Factorial:
-      if(!Root->Left){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left, return);
       error("Not yet implemented");
       break;
 
-    case AST::EXPRESSION::EXPRESSION_TYPE::Negate:
-      if(!Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
-      if(Root->Right->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
-        Temp = Root->Right;
+    case AST::EXPRESSION::EXPRESSION_TYPE::Negate:{
+      assert(Root->Right, return);
+      assert(Root->Right->Type == AST::BASE::TYPE::Expression, return);
+      auto Right = (AST::EXPRESSION*)Root->Right;
+      if(Right->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
+        Temp = Right;
         Root->Right = 0;
         delete Root;
         Root = Temp;
         Root->Value.Mul(-1);
       }
       break;
+    }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Bit_NOT:
-      if(!Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
-      if(Root->Right->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
+      assert(Root->Right, return);
+      assert(Root->Right->Type == AST::BASE::TYPE::Expression, return);
+      if(((AST::EXPRESSION*)Root->Right)->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
         error("Not yet implemented");
         // TODO: Literals require a length, so it must have been cast to a
         //       specific length for this to be valid
@@ -1221,84 +1187,55 @@ void ENGINE::Simplify(AST::EXPRESSION*& Root){
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::AND_Reduce:
-      if(!Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::NAND_Reduce:
-      if(!Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::OR_Reduce:
-      if(!Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::NOR_Reduce:
-      if(!Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::XOR_Reduce:
-      if(!Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::XNOR_Reduce:
-      if(!Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Logical_NOT:
-      if(!Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Cast:
       // TODO: Root has the target type; Root->Left has the original expression
       //       Root->Right is optional and carry the class name (when applicable)
-      if(!Root->Left){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Replicate:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Multiply:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
+      assert(Root->Right->Type == AST::BASE::TYPE::Expression, return);
       if(Root->Left->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
         NUMBER Num = Root->Left->Value;
 
@@ -1309,7 +1246,7 @@ void ENGINE::Simplify(AST::EXPRESSION*& Root){
           Root = Temp;
           Root->Value = 0;
         }else{
-          Temp = Root->Right; // Keep the expression and modify the full-scale
+          Temp = (AST::EXPRESSION*)Root->Right; // Keep the expression and modify the full-scale
           Root->Right = 0;
           delete Root;
           Root = Temp;
@@ -1320,11 +1257,11 @@ void ENGINE::Simplify(AST::EXPRESSION*& Root){
             Root->FullScale.Mul(Num);
           }
         }
-      }else if(Root->Right->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
-        NUMBER Num = Root->Right->Value;
+      }else if(((AST::EXPRESSION*)Root->Right)->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
+        NUMBER Num = ((AST::EXPRESSION*)Root->Right)->Value;
 
         if(Num.IsReal() && Num.GetReal() == 0.0){
-          Temp = Root->Right; // Keep the literal and make it zero
+          Temp = (AST::EXPRESSION*)Root->Right; // Keep the literal and make it zero
           Root->Right = 0;
           delete Root;
           Root = Temp;
@@ -1347,41 +1284,30 @@ void ENGINE::Simplify(AST::EXPRESSION*& Root){
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Divide:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Modulus:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Exponential:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Add:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
+      assert(Root->Right->Type == AST::BASE::TYPE::Expression, return);
       if(
         Root->Left ->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal &&
-        Root->Right->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal
+        ((AST::EXPRESSION*)Root->Right)->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal
       ){
         Root->ExpressionType = AST::EXPRESSION::EXPRESSION_TYPE::Literal;
         Root->Value = Root->Left->Value;
-        Root->Value.Add(Root->Right->Value);
+        Root->Value.Add(((AST::EXPRESSION*)Root->Right)->Value);
         delete Root->Left ; Root->Left  = 0;
         delete Root->Right; Root->Right = 0;
       }
@@ -1390,17 +1316,15 @@ void ENGINE::Simplify(AST::EXPRESSION*& Root){
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Subtract:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
+      assert(Root->Right->Type == AST::BASE::TYPE::Expression, return);
       if(
         Root->Left ->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal &&
-        Root->Right->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal
+        ((AST::EXPRESSION*)Root->Right)->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal
       ){
         Root->ExpressionType = AST::EXPRESSION::EXPRESSION_TYPE::Literal;
         Root->Value = Root->Left->Value;
-        Root->Value.Sub(Root->Right->Value);
+        Root->Value.Sub(((AST::EXPRESSION*)Root->Right)->Value);
         delete Root->Left ; Root->Left  = 0;
         delete Root->Right; Root->Right = 0;
       }
@@ -1409,140 +1333,89 @@ void ENGINE::Simplify(AST::EXPRESSION*& Root){
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Shift_Left:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Shift_Right:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Less:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Greater:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Less_Equal:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Greater_Equal:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Equal:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Not_Equal:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Bit_AND:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Bit_NAND:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Bit_OR:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Bit_NOR:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Bit_XOR:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Bit_XNOR:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Logical_AND:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Logical_OR:
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Conditional:
       // TODO: There should be a third component...  Left and Right of Right?
       //       Or break it down to an if-statement?
-      if(!Root->Left || !Root->Right){
-        error("Unexpected null pointer");
-        break;
-      }
+      assert(Root->Left && Root->Right, return);
       error("Not yet implemented");
       break;
 
@@ -1666,10 +1539,10 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
         Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Multiply);
         Temp->Left  = *Target;
         Temp->Right = Right;
-        if(Temp->Left->Width && Temp->Right->Width){
-          Temp->Width     = Temp->Left->Width + Temp->Right->Width;
+        if(Temp->Left->Width && Right->Width){
+          Temp->Width     = Temp->Left->Width + Right->Width;
           Temp->FullScale = Temp->Left->FullScale;
-          Temp->FullScale.Mul(Temp->Right->FullScale);
+          Temp->FullScale.Mul(Right->FullScale);
         }
         *Target = Temp;
         break;

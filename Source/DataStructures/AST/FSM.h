@@ -33,6 +33,9 @@ namespace AST{
     FSM(int Line, const char* Filename);
    ~FSM();
 
+    // Returns a copy of this instance
+    virtual BASE* Copy();
+
     void Display();
   };
 }

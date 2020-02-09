@@ -37,6 +37,16 @@ LOOP_LOOP::~LOOP_LOOP(){
 }
 //------------------------------------------------------------------------------
 
+BASE* LOOP_LOOP::Copy(){
+  LOOP_LOOP* Copy = new LOOP_LOOP(Line, Filename.c_str());
+
+  if(Count     ) Copy->Count      = (decltype(Count     ))Count     ->Copy();
+  if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy();
+
+  return Copy;
+}
+//------------------------------------------------------------------------------
+
 void LOOP_LOOP::Display(){
   DisplayInfo();
   Debug.print("loop(");

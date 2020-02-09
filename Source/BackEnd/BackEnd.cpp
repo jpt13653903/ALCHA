@@ -33,12 +33,12 @@ BACK_END::~BACK_END(){
 }
 //------------------------------------------------------------------------------
 
-void BACK_END::Error(EXPRESSION* Expression, const char* Message){
+void BACK_END::Error(AST::EXPRESSION* Expression, const char* Message){
   ::Error(Expression->Line, Expression->Filename, Message);
 }
 //------------------------------------------------------------------------------
 
-void BACK_END::Warning(EXPRESSION* Expression, const char* Message){
+void BACK_END::Warning(AST::EXPRESSION* Expression, const char* Message){
   ::Warning(Expression->Line, Expression->Filename.c_str(), Message);
 }
 //------------------------------------------------------------------------------
@@ -105,7 +105,7 @@ bool BACK_END::AssignPinDirections(NAMESPACE* Namespace){
         auto Pin = (PIN*)(SymbolIterator->second);
         if(Pin->Direction == AST::DEFINITION::DIRECTION::Inferred){
           if(Pin->Enabled){ // Possible bidirectional
-            if(Pin->Enabled->ExpressionType == EXPRESSION::EXPRESSION_TYPE::Literal){
+            if(Pin->Enabled->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
               if(Pin->Enabled->Value == 0){
                 Pin->Direction = AST::DEFINITION::DIRECTION::Input;
               }else{
@@ -180,11 +180,11 @@ const char* BACK_END::GetWireName(){
 }
 //------------------------------------------------------------------------------
 
-bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Wire){
+bool BACK_END::BuildExpression(string& Body, AST::EXPRESSION* Expression, string& Wire){
   if(!Expression) return false;
 
   switch(Expression->ExpressionType){
-    case EXPRESSION::EXPRESSION_TYPE::Literal:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Literal:{
       if(!Expression->Value.IsReal()){
         Error(Expression, "non-real literal");
         return false;
@@ -210,40 +210,44 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Wir
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Object:
-      if(!Expression->ObjectRef){
-        error("Null object reference");
-        return false;
-      }
+    case AST::EXPRESSION::EXPRESSION_TYPE::Object:
+      assert(Expression->ObjectRef, return false);
       Wire += Expression->ObjectRef->EscapedName();
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::VectorConcatenate:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::VectorConcatenate:{
       vector<string> Elements;
-      Elements.resize(Expression->Elements.size());
 
-      for(size_t n = 0; n < Expression->Elements.size(); n++){
-        if(!BuildExpression(Body, Expression->Elements[n], Elements[n])) return false;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      AST::EXPRESSION* Node = (AST::EXPRESSION*)Expression->Right;
+
+      while(Node){
+        Elements.emplace_back("");
+        if(!BuildExpression(Body, Node, Elements.back())) return false;
+        assert(Node->Next->Type == AST::BASE::TYPE::Expression, return false);
+        Node = (AST::EXPRESSION*)Node->Next;
       }
+
       Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
       Body += Wire +"= {";
-      for(size_t n = 0; n < Expression->Elements.size(); n++){
+      for(size_t n = 0; n < Elements.size(); n++){
         Body += Elements[n];
-        if(n < Expression->Elements.size()-1) Body += ", ";
+        if(n < Elements.size()-1) Body += ", ";
       }
       Body += "};\n";
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Slice:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Slice:
       error("Not yet implemented");
       break;
 
-    case EXPRESSION::EXPRESSION_TYPE::Negate:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Negate:{
       string Right;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
@@ -251,9 +255,10 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Wir
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Bit_NOT:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Bit_NOT:{
       string Right;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
@@ -261,86 +266,95 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Wir
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::AND_Reduce:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::AND_Reduce:{
       string Right;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       Body += "wire ";
       Body += Wire +"= &("+ Right +");\n";
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::NAND_Reduce:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::NAND_Reduce:{
       string Right;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       Body += "wire ";
       Body += Wire +"= ~&("+ Right +");\n";
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::OR_Reduce:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::OR_Reduce:{
       string Right;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       Body += "wire ";
       Body += Wire +"= |("+ Right +");\n";
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::NOR_Reduce:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::NOR_Reduce:{
       string Right;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       Body += "wire ";
       Body += Wire +"= ~|("+ Right +");\n";
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::XOR_Reduce:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::XOR_Reduce:{
       string Right;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       Body += "wire ";
       Body += Wire +"= ^("+ Right +");\n";
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::XNOR_Reduce:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::XNOR_Reduce:{
       string Right;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       Body += "wire ";
       Body += Wire +"= ~^("+ Right +");\n";
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Logical_NOT:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Logical_NOT:{
       string Right;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       Body += "wire ";
       Body += Wire +"= !("+ Right +");\n";
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Replicate:{ // TODO: Test
+    case AST::EXPRESSION::EXPRESSION_TYPE::Replicate:{ // TODO: Test
       string Left, Right;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      AST::EXPRESSION* ExpressionRight = (AST::EXPRESSION*)Expression->Right;
 
-      if(Expression->Right->ExpressionType != EXPRESSION::EXPRESSION_TYPE::Literal){
+      if(ExpressionRight->ExpressionType != AST::EXPRESSION::EXPRESSION_TYPE::Literal){
         Error(Expression, "Replication count must break down to a run-time constant");
         return false;
       }
-      if(!Expression->Right->Value.IsInt()){
+      if(!ExpressionRight->Value.IsInt()){
         Error(Expression, "Replication count must be an integer");
         return false;
       }
-      if(!Expression->Right->Value.IsPositive()){
+      if(!ExpressionRight->Value.IsPositive()){
         Error(Expression, "Replication count must be real and positive");
         return false;
       }
       if(!BuildExpression(Body, Expression->Left, Left)) return false;
-      Right = Expression->Right->Value.GetString(10);
+      Right = ExpressionRight->Value.GetString(10);
 
       Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
@@ -349,10 +363,11 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Wir
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Multiply:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Multiply:{
       string Left, Right;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
@@ -360,10 +375,11 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Wir
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Add:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Add:{
       string Left, Right;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
@@ -371,10 +387,11 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Wir
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Subtract:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Subtract:{
       string Left, Right;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
@@ -382,10 +399,11 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Wir
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Shift_Left:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Shift_Left:{
       string Left, Right;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
@@ -393,10 +411,11 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Wir
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Shift_Right:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Shift_Right:{
       string Left, Right;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
@@ -404,64 +423,71 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Wir
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Less:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Less:{
       string Left, Right;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       Body += "wire "+ Wire +"= "+ Left +" < "+ Right +";\n";
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Greater:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Greater:{
       string Left, Right;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       Body += "wire "+ Wire +"= "+ Left +" > "+ Right +";\n";
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Less_Equal:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Less_Equal:{
       string Left, Right;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       Body += "wire "+ Wire +"= "+ Left +" <= "+ Right +";\n";
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Greater_Equal:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Greater_Equal:{
       string Left, Right;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       Body += "wire "+ Wire +"= "+ Left +" >= "+ Right +";\n";
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Equal:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Equal:{
       string Left, Right;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       Body += "wire "+ Wire +"= "+ Left +" == "+ Right +";\n";
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Not_Equal:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Not_Equal:{
       string Left, Right;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       Body += "wire "+ Wire +"= "+ Left +" != "+ Right +";\n";
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Bit_AND:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Bit_AND:{
       string Left, Right;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
@@ -469,10 +495,11 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Wir
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Bit_NAND:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Bit_NAND:{
       string Left, Right;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
@@ -480,10 +507,11 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Wir
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Bit_OR:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Bit_OR:{
       string Left, Right;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
@@ -491,10 +519,11 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Wir
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Bit_NOR:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Bit_NOR:{
       string Left, Right;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
@@ -502,10 +531,11 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Wir
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Bit_XOR:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Bit_XOR:{
       string Left, Right;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
@@ -513,10 +543,11 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Wir
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Bit_XNOR:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Bit_XNOR:{
       string Left, Right;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
       else                      Body += "wire ";
@@ -524,42 +555,35 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Wir
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Logical_AND:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Logical_AND:{
       string Left, Right;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       Body += "wire "+ Wire +"= "+ Left +" && "+ Right +";\n";
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Logical_OR:{
+    case AST::EXPRESSION::EXPRESSION_TYPE::Logical_OR:{
       string Left, Right;
+      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
       if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
+      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       Wire = GetWireName();
       Body += "wire "+ Wire +"= "+ Left +" || "+ Right +";\n";
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Cast:{
-      if(!Expression->Left){
-        error("Unexpected null reference");
-        return false;
-      }
-      if(Expression->Right){
-        error("Unexpected cast to class");
-        return false;
-      }
-      EXPRESSION* From = Expression->Left;
-      EXPRESSION* To   = Expression;
+    case AST::EXPRESSION::EXPRESSION_TYPE::Cast:{
+      assert( Expression->Left , return false);
+      assert(!Expression->Right, return false);
+      AST::EXPRESSION* From = Expression->Left;
+      AST::EXPRESSION* To   = Expression;
       NUMBER Factor = From->FullScale;
       Factor.Div(To->FullScale);
       Factor.BinScale(To->Width - From->Width);
-      if(Factor == 0){
-        error("Unexpected 0 full-scale");
-        return false;
-      }
+      assert(Factor != 0, return false);
 
       // Calculate the limit of the inferred multiplier size.  Most FPGAs have 
       // 18-bit multipliers, so make that the minimum limit, otherwise use the 
@@ -643,7 +667,7 @@ bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Wir
       break;
     }
 
-    case EXPRESSION::EXPRESSION_TYPE::Conditional:
+    case AST::EXPRESSION::EXPRESSION_TYPE::Conditional:
       error("Not yet implemented");
       break;
 

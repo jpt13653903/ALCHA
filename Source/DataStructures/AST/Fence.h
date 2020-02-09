@@ -27,10 +27,13 @@
 
 namespace AST{
   struct FENCE: public BASE{
-      FENCE(int Line, const char* Filename);
-     ~FENCE();
+    FENCE(int Line, const char* Filename);
+   ~FENCE();
 
-      void Display();
+    // Returns a copy of this instance
+    virtual BASE* Copy();
+
+    void Display();
   };
 }
 //------------------------------------------------------------------------------

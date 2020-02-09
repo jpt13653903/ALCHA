@@ -272,7 +272,7 @@ AST::EXPRESSION* PARSER::String(){
     Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::String
   );
 
-  Node->StrValue = new string(Token.Data);
+  Node->StrValue = Token.Data;
 
   GetToken();
   return Node;
@@ -291,7 +291,7 @@ AST::EXPRESSION* PARSER::Literal(){
     Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Literal
   );
 
-  Node->Value = new NUMBER(Token.Value);
+  Node->Value = Token.Value;
 
   GetToken();
   return Node;

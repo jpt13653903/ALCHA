@@ -36,6 +36,18 @@ AST::GROUP::~GROUP(){
 }
 //------------------------------------------------------------------------------
 
+BASE* AST::GROUP::Copy(){
+  GROUP* Copy = new AST::GROUP(Line, Filename.c_str());
+
+  Copy->Identifier = Identifier;
+
+  if(Attributes) Copy->Attributes = (decltype(Attributes))Attributes->Copy();
+  if(Body      ) Copy->Body       = (decltype(Body      ))Body      ->Copy();
+
+  return Copy;
+}
+//------------------------------------------------------------------------------
+
 void AST::GROUP::Display(){
   DisplayInfo();
 

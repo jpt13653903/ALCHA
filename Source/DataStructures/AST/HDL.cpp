@@ -38,6 +38,19 @@ HDL::~HDL(){
 }
 //------------------------------------------------------------------------------
 
+BASE* HDL::Copy(){
+  HDL* Copy = new HDL(Line, Filename.c_str());
+
+  Copy->Identifier = Identifier;
+
+  if(Files     ) Copy->Files      = (decltype(Files     ))Files     ->Copy();
+  if(Ports     ) Copy->Ports      = (decltype(Ports     ))Ports     ->Copy();
+  if(Parameters) Copy->Parameters = (decltype(Parameters))Parameters->Copy();
+
+  return Copy;
+}
+//------------------------------------------------------------------------------
+
 void HDL::Display(){
   DisplayInfo();
   Debug.print("hdl (%s):\n", Identifier.c_str());

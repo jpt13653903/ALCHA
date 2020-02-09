@@ -27,12 +27,16 @@
 
 namespace AST{
   struct ALIAS: public BASE{
-      std::string Identifier;
-      EXPRESSION* Expression;
-      ALIAS(int Line, const char* Filename);
-     ~ALIAS();
+    std::string Identifier;
+    EXPRESSION* Expression;
 
-      void Display();
+    ALIAS(int Line, const char* Filename);
+   ~ALIAS();
+
+    // Returns a copy of this instance
+    virtual BASE* Copy();
+
+    void Display();
   };
 }
 //------------------------------------------------------------------------------

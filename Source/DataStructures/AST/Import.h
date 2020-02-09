@@ -33,6 +33,9 @@ namespace AST{
     IMPORT(int Line, const char* Filename);
    ~IMPORT();
 
+    // Returns a copy of this instance
+    virtual BASE* Copy();
+
     void Display();
   };
 }

@@ -36,6 +36,16 @@ RTL::~RTL(){
 }
 //------------------------------------------------------------------------------
 
+BASE* RTL::Copy(){
+  RTL* Copy = new RTL(Line, Filename.c_str());
+
+  if(Parameters) Copy->Parameters = (decltype(Parameters))Parameters->Copy();
+  if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy();
+
+  return Copy;
+}
+//------------------------------------------------------------------------------
+
 void RTL::Display(){
   DisplayInfo();
   Debug.print("rtl(");

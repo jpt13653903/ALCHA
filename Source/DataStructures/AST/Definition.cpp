@@ -30,6 +30,15 @@ DEFINITION::ARRAY::ARRAY(){
 }
 //------------------------------------------------------------------------------
 
+DEFINITION::ARRAY::ARRAY(const ARRAY& Array){
+  Size = 0;
+  Next = 0;
+
+  if(Array.Size) Size = (decltype(Array.Size))Array.Size->Copy();
+  if(Array.Next) Next = new ARRAY(*Array.Next);
+}
+//------------------------------------------------------------------------------
+
 DEFINITION::ARRAY::~ARRAY(){
   if(Size) delete Size;
   if(Next) delete Next;
@@ -44,6 +53,23 @@ DEFINITION::IDENTIFIER::IDENTIFIER(){
   Function     = false;
   Parameters   = 0;
   FunctionBody = 0;
+}
+//------------------------------------------------------------------------------
+
+DEFINITION::IDENTIFIER::IDENTIFIER(const IDENTIFIER& Identifier){
+  Next        = 0;
+  Array       = 0;
+  Initialiser = 0;
+
+  Function     = Identifier.Function;
+  Parameters   = 0;
+  FunctionBody = 0;
+
+  if(Identifier.Next        ) Next         = new IDENTIFIER(*Identifier.Next );
+  if(Identifier.Array       ) Array        = new ARRAY     (*Identifier.Array);
+  if(Identifier.Parameters  ) Parameters   = (decltype(Identifier.Parameters  ))Identifier.Parameters  ->Copy();
+  if(Identifier.Initialiser ) Initialiser  = (decltype(Identifier.Initialiser ))Identifier.Initialiser ->Copy();
+  if(Identifier.FunctionBody) FunctionBody = (decltype(Identifier.FunctionBody))Identifier.FunctionBody->Copy();
 }
 //------------------------------------------------------------------------------
 
@@ -65,16 +91,32 @@ DEFINITION::DEFINITION(
 
   Direction = DIRECTION::Inferred;
 
-  ClassName  = 0;
-  Parameters = 0;
-  Attributes = 0;
+  ClassName   = 0;
+  Parameters  = 0;
+  Attributes  = 0;
+  Identifiers = 0;
 }
 //------------------------------------------------------------------------------
 
 DEFINITION::~DEFINITION(){
-  if(ClassName ) delete ClassName;
-  if(Parameters) delete Parameters;
-  if(Attributes) delete Attributes;
+  if(ClassName  ) delete ClassName;
+  if(Parameters ) delete Parameters;
+  if(Attributes ) delete Attributes;
+  if(Identifiers) delete Identifiers;
+}
+//------------------------------------------------------------------------------
+
+BASE* DEFINITION::Copy(){
+  DEFINITION* Copy = new DEFINITION(Line, Filename.c_str(), DefinitionType);
+
+  Copy->Direction = Direction;
+
+  if(ClassName  ) Copy->ClassName   = (decltype(ClassName ))ClassName ->Copy();
+  if(Parameters ) Copy->Parameters  = (decltype(Parameters))Parameters->Copy();
+  if(Attributes ) Copy->Attributes  = (decltype(Attributes))Attributes->Copy();
+  if(Identifiers) Copy->Identifiers = new IDENTIFIER(*Identifiers);
+
+  return Copy;
 }
 //------------------------------------------------------------------------------
 

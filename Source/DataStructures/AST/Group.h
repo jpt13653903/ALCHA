@@ -35,6 +35,9 @@ namespace AST{
     GROUP(int Line, const char* Filename);
    ~GROUP();
 
+    // Returns a copy of this instance
+    virtual BASE* Copy();
+
     void Display();
   };
 }

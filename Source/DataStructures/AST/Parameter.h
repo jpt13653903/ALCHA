@@ -42,6 +42,9 @@ namespace AST{
     PARAMETER(int Line, const char* Filename, DEFINITION_TYPE DefinitionType);
    ~PARAMETER();
 
+    // Returns a copy of this instance
+    virtual BASE* Copy();
+
     void Display();
   };
 }

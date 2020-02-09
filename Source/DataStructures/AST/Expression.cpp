@@ -41,9 +41,6 @@ EXPRESSION::EXPRESSION(
 ): BASE(Line, Filename, TYPE::Expression){
   this->ExpressionType = ExpressionType;
 
-  Value    = 0;
-  StrValue = 0;
-
   ObjectRef = 0;
   Left      = 0;
   Right     = 0;
@@ -57,11 +54,51 @@ EXPRESSION::EXPRESSION(
 EXPRESSION::~EXPRESSION(){
   // Don't delete the Object reference -- it's part of the namespace tree
 
-  if(Value   ) delete Value;
-  if(StrValue) delete StrValue;
-
   if(Left ) delete Left;
   if(Right) delete Right;
+}
+//------------------------------------------------------------------------------
+
+BASE* EXPRESSION::Element(int n){
+  int e = 0;
+
+  BASE* Node = Right;
+  while(Node){
+    if(e == n) return Node;
+    e++;
+    Node = Node->Next;
+  }
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+int EXPRESSION::ElementCount(){
+  int n = 0;
+
+  BASE* Node = Right;
+  while(Node){
+    n++;
+    Node = Node->Next;
+  }
+  return n;
+}
+//------------------------------------------------------------------------------
+
+BASE* EXPRESSION::Copy(){
+  EXPRESSION* Copy = new EXPRESSION(Line, Filename.c_str(), ExpressionType);
+
+  Copy->Signed    = Signed;
+  Copy->Width     = Width;
+  Copy->FullScale = FullScale;
+  Copy->Name      = Name;
+  Copy->Value     = Value;
+  Copy->StrValue  = StrValue;
+  Copy->ObjectRef = ObjectRef;
+
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+
+  return Copy;
 }
 //------------------------------------------------------------------------------
 
@@ -76,13 +113,11 @@ void EXPRESSION::Display(){
 
   switch(ExpressionType){
     case EXPRESSION_TYPE::String:
-      if(StrValue) Debug.print("\"%s\"", StrValue->c_str());
-      else         error ("(String literal node has no value)");
+      Debug.print("\"%s\"", StrValue.c_str());
       break;
 
     case EXPRESSION_TYPE::Literal:
-      if(Value) Debug.print(Value->Display());
-      else      error("(Literal node has no value)");
+      Debug.print(Value.Display());
       break;
 
     case EXPRESSION_TYPE::Identifier:

@@ -22,6 +22,15 @@
 #define AST_Base_h
 //------------------------------------------------------------------------------
 
+/* Description:
+ *
+ * This is the base class of the abstract syntax tree.  It is used in two 
+ * major data structures: the output of the parser and output of the engine.
+ *
+ * These two structures are essentially independent, but have a significant 
+ * commonality, as is therefore based on the same C++ class hierarchy.
+------------------------------------------------------------------------------*/
+
 #include <string>
 //------------------------------------------------------------------------------
 
@@ -62,6 +71,9 @@ namespace AST{
 
              BASE(int Line, const char* Filename, TYPE Type);
     virtual ~BASE(); // Also deletes the rest of the linked list
+
+    // Returns a copy of this instance
+    virtual BASE* Copy() = 0;
 
             void DisplayInfo();
     virtual void Display() = 0;

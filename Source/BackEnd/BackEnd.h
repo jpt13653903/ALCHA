@@ -32,8 +32,8 @@ class BACK_END{
     std::string Path;
     std::string Filename;
 
-    void Error  (NETLIST::EXPRESSION* Expression, const char* Message = 0);
-    void Warning(NETLIST::EXPRESSION* Expression, const char* Message = 0);
+    void Error  (AST::EXPRESSION* Expression, const char* Message = 0);
+    void Warning(AST::EXPRESSION* Expression, const char* Message = 0);
 
     bool WriteFile(std::string& Filename, const char* Ext, std::string& Body);
 
@@ -43,10 +43,10 @@ class BACK_END{
 
     const char* GetWireName();
 
-    bool BuildExpression (std::string& Body, NETLIST::EXPRESSION* Expression, std::string& Wire);
-    bool BuildAssignments(std::string& Body, NETLIST::NAMESPACE*  Namespace);
-    void BuildPorts      (std::string& Body, NETLIST::NAMESPACE*  Namespace, bool& isFirst);
-    void BuildNets       (std::string& Body, NETLIST::NAMESPACE*  Namespace);
+    bool BuildExpression (std::string& Body, AST::EXPRESSION*    Expression, std::string& Wire);
+    bool BuildAssignments(std::string& Body, NETLIST::NAMESPACE* Namespace);
+    void BuildPorts      (std::string& Body, NETLIST::NAMESPACE* Namespace, bool& isFirst);
+    void BuildNets       (std::string& Body, NETLIST::NAMESPACE* Namespace);
 
     bool BuildHDL(NETLIST::MODULE* Module, std::string Path);
 
