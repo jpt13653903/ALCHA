@@ -52,12 +52,14 @@ ENUM_DEFINITION::~ENUM_DEFINITION(){
 }
 //------------------------------------------------------------------------------
 
-BASE* ENUM_DEFINITION::Copy(){
+BASE* ENUM_DEFINITION::Copy(bool CopyNext){
   ENUM_DEFINITION* Copy = new ENUM_DEFINITION(Line, Filename.c_str());
 
   Copy->Identifier = Identifier;
 
   if(Values) Copy->Values = new VALUE(*Values);
+
+  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
 }

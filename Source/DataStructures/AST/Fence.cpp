@@ -32,8 +32,10 @@ FENCE::~FENCE(){
 }
 //------------------------------------------------------------------------------
 
-BASE* FENCE::Copy(){
+BASE* FENCE::Copy(bool CopyNext){
   FENCE* Copy = new FENCE(Line, Filename.c_str());
+
+  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
 }

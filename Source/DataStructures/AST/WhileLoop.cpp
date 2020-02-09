@@ -37,11 +37,13 @@ WHILE_LOOP::~WHILE_LOOP(){
 }
 //------------------------------------------------------------------------------
 
-BASE* WHILE_LOOP::Copy(){
+BASE* WHILE_LOOP::Copy(bool CopyNext){
   WHILE_LOOP* Copy = new WHILE_LOOP(Line, Filename.c_str());
 
-  if(Condition)  Copy->Condition  = (decltype(Condition ))Condition ->Copy();
-  if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy();
+  if(Condition)  Copy->Condition  = (decltype(Condition ))Condition ->Copy(CopyNext);
+  if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy(CopyNext);
+
+  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
 }

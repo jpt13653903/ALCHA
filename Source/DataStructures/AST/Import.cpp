@@ -33,11 +33,13 @@ IMPORT::~IMPORT(){
 }
 //------------------------------------------------------------------------------
 
-BASE* IMPORT::Copy(){
+BASE* IMPORT::Copy(bool CopyNext){
   IMPORT* Copy = new IMPORT(Line, Filename.c_str());
   
   Copy->File      = File;
   Copy->Namespace = Namespace;
+
+  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
 }

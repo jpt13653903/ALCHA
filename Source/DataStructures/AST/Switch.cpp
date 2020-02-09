@@ -33,8 +33,8 @@ SWITCH::CASE::CASE(){
 
 SWITCH::CASE::CASE(const CASE& Case){
   if(Case.Next       ) Next        = new CASE(*Case.Next);
-  if(Case.Statements ) Statements  = (decltype(Case.Statements ))Case.Statements ->Copy();
-  if(Case.Expressions) Expressions = (decltype(Case.Expressions))Case.Expressions->Copy();
+  if(Case.Statements ) Statements  = (decltype(Case.Statements ))Case.Statements ->Copy(true);
+  if(Case.Expressions) Expressions = (decltype(Case.Expressions))Case.Expressions->Copy(true);
 }
 //------------------------------------------------------------------------------
 
@@ -60,12 +60,14 @@ SWITCH::~SWITCH(){
 }
 //------------------------------------------------------------------------------
 
-BASE* SWITCH::Copy(){
+BASE* SWITCH::Copy(bool CopyNext){
   SWITCH* Copy = new SWITCH(Line, Filename.c_str());
 
   if(Cases     ) Copy->Cases      = new CASE(*Cases);
-  if(Default   ) Copy->Default    = (decltype(Default   ))Default   ->Copy();
-  if(Expression) Copy->Expression = (decltype(Expression))Expression->Copy();
+  if(Default   ) Copy->Default    = (decltype(Default   ))Default   ->Copy(CopyNext);
+  if(Expression) Copy->Expression = (decltype(Expression))Expression->Copy(CopyNext);
+
+  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
 }

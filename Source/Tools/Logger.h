@@ -42,6 +42,7 @@ class LOGGER{
     void print(const char*        String);
     void print(const std::string& String);
     void print(const char* Format, int i);
+    void print(const char* Format, double d);
     void print(const char* Format, unsigned u);
     void print(const char* Format, const char* s);
     void print(const char* Format, const std::string& s);

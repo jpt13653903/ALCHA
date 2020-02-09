@@ -34,12 +34,14 @@ ALIAS::~ALIAS(){
 }
 //------------------------------------------------------------------------------
 
-BASE* ALIAS::Copy(){
+BASE* ALIAS::Copy(bool CopyNext){
   ALIAS* Copy = new ALIAS(Line, Filename.c_str());
 
   Copy->Identifier = Identifier;
 
-  if(Expression) Copy->Expression = (decltype(Expression))Expression->Copy();
+  if(Expression) Copy->Expression = (decltype(Expression))Expression->Copy(CopyNext);
+
+  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
 }

@@ -36,13 +36,15 @@ AST::GROUP::~GROUP(){
 }
 //------------------------------------------------------------------------------
 
-BASE* AST::GROUP::Copy(){
+BASE* AST::GROUP::Copy(bool CopyNext){
   GROUP* Copy = new AST::GROUP(Line, Filename.c_str());
 
   Copy->Identifier = Identifier;
 
-  if(Attributes) Copy->Attributes = (decltype(Attributes))Attributes->Copy();
-  if(Body      ) Copy->Body       = (decltype(Body      ))Body      ->Copy();
+  if(Attributes) Copy->Attributes = (decltype(Attributes))Attributes->Copy(CopyNext);
+  if(Body      ) Copy->Body       = (decltype(Body      ))Body      ->Copy(CopyNext);
+
+  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
 }

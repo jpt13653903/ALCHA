@@ -73,7 +73,7 @@ namespace AST{
     virtual ~BASE(); // Also deletes the rest of the linked list
 
     // Returns a copy of this instance
-    virtual BASE* Copy() = 0;
+    virtual BASE* Copy(bool CopyNext) = 0;
 
             void DisplayInfo();
     virtual void Display() = 0;

@@ -37,11 +37,13 @@ LOOP_LOOP::~LOOP_LOOP(){
 }
 //------------------------------------------------------------------------------
 
-BASE* LOOP_LOOP::Copy(){
+BASE* LOOP_LOOP::Copy(bool CopyNext){
   LOOP_LOOP* Copy = new LOOP_LOOP(Line, Filename.c_str());
 
-  if(Count     ) Copy->Count      = (decltype(Count     ))Count     ->Copy();
-  if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy();
+  if(Count     ) Copy->Count      = (decltype(Count     ))Count     ->Copy(CopyNext);
+  if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy(CopyNext);
+
+  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
 }

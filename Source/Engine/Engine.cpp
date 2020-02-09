@@ -76,15 +76,15 @@ AST::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
 
   switch(Node->ExpressionType){
     case AST::EXPRESSION::EXPRESSION_TYPE::String:
-      Result = (AST::EXPRESSION*)Node->Copy();
+      Result = (AST::EXPRESSION*)Node->Copy(false);
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Literal:
-      Result = (AST::EXPRESSION*)Node->Copy();
+      Result = (AST::EXPRESSION*)Node->Copy(false);
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Array:{
-      Result = (AST::EXPRESSION*)Node->Copy();
+      Result = (AST::EXPRESSION*)Node->Copy(true);
       break;
     }
 
@@ -141,31 +141,12 @@ AST::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::VectorConcatenate:{
-      Result = (AST::EXPRESSION*)Node->Copy();
-      auto Element = (AST::EXPRESSION*)Result->Right;
-      while(Element){
-        auto EvaluatedElement = Evaluate(Element);
-        if(!EvaluatedElement){
-          delete Result;
-          return 0;
-        }
-        if(EvaluatedElement->Width){
-          Result->Width += EvaluatedElement->Width;
-        }else{
-          Error(Element, "Vector element has undefined width");
-          delete Result;
-          return 0;
-        }
-        Element = (AST::EXPRESSION*)Element->Next;
-      }
-      Result->Signed    = false;
-      Result->FullScale = 1;
-      Result->FullScale.BinScale(Result->Width);
+      Result = (AST::EXPRESSION*)Node->Copy(true);
       break;
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::ArrayConcatenate:{
-      Result = (AST::EXPRESSION*)Node->Copy();
+      Result = (AST::EXPRESSION*)Node->Copy(true);
       break;
     }
 
@@ -276,7 +257,7 @@ AST::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
           delete Left;
           return 0;
         }
-        Result = (AST::EXPRESSION*)Found->Copy();
+        Result = (AST::EXPRESSION*)Found->Copy(true);
         assert(Result->Type == AST::BASE::TYPE::Expression);
         delete Left;
       }else{
@@ -306,7 +287,7 @@ AST::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Negate:
-      Result = (AST::EXPRESSION*)Node->Copy();
+      Result = (AST::EXPRESSION*)Node->Copy(true);
       if(!Result->Right){
         delete Result;
         return 0;
@@ -315,13 +296,10 @@ AST::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
         delete Result;
         return 0;
       );
-      Result->Signed    = ((AST::EXPRESSION*)Result->Right)->Signed;
-      Result->Width     = ((AST::EXPRESSION*)Result->Right)->Width;
-      Result->FullScale = ((AST::EXPRESSION*)Result->Right)->FullScale;
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Bit_NOT:
-      Result = (AST::EXPRESSION*)Node->Copy();
+      Result = (AST::EXPRESSION*)Node->Copy(true);
       if(!Result->Right){
         delete Result;
         return 0;
@@ -380,7 +358,7 @@ AST::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Multiply:
-      Result = (AST::EXPRESSION*)Node->Copy();
+      Result = (AST::EXPRESSION*)Node->Copy(true);
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Divide:
@@ -954,13 +932,13 @@ bool ENGINE::GetLHS(AST::EXPRESSION* Node, target_list& List){
 
     case AST::EXPRESSION::EXPRESSION_TYPE::VectorConcatenate:{
       error("VectorConcatenate not yet implemented");
-      // Result = (AST::EXPRESSION*)Node->Copy();
+      // Result = (AST::EXPRESSION*)Node->Copy(true);
       break;
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::ArrayConcatenate:{
       error("ArrayConcatenate not yet implemented");
-      // Result = (AST::EXPRESSION*)Node->Copy();
+      // Result = (AST::EXPRESSION*)Node->Copy(true);
       break;
     }
 
@@ -1098,7 +1076,7 @@ void ENGINE::Simplify(AST::EXPRESSION*& Root){
 
   Simplify(Root->Left );
 
-  {
+  if(Root->Right){
     assert(Root->Right->Type == AST::BASE::TYPE::Expression, return);
     auto Right = (AST::EXPRESSION*)Root->Right;
     Simplify(Right);
@@ -1110,6 +1088,12 @@ void ENGINE::Simplify(AST::EXPRESSION*& Root){
     case AST::EXPRESSION::EXPRESSION_TYPE::String:
     case AST::EXPRESSION::EXPRESSION_TYPE::Literal:
     case AST::EXPRESSION::EXPRESSION_TYPE::Array:
+      break;
+
+    case AST::EXPRESSION::EXPRESSION_TYPE::Identifier:
+      Temp = Root;
+      Root = Evaluate(Root);
+      if(Temp != Root) delete Temp;
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Object:
@@ -1253,7 +1237,7 @@ void ENGINE::Simplify(AST::EXPRESSION*& Root){
           if(Root->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
             Root->Value.Mul(Num);
           }else{
-            if(Root->Width == 0) error("Unexpected 0 width");
+            assert(Root->Width != 0);
             Root->FullScale.Mul(Num);
           }
         }
@@ -1427,6 +1411,8 @@ void ENGINE::Simplify(AST::EXPRESSION*& Root){
 //------------------------------------------------------------------------------
 
 bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
+  assert(Ast, return false);
+
   target_list Left;
   AST::EXPRESSION* Right;
   AST::EXPRESSION* Temp;

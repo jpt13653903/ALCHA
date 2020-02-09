@@ -84,7 +84,7 @@ int EXPRESSION::ElementCount(){
 }
 //------------------------------------------------------------------------------
 
-BASE* EXPRESSION::Copy(){
+BASE* EXPRESSION::Copy(bool CopyNext){
   EXPRESSION* Copy = new EXPRESSION(Line, Filename.c_str(), ExpressionType);
 
   Copy->Signed    = Signed;
@@ -95,8 +95,10 @@ BASE* EXPRESSION::Copy(){
   Copy->StrValue  = StrValue;
   Copy->ObjectRef = ObjectRef;
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
+  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
+
+  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
 }

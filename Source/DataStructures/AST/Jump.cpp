@@ -37,10 +37,12 @@ JUMP::~JUMP(){
 }
 //------------------------------------------------------------------------------
 
-BASE* JUMP::Copy(){
+BASE* JUMP::Copy(bool CopyNext){
   JUMP* Copy = new JUMP(Line, Filename.c_str(), JumpType);
 
-  if(Expression) Copy->Expression = (decltype(Expression))Expression->Copy();
+  if(Expression) Copy->Expression = (decltype(Expression))Expression->Copy(CopyNext);
+
+  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
 }

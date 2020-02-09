@@ -42,13 +42,15 @@ ASSIGNMENT::~ASSIGNMENT(){
 }
 //------------------------------------------------------------------------------
 
-BASE* ASSIGNMENT::Copy(){
+BASE* ASSIGNMENT::Copy(bool CopyNext){
   ASSIGNMENT* Copy = new ASSIGNMENT(Line, Filename.c_str(), AssignmentType);
 
   Copy->Fence = Fence;
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
+  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
+
+  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
 }

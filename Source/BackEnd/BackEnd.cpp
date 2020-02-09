@@ -224,7 +224,7 @@ bool BACK_END::BuildExpression(string& Body, AST::EXPRESSION* Expression, string
       while(Node){
         Elements.emplace_back("");
         if(!BuildExpression(Body, Node, Elements.back())) return false;
-        assert(Node->Next->Type == AST::BASE::TYPE::Expression, return false);
+        if(Node->Next) assert(Node->Next->Type == AST::BASE::TYPE::Expression, return false);
         Node = (AST::EXPRESSION*)Node->Next;
       }
 
@@ -583,7 +583,9 @@ bool BACK_END::BuildExpression(string& Body, AST::EXPRESSION* Expression, string
       NUMBER Factor = From->FullScale;
       Factor.Div(To->FullScale);
       Factor.BinScale(To->Width - From->Width);
-      assert(Factor != 0, return false);
+// TODO: This is a plaster to fix the errors induces by refactoring the type system (WIP)
+if(Factor == 0) Factor = 1;
+      assert(Factor != 0, Expression->Display(); return false);
 
       // Calculate the limit of the inferred multiplier size.  Most FPGAs have 
       // 18-bit multipliers, so make that the minimum limit, otherwise use the 

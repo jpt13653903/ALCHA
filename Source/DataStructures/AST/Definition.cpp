@@ -34,7 +34,7 @@ DEFINITION::ARRAY::ARRAY(const ARRAY& Array){
   Size = 0;
   Next = 0;
 
-  if(Array.Size) Size = (decltype(Array.Size))Array.Size->Copy();
+  if(Array.Size) Size = (decltype(Array.Size))Array.Size->Copy(true);
   if(Array.Next) Next = new ARRAY(*Array.Next);
 }
 //------------------------------------------------------------------------------
@@ -67,9 +67,9 @@ DEFINITION::IDENTIFIER::IDENTIFIER(const IDENTIFIER& Identifier){
 
   if(Identifier.Next        ) Next         = new IDENTIFIER(*Identifier.Next );
   if(Identifier.Array       ) Array        = new ARRAY     (*Identifier.Array);
-  if(Identifier.Parameters  ) Parameters   = (decltype(Identifier.Parameters  ))Identifier.Parameters  ->Copy();
-  if(Identifier.Initialiser ) Initialiser  = (decltype(Identifier.Initialiser ))Identifier.Initialiser ->Copy();
-  if(Identifier.FunctionBody) FunctionBody = (decltype(Identifier.FunctionBody))Identifier.FunctionBody->Copy();
+  if(Identifier.Parameters  ) Parameters   = (decltype(Identifier.Parameters  ))Identifier.Parameters  ->Copy(true);
+  if(Identifier.Initialiser ) Initialiser  = (decltype(Identifier.Initialiser ))Identifier.Initialiser ->Copy(true);
+  if(Identifier.FunctionBody) FunctionBody = (decltype(Identifier.FunctionBody))Identifier.FunctionBody->Copy(true);
 }
 //------------------------------------------------------------------------------
 
@@ -106,15 +106,17 @@ DEFINITION::~DEFINITION(){
 }
 //------------------------------------------------------------------------------
 
-BASE* DEFINITION::Copy(){
+BASE* DEFINITION::Copy(bool CopyNext){
   DEFINITION* Copy = new DEFINITION(Line, Filename.c_str(), DefinitionType);
 
   Copy->Direction = Direction;
 
-  if(ClassName  ) Copy->ClassName   = (decltype(ClassName ))ClassName ->Copy();
-  if(Parameters ) Copy->Parameters  = (decltype(Parameters))Parameters->Copy();
-  if(Attributes ) Copy->Attributes  = (decltype(Attributes))Attributes->Copy();
+  if(ClassName  ) Copy->ClassName   = (decltype(ClassName ))ClassName ->Copy(CopyNext);
+  if(Parameters ) Copy->Parameters  = (decltype(Parameters))Parameters->Copy(CopyNext);
+  if(Attributes ) Copy->Attributes  = (decltype(Attributes))Attributes->Copy(CopyNext);
   if(Identifiers) Copy->Identifiers = new IDENTIFIER(*Identifiers);
+
+  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
 }

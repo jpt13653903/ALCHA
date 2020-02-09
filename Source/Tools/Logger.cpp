@@ -52,6 +52,11 @@ void LOGGER::print(const char* Format, int i){
 }
 //------------------------------------------------------------------------------
 
+void LOGGER::print(const char* Format, double d){
+  fprintf(File, Format, d);
+}
+//------------------------------------------------------------------------------
+
 void LOGGER::print(const char* Format, unsigned u){
   fprintf(File, Format, u);
 }

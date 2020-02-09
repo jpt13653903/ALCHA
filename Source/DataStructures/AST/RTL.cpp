@@ -36,11 +36,13 @@ RTL::~RTL(){
 }
 //------------------------------------------------------------------------------
 
-BASE* RTL::Copy(){
+BASE* RTL::Copy(bool CopyNext){
   RTL* Copy = new RTL(Line, Filename.c_str());
 
-  if(Parameters) Copy->Parameters = (decltype(Parameters))Parameters->Copy();
-  if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy();
+  if(Parameters) Copy->Parameters = (decltype(Parameters))Parameters->Copy(CopyNext);
+  if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy(CopyNext);
+
+  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
 }

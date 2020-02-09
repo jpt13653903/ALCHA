@@ -41,13 +41,15 @@ PARAMETER::~PARAMETER(){
 }
 //------------------------------------------------------------------------------
 
-BASE* PARAMETER::Copy(){
+BASE* PARAMETER::Copy(bool CopyNext){
   PARAMETER* Copy = new PARAMETER(Line, Filename.c_str(), DefinitionType);
 
   Copy->ArrayDimensions = ArrayDimensions;
   Copy->Identifier      = Identifier;
 
-  if(ClassName) Copy->ClassName = (decltype(ClassName))ClassName->Copy();
+  if(ClassName) Copy->ClassName = (decltype(ClassName))ClassName->Copy(CopyNext);
+
+  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
 }

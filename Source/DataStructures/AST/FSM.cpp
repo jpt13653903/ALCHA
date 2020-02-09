@@ -36,11 +36,13 @@ FSM::~FSM(){
 }
 //------------------------------------------------------------------------------
 
-BASE* FSM::Copy(){
+BASE* FSM::Copy(bool CopyNext){
   FSM* Copy = new FSM(Line, Filename.c_str());
 
-  if(Parameters) Copy->Parameters = (decltype(Parameters))Parameters->Copy();
-  if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy();
+  if(Parameters) Copy->Parameters = (decltype(Parameters))Parameters->Copy(CopyNext);
+  if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy(CopyNext);
+
+  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
 }

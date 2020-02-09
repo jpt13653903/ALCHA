@@ -36,7 +36,7 @@ namespace AST{
    ~GROUP();
 
     // Returns a copy of this instance
-    virtual BASE* Copy();
+    virtual BASE* Copy(bool CopyNext);
 
     void Display();
   };
