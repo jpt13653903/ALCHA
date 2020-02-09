@@ -134,6 +134,10 @@ AST::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
           printf("Identifier \"%s\" not defined\n", Node->Name.c_str());
         }
       }
+      if(Node->Next){
+        assert(Node->Next->Type == AST::BASE::TYPE::Expression);
+        Result->Next = Evaluate((AST::EXPRESSION*)Node->Next);
+      }
       break;
     }
 
