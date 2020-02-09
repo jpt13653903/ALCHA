@@ -185,28 +185,30 @@ bool BACK_END::BuildExpression(string& Body, AST::EXPRESSION* Expression, string
 
   switch(Expression->ExpressionType){
     case AST::EXPRESSION::EXPRESSION_TYPE::Literal:{
-      if(!Expression->Value.IsReal()){
-        Error(Expression, "non-real literal");
-        return false;
-      }
-      NUMBER Result(Expression->Value);
-      if(!Result.IsPositive()){
-        if(!Expression->Signed){
-          Error(Expression, "Cannot store a negative literal to an unsigned target");
-          return false;
-        }
-        Wire += "-";
-        Result.Mul(-1);
-      }
-      if(Expression->Signed) Wire += to_string(Expression->Width+1) + "'h";
-      else                   Wire += to_string(Expression->Width  ) + "'h";
-      Result.Round();
-      Wire += Result.GetString(16);
-      Result.BinScale(-Expression->Width);
-      if(Result > 1){
-        Error(Expression, "The literal does not fit in its full-scale range");
-        return false;
-      }
+      // TODO: Move to new strategy of synthesising single operations into temporaries
+      error("Not yet implemented");
+      // if(!Expression->Value.IsReal()){
+      //   Error(Expression, "non-real literal");
+      //   return false;
+      // }
+      // NUMBER Result(Expression->Value);
+      // if(!Result.IsPositive()){
+      //   if(!Expression->Signed){
+      //     Error(Expression, "Cannot store a negative literal to an unsigned target");
+      //     return false;
+      //   }
+      //   Wire += "-";
+      //   Result.Mul(-1);
+      // }
+      // if(Expression->Signed) Wire += to_string(Expression->Width+1) + "'h";
+      // else                   Wire += to_string(Expression->Width  ) + "'h";
+      // Result.Round();
+      // Wire += Result.GetString(16);
+      // Result.BinScale(-Expression->Width);
+      // if(Result > 1){
+      //   Error(Expression, "The literal does not fit in its full-scale range");
+      //   return false;
+      // }
       break;
     }
 
@@ -216,27 +218,29 @@ bool BACK_END::BuildExpression(string& Body, AST::EXPRESSION* Expression, string
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::VectorConcatenate:{
-      vector<string> Elements;
+      // TODO: Move to new strategy of synthesising single operations into temporaries
+      error("Not yet implemented");
+      // vector<string> Elements;
 
-      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
-      AST::EXPRESSION* Node = (AST::EXPRESSION*)Expression->Right;
+      // assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      // AST::EXPRESSION* Node = (AST::EXPRESSION*)Expression->Right;
 
-      while(Node){
-        Elements.emplace_back("");
-        if(!BuildExpression(Body, Node, Elements.back())) return false;
-        if(Node->Next) assert(Node->Next->Type == AST::BASE::TYPE::Expression, return false);
-        Node = (AST::EXPRESSION*)Node->Next;
-      }
+      // while(Node){
+      //   Elements.emplace_back("");
+      //   if(!BuildExpression(Body, Node, Elements.back())) return false;
+      //   if(Node->Next) assert(Node->Next->Type == AST::BASE::TYPE::Expression, return false);
+      //   Node = (AST::EXPRESSION*)Node->Next;
+      // }
 
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= {";
-      for(size_t n = 0; n < Elements.size(); n++){
-        Body += Elements[n];
-        if(n < Elements.size()-1) Body += ", ";
-      }
-      Body += "};\n";
+      // Wire = GetWireName();
+      // if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      // else                      Body += "wire ";
+      // Body += Wire +"= {";
+      // for(size_t n = 0; n < Elements.size(); n++){
+      //   Body += Elements[n];
+      //   if(n < Elements.size()-1) Body += ", ";
+      // }
+      // Body += "};\n";
       break;
     }
 
@@ -245,24 +249,28 @@ bool BACK_END::BuildExpression(string& Body, AST::EXPRESSION* Expression, string
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Negate:{
-      string Right;
-      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= -("+ Right +");\n";
+      // TODO: Move to new strategy of synthesising single operations into temporaries
+      error("Not yet implemented");
+      // string Right;
+      // assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      // else                      Body += "wire ";
+      // Body += Wire +"= -("+ Right +");\n";
       break;
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Bit_NOT:{
-      string Right;
-      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= ~("+ Right +");\n";
+      // TODO: Move to new strategy of synthesising single operations into temporaries
+      error("Not yet implemented");
+      // string Right;
+      // assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      // else                      Body += "wire ";
+      // Body += Wire +"= ~("+ Right +");\n";
       break;
     }
 
@@ -337,89 +345,101 @@ bool BACK_END::BuildExpression(string& Body, AST::EXPRESSION* Expression, string
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Replicate:{ // TODO: Test
-      string Left, Right;
-      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
-      AST::EXPRESSION* ExpressionRight = (AST::EXPRESSION*)Expression->Right;
+      // TODO: Move to new strategy of synthesising single operations into temporaries
+      error("Not yet implemented");
+      // string Left, Right;
+      // assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      // AST::EXPRESSION* ExpressionRight = (AST::EXPRESSION*)Expression->Right;
 
-      if(ExpressionRight->ExpressionType != AST::EXPRESSION::EXPRESSION_TYPE::Literal){
-        Error(Expression, "Replication count must break down to a run-time constant");
-        return false;
-      }
-      if(!ExpressionRight->Value.IsInt()){
-        Error(Expression, "Replication count must be an integer");
-        return false;
-      }
-      if(!ExpressionRight->Value.IsPositive()){
-        Error(Expression, "Replication count must be real and positive");
-        return false;
-      }
-      if(!BuildExpression(Body, Expression->Left, Left)) return false;
-      Right = ExpressionRight->Value.GetString(10);
+      // if(ExpressionRight->ExpressionType != AST::EXPRESSION::EXPRESSION_TYPE::Literal){
+      //   Error(Expression, "Replication count must break down to a run-time constant");
+      //   return false;
+      // }
+      // if(!ExpressionRight->Value.IsInt()){
+      //   Error(Expression, "Replication count must be an integer");
+      //   return false;
+      // }
+      // if(!ExpressionRight->Value.IsPositive()){
+      //   Error(Expression, "Replication count must be real and positive");
+      //   return false;
+      // }
+      // if(!BuildExpression(Body, Expression->Left, Left)) return false;
+      // Right = ExpressionRight->Value.GetString(10);
 
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= {"+ Right +"{"+ Left +"}};\n";
+      // Wire = GetWireName();
+      // if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      // else                      Body += "wire ";
+      // Body += Wire +"= {"+ Right +"{"+ Left +"}};\n";
       break;
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Multiply:{
-      string Left, Right;
-      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= "+ Left +" * "+ Right +";\n";
+      // TODO: Move to new strategy of synthesising single operations into temporaries
+      error("Not yet implemented");
+      // string Left, Right;
+      // assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      // else                      Body += "wire ";
+      // Body += Wire +"= "+ Left +" * "+ Right +";\n";
       break;
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Add:{
-      string Left, Right;
-      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= "+ Left +" + "+ Right +";\n";
+      // TODO: Move to new strategy of synthesising single operations into temporaries
+      error("Not yet implemented");
+      // string Left, Right;
+      // assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      // else                      Body += "wire ";
+      // Body += Wire +"= "+ Left +" + "+ Right +";\n";
       break;
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Subtract:{
-      string Left, Right;
-      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= "+ Left +" - "+ Right +";\n";
+      // TODO: Move to new strategy of synthesising single operations into temporaries
+      error("Not yet implemented");
+      // string Left, Right;
+      // assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      // else                      Body += "wire ";
+      // Body += Wire +"= "+ Left +" - "+ Right +";\n";
       break;
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Shift_Left:{
-      string Left, Right;
-      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= "+ Left +" << "+ Right +";\n";
+      // TODO: Move to new strategy of synthesising single operations into temporaries
+      error("Not yet implemented");
+      // string Left, Right;
+      // assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      // else                      Body += "wire ";
+      // Body += Wire +"= "+ Left +" << "+ Right +";\n";
       break;
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Shift_Right:{
-      string Left, Right;
-      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= "+ Left +" >> "+ Right +";\n";
+      // TODO: Move to new strategy of synthesising single operations into temporaries
+      error("Not yet implemented");
+      // string Left, Right;
+      // assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      // else                      Body += "wire ";
+      // Body += Wire +"= "+ Left +" >> "+ Right +";\n";
       break;
     }
 
@@ -484,74 +504,86 @@ bool BACK_END::BuildExpression(string& Body, AST::EXPRESSION* Expression, string
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Bit_AND:{
-      string Left, Right;
-      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= "+ Left +" & "+ Right +";\n";
+      // TODO: Move to new strategy of synthesising single operations into temporaries
+      error("Not yet implemented");
+      // string Left, Right;
+      // assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      // else                      Body += "wire ";
+      // Body += Wire +"= "+ Left +" & "+ Right +";\n";
       break;
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Bit_NAND:{
-      string Left, Right;
-      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= ~("+ Left +" & "+ Right +");\n";
+      // TODO: Move to new strategy of synthesising single operations into temporaries
+      error("Not yet implemented");
+      // string Left, Right;
+      // assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      // else                      Body += "wire ";
+      // Body += Wire +"= ~("+ Left +" & "+ Right +");\n";
       break;
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Bit_OR:{
-      string Left, Right;
-      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= "+ Left +" | "+ Right +";\n";
+      // TODO: Move to new strategy of synthesising single operations into temporaries
+      error("Not yet implemented");
+      // string Left, Right;
+      // assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      // else                      Body += "wire ";
+      // Body += Wire +"= "+ Left +" | "+ Right +";\n";
       break;
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Bit_NOR:{
-      string Left, Right;
-      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= ~("+ Left +" | "+ Right +");\n";
+      // TODO: Move to new strategy of synthesising single operations into temporaries
+      error("Not yet implemented");
+      // string Left, Right;
+      // assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      // else                      Body += "wire ";
+      // Body += Wire +"= ~("+ Left +" | "+ Right +");\n";
       break;
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Bit_XOR:{
-      string Left, Right;
-      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= "+ Left +" ^ "+ Right +";\n";
+      // TODO: Move to new strategy of synthesising single operations into temporaries
+      error("Not yet implemented");
+      // string Left, Right;
+      // assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      // else                      Body += "wire ";
+      // Body += Wire +"= "+ Left +" ^ "+ Right +";\n";
       break;
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Bit_XNOR:{
-      string Left, Right;
-      assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= "+ Left +" ~^ "+ Right +";\n";
+      // TODO: Move to new strategy of synthesising single operations into temporaries
+      error("Not yet implemented");
+      // string Left, Right;
+      // assert(Expression->Right->Type == AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
+      // else                      Body += "wire ";
+      // Body += Wire +"= "+ Left +" ~^ "+ Right +";\n";
       break;
     }
 
@@ -576,96 +608,96 @@ bool BACK_END::BuildExpression(string& Body, AST::EXPRESSION* Expression, string
     }
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Cast:{
-      assert( Expression->Left , return false);
-      assert(!Expression->Right, return false);
-      AST::EXPRESSION* From = Expression->Left;
-      AST::EXPRESSION* To   = Expression;
-      NUMBER Factor = From->FullScale;
-      Factor.Div(To->FullScale);
-      Factor.BinScale(To->Width - From->Width);
-// TODO: This is a plaster to fix the errors induces by refactoring the type system (WIP)
-if(Factor == 0) Factor = 1;
-      assert(Factor != 0, Expression->Display(); return false);
+      // TODO: Move to new strategy of synthesising single operations into temporaries
+      error("Not yet implemented");
+      // assert( Expression->Left , return false);
+      // assert(!Expression->Right, return false);
+      // AST::EXPRESSION* From = Expression->Left;
+      // AST::EXPRESSION* To   = Expression;
+      // NUMBER Factor = From->FullScale;
+      // Factor.Div(To->FullScale);
+      // Factor.BinScale(To->Width - From->Width);
+      // assert(Factor != 0, Expression->Display(); return false);
 
-      // Calculate the limit of the inferred multiplier size.  Most FPGAs have 
-      // 18-bit multipliers, so make that the minimum limit, otherwise use the 
-      // target width as the limit so that no to little resolution is lost.
-      NUMBER Limit(1);
-      if(To->Width < 18) Limit.BinScale(18);
-      else               Limit.BinScale(To->Width);
-      int Shift = 0;
-      while(Factor.IsInt()){
-        Factor.BinScale(-1);
-        Shift--;
-      }
-      while(!Factor.IsInt() && (Factor < Limit)){
-        Factor.BinScale(1);
-        Shift++;
-      }
-      while(Factor >= Limit){
-        Factor.BinScale(-1);
-        Shift--;
-      }
-      NUMBER FullFactor(Factor);
-      Factor.Round();
-      if(Factor != FullFactor){
-        Warning(Expression, "Rounding the scaling factor - this can be fixed "
-                            "with an explicit scaling multiplication.");
-        while(Factor.IsInt()){ // Make sure it's still minimised after rounding
-          Factor.BinScale(-1);
-          Shift--;
-        }
-        while(!Factor.IsInt()){
-          Factor.BinScale(1);
-          Shift++;
-        }
-      }
+      // // Calculate the limit of the inferred multiplier size.  Most FPGAs have 
+      // // 18-bit multipliers, so make that the minimum limit, otherwise use the 
+      // // target width as the limit so that no to little resolution is lost.
+      // NUMBER Limit(1);
+      // if(To->Width < 18) Limit.BinScale(18);
+      // else               Limit.BinScale(To->Width);
+      // int Shift = 0;
+      // while(Factor.IsInt()){
+      //   Factor.BinScale(-1);
+      //   Shift--;
+      // }
+      // while(!Factor.IsInt() && (Factor < Limit)){
+      //   Factor.BinScale(1);
+      //   Shift++;
+      // }
+      // while(Factor >= Limit){
+      //   Factor.BinScale(-1);
+      //   Shift--;
+      // }
+      // NUMBER FullFactor(Factor);
+      // Factor.Round();
+      // if(Factor != FullFactor){
+      //   Warning(Expression, "Rounding the scaling factor - this can be fixed "
+      //                       "with an explicit scaling multiplication.");
+      //   while(Factor.IsInt()){ // Make sure it's still minimised after rounding
+      //     Factor.BinScale(-1);
+      //     Shift--;
+      //   }
+      //   while(!Factor.IsInt()){
+      //     Factor.BinScale(1);
+      //     Shift++;
+      //   }
+      // }
 
-      int Width = 0;
-      NUMBER Num(Factor);
-      while(Num >= 1){
-        Num.BinScale(-1);
-        Width++;
-      }
+      // int Width = 0;
+      // NUMBER Num(Factor);
+      // while(Num >= 1){
+      //   Num.BinScale(-1);
+      //   Width++;
+      // }
 
-      string FromString;
-      if(!BuildExpression(Body, From, FromString)) return false;
+      // string FromString;
+      // if(!BuildExpression(Body, From, FromString)) return false;
 
-      if(Factor == 1){
-        Body += "wire ";
-        if(To->Width > 1){
-          if(To->Signed) Body += "["+ to_string(To->Width  ) +":0] ";
-          else           Body += "["+ to_string(To->Width-1) +":0] ";
-        }
-        Wire = GetWireName();
-        Body += Wire +"= ";
-        if     (Shift > 0) Body += FromString +" >> "+ to_string( Shift);
-        else if(Shift < 0) Body += FromString +" << "+ to_string(-Shift);
-        Body += ";\n";
+      // if(Factor == 1){
+      //   Body += "wire ";
+      //   if(To->Width > 1){
+      //     if(To->Signed) Body += "["+ to_string(To->Width  ) +":0] ";
+      //     else           Body += "["+ to_string(To->Width-1) +":0] ";
+      //   }
+      //   Wire = GetWireName();
+      //   Body += Wire +"= ";
+      //   if     (Shift > 0) Body += FromString +" >> "+ to_string( Shift);
+      //   else if(Shift < 0) Body += FromString +" << "+ to_string(-Shift);
+      //   Body += ";\n";
 
-      }else{
-        Warning(Expression, "Non power-of-two scaling factor: synthesising a multiplier");
-        string MulWireName = GetWireName();
+      // }else{
+      //   Warning(Expression, "Non power-of-two scaling factor: synthesising a multiplier");
+      //   string MulWireName = GetWireName();
 
-        // TODO: Signed
-        Body += "wire ["+ to_string(From->Width + Width - 1) +":0] ";
-        Body += MulWireName +"= "+ FromString + " * ";
+      //   // TODO: Signed
+      //   Body += "wire ["+ to_string(From->Width + Width - 1) +":0] ";
+      //   Body += MulWireName +"= "+ FromString + " * ";
 
-        Body += to_string(Width) + "'h";
-        Body += Factor.GetString(16);
-        Body += ";\n";
+      //   Body += to_string(Width) + "'h";
+      //   Body += Factor.GetString(16);
+      //   Body += ";\n";
 
-        Body += "wire ";
-        if(To->Width > 1){
-          if(To->Signed) Body += "["+ to_string(To->Width  ) +":0] ";
-          else           Body += "["+ to_string(To->Width-1) +":0] ";
-        }
-        Wire = GetWireName();
-        Body += Wire +"= ";
-        if     (Shift > 0) Body += MulWireName +" >> "+ to_string( Shift);
-        else if(Shift < 0) Body += MulWireName +" << "+ to_string(-Shift);
-        Body += ";\n";
-      }
+      //   Body += "wire ";
+      //   if(To->Width > 1){
+      //     if(To->Signed) Body += "["+ to_string(To->Width  ) +":0] ";
+      //     else           Body += "["+ to_string(To->Width-1) +":0] ";
+      //   }
+      //   Wire = GetWireName();
+      //   Body += Wire +"= ";
+      //   if     (Shift > 0) Body += MulWireName +" >> "+ to_string( Shift);
+      //   else if(Shift < 0) Body += MulWireName +" << "+ to_string(-Shift);
+      //   Body += ";\n";
+      // }
       break;
     }
 

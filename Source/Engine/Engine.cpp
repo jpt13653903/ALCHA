@@ -109,9 +109,6 @@ AST::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
                   auto Synthesisable = (SYNTHESISABLE*)Object->second;
                   Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Object);
                   Result->ObjectRef = Synthesisable;
-                  Result->Signed    = Synthesisable->Signed;
-                  Result->Width     = Synthesisable->Width;
-                  Result->FullScale = Synthesisable->FullScale;
                   Synthesisable->Used = true;
                   break;
                 }
@@ -203,9 +200,6 @@ AST::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
                      Result->ObjectRef->Type == BASE::TYPE::Net ){
                     auto Object = (SYNTHESISABLE*)Result->ObjectRef;
                     Object->Used      = true;
-                    Result->Signed    = Object->Signed;
-                    Result->Width     = Object->Width;
-                    Result->FullScale = Object->FullScale;
                   }
                 }
               }
@@ -308,9 +302,6 @@ AST::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
         delete Result;
         return 0;
       );
-      Result->Signed    = ((AST::EXPRESSION*)Result->Right)->Signed;
-      Result->Width     = ((AST::EXPRESSION*)Result->Right)->Width;
-      Result->FullScale = ((AST::EXPRESSION*)Result->Right)->FullScale;
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Raw:
@@ -1220,51 +1211,7 @@ void ENGINE::Simplify(AST::EXPRESSION*& Root){
     case AST::EXPRESSION::EXPRESSION_TYPE::Multiply:
       assert(Root->Left && Root->Right, return);
       assert(Root->Right->Type == AST::BASE::TYPE::Expression, return);
-      if(Root->Left->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
-        NUMBER Num = Root->Left->Value;
-
-        if(Num.IsReal() && Num.GetReal() == 0.0){
-          Temp = Root->Left; // Keep the literal and make it zero
-          Root->Left = 0;
-          delete Root;
-          Root = Temp;
-          Root->Value = 0;
-        }else{
-          Temp = (AST::EXPRESSION*)Root->Right; // Keep the expression and modify the full-scale
-          Root->Right = 0;
-          delete Root;
-          Root = Temp;
-          if(Root->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
-            Root->Value.Mul(Num);
-          }else{
-            assert(Root->Width != 0);
-            Root->FullScale.Mul(Num);
-          }
-        }
-      }else if(((AST::EXPRESSION*)Root->Right)->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
-        NUMBER Num = ((AST::EXPRESSION*)Root->Right)->Value;
-
-        if(Num.IsReal() && Num.GetReal() == 0.0){
-          Temp = (AST::EXPRESSION*)Root->Right; // Keep the literal and make it zero
-          Root->Right = 0;
-          delete Root;
-          Root = Temp;
-          Root->Value = 0;
-        }else{
-          Temp = Root->Left; // Keep the expression and modify the full-scale
-          Root->Left = 0;
-          delete Root;
-          Root = Temp;
-          if(Root->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
-            Root->Value.Mul(Num);
-          }else{
-            if(Root->Width == 0) error("Unexpected 0 width");
-            Root->FullScale.Mul(Num);
-          }
-        }
-      }
-      // TODO When multiplying an expression with a literal, simply scale the
-      //      full-scale of the expression
+      error("Not yet implemented");
       break;
 
     case AST::EXPRESSION::EXPRESSION_TYPE::Divide:
@@ -1525,11 +1472,6 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
         Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Multiply);
         Temp->Left  = *Target;
         Temp->Right = Right;
-        if(Temp->Left->Width && Right->Width){
-          Temp->Width     = Temp->Left->Width + Right->Width;
-          Temp->FullScale = Temp->Left->FullScale;
-          Temp->FullScale.Mul(Right->FullScale);
-        }
         *Target = Temp;
         break;
       }else{
@@ -1668,34 +1610,12 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
   Simplify(*Target);
 
   if(*Target){
-    if(RawAssign){
-      if(Object->Type == BASE::TYPE::Pin || Object->Type == BASE::TYPE::Net){
-        SYNTHESISABLE* Synth = (SYNTHESISABLE*)Object;
-        (*Target)->Signed    = Synth->Signed;
-        (*Target)->Width     = Synth->Width;
-        (*Target)->FullScale = Synth->FullScale;
-      }
-    }else{
+    if(!RawAssign){
       if(Object->Type == BASE::TYPE::Pin || Object->Type == BASE::TYPE::Net){
         SYNTHESISABLE* Synth = (SYNTHESISABLE*)Object;
         if((*Target)->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Literal){
           (*Target)->Value.Div     (Synth->FullScale);
           (*Target)->Value.BinScale(Synth->Width);
-          (*Target)->Signed    = Synth->Signed;
-          (*Target)->Width     = Synth->Width;
-          (*Target)->FullScale = Synth->FullScale;
-        }else{
-          if((*Target)->Signed    != Synth->Signed ||
-             (*Target)->Width     != Synth->Width  ||
-             (*Target)->FullScale != Synth->FullScale){
-            // Inject a cast expression and let the back-end sort it out
-            Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::EXPRESSION::EXPRESSION_TYPE::Cast);
-            Temp->Left      = *Target;
-            Temp->Signed    = Synth->Signed;
-            Temp->Width     = Synth->Width;
-            Temp->FullScale = Synth->FullScale;
-            *Target = Temp;
-          }
         }
       }
     }

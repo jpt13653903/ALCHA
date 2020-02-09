@@ -44,10 +44,6 @@ EXPRESSION::EXPRESSION(
   ObjectRef = 0;
   Left      = 0;
   Right     = 0;
-
-  Signed    = false;
-  Width     = 0;
-  FullScale = 0;
 }
 //------------------------------------------------------------------------------
 
@@ -87,9 +83,6 @@ int EXPRESSION::ElementCount(){
 BASE* EXPRESSION::Copy(bool CopyNext){
   EXPRESSION* Copy = new EXPRESSION(Line, Filename.c_str(), ExpressionType);
 
-  Copy->Signed    = Signed;
-  Copy->Width     = Width;
-  Copy->FullScale = FullScale;
   Copy->Name      = Name;
   Copy->Value     = Value;
   Copy->StrValue  = StrValue;
@@ -105,8 +98,6 @@ BASE* EXPRESSION::Copy(bool CopyNext){
 //------------------------------------------------------------------------------
 
 void EXPRESSION::Display(){
-  if(Width) Debug.print(ANSI_FG_BRIGHT_GREEN "(" ANSI_RESET);
-
   if(Left){
     if(Left->Left || Left->Right) Debug.print("(");
     Left->Display();
@@ -230,14 +221,6 @@ void EXPRESSION::Display(){
   if(Next){
     Debug.print(", ");
     Next->Display();
-  }
-
-  if(Width){
-    Debug.print(ANSI_FG_BRIGHT_GREEN ")");
-    Debug.print(ANSI_FG_BRIGHT_BLACK "@(");
-    Debug.print("%d", Width);
-    Debug.print(", %s", Signed ? "-" : "");
-    Debug.print("%s)" ANSI_RESET, FullScale.Display());
   }
 }
 //------------------------------------------------------------------------------

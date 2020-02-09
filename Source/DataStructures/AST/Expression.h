@@ -102,15 +102,6 @@ namespace AST{
       Conditional
     } ExpressionType;
 
-    // The resulting fixed-point type of the expression (if appropriate)
-    // If Width is not 0, the contents is in binary representation.
-    // If this is a literal, Value is real-world when Width is 0, else Value
-    // is the binary representation (but still in rational form).
-    bool   Signed;
-    int    Width; // 0 => not applicable or not defined
-    NUMBER FullScale;
-    // TODO: Move the type def above to the symbol table definition...
-
     std::string    Name;      // Used for identifiers
     NUMBER         Value;     // Only used for numerical literals
     std::string    StrValue;  // Only used for string literals
