@@ -23,7 +23,7 @@
 //------------------------------------------------------------------------------
 
 #include "Synthesisable.h"
-#include "AST/Expression.h"
+#include "AST/Expression/Expression.h"
 //------------------------------------------------------------------------------
 
 namespace NETLIST{

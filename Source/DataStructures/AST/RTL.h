@@ -30,7 +30,8 @@ namespace AST{
     BASE* Parameters;
     BASE* Statements;
 
-    RTL(int Line, const char* Filename);
+    RTL(int Line, std::string& Filename);
+    RTL(int Line, const char*  Filename);
    ~RTL();
 
     // Returns a copy of this instance

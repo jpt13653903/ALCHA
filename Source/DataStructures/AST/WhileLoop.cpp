@@ -24,8 +24,10 @@
 using namespace AST;
 //------------------------------------------------------------------------------
 
-WHILE_LOOP::WHILE_LOOP(int Line, const char* Filename):
-BASE(Line, Filename, TYPE::WhileLoop){
+WHILE_LOOP::WHILE_LOOP(int Line, std::string& Filename): WHILE_LOOP(Line, Filename.c_str()){}
+//------------------------------------------------------------------------------
+
+WHILE_LOOP::WHILE_LOOP(int Line, const char* Filename): BASE(Line, Filename, TYPE::WhileLoop){
   Condition  = 0;
   Statements = 0;
 }

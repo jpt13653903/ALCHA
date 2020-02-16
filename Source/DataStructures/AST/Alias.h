@@ -22,7 +22,7 @@
 #define AST_Alias_h
 //------------------------------------------------------------------------------
 
-#include "Expression.h"
+#include "Expression/Expression.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
@@ -30,7 +30,8 @@ namespace AST{
     std::string Identifier;
     EXPRESSION* Expression;
 
-    ALIAS(int Line, const char* Filename);
+    ALIAS(int Line, std::string& Filename);
+    ALIAS(int Line, const char*  Filename);
    ~ALIAS();
 
     // Returns a copy of this instance

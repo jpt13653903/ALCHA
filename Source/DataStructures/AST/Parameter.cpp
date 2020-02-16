@@ -26,6 +26,13 @@ using namespace AST;
 
 PARAMETER::PARAMETER(
   int             Line,
+  std::string&    Filename,
+  DEFINITION_TYPE DefinitionType
+): PARAMETER(Line, Filename.c_str(), DefinitionType){}
+//------------------------------------------------------------------------------
+
+PARAMETER::PARAMETER(
+  int             Line,
   const char*     Filename,
   DEFINITION_TYPE DefinitionType
 ): BASE(Line, Filename, TYPE::Parameter){

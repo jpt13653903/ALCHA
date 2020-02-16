@@ -22,7 +22,7 @@
 #define AST_Switch_h
 //------------------------------------------------------------------------------
 
-#include "Expression.h"
+#include "Expression/Expression.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
@@ -41,7 +41,8 @@ namespace AST{
     BASE      * Default;
     EXPRESSION* Expression;
 
-    SWITCH(int Line, const char* Filename);
+    SWITCH(int Line, std::string& Filename);
+    SWITCH(int Line, const char*  Filename);
    ~SWITCH();
 
     // Returns a copy of this instance

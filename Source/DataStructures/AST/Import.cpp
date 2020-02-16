@@ -24,8 +24,10 @@
 using namespace AST;
 //------------------------------------------------------------------------------
 
-IMPORT::IMPORT(int Line, const char* Filename):
-BASE(Line, Filename, TYPE::Import){
+IMPORT::IMPORT(int Line, std::string& Filename): IMPORT(Line, Filename.c_str()){}
+//------------------------------------------------------------------------------
+
+IMPORT::IMPORT(int Line, const char* Filename): BASE(Line, Filename, TYPE::Import){
 }
 //------------------------------------------------------------------------------
 

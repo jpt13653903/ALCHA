@@ -40,7 +40,8 @@ namespace AST{
     std::string Identifier;
     VALUE*      Values;
 
-    ENUM_DEFINITION(int Line, const char* Filename);
+    ENUM_DEFINITION(int Line, std::string& Filename);
+    ENUM_DEFINITION(int Line, const char*  Filename);
    ~ENUM_DEFINITION();
 
     // Returns a copy of this instance

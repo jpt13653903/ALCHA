@@ -49,6 +49,9 @@ CLASS_DEFINITION::PARENT::~PARENT(){
 }
 //------------------------------------------------------------------------------
 
+CLASS_DEFINITION::CLASS_DEFINITION(int Line, std::string& Filename): CLASS_DEFINITION(Line, Filename.c_str()){}
+//------------------------------------------------------------------------------
+
 CLASS_DEFINITION::CLASS_DEFINITION(int Line, const char* Filename): BASE(Line, Filename, TYPE::ClassDefinition){
   Attributes = 0;
   Parameters = 0;

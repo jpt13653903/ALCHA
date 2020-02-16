@@ -27,7 +27,8 @@
 
 namespace AST{
   struct FENCE: public BASE{
-    FENCE(int Line, const char* Filename);
+    FENCE(int Line, std::string& Filename);
+    FENCE(int Line, const char*  Filename);
    ~FENCE();
 
     // Returns a copy of this instance

@@ -24,6 +24,9 @@
 using namespace AST;
 //------------------------------------------------------------------------------
 
+ALIAS::ALIAS(int Line, std::string& Filename): ALIAS(Line, Filename.c_str()){}
+//------------------------------------------------------------------------------
+
 ALIAS::ALIAS(int Line, const char* Filename): BASE(Line, Filename, TYPE::Alias){
   Expression = 0;
 }

@@ -30,7 +30,8 @@ namespace AST{
     std::string File;
     std::string Namespace;
 
-    IMPORT(int Line, const char* Filename);
+    IMPORT(int Line, std::string& Filename);
+    IMPORT(int Line, const char*  Filename);
    ~IMPORT();
 
     // Returns a copy of this instance

@@ -22,7 +22,7 @@
 #define AST_Jump_h
 //------------------------------------------------------------------------------
 
-#include "Expression.h"
+#include "Expression/Expression.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
@@ -34,7 +34,8 @@ namespace AST{
     } JumpType;
     EXPRESSION* Expression;
 
-    JUMP(int Line, const char* Filename, JUMP_TYPE JumpType);
+    JUMP(int Line, std::string& Filename, JUMP_TYPE JumpType);
+    JUMP(int Line, const char*  Filename, JUMP_TYPE JumpType);
    ~JUMP();
 
     // Returns a copy of this instance

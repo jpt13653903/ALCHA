@@ -24,6 +24,9 @@
 using namespace AST;
 //------------------------------------------------------------------------------
 
+FENCE::FENCE(int Line, std::string& Filename): FENCE(Line, Filename.c_str()){}
+//------------------------------------------------------------------------------
+
 FENCE::FENCE(int Line, const char* Filename): BASE(Line, Filename, TYPE::Fence){
 }
 //------------------------------------------------------------------------------

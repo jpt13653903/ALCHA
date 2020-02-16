@@ -48,7 +48,8 @@ namespace AST{
 
     BASE* Body;
 
-    CLASS_DEFINITION(int Line, const char* Filename);
+    CLASS_DEFINITION(int Line, std::string& Filename);
+    CLASS_DEFINITION(int Line, const char*  Filename);
    ~CLASS_DEFINITION();
 
     // Returns a copy of this instance

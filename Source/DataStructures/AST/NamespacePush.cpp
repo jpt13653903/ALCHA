@@ -24,8 +24,10 @@
 using namespace AST;
 //------------------------------------------------------------------------------
 
-NAMESPACE_PUSH::NAMESPACE_PUSH(int Line, const char* Filename):
-BASE(Line, Filename, TYPE::NamespacePush){
+NAMESPACE_PUSH::NAMESPACE_PUSH(int Line, std::string& Filename): NAMESPACE_PUSH(Line, Filename.c_str()){}
+//------------------------------------------------------------------------------
+
+NAMESPACE_PUSH::NAMESPACE_PUSH(int Line, const char* Filename): BASE(Line, Filename, TYPE::NamespacePush){
   Namespace  = 0;
   Statements = 0;
 }

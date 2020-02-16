@@ -24,8 +24,10 @@
 using namespace AST;
 //------------------------------------------------------------------------------
 
-LOOP_LOOP::LOOP_LOOP(int Line, const char* Filename):
-BASE(Line, Filename, TYPE::LoopLoop){
+LOOP_LOOP::LOOP_LOOP(int Line, std::string& Filename): LOOP_LOOP(Line, Filename.c_str()){}
+//------------------------------------------------------------------------------
+
+LOOP_LOOP::LOOP_LOOP(int Line, const char* Filename): BASE(Line, Filename, TYPE::LoopLoop){
   Count      = 0;
   Statements = 0;
 }

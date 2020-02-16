@@ -22,7 +22,7 @@
 #define AST_LoopLoop_h
 //------------------------------------------------------------------------------
 
-#include "Expression.h"
+#include "Expression/Expression.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
@@ -30,7 +30,8 @@ namespace AST{
     EXPRESSION* Count;
     BASE      * Statements;
 
-    LOOP_LOOP(int Line, const char* Filename);
+    LOOP_LOOP(int Line, std::string& Filename);
+    LOOP_LOOP(int Line, const char*  Filename);
    ~LOOP_LOOP();
 
     // Returns a copy of this instance

@@ -45,8 +45,10 @@ SWITCH::CASE::~CASE(){
 }
 //------------------------------------------------------------------------------
 
-SWITCH::SWITCH(int Line, const char* Filename):
-BASE(Line, Filename, TYPE::Switch){
+SWITCH::SWITCH(int Line, std::string& Filename): SWITCH(Line, Filename.c_str()){}
+//------------------------------------------------------------------------------
+
+SWITCH::SWITCH(int Line, const char* Filename): BASE(Line, Filename, TYPE::Switch){
   Cases      = 0;
   Default    = 0;
   Expression = 0;

@@ -22,7 +22,7 @@
 #define AST_ForLoop_h
 //------------------------------------------------------------------------------
 
-#include "Expression.h"
+#include "Expression/Expression.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
@@ -31,7 +31,8 @@ namespace AST{
     EXPRESSION* Range;
     BASE      * Statements;
 
-    FOR_LOOP(int Line, const char* Filename);
+    FOR_LOOP(int Line, std::string& Filename);
+    FOR_LOOP(int Line, const char*  Filename);
    ~FOR_LOOP();
 
     // Returns a copy of this instance

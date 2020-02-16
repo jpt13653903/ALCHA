@@ -24,8 +24,10 @@
 using namespace AST;
 //------------------------------------------------------------------------------
 
-IF_STATEMENT::IF_STATEMENT(int Line, const char* Filename):
-BASE(Line, Filename, TYPE::IfStatement){
+IF_STATEMENT::IF_STATEMENT(int Line, std::string& Filename): IF_STATEMENT(Line, Filename.c_str()){}
+//------------------------------------------------------------------------------
+
+IF_STATEMENT::IF_STATEMENT(int Line, const char* Filename): BASE(Line, Filename, TYPE::IfStatement){
   Condition       = 0;
   TrueStatements  = 0;
   FalseStatements = 0;

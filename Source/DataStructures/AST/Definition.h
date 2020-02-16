@@ -71,6 +71,9 @@ namespace AST{
     IDENTIFIER* Identifiers;
 
     DEFINITION(int             Line,
+               std::string&    Filename,
+               DEFINITION_TYPE DefinitionType);
+    DEFINITION(int             Line,
                const char*     Filename,
                DEFINITION_TYPE DefinitionType);
    ~DEFINITION();

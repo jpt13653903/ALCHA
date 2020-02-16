@@ -30,7 +30,8 @@ namespace AST{
     BASE* Parameters;
     BASE* Statements;
 
-    FSM(int Line, const char* Filename);
+    FSM(int Line, std::string& Filename);
+    FSM(int Line, const char*  Filename);
    ~FSM();
 
     // Returns a copy of this instance

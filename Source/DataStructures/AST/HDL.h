@@ -33,7 +33,8 @@ namespace AST{
     ASSIGNMENT* Parameters;
     DEFINITION* Ports;
 
-    HDL(int Line, const char* Filename);
+    HDL(int Line, std::string& Filename);
+    HDL(int Line, const char*  Filename);
    ~HDL();
 
     // Returns a copy of this instance

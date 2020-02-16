@@ -24,6 +24,9 @@
 using namespace AST;
 //------------------------------------------------------------------------------
 
+RTL::RTL(int Line, std::string& Filename): RTL(Line, Filename.c_str()){}
+//------------------------------------------------------------------------------
+
 RTL::RTL(int Line, const char* Filename): BASE(Line, Filename, TYPE::RTL){
   Parameters = 0;
   Statements = 0;

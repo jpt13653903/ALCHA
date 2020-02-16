@@ -22,7 +22,7 @@
 #define AST_Assignment_h
 //------------------------------------------------------------------------------
 
-#include "Expression.h"
+#include "Expression/Expression.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
@@ -50,6 +50,9 @@ namespace AST{
     EXPRESSION* Left;
     EXPRESSION* Right;
 
+    ASSIGNMENT(int             Line,
+               std::string&    Filename,
+               ASSIGNMENT_TYPE AssignmentType);
     ASSIGNMENT(int             Line,
                const char*     Filename,
                ASSIGNMENT_TYPE AssignmentType);

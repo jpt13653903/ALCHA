@@ -20,7 +20,7 @@
 
 #include "Base.h"
 #include "Module.h"
-#include "AST/Expression.h"
+#include "AST/Expression/Expression.h"
 //------------------------------------------------------------------------------
 
 using namespace std;

@@ -84,6 +84,13 @@ DEFINITION::IDENTIFIER::~IDENTIFIER(){
 
 DEFINITION::DEFINITION(
   int             Line,
+  std::string&    Filename,
+  DEFINITION_TYPE DefinitionType
+): DEFINITION(Line, Filename.c_str(), DefinitionType){}
+//------------------------------------------------------------------------------
+
+DEFINITION::DEFINITION(
+  int             Line,
   const char*     Filename,
   DEFINITION_TYPE DefinitionType
 ): BASE(Line, Filename, TYPE::Definition){

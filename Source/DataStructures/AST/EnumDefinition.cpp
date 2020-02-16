@@ -41,6 +41,10 @@ ENUM_DEFINITION::VALUE::~VALUE(){
 }
 //------------------------------------------------------------------------------
 
+ENUM_DEFINITION::ENUM_DEFINITION(int Line, std::string& Filename):
+ENUM_DEFINITION(Line, Filename.c_str()){}
+//------------------------------------------------------------------------------
+
 ENUM_DEFINITION::ENUM_DEFINITION(int Line, const char* Filename):
 BASE(Line, Filename, TYPE::EnumDefinition){
   Values = 0;

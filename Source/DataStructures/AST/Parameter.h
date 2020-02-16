@@ -22,7 +22,7 @@
 #define AST_Parameter_h
 //------------------------------------------------------------------------------
 
-#include "Expression.h"
+#include "Expression/Expression.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
@@ -39,7 +39,8 @@ namespace AST{
     int         ArrayDimensions;
     std::string Identifier;
 
-    PARAMETER(int Line, const char* Filename, DEFINITION_TYPE DefinitionType);
+    PARAMETER(int Line, std::string& Filename, DEFINITION_TYPE DefinitionType);
+    PARAMETER(int Line, const char*  Filename, DEFINITION_TYPE DefinitionType);
    ~PARAMETER();
 
     // Returns a copy of this instance

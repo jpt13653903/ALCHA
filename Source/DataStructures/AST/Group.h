@@ -32,7 +32,8 @@ namespace AST{
     std::string Identifier;
     BASE*       Body;
 
-    GROUP(int Line, const char* Filename);
+    GROUP(int Line, std::string& Filename);
+    GROUP(int Line, const char*  Filename);
    ~GROUP();
 
     // Returns a copy of this instance

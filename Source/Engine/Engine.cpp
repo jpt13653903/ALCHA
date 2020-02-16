@@ -107,13 +107,13 @@ AST::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
                 case BASE::TYPE::Pin:
                 case BASE::TYPE::Net:{
                   auto Synthesisable = (SYNTHESISABLE*)Object->second;
-                  Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::BASE::TYPE::Object);
+                  Result = new AST::OBJECT(Node->Line, Node->Filename);
                   Result->ObjectRef = Synthesisable;
                   Synthesisable->Used = true;
                   break;
                 }
                 default:{
-                  Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::BASE::TYPE::Object);
+                  Result = new AST::OBJECT(Node->Line, Node->Filename);
                   Result->ObjectRef = Object->second;
                   break;
                 }
@@ -127,7 +127,7 @@ AST::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       if(!Result){
         NUMBER Constant;
         if(GetConstant(Node->Name.c_str(), &Constant)){
-          Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::BASE::TYPE::Literal);
+          Result = new AST::LITERAL(Node->Line, Node->Filename);
           Result->Value = new NUMBER(Constant);
         }else{
           Error(Node);
@@ -198,7 +198,7 @@ AST::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
                     Result = Evaluate(Alias->Expression);
                   NamespaceStack.pop_front();
                 }else{
-                  Result = new AST::EXPRESSION(Node->Line, Node->Filename, AST::BASE::TYPE::Object);
+                  Result = new AST::OBJECT(Node->Line, Node->Filename);
                   Result->ObjectRef = Found->second;
                   if(Result->ObjectRef->Type == BASE::TYPE::Pin ||
                      Result->ObjectRef->Type == BASE::TYPE::Net ){
@@ -1392,7 +1392,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
       case BASE::TYPE::Byte:
       case BASE::TYPE::Character:
       case BASE::TYPE::Number:
-        ScriptTarget = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::BASE::TYPE::Object);
+        ScriptTarget = new AST::OBJECT(Ast->Line, Ast->Filename);
         ScriptTarget->ObjectRef = Object;
         Target = &ScriptTarget;
         break;
@@ -1421,7 +1421,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::Append_Assign:
       RawAssign = false;
       if(*Target){
-        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::BASE::TYPE::ArrayConcatenate);
+        Temp = new AST::ARRAYCONCATENATE(Ast->Line, Ast->Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -1436,7 +1436,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::Add_Assign:
       RawAssign = false;
       if(*Target){
-        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::BASE::TYPE::Add);
+        Temp = new AST::ADD(Ast->Line, Ast->Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -1451,7 +1451,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::Subtract_Assign:
       RawAssign = false;
       if(*Target){
-        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::BASE::TYPE::Subtract);
+        Temp = new AST::SUBTRACT(Ast->Line, Ast->Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -1466,7 +1466,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::Multiply_Assign:
       RawAssign = false;
       if(*Target){
-        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::BASE::TYPE::Multiply);
+        Temp = new AST::MULTIPLY(Ast->Line, Ast->Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target = Temp;
@@ -1481,7 +1481,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::Divide_Assign:
       RawAssign = false;
       if(*Target){
-        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::BASE::TYPE::Divide);
+        Temp = new AST::DIVIDE(Ast->Line, Ast->Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -1496,7 +1496,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::Modulus_Assign:
       RawAssign = false;
       if(*Target){
-        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::BASE::TYPE::Modulus);
+        Temp = new AST::MODULUS(Ast->Line, Ast->Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -1511,7 +1511,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::Exponential_Assign:
       RawAssign = false;
       if(*Target){
-        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::BASE::TYPE::Exponential);
+        Temp = new AST::EXPONENTIAL(Ast->Line, Ast->Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -1526,7 +1526,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::AND_Assign:
       RawAssign = true;
       if(*Target){
-        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::BASE::TYPE::Bit_AND);
+        Temp = new AST::BIT_AND(Ast->Line, Ast->Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -1541,7 +1541,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::OR_Assign:
       RawAssign = true;
       if(*Target){
-        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::BASE::TYPE::Bit_OR);
+        Temp = new AST::BIT_OR(Ast->Line, Ast->Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -1556,7 +1556,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::XOR_Assign:
       RawAssign = true;
       if(*Target){
-        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::BASE::TYPE::Bit_XOR);
+        Temp = new AST::BIT_XOR(Ast->Line, Ast->Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -1571,7 +1571,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::Shift_Left_Assign:
       RawAssign = true;
       if(*Target){
-        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::BASE::TYPE::Shift_Left);
+        Temp = new AST::SHIFT_LEFT(Ast->Line, Ast->Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -1586,7 +1586,7 @@ bool ENGINE::Assignment(AST::ASSIGNMENT* Ast){
     case AST::ASSIGNMENT::ASSIGNMENT_TYPE::Shift_Right_Assign:
       RawAssign = true;
       if(*Target){
-        Temp = new AST::EXPRESSION(Ast->Line, Ast->Filename, AST::BASE::TYPE::Shift_Right);
+        Temp = new AST::SHIFT_RIGHT(Ast->Line, Ast->Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;

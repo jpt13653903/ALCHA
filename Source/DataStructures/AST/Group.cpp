@@ -24,6 +24,9 @@
 using namespace AST;
 //------------------------------------------------------------------------------
 
+AST::GROUP::GROUP(int Line, std::string& Filename): AST::GROUP(Line, Filename.c_str()){}
+//------------------------------------------------------------------------------
+
 AST::GROUP::GROUP(int Line, const char* Filename): BASE(Line, Filename, TYPE::Group){
   Attributes = 0;
   Body       = 0;

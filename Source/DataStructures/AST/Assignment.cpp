@@ -26,6 +26,13 @@ using namespace AST;
 
 ASSIGNMENT::ASSIGNMENT(
   int             Line,
+  std::string&    Filename,
+  ASSIGNMENT_TYPE AssignmentType
+): ASSIGNMENT(Line, Filename.c_str(), AssignmentType){}
+//------------------------------------------------------------------------------
+
+ASSIGNMENT::ASSIGNMENT(
+  int             Line,
   const char*     Filename,
   ASSIGNMENT_TYPE AssignmentType
 ): BASE(Line, Filename, TYPE::Assignment){

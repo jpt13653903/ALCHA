@@ -22,7 +22,7 @@
 #define AST_WhileLoop_h
 //------------------------------------------------------------------------------
 
-#include "Expression.h"
+#include "Expression/Expression.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
@@ -30,7 +30,8 @@ namespace AST{
     EXPRESSION* Condition;
     BASE      * Statements;
 
-    WHILE_LOOP(int Line, const char* Filename);
+    WHILE_LOOP(int Line, std::string& Filename);
+    WHILE_LOOP(int Line, const char*  Filename);
    ~WHILE_LOOP();
 
     // Returns a copy of this instance

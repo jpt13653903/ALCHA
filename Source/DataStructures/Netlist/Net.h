@@ -22,7 +22,7 @@
 #define Netlist_Net_h
 //------------------------------------------------------------------------------
 
-#include "AST/Expression.h"
+#include "AST/Expression/Expression.h"
 #include "Synthesisable.h"
 //------------------------------------------------------------------------------
 

@@ -18,46 +18,48 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Expression_h
-#define AST_Expression_h
+#include "Conditional.h"
+#include "../Assignment.h"
+#include "Netlist/Base.h"
 //------------------------------------------------------------------------------
 
-#include "Base.h"
-#include "Number.h"
+using namespace std;
+using namespace AST;
 //------------------------------------------------------------------------------
 
-namespace NETLIST{
-  class BASE;
+CONDITIONAL::CONDITIONAL(int Line, const string& Filename): CONDITIONAL(Line, Filename.c_str()){}
+//------------------------------------------------------------------------------
+
+CONDITIONAL::CONDITIONAL(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Conditional){
 }
 //------------------------------------------------------------------------------
 
-namespace AST{
-  struct EXPRESSION: public BASE{
-    std::string    Name;      // Used for identifiers
-    NUMBER         Value;     // Only used for numerical literals
-    std::string    StrValue;  // Only used for string literals
-    NETLIST::BASE* ObjectRef; // Used for "Object" type
-
-    // Left and Right operands
-    EXPRESSION* Left;
-    BASE*       Right; // Can be expression or assignment (for function calls)
-
-    EXPRESSION(int Line, const std::string& Filename, TYPE ExpressionType);
-    EXPRESSION(int Line, const char*        Filename, TYPE ExpressionType);
-   ~EXPRESSION();
-
-    // These functions work on the linked list stored in Right
-    BASE* Element(int n);
-    int   ElementCount();
-
-    // Returns a copy of this instance
-    virtual BASE* Copy(bool CopyNext);
-
-    void Display();
-  };
+CONDITIONAL::~CONDITIONAL(){
 }
 //------------------------------------------------------------------------------
 
-#endif
+BASE* CONDITIONAL::Copy(bool CopyNext){
+  CONDITIONAL* Copy = new CONDITIONAL(Line, Filename.c_str());
+
+  Copy->Name      = Name;
+  Copy->Value     = Value;
+  Copy->StrValue  = StrValue;
+  Copy->ObjectRef = ObjectRef;
+
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
+  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
+
+  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+
+  return Copy;
+}
 //------------------------------------------------------------------------------
 
+void CONDITIONAL::Display(){
+  DisplayStart();
+
+  Debug.print(" ? ");
+
+  DisplayEnd();
+}
+//------------------------------------------------------------------------------

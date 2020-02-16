@@ -63,7 +63,7 @@ namespace AST{
       FSM,
       HDL,
 
-      Expression, // Used only as a starting index
+      Expression, // Used only as a starting index for if-statements
         String,
         Literal,
         Array,
@@ -130,6 +130,7 @@ namespace AST{
         Logical_OR,
 
         Conditional
+      // End of expressions -- don't add other stuff below this point
     } Type;
 
     int         Line;

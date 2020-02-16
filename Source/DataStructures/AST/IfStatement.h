@@ -22,7 +22,7 @@
 #define AST_IfStatement_h
 //------------------------------------------------------------------------------
 
-#include "Expression.h"
+#include "Expression/Expression.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
@@ -31,7 +31,8 @@ namespace AST{
     BASE      * TrueStatements;
     BASE      * FalseStatements;
 
-    IF_STATEMENT(int Line, const char* Filename);
+    IF_STATEMENT(int Line, std::string& Filename);
+    IF_STATEMENT(int Line, const char*  Filename);
    ~IF_STATEMENT();
 
     // Returns a copy of this instance

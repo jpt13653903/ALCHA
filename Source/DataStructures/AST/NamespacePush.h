@@ -22,7 +22,7 @@
 #define AST_NamespacePush_h
 //------------------------------------------------------------------------------
 
-#include "Expression.h"
+#include "Expression/Expression.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
@@ -30,7 +30,8 @@ namespace AST{
     EXPRESSION* Namespace;
     BASE      * Statements;
 
-    NAMESPACE_PUSH(int Line, const char* Filename);
+    NAMESPACE_PUSH(int Line, std::string& Filename);
+    NAMESPACE_PUSH(int Line, const char*  Filename);
    ~NAMESPACE_PUSH();
 
     // Returns a copy of this instance
