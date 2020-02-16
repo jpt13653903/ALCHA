@@ -51,7 +51,6 @@ namespace AST{
       Definition, // pin, net, byte, char, num and
                   // class instance
       Parameter,  // Parameter definition, not function call
-      Expression,
       Assignment,
       NamespacePush,
       IfStatement,
@@ -62,7 +61,75 @@ namespace AST{
       Jump,
       RTL,
       FSM,
-      HDL
+      HDL,
+
+      Expression, // Used only as a starting index
+        String,
+        Literal,
+        Array,
+        Identifier,
+        Object,
+
+        VectorConcatenate,
+        ArrayConcatenate,
+
+        FunctionCall, // Left is the function name; right is the parameter list
+        Slice,
+        AccessMember,
+        AccessMemberSafe,
+        AccessAttribute,
+        Range, // Left = from; Right = to; Right->Next = step
+
+        Increment, // If child is on the left, post-increment
+        Decrement, // If child is on the left, post-decrement
+        Factorial,
+
+        Negate,
+        Bit_NOT,
+        Raw,     // Unary operator to cast to "raw bits", or "unsigned int"
+
+        AND_Reduce,
+        NAND_Reduce,
+        OR_Reduce,
+        NOR_Reduce,
+        XOR_Reduce,
+        XNOR_Reduce,
+        Logical_NOT,
+
+        Cast,
+
+        Replicate,
+
+        Multiply,
+        Divide,
+        Modulus,
+        Exponential,
+
+        Add,
+        Subtract,
+
+        Shift_Left,
+        Shift_Right,
+
+        Less,
+        Greater,
+        Less_Equal,
+        Greater_Equal,
+
+        Equal,
+        Not_Equal,
+
+        Bit_AND,
+        Bit_NAND,
+        Bit_OR,
+        Bit_NOR,
+        Bit_XOR,
+        Bit_XNOR,
+
+        Logical_AND,
+        Logical_OR,
+
+        Conditional
     } Type;
 
     int         Line;

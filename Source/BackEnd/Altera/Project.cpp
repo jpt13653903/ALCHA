@@ -127,7 +127,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
         auto Pin = (PIN*)(SymbolIterator->second);
         auto Standard = Pin->GetAttrib("standard");
         if(Standard){
-          if(Standard->ExpressionType != AST::EXPRESSION::EXPRESSION_TYPE::String){
+          if(Standard->Type != AST::BASE::TYPE::String){
             Error(Standard, "Standard attribute not a string");
             return false;
           }
@@ -139,13 +139,13 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
         auto Location = Pin->GetAttrib("location");
         if(Location){
           if(Pin->Width == 1){
-            if(Location->ExpressionType != AST::EXPRESSION::EXPRESSION_TYPE::String){
+            if(Location->Type != AST::BASE::TYPE::String){
               Error(Location, "Scalar pin location not a string");
               return false;
             }
             AssignPin(Body, Location->StrValue, Pin->HDL_Name());
           }else{
-            if(Location->ExpressionType != AST::EXPRESSION::EXPRESSION_TYPE::Array){
+            if(Location->Type != AST::BASE::TYPE::Array){
               Error(Location, "Vector pin location not an array");
               return false;
             }
@@ -155,9 +155,9 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
             }
             for(int n = 0; n < Pin->Width; n++){
               AST::BASE* Temp = Location->Element(n);
-              assert(Temp && Temp->Type == AST::BASE::TYPE::Expression, return false);
+              assert(Temp && Temp->Type > AST::BASE::TYPE::Expression, return false);
               AST::EXPRESSION* Element = (AST::EXPRESSION*)Temp;
-              if(Element->ExpressionType != AST::EXPRESSION::EXPRESSION_TYPE::String){
+              if(Element->Type != AST::BASE::TYPE::String){
                 Error(Element, "Pin location not a string");
                 return false;
               }
@@ -176,8 +176,8 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
         if(Current){
           Body += "set_instance_assignment "
                   "-name CURRENT_STRENGTH_NEW ";
-          switch(Current->ExpressionType){
-            case AST::EXPRESSION::EXPRESSION_TYPE::Literal:{
+          switch(Current->Type){
+            case AST::BASE::TYPE::Literal:{
               if(!Current->Value.IsReal()){
                 Error(Current, "Current attribute not real");
                 return false;
@@ -187,7 +187,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
               Body += to_string((int)mA.GetReal()) + "MA";
               break;
             }
-            case AST::EXPRESSION::EXPRESSION_TYPE::String:
+            case AST::BASE::TYPE::String:
               Body += '"' + Current->StrValue + '"';
               break;
             default:
@@ -203,13 +203,13 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
         if(WeakPullup){
           Body += "set_instance_assignment "
                   "-name WEAK_PULL_UP_RESISTOR ";
-          switch(WeakPullup->ExpressionType){
-            case AST::EXPRESSION::EXPRESSION_TYPE::Literal:{
+          switch(WeakPullup->Type){
+            case AST::BASE::TYPE::Literal:{
               if(WeakPullup->Value == true) Body += "ON";
               else                          Body += "OFF";
               break;
             }
-            case AST::EXPRESSION::EXPRESSION_TYPE::String:
+            case AST::BASE::TYPE::String:
               Body += '"' + WeakPullup->StrValue + '"';
               break;
             default:
@@ -292,7 +292,7 @@ bool PROJECT::BuildSettings(){
   auto Standard = Global.GetAttrib("standard");
   Body += "set_global_assignment -name STRATIX_DEVICE_IO_STANDARD ";
   if(Standard){
-    if(Standard->ExpressionType != AST::EXPRESSION::EXPRESSION_TYPE::String){
+    if(Standard->Type != AST::BASE::TYPE::String){
       Error(Standard, "Standard attribute not a string");
       return false;
     }
@@ -371,7 +371,7 @@ bool PROJECT::Build(const char* Path, const char* Filename){
     Error("Global attribute \"target_device\" not defined");
     return false;
   }
-  if(Device->ExpressionType != AST::EXPRESSION::EXPRESSION_TYPE::String){
+  if(Device->Type != AST::BASE::TYPE::String){
     Error(Device, "Global attribute \"target_device\" not a string");
     return false;
   }
@@ -382,7 +382,7 @@ bool PROJECT::Build(const char* Path, const char* Filename){
     Error("Global attribute \"target_series\" not defined");
     return false;
   }
-  if(Series->ExpressionType != AST::EXPRESSION::EXPRESSION_TYPE::String){
+  if(Series->Type != AST::BASE::TYPE::String){
     Error(Series, "Global attribute \"target_series\" not a string");
     return false;
   }

@@ -33,75 +33,6 @@ namespace NETLIST{
 
 namespace AST{
   struct EXPRESSION: public BASE{
-    enum class EXPRESSION_TYPE{
-      String,
-      Literal,
-      Array,
-      Identifier,
-      Object,
-
-      VectorConcatenate,
-      ArrayConcatenate,
-
-      FunctionCall, // Left is the function name; right is the parameter list
-      Slice,
-      AccessMember,
-      AccessMemberSafe,
-      AccessAttribute,
-      Range, // Left = from; Right = to; Right->Next = step
-
-      Increment, // If child is on the left, post-increment
-      Decrement, // If child is on the left, post-decrement
-      Factorial,
-
-      Negate,
-      Bit_NOT,
-      Raw,     // Unary operator to cast to "raw bits", or "unsigned int"
-
-      AND_Reduce,
-      NAND_Reduce,
-      OR_Reduce,
-      NOR_Reduce,
-      XOR_Reduce,
-      XNOR_Reduce,
-      Logical_NOT,
-
-      Cast,
-
-      Replicate,
-
-      Multiply,
-      Divide,
-      Modulus,
-      Exponential,
-
-      Add,
-      Subtract,
-
-      Shift_Left,
-      Shift_Right,
-
-      Less,
-      Greater,
-      Less_Equal,
-      Greater_Equal,
-
-      Equal,
-      Not_Equal,
-
-      Bit_AND,
-      Bit_NAND,
-      Bit_OR,
-      Bit_NOR,
-      Bit_XOR,
-      Bit_XNOR,
-
-      Logical_AND,
-      Logical_OR,
-
-      Conditional
-    } ExpressionType;
-
     std::string    Name;      // Used for identifiers
     NUMBER         Value;     // Only used for numerical literals
     std::string    StrValue;  // Only used for string literals
@@ -111,16 +42,8 @@ namespace AST{
     EXPRESSION* Left;
     BASE*       Right; // Can be expression or assignment (for function calls)
 
-    EXPRESSION(
-      int                Line,
-      const std::string& Filename,
-      EXPRESSION_TYPE    ExpressionType
-    );
-    EXPRESSION(
-      int             Line,
-      const char*     Filename,
-      EXPRESSION_TYPE ExpressionType
-    );
+    EXPRESSION(int Line, const std::string& Filename, TYPE ExpressionType);
+    EXPRESSION(int Line, const char*        Filename, TYPE ExpressionType);
    ~EXPRESSION();
 
     // These functions work on the linked list stored in Right

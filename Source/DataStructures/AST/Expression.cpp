@@ -28,19 +28,17 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 EXPRESSION::EXPRESSION(
-  int             Line,
-  const string&   Filename,
-  EXPRESSION_TYPE ExpressionType
+  int           Line,
+  const string& Filename,
+  TYPE          ExpressionType
 ): EXPRESSION(Line, Filename.c_str(), ExpressionType){}
 //------------------------------------------------------------------------------
 
 EXPRESSION::EXPRESSION(
-  int             Line,
-  const char*     Filename,
-  EXPRESSION_TYPE ExpressionType
-): BASE(Line, Filename, TYPE::Expression){
-  this->ExpressionType = ExpressionType;
-
+  int         Line,
+  const char* Filename,
+  TYPE        ExpressionType
+): BASE(Line, Filename, ExpressionType){
   ObjectRef = 0;
   Left      = 0;
   Right     = 0;
@@ -81,7 +79,7 @@ int EXPRESSION::ElementCount(){
 //------------------------------------------------------------------------------
 
 BASE* EXPRESSION::Copy(bool CopyNext){
-  EXPRESSION* Copy = new EXPRESSION(Line, Filename.c_str(), ExpressionType);
+  EXPRESSION* Copy = new EXPRESSION(Line, Filename.c_str(), Type);
 
   Copy->Name      = Name;
   Copy->Value     = Value;
@@ -104,21 +102,21 @@ void EXPRESSION::Display(){
     if(Left->Left || Left->Right) Debug.print(")");
   }
 
-  switch(ExpressionType){
-    case EXPRESSION_TYPE::String:
+  switch(Type){
+    case TYPE::String:
       Debug.print("\"%s\"", StrValue.c_str());
       break;
 
-    case EXPRESSION_TYPE::Literal:
+    case TYPE::Literal:
       Debug.print(Value.Display());
       break;
 
-    case EXPRESSION_TYPE::Identifier:
+    case TYPE::Identifier:
       if(Name.empty()) error ("(Identifier node has no name)");
       else             Debug.print("%s", Name.c_str());
       break;
 
-    case EXPRESSION_TYPE::Object:
+    case TYPE::Object:
       if(ObjectRef){
         // TODO: Display the width here, because it should be a property
         //       of the target object, not the expression itself
@@ -128,93 +126,90 @@ void EXPRESSION::Display(){
       }
       break;
 
-    case EXPRESSION_TYPE::Array            : Debug.print("{Array}"       ); break;
-    case EXPRESSION_TYPE::VectorConcatenate: Debug.print("{VectorConcat}"); break;
-    case EXPRESSION_TYPE::ArrayConcatenate : Debug.print("{ArrayConcat}" ); break;
+    case TYPE::Array            : Debug.print("{Array}"       ); break;
+    case TYPE::VectorConcatenate: Debug.print("{VectorConcat}"); break;
+    case TYPE::ArrayConcatenate : Debug.print("{ArrayConcat}" ); break;
 
-    case EXPRESSION_TYPE::FunctionCall: Debug.print("{call}" ); break;
+    case TYPE::FunctionCall: Debug.print("{call}" ); break;
 
-    case EXPRESSION_TYPE::Slice: Debug.print("{slice}"); break;
+    case TYPE::Slice: Debug.print("{slice}"); break;
 
-    case EXPRESSION_TYPE::AccessMember:     Debug.print("." ); break;
-    case EXPRESSION_TYPE::AccessMemberSafe: Debug.print("?." ); break;
-    case EXPRESSION_TYPE::AccessAttribute:  Debug.print("'" ); break;
+    case TYPE::AccessMember:     Debug.print("." ); break;
+    case TYPE::AccessMemberSafe: Debug.print("?." ); break;
+    case TYPE::AccessAttribute:  Debug.print("'" ); break;
 
-    case EXPRESSION_TYPE::Increment: Debug.print("++"); break;
-    case EXPRESSION_TYPE::Decrement: Debug.print("--"); break;
-    case EXPRESSION_TYPE::Factorial: Debug.print("!" ); break;
+    case TYPE::Increment: Debug.print("++"); break;
+    case TYPE::Decrement: Debug.print("--"); break;
+    case TYPE::Factorial: Debug.print("!" ); break;
 
-    case EXPRESSION_TYPE::Range: Debug.print(".."); break;
+    case TYPE::Range: Debug.print(".."); break;
 
-    case EXPRESSION_TYPE::Negate : Debug.print(" -"); break;
-    case EXPRESSION_TYPE::Bit_NOT: Debug.print(" ~"); break;
-    case EXPRESSION_TYPE::Raw    : Debug.print(" :"); break;
+    case TYPE::Negate : Debug.print(" -"); break;
+    case TYPE::Bit_NOT: Debug.print(" ~"); break;
+    case TYPE::Raw    : Debug.print(" :"); break;
 
-    case EXPRESSION_TYPE::AND_Reduce : Debug.print( " &"); break;
-    case EXPRESSION_TYPE::NAND_Reduce: Debug.print(" ~&"); break;
-    case EXPRESSION_TYPE::OR_Reduce  : Debug.print( " |"); break;
-    case EXPRESSION_TYPE::NOR_Reduce : Debug.print(" ~|"); break;
-    case EXPRESSION_TYPE::XOR_Reduce : Debug.print( " #"); break;
-    case EXPRESSION_TYPE::XNOR_Reduce: Debug.print(" ~#"); break;
-    case EXPRESSION_TYPE::Logical_NOT: Debug.print( " !"); break;
+    case TYPE::AND_Reduce : Debug.print( " &"); break;
+    case TYPE::NAND_Reduce: Debug.print(" ~&"); break;
+    case TYPE::OR_Reduce  : Debug.print( " |"); break;
+    case TYPE::NOR_Reduce : Debug.print(" ~|"); break;
+    case TYPE::XOR_Reduce : Debug.print( " #"); break;
+    case TYPE::XNOR_Reduce: Debug.print(" ~#"); break;
+    case TYPE::Logical_NOT: Debug.print( " !"); break;
 
-    case EXPRESSION_TYPE::Cast       : Debug.print(" {cast} "); break;
+    case TYPE::Cast       : Debug.print(" {cast} "); break;
 
-    case EXPRESSION_TYPE::Replicate  : Debug.print("{rep}"); break;
+    case TYPE::Replicate  : Debug.print("{rep}"); break;
 
-    case EXPRESSION_TYPE::Exponential: Debug.print(" ^ " ); break;
-    case EXPRESSION_TYPE::Multiply   : Debug.print(" * " ); break;
-    case EXPRESSION_TYPE::Divide     : Debug.print(" / " ); break;
-    case EXPRESSION_TYPE::Modulus    : Debug.print(" %% "); break;
-    case EXPRESSION_TYPE::Add        : Debug.print(" + " ); break;
-    case EXPRESSION_TYPE::Subtract   : Debug.print(" - " ); break;
+    case TYPE::Exponential: Debug.print(" ^ " ); break;
+    case TYPE::Multiply   : Debug.print(" * " ); break;
+    case TYPE::Divide     : Debug.print(" / " ); break;
+    case TYPE::Modulus    : Debug.print(" %% "); break;
+    case TYPE::Add        : Debug.print(" + " ); break;
+    case TYPE::Subtract   : Debug.print(" - " ); break;
 
-    case EXPRESSION_TYPE::Shift_Left : Debug.print(" << "); break;
-    case EXPRESSION_TYPE::Shift_Right: Debug.print(" >> "); break;
+    case TYPE::Shift_Left : Debug.print(" << "); break;
+    case TYPE::Shift_Right: Debug.print(" >> "); break;
 
-    case EXPRESSION_TYPE::Less         : Debug.print(" < " ); break;
-    case EXPRESSION_TYPE::Greater      : Debug.print(" > " ); break;
-    case EXPRESSION_TYPE::Less_Equal   : Debug.print(" <= "); break;
-    case EXPRESSION_TYPE::Greater_Equal: Debug.print(" >= "); break;
-    case EXPRESSION_TYPE::Equal        : Debug.print(" == "); break;
-    case EXPRESSION_TYPE::Not_Equal    : Debug.print(" != "); break;
+    case TYPE::Less         : Debug.print(" < " ); break;
+    case TYPE::Greater      : Debug.print(" > " ); break;
+    case TYPE::Less_Equal   : Debug.print(" <= "); break;
+    case TYPE::Greater_Equal: Debug.print(" >= "); break;
+    case TYPE::Equal        : Debug.print(" == "); break;
+    case TYPE::Not_Equal    : Debug.print(" != "); break;
 
-    case EXPRESSION_TYPE::Bit_AND : Debug.print( " & "); break;
-    case EXPRESSION_TYPE::Bit_NAND: Debug.print(" ~& "); break;
-    case EXPRESSION_TYPE::Bit_OR  : Debug.print( " | "); break;
-    case EXPRESSION_TYPE::Bit_NOR : Debug.print(" ~| "); break;
-    case EXPRESSION_TYPE::Bit_XOR : Debug.print( " # "); break;
-    case EXPRESSION_TYPE::Bit_XNOR: Debug.print(" ~# "); break;
+    case TYPE::Bit_AND : Debug.print( " & "); break;
+    case TYPE::Bit_NAND: Debug.print(" ~& "); break;
+    case TYPE::Bit_OR  : Debug.print( " | "); break;
+    case TYPE::Bit_NOR : Debug.print(" ~| "); break;
+    case TYPE::Bit_XOR : Debug.print( " # "); break;
+    case TYPE::Bit_XNOR: Debug.print(" ~# "); break;
 
-    case EXPRESSION_TYPE::Logical_AND: Debug.print(" && "); break;
-    case EXPRESSION_TYPE::Logical_OR : Debug.print(" || "); break;
+    case TYPE::Logical_AND: Debug.print(" && "); break;
+    case TYPE::Logical_OR : Debug.print(" || "); break;
 
-    case EXPRESSION_TYPE::Conditional : Debug.print(" ? "); break;
+    case TYPE::Conditional : Debug.print(" ? "); break;
 
-    default: error("(Unknown expression type: %d)", (int)ExpressionType);
+    default: error("(Unknown expression type: %d)", (int)Type);
   }
 
   if(Right){
     EXPRESSION* ExprRight;
     ASSIGNMENT* AssignRight;
-    switch(Right->Type){
-      case TYPE::Expression:
-        ExprRight = (EXPRESSION*)Right;
-        if(ExprRight->Left || ExprRight->Right || ExprRight->Next) Debug.print("(");
-        ExprRight->Display();
-        if(ExprRight->Left || ExprRight->Right || ExprRight->Next) Debug.print(")");
-        break;
+    if(Right->Type > TYPE::Expression){
+      ExprRight = (EXPRESSION*)Right;
+      if(ExprRight->Left || ExprRight->Right || ExprRight->Next) Debug.print("(");
+      ExprRight->Display();
+      if(ExprRight->Left || ExprRight->Right || ExprRight->Next) Debug.print(")");
 
-      case TYPE::Assignment:
-        AssignRight = (ASSIGNMENT*)Right;
-        if(AssignRight->Left || AssignRight->Right || AssignRight->Next) Debug.print("(");
-        AssignRight->Display();
-        if(AssignRight->Left || AssignRight->Right || AssignRight->Next) Debug.print(")");
-        break;
+    }else if(Right->Type == TYPE::Assignment){
+      AssignRight = (ASSIGNMENT*)Right;
+      if(AssignRight->Left || AssignRight->Right || AssignRight->Next) Debug.print("(");
+      AssignRight->Display();
+      if(AssignRight->Left || AssignRight->Right || AssignRight->Next) Debug.print(")");
 
-      default:
-        error("Invalid type");
-        return;
+    }else{
+      error("Invalid type");
+      return;
     }
   }
 

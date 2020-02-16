@@ -269,7 +269,7 @@ AST::EXPRESSION* PARSER::String(){
   if(Token.Type != TOKEN::TYPE::String) return 0;
 
   AST::EXPRESSION* Node = new AST::EXPRESSION(
-    Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::String
+    Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::String
   );
 
   Node->StrValue = Token.Data;
@@ -288,7 +288,7 @@ AST::EXPRESSION* PARSER::Literal(){
   }
 
   AST::EXPRESSION* Node = new AST::EXPRESSION(
-    Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Literal
+    Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Literal
   );
 
   Node->Value = Token.Value;
@@ -302,7 +302,7 @@ AST::EXPRESSION* PARSER::Identifier(){
   if(Token.Type != TOKEN::TYPE::Identifier) return 0;
 
   AST::EXPRESSION* Node = new AST::EXPRESSION(
-    Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Identifier
+    Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Identifier
   );
   Node->Name = Token.Data;
 
@@ -337,7 +337,7 @@ AST::BASE* PARSER::Parameter(){
   AST::EXPRESSION* Expr = Expression();
   if(!Expr) return 0;
 
-  if(Expr->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Identifier){
+  if(Expr->Type == AST::BASE::TYPE::Identifier){
     switch(Token.Type){
       case TOKEN::TYPE::Assign:
         Node = new AST::ASSIGNMENT(
@@ -417,7 +417,7 @@ AST::EXPRESSION* PARSER::Array(){
     GetToken();
 
     Node = new AST::EXPRESSION(
-      Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Array
+      Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Array
     );
     Node->Right = ExpressionList();
 
@@ -440,7 +440,7 @@ AST::EXPRESSION* PARSER::ArrayConcat(){
     GetToken();
 
     Node = new AST::EXPRESSION(
-      Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::ArrayConcatenate
+      Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::ArrayConcatenate
     );
     Node->Right = ExpressionList();
 
@@ -463,7 +463,7 @@ AST::EXPRESSION* PARSER::VectorConcat(){
     GetToken();
 
     Node = new AST::EXPRESSION(
-      Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::VectorConcatenate
+      Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::VectorConcatenate
     );
     Node->Right = ExpressionList();
 
@@ -492,7 +492,7 @@ AST::EXPRESSION* PARSER::Primary(){
   if(Node){
     if(GlobalAttribute){
       AST::EXPRESSION* Temp = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::AccessAttribute
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::AccessAttribute
       );
       Temp->Right = Node;
       Node = Temp;
@@ -536,7 +536,7 @@ AST::EXPRESSION* PARSER::CastEpr(AST::EXPRESSION* Node){
 
   if(Token.Type == TOKEN::TYPE::CastOp){
     Temp = new AST::EXPRESSION(
-      Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Cast
+      Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Cast
     );
     GetToken();
     Temp->Left = Node;
@@ -596,7 +596,7 @@ AST::EXPRESSION* PARSER::Postfix(){
   while(Token.Type != TOKEN::TYPE::Unknown){
     if(Token.Type == TOKEN::TYPE::OpenSquare){ // Array slice
       Temp = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Slice
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Slice
       );
 
       Temp->Left  = Node;
@@ -611,7 +611,7 @@ AST::EXPRESSION* PARSER::Postfix(){
 
     }else if(Token.Type == TOKEN::TYPE::OpenRound){ // Function call
       Temp = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::FunctionCall
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::FunctionCall
       );
 
       Temp->Left  = Node;
@@ -620,7 +620,7 @@ AST::EXPRESSION* PARSER::Postfix(){
 
     }else if(Token.Type == TOKEN::TYPE::AccessMember){
       Temp = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::AccessMember
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::AccessMember
       );
       GetToken();
 
@@ -636,7 +636,7 @@ AST::EXPRESSION* PARSER::Postfix(){
 
     }else if(Token.Type == TOKEN::TYPE::AccessMemberSafe){
       Temp = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::AccessMemberSafe
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::AccessMemberSafe
       );
       GetToken();
 
@@ -652,7 +652,7 @@ AST::EXPRESSION* PARSER::Postfix(){
 
     }else if(Token.Type == TOKEN::TYPE::AccessAttribute){
       Temp = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::AccessAttribute
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::AccessAttribute
       );
       GetToken();
 
@@ -668,7 +668,7 @@ AST::EXPRESSION* PARSER::Postfix(){
 
     }else if(Token.Type == TOKEN::TYPE::Increment){
       Temp = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Increment
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Increment
       );
       GetToken();
 
@@ -677,7 +677,7 @@ AST::EXPRESSION* PARSER::Postfix(){
 
     }else if(Token.Type == TOKEN::TYPE::Decrement){
       Temp = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Decrement
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Decrement
       );
       GetToken();
 
@@ -686,7 +686,7 @@ AST::EXPRESSION* PARSER::Postfix(){
 
     }else if(Token.Type == TOKEN::TYPE::Factorial){
       Temp = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Factorial
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Factorial
       );
       GetToken();
 
@@ -709,27 +709,27 @@ AST::EXPRESSION* PARSER::Unary(){
   while(Token.Type != TOKEN::TYPE::Unknown){
     if(Token.Type == TOKEN::TYPE::Negate){
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Negate
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Negate
       );
 
     }else if(Token.Type == TOKEN::TYPE::Bit_NOT){
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Bit_NOT
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Bit_NOT
       );
 
     }else if(Token.Type == TOKEN::TYPE::Colon){
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Raw
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Raw
       );
 
     }else if(Token.Type == TOKEN::TYPE::Increment){
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Increment
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Increment
       );
 
     }else if(Token.Type == TOKEN::TYPE::Decrement){
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Decrement
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Decrement
       );
 
     }else{
@@ -765,7 +765,7 @@ AST::EXPRESSION* PARSER::Range(){
 
   if(Token.Type == TOKEN::TYPE::To){
     Temp = new AST::EXPRESSION(
-      Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Range
+      Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Range
     );
     GetToken();
 
@@ -796,49 +796,49 @@ AST::EXPRESSION* PARSER::Reduction(){
   switch(Token.Type){
     case TOKEN::TYPE::Bit_AND:
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::AND_Reduce
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::AND_Reduce
       );
       GetToken();
       break;
 
     case TOKEN::TYPE::Bit_NAND:
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::NAND_Reduce
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::NAND_Reduce
       );
       GetToken();
       break;
 
     case TOKEN::TYPE::Bit_OR:
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::OR_Reduce
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::OR_Reduce
       );
       GetToken();
       break;
 
     case TOKEN::TYPE::Bit_NOR:
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::NOR_Reduce
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::NOR_Reduce
       );
       GetToken();
       break;
 
     case TOKEN::TYPE::Bit_XOR:
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::XOR_Reduce
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::XOR_Reduce
       );
       GetToken();
       break;
 
     case TOKEN::TYPE::Bit_XNOR:
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::XNOR_Reduce
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::XNOR_Reduce
       );
       GetToken();
       break;
 
     case TOKEN::TYPE::Logical_NOT:
       Node = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Logical_NOT
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Logical_NOT
       );
       GetToken();
       break;
@@ -875,7 +875,7 @@ AST::EXPRESSION* PARSER::Replication(){
 
   if(Token.Type == TOKEN::TYPE::Replicate){
     Temp = new AST::EXPRESSION(
-      Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Replicate
+      Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Replicate
     );
     GetToken();
 
@@ -904,7 +904,7 @@ AST::EXPRESSION* PARSER::Exponential(){
     switch(Token.Type){
       case TOKEN::TYPE::Exponential:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Exponential
+          Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Exponential
         );
         break;
       default:
@@ -937,17 +937,17 @@ AST::EXPRESSION* PARSER::Multiplicative(){
     switch(Token.Type){
       case TOKEN::TYPE::Multiply:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Multiply
+          Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Multiply
         );
         break;
       case TOKEN::TYPE::Divide:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Divide
+          Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Divide
         );
         break;
       case TOKEN::TYPE::Modulus:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Modulus
+          Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Modulus
         );
         break;
       default:
@@ -980,12 +980,12 @@ AST::EXPRESSION* PARSER::Additive(){
     switch(Token.Type){
       case TOKEN::TYPE::Add:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Add
+          Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Add
         );
         break;
       case TOKEN::TYPE::Subtract:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Subtract
+          Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Subtract
         );
         break;
       default:
@@ -1018,12 +1018,12 @@ AST::EXPRESSION* PARSER::Shift(){
     switch(Token.Type){
       case TOKEN::TYPE::Shift_Left:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Shift_Left
+          Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Shift_Left
         );
         break;
       case TOKEN::TYPE::Shift_Right:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Shift_Right
+          Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Shift_Right
         );
         break;
       default:
@@ -1056,22 +1056,22 @@ AST::EXPRESSION* PARSER::Relational(){
     switch(Token.Type){
       case TOKEN::TYPE::Less:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Less
+          Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Less
         );
         break;
       case TOKEN::TYPE::Greater:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Greater
+          Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Greater
         );
         break;
       case TOKEN::TYPE::Less_Equal:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Less_Equal
+          Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Less_Equal
         );
         break;
       case TOKEN::TYPE::Greater_Equal:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Greater_Equal
+          Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Greater_Equal
         );
         break;
       default:
@@ -1104,12 +1104,12 @@ AST::EXPRESSION* PARSER::Equality(){
     switch(Token.Type){
       case TOKEN::TYPE::Equal:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Equal
+          Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Equal
         );
         break;
       case TOKEN::TYPE::Not_Equal:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Not_Equal
+          Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Not_Equal
         );
         break;
       default:
@@ -1142,12 +1142,12 @@ AST::EXPRESSION* PARSER::BitwiseAND(){
     switch(Token.Type){
       case TOKEN::TYPE::Bit_AND:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Bit_AND
+          Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Bit_AND
         );
         break;
       case TOKEN::TYPE::Bit_NAND:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Bit_NAND
+          Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Bit_NAND
         );
         break;
       default:
@@ -1180,12 +1180,12 @@ AST::EXPRESSION* PARSER::BitwiseXOR(){
     switch(Token.Type){
       case TOKEN::TYPE::Bit_XOR:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Bit_XOR
+          Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Bit_XOR
         );
         break;
       case TOKEN::TYPE::Bit_XNOR:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Bit_XNOR
+          Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Bit_XNOR
         );
         break;
       default:
@@ -1218,12 +1218,12 @@ AST::EXPRESSION* PARSER::BitwiseOR(){
     switch(Token.Type){
       case TOKEN::TYPE::Bit_OR:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Bit_OR
+          Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Bit_OR
         );
         break;
       case TOKEN::TYPE::Bit_NOR:
         Temp = new AST::EXPRESSION(
-          Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Bit_NOR
+          Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Bit_NOR
         );
         break;
       default:
@@ -1254,7 +1254,7 @@ AST::EXPRESSION* PARSER::Expression(){
 
   if(Token.Type == TOKEN::TYPE::TernaryIf){
     Temp = new AST::EXPRESSION(
-      Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Conditional
+      Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Conditional
     );
     GetToken();
 
@@ -1295,7 +1295,7 @@ AST::EXPRESSION* PARSER::TypeIdentifier(){
   while(Token.Type != TOKEN::TYPE::Unknown){
     if(Token.Type == TOKEN::TYPE::AccessMember){
       Temp = new AST::EXPRESSION(
-        Token.Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::AccessMember
+        Token.Line, Scanner.Filename.c_str(), AST::BASE::TYPE::AccessMember
       );
       GetToken();
 
@@ -1342,7 +1342,7 @@ AST::ASSIGNMENT* PARSER::Initialiser(std::string& Identifier){
     return 0;
   }
   Node->Left       = new AST::EXPRESSION(
-    Node->Line, Scanner.Filename.c_str(), AST::EXPRESSION::EXPRESSION_TYPE::Identifier
+    Node->Line, Scanner.Filename.c_str(), AST::BASE::TYPE::Identifier
   );
   Node->Left->Name = Identifier;
   return Node;
@@ -1426,7 +1426,7 @@ AST::PARAMETER* PARSER::DefParameter(){
   }else{
     if(
       Node->ClassName &&
-      Node->ClassName->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::Identifier
+      Node->ClassName->Type == AST::BASE::TYPE::Identifier
     ){
       Node->Identifier = Node->ClassName->Name;
       delete Node->ClassName;
@@ -1658,9 +1658,9 @@ AST::DEFINITION* PARSER::Definition(){
 
 bool PARSER::ValidNamespaceSpecifier(AST::EXPRESSION* Node){
   // Only a few operations are invalid:
-  switch(Node->ExpressionType){
-    case AST::EXPRESSION::EXPRESSION_TYPE::AccessMember:
-    case AST::EXPRESSION::EXPRESSION_TYPE::Identifier:
+  switch(Node->Type){
+    case AST::BASE::TYPE::AccessMember:
+    case AST::BASE::TYPE::Identifier:
       break;
 
     default:
@@ -1671,7 +1671,7 @@ bool PARSER::ValidNamespaceSpecifier(AST::EXPRESSION* Node){
     if(!ValidNamespaceSpecifier(Node->Left)) return false;
   }
   if(Node->Right){
-    if(Node->Right->Type == AST::BASE::TYPE::Expression){
+    if(Node->Right->Type > AST::BASE::TYPE::Expression){
       if(!ValidNamespaceSpecifier((AST::EXPRESSION*)Node->Right)) return false;
     }else{
       return false;
@@ -1683,12 +1683,12 @@ bool PARSER::ValidNamespaceSpecifier(AST::EXPRESSION* Node){
 
 bool PARSER::ValidTypeSpecifier(AST::EXPRESSION* Node){
   // Only a few operations are invalid:
-  switch(Node->ExpressionType){
-    case AST::EXPRESSION::EXPRESSION_TYPE::AccessMember:
-    case AST::EXPRESSION::EXPRESSION_TYPE::Identifier:
+  switch(Node->Type){
+    case AST::BASE::TYPE::AccessMember:
+    case AST::BASE::TYPE::Identifier:
       break;
 
-    case AST::EXPRESSION::EXPRESSION_TYPE::FunctionCall:
+    case AST::BASE::TYPE::FunctionCall:
       if(Node->Left){ // Don't test the parameter list
         if(!ValidTypeSpecifier(Node->Left)) return false;
       }
@@ -1700,13 +1700,13 @@ bool PARSER::ValidTypeSpecifier(AST::EXPRESSION* Node){
 
   // Only the root may be a function call, and test recursively
   if(Node->Left){
-    if(Node->Left->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::FunctionCall) return false;
+    if(Node->Left->Type == AST::BASE::TYPE::FunctionCall) return false;
     if(!ValidTypeSpecifier(Node->Left)) return false;
   }
   if(Node->Right){
-    if(Node->Right->Type == AST::BASE::TYPE::Expression){
+    if(Node->Right->Type > AST::BASE::TYPE::Expression){
       AST::EXPRESSION* Right = (AST::EXPRESSION*)Node->Right;
-      if(Right->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::FunctionCall) return false;
+      if(Right->Type == AST::BASE::TYPE::FunctionCall) return false;
       if(!ValidTypeSpecifier(Right)) return false;
     }else{
       return false;
@@ -1717,16 +1717,16 @@ bool PARSER::ValidTypeSpecifier(AST::EXPRESSION* Node){
 //------------------------------------------------------------------------------
 
 bool PARSER::ValidLHS(AST::EXPRESSION* Node){
-  switch(Node->ExpressionType){
-    case AST::EXPRESSION::EXPRESSION_TYPE::AccessMember:
-    case AST::EXPRESSION::EXPRESSION_TYPE::AccessMemberSafe:
-    case AST::EXPRESSION::EXPRESSION_TYPE::AccessAttribute:
-    case AST::EXPRESSION::EXPRESSION_TYPE::Identifier:
-    case AST::EXPRESSION::EXPRESSION_TYPE::VectorConcatenate:
-    case AST::EXPRESSION::EXPRESSION_TYPE::ArrayConcatenate:
+  switch(Node->Type){
+    case AST::BASE::TYPE::AccessMember:
+    case AST::BASE::TYPE::AccessMemberSafe:
+    case AST::BASE::TYPE::AccessAttribute:
+    case AST::BASE::TYPE::Identifier:
+    case AST::BASE::TYPE::VectorConcatenate:
+    case AST::BASE::TYPE::ArrayConcatenate:
       break;
 
-    case AST::EXPRESSION::EXPRESSION_TYPE::Slice:
+    case AST::BASE::TYPE::Slice:
       if(Node->Left){ // Don't test the slice list
         if(!ValidLHS(Node->Left)) return false;
       }
@@ -1740,7 +1740,7 @@ bool PARSER::ValidLHS(AST::EXPRESSION* Node){
     if(!ValidLHS(Node->Left)) return false;
   }
   if(Node->Right){
-    if(Node->Right->Type == AST::BASE::TYPE::Expression){
+    if(Node->Right->Type > AST::BASE::TYPE::Expression){
       if(!ValidLHS((AST::EXPRESSION*)Node->Right)) return false;
     }else{
       return false;
@@ -1759,9 +1759,9 @@ AST::BASE* PARSER::Other(){
 
   if(Token.Type == TOKEN::TYPE::Comma || Token.Type == TOKEN::TYPE::Semicolon){
     if(
-      Expr->ExpressionType != AST::EXPRESSION::EXPRESSION_TYPE::FunctionCall &&
-      Expr->ExpressionType != AST::EXPRESSION::EXPRESSION_TYPE::Increment    &&
-      Expr->ExpressionType != AST::EXPRESSION::EXPRESSION_TYPE::Decrement
+      Expr->Type != AST::BASE::TYPE::FunctionCall &&
+      Expr->Type != AST::BASE::TYPE::Increment    &&
+      Expr->Type != AST::BASE::TYPE::Decrement
     ){
       Error("Unexpected end-of-statement");
       delete Expr;
@@ -1809,7 +1809,7 @@ AST::BASE* PARSER::Other(){
     AST::DEFINITION* Def = new AST::DEFINITION(
       Token.Line, Scanner.Filename.c_str(), AST::DEFINITION::DEFINITION_TYPE::ClassInstance
     );
-    if(Expr->ExpressionType == AST::EXPRESSION::EXPRESSION_TYPE::FunctionCall){
+    if(Expr->Type == AST::BASE::TYPE::FunctionCall){
       Def->ClassName  = Expr->Left;
       Def->Parameters = Expr->Right;
       Expr->Left  = 0;
