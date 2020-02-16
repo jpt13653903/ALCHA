@@ -44,7 +44,7 @@ void NETLIST::GROUP::Display(){
   DisplayAttributes(4);
   Debug.print("\n");
 
-  for(auto s = Symbols.begin(); s != Symbols.end(); s++){
+  foreach(s, Symbols){
     if(s->second) s->second->Display();
     else          Debug.print("    - %s: {null}\n", s->first.c_str());
     Debug.print("\n");

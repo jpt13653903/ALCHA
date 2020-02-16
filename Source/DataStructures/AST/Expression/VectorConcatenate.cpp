@@ -19,8 +19,6 @@
 //==============================================================================
 
 #include "VectorConcatenate.h"
-#include "../Assignment.h"
-#include "Netlist/Base.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -35,6 +33,7 @@ VECTORCONCATENATE::VECTORCONCATENATE(int Line, const char* Filename): EXPRESSION
 //------------------------------------------------------------------------------
 
 VECTORCONCATENATE::~VECTORCONCATENATE(){
+  foreach(Element, Elements) delete *Element;
 }
 //------------------------------------------------------------------------------
 
@@ -49,6 +48,10 @@ BASE* VECTORCONCATENATE::Copy(bool CopyNext){
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 
+  foreach(Element, Elements){
+    Copy->Elements.push_back((EXPRESSION*)(*Element)->Copy(CopyNext));
+  }
+
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
@@ -56,10 +59,18 @@ BASE* VECTORCONCATENATE::Copy(bool CopyNext){
 //------------------------------------------------------------------------------
 
 void VECTORCONCATENATE::Display(){
-  DisplayStart();
+  assert(!Left);
 
-  Debug.print("{VectorConcat}");
+  Debug.print("(VectorConcat: (");
+  bool isFirst = true;
+  foreach(Element, Elements){
+    if(!isFirst) Debug.print(", ");
+    (*Element)->Display();
+    isFirst = false;
+  }
+  Debug.print("))");
 
-  DisplayEnd();
+  assert(!Right);
+  assert(!Next );
 }
 //------------------------------------------------------------------------------

@@ -22,14 +22,15 @@
 #define AST_Switch_h
 //------------------------------------------------------------------------------
 
+#include <vector>
 #include "Expression/Expression.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
   struct SWITCH: public BASE{
     struct CASE{
-      EXPRESSION* Expressions; // List through the BASE::Next pointer
-      BASE      * Statements;
+      std::vector<EXPRESSION*> Expressions;
+      BASE* Statements;
 
       CASE* Next; // The next case (this can be turned into a BST later...)
 

@@ -39,9 +39,7 @@ BASE::BASE(int Line, const string& Filename, const char* Name, TYPE Type){
 //------------------------------------------------------------------------------
 
 BASE::~BASE(){
-  for(auto a = Attributes.begin(); a != Attributes.end(); a++){
-    delete a->second;
-  }
+  foreach(a, Attributes) delete a->second;
 }
 //------------------------------------------------------------------------------
 
@@ -114,7 +112,7 @@ void BASE::DisplayAttributes(int Indent){
   for(int n = 0; n < Indent; n++) Debug.print(" ");
   Debug.print("Attributes:\n");
 
-  for(auto a = Attributes.begin(); a != Attributes.end(); a++){
+  foreach(a, Attributes){
     for(int n = 0; n < Indent; n++) Debug.print(" ");
     Debug.print("  %s = ", a->first.c_str());
     if(a->second) a->second->Display();

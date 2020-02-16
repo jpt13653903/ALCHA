@@ -78,7 +78,7 @@ namespace AST{
         AccessMember,
         AccessMemberSafe,
         AccessAttribute,
-        Range, // Left = from; Right = to; Right->Next = step
+        Range,
 
         Increment, // If child is on the left, post-increment
         Decrement, // If child is on the left, post-decrement

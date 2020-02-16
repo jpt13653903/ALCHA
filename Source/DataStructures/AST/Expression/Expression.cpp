@@ -20,7 +20,6 @@
 
 #include "Expression.h"
 #include "../Assignment.h"
-#include "Netlist/Base.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -39,31 +38,6 @@ EXPRESSION::~EXPRESSION(){
 
   if(Left ) delete Left;
   if(Right) delete Right;
-}
-//------------------------------------------------------------------------------
-
-BASE* EXPRESSION::Element(int n){
-  int e = 0;
-
-  BASE* Node = Right;
-  while(Node){
-    if(e == n) return Node;
-    e++;
-    Node = Node->Next;
-  }
-  return 0;
-}
-//------------------------------------------------------------------------------
-
-int EXPRESSION::ElementCount(){
-  int n = 0;
-
-  BASE* Node = Right;
-  while(Node){
-    n++;
-    Node = Node->Next;
-  }
-  return n;
 }
 //------------------------------------------------------------------------------
 
@@ -98,10 +72,7 @@ void EXPRESSION::DisplayEnd(){
     }
   }
 
-  if(Next){
-    Debug.print(", ");
-    Next->Display();
-  }
+  assert(Next == 0, info("Line: %d", Line)); // Expressions should not have a "Next"
 }
 //------------------------------------------------------------------------------
 

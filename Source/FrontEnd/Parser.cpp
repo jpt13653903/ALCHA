@@ -305,24 +305,25 @@ AST::EXPRESSION* PARSER::Identifier(){
 }
 //------------------------------------------------------------------------------
 
-AST::EXPRESSION* PARSER::ExpressionList(){
-  AST::EXPRESSION* Head;
+bool PARSER::ExpressionList(std::vector<AST::EXPRESSION*>& List){
   AST::EXPRESSION* Node;
 
-  Head = Node = Expression();
-  if(!Node) return 0;
+  Node = Expression();
+  if(!Node) return false;
+  List.push_back(Node);
 
   while(Token.Type == TOKEN::TYPE::Comma){
     GetToken();
-    Node->Next = Expression();
-    Node       = (AST::EXPRESSION*)Node->Next;
+    Node = Expression();
     if(!Node){
       Error("Expression expected");
-      delete Head;
-      return 0;
+      foreach(Element, List) delete *Element;
+      List.clear();
+      return false;
     }
+    List.push_back(Node);
   }
-  return Head;
+  return true;
 }
 //------------------------------------------------------------------------------
 
@@ -405,13 +406,13 @@ AST::BASE* PARSER::ParameterList(){
 //------------------------------------------------------------------------------
 
 AST::EXPRESSION* PARSER::Array(){
-  AST::EXPRESSION* Node;
+  AST::ARRAY* Node;
 
   if(Token.Type == TOKEN::TYPE::OpenSquare){
     GetToken();
 
     Node = new AST::ARRAY(Token.Line, Scanner.Filename);
-    Node->Right = ExpressionList();
+    ExpressionList(Node->Elements);
 
     if(Token.Type != TOKEN::TYPE::CloseSquare){
       Error("] expected");
@@ -426,13 +427,13 @@ AST::EXPRESSION* PARSER::Array(){
 //------------------------------------------------------------------------------
 
 AST::EXPRESSION* PARSER::ArrayConcat(){
-  AST::EXPRESSION* Node;
+  AST::ARRAYCONCATENATE* Node;
 
   if(Token.Type == TOKEN::TYPE::ArrayConcatenate){
     GetToken();
 
     Node = new AST::ARRAYCONCATENATE(Token.Line, Scanner.Filename);
-    Node->Right = ExpressionList();
+    ExpressionList(Node->Elements);
 
     if(Token.Type != TOKEN::TYPE::CloseSquare){
       Error("] expected");
@@ -447,13 +448,13 @@ AST::EXPRESSION* PARSER::ArrayConcat(){
 //------------------------------------------------------------------------------
 
 AST::EXPRESSION* PARSER::VectorConcat(){
-  AST::EXPRESSION* Node;
+  AST::VECTORCONCATENATE* Node;
 
   if(Token.Type == TOKEN::TYPE::Concatenate){
     GetToken();
 
     Node = new AST::VECTORCONCATENATE(Token.Line, Scanner.Filename);
-    Node->Right = ExpressionList();
+    ExpressionList(Node->Elements);
 
     if(Token.Type != TOKEN::TYPE::CloseRound){
       Error(") expected");
@@ -716,7 +717,7 @@ AST::EXPRESSION* PARSER::Unary(){
 
 AST::EXPRESSION* PARSER::Range(){
   AST::EXPRESSION* Node;
-  AST::EXPRESSION* Temp;
+  AST::RANGE*      Temp;
 
   Node = Unary();
   if(!Node) return 0;
@@ -727,21 +728,21 @@ AST::EXPRESSION* PARSER::Range(){
 
     Temp->Left  = Node;
     Temp->Right = Unary();
-    Node = Temp;
-    if(!Node->Right){
+    if(!Temp->Right){
       Error("Range end expected");
-      delete Node;
+      delete Temp;
       return 0;
     }
     if(Token.Type == TOKEN::TYPE::Step){
       GetToken();
-      Node->Right->Next = Unary();
-      if(!Node->Right->Next){
+      Temp->Step = Unary();
+      if(!Temp->Step){
         Error("Range step expected");
-        delete Node;
+        delete Temp;
         return 0;
       }
     }
+    Node = Temp;
   }
   return Node;
 }
@@ -2056,8 +2057,7 @@ AST::SWITCH* PARSER::Switch(){
     }
     GetToken();
 
-    Case->Expressions = ExpressionList();
-    if(!Case->Expressions){
+    if(!ExpressionList(Case->Expressions)){
       Error("Expression list expected");
       delete Node;
       return 0;

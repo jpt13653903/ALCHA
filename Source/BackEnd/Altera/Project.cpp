@@ -74,9 +74,7 @@ bool PROJECT::WriteFile(string& Filename, const char* Ext, string& Body){
 void PROJECT::BuildFileList(string& Body, MODULE* Module, string Path){
   bool isGlobal = (Module == &Global);
 
-  for(auto SymbolIterator  = Module->Symbols.begin();
-           SymbolIterator != Module->Symbols.end  ();
-           SymbolIterator++){
+  foreach(SymbolIterator, Module->Symbols){
     auto Symbol = SymbolIterator->second;
     if(Symbol->Type == BASE::TYPE::Module){
       auto Child = (MODULE*)Symbol;
@@ -119,9 +117,7 @@ void PROJECT::AssignPin(string& Body, const string& Location, const string& Name
 //------------------------------------------------------------------------------
 
 bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
-  for(auto SymbolIterator  = Namespace->Symbols.begin();
-           SymbolIterator != Namespace->Symbols.end  ();
-           SymbolIterator++){
+  foreach(SymbolIterator, Namespace->Symbols){
     switch(SymbolIterator->second->Type){
       case BASE::TYPE::Pin:{
         auto Pin = (PIN*)(SymbolIterator->second);
@@ -149,12 +145,13 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
               Error(Location, "Vector pin location not an array");
               return false;
             }
-            if(Location->ElementCount() != Pin->Width){
-              Error(Location, "Vector pin location array of wrong size");
+            auto LocationArray = (AST::ARRAY*)Location;
+            if(LocationArray->Elements.size() != (size_t)Pin->Width){
+              Error(LocationArray, "Vector pin location array of wrong size");
               return false;
             }
             for(int n = 0; n < Pin->Width; n++){
-              AST::BASE* Temp = Location->Element(n);
+              AST::BASE* Temp = LocationArray->Elements[n];
               assert(Temp && Temp->Type > AST::BASE::TYPE::Expression, return false);
               AST::EXPRESSION* Element = (AST::EXPRESSION*)Temp;
               if(Element->Type != AST::BASE::TYPE::String){

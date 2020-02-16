@@ -29,7 +29,7 @@ NAMESPACE::NAMESPACE(int Line, const std::string& Filename, const char* Name): B
 //------------------------------------------------------------------------------
 
 NAMESPACE::~NAMESPACE(){
-  for(auto s = Symbols.begin(); s != Symbols.end(); s++) delete s->second;
+  foreach(s, Symbols) delete s->second;
 }
 //------------------------------------------------------------------------------
 

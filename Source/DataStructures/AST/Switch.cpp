@@ -21,27 +21,31 @@
 #include "Switch.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
 SWITCH::CASE::CASE(){
-  Next        = 0;
-  Statements  = 0;
-  Expressions = 0;
+  Next       = 0;
+  Statements = 0;
 }
 //------------------------------------------------------------------------------
 
 SWITCH::CASE::CASE(const CASE& Case){
-  if(Case.Next       ) Next        = new CASE(*Case.Next);
-  if(Case.Statements ) Statements  = (decltype(Case.Statements ))Case.Statements ->Copy(true);
-  if(Case.Expressions) Expressions = (decltype(Case.Expressions))Case.Expressions->Copy(true);
+  if(Case.Next       ) Next       = new CASE(*Case.Next);
+  if(Case.Statements ) Statements = (decltype(Case.Statements))Case.Statements->Copy(true);
+
+  foreach(Element, Case.Expressions){
+    Expressions.push_back((EXPRESSION*)(*Element)->Copy(true));
+  }
 }
 //------------------------------------------------------------------------------
 
 SWITCH::CASE::~CASE(){
   if(Next       ) delete Next;
   if(Statements ) delete Statements;
-  if(Expressions) delete Expressions;
+
+  foreach(Element, Expressions) delete *Element;
 }
 //------------------------------------------------------------------------------
 
@@ -83,7 +87,12 @@ void SWITCH::Display(){
     CASE* Temp = Cases;
     while(Temp){
       Debug.print(" case(");
-        if(Temp->Expressions) Temp->Expressions->Display();
+        bool isFirst = true;
+        foreach(Expression, Temp->Expressions){
+          if(!isFirst) Debug.print(", ");
+          (*Expression)->Display();
+          isFirst = false;
+        }
       Debug.print("){\n");
         if(Temp->Statements) Temp->Statements->Display();
       Debug.print(" }\n");

@@ -19,8 +19,6 @@
 //==============================================================================
 
 #include "Array.h"
-#include "../Assignment.h"
-#include "Netlist/Base.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -35,6 +33,7 @@ ARRAY::ARRAY(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::A
 //------------------------------------------------------------------------------
 
 ARRAY::~ARRAY(){
+  foreach(Element, Elements) delete *Element;
 }
 //------------------------------------------------------------------------------
 
@@ -49,6 +48,10 @@ BASE* ARRAY::Copy(bool CopyNext){
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 
+  foreach(Element, Elements){
+    Copy->Elements.push_back((EXPRESSION*)(*Element)->Copy(CopyNext));
+  }
+
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
@@ -56,10 +59,18 @@ BASE* ARRAY::Copy(bool CopyNext){
 //------------------------------------------------------------------------------
 
 void ARRAY::Display(){
-  DisplayStart();
+  assert(!Left);
 
-  Debug.print("{Array}");
+  Debug.print("(Array: (");
+  bool isFirst = true;
+  foreach(Element, Elements){
+    if(!isFirst) Debug.print(", ");
+    (*Element)->Display();
+    isFirst = false;
+  }
+  Debug.print("))");
 
-  DisplayEnd();
+  assert(!Right);
+  assert(!Next );
 }
 //------------------------------------------------------------------------------

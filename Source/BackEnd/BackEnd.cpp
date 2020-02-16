@@ -97,9 +97,7 @@ bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
 bool BACK_END::AssignPinDirections(NAMESPACE* Namespace){
   info("Assign pin directions...");
 
-  for(auto SymbolIterator  = Namespace->Symbols.begin();
-           SymbolIterator != Namespace->Symbols.end  ();
-           SymbolIterator++){
+  foreach(SymbolIterator, Namespace->Symbols){
     switch(SymbolIterator->second->Type){
       case BASE::TYPE::Pin:{
         auto Pin = (PIN*)(SymbolIterator->second);
@@ -148,9 +146,7 @@ bool BACK_END::RoutePorts(NAMESPACE* Namespace){
   // with HDL module ports.
 
   // Do the children first
-  for(auto SymbolIterator  = Namespace->Symbols.begin();
-           SymbolIterator != Namespace->Symbols.end  ();
-           SymbolIterator++){
+  foreach(SymbolIterator, Namespace->Symbols){
     if(SymbolIterator->second->Type == BASE::TYPE::Module ||
        SymbolIterator->second->Type == BASE::TYPE::Group  ){
       RoutePorts((MODULE*)(SymbolIterator->second));
@@ -714,9 +710,7 @@ bool BACK_END::BuildExpression(string& Body, AST::EXPRESSION* Expression, string
 //------------------------------------------------------------------------------
 
 bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
-  for(auto SymbolIterator  = Namespace->Symbols.begin();
-           SymbolIterator != Namespace->Symbols.end  ();
-           SymbolIterator++){
+  foreach(SymbolIterator, Namespace->Symbols){
     auto Object = SymbolIterator->second;
     switch(Object->Type){
       case BASE::TYPE::Pin:{
@@ -762,9 +756,7 @@ bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
 //------------------------------------------------------------------------------
 
 void BACK_END::BuildPorts(string& Body, NAMESPACE* Namespace, bool& isFirst){
-  for(auto SymbolIterator  = Namespace->Symbols.begin();
-           SymbolIterator != Namespace->Symbols.end  ();
-           SymbolIterator++){
+  foreach(SymbolIterator, Namespace->Symbols){
     auto Object = SymbolIterator->second;
     switch(Object->Type){
       case BASE::TYPE::Pin:{
@@ -796,9 +788,7 @@ void BACK_END::BuildPorts(string& Body, NAMESPACE* Namespace, bool& isFirst){
 //------------------------------------------------------------------------------
 
 void BACK_END::BuildNets(string& Body, NAMESPACE* Namespace){
-  for(auto SymbolIterator  = Namespace->Symbols.begin();
-           SymbolIterator != Namespace->Symbols.end  ();
-           SymbolIterator++){
+  foreach(SymbolIterator, Namespace->Symbols){
     switch(SymbolIterator->second->Type){
       case BASE::TYPE::Net:{
         auto Net = (NET*)SymbolIterator->second;
@@ -825,9 +815,7 @@ bool BACK_END::BuildHDL(MODULE* Module, string Path){
   bool isGlobal = (Module == &Global);
 
   // Recursively generate the modules (each namespace is a module)
-  for(auto SymbolIterator  = Module->Symbols.begin();
-           SymbolIterator != Module->Symbols.end  ();
-           SymbolIterator++){
+  foreach(SymbolIterator, Module->Symbols){
     auto Symbol = SymbolIterator->second;
     if(Symbol->Type == BASE::TYPE::Module){
       auto Child = (MODULE*)Symbol;

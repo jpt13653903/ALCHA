@@ -50,10 +50,6 @@ namespace AST{
       EXPRESSION(int Line, const char* Filename, TYPE ExpressionType);
       virtual ~EXPRESSION();
 
-      // These functions work on the linked list stored in Right
-      BASE* Element(int n);
-      int   ElementCount();
-
       // Returns a copy of this instance
       virtual BASE* Copy(bool CopyNext) = 0;
 

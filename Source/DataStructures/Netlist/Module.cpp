@@ -52,7 +52,7 @@ void MODULE::Display(){
 
   list<BASE*> Modules;
 
-  for(auto s = Symbols.begin(); s != Symbols.end(); s++){
+  foreach(s, Symbols){
     if(s->second){
       if(s->second->Type == TYPE::Module) Modules.push_back(s->second);
       else s->second->Display();
@@ -62,7 +62,7 @@ void MODULE::Display(){
     Debug.print("\n");
   }
 
-  for(auto s = Modules.begin(); s != Modules.end(); s++){
+  foreach(s, Modules){
     (*s)->Display();
     Debug.print("\n");
   }

@@ -22,11 +22,14 @@
 #define AST_Expression_Array_h
 //------------------------------------------------------------------------------
 
+#include <vector>
 #include "Expression.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
   struct ARRAY: public EXPRESSION{
+    std::vector<EXPRESSION*> Elements;
+
     ARRAY(int Line, const std::string& Filename);
     ARRAY(int Line, const char*        Filename);
    ~ARRAY();

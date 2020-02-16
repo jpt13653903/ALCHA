@@ -22,11 +22,14 @@
 #define AST_Expression_VectorConcatenate_h
 //------------------------------------------------------------------------------
 
+#include <vector>
 #include "Expression.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
   struct VECTORCONCATENATE: public EXPRESSION{
+    std::vector<EXPRESSION*> Elements;
+
     VECTORCONCATENATE(int Line, const std::string& Filename);
     VECTORCONCATENATE(int Line, const char*        Filename);
    ~VECTORCONCATENATE();

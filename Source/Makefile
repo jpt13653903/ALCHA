@@ -51,6 +51,7 @@ Headers += Tools/*.h
 Headers += $(Toolbox)/*.h
 Headers += DataStructures/*.h
 Headers += DataStructures/AST/*.h
+Headers += DataStructures/AST/Expression/*.h
 Headers += DataStructures/Netlist/*.h
 
 Headers += FrontEnd/*.h

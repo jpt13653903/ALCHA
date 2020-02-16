@@ -27,6 +27,8 @@
 
 namespace AST{
   struct RANGE: public EXPRESSION{
+    EXPRESSION* Step;
+
     RANGE(int Line, const std::string& Filename);
     RANGE(int Line, const char*        Filename);
    ~RANGE();

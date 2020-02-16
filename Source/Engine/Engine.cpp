@@ -84,7 +84,9 @@ AST::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
       break;
 
     case AST::BASE::TYPE::Array:{
-      Result = (AST::EXPRESSION*)Node->Copy(true);
+      auto Array = (AST::ARRAY*)Node->Copy(true);
+      foreach(Element, Array->Elements) (*Element) = Evaluate(*Element);
+      Result = Array;
       break;
     }
 
@@ -142,12 +144,16 @@ AST::EXPRESSION* ENGINE::Evaluate(AST::EXPRESSION* Node){
     }
 
     case AST::BASE::TYPE::VectorConcatenate:{
-      Result = (AST::EXPRESSION*)Node->Copy(true);
+      auto Array = (AST::VECTORCONCATENATE*)Node->Copy(true);
+      foreach(Element, Array->Elements) (*Element) = Evaluate(*Element);
+      Result = Array;
       break;
     }
 
     case AST::BASE::TYPE::ArrayConcatenate:{
-      Result = (AST::EXPRESSION*)Node->Copy(true);
+      auto Array = (AST::ARRAYCONCATENATE*)Node->Copy(true);
+      foreach(Element, Array->Elements) (*Element) = Evaluate(*Element);
+      Result = Array;
       break;
     }
 
@@ -1062,7 +1068,7 @@ void ENGINE::Simplify(AST::EXPRESSION*& Root){
 
   AST::EXPRESSION* Temp;
 
-  Simplify(Root->Left );
+  Simplify(Root->Left);
 
   if(Root->Right){
     assert(Root->Right->Type > AST::BASE::TYPE::Expression, return);
@@ -1109,8 +1115,7 @@ void ENGINE::Simplify(AST::EXPRESSION*& Root){
       break;
 
     case AST::BASE::TYPE::VectorConcatenate:
-      assert(Root->Right, return);
-      // TODO: Check members for literals
+      error("Not yet implemented");
       break;
 
     case AST::BASE::TYPE::ArrayConcatenate:

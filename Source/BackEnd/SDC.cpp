@@ -36,9 +36,7 @@ SDC::~SDC(){
 void SDC::BuildClocks(){
   int ClockCount = 0;
 
-  for(auto SymbolIterator  = Global.Symbols.begin();
-           SymbolIterator != Global.Symbols.end();
-           SymbolIterator++){
+  foreach(SymbolIterator, Global.Symbols){
     if(SymbolIterator->second->Type == BASE::TYPE::Pin){
       auto Pin  = (PIN*)(SymbolIterator->second);
       auto Freq = Pin->GetAttrib("frequency");
@@ -67,9 +65,7 @@ void SDC::BuildClocks(){
   if(ClockCount){
     Constraints += "\nset_clock_groups -asynchronous";
 
-    for(auto SymbolIterator  = Global.Symbols.begin();
-             SymbolIterator != Global.Symbols.end();
-             SymbolIterator++){
+    foreach(SymbolIterator, Global.Symbols){
       if(SymbolIterator->second->Type == BASE::TYPE::Pin){
         auto Pin  = (PIN*)(SymbolIterator->second);
         auto Freq = Pin->GetAttrib("frequency");
@@ -86,9 +82,7 @@ void SDC::BuildPorts(NETLIST::NAMESPACE* Namespace){
   // TODO: Handle the input and output delays properly
   warning("input_delay and output_delay not yet implemented");
 
-  for(auto SymbolIterator  = Namespace->Symbols.begin();
-           SymbolIterator != Namespace->Symbols.end();
-           SymbolIterator++){
+  foreach(SymbolIterator, Namespace->Symbols){
     switch(SymbolIterator->second->Type){
       case BASE::TYPE::Pin:{
         auto Pin = (PIN*)(SymbolIterator->second);

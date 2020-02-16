@@ -22,11 +22,14 @@
 #define AST_Expression_ArrayConcatenate_h
 //------------------------------------------------------------------------------
 
+#include <vector>
 #include "Expression.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
   struct ARRAYCONCATENATE: public EXPRESSION{
+    std::vector<EXPRESSION*> Elements;
+
     ARRAYCONCATENATE(int Line, const std::string& Filename);
     ARRAYCONCATENATE(int Line, const char*        Filename);
    ~ARRAYCONCATENATE();

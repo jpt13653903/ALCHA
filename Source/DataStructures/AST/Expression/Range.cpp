@@ -19,8 +19,6 @@
 //==============================================================================
 
 #include "Range.h"
-#include "../Assignment.h"
-#include "Netlist/Base.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -31,10 +29,12 @@ RANGE::RANGE(int Line, const string& Filename): RANGE(Line, Filename.c_str()){}
 //------------------------------------------------------------------------------
 
 RANGE::RANGE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Range){
+  Step = 0;
 }
 //------------------------------------------------------------------------------
 
 RANGE::~RANGE(){
+  if(Step) delete Step;
 }
 //------------------------------------------------------------------------------
 
@@ -48,6 +48,7 @@ BASE* RANGE::Copy(bool CopyNext){
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
+  if(Step ) Copy->Step  = (decltype(Step ))Step ->Copy(CopyNext);
 
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
@@ -61,5 +62,12 @@ void RANGE::Display(){
   Debug.print("..");
 
   DisplayEnd();
+
+  if(Step){
+    Debug.print(":");
+    if(Step->Left || Step->Right) Debug.print("(");
+    Step->Display();
+    if(Step->Left || Step->Right) Debug.print(")");
+  }
 }
 //------------------------------------------------------------------------------

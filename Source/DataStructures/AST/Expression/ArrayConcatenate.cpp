@@ -19,8 +19,6 @@
 //==============================================================================
 
 #include "ArrayConcatenate.h"
-#include "../Assignment.h"
-#include "Netlist/Base.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -35,6 +33,7 @@ ARRAYCONCATENATE::ARRAYCONCATENATE(int Line, const char* Filename): EXPRESSION(L
 //------------------------------------------------------------------------------
 
 ARRAYCONCATENATE::~ARRAYCONCATENATE(){
+  foreach(Element, Elements) delete *Element;
 }
 //------------------------------------------------------------------------------
 
@@ -49,6 +48,10 @@ BASE* ARRAYCONCATENATE::Copy(bool CopyNext){
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 
+  foreach(Element, Elements){
+    Copy->Elements.push_back((EXPRESSION*)(*Element)->Copy(CopyNext));
+  }
+
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
@@ -56,10 +59,18 @@ BASE* ARRAYCONCATENATE::Copy(bool CopyNext){
 //------------------------------------------------------------------------------
 
 void ARRAYCONCATENATE::Display(){
-  DisplayStart();
+  assert(!Left);
 
-  Debug.print("{ArrayConcat}");
+  Debug.print("(ArrayConcat: (");
+  bool isFirst = true;
+  foreach(Element, Elements){
+    if(!isFirst) Debug.print(", ");
+    (*Element)->Display();
+    isFirst = false;
+  }
+  Debug.print("))");
 
-  DisplayEnd();
+  assert(!Right);
+  assert(!Next );
 }
 //------------------------------------------------------------------------------
