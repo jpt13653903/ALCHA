@@ -60,18 +60,18 @@ EXPRESSION* CONDITIONAL::Evaluate(){
   error("Not yet implemented");
 
   if(!Result) return 0;
-  return Result->Simplify();
+  return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* CONDITIONAL::Simplify(){
+EXPRESSION* CONDITIONAL::Simplify(bool GenWire){
   // TODO: There should be a third component...  Left and Right of Right?
   //       Or break it down to an if-statement?
   assert(Left && Right, return this);
   assert(Right->Type > TYPE::Expression, return this);
 
-  Left = Left->Simplify();
-  Right = ((EXPRESSION*)Right)->Simplify();
+  Left = Left->Simplify(true);
+  Right = ((EXPRESSION*)Right)->Simplify(true);
 
   error("Not yet implemented");
   return this;

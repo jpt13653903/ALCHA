@@ -40,7 +40,7 @@ namespace AST{
     // Runs scripting commands and creates instances in the namespace tree
     virtual bool RunScripting();
     virtual EXPRESSION* Evaluate();
-    virtual EXPRESSION* Simplify();
+    virtual EXPRESSION* Simplify(bool GenWire);
 
     void Display();
   };

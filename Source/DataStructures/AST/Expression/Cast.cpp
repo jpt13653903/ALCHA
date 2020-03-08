@@ -60,19 +60,19 @@ EXPRESSION* CAST::Evaluate(){
   error("Not yet implemented");
 
   if(!Result) return 0;
-  return Result->Simplify();
+  return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* CAST::Simplify(){
+EXPRESSION* CAST::Simplify(bool GenWire){
   // TODO: Root has the target type; Left has the original expression
   //       Right is optional and carry the class name (when applicable)
   assert(Left, return this);
 
-  Left = Left->Simplify();
+  Left = Left->Simplify(true);
   if(Right){
     assert(Right->Type > TYPE::Expression, return this);
-    Right = ((EXPRESSION*)Right)->Simplify();
+    Right = ((EXPRESSION*)Right)->Simplify(true);
   }
 
   error("Not yet implemented");

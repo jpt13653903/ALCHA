@@ -27,12 +27,25 @@ using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
+
 BASE::BASE(int Line, const string& Filename, const char* Name, TYPE Type){
   this->Line      = Line;
   this->Filename  = Filename;
-  this->Name      = Name;
   this->Type      = Type;
   this->Namespace = 0;
+
+  static unsigned GenNameCount = 0;
+  if(Name){
+    this->Name = Name;
+  }else{
+    switch(Type){
+      case TYPE::Net   : this->Name = "w.."; break;
+      case TYPE::Module: this->Name = "m.."; break;
+      default          : this->Name = "t.."; break;
+    }
+    this->Name += to_string(GenNameCount++);
+  }
 
   if(!NamespaceStack.empty()) Namespace = NamespaceStack.front();
 }

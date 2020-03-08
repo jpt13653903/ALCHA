@@ -63,16 +63,19 @@ EXPRESSION* VECTORCONCATENATE::Evaluate(){
   auto Array = (VECTORCONCATENATE*)Copy(true);
   foreach(Element, Array->Elements) (*Element) = (*Element)->Evaluate();
 
-  return Array->Simplify();
+  return Array->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* VECTORCONCATENATE::Simplify(){
+EXPRESSION* VECTORCONCATENATE::Simplify(bool GenWire){
   foreach(Element, Elements){
-    *Element = (*Element)->Simplify();
+    *Element = (*Element)->Simplify(true);
+    assert((*Element)->Type == TYPE::Object, return this);
   }
 
-  error("Not yet implemented");
+  if(GenWire){
+    error("Not yet implemented");
+  }
 
   return this;
 }

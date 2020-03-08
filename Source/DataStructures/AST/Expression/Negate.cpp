@@ -69,15 +69,15 @@ EXPRESSION* NEGATE::Evaluate(){
   );
 
   if(!Result) return 0;
-  return Result->Simplify();
+  return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* NEGATE::Simplify(){
+EXPRESSION* NEGATE::Simplify(bool GenWire){
   assert(Right, return this);
   assert(Right->Type > AST::BASE::TYPE::Expression, return this);
 
-  Right = ((EXPRESSION*)Right)->Simplify();
+  Right = ((EXPRESSION*)Right)->Simplify(true);
 
   EXPRESSION* Result = this;
 

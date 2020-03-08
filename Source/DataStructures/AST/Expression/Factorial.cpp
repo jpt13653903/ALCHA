@@ -60,14 +60,14 @@ EXPRESSION* FACTORIAL::Evaluate(){
   error("Not yet implemented");
 
   if(!Result) return 0;
-  return Result->Simplify();
+  return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* FACTORIAL::Simplify(){
+EXPRESSION* FACTORIAL::Simplify(bool GenWire){
   assert(Left, return this);
 
-  Left = Left->Simplify();
+  Left = Left->Simplify(true);
 
   error("Not yet implemented");
   return this;

@@ -62,11 +62,11 @@ EXPRESSION* LITERAL::Evaluate(){
   Result = (EXPRESSION*)Copy(false);
 
   if(!Result) return 0;
-  return Result->Simplify();
+  return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LITERAL::Simplify(){
+EXPRESSION* LITERAL::Simplify(bool GenWire){
   return this;
 }
 //------------------------------------------------------------------------------

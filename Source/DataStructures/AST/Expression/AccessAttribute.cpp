@@ -93,11 +93,11 @@ EXPRESSION* ACCESSATTRIBUTE::Evaluate(){
   }
 
   if(!Result) return 0;
-  return Result->Simplify();
+  return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ACCESSATTRIBUTE::Simplify(){
+EXPRESSION* ACCESSATTRIBUTE::Simplify(bool GenWire){
   error("Not yet implemented");
   return this;
 }

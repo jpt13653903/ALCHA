@@ -136,11 +136,11 @@ EXPRESSION* ACCESSMEMBER::Evaluate(){
   }
 
   if(!Result) return 0;
-  return Result->Simplify();
+  return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ACCESSMEMBER::Simplify(){
+EXPRESSION* ACCESSMEMBER::Simplify(bool GenWire){
   error("Not yet implemented");
   return this;
 }

@@ -41,7 +41,7 @@ namespace AST{
       virtual ~EXPRESSION();
 
       virtual EXPRESSION* Evaluate() = 0;
-      virtual EXPRESSION* Simplify() = 0;
+      virtual EXPRESSION* Simplify(bool GenWire) = 0;
   };
 }
 //------------------------------------------------------------------------------

@@ -6,9 +6,9 @@ alias Button = SW;
 LED := :(Button, ~Button);
 
 // ADT7420.SCL = AD5681R.SCL;
-// 
+
 // net Data = 0;
-// 
+
 // ADT7420.SDA'pullup  = true;
 // ADT7420.SDA.driver  = 0;
 // ADT7420.SDA.enabled = ~Data;

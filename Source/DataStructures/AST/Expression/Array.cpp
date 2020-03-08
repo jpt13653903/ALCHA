@@ -63,11 +63,11 @@ EXPRESSION* ARRAY::Evaluate(){
   ARRAY* Array = (ARRAY*)Copy(true);
   foreach(Element, Array->Elements) (*Element) = (*Element)->Evaluate();
 
-  return Array->Simplify();
+  return Array->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ARRAY::Simplify(){
+EXPRESSION* ARRAY::Simplify(bool GenWire){
   return this;
 }
 //------------------------------------------------------------------------------

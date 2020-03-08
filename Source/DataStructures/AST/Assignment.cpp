@@ -579,7 +579,7 @@ bool ASSIGNMENT::RunScripting(){
       if(ScriptTarget) delete ScriptTarget;
       return false;
   }
-  *Target = (*Target)->Simplify();
+  *Target = (*Target)->Simplify(false);
 
   if(*Target){
     if(!RawAssign){

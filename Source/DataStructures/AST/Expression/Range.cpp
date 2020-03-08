@@ -63,11 +63,11 @@ EXPRESSION* RANGE::Evaluate(){
   error("Not yet implemented");
 
   if(!Result) return 0;
-  return Result->Simplify();
+  return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* RANGE::Simplify(){
+EXPRESSION* RANGE::Simplify(bool GenWire){
   error("Not yet implemented");
   return this;
 }

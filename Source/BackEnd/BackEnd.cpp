@@ -171,15 +171,7 @@ bool BACK_END::WriteFile(string& Filename, const char* Ext, string& Body){
 }
 //------------------------------------------------------------------------------
 
-const char* BACK_END::GetWireName(){
-  static unsigned Count = 0;
-  static char     Name[0x10];
-  sprintf(Name, "\\w..%d ", Count++);
-  return Name;
-}
-//------------------------------------------------------------------------------
-
-bool BACK_END::BuildExpression(string& Body, AST::EXPRESSION* Expression, string& Wire){
+bool BACK_END::BuildExpression(string& Body, AST::EXPRESSION* Expression){
   if(!Expression) return false;
 
   switch(Expression->Type){
@@ -214,34 +206,19 @@ bool BACK_END::BuildExpression(string& Body, AST::EXPRESSION* Expression, string
     case AST::BASE::TYPE::Object:{
       auto Object = ((AST::OBJECT*)Expression)->ObjectRef;
       assert(Object, return false);
-      Wire += Object->EscapedName();
+      Body += Object->EscapedName();
       break;
     }
 
     case AST::BASE::TYPE::VectorConcatenate:{
-      // TODO: Move to new strategy of synthesising single operations into temporaries
-      error("Not yet implemented");
-      // vector<string> Elements;
-
-      // assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
-      // AST::EXPRESSION* Node = (AST::EXPRESSION*)Expression->Right;
-
-      // while(Node){
-      //   Elements.emplace_back("");
-      //   if(!BuildExpression(Body, Node, Elements.back())) return false;
-      //   if(Node->Next) assert(Node->Next->Type > AST::BASE::TYPE::Expression, return false);
-      //   Node = (AST::EXPRESSION*)Node->Next;
-      // }
-
-      // Wire = GetWireName();
-      // if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      // else                      Body += "wire ";
-      // Body += Wire +"= {";
-      // for(size_t n = 0; n < Elements.size(); n++){
-      //   Body += Elements[n];
-      //   if(n < Elements.size()-1) Body += ", ";
-      // }
-      // Body += "};\n";
+      bool isFirst = true;
+      foreach(Element, ((AST::VECTORCONCATENATE*)Expression)->Elements){
+        if(isFirst) Body += "{";
+        else        Body += ", ";
+        BuildExpression(Body, *Element);
+        isFirst = false;
+      }
+      Body += "}";
       break;
     }
 
@@ -263,85 +240,87 @@ bool BACK_END::BuildExpression(string& Body, AST::EXPRESSION* Expression, string
     }
 
     case AST::BASE::TYPE::Bit_NOT:{
-      // TODO: Move to new strategy of synthesising single operations into temporaries
+      Body += "~(";
+      assert(Expression->Right->Type >= AST::BASE::TYPE::Expression, return false);
+      BuildExpression(Body, (AST::EXPRESSION*)Expression->Right);
+      Body += ")";
+      break;
+    }
+
+    case AST::BASE::TYPE::AND_Reduce:{
       error("Not yet implemented");
       // string Right;
       // assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
       // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
       // Wire = GetWireName();
-      // if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      // else                      Body += "wire ";
-      // Body += Wire +"= ~("+ Right +");\n";
-      break;
-    }
-
-    case AST::BASE::TYPE::AND_Reduce:{
-      string Right;
-      assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire ";
-      Body += Wire +"= &("+ Right +");\n";
+      // Body += "wire ";
+      // Body += Wire +"= &("+ Right +");\n";
       break;
     }
 
     case AST::BASE::TYPE::NAND_Reduce:{
-      string Right;
-      assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire ";
-      Body += Wire +"= ~&("+ Right +");\n";
+      error("Not yet implemented");
+      // string Right;
+      // assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // Body += "wire ";
+      // Body += Wire +"= ~&("+ Right +");\n";
       break;
     }
 
     case AST::BASE::TYPE::OR_Reduce:{
-      string Right;
-      assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire ";
-      Body += Wire +"= |("+ Right +");\n";
+      error("Not yet implemented");
+      // string Right;
+      // assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // Body += "wire ";
+      // Body += Wire +"= |("+ Right +");\n";
       break;
     }
 
     case AST::BASE::TYPE::NOR_Reduce:{
-      string Right;
-      assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire ";
-      Body += Wire +"= ~|("+ Right +");\n";
+      error("Not yet implemented");
+      // string Right;
+      // assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // Body += "wire ";
+      // Body += Wire +"= ~|("+ Right +");\n";
       break;
     }
 
     case AST::BASE::TYPE::XOR_Reduce:{
-      string Right;
-      assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire ";
-      Body += Wire +"= ^("+ Right +");\n";
+      error("Not yet implemented");
+      // string Right;
+      // assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // Body += "wire ";
+      // Body += Wire +"= ^("+ Right +");\n";
       break;
     }
 
     case AST::BASE::TYPE::XNOR_Reduce:{
-      string Right;
-      assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire ";
-      Body += Wire +"= ~^("+ Right +");\n";
+      error("Not yet implemented");
+      // string Right;
+      // assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // Body += "wire ";
+      // Body += Wire +"= ~^("+ Right +");\n";
       break;
     }
 
     case AST::BASE::TYPE::Logical_NOT:{
-      string Right;
-      assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire ";
-      Body += Wire +"= !("+ Right +");\n";
+      error("Not yet implemented");
+      // string Right;
+      // assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // Body += "wire ";
+      // Body += Wire +"= !("+ Right +");\n";
       break;
     }
 
@@ -445,62 +424,68 @@ bool BACK_END::BuildExpression(string& Body, AST::EXPRESSION* Expression, string
     }
 
     case AST::BASE::TYPE::Less:{
-      string Left, Right;
-      assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire "+ Wire +"= "+ Left +" < "+ Right +";\n";
+      error("Not yet implemented");
+      // string Left, Right;
+      // assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // Body += "wire "+ Wire +"= "+ Left +" < "+ Right +";\n";
       break;
     }
 
     case AST::BASE::TYPE::Greater:{
-      string Left, Right;
-      assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire "+ Wire +"= "+ Left +" > "+ Right +";\n";
+      error("Not yet implemented");
+      // string Left, Right;
+      // assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // Body += "wire "+ Wire +"= "+ Left +" > "+ Right +";\n";
       break;
     }
 
     case AST::BASE::TYPE::Less_Equal:{
-      string Left, Right;
-      assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire "+ Wire +"= "+ Left +" <= "+ Right +";\n";
+      error("Not yet implemented");
+      // string Left, Right;
+      // assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // Body += "wire "+ Wire +"= "+ Left +" <= "+ Right +";\n";
       break;
     }
 
     case AST::BASE::TYPE::Greater_Equal:{
-      string Left, Right;
-      assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire "+ Wire +"= "+ Left +" >= "+ Right +";\n";
+      error("Not yet implemented");
+      // string Left, Right;
+      // assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // Body += "wire "+ Wire +"= "+ Left +" >= "+ Right +";\n";
       break;
     }
 
     case AST::BASE::TYPE::Equal:{
-      string Left, Right;
-      assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire "+ Wire +"= "+ Left +" == "+ Right +";\n";
+      error("Not yet implemented");
+      // string Left, Right;
+      // assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // Body += "wire "+ Wire +"= "+ Left +" == "+ Right +";\n";
       break;
     }
 
     case AST::BASE::TYPE::Not_Equal:{
-      string Left, Right;
-      assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire "+ Wire +"= "+ Left +" != "+ Right +";\n";
+      error("Not yet implemented");
+      // string Left, Right;
+      // assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // Body += "wire "+ Wire +"= "+ Left +" != "+ Right +";\n";
       break;
     }
 
@@ -589,22 +574,24 @@ bool BACK_END::BuildExpression(string& Body, AST::EXPRESSION* Expression, string
     }
 
     case AST::BASE::TYPE::Logical_AND:{
-      string Left, Right;
-      assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire "+ Wire +"= "+ Left +" && "+ Right +";\n";
+      error("Not yet implemented");
+      // string Left, Right;
+      // assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // Body += "wire "+ Wire +"= "+ Left +" && "+ Right +";\n";
       break;
     }
 
     case AST::BASE::TYPE::Logical_OR:{
-      string Left, Right;
-      assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire "+ Wire +"= "+ Left +" || "+ Right +";\n";
+      error("Not yet implemented");
+      // string Left, Right;
+      // assert(Expression->Right->Type > AST::BASE::TYPE::Expression, return false);
+      // if(!BuildExpression(Body, Expression->Left , Left )) return false;
+      // if(!BuildExpression(Body, (AST::EXPRESSION*)Expression->Right, Right)) return false;
+      // Wire = GetWireName();
+      // Body += "wire "+ Wire +"= "+ Left +" || "+ Right +";\n";
       break;
     }
 
@@ -723,11 +710,11 @@ bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
         if(Pin->Driver){
           string Driver;
           Body += "// " + Pin->Driver->Filename +" +"+ to_string(Pin->Driver->Line) + "\n";
-          if(!BuildExpression(Body, Pin->Driver, Driver)) return false;
+          if(!BuildExpression(Driver, Pin->Driver)) return false;
           if(Pin->Enabled){
             string Enabled;
             Body += "// " + Pin->Enabled->Filename +" +"+ to_string(Pin->Enabled->Line) + "\n";
-            if(!BuildExpression(Body, Pin->Enabled, Enabled)) return false;
+            if(!BuildExpression(Enabled, Pin->Enabled)) return false;
             Body += "assign "+ Pin->EscapedName() +
                     " = |("+ Enabled + ")"
                     " ? ("+ Driver + ")"
@@ -743,8 +730,8 @@ bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
         if(Net->Value){
           string Value;
           Body += "// " + Net->Value->Filename +" +"+ to_string(Net->Value->Line) + "\n";
-          if(!BuildExpression(Body, Net->Value, Value)) return false;
-          Body += "assign "+ Net->EscapedName() +" = "+ Value +";\n\n";
+          if(!BuildExpression(Value, Net->Value)) return false;
+          Body += "assign "+ Net->EscapedName() +" = "+ Value +";\n";
         }
         break;
       }

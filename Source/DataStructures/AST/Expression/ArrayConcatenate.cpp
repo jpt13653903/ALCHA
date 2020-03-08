@@ -63,11 +63,11 @@ EXPRESSION* ARRAYCONCATENATE::Evaluate(){
   auto Array = (AST::ARRAYCONCATENATE*)Copy(true);
   foreach(Element, Array->Elements) (*Element) = (*Element)->Evaluate();
 
-  return Array->Simplify();
+  return Array->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ARRAYCONCATENATE::Simplify(){
+EXPRESSION* ARRAYCONCATENATE::Simplify(bool GenWire){
   // TODO: Simplify the elements
   error("Not yet implemented");
   return this;

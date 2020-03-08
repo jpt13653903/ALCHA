@@ -45,6 +45,7 @@ namespace NETLIST{
   class BASE{ // Base class for the symbol table
     protected:
       void DisplayAttributes(int Indent);
+    //--------------------------------------------------------------------------
 
     public:
       // Indentation follows the inheritance tree
@@ -70,7 +71,10 @@ namespace NETLIST{
       std::string                             Name;
       NAMESPACE*                              Namespace;
       std::map<std::string, AST::EXPRESSION*> Attributes;
+    //--------------------------------------------------------------------------
 
+    public:
+      // When Name is 0, a name is auto-generated
                BASE(int Line, const std::string& Filename, const char* Name, TYPE Type);
       virtual ~BASE();
 

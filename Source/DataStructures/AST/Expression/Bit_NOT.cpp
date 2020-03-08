@@ -19,6 +19,9 @@
 //==============================================================================
 
 #include "Bit_NOT.h"
+#include "Object.h"
+#include "Netlist/Net.h"
+#include "Netlist/Module.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -68,24 +71,38 @@ EXPRESSION* BIT_NOT::Evaluate(){
   );
 
   if(!Result) return 0;
-  return Result->Simplify();
+  return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* BIT_NOT::Simplify(){
+EXPRESSION* BIT_NOT::Simplify(bool GenWire){
   assert(Right, return this);
   assert(Right->Type > TYPE::Expression, return this);
 
-  Right = ((EXPRESSION*)Right)->Simplify();
-
   EXPRESSION* Result = this;
 
-  if(Right->Type == TYPE::Literal){
-    error("Not yet implemented");
-    // TODO: Literals require a length, so it must have been cast to a
-    //       specific length for this to be valid
-  }
+  Right = ((EXPRESSION*)Right)->Simplify(true);
+  assert(Right->Type == TYPE::Object, return Result);
 
+  if(GenWire){
+    auto Net = new NETLIST::NET(Line, Filename, 0);
+    Net->Used  = true;
+    Net->Value = this;
+
+    auto ObjectRef = ((OBJECT*)Right)->ObjectRef;
+    if(ObjectRef && (ObjectRef->Type == NETLIST::BASE::TYPE::Net ||
+                     ObjectRef->Type == NETLIST::BASE::TYPE::Pin)
+    ){
+      auto Synthesisable = (NETLIST::SYNTHESISABLE*)ObjectRef;
+      Net->Width     = Synthesisable->Width;
+      Net->FullScale = Synthesisable->FullScale;
+    }
+    NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
+
+    auto Object = new OBJECT(Line, Filename);
+    Object->ObjectRef = Net;
+    Result = Object;
+  }
   return Result;
 }
 //------------------------------------------------------------------------------

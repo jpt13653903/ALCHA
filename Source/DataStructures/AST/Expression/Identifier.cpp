@@ -148,11 +148,11 @@ EXPRESSION* IDENTIFIER::Evaluate(){
   }
 
   if(!Result) return 0;
-  return Result->Simplify();
+  return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* IDENTIFIER::Simplify(){
+EXPRESSION* IDENTIFIER::Simplify(bool GenWire){
   EXPRESSION* Result = Evaluate();
 
   if(Result != this) delete this;

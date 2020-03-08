@@ -60,11 +60,11 @@ EXPRESSION* INCREMENT::Evaluate(){
   error("Not yet implemented");
 
   if(!Result) return 0;
-  return Result->Simplify();
+  return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* INCREMENT::Simplify(){
+EXPRESSION* INCREMENT::Simplify(bool GenWire){
   error("Not yet implemented");
   return this;
 }
