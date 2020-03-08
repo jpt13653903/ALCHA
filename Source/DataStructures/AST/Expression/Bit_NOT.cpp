@@ -39,9 +39,6 @@ BIT_NOT::~BIT_NOT(){
 BASE* BIT_NOT::Copy(bool CopyNext){
   BIT_NOT* Copy = new BIT_NOT(Line, Filename.c_str());
 
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
-
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 
@@ -83,7 +80,7 @@ EXPRESSION* BIT_NOT::Simplify(){
 
   EXPRESSION* Result = this;
 
-  if(((EXPRESSION*)Right)->Type == TYPE::Literal){
+  if(Right->Type == TYPE::Literal){
     error("Not yet implemented");
     // TODO: Literals require a length, so it must have been cast to a
     //       specific length for this to be valid

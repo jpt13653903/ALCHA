@@ -19,6 +19,7 @@
 //==============================================================================
 
 #include "Add.h"
+#include "Literal.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -38,9 +39,6 @@ ADD::~ADD(){
 
 BASE* ADD::Copy(bool CopyNext){
   ADD* Copy = new ADD(Line, Filename.c_str());
-
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -74,21 +72,20 @@ EXPRESSION* ADD::Simplify(){
   Left = Left->Simplify();
   Right = ((EXPRESSION*)Right)->Simplify();
 
-  if(
-    Left->Type == TYPE::Literal &&
-    ((EXPRESSION*)Right)->Type == TYPE::Literal
-  ){
-    Type = TYPE::Literal;
-    Value = Left->Value;
-    Value.Add(((EXPRESSION*)Right)->Value);
-    delete Left ; Left  = 0;
-    delete Right; Right = 0;
+  EXPRESSION* Result = this;
+
+  if(Left->Type == TYPE::Literal && Right->Type == TYPE::Literal){
+    auto Literal = new LITERAL(Line, Filename);
+    Literal->Value =   ((LITERAL*)Left )->Value;
+    Literal->Value.Add(((LITERAL*)Right)->Value);
+    delete this;
+    Result = Literal;
   }
   // TODO When adding an expression to a literal, follow the rules
   //      in the SIPS article
 
   error("Not yet implemented");
-  return this;
+  return Result;
 }
 //------------------------------------------------------------------------------
 

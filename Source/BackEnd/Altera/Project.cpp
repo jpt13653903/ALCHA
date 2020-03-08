@@ -129,7 +129,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
             return false;
           }
           Body += "set_instance_assignment -name "
-                  "IO_STANDARD \""+ Standard->StrValue +"\" -to "+ Pin->HDL_Name();
+                  "IO_STANDARD \""+ ((AST::STRING*)Standard)->Value +"\" -to "+ Pin->HDL_Name();
           if(Pin->Width > 1) Body += "[*]";
           Body += "\n";
         }
@@ -140,7 +140,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
               Error(Location, "Scalar pin location not a string");
               return false;
             }
-            AssignPin(Body, Location->StrValue, Pin->HDL_Name());
+            AssignPin(Body, ((AST::STRING*)Location)->Value, Pin->HDL_Name());
           }else{
             if(Location->Type != AST::BASE::TYPE::Array){
               Error(Location, "Vector pin location not an array");
@@ -159,7 +159,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
                 Error(Element, "Pin location not a string");
                 return false;
               }
-              AssignPin(Body, Element->StrValue,
+              AssignPin(Body, ((AST::STRING*)Element)->Value,
                         Pin->HDL_Name() +"["+ to_string(Pin->Width-1-n) +"]");
             }
           }
@@ -176,17 +176,17 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
                   "-name CURRENT_STRENGTH_NEW ";
           switch(Current->Type){
             case AST::BASE::TYPE::Literal:{
-              if(!Current->Value.IsReal()){
+              if(!((AST::LITERAL*)Current)->Value.IsReal()){
                 Error(Current, "Current attribute not real");
                 return false;
               }
-              NUMBER mA = Current->Value;
+              NUMBER mA = ((AST::LITERAL*)Current)->Value;
               mA.Mul(1e3);
               Body += to_string((int)mA.GetReal()) + "MA";
               break;
             }
             case AST::BASE::TYPE::String:
-              Body += '"' + Current->StrValue + '"';
+              Body += '"' + ((AST::STRING*)Current)->Value + '"';
               break;
             default:
               // TODO Need to also handle arrays (for vector types) correctly
@@ -203,12 +203,12 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
                   "-name WEAK_PULL_UP_RESISTOR ";
           switch(WeakPullup->Type){
             case AST::BASE::TYPE::Literal:{
-              if(WeakPullup->Value == true) Body += "ON";
-              else                          Body += "OFF";
+              if(((AST::LITERAL*)WeakPullup)->Value == true) Body += "ON";
+              else                                           Body += "OFF";
               break;
             }
             case AST::BASE::TYPE::String:
-              Body += '"' + WeakPullup->StrValue + '"';
+              Body += '"' + ((AST::STRING*)WeakPullup)->Value + '"';
               break;
             default:
               // TODO Need to also handle arrays (for vector types) correctly
@@ -294,7 +294,7 @@ bool PROJECT::BuildSettings(){
       Error(Standard, "Standard attribute not a string");
       return false;
     }
-    Body += "\""+ Standard->StrValue +"\"\n\n";
+    Body += "\""+ ((AST::STRING*)Standard)->Value +"\"\n\n";
   }else{
     Body += "\"3.3-V LVCMOS\"\n\n";
   }
@@ -373,7 +373,7 @@ bool PROJECT::Build(const char* Path, const char* Filename){
     Error(Device, "Global attribute \"target_device\" not a string");
     return false;
   }
-  this->Device = Device->StrValue;
+  this->Device = ((AST::STRING*)Device)->Value;
 
   auto Series = Global.GetAttrib("target_series");
   if(!Series){
@@ -384,7 +384,7 @@ bool PROJECT::Build(const char* Path, const char* Filename){
     Error(Series, "Global attribute \"target_series\" not a string");
     return false;
   }
-  this->Series = Series->StrValue;
+  this->Series = ((AST::STRING*)Series)->Value;
 
   if(!BuildProject          ()) return false;
   if(!BuildSettings         ()) return false;

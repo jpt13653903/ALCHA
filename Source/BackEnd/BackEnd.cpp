@@ -107,7 +107,7 @@ bool BACK_END::AssignPinDirections(NAMESPACE* Namespace){
         if(Pin->Direction == AST::DEFINITION::DIRECTION::Inferred){
           if(Pin->Enabled){ // Possible bidirectional
             if(Pin->Enabled->Type == AST::BASE::TYPE::Literal){
-              if(Pin->Enabled->Value == 0){
+              if(((AST::LITERAL*)Pin->Enabled)->Value == 0){
                 Pin->Direction = AST::DEFINITION::DIRECTION::Input;
               }else{
                 Pin->Direction = AST::DEFINITION::DIRECTION::Output;
@@ -174,7 +174,7 @@ bool BACK_END::WriteFile(string& Filename, const char* Ext, string& Body){
 const char* BACK_END::GetWireName(){
   static unsigned Count = 0;
   static char     Name[0x10];
-  sprintf(Name, "\\t..%d ", Count++);
+  sprintf(Name, "\\w..%d ", Count++);
   return Name;
 }
 //------------------------------------------------------------------------------

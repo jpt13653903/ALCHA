@@ -39,9 +39,6 @@ BIT_AND::~BIT_AND(){
 BASE* BIT_AND::Copy(bool CopyNext){
   BIT_AND* Copy = new BIT_AND(Line, Filename.c_str());
 
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
-
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 

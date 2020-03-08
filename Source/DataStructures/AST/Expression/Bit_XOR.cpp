@@ -39,9 +39,6 @@ BIT_XOR::~BIT_XOR(){
 BASE* BIT_XOR::Copy(bool CopyNext){
   BIT_XOR* Copy = new BIT_XOR(Line, Filename.c_str());
 
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
-
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 

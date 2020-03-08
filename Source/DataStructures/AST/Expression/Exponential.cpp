@@ -39,9 +39,6 @@ EXPONENTIAL::~EXPONENTIAL(){
 BASE* EXPONENTIAL::Copy(bool CopyNext){
   EXPONENTIAL* Copy = new EXPONENTIAL(Line, Filename.c_str());
 
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
-
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 

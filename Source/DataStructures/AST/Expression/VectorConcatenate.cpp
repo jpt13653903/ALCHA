@@ -40,9 +40,6 @@ VECTORCONCATENATE::~VECTORCONCATENATE(){
 BASE* VECTORCONCATENATE::Copy(bool CopyNext){
   VECTORCONCATENATE* Copy = new VECTORCONCATENATE(Line, Filename.c_str());
 
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
-
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 

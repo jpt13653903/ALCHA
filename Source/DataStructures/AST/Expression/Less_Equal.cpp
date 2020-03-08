@@ -39,9 +39,6 @@ LESS_EQUAL::~LESS_EQUAL(){
 BASE* LESS_EQUAL::Copy(bool CopyNext){
   LESS_EQUAL* Copy = new LESS_EQUAL(Line, Filename.c_str());
 
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
-
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 

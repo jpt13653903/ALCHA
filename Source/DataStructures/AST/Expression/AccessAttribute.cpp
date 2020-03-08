@@ -42,9 +42,6 @@ ACCESSATTRIBUTE::~ACCESSATTRIBUTE(){
 BASE* ACCESSATTRIBUTE::Copy(bool CopyNext){
   ACCESSATTRIBUTE* Copy = new ACCESSATTRIBUTE(Line, Filename.c_str());
 
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
-
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 

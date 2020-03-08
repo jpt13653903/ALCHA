@@ -39,8 +39,7 @@ LITERAL::~LITERAL(){
 BASE* LITERAL::Copy(bool CopyNext){
   LITERAL* Copy = new LITERAL(Line, Filename.c_str());
 
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
+  Copy->Value = Value;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);

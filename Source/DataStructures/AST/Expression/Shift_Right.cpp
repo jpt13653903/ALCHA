@@ -39,9 +39,6 @@ SHIFT_RIGHT::~SHIFT_RIGHT(){
 BASE* SHIFT_RIGHT::Copy(bool CopyNext){
   SHIFT_RIGHT* Copy = new SHIFT_RIGHT(Line, Filename.c_str());
 
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
-
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 

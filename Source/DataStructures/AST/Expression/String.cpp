@@ -39,8 +39,7 @@ STRING::~STRING(){
 BASE* STRING::Copy(bool CopyNext){
   STRING* Copy = new STRING(Line, Filename.c_str());
 
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
+  Copy->Value = Value;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -75,7 +74,7 @@ EXPRESSION* STRING::Simplify(){
 void STRING::Display(){
   DisplayStart();
 
-  Debug.print("\"%s\"", StrValue.c_str());
+  Debug.print("\"%s\"", Value.c_str());
 
   DisplayEnd();
 }

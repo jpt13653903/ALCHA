@@ -39,9 +39,6 @@ NOT_EQUAL::~NOT_EQUAL(){
 BASE* NOT_EQUAL::Copy(bool CopyNext){
   NOT_EQUAL* Copy = new NOT_EQUAL(Line, Filename.c_str());
 
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
-
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 

@@ -33,9 +33,6 @@ namespace AST{
       void DisplayEnd  ();
 
     public:
-      NUMBER         Value;     // Only used for numerical literals
-      std::string    StrValue;  // Only used for string literals
-
       // Left and Right operands
       EXPRESSION* Left;
       BASE*       Right; // Can be expression or assignment (for function calls)

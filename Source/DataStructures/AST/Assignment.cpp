@@ -30,6 +30,7 @@
 #include "Netlist/Module.h"
 
 #include "Expression/Object.h"
+#include "Expression/Literal.h"
 #include "Expression/ArrayConcatenate.h"
 #include "Expression/Add.h"
 #include "Expression/Subtract.h"
@@ -587,8 +588,9 @@ bool ASSIGNMENT::RunScripting(){
       ){
         NETLIST::SYNTHESISABLE* Synth = (NETLIST::SYNTHESISABLE*)Object;
         if((*Target)->Type == TYPE::Literal){
-          (*Target)->Value.Div     (Synth->FullScale);
-          (*Target)->Value.BinScale(Synth->Width);
+          auto Literal = (LITERAL*)(*Target);
+          Literal->Value.Div     (Synth->FullScale);
+          Literal->Value.BinScale(Synth->Width);
         }
       }
     }
@@ -599,7 +601,7 @@ bool ASSIGNMENT::RunScripting(){
       case NETLIST::BASE::TYPE::Byte:{
         auto Byte = (NETLIST::BYTE*)Object;
         if(ScriptTarget->Type == TYPE::Literal){
-          Byte->Value = ScriptTarget->Value.GetReal();
+          Byte->Value = ((LITERAL*)ScriptTarget)->Value.GetReal();
         }else{
           // TODO Could be an array, for instance
           // TODO Check that the RHS is non-synthesisable
@@ -610,7 +612,7 @@ bool ASSIGNMENT::RunScripting(){
       case NETLIST::BASE::TYPE::Character:{
         auto Char = (NETLIST::CHARACTER*)Object;
         if(ScriptTarget->Type == TYPE::Literal){
-          Char->Value = ScriptTarget->Value.GetReal();
+          Char->Value = ((LITERAL*)ScriptTarget)->Value.GetReal();
         }else{
           // TODO Could be an array, for instance
           // TODO Check that the RHS is non-synthesisable
@@ -621,7 +623,7 @@ bool ASSIGNMENT::RunScripting(){
       case NETLIST::BASE::TYPE::Number:{
         auto Num = (NETLIST::NUM*)Object;
         if(ScriptTarget->Type == TYPE::Literal){
-          Num->Value = ScriptTarget->Value;
+          Num->Value = ((LITERAL*)ScriptTarget)->Value;
         }else{
           // TODO Could be an array, for instance
           // TODO Check that the RHS is non-synthesisable

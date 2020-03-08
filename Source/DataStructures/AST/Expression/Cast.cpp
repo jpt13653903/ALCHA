@@ -39,9 +39,6 @@ CAST::~CAST(){
 BASE* CAST::Copy(bool CopyNext){
   CAST* Copy = new CAST(Line, Filename.c_str());
 
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
-
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 

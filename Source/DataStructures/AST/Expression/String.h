@@ -27,6 +27,8 @@
 
 namespace AST{
   struct STRING: public EXPRESSION{
+    std::string Value;
+
     STRING(int Line, const std::string& Filename);
     STRING(int Line, const char*        Filename);
    ~STRING();

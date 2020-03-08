@@ -41,9 +41,6 @@ RANGE::~RANGE(){
 BASE* RANGE::Copy(bool CopyNext){
   RANGE* Copy = new RANGE(Line, Filename.c_str());
 
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
-
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
   if(Step ) Copy->Step  = (decltype(Step ))Step ->Copy(CopyNext);

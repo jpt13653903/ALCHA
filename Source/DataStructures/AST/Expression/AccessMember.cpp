@@ -45,9 +45,6 @@ ACCESSMEMBER::~ACCESSMEMBER(){
 BASE* ACCESSMEMBER::Copy(bool CopyNext){
   ACCESSMEMBER* Copy = new ACCESSMEMBER(Line, Filename.c_str());
 
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
-
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 
@@ -137,7 +134,6 @@ EXPRESSION* ACCESSMEMBER::Evaluate(){
     delete Left;
     return 0;
   }
-
 
   if(!Result) return 0;
   return Result->Simplify();

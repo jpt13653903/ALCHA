@@ -19,6 +19,7 @@
 //==============================================================================
 
 #include "Negate.h"
+#include "Literal.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -38,9 +39,6 @@ NEGATE::~NEGATE(){
 
 BASE* NEGATE::Copy(bool CopyNext){
   NEGATE* Copy = new NEGATE(Line, Filename.c_str());
-
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -87,7 +85,7 @@ EXPRESSION* NEGATE::Simplify(){
   if(Right->Type == TYPE::Literal){
     Result = Right;
     this->Right = 0;
-    Result->Value.Mul(-1);
+    ((LITERAL*)Result)->Value.Mul(-1);
     delete this;
   }
   return Result;

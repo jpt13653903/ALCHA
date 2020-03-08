@@ -268,9 +268,9 @@ AST::ENUM_DEFINITION* PARSER::EnumDefinition(){
 AST::EXPRESSION* PARSER::String(){
   if(Token.Type != TOKEN::TYPE::String) return 0;
 
-  AST::EXPRESSION* Node = new AST::STRING(Token.Line, Scanner.Filename);
+  AST::STRING* Node = new AST::STRING(Token.Line, Scanner.Filename);
 
-  Node->StrValue = Token.Data;
+  Node->Value = Token.Data;
 
   GetToken();
   return Node;
@@ -285,7 +285,7 @@ AST::EXPRESSION* PARSER::Literal(){
     default            : return 0;
   }
 
-  AST::EXPRESSION* Node = new AST::LITERAL(Token.Line, Scanner.Filename);
+  AST::LITERAL* Node = new AST::LITERAL(Token.Line, Scanner.Filename);
 
   Node->Value = Token.Value;
 

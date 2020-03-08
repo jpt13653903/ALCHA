@@ -39,9 +39,6 @@ ACCESSMEMBERSAFE::~ACCESSMEMBERSAFE(){
 BASE* ACCESSMEMBERSAFE::Copy(bool CopyNext){
   ACCESSMEMBERSAFE* Copy = new ACCESSMEMBERSAFE(Line, Filename.c_str());
 
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
-
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 

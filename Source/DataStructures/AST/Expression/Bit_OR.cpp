@@ -39,9 +39,6 @@ BIT_OR::~BIT_OR(){
 BASE* BIT_OR::Copy(bool CopyNext){
   BIT_OR* Copy = new BIT_OR(Line, Filename.c_str());
 
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
-
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 

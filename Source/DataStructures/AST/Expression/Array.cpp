@@ -40,9 +40,6 @@ ARRAY::~ARRAY(){
 BASE* ARRAY::Copy(bool CopyNext){
   ARRAY* Copy = new ARRAY(Line, Filename.c_str());
 
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
-
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 

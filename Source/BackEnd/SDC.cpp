@@ -46,11 +46,11 @@ void SDC::BuildClocks(){
           error("frequency attribute not a literal");
           return;
         }
-        if(!Freq->Value.IsReal()){
+        if(!((AST::LITERAL*)Freq)->Value.IsReal()){
           error("frequency attribute not real");
           return;
         }
-        double Period = 1e9/Freq->Value.GetReal(); // ns
+        double Period = 1e9/((AST::LITERAL*)Freq)->Value.GetReal(); // ns
         Constraints +=
           "create_clock -name {" + Pin->HDL_Name()     + "}"   +
           " -period "            + to_string(Period)   + "ns"  +

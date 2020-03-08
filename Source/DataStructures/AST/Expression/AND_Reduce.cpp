@@ -39,9 +39,6 @@ AND_REDUCE::~AND_REDUCE(){
 BASE* AND_REDUCE::Copy(bool CopyNext){
   AND_REDUCE* Copy = new AND_REDUCE(Line, Filename.c_str());
 
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
-
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 

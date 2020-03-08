@@ -67,9 +67,7 @@ IDENTIFIER::~IDENTIFIER(){
 BASE* IDENTIFIER::Copy(bool CopyNext){
   IDENTIFIER* Copy = new IDENTIFIER(Line, Filename.c_str());
 
-  Copy->Name      = Name;
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
+  Copy->Name = Name;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -138,7 +136,7 @@ EXPRESSION* IDENTIFIER::Evaluate(){
     NUMBER Constant;
     if(GetConstant(this->Name.c_str(), &Constant)){
       Result = new LITERAL(this->Line, this->Filename);
-      Result->Value = new NUMBER(Constant);
+      ((LITERAL*)Result)->Value = Constant;
     }else{
       Error();
       printf("Identifier \"%s\" not defined\n", this->Name.c_str());

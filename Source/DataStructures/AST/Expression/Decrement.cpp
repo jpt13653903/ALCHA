@@ -39,9 +39,6 @@ DECREMENT::~DECREMENT(){
 BASE* DECREMENT::Copy(bool CopyNext){
   DECREMENT* Copy = new DECREMENT(Line, Filename.c_str());
 
-  Copy->Value     = Value;
-  Copy->StrValue  = StrValue;
-
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 

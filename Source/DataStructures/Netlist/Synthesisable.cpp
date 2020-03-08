@@ -19,6 +19,7 @@
 //==============================================================================
 
 #include "Synthesisable.h"
+#include "Ast/Expression/Literal.h"
 //------------------------------------------------------------------------------
 
 using namespace NETLIST;
@@ -51,23 +52,25 @@ bool SYNTHESISABLE::ApplyParameters(AST::BASE* Parameter){
       }
 
       switch(Param->Type){
-        case AST::BASE::TYPE::Literal:
+        case AST::BASE::TYPE::Literal:{
+          auto Literal = (AST::LITERAL*)Param;
           switch(Position){
             case 0:
-              if(!Param->Value.IsInt()) return false;
-              Width = round(Param->Value.GetReal());
+              if(!Literal->Value.IsInt()) return false;
+              Width = round(Literal->Value.GetReal());
               break;
 
             case 1:
               ExplicitFullScale = true;
-              FullScale = Param->Value;
+              FullScale = Literal->Value;
               break;
 
             default: // Too many parameters
-              delete Param;
+              delete Literal;
               return false;
           }
           break;
+        }
 
         default:
           Parameter->Error("Parameters must be pure scripting expressions");
