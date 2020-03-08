@@ -23,7 +23,7 @@
 //------------------------------------------------------------------------------
 
 #include "Logger.h"
-#include "Messages.h"
+#include "Utilities.h"
 
 #include "Scanner.h"
 #include "Dictionary.h"

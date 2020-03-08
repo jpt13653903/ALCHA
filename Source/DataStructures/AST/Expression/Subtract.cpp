@@ -39,10 +39,8 @@ SUBTRACT::~SUBTRACT(){
 BASE* SUBTRACT::Copy(bool CopyNext){
   SUBTRACT* Copy = new SUBTRACT(Line, Filename.c_str());
 
-  Copy->Name      = Name;
   Copy->Value     = Value;
   Copy->StrValue  = StrValue;
-  Copy->ObjectRef = ObjectRef;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -50,6 +48,46 @@ BASE* SUBTRACT::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool SUBTRACT::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* SUBTRACT::Evaluate(){
+  EXPRESSION* Result = 0;
+
+  error("Not yet implemented");
+
+  if(!Result) return 0;
+  return Result->Simplify();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* SUBTRACT::Simplify(){
+  assert(Left && Right, return this);
+  assert(Right->Type > TYPE::Expression, return this);
+
+  Left = Left->Simplify();
+  Right = ((EXPRESSION*)Right)->Simplify();
+
+  if(
+    Left ->Type == TYPE::Literal &&
+    ((EXPRESSION*)Right)->Type == TYPE::Literal
+  ){
+    Type = TYPE::Literal;
+    Value = Left->Value;
+    Value.Sub(((EXPRESSION*)Right)->Value);
+    delete Left ; Left  = 0;
+    delete Right; Right = 0;
+  }
+  // TODO When subtracting an expression from a literal (or vice versa),
+  //      follow the rules in the SIPS article
+
+  return this;
 }
 //------------------------------------------------------------------------------
 

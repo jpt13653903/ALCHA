@@ -41,10 +41,8 @@ RANGE::~RANGE(){
 BASE* RANGE::Copy(bool CopyNext){
   RANGE* Copy = new RANGE(Line, Filename.c_str());
 
-  Copy->Name      = Name;
   Copy->Value     = Value;
   Copy->StrValue  = StrValue;
-  Copy->ObjectRef = ObjectRef;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -53,6 +51,28 @@ BASE* RANGE::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool RANGE::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* RANGE::Evaluate(){
+  EXPRESSION* Result = 0;
+
+  error("Not yet implemented");
+
+  if(!Result) return 0;
+  return Result->Simplify();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* RANGE::Simplify(){
+  error("Not yet implemented");
+  return this;
 }
 //------------------------------------------------------------------------------
 

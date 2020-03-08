@@ -19,6 +19,8 @@
 //==============================================================================
 
 #include "Alias.h"
+#include "Netlist/Alias.h"
+#include "Netlist/Module.h"
 //------------------------------------------------------------------------------
 
 using namespace AST;
@@ -47,6 +49,23 @@ BASE* ALIAS::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool ALIAS::RunScripting(){
+  auto Symbol = NETLIST::NamespaceStack.front()->Symbols.find(Identifier);
+  if(Symbol != NETLIST::NamespaceStack.front()->Symbols.end()){
+    Error();
+    printf("Symbol \"%s\" already defined in the current namespace\n",
+           Identifier.c_str());
+    return false;
+  }
+
+  auto Object = new NETLIST::ALIAS(Line, Filename, Identifier.c_str(), Expression);
+
+  NETLIST::NamespaceStack.front()->Symbols[Object->Name] = Object;
+
+  return true;
 }
 //------------------------------------------------------------------------------
 

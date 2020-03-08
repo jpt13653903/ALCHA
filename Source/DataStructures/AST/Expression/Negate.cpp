@@ -39,10 +39,8 @@ NEGATE::~NEGATE(){
 BASE* NEGATE::Copy(bool CopyNext){
   NEGATE* Copy = new NEGATE(Line, Filename.c_str());
 
-  Copy->Name      = Name;
   Copy->Value     = Value;
   Copy->StrValue  = StrValue;
-  Copy->ObjectRef = ObjectRef;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -50,6 +48,49 @@ BASE* NEGATE::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool NEGATE::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* NEGATE::Evaluate(){
+  EXPRESSION* Result = 0;
+
+  Result = (EXPRESSION*)Copy(true);
+  if(!Result->Right){
+    delete Result;
+    return 0;
+  }
+  assert(Result->Right->Type > TYPE::Expression,
+    delete Result;
+    return 0;
+  );
+
+  if(!Result) return 0;
+  return Result->Simplify();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* NEGATE::Simplify(){
+  assert(Right, return this);
+  assert(Right->Type > AST::BASE::TYPE::Expression, return this);
+
+  Right = ((EXPRESSION*)Right)->Simplify();
+
+  EXPRESSION* Result = this;
+
+  auto Right = (EXPRESSION*)this->Right;
+  if(Right->Type == TYPE::Literal){
+    Result = Right;
+    this->Right = 0;
+    Result->Value.Mul(-1);
+    delete this;
+  }
+  return Result;
 }
 //------------------------------------------------------------------------------
 

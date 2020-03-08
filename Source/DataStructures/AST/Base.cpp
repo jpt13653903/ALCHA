@@ -44,6 +44,16 @@ BASE::~BASE(){
 }
 //------------------------------------------------------------------------------
 
+void BASE::Error(const char* Message){
+  ::Error(Line, Filename.c_str(), Message);
+}
+//------------------------------------------------------------------------------
+
+void BASE::Warning(const char* Message){
+  ::Warning(Line, Filename.c_str(), Message);
+}
+//------------------------------------------------------------------------------
+
 void BASE::DisplayInfo(){
   Debug.print("\n" ANSI_FG_BRIGHT_BLACK "%s:", Filename.c_str());
   Debug.print(ANSI_FG_CYAN "%05d" ANSI_FG_YELLOW " -- " ANSI_RESET, Line);

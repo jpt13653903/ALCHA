@@ -79,6 +79,12 @@ BASE* SWITCH::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
+bool SWITCH::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void SWITCH::Display(){
   DisplayInfo();
   Debug.print("switch(");

@@ -39,10 +39,8 @@ LESS_EQUAL::~LESS_EQUAL(){
 BASE* LESS_EQUAL::Copy(bool CopyNext){
   LESS_EQUAL* Copy = new LESS_EQUAL(Line, Filename.c_str());
 
-  Copy->Name      = Name;
   Copy->Value     = Value;
   Copy->StrValue  = StrValue;
-  Copy->ObjectRef = ObjectRef;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -50,6 +48,34 @@ BASE* LESS_EQUAL::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool LESS_EQUAL::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* LESS_EQUAL::Evaluate(){
+  EXPRESSION* Result = 0;
+
+  error("Not yet implemented");
+
+  if(!Result) return 0;
+  return Result->Simplify();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* LESS_EQUAL::Simplify(){
+  assert(Left && Right, return this);
+  assert(Right->Type > TYPE::Expression, return this);
+
+  Left = Left->Simplify();
+  Right = ((EXPRESSION*)Right)->Simplify();
+
+  error("Not yet implemented");
+  return this;
 }
 //------------------------------------------------------------------------------
 

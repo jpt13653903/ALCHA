@@ -36,115 +36,129 @@
 
 #include "Logger.h"
 #include "General.h"
+#include "Utilities.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct BASE{ // The base type for AST nodes
-    enum class TYPE{
-      Fence, // Empty statement, but also "next-cycle" specifier in FSMs
-      Import,
-      Group,
-      Alias,
-      TargetDefinition,
-      ClassDefinition,
-      EnumDefinition,
-      Definition, // pin, net, byte, char, num and
-                  // class instance
-      Parameter,  // Parameter definition, not function call
-      Assignment,
-      NamespacePush,
-      IfStatement,
-      ForLoop,
-      LoopLoop,
-      WhileLoop,
-      Switch,
-      Jump,
-      RTL,
-      FSM,
-      HDL,
+  class BASE{ // The base type for AST nodes
+    public:
+      void Error  (const char* Message = 0);
+      void Warning(const char* Message = 0);
+    //--------------------------------------------------------------------------
 
-      Expression, // Used only as a starting index for if-statements
-        String,
-        Literal,
-        Array,
-        Identifier,
-        Object,
+    public:
+      enum class TYPE{
+        Fence, // Empty statement, but also "next-cycle" specifier in FSMs
+        Import,
+        Group,
+        Alias,
+        TargetDefinition,
+        ClassDefinition,
+        EnumDefinition,
+        Definition, // pin, net, byte, char, num and
+                    // class instance
+        Parameter,  // Parameter definition, not function call
+        Assignment,
+        NamespacePush,
+        IfStatement,
+        ForLoop,
+        LoopLoop,
+        WhileLoop,
+        Switch,
+        Jump,
+        RTL,
+        FSM,
+        HDL,
 
-        VectorConcatenate,
-        ArrayConcatenate,
+        Expression, // Used only as a starting index for if-statements
+          String,
+          Literal,
+          Array,
+          Identifier,
+          Object,
 
-        FunctionCall, // Left is the function name; right is the parameter list
-        Slice,
-        AccessMember,
-        AccessMemberSafe,
-        AccessAttribute,
-        Range,
+          VectorConcatenate,
+          ArrayConcatenate,
 
-        Increment, // If child is on the left, post-increment
-        Decrement, // If child is on the left, post-decrement
-        Factorial,
+          FunctionCall, // Left is the function name; right is the parameter list
+          Slice,
+          AccessMember,
+          AccessMemberSafe,
+          AccessAttribute,
+          Range,
 
-        Negate,
-        Bit_NOT,
-        Raw,     // Unary operator to cast to "raw bits", or "unsigned int"
+          Increment, // If child is on the left, post-increment
+          Decrement, // If child is on the left, post-decrement
+          Factorial,
 
-        AND_Reduce,
-        NAND_Reduce,
-        OR_Reduce,
-        NOR_Reduce,
-        XOR_Reduce,
-        XNOR_Reduce,
-        Logical_NOT,
+          Negate,
+          Bit_NOT,
+          Raw,     // Unary operator to cast to "raw bits", or "unsigned int"
 
-        Cast,
+          AND_Reduce,
+          NAND_Reduce,
+          OR_Reduce,
+          NOR_Reduce,
+          XOR_Reduce,
+          XNOR_Reduce,
+          Logical_NOT,
 
-        Replicate,
+          Cast,
 
-        Multiply,
-        Divide,
-        Modulus,
-        Exponential,
+          Replicate,
 
-        Add,
-        Subtract,
+          Multiply,
+          Divide,
+          Modulus,
+          Exponential,
 
-        Shift_Left,
-        Shift_Right,
+          Add,
+          Subtract,
 
-        Less,
-        Greater,
-        Less_Equal,
-        Greater_Equal,
+          Shift_Left,
+          Shift_Right,
 
-        Equal,
-        Not_Equal,
+          Less,
+          Greater,
+          Less_Equal,
+          Greater_Equal,
 
-        Bit_AND,
-        Bit_NAND,
-        Bit_OR,
-        Bit_NOR,
-        Bit_XOR,
-        Bit_XNOR,
+          Equal,
+          Not_Equal,
 
-        Logical_AND,
-        Logical_OR,
+          Bit_AND,
+          Bit_NAND,
+          Bit_OR,
+          Bit_NOR,
+          Bit_XOR,
+          Bit_XNOR,
 
-        Conditional
-      // End of expressions -- don't add other stuff below this point
-    } Type;
+          Logical_AND,
+          Logical_OR,
 
-    int         Line;
-    std::string Filename;
-    BASE*       Next; // Next sibling
+          Conditional
+        // End of expressions -- don't add other stuff below this point
+      } Type;
+    //--------------------------------------------------------------------------
 
-             BASE(int Line, const char* Filename, TYPE Type);
-    virtual ~BASE(); // Also deletes the rest of the linked list
+    public:
+      int         Line;
+      std::string Filename;
+      BASE*       Next; // Next sibling
+    //--------------------------------------------------------------------------
 
-    // Returns a copy of this instance
-    virtual BASE* Copy(bool CopyNext) = 0;
+    public:
+               BASE(int Line, const char* Filename, TYPE Type);
+      virtual ~BASE(); // Also deletes the rest of the linked list
 
-            void DisplayInfo();
-    virtual void Display() = 0;
+      // Returns a copy of this instance
+      virtual BASE* Copy(bool CopyNext) = 0;
+
+      // Runs scripting commands and creates instances in the namespace tree
+      virtual bool RunScripting() = 0;
+
+              void DisplayInfo();
+      virtual void Display() = 0;
   };
 }
 //------------------------------------------------------------------------------

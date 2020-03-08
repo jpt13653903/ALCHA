@@ -39,10 +39,8 @@ INCREMENT::~INCREMENT(){
 BASE* INCREMENT::Copy(bool CopyNext){
   INCREMENT* Copy = new INCREMENT(Line, Filename.c_str());
 
-  Copy->Name      = Name;
   Copy->Value     = Value;
   Copy->StrValue  = StrValue;
-  Copy->ObjectRef = ObjectRef;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -50,6 +48,28 @@ BASE* INCREMENT::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool INCREMENT::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* INCREMENT::Evaluate(){
+  EXPRESSION* Result = 0;
+
+  error("Not yet implemented");
+
+  if(!Result) return 0;
+  return Result->Simplify();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* INCREMENT::Simplify(){
+  error("Not yet implemented");
+  return this;
 }
 //------------------------------------------------------------------------------
 

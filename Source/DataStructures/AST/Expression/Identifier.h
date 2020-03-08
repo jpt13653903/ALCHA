@@ -22,19 +22,36 @@
 #define AST_Expression_Identifier_h
 //------------------------------------------------------------------------------
 
+#include <map>
+//------------------------------------------------------------------------------
+
 #include "Expression.h"
+#include "Number.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct IDENTIFIER: public EXPRESSION{
-    IDENTIFIER(int Line, const std::string& Filename);
-    IDENTIFIER(int Line, const char*        Filename);
-   ~IDENTIFIER();
+  class IDENTIFIER: public EXPRESSION{
+    private:
+      // Called when the identifier cannot be found in the namespace stack
+      std::map<std::string, NUMBER> Constants;
+      bool GetConstant(const std::string& Name, NUMBER* Constant);
 
-    // Returns a copy of this instance
-    virtual BASE* Copy(bool CopyNext);
+    public:
+      std::string Name;
 
-    void Display();
+      IDENTIFIER(int Line, const std::string& Filename);
+      IDENTIFIER(int Line, const char*        Filename);
+     ~IDENTIFIER();
+
+      // Returns a copy of this instance
+      virtual BASE* Copy(bool CopyNext);
+
+      // Runs scripting commands and creates instances in the namespace tree
+      virtual bool RunScripting();
+      virtual EXPRESSION* Evaluate();
+      virtual EXPRESSION* Simplify();
+
+      void Display();
   };
 }
 //------------------------------------------------------------------------------

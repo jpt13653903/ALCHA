@@ -32,12 +32,15 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
+  class BASE;
+  class ASSIGNMENT;
   class EXPRESSION;
 }
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
   class NAMESPACE;
+  class SYNTHESISABLE;
 
   class BASE{ // Base class for the symbol table
     protected:
@@ -70,6 +73,13 @@ namespace NETLIST{
 
                BASE(int Line, const std::string& Filename, const char* Name, TYPE Type);
       virtual ~BASE();
+
+      bool ApplyAttributes(
+        std::string&     Name,
+        AST::EXPRESSION* Value,
+        AST::BASE*       Ast
+      );
+      bool ApplyAttributes(AST::ASSIGNMENT* AttributeList);
 
       // Generates a name based on the parent group(s), if it is not directly
       // part of the module.  This is the name used in the output HDL.

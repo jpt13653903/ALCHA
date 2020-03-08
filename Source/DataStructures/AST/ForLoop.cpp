@@ -53,6 +53,12 @@ BASE* FOR_LOOP::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
+bool FOR_LOOP::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void FOR_LOOP::Display(){
   DisplayInfo();
   Debug.print("for(%s in ", Identifier.c_str());

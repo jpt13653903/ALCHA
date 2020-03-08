@@ -62,6 +62,12 @@ BASE* PARAMETER::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
+bool PARAMETER::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void PARAMETER::Display(){
   DisplayInfo();
   Debug.print("Parameter (");

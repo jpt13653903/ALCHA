@@ -20,7 +20,7 @@
 
 #include "Base.h"
 #include "Module.h"
-#include "AST/Expression/Expression.h"
+#include "AST/Expression/Identifier.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -40,6 +40,70 @@ BASE::BASE(int Line, const string& Filename, const char* Name, TYPE Type){
 
 BASE::~BASE(){
   foreach(a, Attributes) delete a->second;
+}
+//------------------------------------------------------------------------------
+
+bool BASE::ApplyAttributes(
+  string&          Name,
+  AST::EXPRESSION* Value,
+  AST::BASE*       Ast
+){
+  if(!Value){
+    Ast->Error("Invalid attribute expression");
+    return false;
+  }
+
+  switch(Value->Type){
+    case AST::BASE::TYPE::String:
+    case AST::BASE::TYPE::Literal:
+      break;
+
+    case AST::BASE::TYPE::Array:
+      // TODO Make sure that the array only contains strings or literals
+      break;
+
+    default:
+      Ast->Error("Attribute values must be strings, literals or arrays");
+      delete Value;
+      return false;
+  }
+  Attributes[Name] = Value;
+  return true;
+}
+//------------------------------------------------------------------------------
+
+bool BASE::ApplyAttributes(AST::ASSIGNMENT* AttributeList){
+  while(AttributeList){
+    if(!AttributeList->Left){
+      error("Null attribute name");
+      return false;
+    }
+    if(!AttributeList->Right){
+      error("Null attribute value");
+      return false;
+    }
+    if(AttributeList->Left->Type != AST::BASE::TYPE::Identifier){
+      error("Attribute LHS not an identifier");
+      return false;
+    }
+    assert(AttributeList->Left->Type == AST::BASE::TYPE::Identifier, return false);
+    auto AttributeList__Left = (AST::IDENTIFIER*)AttributeList->Left;
+    auto a = Attributes.find(AttributeList__Left->Name);
+    if(a != Attributes.end()){
+      AttributeList->Warning();
+      printf("Overwriting attribute %s\n", AttributeList__Left->Name.c_str());
+      if(a->second) delete a->second;
+    }
+
+    if(!ApplyAttributes(
+      AttributeList__Left->Name,
+      AttributeList->Right->Evaluate(),
+      AttributeList
+    )) return false;
+
+    AttributeList = (AST::ASSIGNMENT*)AttributeList->Next;
+  }
+  return true;
 }
 //------------------------------------------------------------------------------
 

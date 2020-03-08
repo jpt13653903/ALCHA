@@ -50,6 +50,12 @@ BASE* JUMP::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
+bool JUMP::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void JUMP::Display(){
   DisplayInfo();
   Debug.print("jump(");

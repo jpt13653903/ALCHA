@@ -39,10 +39,8 @@ BIT_OR::~BIT_OR(){
 BASE* BIT_OR::Copy(bool CopyNext){
   BIT_OR* Copy = new BIT_OR(Line, Filename.c_str());
 
-  Copy->Name      = Name;
   Copy->Value     = Value;
   Copy->StrValue  = StrValue;
-  Copy->ObjectRef = ObjectRef;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -50,6 +48,34 @@ BASE* BIT_OR::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool BIT_OR::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* BIT_OR::Evaluate(){
+  EXPRESSION* Result = 0;
+
+  error("Not yet implemented");
+
+  if(!Result) return 0;
+  return Result->Simplify();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* BIT_OR::Simplify(){
+  assert(Left && Right, return this);
+  assert(Right->Type > TYPE::Expression, return this);
+
+  Left = Left->Simplify();
+  Right = ((EXPRESSION*)Right)->Simplify();
+
+  error("Not yet implemented");
+  return this;
 }
 //------------------------------------------------------------------------------
 

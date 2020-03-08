@@ -54,6 +54,12 @@ BASE* IF_STATEMENT::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
+bool IF_STATEMENT::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void IF_STATEMENT::Display(){
   DisplayInfo();
   Debug.print("if(");

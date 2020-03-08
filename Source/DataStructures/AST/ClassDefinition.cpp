@@ -86,6 +86,12 @@ BASE* CLASS_DEFINITION::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
+bool CLASS_DEFINITION::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void CLASS_DEFINITION::Display(){
   DisplayInfo();
   Debug.print("Class Definition (%s):\n", Identifier.c_str());

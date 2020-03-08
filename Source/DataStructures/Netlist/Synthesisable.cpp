@@ -36,6 +36,72 @@ SYNTHESISABLE::~SYNTHESISABLE(){
 }
 //------------------------------------------------------------------------------
 
+bool SYNTHESISABLE::ApplyParameters(AST::BASE* Parameter){
+  int  Position          = 0; // Negative => named parameters
+  bool ExplicitFullScale = false;
+
+  while(Parameter){
+    if(Parameter->Type > AST::BASE::TYPE::Expression){
+      if(Position < 0) return false; // Mixing named and positional parameters
+
+      AST::EXPRESSION* Param = ((AST::EXPRESSION*)Parameter)->Evaluate();
+      if(!Param){
+        Parameter->Error("Invalid parameter expression");
+        return false;
+      }
+
+      switch(Param->Type){
+        case AST::BASE::TYPE::Literal:
+          switch(Position){
+            case 0:
+              if(!Param->Value.IsInt()) return false;
+              Width = round(Param->Value.GetReal());
+              break;
+
+            case 1:
+              ExplicitFullScale = true;
+              FullScale = Param->Value;
+              break;
+
+            default: // Too many parameters
+              delete Param;
+              return false;
+          }
+          break;
+
+        default:
+          Parameter->Error("Parameters must be pure scripting expressions");
+          delete Param;
+          return false;
+      }
+      delete Param;
+
+    }else if(Parameter->Type == AST::BASE::TYPE::Assignment){
+      // auto Param = (AST::EXPRESSION*)Parameter;
+      Position = -1;
+      error("Not yet implemented");
+
+    }else{
+      return false;
+    }
+    Parameter = Parameter->Next;
+    if(Position >= 0) Position++;
+  }
+  if(Width < 0){
+    Width *= -1;
+    Signed = true;
+  }
+  if(!ExplicitFullScale){
+    FullScale = pow(2.0, Width);
+  }
+  if(FullScale.IsReal() && (FullScale.GetReal() < 0)){
+    FullScale.Mul(-1);
+    Signed = true;
+  }
+  return true;
+}
+//------------------------------------------------------------------------------
+
 void SYNTHESISABLE::Display(){
   switch(Type){
     case TYPE::Pin: Debug.print("  Pin: "); break;

@@ -39,10 +39,8 @@ FACTORIAL::~FACTORIAL(){
 BASE* FACTORIAL::Copy(bool CopyNext){
   FACTORIAL* Copy = new FACTORIAL(Line, Filename.c_str());
 
-  Copy->Name      = Name;
   Copy->Value     = Value;
   Copy->StrValue  = StrValue;
-  Copy->ObjectRef = ObjectRef;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -50,6 +48,32 @@ BASE* FACTORIAL::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool FACTORIAL::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* FACTORIAL::Evaluate(){
+  EXPRESSION* Result = 0;
+
+  error("Not yet implemented");
+
+  if(!Result) return 0;
+  return Result->Simplify();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* FACTORIAL::Simplify(){
+  assert(Left, return this);
+
+  Left = Left->Simplify();
+
+  error("Not yet implemented");
+  return this;
 }
 //------------------------------------------------------------------------------
 

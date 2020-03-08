@@ -26,62 +26,76 @@
 #include "Assignment.h"
 //------------------------------------------------------------------------------
 
+namespace NETLIST{
+  class BASE;
+  class SYNTHESISABLE;
+}
+//------------------------------------------------------------------------------
+
 namespace AST{
-  struct DEFINITION: public BASE{
-    enum class DEFINITION_TYPE{
-      Void, Auto, // Used for functions only
-      Pin, Net,
-      Byte, Char, Num,
-      Func, // Function pointer
-      ClassInstance
-    } DefinitionType;
-    EXPRESSION* ClassName; // For class instances
+  class DEFINITION: public BASE{
+    public:
+      enum class DEFINITION_TYPE{
+        Void, Auto, // Used for functions only
+        Pin, Net,
+        Byte, Char, Num,
+        Func, // Function pointer
+        ClassInstance
+      } DefinitionType;
+      EXPRESSION* ClassName; // For class instances
 
-    struct ARRAY{
-      EXPRESSION* Size;
-      ARRAY     * Next; // Next dimension of the array
+      struct ARRAY{
+        EXPRESSION* Size;
+        ARRAY     * Next; // Next dimension of the array
 
-      ARRAY();
-      ARRAY(const ARRAY& Array);
-     ~ARRAY();
-    };
+        ARRAY();
+        ARRAY(const ARRAY& Array);
+       ~ARRAY();
+      };
 
-    struct IDENTIFIER{
-      std::string Identifier;
-      ARRAY*      Array;      // Null when this is a scalar
+      struct IDENTIFIER{
+        std::string Identifier;
+        ARRAY*      Array;      // Null when this is a scalar
 
-      ASSIGNMENT* Initialiser;
+        ASSIGNMENT* Initialiser;
 
-      // These are used for function definitions.
-      bool       Function; // True when this is a function definition
-      PARAMETER* Parameters; // List of identifiers (calls are duck-typed)
-      BASE     * FunctionBody;
+        // These are used for function definitions.
+        bool       Function; // True when this is a function definition
+        PARAMETER* Parameters; // List of identifiers (calls are duck-typed)
+        BASE     * FunctionBody;
 
-      IDENTIFIER* Next;
+        IDENTIFIER* Next;
 
-      IDENTIFIER();
-      IDENTIFIER(const IDENTIFIER& Identifier);
-     ~IDENTIFIER();
-    };
+        IDENTIFIER();
+        IDENTIFIER(const IDENTIFIER& Identifier);
+       ~IDENTIFIER();
+      };
+    //--------------------------------------------------------------------------
 
-    enum class DIRECTION{Inferred = 0, Input, Output, Bidirectional} Direction;
+    public:
+      enum class DIRECTION{Inferred = 0, Input, Output, Bidirectional} Direction;
 
-    BASE*       Parameters; // Expression or Assignment
-    ASSIGNMENT* Attributes;
-    IDENTIFIER* Identifiers;
+      BASE*       Parameters; // Expression or Assignment
+      ASSIGNMENT* Attributes;
+      IDENTIFIER* Identifiers;
+    //--------------------------------------------------------------------------
 
-    DEFINITION(int             Line,
-               std::string&    Filename,
-               DEFINITION_TYPE DefinitionType);
-    DEFINITION(int             Line,
-               const char*     Filename,
-               DEFINITION_TYPE DefinitionType);
-   ~DEFINITION();
+    public:
+      DEFINITION(int             Line,
+                 std::string&    Filename,
+                 DEFINITION_TYPE DefinitionType);
+      DEFINITION(int             Line,
+                 const char*     Filename,
+                 DEFINITION_TYPE DefinitionType);
+     ~DEFINITION();
 
-    // Returns a copy of this instance
-    virtual BASE* Copy(bool CopyNext);
+      // Returns a copy of this instance
+      virtual BASE* Copy(bool CopyNext);
 
-    void Display();
+      // Runs scripting commands and creates instances in the namespace tree
+      virtual bool RunScripting();
+
+      void Display();
   };
 }
 //------------------------------------------------------------------------------

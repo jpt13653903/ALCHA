@@ -39,10 +39,8 @@ BIT_NOT::~BIT_NOT(){
 BASE* BIT_NOT::Copy(bool CopyNext){
   BIT_NOT* Copy = new BIT_NOT(Line, Filename.c_str());
 
-  Copy->Name      = Name;
   Copy->Value     = Value;
   Copy->StrValue  = StrValue;
-  Copy->ObjectRef = ObjectRef;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -50,6 +48,48 @@ BASE* BIT_NOT::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool BIT_NOT::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* BIT_NOT::Evaluate(){
+  EXPRESSION* Result = 0;
+
+  Result = (EXPRESSION*)Copy(true);
+  if(!Result->Right){
+    delete Result;
+    return 0;
+  }
+  assert(Result->Right->Type > TYPE::Expression,
+    delete Result;
+    return 0;
+  );
+
+  if(!Result) return 0;
+  return Result->Simplify();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* BIT_NOT::Simplify(){
+  assert(Right, return this);
+  assert(Right->Type > TYPE::Expression, return this);
+
+  Right = ((EXPRESSION*)Right)->Simplify();
+
+  EXPRESSION* Result = this;
+
+  if(((EXPRESSION*)Right)->Type == TYPE::Literal){
+    error("Not yet implemented");
+    // TODO: Literals require a length, so it must have been cast to a
+    //       specific length for this to be valid
+  }
+
+  return Result;
 }
 //------------------------------------------------------------------------------
 

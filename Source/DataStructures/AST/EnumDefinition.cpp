@@ -69,6 +69,12 @@ BASE* ENUM_DEFINITION::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
+bool ENUM_DEFINITION::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void ENUM_DEFINITION::Display(){
   DisplayInfo();
   Debug.print("Enum Definition (%s):\n", Identifier.c_str());

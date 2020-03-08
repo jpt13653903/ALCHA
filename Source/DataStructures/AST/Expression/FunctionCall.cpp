@@ -39,10 +39,8 @@ FUNCTIONCALL::~FUNCTIONCALL(){
 BASE* FUNCTIONCALL::Copy(bool CopyNext){
   FUNCTIONCALL* Copy = new FUNCTIONCALL(Line, Filename.c_str());
 
-  Copy->Name      = Name;
   Copy->Value     = Value;
   Copy->StrValue  = StrValue;
-  Copy->ObjectRef = ObjectRef;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -50,6 +48,36 @@ BASE* FUNCTIONCALL::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool FUNCTIONCALL::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* FUNCTIONCALL::Evaluate(){
+  EXPRESSION* Result = 0;
+
+  error("Not yet implemented");
+
+  if(!Result) return 0;
+  return Result->Simplify();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* FUNCTIONCALL::Simplify(){
+  assert(Left, return this);
+
+  Left = Left->Simplify();
+  if(Right){
+    assert(Right->Type > TYPE::Expression, return this);
+    Right = ((EXPRESSION*)Right)->Simplify();
+  }
+
+  error("Not yet implemented");
+  return this;
 }
 //------------------------------------------------------------------------------
 

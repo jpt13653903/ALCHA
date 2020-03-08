@@ -51,6 +51,12 @@ BASE* NAMESPACE_PUSH::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
+bool NAMESPACE_PUSH::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void NAMESPACE_PUSH::Display(){
   DisplayInfo();
   Debug.print("NamespacePush:\n ");

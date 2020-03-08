@@ -27,15 +27,12 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 EXPRESSION::EXPRESSION(int Line, const char* Filename, TYPE ExpressionType): BASE(Line, Filename, ExpressionType){
-  ObjectRef = 0;
-  Left      = 0;
-  Right     = 0;
+  Left  = 0;
+  Right = 0;
 }
 //------------------------------------------------------------------------------
 
 EXPRESSION::~EXPRESSION(){
-  // Don't delete the Object reference -- it's part of the namespace tree
-
   if(Left ) delete Left;
   if(Right) delete Right;
 }

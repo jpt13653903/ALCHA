@@ -40,10 +40,8 @@ ARRAY::~ARRAY(){
 BASE* ARRAY::Copy(bool CopyNext){
   ARRAY* Copy = new ARRAY(Line, Filename.c_str());
 
-  Copy->Name      = Name;
   Copy->Value     = Value;
   Copy->StrValue  = StrValue;
-  Copy->ObjectRef = ObjectRef;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -55,6 +53,25 @@ BASE* ARRAY::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool ARRAY::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* ARRAY::Evaluate(){
+  ARRAY* Array = (ARRAY*)Copy(true);
+  foreach(Element, Array->Elements) (*Element) = (*Element)->Evaluate();
+
+  return Array->Simplify();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* ARRAY::Simplify(){
+  return this;
 }
 //------------------------------------------------------------------------------
 

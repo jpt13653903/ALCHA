@@ -19,6 +19,9 @@
 //==============================================================================
 
 #include "BackEnd.h"
+#include "Ast/Expression/Object.h"
+#include "Netlist/Pin.h"
+#include "Netlist/Net.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -208,10 +211,12 @@ bool BACK_END::BuildExpression(string& Body, AST::EXPRESSION* Expression, string
       break;
     }
 
-    case AST::BASE::TYPE::Object:
-      assert(Expression->ObjectRef, return false);
-      Wire += Expression->ObjectRef->EscapedName();
+    case AST::BASE::TYPE::Object:{
+      auto Object = ((AST::OBJECT*)Expression)->ObjectRef;
+      assert(Object, return false);
+      Wire += Object->EscapedName();
       break;
+    }
 
     case AST::BASE::TYPE::VectorConcatenate:{
       // TODO: Move to new strategy of synthesising single operations into temporaries

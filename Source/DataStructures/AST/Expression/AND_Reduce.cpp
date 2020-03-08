@@ -39,10 +39,8 @@ AND_REDUCE::~AND_REDUCE(){
 BASE* AND_REDUCE::Copy(bool CopyNext){
   AND_REDUCE* Copy = new AND_REDUCE(Line, Filename.c_str());
 
-  Copy->Name      = Name;
   Copy->Value     = Value;
   Copy->StrValue  = StrValue;
-  Copy->ObjectRef = ObjectRef;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -50,6 +48,33 @@ BASE* AND_REDUCE::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool AND_REDUCE::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* AND_REDUCE::Evaluate(){
+  EXPRESSION* Result = 0;
+
+  error("Not yet implemented");
+
+  if(!Result) return 0;
+  return Result->Simplify();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* AND_REDUCE::Simplify(){
+  assert(Right, return this);
+  assert(Right->Type > TYPE::Expression, return this);
+
+  Right = ((EXPRESSION*)Right)->Simplify();
+
+  error("Not yet implemented");
+  return this;
 }
 //------------------------------------------------------------------------------
 

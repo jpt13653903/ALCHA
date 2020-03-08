@@ -19,6 +19,12 @@
 //==============================================================================
 
 #include "Identifier.h"
+#include "Object.h"
+#include "Literal.h"
+
+#include "Netlist/Alias.h"
+#include "Netlist/Module.h"
+#include "Netlist/Synthesisable.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -29,6 +35,28 @@ IDENTIFIER::IDENTIFIER(int Line, const string& Filename): IDENTIFIER(Line, Filen
 //------------------------------------------------------------------------------
 
 IDENTIFIER::IDENTIFIER(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Identifier){
+  // TODO: Maybe pull constants into a class of their own?
+  Constants["e" ].Set_e ();
+  Constants["π" ].Set_pi();
+  Constants["pi"].Set_pi();
+  Constants["i" ].Set_i ();
+  Constants["j" ].Set_i ();
+
+  time_t RawTime;
+  struct tm* Time;
+
+  time(&RawTime);
+  Time = localtime(&RawTime);
+
+  Constants["__YEAR__"   ] = Time->tm_year+1900;
+  Constants["__MONTH__"  ] = Time->tm_mon+1;
+  Constants["__DAY__"    ] = Time->tm_mday;
+  Constants["__HOUR__"   ] = Time->tm_hour;
+  Constants["__MINUTE__" ] = Time->tm_min;
+  Constants["__SECOND__" ] = Time->tm_sec;
+
+  Constants["__WEEKDAY__"] = ((Time->tm_wday+6)%7)+1;
+  Constants["__YEARDAY__"] = Time->tm_yday+1;
 }
 //------------------------------------------------------------------------------
 
@@ -42,7 +70,6 @@ BASE* IDENTIFIER::Copy(bool CopyNext){
   Copy->Name      = Name;
   Copy->Value     = Value;
   Copy->StrValue  = StrValue;
-  Copy->ObjectRef = ObjectRef;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -50,6 +77,88 @@ BASE* IDENTIFIER::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool IDENTIFIER::GetConstant(const string& Name, NUMBER* Constant){
+  auto Result = Constants.find(Name);
+  if(Result == Constants.end()) return false;
+
+  *Constant = Result->second;
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
+bool IDENTIFIER::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* IDENTIFIER::Evaluate(){
+  EXPRESSION* Result = 0;
+
+  auto NamespaceIterator = NETLIST::NamespaceStack.begin();
+  while(!Result && NamespaceIterator != NETLIST::NamespaceStack.end()){
+    NETLIST::NAMESPACE* Namespace = *NamespaceIterator;
+    while(!Result && Namespace){
+      auto Object = Namespace->Symbols.find(this->Name);
+      if(Object != Namespace->Symbols.end()){
+        if(Object->second){
+          switch(Object->second->Type){
+            case NETLIST::BASE::TYPE::Alias:{
+              auto Alias = (NETLIST::ALIAS*)Object->second;
+              NETLIST::NamespaceStack.push_front(Alias->Namespace);
+                Result = Alias->Expression->Evaluate();
+              NETLIST::NamespaceStack.pop_front();
+              break;
+            }
+            case NETLIST::BASE::TYPE::Pin:
+            case NETLIST::BASE::TYPE::Net:{
+              auto Synthesisable = (NETLIST::SYNTHESISABLE*)Object->second;
+              Result = new OBJECT(this->Line, this->Filename);
+              ((OBJECT*)Result)->ObjectRef = Synthesisable;
+              Synthesisable->Used = true;
+              break;
+            }
+            default:{
+              Result = new OBJECT(this->Line, this->Filename);
+              ((OBJECT*)Result)->ObjectRef = Object->second;
+              break;
+            }
+          }
+        }
+      }
+      Namespace = Namespace->Namespace;
+    }
+    NamespaceIterator++;
+  }
+  if(!Result){
+    NUMBER Constant;
+    if(GetConstant(this->Name.c_str(), &Constant)){
+      Result = new LITERAL(this->Line, this->Filename);
+      Result->Value = new NUMBER(Constant);
+    }else{
+      Error();
+      printf("Identifier \"%s\" not defined\n", this->Name.c_str());
+    }
+  }
+  if(this->Next){
+    assert(this->Next->Type > TYPE::Expression);
+    Result->Next = ((EXPRESSION*)this->Next)->Evaluate();
+  }
+
+  if(!Result) return 0;
+  return Result->Simplify();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* IDENTIFIER::Simplify(){
+  EXPRESSION* Result = Evaluate();
+
+  if(Result != this) delete this;
+  return Result;
 }
 //------------------------------------------------------------------------------
 

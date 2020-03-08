@@ -39,10 +39,8 @@ STRING::~STRING(){
 BASE* STRING::Copy(bool CopyNext){
   STRING* Copy = new STRING(Line, Filename.c_str());
 
-  Copy->Name      = Name;
   Copy->Value     = Value;
   Copy->StrValue  = StrValue;
-  Copy->ObjectRef = ObjectRef;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -50,6 +48,27 @@ BASE* STRING::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool STRING::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* STRING::Evaluate(){
+  EXPRESSION* Result = 0;
+
+  Result = (EXPRESSION*)Copy(false);
+
+  if(!Result) return 0;
+  return Result->Simplify();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* STRING::Simplify(){
+  return this;
 }
 //------------------------------------------------------------------------------
 

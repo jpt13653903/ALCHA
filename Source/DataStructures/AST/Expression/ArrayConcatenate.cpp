@@ -40,10 +40,8 @@ ARRAYCONCATENATE::~ARRAYCONCATENATE(){
 BASE* ARRAYCONCATENATE::Copy(bool CopyNext){
   ARRAYCONCATENATE* Copy = new ARRAYCONCATENATE(Line, Filename.c_str());
 
-  Copy->Name      = Name;
   Copy->Value     = Value;
   Copy->StrValue  = StrValue;
-  Copy->ObjectRef = ObjectRef;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -55,6 +53,27 @@ BASE* ARRAYCONCATENATE::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool ARRAYCONCATENATE::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* ARRAYCONCATENATE::Evaluate(){
+  auto Array = (AST::ARRAYCONCATENATE*)Copy(true);
+  foreach(Element, Array->Elements) (*Element) = (*Element)->Evaluate();
+
+  return Array->Simplify();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* ARRAYCONCATENATE::Simplify(){
+  // TODO: Simplify the elements
+  error("Not yet implemented");
+  return this;
 }
 //------------------------------------------------------------------------------
 

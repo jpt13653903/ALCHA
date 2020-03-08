@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Messages.h"
+#include "Utilities.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -52,9 +52,53 @@ void Error(int Line, const std::string& Filename, const char* Message){
 
 void Warning(int Line, const std::string& Filename, const char* Message){
   Header(Line, Filename);
-  printf( ANSI_FG_MAGENTA "  Warning: " ANSI_RESET);
+  printf(ANSI_FG_MAGENTA "  Warning: " ANSI_RESET);
 
   if(Message) printf("%s\n", Message);
+}
+//------------------------------------------------------------------------------
+
+void SimplifyFilename(string& Filename){
+  int  LastSlash;
+  int  n, c;
+  bool Changes;
+
+  do{
+    Changes   = false;
+    LastSlash = -1;
+
+    for(n = 0; Filename[n]; n++){
+      if(Filename[n] == '/'
+        #ifdef WINVER
+          || Filename[n] == '\\'
+        #endif
+      ){
+        if(
+          Filename[n+1] == '.' &&
+          Filename[n+2] == '.' && (
+            Filename[n+3] == '/'
+            #ifdef WINVER
+              || Filename[n+3] == '\\'
+            #endif
+          ) && (
+            n > LastSlash+3 ||
+            Filename[LastSlash+1] != '.' ||
+            Filename[LastSlash+2] != '.'
+          )
+        ){
+          n += 4;
+          for(c = LastSlash+1; Filename[n]; c++, n++) Filename[c] = Filename[n];
+          Filename[c] = 0;
+          Changes = true;
+          break;
+        }else{
+          LastSlash = n;
+        }
+      }
+    }
+  }while(Changes);
+
+  Filename.resize(n);
 }
 //------------------------------------------------------------------------------
 

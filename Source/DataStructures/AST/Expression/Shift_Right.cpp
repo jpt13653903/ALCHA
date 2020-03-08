@@ -39,10 +39,8 @@ SHIFT_RIGHT::~SHIFT_RIGHT(){
 BASE* SHIFT_RIGHT::Copy(bool CopyNext){
   SHIFT_RIGHT* Copy = new SHIFT_RIGHT(Line, Filename.c_str());
 
-  Copy->Name      = Name;
   Copy->Value     = Value;
   Copy->StrValue  = StrValue;
-  Copy->ObjectRef = ObjectRef;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -50,6 +48,34 @@ BASE* SHIFT_RIGHT::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool SHIFT_RIGHT::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* SHIFT_RIGHT::Evaluate(){
+  EXPRESSION* Result = 0;
+
+  error("Not yet implemented");
+
+  if(!Result) return 0;
+  return Result->Simplify();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* SHIFT_RIGHT::Simplify(){
+  assert(Left && Right, return this);
+  assert(Right->Type > TYPE::Expression, return this);
+
+  Left = Left->Simplify();
+  Right = ((EXPRESSION*)Right)->Simplify();
+
+  error("Not yet implemented");
+  return this;
 }
 //------------------------------------------------------------------------------
 

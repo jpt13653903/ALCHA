@@ -51,6 +51,12 @@ BASE* LOOP_LOOP::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
+bool LOOP_LOOP::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void LOOP_LOOP::Display(){
   DisplayInfo();
   Debug.print("loop(");

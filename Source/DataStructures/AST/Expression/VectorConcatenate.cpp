@@ -40,10 +40,8 @@ VECTORCONCATENATE::~VECTORCONCATENATE(){
 BASE* VECTORCONCATENATE::Copy(bool CopyNext){
   VECTORCONCATENATE* Copy = new VECTORCONCATENATE(Line, Filename.c_str());
 
-  Copy->Name      = Name;
   Copy->Value     = Value;
   Copy->StrValue  = StrValue;
-  Copy->ObjectRef = ObjectRef;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -55,6 +53,31 @@ BASE* VECTORCONCATENATE::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool VECTORCONCATENATE::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* VECTORCONCATENATE::Evaluate(){
+  auto Array = (VECTORCONCATENATE*)Copy(true);
+  foreach(Element, Array->Elements) (*Element) = (*Element)->Evaluate();
+
+  return Array->Simplify();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* VECTORCONCATENATE::Simplify(){
+  foreach(Element, Elements){
+    *Element = (*Element)->Simplify();
+  }
+
+  error("Not yet implemented");
+
+  return this;
 }
 //------------------------------------------------------------------------------
 

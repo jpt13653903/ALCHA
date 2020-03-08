@@ -55,6 +55,9 @@ namespace AST{
     // Returns a copy of this instance
     virtual BASE* Copy(bool CopyNext);
 
+    // Runs scripting commands and creates instances in the namespace tree
+    virtual bool RunScripting();
+
     void Display();
   };
 }

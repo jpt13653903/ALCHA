@@ -22,8 +22,10 @@
 #define BackEnd_h
 //------------------------------------------------------------------------------
 
-#include "Messages.h"
+#include "Utilities.h"
 #include "AST/Definition.h"
+#include "AST/Expression/Expression.h"
+#include "Netlist/Module.h"
 #include "Altera/Project.h"
 //------------------------------------------------------------------------------
 

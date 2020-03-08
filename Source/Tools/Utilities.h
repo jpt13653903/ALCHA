@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Messages_h
-#define Messages_h
+#ifndef Utilities_h
+#define Utilities_h
 //------------------------------------------------------------------------------
 
 #include <string>
@@ -30,6 +30,10 @@
 
 void Error  (int Line, const std::string& Filename, const char* Message = 0);
 void Warning(int Line, const std::string& Filename, const char* Message = 0);
+
+// Replaces "path/../" patterns with "/".
+// In Windows, '\' is also an accepted path specifier.
+void SimplifyFilename(std::string& Filename);
 //------------------------------------------------------------------------------
 
 #endif

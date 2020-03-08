@@ -19,12 +19,15 @@
 //==============================================================================
 
 #include "Import.h"
+#include "Engine.h"
+#include "Netlist/Module.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-IMPORT::IMPORT(int Line, std::string& Filename): IMPORT(Line, Filename.c_str()){}
+IMPORT::IMPORT(int Line, string& Filename): IMPORT(Line, Filename.c_str()){}
 //------------------------------------------------------------------------------
 
 IMPORT::IMPORT(int Line, const char* Filename): BASE(Line, Filename, TYPE::Import){
@@ -44,6 +47,43 @@ BASE* IMPORT::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool IMPORT::RunScripting(){
+  string ImportFilename;
+  bool   OwnNamespace = !Namespace.empty();
+
+  if(OwnNamespace){
+    auto Found = NETLIST::NamespaceStack.front()->Symbols.find(Namespace);
+    if(Found != NETLIST::NamespaceStack.front()->Symbols.end()){
+      Error();
+      printf("Symbol \"%s\" already exists in the current namespace\n",
+             Namespace.c_str());
+      return false;
+    }
+    auto Module = new NETLIST::MODULE(Line, Filename, Namespace.c_str());
+    NETLIST::NamespaceStack.front()->Symbols[Namespace] = Module;
+    NETLIST::NamespaceStack.push_front(Module);
+  }
+
+  string& Path = Filename;
+  int n;
+  for(n = Path.length()-1; n >= 0; n--){
+    if(Path[n] == '/') break;
+  }
+  if(n >= 0) ImportFilename = Path.substr(0, n+1);
+  ImportFilename += File;
+  ImportFilename += ".alc";
+  SimplifyFilename(ImportFilename);
+  Debug.print("\nFilename = %s\n", ImportFilename);
+
+  bool Result = Engine->Run(ImportFilename.c_str());
+
+  if(OwnNamespace){
+    NETLIST::NamespaceStack.pop_front();
+  }
+  return Result;
 }
 //------------------------------------------------------------------------------
 

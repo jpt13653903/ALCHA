@@ -28,9 +28,14 @@
 //------------------------------------------------------------------------------
 
 #include "Engine.h"
-#include "Messages.h"
+#include "Utilities.h"
 #include "FileWrapper.h"
 #include "SDC.h"
+
+#include "AST/Expression/Expression.h"
+
+#include "Netlist/Module.h"
+#include "Netlist/Namespace.h"
 //------------------------------------------------------------------------------
 
 namespace ALTERA{

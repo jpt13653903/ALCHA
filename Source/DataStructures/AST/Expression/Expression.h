@@ -26,11 +26,6 @@
 #include "Number.h"
 //------------------------------------------------------------------------------
 
-namespace NETLIST{
-  class BASE;
-}
-//------------------------------------------------------------------------------
-
 namespace AST{
   class EXPRESSION: public BASE{
     protected:
@@ -38,10 +33,8 @@ namespace AST{
       void DisplayEnd  ();
 
     public:
-      std::string    Name;      // Used for identifiers
       NUMBER         Value;     // Only used for numerical literals
       std::string    StrValue;  // Only used for string literals
-      NETLIST::BASE* ObjectRef; // Used for "Object" type
 
       // Left and Right operands
       EXPRESSION* Left;
@@ -50,10 +43,8 @@ namespace AST{
       EXPRESSION(int Line, const char* Filename, TYPE ExpressionType);
       virtual ~EXPRESSION();
 
-      // Returns a copy of this instance
-      virtual BASE* Copy(bool CopyNext) = 0;
-
-      virtual void Display() = 0;
+      virtual EXPRESSION* Evaluate() = 0;
+      virtual EXPRESSION* Simplify() = 0;
   };
 }
 //------------------------------------------------------------------------------

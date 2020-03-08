@@ -297,7 +297,7 @@ AST::EXPRESSION* PARSER::Literal(){
 AST::EXPRESSION* PARSER::Identifier(){
   if(Token.Type != TOKEN::TYPE::Identifier) return 0;
 
-  AST::EXPRESSION* Node = new AST::IDENTIFIER(Token.Line, Scanner.Filename);
+  AST::IDENTIFIER* Node = new AST::IDENTIFIER(Token.Line, Scanner.Filename);
   Node->Name = Token.Data;
 
   GetToken();
@@ -1239,7 +1239,7 @@ AST::ASSIGNMENT* PARSER::Initialiser(std::string& Identifier){
     return 0;
   }
   Node->Left       = new AST::IDENTIFIER(Node->Line, Scanner.Filename);
-  Node->Left->Name = Identifier;
+  ((AST::IDENTIFIER*)Node->Left)->Name = Identifier;
   return Node;
 }
 //------------------------------------------------------------------------------
@@ -1323,7 +1323,7 @@ AST::PARAMETER* PARSER::DefParameter(){
       Node->ClassName &&
       Node->ClassName->Type == AST::BASE::TYPE::Identifier
     ){
-      Node->Identifier = Node->ClassName->Name;
+      Node->Identifier = ((AST::IDENTIFIER*)Node->ClassName)->Name;
       delete Node->ClassName;
       Node->ClassName      = 0;
       Node->DefinitionType = AST::PARAMETER::DEFINITION_TYPE::Auto;

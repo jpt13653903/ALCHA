@@ -39,10 +39,8 @@ CAST::~CAST(){
 BASE* CAST::Copy(bool CopyNext){
   CAST* Copy = new CAST(Line, Filename.c_str());
 
-  Copy->Name      = Name;
   Copy->Value     = Value;
   Copy->StrValue  = StrValue;
-  Copy->ObjectRef = ObjectRef;
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -50,6 +48,38 @@ BASE* CAST::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool CAST::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* CAST::Evaluate(){
+  EXPRESSION* Result = 0;
+
+  error("Not yet implemented");
+
+  if(!Result) return 0;
+  return Result->Simplify();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* CAST::Simplify(){
+  // TODO: Root has the target type; Left has the original expression
+  //       Right is optional and carry the class name (when applicable)
+  assert(Left, return this);
+
+  Left = Left->Simplify();
+  if(Right){
+    assert(Right->Type > TYPE::Expression, return this);
+    Right = ((EXPRESSION*)Right)->Simplify();
+  }
+
+  error("Not yet implemented");
+  return this;
 }
 //------------------------------------------------------------------------------
 

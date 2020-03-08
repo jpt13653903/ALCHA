@@ -19,8 +19,16 @@
 //==============================================================================
 
 #include "Definition.h"
+#include "Netlist/Byte.h"
+#include "Netlist/Character.h"
+#include "Netlist/Pin.h"
+#include "Netlist/Module.h"
+#include "Netlist/Net.h"
+#include "Netlist/Num.h"
+#include "Netlist/Synthesisable.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
@@ -84,7 +92,7 @@ DEFINITION::IDENTIFIER::~IDENTIFIER(){
 
 DEFINITION::DEFINITION(
   int             Line,
-  std::string&    Filename,
+  string&         Filename,
   DEFINITION_TYPE DefinitionType
 ): DEFINITION(Line, Filename.c_str(), DefinitionType){}
 //------------------------------------------------------------------------------
@@ -126,6 +134,106 @@ BASE* DEFINITION::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool DEFINITION::RunScripting(){
+  auto Identifier = Identifiers;
+
+  while(Identifier){
+    auto Symbol = NETLIST::NamespaceStack.front()->Symbols.find(Identifier->Identifier);
+    if(Symbol != NETLIST::NamespaceStack.front()->Symbols.end()){
+      Error();
+      printf("Symbol \"%s\" already defined in the current namespace\n",
+             Identifier->Identifier.c_str());
+      return false;
+    }
+
+    if(Identifier->Function){
+      error("Not yet implemented");
+      Identifier = Identifier->Next;
+      continue;
+    }
+    if(Identifier->Parameters) error("Not yet implemented");
+
+    switch(DefinitionType){
+      case DEFINITION_TYPE::Void:
+        error("Not yet implemented");
+        break;
+
+      case DEFINITION_TYPE::Auto:
+        error("Not yet implemented");
+        break;
+
+      case DEFINITION_TYPE::Pin:{
+        auto Pin = new NETLIST::PIN(Line, Filename, Identifier->Identifier.c_str());
+        Pin->Direction = Direction;
+        if(!Pin->ApplyParameters(Parameters)) Error("Invalid parameters");
+        if(!Pin->ApplyAttributes(Attributes)) Error("Invalid attributes");
+        NETLIST::NamespaceStack.front()->Symbols[Pin->Name] = Pin;
+        if(Identifier->Initialiser){
+          if(!Identifier->Initialiser->RunScripting()) return false;
+        }
+        break;
+      }
+
+      case DEFINITION_TYPE::Net:{
+        auto Net = new NETLIST::NET(Line, Filename, Identifier->Identifier.c_str());
+        Net->Direction = Direction;
+        if(!Net->ApplyParameters(Parameters)) Error("Invalid parameters");
+        if(!Net->ApplyAttributes(Attributes)) Error("Invalid attributes");
+        NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
+        if(Identifier->Initialiser){
+          if(!Identifier->Initialiser->RunScripting()) return false;
+        }
+        break;
+      }
+
+      case DEFINITION_TYPE::Byte:{
+        auto Byte = new NETLIST::BYTE(Line, Filename, Identifier->Identifier.c_str());
+        if(!Byte->ApplyAttributes(Attributes)) Error("Invalid attributes");
+        NETLIST::NamespaceStack.front()->Symbols[Byte->Name] = Byte;
+        if(Identifier->Initialiser){
+          if(!Identifier->Initialiser->RunScripting()) return false;
+        }
+        break;
+      }
+
+      case DEFINITION_TYPE::Char:{
+        auto Char = new NETLIST::CHARACTER(Line, Filename, Identifier->Identifier.c_str());
+        if(!Char->ApplyAttributes(Attributes)) Error("Invalid attributes");
+        NETLIST::NamespaceStack.front()->Symbols[Char->Name] = Char;
+        if(Identifier->Initialiser){
+          if(!Identifier->Initialiser->RunScripting()) return false;
+        }
+        break;
+      }
+
+      case DEFINITION_TYPE::Num:{
+        auto Number = new NETLIST::NUM(Line, Filename, Identifier->Identifier.c_str());
+        if(!Number->ApplyAttributes(Attributes)) Error("Invalid attributes");
+        NETLIST::NamespaceStack.front()->Symbols[Number->Name] = Number;
+        if(Identifier->Initialiser){
+          if(!Identifier->Initialiser->RunScripting()) return false;
+        }
+        break;
+      }
+
+      case DEFINITION_TYPE::Func:
+        error("Not yet implemented");
+        break;
+
+      case DEFINITION_TYPE::ClassInstance:
+        error("Not yet implemented");
+        break;
+
+      default:
+        error("Unknown definition type: %d", (int)DefinitionType);
+        return false;
+    }
+    Identifier = Identifier->Next;
+  }
+  return true;
 }
 //------------------------------------------------------------------------------
 

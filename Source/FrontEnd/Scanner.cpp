@@ -792,7 +792,7 @@ bool SCANNER::Open(const char* Filename){
 
   Buffer = (byte*)fs.ReadAll(Filename);
   if(!Buffer){
-    printf("Error reading file: %s\n", Filename);
+    error("Cannot read file: %s\n", Filename);
     return false;
   }
 

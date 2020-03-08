@@ -19,6 +19,8 @@
 //==============================================================================
 
 #include "Group.h"
+#include "Netlist/Group.h"
+#include "Netlist/Module.h"
 //------------------------------------------------------------------------------
 
 using namespace AST;
@@ -50,6 +52,31 @@ BASE* AST::GROUP::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool AST::GROUP::RunScripting(){
+  if(Identifier.empty()){
+    error("Anonymous groups not supported yet");
+    return false;
+  }
+
+  auto Found = NETLIST::NamespaceStack.front()->Symbols.find(Identifier);
+  if(Found != NETLIST::NamespaceStack.front()->Symbols.end()){
+    Error();
+    printf("Symbol \"%s\" already exists in the current namespace\n",
+           Identifier.c_str());
+    return false;
+  }
+  auto Object = new NETLIST::GROUP(Line, Filename, Identifier.c_str());
+  Object->ApplyAttributes(Attributes);
+  NETLIST::NamespaceStack.front()->Symbols[Identifier] = Object;
+  NETLIST::NamespaceStack.push_front(Object);
+
+  bool Result = Body ? Body->RunScripting() : false;
+
+  NETLIST::NamespaceStack.pop_front();
+  return Result;
 }
 //------------------------------------------------------------------------------
 

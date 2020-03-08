@@ -51,6 +51,12 @@ BASE* WHILE_LOOP::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
+bool WHILE_LOOP::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void WHILE_LOOP::Display(){
   DisplayInfo();
   Debug.print("while(");

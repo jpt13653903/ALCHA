@@ -22,46 +22,72 @@
 #define AST_Assignment_h
 //------------------------------------------------------------------------------
 
+#include <list>
+//------------------------------------------------------------------------------
+
 #include "Expression/Expression.h"
 //------------------------------------------------------------------------------
 
+namespace NETLIST{
+  class BASE;
+}
+//------------------------------------------------------------------------------
+
 namespace AST{
-  struct ASSIGNMENT: public BASE{
-    enum class ASSIGNMENT_TYPE{
-      Assign,             //   =
-      Raw_Assign,         //  :=
-      Append_Assign,      //  ~=
-      Add_Assign,         //  +=
-      Subtract_Assign,    //  -=
-      Multiply_Assign,    //  *=
-      Divide_Assign,      //  /=
-      Modulus_Assign,     //  %=
-      Exponential_Assign, // **=
-      AND_Assign,         //  &=
-      OR_Assign,          //  |=
-      XOR_Assign,         //  ^=
-      Shift_Left_Assign,  // <<=
-      Shift_Right_Assign  // >>=
-    } AssignmentType;
+  class ASSIGNMENT: public BASE{
+    public:
+      enum class ASSIGNMENT_TYPE{
+        Assign,             //   =
+        Raw_Assign,         //  :=
+        Append_Assign,      //  ~=
+        Add_Assign,         //  +=
+        Subtract_Assign,    //  -=
+        Multiply_Assign,    //  *=
+        Divide_Assign,      //  /=
+        Modulus_Assign,     //  %=
+        Exponential_Assign, // **=
+        AND_Assign,         //  &=
+        OR_Assign,          //  |=
+        XOR_Assign,         //  ^=
+        Shift_Left_Assign,  // <<=
+        Shift_Right_Assign  // >>=
+      } AssignmentType;
 
-    bool Fence; // Assignment terminates in a ";" and not a ","
+      bool Fence; // Assignment terminates in a ";" and not a ","
 
-    // Left and Right operands
-    EXPRESSION* Left;
-    EXPRESSION* Right;
+      // Left and Right operands
+      EXPRESSION* Left;
+      EXPRESSION* Right;
 
-    ASSIGNMENT(int             Line,
-               std::string&    Filename,
-               ASSIGNMENT_TYPE AssignmentType);
-    ASSIGNMENT(int             Line,
-               const char*     Filename,
-               ASSIGNMENT_TYPE AssignmentType);
-   ~ASSIGNMENT();
+    private:
+      // Populates a list of existing expressions, except when the target is an
+      // undefined attribute, in which case the attribute is created first.
+      struct TARGET_LIST{
+        bool           isAttribute;
+        NETLIST::BASE* Object;
+        EXPRESSION**   Expression;
+        TARGET_LIST(){ isAttribute = false; }
+      };
+      typedef std::list<TARGET_LIST> target_list;
+      bool    GetLHS_Object(NETLIST::BASE* Object, target_list& List, BASE* Ast);
+      bool    GetLHS(EXPRESSION* Node, target_list& List);
 
-    // Returns a copy of this instance
-    virtual BASE* Copy(bool CopyNext);
+    public:
+      ASSIGNMENT(int             Line,
+                 std::string&    Filename,
+                 ASSIGNMENT_TYPE AssignmentType);
+      ASSIGNMENT(int             Line,
+                 const char*     Filename,
+                 ASSIGNMENT_TYPE AssignmentType);
+     ~ASSIGNMENT();
 
-    void Display();
+      // Returns a copy of this instance
+      virtual BASE* Copy(bool CopyNext);
+
+      // Runs scripting commands and creates instances in the namespace tree
+      virtual bool RunScripting();
+
+      void Display();
   };
 }
 //------------------------------------------------------------------------------

@@ -51,6 +51,12 @@ BASE* RTL::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
+bool RTL::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void RTL::Display(){
   DisplayInfo();
   Debug.print("rtl(");

@@ -56,6 +56,12 @@ BASE* HDL::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
+bool HDL::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void HDL::Display(){
   DisplayInfo();
   Debug.print("hdl (%s):\n", Identifier.c_str());

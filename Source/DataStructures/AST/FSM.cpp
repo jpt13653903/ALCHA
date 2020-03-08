@@ -51,6 +51,12 @@ BASE* FSM::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
+bool FSM::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void FSM::Display(){
   DisplayInfo();
   Debug.print("fsm(");

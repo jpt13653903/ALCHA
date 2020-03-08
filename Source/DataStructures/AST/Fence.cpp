@@ -44,6 +44,12 @@ BASE* FENCE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
+bool FENCE::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void FENCE::Display(){
   DisplayInfo();
   Debug.print("Fence\n");
