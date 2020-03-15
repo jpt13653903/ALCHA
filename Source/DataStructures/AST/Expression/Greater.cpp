@@ -54,6 +54,17 @@ bool GREATER::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool GREATER::GetVerilog(string& Body){
+  Body += "(";
+  Left->GetVerilog(Body);
+  Body += ") > (";
+  Right->GetVerilog(Body);
+  Body += ")";
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* GREATER::Evaluate(){
   EXPRESSION* Result = 0;
 

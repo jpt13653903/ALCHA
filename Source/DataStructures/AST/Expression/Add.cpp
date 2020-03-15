@@ -55,6 +55,17 @@ bool ADD::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool ADD::GetVerilog(string& Body){
+  Body += "(";
+  Left->GetVerilog(Body);
+  Body += ") + (";
+  Right->GetVerilog(Body);
+  Body += ")";
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* ADD::Evaluate(){
   EXPRESSION* Result = 0;
 

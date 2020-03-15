@@ -54,6 +54,17 @@ bool BIT_NAND::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool BIT_NAND::GetVerilog(string& Body){
+  Body += "(";
+  Left->GetVerilog(Body);
+  Body += ") ~& (";
+  Right->GetVerilog(Body);
+  Body += ")";
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* BIT_NAND::Evaluate(){
   EXPRESSION* Result = 0;
 

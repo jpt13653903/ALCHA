@@ -54,6 +54,15 @@ bool XOR_REDUCE::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool XOR_REDUCE::GetVerilog(string& Body){
+  Body += "^(";
+  Right->GetVerilog(Body);
+  Body += ")";
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* XOR_REDUCE::Evaluate(){
   EXPRESSION* Result = 0;
 

@@ -54,6 +54,17 @@ bool BIT_XNOR::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool BIT_XNOR::GetVerilog(string& Body){
+  Body += "(";
+  Left->GetVerilog(Body);
+  Body += ") ~^ (";
+  Right->GetVerilog(Body);
+  Body += ")";
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* BIT_XNOR::Evaluate(){
   EXPRESSION* Result = 0;
 

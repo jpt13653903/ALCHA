@@ -21,6 +21,7 @@
 #include "HDL.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
@@ -57,6 +58,12 @@ BASE* HDL::Copy(bool CopyNext){
 //------------------------------------------------------------------------------
 
 bool HDL::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+bool HDL::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
 }

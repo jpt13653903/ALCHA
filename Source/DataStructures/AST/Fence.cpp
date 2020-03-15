@@ -21,6 +21,7 @@
 #include "Fence.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
@@ -45,6 +46,12 @@ BASE* FENCE::Copy(bool CopyNext){
 //------------------------------------------------------------------------------
 
 bool FENCE::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+bool FENCE::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
 }

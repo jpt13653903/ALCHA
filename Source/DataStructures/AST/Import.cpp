@@ -87,6 +87,12 @@ bool IMPORT::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool IMPORT::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void IMPORT::Display(){
   DisplayInfo();
   Debug.print("import \"%s\"", File.c_str());

@@ -54,6 +54,15 @@ bool NOR_REDUCE::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool NOR_REDUCE::GetVerilog(string& Body){
+  Body += "~|(";
+  Right->GetVerilog(Body);
+  Body += ")";
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* NOR_REDUCE::Evaluate(){
   EXPRESSION* Result = 0;
 

@@ -21,6 +21,7 @@
 #include "IfStatement.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
@@ -55,6 +56,12 @@ BASE* IF_STATEMENT::Copy(bool CopyNext){
 //------------------------------------------------------------------------------
 
 bool IF_STATEMENT::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+bool IF_STATEMENT::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
 }

@@ -56,6 +56,37 @@ bool LITERAL::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool LITERAL::GetVerilog(string& Body){
+  // TODO: Move to new strategy of synthesising single operations into temporaries
+  error("Not yet implemented");
+  // if(!Expression->Value.IsReal()){
+  //   Error(Expression, "non-real literal");
+  //   return false;
+  // }
+  // NUMBER Result(Expression->Value);
+  // if(!Result.IsPositive()){
+  //   if(!Expression->Signed){
+  //     Error(Expression, "Cannot store a negative literal to an unsigned target");
+  //     return false;
+  //   }
+  //   Wire += "-";
+  //   Result.Mul(-1);
+  // }
+  // if(Expression->Signed) Wire += to_string(Expression->Width+1) + "'h";
+  // else                   Wire += to_string(Expression->Width  ) + "'h";
+  // Result.Round();
+  // Wire += Result.GetString(16);
+  // Result.BinScale(-Expression->Width);
+  // if(Result > 1){
+  //   Error(Expression, "The literal does not fit in its full-scale range");
+  //   return false;
+  // }
+
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* LITERAL::Evaluate(){
   EXPRESSION* Result = 0;
 

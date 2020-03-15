@@ -54,6 +54,103 @@ bool CAST::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool CAST::GetVerilog(string& Body){
+  // TODO: Move to new strategy of synthesising single operations into temporaries
+  error("Not yet implemented");
+  // assert( Expression->Left , return false);
+  // assert(!Expression->Right, return false);
+  // AST::EXPRESSION* From = Expression->Left;
+  // AST::EXPRESSION* To   = Expression;
+  // NUMBER Factor = From->FullScale;
+  // Factor.Div(To->FullScale);
+  // Factor.BinScale(To->Width - From->Width);
+  // assert(Factor != 0, Expression->Display(); return false);
+
+  // // Calculate the limit of the inferred multiplier size.  Most FPGAs have 
+  // // 18-bit multipliers, so make that the minimum limit, otherwise use the 
+  // // target width as the limit so that no to little resolution is lost.
+  // NUMBER Limit(1);
+  // if(To->Width < 18) Limit.BinScale(18);
+  // else               Limit.BinScale(To->Width);
+  // int Shift = 0;
+  // while(Factor.IsInt()){
+  //   Factor.BinScale(-1);
+  //   Shift--;
+  // }
+  // while(!Factor.IsInt() && (Factor < Limit)){
+  //   Factor.BinScale(1);
+  //   Shift++;
+  // }
+  // while(Factor >= Limit){
+  //   Factor.BinScale(-1);
+  //   Shift--;
+  // }
+  // NUMBER FullFactor(Factor);
+  // Factor.Round();
+  // if(Factor != FullFactor){
+  //   Warning(Expression, "Rounding the scaling factor - this can be fixed "
+  //                       "with an explicit scaling multiplication.");
+  //   while(Factor.IsInt()){ // Make sure it's still minimised after rounding
+  //     Factor.BinScale(-1);
+  //     Shift--;
+  //   }
+  //   while(!Factor.IsInt()){
+  //     Factor.BinScale(1);
+  //     Shift++;
+  //   }
+  // }
+
+  // int Width = 0;
+  // NUMBER Num(Factor);
+  // while(Num >= 1){
+  //   Num.BinScale(-1);
+  //   Width++;
+  // }
+
+  // string FromString;
+  // if(!BuildExpression(Body, From, FromString)) return false;
+
+  // if(Factor == 1){
+  //   Body += "wire ";
+  //   if(To->Width > 1){
+  //     if(To->Signed) Body += "["+ to_string(To->Width  ) +":0] ";
+  //     else           Body += "["+ to_string(To->Width-1) +":0] ";
+  //   }
+  //   Wire = GetWireName();
+  //   Body += Wire +"= ";
+  //   if     (Shift > 0) Body += FromString +" >> "+ to_string( Shift);
+  //   else if(Shift < 0) Body += FromString +" << "+ to_string(-Shift);
+  //   Body += ";\n";
+
+  // }else{
+  //   Warning(Expression, "Non power-of-two scaling factor: synthesising a multiplier");
+  //   string MulWireName = GetWireName();
+
+  //   // TODO: Signed
+  //   Body += "wire ["+ to_string(From->Width + Width - 1) +":0] ";
+  //   Body += MulWireName +"= "+ FromString + " * ";
+
+  //   Body += to_string(Width) + "'h";
+  //   Body += Factor.GetString(16);
+  //   Body += ";\n";
+
+  //   Body += "wire ";
+  //   if(To->Width > 1){
+  //     if(To->Signed) Body += "["+ to_string(To->Width  ) +":0] ";
+  //     else           Body += "["+ to_string(To->Width-1) +":0] ";
+  //   }
+  //   Wire = GetWireName();
+  //   Body += Wire +"= ";
+  //   if     (Shift > 0) Body += MulWireName +" >> "+ to_string( Shift);
+  //   else if(Shift < 0) Body += MulWireName +" << "+ to_string(-Shift);
+  //   Body += ";\n";
+  // }
+
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* CAST::Evaluate(){
   EXPRESSION* Result = 0;
 

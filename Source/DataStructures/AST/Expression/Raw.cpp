@@ -54,6 +54,12 @@ bool RAW::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool RAW::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* RAW::Evaluate(){
   EXPRESSION* Result = 0;
 

@@ -54,6 +54,12 @@ bool DIVIDE::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool DIVIDE::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* DIVIDE::Evaluate(){
   EXPRESSION* Result = 0;
 

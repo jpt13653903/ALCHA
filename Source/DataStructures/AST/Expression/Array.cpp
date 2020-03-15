@@ -59,6 +59,12 @@ bool ARRAY::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool ARRAY::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* ARRAY::Evaluate(){
   ARRAY* Array = (ARRAY*)Copy(true);
   foreach(Element, Array->Elements) (*Element) = (*Element)->Evaluate();

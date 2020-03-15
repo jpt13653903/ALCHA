@@ -57,6 +57,15 @@ bool BIT_NOT::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool BIT_NOT::GetVerilog(string& Body){
+  Body += "~(";
+  Right->GetVerilog(Body);
+  Body += ")";
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* BIT_NOT::Evaluate(){
   EXPRESSION* Result = 0;
 

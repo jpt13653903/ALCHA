@@ -21,6 +21,7 @@
 #include "FSM.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
@@ -52,6 +53,12 @@ BASE* FSM::Copy(bool CopyNext){
 //------------------------------------------------------------------------------
 
 bool FSM::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+bool FSM::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
 }

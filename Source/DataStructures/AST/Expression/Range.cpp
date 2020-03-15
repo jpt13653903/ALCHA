@@ -57,6 +57,12 @@ bool RANGE::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool RANGE::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* RANGE::Evaluate(){
   EXPRESSION* Result = 0;
 

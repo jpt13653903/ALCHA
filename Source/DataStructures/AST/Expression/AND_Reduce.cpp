@@ -54,6 +54,16 @@ bool AND_REDUCE::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool AND_REDUCE::GetVerilog(string& Body){
+  Body += "&(";
+  Right->GetVerilog(Body);
+  Body += ")";
+
+  return true;
+
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* AND_REDUCE::Evaluate(){
   EXPRESSION* Result = 0;
 

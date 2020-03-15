@@ -54,6 +54,17 @@ bool SHIFT_LEFT::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool SHIFT_LEFT::GetVerilog(string& Body){
+  Body += "(";
+  Left->GetVerilog(Body);
+  Body += ") << (";
+  Right->GetVerilog(Body);
+  Body += ")";
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* SHIFT_LEFT::Evaluate(){
   EXPRESSION* Result = 0;
 

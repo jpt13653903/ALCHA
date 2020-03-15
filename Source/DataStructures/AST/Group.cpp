@@ -23,6 +23,7 @@
 #include "Netlist/Module.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
@@ -77,6 +78,12 @@ bool AST::GROUP::RunScripting(){
 
   NETLIST::NamespaceStack.pop_front();
   return Result;
+}
+//------------------------------------------------------------------------------
+
+bool AST::GROUP::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 

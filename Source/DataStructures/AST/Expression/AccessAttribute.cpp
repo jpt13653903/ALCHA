@@ -57,6 +57,12 @@ bool ACCESSATTRIBUTE::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool ACCESSATTRIBUTE::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* ACCESSATTRIBUTE::Evaluate(){
   EXPRESSION* Result = 0;
 

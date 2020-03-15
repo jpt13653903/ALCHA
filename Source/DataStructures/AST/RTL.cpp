@@ -21,6 +21,7 @@
 #include "RTL.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
@@ -52,6 +53,12 @@ BASE* RTL::Copy(bool CopyNext){
 //------------------------------------------------------------------------------
 
 bool RTL::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+bool RTL::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
 }

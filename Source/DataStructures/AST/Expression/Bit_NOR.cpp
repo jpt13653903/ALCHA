@@ -54,6 +54,17 @@ bool BIT_NOR::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool BIT_NOR::GetVerilog(string& Body){
+  Body += "(";
+  Left->GetVerilog(Body);
+  Body += ") ~| (";
+  Right->GetVerilog(Body);
+  Body += ")";
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* BIT_NOR::Evaluate(){
   EXPRESSION* Result = 0;
 

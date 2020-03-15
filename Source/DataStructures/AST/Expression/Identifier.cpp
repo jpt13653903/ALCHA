@@ -94,6 +94,12 @@ bool IDENTIFIER::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool IDENTIFIER::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* IDENTIFIER::Evaluate(){
   EXPRESSION* Result = 0;
 

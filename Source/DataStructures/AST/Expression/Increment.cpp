@@ -54,6 +54,12 @@ bool INCREMENT::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool INCREMENT::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* INCREMENT::Evaluate(){
   EXPRESSION* Result = 0;
 

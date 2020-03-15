@@ -54,6 +54,17 @@ bool REPLICATE::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool REPLICATE::GetVerilog(string& Body){
+  Body += "{(";
+  Right->GetVerilog(Body);
+  Body += "){";
+  Left->GetVerilog(Body);
+  Body += "}}";
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* REPLICATE::Evaluate(){
   EXPRESSION* Result = 0;
 

@@ -21,6 +21,7 @@
 #include "EnumDefinition.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
@@ -70,6 +71,12 @@ BASE* ENUM_DEFINITION::Copy(bool CopyNext){
 //------------------------------------------------------------------------------
 
 bool ENUM_DEFINITION::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+bool ENUM_DEFINITION::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
 }

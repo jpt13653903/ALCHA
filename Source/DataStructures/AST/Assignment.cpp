@@ -643,6 +643,12 @@ bool ASSIGNMENT::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool ASSIGNMENT::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void ASSIGNMENT::Display(){
   DisplayInfo();
   Debug.print("Assignment: ");

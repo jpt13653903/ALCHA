@@ -21,6 +21,7 @@
 #include "Jump.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
@@ -51,6 +52,12 @@ BASE* JUMP::Copy(bool CopyNext){
 //------------------------------------------------------------------------------
 
 bool JUMP::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+bool JUMP::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
 }

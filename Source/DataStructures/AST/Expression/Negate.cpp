@@ -55,6 +55,15 @@ bool NEGATE::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool NEGATE::GetVerilog(string& Body){
+  Body += "-(";
+  Right->GetVerilog(Body);
+  Body += ")";
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* NEGATE::Evaluate(){
   EXPRESSION* Result = 0;
 

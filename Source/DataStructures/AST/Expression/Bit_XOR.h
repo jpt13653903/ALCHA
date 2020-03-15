@@ -36,6 +36,7 @@ namespace AST{
 
     // Runs scripting commands and creates instances in the namespace tree
     virtual bool RunScripting();
+    virtual bool GetVerilog(std::string& Body);
     virtual EXPRESSION* Evaluate();
     virtual EXPRESSION* Simplify(bool GenWire);
 

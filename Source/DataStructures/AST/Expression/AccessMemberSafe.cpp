@@ -54,6 +54,12 @@ bool ACCESSMEMBERSAFE::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool ACCESSMEMBERSAFE::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* ACCESSMEMBERSAFE::Evaluate(){
   EXPRESSION* Result = 0;
 

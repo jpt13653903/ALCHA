@@ -237,6 +237,12 @@ bool DEFINITION::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool DEFINITION::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void DEFINITION::Display(){
   DisplayInfo();
   Debug.print("Definition (");

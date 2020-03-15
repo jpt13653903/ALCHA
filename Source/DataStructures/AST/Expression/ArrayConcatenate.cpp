@@ -59,6 +59,12 @@ bool ARRAYCONCATENATE::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool ARRAYCONCATENATE::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* ARRAYCONCATENATE::Evaluate(){
   auto Array = (AST::ARRAYCONCATENATE*)Copy(true);
   foreach(Element, Array->Elements) (*Element) = (*Element)->Evaluate();

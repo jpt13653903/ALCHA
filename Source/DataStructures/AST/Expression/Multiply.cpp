@@ -54,6 +54,17 @@ bool MULTIPLY::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool MULTIPLY::GetVerilog(string& Body){
+  Body += "(";
+  Left->GetVerilog(Body);
+  Body += ") * (";
+  Right->GetVerilog(Body);
+  Body += ")";
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* MULTIPLY::Evaluate(){
   EXPRESSION* Result = (EXPRESSION*)Copy(true);
   return Result->Simplify(false);

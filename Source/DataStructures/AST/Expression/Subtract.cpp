@@ -55,6 +55,17 @@ bool SUBTRACT::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool SUBTRACT::GetVerilog(string& Body){
+  Body += "(";
+  Left->GetVerilog(Body);
+  Body += ") - (";
+  Right->GetVerilog(Body);
+  Body += ")";
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* SUBTRACT::Evaluate(){
   EXPRESSION* Result = 0;
 

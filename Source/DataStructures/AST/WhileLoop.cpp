@@ -21,6 +21,7 @@
 #include "WhileLoop.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
@@ -52,6 +53,12 @@ BASE* WHILE_LOOP::Copy(bool CopyNext){
 //------------------------------------------------------------------------------
 
 bool WHILE_LOOP::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+bool WHILE_LOOP::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
 }

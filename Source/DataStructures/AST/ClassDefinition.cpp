@@ -21,6 +21,7 @@
 #include "ClassDefinition.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
@@ -87,6 +88,12 @@ BASE* CLASS_DEFINITION::Copy(bool CopyNext){
 //------------------------------------------------------------------------------
 
 bool CLASS_DEFINITION::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+bool CLASS_DEFINITION::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
 }

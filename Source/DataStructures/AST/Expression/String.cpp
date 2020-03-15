@@ -56,6 +56,12 @@ bool STRING::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool STRING::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* STRING::Evaluate(){
   EXPRESSION* Result = 0;
 

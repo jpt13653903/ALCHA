@@ -54,6 +54,17 @@ bool LESS_EQUAL::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool LESS_EQUAL::GetVerilog(string& Body){
+  Body += "(";
+  Left->GetVerilog(Body);
+  Body += ") <= (";
+  Right->GetVerilog(Body);
+  Body += ")";
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* LESS_EQUAL::Evaluate(){
   EXPRESSION* Result = 0;
 

@@ -21,6 +21,7 @@
 #include "NamespacePush.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
@@ -52,6 +53,12 @@ BASE* NAMESPACE_PUSH::Copy(bool CopyNext){
 //------------------------------------------------------------------------------
 
 bool NAMESPACE_PUSH::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+bool NAMESPACE_PUSH::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
 }

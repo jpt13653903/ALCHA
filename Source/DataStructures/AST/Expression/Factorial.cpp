@@ -54,6 +54,12 @@ bool FACTORIAL::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool FACTORIAL::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* FACTORIAL::Evaluate(){
   EXPRESSION* Result = 0;
 

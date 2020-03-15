@@ -59,6 +59,21 @@ bool VECTORCONCATENATE::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool VECTORCONCATENATE::GetVerilog(string& Body){
+  bool isFirst = true;
+
+  foreach(Element, Elements){
+    if(isFirst) Body += "{";
+    else        Body += ", ";
+    (*Element)->GetVerilog(Body);
+    isFirst = false;
+  }
+  Body += "}";
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* VECTORCONCATENATE::Evaluate(){
   auto Array = (VECTORCONCATENATE*)Copy(true);
   foreach(Element, Array->Elements) (*Element) = (*Element)->Evaluate();

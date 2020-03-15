@@ -54,6 +54,12 @@ bool DECREMENT::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool DECREMENT::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* DECREMENT::Evaluate(){
   EXPRESSION* Result = 0;
 

@@ -85,6 +85,12 @@ bool SWITCH::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool SWITCH::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void SWITCH::Display(){
   DisplayInfo();
   Debug.print("switch(");

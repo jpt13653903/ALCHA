@@ -54,6 +54,15 @@ bool XNOR_REDUCE::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool XNOR_REDUCE::GetVerilog(string& Body){
+  Body += "~^(";
+  Right->GetVerilog(Body);
+  Body += ")";
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* XNOR_REDUCE::Evaluate(){
   EXPRESSION* Result = 0;
 

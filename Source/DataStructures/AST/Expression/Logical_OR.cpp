@@ -54,6 +54,17 @@ bool LOGICAL_OR::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool LOGICAL_OR::GetVerilog(string& Body){
+  Body += "(";
+  Left->GetVerilog(Body);
+  Body += ") || (";
+  Right->GetVerilog(Body);
+  Body += ")";
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* LOGICAL_OR::Evaluate(){
   EXPRESSION* Result = 0;
 

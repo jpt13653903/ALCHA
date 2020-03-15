@@ -54,6 +54,15 @@ bool NAND_REDUCE::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool NAND_REDUCE::GetVerilog(string& Body){
+  Body += "~&(";
+  Right->GetVerilog(Body);
+  Body += ")";
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* NAND_REDUCE::Evaluate(){
   EXPRESSION* Result = 0;
 

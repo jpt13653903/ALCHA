@@ -21,6 +21,7 @@
 #include "Parameter.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
@@ -63,6 +64,12 @@ BASE* PARAMETER::Copy(bool CopyNext){
 //------------------------------------------------------------------------------
 
 bool PARAMETER::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+bool PARAMETER::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
 }

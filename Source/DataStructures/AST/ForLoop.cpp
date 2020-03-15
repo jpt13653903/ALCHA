@@ -21,6 +21,7 @@
 #include "ForLoop.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
@@ -54,6 +55,12 @@ BASE* FOR_LOOP::Copy(bool CopyNext){
 //------------------------------------------------------------------------------
 
 bool FOR_LOOP::RunScripting(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+bool FOR_LOOP::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
 }

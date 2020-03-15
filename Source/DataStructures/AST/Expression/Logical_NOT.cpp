@@ -54,6 +54,15 @@ bool LOGICAL_NOT::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool LOGICAL_NOT::GetVerilog(string& Body){
+  Body += "!(";
+  Right->GetVerilog(Body);
+  Body += ")";
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* LOGICAL_NOT::Evaluate(){
   EXPRESSION* Result = 0;
 

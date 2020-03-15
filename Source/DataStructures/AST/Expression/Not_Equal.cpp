@@ -54,6 +54,17 @@ bool NOT_EQUAL::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool NOT_EQUAL::GetVerilog(string& Body){
+  Body += "(";
+  Left->GetVerilog(Body);
+  Body += ") != (";
+  Right->GetVerilog(Body);
+  Body += ")";
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* NOT_EQUAL::Evaluate(){
   EXPRESSION* Result = 0;
 

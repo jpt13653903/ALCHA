@@ -54,6 +54,12 @@ bool MODULUS::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool MODULUS::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* MODULUS::Evaluate(){
   EXPRESSION* Result = 0;
 

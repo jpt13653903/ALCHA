@@ -54,6 +54,12 @@ bool FUNCTIONCALL::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool FUNCTIONCALL::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* FUNCTIONCALL::Evaluate(){
   EXPRESSION* Result = 0;
 

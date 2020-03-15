@@ -54,6 +54,17 @@ bool BIT_AND::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool BIT_AND::GetVerilog(string& Body){
+  Body += "(";
+  Left->GetVerilog(Body);
+  Body += ") & (";
+  Right->GetVerilog(Body);
+  Body += ")";
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* BIT_AND::Evaluate(){
   EXPRESSION* Result = 0;
 

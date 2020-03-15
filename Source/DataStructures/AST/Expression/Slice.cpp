@@ -54,6 +54,12 @@ bool SLICE::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool SLICE::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* SLICE::Evaluate(){
   EXPRESSION* Result = 0;
 

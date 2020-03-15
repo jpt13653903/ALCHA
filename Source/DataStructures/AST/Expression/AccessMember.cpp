@@ -60,6 +60,12 @@ bool ACCESSMEMBER::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool ACCESSMEMBER::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* ACCESSMEMBER::Evaluate(){
   EXPRESSION* Result = 0;
 

@@ -157,6 +157,9 @@ namespace AST{
       // Runs scripting commands and creates instances in the namespace tree
       virtual bool RunScripting() = 0;
 
+      // Appends the Verilog code of this node to Body
+      virtual bool GetVerilog(std::string& Body) = 0;
+
               void DisplayInfo();
       virtual void Display() = 0;
   };

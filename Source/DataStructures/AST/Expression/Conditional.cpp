@@ -54,6 +54,12 @@ bool CONDITIONAL::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool CONDITIONAL::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* CONDITIONAL::Evaluate(){
   EXPRESSION* Result = 0;
 

@@ -54,6 +54,12 @@ bool EXPONENTIAL::RunScripting(){
 }
 //------------------------------------------------------------------------------
 
+bool EXPONENTIAL::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* EXPONENTIAL::Evaluate(){
   EXPRESSION* Result = 0;
 

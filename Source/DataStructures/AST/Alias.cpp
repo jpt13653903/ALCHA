@@ -23,6 +23,7 @@
 #include "Netlist/Module.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
@@ -66,6 +67,12 @@ bool ALIAS::RunScripting(){
   NETLIST::NamespaceStack.front()->Symbols[Object->Name] = Object;
 
   return true;
+}
+//------------------------------------------------------------------------------
+
+bool ALIAS::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
