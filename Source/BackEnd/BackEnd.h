@@ -43,7 +43,6 @@ class BACK_END{
     bool AssignPinDirections(NETLIST::NAMESPACE* Module);
     bool RoutePorts         (NETLIST::NAMESPACE* Module);
 
-    bool BuildExpression (std::string& Body, AST::EXPRESSION*    Expression);
     bool BuildAssignments(std::string& Body, NETLIST::NAMESPACE* Namespace);
     void BuildPorts      (std::string& Body, NETLIST::NAMESPACE* Namespace, bool& isFirst);
     void BuildNets       (std::string& Body, NETLIST::NAMESPACE* Namespace);

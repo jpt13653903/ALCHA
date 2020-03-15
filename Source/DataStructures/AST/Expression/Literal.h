@@ -28,6 +28,8 @@
 namespace AST{
   struct LITERAL: public EXPRESSION{
     NUMBER Value;
+    bool   Signed;
+    int    Width;
 
     LITERAL(int Line, const std::string& Filename);
     LITERAL(int Line, const char*        Filename);

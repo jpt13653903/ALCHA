@@ -187,6 +187,10 @@ bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List){
         }
         NamespaceIterator++;
       }
+      if(!Result){
+        Node->Error();
+        printf("Undefined identifier: \"%s\"\n", Identifier->Name.c_str());
+      }
       break;
     }
 
@@ -379,6 +383,18 @@ bool ASSIGNMENT::RunScripting(){
   }
 
   bool RawAssign = true;
+
+  if(Right->Type == TYPE::Literal){
+    if(Object->Type == NETLIST::BASE::TYPE::Pin ||
+       Object->Type == NETLIST::BASE::TYPE::Net ||
+       Object->Type == NETLIST::BASE::TYPE::Synthesisable
+    ){
+      auto Synth   = (NETLIST::SYNTHESISABLE*)Object;
+      auto Literal = (LITERAL*)Right;
+      Literal->Signed = Synth->Signed;
+      Literal->Width  = Synth->Width;
+    }
+  }
 
   switch(AssignmentType){
     case ASSIGNMENT_TYPE::Assign:

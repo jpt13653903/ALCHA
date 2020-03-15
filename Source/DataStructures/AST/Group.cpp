@@ -74,7 +74,12 @@ bool AST::GROUP::RunScripting(){
   NETLIST::NamespaceStack.front()->Symbols[Identifier] = Object;
   NETLIST::NamespaceStack.push_front(Object);
 
-  bool Result = Body ? Body->RunScripting() : false;
+  bool Result = true;
+  auto Element = Body;
+  while(Result && Element){
+    Result  = Element->RunScripting();
+    Element = Element->Next;
+  }
 
   NETLIST::NamespaceStack.pop_front();
   return Result;

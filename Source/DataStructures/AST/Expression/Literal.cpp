@@ -29,6 +29,8 @@ LITERAL::LITERAL(int Line, const string& Filename): LITERAL(Line, Filename.c_str
 //------------------------------------------------------------------------------
 
 LITERAL::LITERAL(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Literal){
+  Signed = false;
+  Width  = 0;
 }
 //------------------------------------------------------------------------------
 
@@ -57,33 +59,34 @@ bool LITERAL::RunScripting(){
 //------------------------------------------------------------------------------
 
 bool LITERAL::GetVerilog(string& Body){
-  // TODO: Move to new strategy of synthesising single operations into temporaries
-  error("Not yet implemented");
-  // if(!Expression->Value.IsReal()){
-  //   Error(Expression, "non-real literal");
-  //   return false;
-  // }
-  // NUMBER Result(Expression->Value);
-  // if(!Result.IsPositive()){
-  //   if(!Expression->Signed){
-  //     Error(Expression, "Cannot store a negative literal to an unsigned target");
-  //     return false;
-  //   }
-  //   Wire += "-";
-  //   Result.Mul(-1);
-  // }
-  // if(Expression->Signed) Wire += to_string(Expression->Width+1) + "'h";
-  // else                   Wire += to_string(Expression->Width  ) + "'h";
-  // Result.Round();
-  // Wire += Result.GetString(16);
-  // Result.BinScale(-Expression->Width);
-  // if(Result > 1){
-  //   Error(Expression, "The literal does not fit in its full-scale range");
-  //   return false;
-  // }
-
-  error("Not yet implemented");
-  return false;
+  if(!Width){
+    Error("Literal has unknown width");
+    return false;
+  }
+  if(!Value.IsReal()){
+    Error("non-real literal");
+    return false;
+  }
+  NUMBER Result(Value);
+  bool IsPositive = Result.IsPositive();
+  if(!IsPositive){
+    if(!Signed){
+      Error("Cannot store a negative literal to an unsigned target");
+      return false;
+    }
+    Body += "-";
+    Result.Mul(-1);
+  }
+  if(Signed) Body += to_string(Width+1) + "'h";
+  else       Body += to_string(Width  ) + "'h";
+  Result.Round();
+  Body += Result.GetString(16);
+  Result.BinScale(-Width);
+  if((IsPositive && Result >= 1) || (!IsPositive && Result > 1)){
+    Error("The literal does not fit in its full-scale range");
+    return false;
+  }
+  return true;
 }
 //------------------------------------------------------------------------------
 

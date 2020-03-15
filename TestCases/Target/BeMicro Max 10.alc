@@ -20,21 +20,21 @@
 // }
 //------------------------------------------------------------------------------
 
-// group AD5681R{
-//   pin<location = "N18"> LDACn;
-//   pin<location = "L15"> RSTn;
-//   pin<location = "G17"> SCL;
-//   pin<location = "H17"> SDA;
-//   pin<location = "N19"> SYNCn;
-// }
+group AD5681R{
+  pin<location = "N18"> LDACn;
+  pin<location = "L15"> RSTn;
+  pin<location = "G17"> SCL;
+  pin<location = "H17"> SDA;
+  pin<location = "N19"> SYNCn;
+}
 //------------------------------------------------------------------------------
 
-// group ADT7420{
-//   input  pin<location = "P13" > CT;
-//   input  pin<location = "AB14"> INT;
-//   output pin<location = "W13" > SCL;
-//          pin<location = "R13" > SDA;
-// }
+group ADT7420{
+  input  pin<location = "P13" > CT;
+  input  pin<location = "AB14"> INT;
+  output pin<location = "W13" > SCL;
+         pin<location = "R13" > SDA;
+}
 //------------------------------------------------------------------------------
 
 // group SDRAM{
