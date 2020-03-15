@@ -33,6 +33,9 @@ FUNCTIONCALL::FUNCTIONCALL(int Line, const char* Filename): EXPRESSION(Line, Fil
 //------------------------------------------------------------------------------
 
 FUNCTIONCALL::~FUNCTIONCALL(){
+  foreach(Parameter, Parameters){
+    if(*Parameter) delete *Parameter;
+  }
 }
 //------------------------------------------------------------------------------
 
@@ -41,6 +44,10 @@ BASE* FUNCTIONCALL::Copy(bool CopyNext){
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
+
+  foreach(Parameter, Parameters){
+    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy(CopyNext));
+  }
 
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
@@ -74,9 +81,11 @@ EXPRESSION* FUNCTIONCALL::Simplify(bool GenWire){
   assert(Left, return this);
 
   Left = Left->Simplify(true);
-  if(Right){
-    assert(Right->Type > TYPE::Expression, return this);
-    Right = ((EXPRESSION*)Right)->Simplify(true);
+  if(!Parameters.empty()){
+    foreach(Parameter, Parameters){
+      assert((*Parameter)->Type > TYPE::Expression, return this);
+      (*Parameter) = ((EXPRESSION*)(*Parameter))->Simplify(true);
+    }
   }
 
   error("Not yet implemented");
@@ -87,7 +96,15 @@ EXPRESSION* FUNCTIONCALL::Simplify(bool GenWire){
 void FUNCTIONCALL::Display(){
   DisplayStart();
 
-  Debug.print("{call}" );
+  Debug.print("{call}(");
+
+  bool isFirst = true;
+  foreach(Parameter, Parameters){
+    if(!isFirst) Debug.print(", ");
+    isFirst = false;
+    (*Parameter)->Display();
+  }
+  Debug.print(")");
 
   DisplayEnd();
 }

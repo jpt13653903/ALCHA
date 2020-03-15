@@ -22,6 +22,7 @@
 #define AST_Definition_h
 //------------------------------------------------------------------------------
 
+#include <list>
 #include "Parameter.h"
 #include "Assignment.h"
 //------------------------------------------------------------------------------
@@ -75,7 +76,7 @@ namespace AST{
     public:
       enum class DIRECTION{Inferred = 0, Input, Output, Bidirectional} Direction;
 
-      BASE*       Parameters; // Expression or Assignment
+      std::list<BASE*> Parameters; // Expression or Assignment
       ASSIGNMENT* Attributes;
       IDENTIFIER* Identifiers;
     //--------------------------------------------------------------------------

@@ -22,12 +22,13 @@
 #define AST_RTL_h
 //------------------------------------------------------------------------------
 
+#include <list>
 #include "Base.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
   struct RTL: public BASE{
-    BASE* Parameters;
+    std::list<BASE*> Parameters;
     BASE* Statements;
 
     RTL(int Line, std::string& Filename);

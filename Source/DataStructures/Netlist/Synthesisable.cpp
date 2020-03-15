@@ -22,6 +22,7 @@
 #include "Ast/Expression/Literal.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
@@ -37,17 +38,17 @@ SYNTHESISABLE::~SYNTHESISABLE(){
 }
 //------------------------------------------------------------------------------
 
-bool SYNTHESISABLE::ApplyParameters(AST::BASE* Parameter){
+bool SYNTHESISABLE::ApplyParameters(list<AST::BASE*>& Parameters){
   int  Position          = 0; // Negative => named parameters
   bool ExplicitFullScale = false;
 
-  while(Parameter){
-    if(Parameter->Type > AST::BASE::TYPE::Expression){
+  foreach(Parameter, Parameters){
+    if((*Parameter)->Type > AST::BASE::TYPE::Expression){
       if(Position < 0) return false; // Mixing named and positional parameters
 
-      AST::EXPRESSION* Param = ((AST::EXPRESSION*)Parameter)->Evaluate();
+      AST::EXPRESSION* Param = ((AST::EXPRESSION*)(*Parameter))->Evaluate();
       if(!Param){
-        Parameter->Error("Invalid parameter expression");
+        (*Parameter)->Error("Invalid parameter expression");
         return false;
       }
 
@@ -73,21 +74,20 @@ bool SYNTHESISABLE::ApplyParameters(AST::BASE* Parameter){
         }
 
         default:
-          Parameter->Error("Parameters must be pure scripting expressions");
+          (*Parameter)->Error("Parameters must be pure scripting expressions");
           delete Param;
           return false;
       }
       delete Param;
 
-    }else if(Parameter->Type == AST::BASE::TYPE::Assignment){
-      // auto Param = (AST::EXPRESSION*)Parameter;
+    }else if((*Parameter)->Type == AST::BASE::TYPE::Assignment){
+      // auto Param = (AST::EXPRESSION*)(*Parameter);
       Position = -1;
       error("Not yet implemented");
 
     }else{
       return false;
     }
-    Parameter = Parameter->Next;
     if(Position >= 0) Position++;
   }
   if(Width < 0){

@@ -22,11 +22,14 @@
 #define AST_Expression_FunctionCall_h
 //------------------------------------------------------------------------------
 
+#include <list>
 #include "Expression.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
   struct FUNCTIONCALL: public EXPRESSION{
+    std::list<BASE*> Parameters;
+
     FUNCTIONCALL(int Line, const std::string& Filename);
     FUNCTIONCALL(int Line, const char*        Filename);
    ~FUNCTIONCALL();

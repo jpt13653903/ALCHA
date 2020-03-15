@@ -22,12 +22,13 @@
 #define AST_FSM_h
 //------------------------------------------------------------------------------
 
+#include <list>
 #include "Base.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
   struct FSM: public BASE{
-    BASE* Parameters;
+    std::list<BASE*> Parameters;
     BASE* Statements;
 
     FSM(int Line, std::string& Filename);

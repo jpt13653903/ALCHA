@@ -107,7 +107,6 @@ DEFINITION::DEFINITION(
   Direction = DIRECTION::Inferred;
 
   ClassName   = 0;
-  Parameters  = 0;
   Attributes  = 0;
   Identifiers = 0;
 }
@@ -115,9 +114,12 @@ DEFINITION::DEFINITION(
 
 DEFINITION::~DEFINITION(){
   if(ClassName  ) delete ClassName;
-  if(Parameters ) delete Parameters;
   if(Attributes ) delete Attributes;
   if(Identifiers) delete Identifiers;
+
+  foreach(Parameter, Parameters){
+    if(*Parameter) delete *Parameter;
+  }
 }
 //------------------------------------------------------------------------------
 
@@ -127,11 +129,14 @@ BASE* DEFINITION::Copy(bool CopyNext){
   Copy->Direction = Direction;
 
   if(ClassName  ) Copy->ClassName   = (decltype(ClassName ))ClassName ->Copy(CopyNext);
-  if(Parameters ) Copy->Parameters  = (decltype(Parameters))Parameters->Copy(CopyNext);
   if(Attributes ) Copy->Attributes  = (decltype(Attributes))Attributes->Copy(CopyNext);
   if(Identifiers) Copy->Identifiers = new IDENTIFIER(*Identifiers);
 
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+
+  foreach(Parameter, Parameters){
+    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy(CopyNext));
+  }
 
   return Copy;
 }
@@ -275,11 +280,13 @@ void DEFINITION::Display(){
   }
 
   Debug.print(" Parameters: ");
-  if(Parameters){
-    Parameters->Display();
-    Debug.print("\n");
-  }else{
+  if(Parameters.empty()){
     Debug.print("none / default\n");
+  }else{
+    foreach(Parameter, Parameters){
+      (*Parameter)->Display();
+      Debug.print("\n");
+    }
   }
 
   Debug.print(" Attributes: ");

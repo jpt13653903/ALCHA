@@ -27,26 +27,30 @@ using namespace AST;
 
 CLASS_DEFINITION::PARENT::PARENT(){
   ClassName  = 0;
-  Parameters = 0;
   Next       = 0;
 }
 //------------------------------------------------------------------------------
 
 CLASS_DEFINITION::PARENT::PARENT(const PARENT& Parent){
   ClassName  = 0;
-  Parameters = 0;
   Next       = 0;
 
-  if(Parent.ClassName ) ClassName  = (decltype(Parent.ClassName ))Parent.ClassName ->Copy(true);
-  if(Parent.Parameters) Parameters = (decltype(Parent.Parameters))Parent.Parameters->Copy(true);
-  if(Parent.Next      ) Next       = new PARENT(*Parent.Next);
+  if(Parent.ClassName) ClassName  = (decltype(Parent.ClassName ))Parent.ClassName ->Copy(true);
+  if(Parent.Next     ) Next       = new PARENT(*Parent.Next);
+
+  foreach(Parameter, Parent.Parameters){
+    if(*Parameter) Parameters.push_back((*Parameter)->Copy(true));
+  }
 }
 //------------------------------------------------------------------------------
 
 CLASS_DEFINITION::PARENT::~PARENT(){
   if(ClassName ) delete ClassName;
-  if(Parameters) delete Parameters;
   if(Next      ) delete Next;
+
+  foreach(Parameter, Parameters){
+    if(*Parameter) delete *Parameter;
+  }
 }
 //------------------------------------------------------------------------------
 
@@ -114,8 +118,15 @@ void CLASS_DEFINITION::Display(){
   PARENT* Parent = Parents;
   while(Parent){
     Debug.print(" - ");
-    if(Parent->ClassName ) Parent->ClassName ->Display(); Debug.print("(");
-    if(Parent->Parameters) Parent->Parameters->Display(); Debug.print(")\n");
+    if(Parent->ClassName) Parent->ClassName->Display();
+    Debug.print("(");
+    bool isFirst = true;
+    foreach(Parameter, Parent->Parameters){
+      if(isFirst) Debug.print(", ");
+      isFirst = false;
+      (*Parameter)->Display();
+    }
+    Debug.print(")\n");
     Parent = Parent->Next;
   }
 

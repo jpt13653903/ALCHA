@@ -122,7 +122,7 @@ class PARSER{
 
     bool             ExpressionList (std::vector<AST::EXPRESSION*>& List);
     AST::BASE*       Parameter      ();
-    AST::BASE*       ParameterList  ();
+    bool             ParameterList  (std::list<AST::BASE*>& Parameters);
     AST::EXPRESSION* Array          ();
     AST::EXPRESSION* ArrayConcat    ();
     AST::EXPRESSION* VectorConcat   ();

@@ -190,7 +190,7 @@ AST::CLASS_DEFINITION* PARSER::ClassDefinition(){
         return 0;
       }
 
-      Parent->Parameters = ParameterList();
+      ParameterList(Parent->Parameters);
     }while(Token.Type == TOKEN::TYPE::Comma);
   }
   if(Token.Type != TOKEN::TYPE::OpenCurly){
@@ -365,43 +365,36 @@ AST::BASE* PARSER::Parameter(){
 }
 //------------------------------------------------------------------------------
 
-AST::BASE* PARSER::ParameterList(){
-  AST::BASE* Head = 0;
-  AST::BASE* Tail = 0;
+bool PARSER::ParameterList(list<AST::BASE*>& Parameters){
   AST::BASE* Node;
 
   if(Token.Type != TOKEN::TYPE::OpenRound) return 0;
   GetToken();
   if(Token.Type == TOKEN::TYPE::CloseRound){
     GetToken();
-    return 0; // The caller checks for OpenRound if required
+    return true; // The caller checks for OpenRound if required
   }
 
   while(Token.Type != TOKEN::TYPE::Unknown){
     Node = Parameter();
     if(!Node){
       Error("Parameter assignment or expression expected");
-      if(Head) delete Head;
-      return 0;
+      return false;
     }
-    if(Tail) Tail->Next = Node;
-    else     Head       = Node;
-    Tail = Node;
+    Parameters.push_back(Node);
 
     if(Token.Type == TOKEN::TYPE::CloseRound){
       GetToken();
-      return Head;
+      return true;
     }
     if(Token.Type != TOKEN::TYPE::Comma){
       Error("',' or ')' expected");
-      delete Head;
-      return 0;
+      return false;
     }
     GetToken();
   }
   Error("Incomplete parameter list");
-  if(Head) delete Head;
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -596,7 +589,7 @@ AST::EXPRESSION* PARSER::Postfix(){
       Temp = new AST::FUNCTIONCALL(Token.Line, Scanner.Filename);
 
       Temp->Left  = Node;
-      Temp->Right = ParameterList();
+      ParameterList(((AST::FUNCTIONCALL*)Temp)->Parameters);
       Node = Temp;
 
     }else if(Token.Type == TOKEN::TYPE::AccessMember){
@@ -1504,9 +1497,9 @@ AST::DEFINITION* PARSER::Definition(){
   Node->Direction = Direction;
   GetToken();
 
-  Node->Parameters = ParameterList();
+  ParameterList(Node->Parameters);
 
-  if(Node->Parameters){
+  if(!Node->Parameters.empty()){
     if(Node->DefinitionType == AST::DEFINITION::DEFINITION_TYPE::Void){
       Error("Void type does not take parameters");
       delete Node;
@@ -1706,9 +1699,9 @@ AST::BASE* PARSER::Other(){
     );
     if(Expr->Type == AST::BASE::TYPE::FunctionCall){
       Def->ClassName  = Expr->Left;
-      Def->Parameters = Expr->Right;
+      Def->Parameters = ((AST::FUNCTIONCALL*)Expr)->Parameters;
       Expr->Left  = 0;
-      Expr->Right = 0;
+      ((AST::FUNCTIONCALL*)Expr)->Parameters.clear();
       delete Expr;
     }else{
       Def->ClassName = Expr;
@@ -2202,7 +2195,7 @@ AST::RTL* PARSER::RTL(){
   AST::RTL* Node = new AST::RTL(Token.Line, Scanner.Filename);
   GetToken();
 
-  Node->Parameters = ParameterList ();
+  ParameterList(Node->Parameters);
   Node->Statements = StatementBlock();
   return Node;
 }
@@ -2213,7 +2206,7 @@ AST::FSM* PARSER::FSM(){
   AST::FSM* Node = new AST::FSM(Token.Line, Scanner.Filename);
   GetToken();
 
-  Node->Parameters = ParameterList ();
+  ParameterList(Node->Parameters);
   Node->Statements = StatementBlock();
   return Node;
 }

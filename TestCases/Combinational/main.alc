@@ -13,11 +13,11 @@ ADT7420.SDA'pullup  = true;
 ADT7420.SDA.driver  = 0;
 ADT7420.SDA.enabled = ~Data;
 
-// num MyNumber = 1.23456;
-// 
-// !! Testing virtual pins
-// net(14, 3 ) TestNet  = GPIO;
-// 
+num MyNumber = 1.23456;
+
+net(14, 3 ) TestNet  = GPIO;
+
+!! Testing virtual pins
 // pin(14, 3 ) Testing1 =  0.1 *TestNet;
 // pin(14, 3 ) Testing2 = 10   *TestNet;
 // pin(14, 3 ) Testing3 =  4   *TestNet;

@@ -29,22 +29,27 @@ RTL::RTL(int Line, std::string& Filename): RTL(Line, Filename.c_str()){}
 //------------------------------------------------------------------------------
 
 RTL::RTL(int Line, const char* Filename): BASE(Line, Filename, TYPE::RTL){
-  Parameters = 0;
   Statements = 0;
 }
 //------------------------------------------------------------------------------
 
 RTL::~RTL(){
-  if(Parameters) delete Parameters;
   if(Statements) delete Statements;
+
+  foreach(Parameter, Parameters){
+    if(*Parameter) delete *Parameter;
+  }
 }
 //------------------------------------------------------------------------------
 
 BASE* RTL::Copy(bool CopyNext){
   RTL* Copy = new RTL(Line, Filename.c_str());
 
-  if(Parameters) Copy->Parameters = (decltype(Parameters))Parameters->Copy(CopyNext);
   if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy(CopyNext);
+
+  foreach(Parameter, Parameters){
+    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy(CopyNext));
+  }
 
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
@@ -67,7 +72,12 @@ bool RTL::GetVerilog(string& Body){
 void RTL::Display(){
   DisplayInfo();
   Debug.print("rtl(");
-    if(Parameters) Parameters->Display();
+    bool isFirst = true;
+    foreach(Parameter, Parameters){
+      if(isFirst) Debug.print(", ");
+      isFirst = false;
+      if(*Parameter) (*Parameter)->Display();
+    }
   Debug.print("){\n");
     if(Statements) Statements->Display();
   Debug.print("}\n");

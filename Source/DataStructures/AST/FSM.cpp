@@ -29,22 +29,27 @@ FSM::FSM(int Line, std::string& Filename): FSM(Line, Filename.c_str()){}
 //------------------------------------------------------------------------------
 
 FSM::FSM(int Line, const char* Filename): BASE(Line, Filename, TYPE::FSM){
-  Parameters = 0;
   Statements = 0;
 }
 //------------------------------------------------------------------------------
 
 FSM::~FSM(){
-  if(Parameters) delete Parameters;
   if(Statements) delete Statements;
+
+  foreach(Parameter, Parameters){
+    if(*Parameter) delete *Parameter;
+  }
 }
 //------------------------------------------------------------------------------
 
 BASE* FSM::Copy(bool CopyNext){
   FSM* Copy = new FSM(Line, Filename.c_str());
 
-  if(Parameters) Copy->Parameters = (decltype(Parameters))Parameters->Copy(CopyNext);
   if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy(CopyNext);
+
+  foreach(Parameter, Parameters){
+    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy(CopyNext));
+  }
 
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
@@ -67,7 +72,12 @@ bool FSM::GetVerilog(string& Body){
 void FSM::Display(){
   DisplayInfo();
   Debug.print("fsm(");
-    if(Parameters) Parameters->Display();
+    bool isFirst = true;
+    foreach(Parameter, Parameters){
+      if(isFirst) Debug.print(", ");
+      isFirst = false;
+      if(*Parameter) (*Parameter)->Display();
+    }
   Debug.print("){\n");
     if(Statements) Statements->Display();
   Debug.print("}\n");

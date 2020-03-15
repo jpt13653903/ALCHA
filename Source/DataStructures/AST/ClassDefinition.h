@@ -30,7 +30,7 @@ namespace AST{
   struct CLASS_DEFINITION: public BASE{
     struct PARENT{ // Link-list node for parent classes
       EXPRESSION* ClassName;  // This class inherits from Parent
-      BASE*       Parameters; // Parent constructor call
+      std::list<BASE*> Parameters; // Parent constructor call
 
       PARENT* Next;
 
