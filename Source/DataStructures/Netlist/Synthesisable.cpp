@@ -105,12 +105,7 @@ bool SYNTHESISABLE::ApplyParameters(list<AST::BASE*>& Parameters){
 }
 //------------------------------------------------------------------------------
 
-void SYNTHESISABLE::Display(){
-  switch(Type){
-    case TYPE::Pin: Debug.print("  Pin: "); break;
-    case TYPE::Net: Debug.print("  Net: "); break;
-    default: error ("Unknown synthesisable type"); break;
-  }
+void SYNTHESISABLE::DisplayParameters(){
   Debug.print("%s\n", Name.c_str());
   Debug.print("    Used       = %s\n", Used   ? "true" : "false");
   Debug.print("    Width      = %u\n", Width);
@@ -127,5 +122,4 @@ void SYNTHESISABLE::Display(){
   }
 }
 //------------------------------------------------------------------------------
-
 

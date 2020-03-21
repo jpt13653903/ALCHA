@@ -33,20 +33,22 @@
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
-  struct SYNTHESISABLE: public BASE{
-    bool   Used; // Actually used in an expression somewhere
-    bool   Signed;
-    int    Width;
-    NUMBER FullScale;
+  class SYNTHESISABLE: public BASE{
+    protected:
+      void DisplayParameters();
 
-    AST::DEFINITION::DIRECTION Direction;
+    public:
+      bool   Used; // Actually used in an expression somewhere
+      bool   Signed;
+      int    Width;
+      NUMBER FullScale;
 
-             SYNTHESISABLE(int Line, const std::string& Filename, const char* Name, TYPE Type);
-    virtual ~SYNTHESISABLE();
+      AST::DEFINITION::DIRECTION Direction;
 
-    bool ApplyParameters(std::list<AST::BASE*>& Parameters);
+               SYNTHESISABLE(int Line, const std::string& Filename, const char* Name, TYPE Type);
+      virtual ~SYNTHESISABLE();
 
-    void Display();
+      bool ApplyParameters(std::list<AST::BASE*>& Parameters);
   };
 }
 //------------------------------------------------------------------------------

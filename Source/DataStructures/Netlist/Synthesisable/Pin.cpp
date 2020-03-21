@@ -37,7 +37,9 @@ PIN::~PIN(){
 //------------------------------------------------------------------------------
 
 void PIN::Display(){
-  SYNTHESISABLE::Display();
+  Debug.print("  Pin: ");
+
+  DisplayParameters();
 
   Debug.print("    Driver     = ");
   if(Driver) Driver->Display();
