@@ -20,8 +20,8 @@
 
 #include "BackEnd.h"
 #include "Ast/Expression/Object.h"
-#include "Netlist/Pin.h"
-#include "Netlist/Net.h"
+#include "Netlist/Synthesisable/Pin.h"
+#include "Netlist/Synthesisable/Net.h"
 //------------------------------------------------------------------------------
 
 using namespace std;

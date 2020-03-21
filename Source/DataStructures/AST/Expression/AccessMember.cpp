@@ -22,7 +22,7 @@
 #include "Object.h"
 #include "Identifier.h"
 #include "Netlist/Alias.h"
-#include "Netlist/Module.h"
+#include "Netlist/Namespace/Module.h"
 #include "Netlist/Namespace.h"
 #include "Netlist/Synthesisable.h"
 //------------------------------------------------------------------------------

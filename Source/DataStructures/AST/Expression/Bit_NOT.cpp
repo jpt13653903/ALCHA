@@ -20,8 +20,8 @@
 
 #include "Bit_NOT.h"
 #include "Object.h"
-#include "Netlist/Net.h"
-#include "Netlist/Module.h"
+#include "Netlist/Synthesisable/Net.h"
+#include "Netlist/Namespace/Module.h"
 //------------------------------------------------------------------------------
 
 using namespace std;

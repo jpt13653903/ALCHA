@@ -49,6 +49,7 @@
 #include "AST/Switch.h"
 #include "AST/WhileLoop.h"
 
+#include "AST/Expression.h"
 #include "AST/Expression/AccessAttribute.h"
 #include "AST/Expression/AccessMember.h"
 #include "AST/Expression/AccessMemberSafe.h"
@@ -69,7 +70,6 @@
 #include "AST/Expression/Divide.h"
 #include "AST/Expression/Equal.h"
 #include "AST/Expression/Exponential.h"
-#include "AST/Expression/Expression.h"
 #include "AST/Expression/Factorial.h"
 #include "AST/Expression/FunctionCall.h"
 #include "AST/Expression/Greater.h"

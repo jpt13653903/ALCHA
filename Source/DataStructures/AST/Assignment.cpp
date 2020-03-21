@@ -24,10 +24,10 @@
 #include "Netlist/Alias.h"
 #include "Netlist/Byte.h"
 #include "Netlist/Character.h"
-#include "Netlist/Pin.h"
-#include "Netlist/Net.h"
+#include "Netlist/Synthesisable/Pin.h"
+#include "Netlist/Synthesisable/Net.h"
 #include "Netlist/Num.h"
-#include "Netlist/Module.h"
+#include "Netlist/Namespace/Module.h"
 
 #include "Expression/Object.h"
 #include "Expression/Literal.h"

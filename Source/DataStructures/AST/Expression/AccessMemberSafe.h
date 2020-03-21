@@ -22,7 +22,7 @@
 #define AST_Expression_AccessMemberSafe_h
 //------------------------------------------------------------------------------
 
-#include "Expression.h"
+#include "../Expression.h"
 //------------------------------------------------------------------------------
 
 namespace AST{

@@ -20,7 +20,7 @@
 
 #include "Import.h"
 #include "Engine.h"
-#include "Netlist/Module.h"
+#include "Netlist/Namespace/Module.h"
 //------------------------------------------------------------------------------
 
 using namespace std;

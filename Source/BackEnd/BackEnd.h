@@ -24,8 +24,8 @@
 
 #include "Utilities.h"
 #include "AST/Definition.h"
-#include "AST/Expression/Expression.h"
-#include "Netlist/Module.h"
+#include "AST/Expression.h"
+#include "Netlist/Namespace/Module.h"
 #include "Altera/Project.h"
 //------------------------------------------------------------------------------
 

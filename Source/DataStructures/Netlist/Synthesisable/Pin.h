@@ -18,28 +18,26 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Netlist_Group_h
-#define Netlist_Group_h
+#ifndef Netlist_Pin_h
+#define Netlist_Pin_h
 //------------------------------------------------------------------------------
 
-#include <map>
-#include <list>
-//------------------------------------------------------------------------------
-
-#include "Namespace.h"
+#include "../Synthesisable.h"
+#include "AST/Expression.h"
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
-  class GROUP: public NAMESPACE{
-    public:
-               GROUP(int Line, const std::string& Filename, const char* Name = "");
-      virtual ~GROUP(); // Also cleans up the children
+  struct PIN: public SYNTHESISABLE{
+    AST::EXPRESSION* Driver;
+    AST::EXPRESSION* Enabled;
 
-      virtual void Display();
+    PIN(int Line, const std::string& Filename, const char* Name);
+   ~PIN();
+
+    void Display();
   };
 }
 //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------
-

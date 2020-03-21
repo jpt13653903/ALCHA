@@ -17,8 +17,7 @@ num MyNumber = 1.23456;
 
 net(14, 3 ) TestNet  = GPIO;
 
-!! Testing virtual pins
-// pin(14, 3 ) Testing1 =  0.1 *TestNet;
+pin(14, 3 ) Testing1 =  0.1 *TestNet;
 // pin(14, 3 ) Testing2 = 10   *TestNet;
 // pin(14, 3 ) Testing3 =  4   *TestNet;
 // pin(14, 3 ) Testing4 =  0.25*TestNet;

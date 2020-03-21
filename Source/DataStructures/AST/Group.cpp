@@ -19,8 +19,8 @@
 //==============================================================================
 
 #include "Group.h"
-#include "Netlist/Group.h"
-#include "Netlist/Module.h"
+#include "Netlist/Namespace/Group.h"
+#include "Netlist/Namespace/Module.h"
 //------------------------------------------------------------------------------
 
 using namespace std;

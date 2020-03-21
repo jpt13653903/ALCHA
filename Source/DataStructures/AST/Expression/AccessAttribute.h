@@ -22,7 +22,7 @@
 #define AST_Expression_AccessAttribute_h
 //------------------------------------------------------------------------------
 
-#include "Expression.h"
+#include "../Expression.h"
 //------------------------------------------------------------------------------
 
 namespace AST{

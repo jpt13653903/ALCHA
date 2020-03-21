@@ -23,7 +23,7 @@
 #include "Literal.h"
 
 #include "Netlist/Alias.h"
-#include "Netlist/Module.h"
+#include "Netlist/Namespace/Module.h"
 #include "Netlist/Synthesisable.h"
 //------------------------------------------------------------------------------
 

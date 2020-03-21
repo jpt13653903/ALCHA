@@ -18,25 +18,34 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Netlist_Net_h
-#define Netlist_Net_h
+#ifndef AST_Expression_Expression_h
+#define AST_Expression_Expression_h
 //------------------------------------------------------------------------------
 
-#include "AST/Expression/Expression.h"
-#include "Synthesisable.h"
+#include "Base.h"
+#include "Number.h"
 //------------------------------------------------------------------------------
 
-namespace NETLIST{
-  struct NET: public SYNTHESISABLE{
-    AST::EXPRESSION* Value;
+namespace AST{
+  class EXPRESSION: public BASE{
+    protected:
+      void DisplayStart();
+      void DisplayEnd  ();
 
-             NET(int Line, const std::string& Filename, const char* Name);
-    virtual ~NET();
+    public:
+      // Left and Right operands
+      EXPRESSION* Left;
+      BASE*       Right; // Can be expression or assignment (for function calls)
 
-    virtual void Display();
+      EXPRESSION(int Line, const char* Filename, TYPE ExpressionType);
+      virtual ~EXPRESSION();
+
+      virtual EXPRESSION* Evaluate() = 0;
+      virtual EXPRESSION* Simplify(bool GenWire) = 0;
   };
 }
 //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------
+

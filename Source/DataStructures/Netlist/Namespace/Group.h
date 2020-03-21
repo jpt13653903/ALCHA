@@ -18,29 +18,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Netlist_Module_h
-#define Netlist_Module_h
+#ifndef Netlist_Group_h
+#define Netlist_Group_h
 //------------------------------------------------------------------------------
 
 #include <map>
 #include <list>
 //------------------------------------------------------------------------------
 
-#include "Namespace.h"
+#include "../Namespace.h"
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
-  class MODULE: public NAMESPACE{
+  class GROUP: public NAMESPACE{
     public:
-               MODULE(int Line, const std::string& Filename, const char* Name = "");
-      virtual ~MODULE(); // Also cleans up the children
+               GROUP(int Line, const std::string& Filename, const char* Name = "");
+      virtual ~GROUP(); // Also cleans up the children
 
       virtual void Display();
   };
-  //----------------------------------------------------------------------------
-
-  extern std::list<NAMESPACE*> NamespaceStack; // Used for namespace searches
-  extern MODULE                Global;         // The root of the module tree
 }
 //------------------------------------------------------------------------------
 

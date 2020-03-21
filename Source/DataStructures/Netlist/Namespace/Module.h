@@ -18,26 +18,32 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Netlist_Pin_h
-#define Netlist_Pin_h
+#ifndef Netlist_Module_h
+#define Netlist_Module_h
 //------------------------------------------------------------------------------
 
-#include "Synthesisable.h"
-#include "AST/Expression/Expression.h"
+#include <map>
+#include <list>
+//------------------------------------------------------------------------------
+
+#include "../Namespace.h"
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
-  struct PIN: public SYNTHESISABLE{
-    AST::EXPRESSION* Driver;
-    AST::EXPRESSION* Enabled;
+  class MODULE: public NAMESPACE{
+    public:
+               MODULE(int Line, const std::string& Filename, const char* Name = "");
+      virtual ~MODULE(); // Also cleans up the children
 
-    PIN(int Line, const std::string& Filename, const char* Name);
-   ~PIN();
-
-    void Display();
+      virtual void Display();
   };
+  //----------------------------------------------------------------------------
+
+  extern std::list<NAMESPACE*> NamespaceStack; // Used for namespace searches
+  extern MODULE                Global;         // The root of the module tree
 }
 //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------
+

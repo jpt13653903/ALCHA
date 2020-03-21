@@ -20,7 +20,7 @@
 
 #include "Alias.h"
 #include "Netlist/Alias.h"
-#include "Netlist/Module.h"
+#include "Netlist/Namespace/Module.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
