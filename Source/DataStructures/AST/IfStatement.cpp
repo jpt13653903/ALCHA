@@ -55,9 +55,9 @@ BASE* IF_STATEMENT::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool IF_STATEMENT::RunScripting(){
+BASE* IF_STATEMENT::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

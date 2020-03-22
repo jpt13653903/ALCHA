@@ -157,7 +157,9 @@ namespace AST{
       virtual BASE* Copy(bool CopyNext) = 0;
 
       // Runs scripting commands and creates instances in the namespace tree
-      virtual bool RunScripting() = 0;
+      // It potentially changes the node, in which case the new node is 
+      // returned.
+      virtual BASE* RunScripting() = 0;
 
       // Appends the Verilog code of this node to Body
       virtual bool GetVerilog(std::string& Body) = 0;

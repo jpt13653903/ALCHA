@@ -48,9 +48,9 @@ BASE* BIT_OR::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool BIT_OR::RunScripting(){
+BASE* BIT_OR::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

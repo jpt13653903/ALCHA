@@ -32,6 +32,7 @@
 namespace NETLIST{
   class NAMESPACE: public BASE{
     public:
+      AST::BASE* Ast;
       std::map<std::string, BASE*> Symbols;
 
                NAMESPACE(int Line, const std::string& Filename, const char* Name = "");

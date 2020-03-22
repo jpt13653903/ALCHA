@@ -48,9 +48,9 @@ BASE* MULTIPLY::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool MULTIPLY::RunScripting(){
+BASE* MULTIPLY::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

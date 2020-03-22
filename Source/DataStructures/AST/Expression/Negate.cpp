@@ -49,9 +49,9 @@ BASE* NEGATE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool NEGATE::RunScripting(){
+BASE* NEGATE::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

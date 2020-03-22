@@ -48,9 +48,9 @@ BASE* ACCESSMEMBERSAFE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool ACCESSMEMBERSAFE::RunScripting(){
+BASE* ACCESSMEMBERSAFE::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

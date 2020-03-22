@@ -48,9 +48,9 @@ BASE* BIT_NAND::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool BIT_NAND::RunScripting(){
+BASE* BIT_NAND::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

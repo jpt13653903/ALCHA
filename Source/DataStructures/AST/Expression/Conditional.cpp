@@ -48,9 +48,9 @@ BASE* CONDITIONAL::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool CONDITIONAL::RunScripting(){
+BASE* CONDITIONAL::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

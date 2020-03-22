@@ -48,9 +48,9 @@ BASE* NOT_EQUAL::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool NOT_EQUAL::RunScripting(){
+BASE* NOT_EQUAL::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

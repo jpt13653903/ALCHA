@@ -54,9 +54,9 @@ BASE* ACCESSMEMBER::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool ACCESSMEMBER::RunScripting(){
+BASE* ACCESSMEMBER::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

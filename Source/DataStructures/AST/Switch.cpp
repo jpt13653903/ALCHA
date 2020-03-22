@@ -79,9 +79,9 @@ BASE* SWITCH::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool SWITCH::RunScripting(){
+BASE* SWITCH::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

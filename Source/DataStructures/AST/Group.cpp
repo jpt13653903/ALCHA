@@ -56,7 +56,7 @@ BASE* AST::GROUP::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool AST::GROUP::RunScripting(){
+BASE* AST::GROUP::RunScripting(){
   if(Identifier.empty()){
     error("Anonymous groups not supported yet");
     return false;
@@ -74,15 +74,15 @@ bool AST::GROUP::RunScripting(){
   NETLIST::NamespaceStack.front()->Symbols[Identifier] = Object;
   NETLIST::NamespaceStack.push_front(Object);
 
-  bool Result = true;
   auto Element = Body;
-  while(Result && Element){
-    Result  = Element->RunScripting();
+  while(Element){
+    Element = Element->RunScripting();
+    if(!Element) return 0;
     Element = Element->Next;
   }
 
   NETLIST::NamespaceStack.pop_front();
-  return Result;
+  return this;
 }
 //------------------------------------------------------------------------------
 

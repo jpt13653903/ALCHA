@@ -34,32 +34,42 @@ ENGINE::ENGINE(){
 //------------------------------------------------------------------------------
 
 ENGINE::~ENGINE(){
-  while(!AstStack.empty()){
-    delete AstStack.top();
-    AstStack.pop();
-  }
 }
 //------------------------------------------------------------------------------
 
-bool ENGINE::RunScripting(const char* Filename){
-  if(NETLIST::NamespaceStack.empty()){
-    NETLIST::NamespaceStack.push_front(&NETLIST::Global);
-  }
-
+AST::BASE* ENGINE::RunScripting(const char* Filename){
   AST::BASE* Ast = Parser.Run(Filename);
-  if(Ast) AstStack.push(Ast);
-  else    return false;
+  if(!Ast) return 0;
 
-  while(Ast){
-    if(!Ast->RunScripting()) return false;
-    Ast = Ast->Next;
+  auto Node = Ast;
+  while(Node){
+    Node = Node->RunScripting();
+    if(!Node){
+      delete Ast;
+      return 0;
+    }
+    Node = Node->Next;
   }
-  return true;
+  return Ast;
 }
 //------------------------------------------------------------------------------
 
 bool ENGINE::Run(const char* Filename){
-  return RunScripting(Filename);
+  assert(NETLIST::NamespaceStack.empty());
+
+  NETLIST::NamespaceStack.push_front(&NETLIST::Global);
+
+  NETLIST::Global.Ast = RunScripting(Filename);
+
+  #ifdef DEBUG
+    Debug.print(ANSI_FG_GREEN "\nDisplaying Global AST ");
+    Debug.print(Filename);
+    Debug.print(" -------------------------------------\n\n" ANSI_RESET);
+    if(NETLIST::Global.Ast) NETLIST::Global.Ast->Display();
+    else                    Debug.print("AST is empty\n");
+  #endif
+
+  return NETLIST::Global.Ast;
 }
 //------------------------------------------------------------------------------
 

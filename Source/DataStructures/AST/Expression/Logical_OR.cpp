@@ -48,9 +48,9 @@ BASE* LOGICAL_OR::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool LOGICAL_OR::RunScripting(){
+BASE* LOGICAL_OR::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

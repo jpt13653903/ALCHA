@@ -49,9 +49,9 @@ BASE* ADD::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool ADD::RunScripting(){
+BASE* ADD::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

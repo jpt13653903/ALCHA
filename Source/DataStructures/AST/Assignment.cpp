@@ -334,33 +334,33 @@ bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List){
 }
 //------------------------------------------------------------------------------
 
-bool ASSIGNMENT::RunScripting(){
+BASE* ASSIGNMENT::RunScripting(){
   target_list Left;
   EXPRESSION* Right;
   EXPRESSION* Temp;
 
-  if(!GetLHS(this->Left, Left)) return false;
+  if(!GetLHS(this->Left, Left)) return 0;
   if(Left.empty()){
     Error("Target object list is empty");
-    return false;
+    return 0;
   }
 
   if(Left.size() > 1){
     error("Multiple assignment targets not supported yet");
-    return false;
+    return 0;
   }
 
   Right = this->Right->Evaluate();
   if(!Right){
     // This is ok -- generally caused by a syntax or semantic error, but should
     // halt further compilation anyway
-    return false;
+    return 0;
   }
 
   NETLIST::BASE* Object = Left.front().Object;
   if(!Object){
     error("Unexpected null reference");
-    return false;
+    return 0;
   }
 
   EXPRESSION*  ScriptTarget = 0;
@@ -378,7 +378,7 @@ bool ASSIGNMENT::RunScripting(){
 
       default:
         error("Unexpected null reference");
-        return false;
+        return 0;
     }
   }
 
@@ -421,7 +421,7 @@ bool ASSIGNMENT::RunScripting(){
         Error("Append-Assign with null target");
         delete Right;
         if(ScriptTarget) delete ScriptTarget;
-        return false;
+        return 0;
       }
 
     case ASSIGNMENT_TYPE::Add_Assign:
@@ -436,7 +436,7 @@ bool ASSIGNMENT::RunScripting(){
         Error("Add-Assign with null target");
         delete Right;
         if(ScriptTarget) delete ScriptTarget;
-        return false;
+        return 0;
       }
 
     case ASSIGNMENT_TYPE::Subtract_Assign:
@@ -451,7 +451,7 @@ bool ASSIGNMENT::RunScripting(){
         Error("Subtract-Assign with null target");
         delete Right;
         if(ScriptTarget) delete ScriptTarget;
-        return false;
+        return 0;
       }
 
     case ASSIGNMENT_TYPE::Multiply_Assign:
@@ -466,7 +466,7 @@ bool ASSIGNMENT::RunScripting(){
         Error("Multiply-Assign with null target");
         delete Right;
         if(ScriptTarget) delete ScriptTarget;
-        return false;
+        return 0;
       }
 
     case ASSIGNMENT_TYPE::Divide_Assign:
@@ -481,7 +481,7 @@ bool ASSIGNMENT::RunScripting(){
         Error("Divide-Assign with null target");
         delete Right;
         if(ScriptTarget) delete ScriptTarget;
-        return false;
+        return 0;
       }
 
     case ASSIGNMENT_TYPE::Modulus_Assign:
@@ -496,7 +496,7 @@ bool ASSIGNMENT::RunScripting(){
         Error("Modulus-Assign with null target");
         delete Right;
         if(ScriptTarget) delete ScriptTarget;
-        return false;
+        return 0;
       }
 
     case ASSIGNMENT_TYPE::Exponential_Assign:
@@ -511,7 +511,7 @@ bool ASSIGNMENT::RunScripting(){
         Error("Exponential-Assign with null target");
         delete Right;
         if(ScriptTarget) delete ScriptTarget;
-        return false;
+        return 0;
       }
 
     case ASSIGNMENT_TYPE::AND_Assign:
@@ -526,7 +526,7 @@ bool ASSIGNMENT::RunScripting(){
         Error("AND-Assign with null target");
         delete Right;
         if(ScriptTarget) delete ScriptTarget;
-        return false;
+        return 0;
       }
 
     case ASSIGNMENT_TYPE::OR_Assign:
@@ -541,7 +541,7 @@ bool ASSIGNMENT::RunScripting(){
         Error("OR-Assign with null target");
         delete Right;
         if(ScriptTarget) delete ScriptTarget;
-        return false;
+        return 0;
       }
 
     case ASSIGNMENT_TYPE::XOR_Assign:
@@ -556,7 +556,7 @@ bool ASSIGNMENT::RunScripting(){
         Error("XOR-Assign with null target");
         delete Right;
         if(ScriptTarget) delete ScriptTarget;
-        return false;
+        return 0;
       }
 
     case ASSIGNMENT_TYPE::Shift_Left_Assign:
@@ -571,7 +571,7 @@ bool ASSIGNMENT::RunScripting(){
         Error("Shift-Assign with null target");
         delete Right;
         if(ScriptTarget) delete ScriptTarget;
-        return false;
+        return 0;
       }
 
     case ASSIGNMENT_TYPE::Shift_Right_Assign:
@@ -586,14 +586,14 @@ bool ASSIGNMENT::RunScripting(){
         Error("Shift-Assign with null target");
         delete Right;
         if(ScriptTarget) delete ScriptTarget;
-        return false;
+        return 0;
       }
 
     default:
       error("Unknown assignment type: %d", (int)AssignmentType);
       delete Right;
       if(ScriptTarget) delete ScriptTarget;
-      return false;
+      return 0;
   }
   *Target = (*Target)->Simplify(false);
 
@@ -645,7 +645,7 @@ bool ASSIGNMENT::RunScripting(){
           // TODO Check that the RHS is non-synthesisable
           error("Not yet implemented");
           delete ScriptTarget;
-          return false;
+          return 0;
         }
         break;
       }
@@ -655,7 +655,7 @@ bool ASSIGNMENT::RunScripting(){
     }
     delete ScriptTarget;
   }
-  return true;
+  return this;
 }
 //------------------------------------------------------------------------------
 

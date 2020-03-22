@@ -45,9 +45,9 @@ BASE* FENCE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool FENCE::RunScripting(){
+BASE* FENCE::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

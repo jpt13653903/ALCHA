@@ -34,10 +34,6 @@ class ENGINE{
     PARSER Parser;
   //----------------------------------------------------------------------------
 
-  private: // Internal structures
-    std::stack<AST::BASE*> AstStack; // Used for clean-up in the destructor
-  //----------------------------------------------------------------------------
-
   public: // Engine functions
     /* Builds the namespace tree:
      * - Parse the file
@@ -45,7 +41,7 @@ class ENGINE{
      * - Evaluate the scripting statements
      * - Import files into the specified namespaces
      */
-    bool RunScripting(const char* Filename);
+    AST::BASE* RunScripting(const char* Filename);
   //----------------------------------------------------------------------------
 
   public:

@@ -35,13 +35,13 @@ namespace AST{
    ~NAMESPACE_PUSH();
 
     // Returns a copy of this instance
-    virtual BASE* Copy(bool CopyNext);
+    BASE* Copy(bool CopyNext) override;
 
     // Runs scripting commands and creates instances in the namespace tree
-    virtual bool RunScripting();
-    virtual bool GetVerilog(std::string& Body);
+    BASE* RunScripting() override;
+    bool  GetVerilog(std::string& Body) override;
 
-    void Display();
+    void Display() override;
   };
 }
 //------------------------------------------------------------------------------

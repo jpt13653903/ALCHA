@@ -142,7 +142,7 @@ BASE* DEFINITION::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool DEFINITION::RunScripting(){
+BASE* DEFINITION::RunScripting(){
   auto Identifier = Identifiers;
 
   while(Identifier){
@@ -151,7 +151,7 @@ bool DEFINITION::RunScripting(){
       Error();
       printf("Symbol \"%s\" already defined in the current namespace\n",
              Identifier->Identifier.c_str());
-      return false;
+      return 0;
     }
 
     if(Identifier->Function){
@@ -177,7 +177,7 @@ bool DEFINITION::RunScripting(){
         if(!Pin->ApplyAttributes(Attributes)) Error("Invalid attributes");
         NETLIST::NamespaceStack.front()->Symbols[Pin->Name] = Pin;
         if(Identifier->Initialiser){
-          if(!Identifier->Initialiser->RunScripting()) return false;
+          if(!Identifier->Initialiser->RunScripting()) return 0;
         }
         break;
       }
@@ -189,7 +189,7 @@ bool DEFINITION::RunScripting(){
         if(!Net->ApplyAttributes(Attributes)) Error("Invalid attributes");
         NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
         if(Identifier->Initialiser){
-          if(!Identifier->Initialiser->RunScripting()) return false;
+          if(!Identifier->Initialiser->RunScripting()) return 0;
         }
         break;
       }
@@ -199,7 +199,7 @@ bool DEFINITION::RunScripting(){
         if(!Byte->ApplyAttributes(Attributes)) Error("Invalid attributes");
         NETLIST::NamespaceStack.front()->Symbols[Byte->Name] = Byte;
         if(Identifier->Initialiser){
-          if(!Identifier->Initialiser->RunScripting()) return false;
+          if(!Identifier->Initialiser->RunScripting()) return 0;
         }
         break;
       }
@@ -209,7 +209,7 @@ bool DEFINITION::RunScripting(){
         if(!Char->ApplyAttributes(Attributes)) Error("Invalid attributes");
         NETLIST::NamespaceStack.front()->Symbols[Char->Name] = Char;
         if(Identifier->Initialiser){
-          if(!Identifier->Initialiser->RunScripting()) return false;
+          if(!Identifier->Initialiser->RunScripting()) return 0;
         }
         break;
       }
@@ -219,7 +219,7 @@ bool DEFINITION::RunScripting(){
         if(!Number->ApplyAttributes(Attributes)) Error("Invalid attributes");
         NETLIST::NamespaceStack.front()->Symbols[Number->Name] = Number;
         if(Identifier->Initialiser){
-          if(!Identifier->Initialiser->RunScripting()) return false;
+          if(!Identifier->Initialiser->RunScripting()) return 0;
         }
         break;
       }
@@ -234,11 +234,11 @@ bool DEFINITION::RunScripting(){
 
       default:
         error("Unknown definition type: %d", (int)DefinitionType);
-        return false;
+        return 0;
     }
     Identifier = Identifier->Next;
   }
-  return true;
+  return this;
 }
 //------------------------------------------------------------------------------
 

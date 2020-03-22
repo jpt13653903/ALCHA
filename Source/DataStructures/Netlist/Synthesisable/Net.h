@@ -33,7 +33,7 @@ namespace NETLIST{
              NET(int Line, const std::string& Filename, const char* Name);
     virtual ~NET();
 
-    virtual void Display();
+    void Display() override;
   };
 }
 //------------------------------------------------------------------------------

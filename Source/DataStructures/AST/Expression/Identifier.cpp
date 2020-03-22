@@ -88,9 +88,9 @@ bool IDENTIFIER::GetConstant(const string& Name, NUMBER* Constant){
 }
 //------------------------------------------------------------------------------
 
-bool IDENTIFIER::RunScripting(){
+BASE* IDENTIFIER::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

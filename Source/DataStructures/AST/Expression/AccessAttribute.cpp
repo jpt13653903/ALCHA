@@ -51,9 +51,9 @@ BASE* ACCESSATTRIBUTE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool ACCESSATTRIBUTE::RunScripting(){
+BASE* ACCESSATTRIBUTE::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

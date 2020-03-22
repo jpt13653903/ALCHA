@@ -48,9 +48,9 @@ BASE* SLICE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool SLICE::RunScripting(){
+BASE* SLICE::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

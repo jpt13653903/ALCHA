@@ -49,9 +49,9 @@ BASE* SUBTRACT::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool SUBTRACT::RunScripting(){
+BASE* SUBTRACT::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

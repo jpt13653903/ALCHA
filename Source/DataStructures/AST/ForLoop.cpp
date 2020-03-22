@@ -54,9 +54,9 @@ BASE* FOR_LOOP::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool FOR_LOOP::RunScripting(){
+BASE* FOR_LOOP::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

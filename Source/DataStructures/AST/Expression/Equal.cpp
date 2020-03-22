@@ -48,9 +48,9 @@ BASE* EQUAL::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool EQUAL::RunScripting(){
+BASE* EQUAL::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

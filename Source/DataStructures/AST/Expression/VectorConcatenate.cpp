@@ -53,9 +53,9 @@ BASE* VECTORCONCATENATE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool VECTORCONCATENATE::RunScripting(){
+BASE* VECTORCONCATENATE::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

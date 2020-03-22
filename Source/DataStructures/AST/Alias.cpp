@@ -53,20 +53,20 @@ BASE* ALIAS::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool ALIAS::RunScripting(){
+BASE* ALIAS::RunScripting(){
   auto Symbol = NETLIST::NamespaceStack.front()->Symbols.find(Identifier);
   if(Symbol != NETLIST::NamespaceStack.front()->Symbols.end()){
     Error();
     printf("Symbol \"%s\" already defined in the current namespace\n",
            Identifier.c_str());
-    return false;
+    return 0;
   }
 
   auto Object = new NETLIST::ALIAS(Source.Line, Source.Filename, Identifier.c_str(), Expression);
 
   NETLIST::NamespaceStack.front()->Symbols[Object->Name] = Object;
 
-  return true;
+  return this;
 }
 //------------------------------------------------------------------------------
 

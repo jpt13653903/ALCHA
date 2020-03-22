@@ -48,9 +48,9 @@ BASE* GREATER::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool GREATER::RunScripting(){
+BASE* GREATER::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

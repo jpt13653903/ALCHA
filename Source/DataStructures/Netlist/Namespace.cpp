@@ -25,10 +25,12 @@ using namespace NETLIST;
 //------------------------------------------------------------------------------
 
 NAMESPACE::NAMESPACE(int Line, const std::string& Filename, const char* Name): BASE(Line, Filename, Name, TYPE::Namespace){
+  Ast = 0;
 }
 //------------------------------------------------------------------------------
 
 NAMESPACE::~NAMESPACE(){
+  if(Ast) delete Ast;
   foreach(s, Symbols) delete s->second;
 }
 //------------------------------------------------------------------------------

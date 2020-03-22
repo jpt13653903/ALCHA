@@ -48,9 +48,9 @@ BASE* DECREMENT::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool DECREMENT::RunScripting(){
+BASE* DECREMENT::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

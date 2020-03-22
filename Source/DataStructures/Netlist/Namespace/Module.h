@@ -35,7 +35,7 @@ namespace NETLIST{
                MODULE(int Line, const std::string& Filename, const char* Name = "");
       virtual ~MODULE(); // Also cleans up the children
 
-      virtual void Display();
+      void Display() override;
   };
   //----------------------------------------------------------------------------
 

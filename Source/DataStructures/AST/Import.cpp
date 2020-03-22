@@ -50,9 +50,11 @@ BASE* IMPORT::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool IMPORT::RunScripting(){
+BASE* IMPORT::RunScripting(){
   string ImportFilename;
   bool   OwnNamespace = !Namespace.empty();
+
+  NETLIST::MODULE* Module = 0;
 
   if(OwnNamespace){
     auto Found = NETLIST::NamespaceStack.front()->Symbols.find(Namespace);
@@ -62,7 +64,7 @@ bool IMPORT::RunScripting(){
              Namespace.c_str());
       return false;
     }
-    auto Module = new NETLIST::MODULE(Source.Line, Source.Filename, Namespace.c_str());
+    Module = new NETLIST::MODULE(Source.Line, Source.Filename, Namespace.c_str());
     NETLIST::NamespaceStack.front()->Symbols[Namespace] = Module;
     NETLIST::NamespaceStack.push_front(Module);
   }
@@ -78,12 +80,23 @@ bool IMPORT::RunScripting(){
   SimplifyFilename(ImportFilename);
   Debug.print("\nFilename = %s\n", ImportFilename);
 
-  bool Result = Engine->RunScripting(ImportFilename.c_str());
+  auto Ast = Engine->RunScripting(ImportFilename.c_str());
+  if(!Ast) return 0;
 
   if(OwnNamespace){
+    Module->Ast = Ast;
     NETLIST::NamespaceStack.pop_front();
+
+  }else{ // Inject into the current namespace, after the "import" statement
+    // TODO: Inject in place of the import node instead of after
+    //       But what to return when OwnNamespace is true???
+    auto Temp = Next;
+    Next = Ast;
+    while(Ast->Next) Ast = Ast->Next;
+    Ast->Next = Temp;
+    return Ast;
   }
-  return Result;
+  return this;
 }
 //------------------------------------------------------------------------------
 

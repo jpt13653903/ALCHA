@@ -48,9 +48,9 @@ BASE* CAST::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool CAST::RunScripting(){
+BASE* CAST::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

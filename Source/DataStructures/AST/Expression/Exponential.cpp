@@ -48,9 +48,9 @@ BASE* EXPONENTIAL::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool EXPONENTIAL::RunScripting(){
+BASE* EXPONENTIAL::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

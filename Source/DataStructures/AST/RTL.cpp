@@ -57,9 +57,9 @@ BASE* RTL::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool RTL::RunScripting(){
+BASE* RTL::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

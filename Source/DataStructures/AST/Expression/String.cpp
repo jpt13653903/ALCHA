@@ -50,9 +50,9 @@ BASE* STRING::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool STRING::RunScripting(){
+BASE* STRING::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

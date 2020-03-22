@@ -51,9 +51,9 @@ BASE* JUMP::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool JUMP::RunScripting(){
+BASE* JUMP::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

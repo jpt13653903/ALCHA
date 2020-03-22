@@ -48,9 +48,9 @@ BASE* XOR_REDUCE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool XOR_REDUCE::RunScripting(){
+BASE* XOR_REDUCE::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

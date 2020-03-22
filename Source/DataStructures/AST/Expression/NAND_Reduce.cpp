@@ -48,9 +48,9 @@ BASE* NAND_REDUCE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool NAND_REDUCE::RunScripting(){
+BASE* NAND_REDUCE::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

@@ -48,9 +48,9 @@ BASE* LOGICAL_NOT::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool LOGICAL_NOT::RunScripting(){
+BASE* LOGICAL_NOT::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

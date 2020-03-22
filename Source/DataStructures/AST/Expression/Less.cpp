@@ -48,9 +48,9 @@ BASE* LESS::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool LESS::RunScripting(){
+BASE* LESS::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

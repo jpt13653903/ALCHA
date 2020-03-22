@@ -51,9 +51,9 @@ BASE* BIT_NOT::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool BIT_NOT::RunScripting(){
+BASE* BIT_NOT::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

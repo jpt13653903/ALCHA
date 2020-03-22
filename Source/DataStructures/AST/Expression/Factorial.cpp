@@ -48,9 +48,9 @@ BASE* FACTORIAL::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool FACTORIAL::RunScripting(){
+BASE* FACTORIAL::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

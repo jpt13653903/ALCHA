@@ -48,9 +48,9 @@ BASE* BIT_XOR::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool BIT_XOR::RunScripting(){
+BASE* BIT_XOR::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

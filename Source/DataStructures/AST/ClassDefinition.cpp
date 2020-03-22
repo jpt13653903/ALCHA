@@ -91,9 +91,9 @@ BASE* CLASS_DEFINITION::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool CLASS_DEFINITION::RunScripting(){
+BASE* CLASS_DEFINITION::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

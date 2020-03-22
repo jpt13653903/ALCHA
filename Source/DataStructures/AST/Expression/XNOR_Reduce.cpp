@@ -48,9 +48,9 @@ BASE* XNOR_REDUCE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool XNOR_REDUCE::RunScripting(){
+BASE* XNOR_REDUCE::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

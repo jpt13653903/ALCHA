@@ -48,9 +48,9 @@ BASE* AND_REDUCE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool AND_REDUCE::RunScripting(){
+BASE* AND_REDUCE::RunScripting(){
   error("Not yet implemented");
-  return false;
+  return 0;
 }
 //------------------------------------------------------------------------------
 
