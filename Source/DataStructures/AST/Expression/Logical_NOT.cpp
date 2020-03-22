@@ -37,7 +37,7 @@ LOGICAL_NOT::~LOGICAL_NOT(){
 //------------------------------------------------------------------------------
 
 BASE* LOGICAL_NOT::Copy(bool CopyNext){
-  LOGICAL_NOT* Copy = new LOGICAL_NOT(Line, Filename.c_str());
+  LOGICAL_NOT* Copy = new LOGICAL_NOT(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);

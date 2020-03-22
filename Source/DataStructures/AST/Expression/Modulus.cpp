@@ -37,7 +37,7 @@ MODULUS::~MODULUS(){
 //------------------------------------------------------------------------------
 
 BASE* MODULUS::Copy(bool CopyNext){
-  MODULUS* Copy = new MODULUS(Line, Filename.c_str());
+  MODULUS* Copy = new MODULUS(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);

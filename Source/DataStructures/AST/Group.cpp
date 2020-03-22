@@ -43,7 +43,7 @@ AST::GROUP::~GROUP(){
 //------------------------------------------------------------------------------
 
 BASE* AST::GROUP::Copy(bool CopyNext){
-  GROUP* Copy = new AST::GROUP(Line, Filename.c_str());
+  GROUP* Copy = new AST::GROUP(Source.Line, Source.Filename.c_str());
 
   Copy->Identifier = Identifier;
 
@@ -69,7 +69,7 @@ bool AST::GROUP::RunScripting(){
            Identifier.c_str());
     return false;
   }
-  auto Object = new NETLIST::GROUP(Line, Filename, Identifier.c_str());
+  auto Object = new NETLIST::GROUP(Source.Line, Source.Filename, Identifier.c_str());
   Object->ApplyAttributes(Attributes);
   NETLIST::NamespaceStack.front()->Symbols[Identifier] = Object;
   NETLIST::NamespaceStack.push_front(Object);

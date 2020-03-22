@@ -37,7 +37,7 @@ BIT_OR::~BIT_OR(){
 //------------------------------------------------------------------------------
 
 BASE* BIT_OR::Copy(bool CopyNext){
-  BIT_OR* Copy = new BIT_OR(Line, Filename.c_str());
+  BIT_OR* Copy = new BIT_OR(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);

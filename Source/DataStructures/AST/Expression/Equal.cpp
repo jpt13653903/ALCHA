@@ -37,7 +37,7 @@ EQUAL::~EQUAL(){
 //------------------------------------------------------------------------------
 
 BASE* EQUAL::Copy(bool CopyNext){
-  EQUAL* Copy = new EQUAL(Line, Filename.c_str());
+  EQUAL* Copy = new EQUAL(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);

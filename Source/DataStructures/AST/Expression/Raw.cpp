@@ -37,7 +37,7 @@ RAW::~RAW(){
 //------------------------------------------------------------------------------
 
 BASE* RAW::Copy(bool CopyNext){
-  RAW* Copy = new RAW(Line, Filename.c_str());
+  RAW* Copy = new RAW(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);

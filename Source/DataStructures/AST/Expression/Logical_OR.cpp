@@ -37,7 +37,7 @@ LOGICAL_OR::~LOGICAL_OR(){
 //------------------------------------------------------------------------------
 
 BASE* LOGICAL_OR::Copy(bool CopyNext){
-  LOGICAL_OR* Copy = new LOGICAL_OR(Line, Filename.c_str());
+  LOGICAL_OR* Copy = new LOGICAL_OR(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);

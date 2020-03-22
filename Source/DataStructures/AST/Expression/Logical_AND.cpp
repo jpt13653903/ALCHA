@@ -37,7 +37,7 @@ LOGICAL_AND::~LOGICAL_AND(){
 //------------------------------------------------------------------------------
 
 BASE* LOGICAL_AND::Copy(bool CopyNext){
-  LOGICAL_AND* Copy = new LOGICAL_AND(Line, Filename.c_str());
+  LOGICAL_AND* Copy = new LOGICAL_AND(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);

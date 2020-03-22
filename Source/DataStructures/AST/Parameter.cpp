@@ -50,7 +50,7 @@ PARAMETER::~PARAMETER(){
 //------------------------------------------------------------------------------
 
 BASE* PARAMETER::Copy(bool CopyNext){
-  PARAMETER* Copy = new PARAMETER(Line, Filename.c_str(), DefinitionType);
+  PARAMETER* Copy = new PARAMETER(Source.Line, Source.Filename.c_str(), DefinitionType);
 
   Copy->ArrayDimensions = ArrayDimensions;
   Copy->Identifier      = Identifier;

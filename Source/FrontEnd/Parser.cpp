@@ -1231,7 +1231,7 @@ AST::ASSIGNMENT* PARSER::Initialiser(std::string& Identifier){
     delete Node;
     return 0;
   }
-  Node->Left       = new AST::IDENTIFIER(Node->Line, Scanner.Filename);
+  Node->Left       = new AST::IDENTIFIER(Node->Source.Line, Scanner.Filename);
   ((AST::IDENTIFIER*)Node->Left)->Name = Identifier;
   return Node;
 }

@@ -37,7 +37,7 @@ LESS::~LESS(){
 //------------------------------------------------------------------------------
 
 BASE* LESS::Copy(bool CopyNext){
-  LESS* Copy = new LESS(Line, Filename.c_str());
+  LESS* Copy = new LESS(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);

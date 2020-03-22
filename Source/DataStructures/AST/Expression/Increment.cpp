@@ -37,7 +37,7 @@ INCREMENT::~INCREMENT(){
 //------------------------------------------------------------------------------
 
 BASE* INCREMENT::Copy(bool CopyNext){
-  INCREMENT* Copy = new INCREMENT(Line, Filename.c_str());
+  INCREMENT* Copy = new INCREMENT(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);

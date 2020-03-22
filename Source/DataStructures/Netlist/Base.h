@@ -65,8 +65,10 @@ namespace NETLIST{
       } Type;
 
       // The line and filename that resulted in this object, used for error reporting
-      int         Line;
-      std::string Filename;
+      struct{
+        int         Line;
+        std::string Filename;
+      } Source;
 
       std::string                             Name;
       NAMESPACE*                              Namespace;

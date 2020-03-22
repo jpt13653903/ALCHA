@@ -30,10 +30,10 @@ using namespace NETLIST;
 //------------------------------------------------------------------------------
 
 BASE::BASE(int Line, const string& Filename, const char* Name, TYPE Type){
-  this->Line      = Line;
-  this->Filename  = Filename;
-  this->Type      = Type;
-  this->Namespace = 0;
+  Source.Line      = Line;
+  Source.Filename  = Filename;
+  this->Type       = Type;
+  this->Namespace  = 0;
 
   static unsigned GenNameCount = 0;
   if(Name){
@@ -181,10 +181,10 @@ void BASE::DisplayLongName(){
 
 void BASE::DisplayAttributes(int Indent){
   for(int n = 0; n < Indent; n++) Debug.print(" ");
-  Debug.print("Line       = %d\n", Line);
+  Debug.print("Line       = %d\n", Source.Line);
 
   for(int n = 0; n < Indent; n++) Debug.print(" ");
-  Debug.print("Filename   = \"%s\"\n", Filename);
+  Debug.print("Filename   = \"%s\"\n", Source.Filename);
 
   for(int n = 0; n < Indent; n++) Debug.print(" ");
   Debug.print("Attributes:\n");

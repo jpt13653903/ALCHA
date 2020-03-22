@@ -46,22 +46,22 @@ void PROJECT::Warning(const char* Message){
 //------------------------------------------------------------------------------
 
 void PROJECT::Error(BASE* Netlist, const char* Message){
-  ::Error(Netlist->Line, Netlist->Filename.c_str(), Message);
+  ::Error(Netlist->Source.Line, Netlist->Source.Filename.c_str(), Message);
 }
 //------------------------------------------------------------------------------
 
 void PROJECT::Warning(BASE* Netlist, const char* Message){
-  ::Warning(Netlist->Line, Netlist->Filename.c_str(), Message);
+  ::Warning(Netlist->Source.Line, Netlist->Source.Filename.c_str(), Message);
 }
 //------------------------------------------------------------------------------
 
 void PROJECT::Error(AST::EXPRESSION* Expression, const char* Message){
-  ::Error(Expression->Line, Expression->Filename.c_str(), Message);
+  ::Error(Expression->Source.Line, Expression->Source.Filename.c_str(), Message);
 }
 //------------------------------------------------------------------------------
 
 void PROJECT::Warning(AST::EXPRESSION* Expression, const char* Message){
-  ::Warning(Expression->Line, Expression->Filename.c_str(), Message);
+  ::Warning(Expression->Source.Line, Expression->Source.Filename.c_str(), Message);
 }
 //------------------------------------------------------------------------------
 

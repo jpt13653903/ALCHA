@@ -41,7 +41,7 @@ WHILE_LOOP::~WHILE_LOOP(){
 //------------------------------------------------------------------------------
 
 BASE* WHILE_LOOP::Copy(bool CopyNext){
-  WHILE_LOOP* Copy = new WHILE_LOOP(Line, Filename.c_str());
+  WHILE_LOOP* Copy = new WHILE_LOOP(Source.Line, Source.Filename.c_str());
 
   if(Condition)  Copy->Condition  = (decltype(Condition ))Condition ->Copy(CopyNext);
   if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy(CopyNext);

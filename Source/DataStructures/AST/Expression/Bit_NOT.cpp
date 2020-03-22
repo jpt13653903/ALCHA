@@ -40,7 +40,7 @@ BIT_NOT::~BIT_NOT(){
 //------------------------------------------------------------------------------
 
 BASE* BIT_NOT::Copy(bool CopyNext){
-  BIT_NOT* Copy = new BIT_NOT(Line, Filename.c_str());
+  BIT_NOT* Copy = new BIT_NOT(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -94,7 +94,7 @@ EXPRESSION* BIT_NOT::Simplify(bool GenWire){
   assert(Right->Type == TYPE::Object, return Result);
 
   if(GenWire){
-    auto Net = new NETLIST::NET(Line, Filename, 0);
+    auto Net = new NETLIST::NET(Source.Line, Source.Filename, 0);
     Net->Used  = true;
     Net->Value = this;
 
@@ -108,7 +108,7 @@ EXPRESSION* BIT_NOT::Simplify(bool GenWire){
     }
     NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
 
-    auto Object = new OBJECT(Line, Filename);
+    auto Object = new OBJECT(Source.Line, Source.Filename);
     Object->ObjectRef = Net;
     Result = Object;
   }

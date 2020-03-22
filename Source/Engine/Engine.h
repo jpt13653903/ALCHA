@@ -18,13 +18,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-/* Description
-
-1. Processes the AST and produces the netlist tree (NETLIST::Global).
-2. Processes the scripting statements so that the scripting variables become
-   constants, thereby making the resulting netlist tree synthesisable.
-------------------------------------------------------------------------------*/
-
 #ifndef Engine_h
 #define Engine_h
 //------------------------------------------------------------------------------
@@ -43,6 +36,16 @@ class ENGINE{
 
   private: // Internal structures
     std::stack<AST::BASE*> AstStack; // Used for clean-up in the destructor
+  //----------------------------------------------------------------------------
+
+  public: // Engine functions
+    /* Builds the namespace tree:
+     * - Parse the file
+     * - Create instances of global objects (scripting variables, net and pins)
+     * - Evaluate the scripting statements
+     * - Import files into the specified namespaces
+     */
+    bool RunScripting(const char* Filename);
   //----------------------------------------------------------------------------
 
   public:

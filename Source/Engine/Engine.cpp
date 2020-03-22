@@ -41,7 +41,7 @@ ENGINE::~ENGINE(){
 }
 //------------------------------------------------------------------------------
 
-bool ENGINE::Run(const char* Filename){
+bool ENGINE::RunScripting(const char* Filename){
   if(NETLIST::NamespaceStack.empty()){
     NETLIST::NamespaceStack.push_front(&NETLIST::Global);
   }
@@ -55,6 +55,11 @@ bool ENGINE::Run(const char* Filename){
     Ast = Ast->Next;
   }
   return true;
+}
+//------------------------------------------------------------------------------
+
+bool ENGINE::Run(const char* Filename){
+  return RunScripting(Filename);
 }
 //------------------------------------------------------------------------------
 

@@ -41,7 +41,7 @@ FOR_LOOP::~FOR_LOOP(){
 //------------------------------------------------------------------------------
 
 BASE* FOR_LOOP::Copy(bool CopyNext){
-  FOR_LOOP* Copy = new FOR_LOOP(Line, Filename.c_str());
+  FOR_LOOP* Copy = new FOR_LOOP(Source.Line, Source.Filename.c_str());
 
   Copy->Identifier = Identifier;
 

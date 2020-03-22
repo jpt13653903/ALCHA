@@ -65,7 +65,7 @@ IDENTIFIER::~IDENTIFIER(){
 //------------------------------------------------------------------------------
 
 BASE* IDENTIFIER::Copy(bool CopyNext){
-  IDENTIFIER* Copy = new IDENTIFIER(Line, Filename.c_str());
+  IDENTIFIER* Copy = new IDENTIFIER(Source.Line, Source.Filename.c_str());
 
   Copy->Name = Name;
 
@@ -121,13 +121,13 @@ EXPRESSION* IDENTIFIER::Evaluate(){
             case NETLIST::BASE::TYPE::Pin:
             case NETLIST::BASE::TYPE::Net:{
               auto Synthesisable = (NETLIST::SYNTHESISABLE*)Object->second;
-              Result = new OBJECT(this->Line, this->Filename);
+              Result = new OBJECT(Source.Line, Source.Filename);
               ((OBJECT*)Result)->ObjectRef = Synthesisable;
               Synthesisable->Used = true;
               break;
             }
             default:{
-              Result = new OBJECT(this->Line, this->Filename);
+              Result = new OBJECT(Source.Line, Source.Filename);
               ((OBJECT*)Result)->ObjectRef = Object->second;
               break;
             }
@@ -141,7 +141,7 @@ EXPRESSION* IDENTIFIER::Evaluate(){
   if(!Result){
     NUMBER Constant;
     if(GetConstant(this->Name.c_str(), &Constant)){
-      Result = new LITERAL(this->Line, this->Filename);
+      Result = new LITERAL(Source.Line, Source.Filename);
       ((LITERAL*)Result)->Value = Constant;
     }else{
       Error();

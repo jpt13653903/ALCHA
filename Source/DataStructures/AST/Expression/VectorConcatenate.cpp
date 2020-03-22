@@ -38,7 +38,7 @@ VECTORCONCATENATE::~VECTORCONCATENATE(){
 //------------------------------------------------------------------------------
 
 BASE* VECTORCONCATENATE::Copy(bool CopyNext){
-  VECTORCONCATENATE* Copy = new VECTORCONCATENATE(Line, Filename.c_str());
+  VECTORCONCATENATE* Copy = new VECTORCONCATENATE(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);

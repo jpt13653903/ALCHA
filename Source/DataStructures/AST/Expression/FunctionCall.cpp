@@ -40,7 +40,7 @@ FUNCTIONCALL::~FUNCTIONCALL(){
 //------------------------------------------------------------------------------
 
 BASE* FUNCTIONCALL::Copy(bool CopyNext){
-  FUNCTIONCALL* Copy = new FUNCTIONCALL(Line, Filename.c_str());
+  FUNCTIONCALL* Copy = new FUNCTIONCALL(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);

@@ -38,7 +38,7 @@ NEGATE::~NEGATE(){
 //------------------------------------------------------------------------------
 
 BASE* NEGATE::Copy(bool CopyNext){
-  NEGATE* Copy = new NEGATE(Line, Filename.c_str());
+  NEGATE* Copy = new NEGATE(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);

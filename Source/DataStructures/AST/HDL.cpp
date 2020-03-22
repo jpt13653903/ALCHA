@@ -43,7 +43,7 @@ HDL::~HDL(){
 //------------------------------------------------------------------------------
 
 BASE* HDL::Copy(bool CopyNext){
-  HDL* Copy = new HDL(Line, Filename.c_str());
+  HDL* Copy = new HDL(Source.Line, Source.Filename.c_str());
 
   Copy->Identifier = Identifier;
 

@@ -58,7 +58,7 @@ ENUM_DEFINITION::~ENUM_DEFINITION(){
 //------------------------------------------------------------------------------
 
 BASE* ENUM_DEFINITION::Copy(bool CopyNext){
-  ENUM_DEFINITION* Copy = new ENUM_DEFINITION(Line, Filename.c_str());
+  ENUM_DEFINITION* Copy = new ENUM_DEFINITION(Source.Line, Source.Filename.c_str());
 
   Copy->Identifier = Identifier;
 

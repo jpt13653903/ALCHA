@@ -39,7 +39,7 @@ LITERAL::~LITERAL(){
 //------------------------------------------------------------------------------
 
 BASE* LITERAL::Copy(bool CopyNext){
-  LITERAL* Copy = new LITERAL(Line, Filename.c_str());
+  LITERAL* Copy = new LITERAL(Source.Line, Source.Filename.c_str());
 
   Copy->Value = Value;
 

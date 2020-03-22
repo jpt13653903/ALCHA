@@ -39,7 +39,7 @@ IMPORT::~IMPORT(){
 //------------------------------------------------------------------------------
 
 BASE* IMPORT::Copy(bool CopyNext){
-  IMPORT* Copy = new IMPORT(Line, Filename.c_str());
+  IMPORT* Copy = new IMPORT(Source.Line, Source.Filename.c_str());
   
   Copy->File      = File;
   Copy->Namespace = Namespace;
@@ -62,12 +62,12 @@ bool IMPORT::RunScripting(){
              Namespace.c_str());
       return false;
     }
-    auto Module = new NETLIST::MODULE(Line, Filename, Namespace.c_str());
+    auto Module = new NETLIST::MODULE(Source.Line, Source.Filename, Namespace.c_str());
     NETLIST::NamespaceStack.front()->Symbols[Namespace] = Module;
     NETLIST::NamespaceStack.push_front(Module);
   }
 
-  string& Path = Filename;
+  string& Path = Source.Filename;
   int n;
   for(n = Path.length()-1; n >= 0; n--){
     if(Path[n] == '/') break;
@@ -78,7 +78,7 @@ bool IMPORT::RunScripting(){
   SimplifyFilename(ImportFilename);
   Debug.print("\nFilename = %s\n", ImportFilename);
 
-  bool Result = Engine->Run(ImportFilename.c_str());
+  bool Result = Engine->RunScripting(ImportFilename.c_str());
 
   if(OwnNamespace){
     NETLIST::NamespaceStack.pop_front();

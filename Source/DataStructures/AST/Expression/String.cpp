@@ -37,7 +37,7 @@ STRING::~STRING(){
 //------------------------------------------------------------------------------
 
 BASE* STRING::Copy(bool CopyNext){
-  STRING* Copy = new STRING(Line, Filename.c_str());
+  STRING* Copy = new STRING(Source.Line, Source.Filename.c_str());
 
   Copy->Value = Value;
 

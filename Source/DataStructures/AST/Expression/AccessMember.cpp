@@ -43,7 +43,7 @@ ACCESSMEMBER::~ACCESSMEMBER(){
 //------------------------------------------------------------------------------
 
 BASE* ACCESSMEMBER::Copy(bool CopyNext){
-  ACCESSMEMBER* Copy = new ACCESSMEMBER(Line, Filename.c_str());
+  ACCESSMEMBER* Copy = new ACCESSMEMBER(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -112,7 +112,7 @@ EXPRESSION* ACCESSMEMBER::Evaluate(){
                 Result = Alias->Expression->Evaluate();
               NETLIST::NamespaceStack.pop_front();
             }else{
-              OBJECT* Object = new OBJECT(this->Line, this->Filename);
+              OBJECT* Object = new OBJECT(Source.Line, Source.Filename);
               Object->ObjectRef = Found->second;
               if(Object->ObjectRef->Type == NETLIST::BASE::TYPE::Pin ||
                  Object->ObjectRef->Type == NETLIST::BASE::TYPE::Net ){

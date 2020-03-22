@@ -37,7 +37,7 @@ NAND_REDUCE::~NAND_REDUCE(){
 //------------------------------------------------------------------------------
 
 BASE* NAND_REDUCE::Copy(bool CopyNext){
-  NAND_REDUCE* Copy = new NAND_REDUCE(Line, Filename.c_str());
+  NAND_REDUCE* Copy = new NAND_REDUCE(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);

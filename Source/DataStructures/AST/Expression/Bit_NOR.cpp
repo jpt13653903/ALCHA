@@ -37,7 +37,7 @@ BIT_NOR::~BIT_NOR(){
 //------------------------------------------------------------------------------
 
 BASE* BIT_NOR::Copy(bool CopyNext){
-  BIT_NOR* Copy = new BIT_NOR(Line, Filename.c_str());
+  BIT_NOR* Copy = new BIT_NOR(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);

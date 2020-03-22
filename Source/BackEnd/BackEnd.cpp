@@ -37,12 +37,12 @@ BACK_END::~BACK_END(){
 //------------------------------------------------------------------------------
 
 void BACK_END::Error(AST::EXPRESSION* Expression, const char* Message){
-  ::Error(Expression->Line, Expression->Filename, Message);
+  ::Error(Expression->Source.Line, Expression->Source.Filename, Message);
 }
 //------------------------------------------------------------------------------
 
 void BACK_END::Warning(AST::EXPRESSION* Expression, const char* Message){
-  ::Warning(Expression->Line, Expression->Filename.c_str(), Message);
+  ::Warning(Expression->Source.Line, Expression->Source.Filename.c_str(), Message);
 }
 //------------------------------------------------------------------------------
 
@@ -179,11 +179,11 @@ bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
         auto Pin = (PIN*)Object;
         if(Pin->Driver){
           string Driver;
-          Body += "// " + Pin->Driver->Filename +" +"+ to_string(Pin->Driver->Line) + "\n";
+          Body += "// " + Pin->Driver->Source.Filename +" +"+ to_string(Pin->Driver->Source.Line) + "\n";
           if(!Pin->Driver->GetVerilog(Driver)) return false;
           if(Pin->Enabled){
             string Enabled;
-            Body += "// " + Pin->Enabled->Filename +" +"+ to_string(Pin->Enabled->Line) + "\n";
+            Body += "// " + Pin->Enabled->Source.Filename +" +"+ to_string(Pin->Enabled->Source.Line) + "\n";
             if(!Pin->Enabled->GetVerilog(Enabled)) return false;
             Body += "assign "+ Pin->EscapedName() +
                     " = |("+ Enabled + ")"
@@ -199,7 +199,7 @@ bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
         auto Net = (NET*)Object;
         if(Net->Value){
           string Value;
-          Body += "// " + Net->Value->Filename +" +"+ to_string(Net->Value->Line) + "\n";
+          Body += "// " + Net->Value->Source.Filename +" +"+ to_string(Net->Value->Source.Line) + "\n";
           if(!Net->Value->GetVerilog(Value)) return false;
           Body += "assign "+ Net->EscapedName() +" = "+ Value +";\n";
         }

@@ -124,7 +124,7 @@ DEFINITION::~DEFINITION(){
 //------------------------------------------------------------------------------
 
 BASE* DEFINITION::Copy(bool CopyNext){
-  DEFINITION* Copy = new DEFINITION(Line, Filename.c_str(), DefinitionType);
+  DEFINITION* Copy = new DEFINITION(Source.Line, Source.Filename.c_str(), DefinitionType);
 
   Copy->Direction = Direction;
 
@@ -171,7 +171,7 @@ bool DEFINITION::RunScripting(){
         break;
 
       case DEFINITION_TYPE::Pin:{
-        auto Pin = new NETLIST::PIN(Line, Filename, Identifier->Identifier.c_str());
+        auto Pin = new NETLIST::PIN(Source.Line, Source.Filename, Identifier->Identifier.c_str());
         Pin->Direction = Direction;
         if(!Pin->ApplyParameters(Parameters)) Error("Invalid parameters");
         if(!Pin->ApplyAttributes(Attributes)) Error("Invalid attributes");
@@ -183,7 +183,7 @@ bool DEFINITION::RunScripting(){
       }
 
       case DEFINITION_TYPE::Net:{
-        auto Net = new NETLIST::NET(Line, Filename, Identifier->Identifier.c_str());
+        auto Net = new NETLIST::NET(Source.Line, Source.Filename, Identifier->Identifier.c_str());
         Net->Direction = Direction;
         if(!Net->ApplyParameters(Parameters)) Error("Invalid parameters");
         if(!Net->ApplyAttributes(Attributes)) Error("Invalid attributes");
@@ -195,7 +195,7 @@ bool DEFINITION::RunScripting(){
       }
 
       case DEFINITION_TYPE::Byte:{
-        auto Byte = new NETLIST::BYTE(Line, Filename, Identifier->Identifier.c_str());
+        auto Byte = new NETLIST::BYTE(Source.Line, Source.Filename, Identifier->Identifier.c_str());
         if(!Byte->ApplyAttributes(Attributes)) Error("Invalid attributes");
         NETLIST::NamespaceStack.front()->Symbols[Byte->Name] = Byte;
         if(Identifier->Initialiser){
@@ -205,7 +205,7 @@ bool DEFINITION::RunScripting(){
       }
 
       case DEFINITION_TYPE::Char:{
-        auto Char = new NETLIST::CHARACTER(Line, Filename, Identifier->Identifier.c_str());
+        auto Char = new NETLIST::CHARACTER(Source.Line, Source.Filename, Identifier->Identifier.c_str());
         if(!Char->ApplyAttributes(Attributes)) Error("Invalid attributes");
         NETLIST::NamespaceStack.front()->Symbols[Char->Name] = Char;
         if(Identifier->Initialiser){
@@ -215,7 +215,7 @@ bool DEFINITION::RunScripting(){
       }
 
       case DEFINITION_TYPE::Num:{
-        auto Number = new NETLIST::NUM(Line, Filename, Identifier->Identifier.c_str());
+        auto Number = new NETLIST::NUM(Source.Line, Source.Filename, Identifier->Identifier.c_str());
         if(!Number->ApplyAttributes(Attributes)) Error("Invalid attributes");
         NETLIST::NamespaceStack.front()->Symbols[Number->Name] = Number;
         if(Identifier->Initialiser){

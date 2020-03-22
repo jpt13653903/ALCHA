@@ -43,7 +43,7 @@ FSM::~FSM(){
 //------------------------------------------------------------------------------
 
 BASE* FSM::Copy(bool CopyNext){
-  FSM* Copy = new FSM(Line, Filename.c_str());
+  FSM* Copy = new FSM(Source.Line, Source.Filename.c_str());
 
   if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy(CopyNext);
 

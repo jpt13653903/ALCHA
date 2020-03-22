@@ -37,7 +37,7 @@ OR_REDUCE::~OR_REDUCE(){
 //------------------------------------------------------------------------------
 
 BASE* OR_REDUCE::Copy(bool CopyNext){
-  OR_REDUCE* Copy = new OR_REDUCE(Line, Filename.c_str());
+  OR_REDUCE* Copy = new OR_REDUCE(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);

@@ -76,7 +76,7 @@ CLASS_DEFINITION::~CLASS_DEFINITION(){
 //------------------------------------------------------------------------------
 
 BASE* CLASS_DEFINITION::Copy(bool CopyNext){
-  CLASS_DEFINITION* Copy = new CLASS_DEFINITION(Line, Filename.c_str());
+  CLASS_DEFINITION* Copy = new CLASS_DEFINITION(Source.Line, Source.Filename.c_str());
 
   Copy->Identifier = Identifier;
 

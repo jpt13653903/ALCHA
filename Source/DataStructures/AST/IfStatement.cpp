@@ -43,7 +43,7 @@ IF_STATEMENT::~IF_STATEMENT(){
 //------------------------------------------------------------------------------
 
 BASE* IF_STATEMENT::Copy(bool CopyNext){
-  IF_STATEMENT* Copy = new IF_STATEMENT(Line, Filename.c_str());
+  IF_STATEMENT* Copy = new IF_STATEMENT(Source.Line, Source.Filename.c_str());
 
   if(Condition      ) Copy->Condition       = (decltype(Condition      ))Condition      ->Copy(CopyNext);
   if(TrueStatements ) Copy->TrueStatements  = (decltype(TrueStatements ))TrueStatements ->Copy(CopyNext);

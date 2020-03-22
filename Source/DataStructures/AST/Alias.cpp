@@ -41,7 +41,7 @@ ALIAS::~ALIAS(){
 //------------------------------------------------------------------------------
 
 BASE* ALIAS::Copy(bool CopyNext){
-  ALIAS* Copy = new ALIAS(Line, Filename.c_str());
+  ALIAS* Copy = new ALIAS(Source.Line, Source.Filename.c_str());
 
   Copy->Identifier = Identifier;
 
@@ -62,7 +62,7 @@ bool ALIAS::RunScripting(){
     return false;
   }
 
-  auto Object = new NETLIST::ALIAS(Line, Filename, Identifier.c_str(), Expression);
+  auto Object = new NETLIST::ALIAS(Source.Line, Source.Filename, Identifier.c_str(), Expression);
 
   NETLIST::NamespaceStack.front()->Symbols[Object->Name] = Object;
 

@@ -142,9 +142,11 @@ namespace AST{
     //--------------------------------------------------------------------------
 
     public:
-      int         Line;
-      std::string Filename;
-      BASE*       Next; // Next sibling
+      struct{
+        int         Line;
+        std::string Filename;
+      } Source;
+      BASE* Next; // Next instruction
     //--------------------------------------------------------------------------
 
     public:

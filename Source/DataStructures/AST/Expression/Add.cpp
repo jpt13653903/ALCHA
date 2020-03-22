@@ -38,7 +38,7 @@ ADD::~ADD(){
 //------------------------------------------------------------------------------
 
 BASE* ADD::Copy(bool CopyNext){
-  ADD* Copy = new ADD(Line, Filename.c_str());
+  ADD* Copy = new ADD(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -86,7 +86,7 @@ EXPRESSION* ADD::Simplify(bool GenWire){
   EXPRESSION* Result = this;
 
   if(Left->Type == TYPE::Literal && Right->Type == TYPE::Literal){
-    auto Literal = new LITERAL(Line, Filename);
+    auto Literal = new LITERAL(Source.Line, Source.Filename);
     Literal->Value =   ((LITERAL*)Left )->Value;
     Literal->Value.Add(((LITERAL*)Right)->Value);
     delete this;

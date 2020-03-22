@@ -76,7 +76,7 @@ ASSIGNMENT::~ASSIGNMENT(){
 //------------------------------------------------------------------------------
 
 BASE* ASSIGNMENT::Copy(bool CopyNext){
-  ASSIGNMENT* Copy = new ASSIGNMENT(Line, Filename.c_str(), AssignmentType);
+  ASSIGNMENT* Copy = new ASSIGNMENT(Source.Line, Source.Filename.c_str(), AssignmentType);
 
   Copy->Fence = Fence;
 
@@ -370,7 +370,7 @@ bool ASSIGNMENT::RunScripting(){
       case NETLIST::BASE::TYPE::Byte:
       case NETLIST::BASE::TYPE::Character:
       case NETLIST::BASE::TYPE::Number:{
-        ScriptTarget = new OBJECT(Line, Filename);
+        ScriptTarget = new OBJECT(Source.Line, Source.Filename);
         ((OBJECT*)ScriptTarget)->ObjectRef = Object;
         Target = &ScriptTarget;
         break;
@@ -412,7 +412,7 @@ bool ASSIGNMENT::RunScripting(){
     case ASSIGNMENT_TYPE::Append_Assign:
       RawAssign = false;
       if(*Target){
-        Temp = new ARRAYCONCATENATE(Line, Filename);
+        Temp = new ARRAYCONCATENATE(Source.Line, Source.Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -427,7 +427,7 @@ bool ASSIGNMENT::RunScripting(){
     case ASSIGNMENT_TYPE::Add_Assign:
       RawAssign = false;
       if(*Target){
-        Temp = new ADD(Line, Filename);
+        Temp = new ADD(Source.Line, Source.Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -442,7 +442,7 @@ bool ASSIGNMENT::RunScripting(){
     case ASSIGNMENT_TYPE::Subtract_Assign:
       RawAssign = false;
       if(*Target){
-        Temp = new SUBTRACT(Line, Filename);
+        Temp = new SUBTRACT(Source.Line, Source.Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -457,7 +457,7 @@ bool ASSIGNMENT::RunScripting(){
     case ASSIGNMENT_TYPE::Multiply_Assign:
       RawAssign = false;
       if(*Target){
-        Temp = new MULTIPLY(Line, Filename);
+        Temp = new MULTIPLY(Source.Line, Source.Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target = Temp;
@@ -472,7 +472,7 @@ bool ASSIGNMENT::RunScripting(){
     case ASSIGNMENT_TYPE::Divide_Assign:
       RawAssign = false;
       if(*Target){
-        Temp = new DIVIDE(Line, Filename);
+        Temp = new DIVIDE(Source.Line, Source.Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -487,7 +487,7 @@ bool ASSIGNMENT::RunScripting(){
     case ASSIGNMENT_TYPE::Modulus_Assign:
       RawAssign = false;
       if(*Target){
-        Temp = new MODULUS(Line, Filename);
+        Temp = new MODULUS(Source.Line, Source.Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -502,7 +502,7 @@ bool ASSIGNMENT::RunScripting(){
     case ASSIGNMENT_TYPE::Exponential_Assign:
       RawAssign = false;
       if(*Target){
-        Temp = new EXPONENTIAL(Line, Filename);
+        Temp = new EXPONENTIAL(Source.Line, Source.Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -517,7 +517,7 @@ bool ASSIGNMENT::RunScripting(){
     case ASSIGNMENT_TYPE::AND_Assign:
       RawAssign = true;
       if(*Target){
-        Temp = new BIT_AND(Line, Filename);
+        Temp = new BIT_AND(Source.Line, Source.Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -532,7 +532,7 @@ bool ASSIGNMENT::RunScripting(){
     case ASSIGNMENT_TYPE::OR_Assign:
       RawAssign = true;
       if(*Target){
-        Temp = new BIT_OR(Line, Filename);
+        Temp = new BIT_OR(Source.Line, Source.Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -547,7 +547,7 @@ bool ASSIGNMENT::RunScripting(){
     case ASSIGNMENT_TYPE::XOR_Assign:
       RawAssign = true;
       if(*Target){
-        Temp = new BIT_XOR(Line, Filename);
+        Temp = new BIT_XOR(Source.Line, Source.Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -562,7 +562,7 @@ bool ASSIGNMENT::RunScripting(){
     case ASSIGNMENT_TYPE::Shift_Left_Assign:
       RawAssign = true;
       if(*Target){
-        Temp = new SHIFT_LEFT(Line, Filename);
+        Temp = new SHIFT_LEFT(Source.Line, Source.Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;
@@ -577,7 +577,7 @@ bool ASSIGNMENT::RunScripting(){
     case ASSIGNMENT_TYPE::Shift_Right_Assign:
       RawAssign = true;
       if(*Target){
-        Temp = new SHIFT_RIGHT(Line, Filename);
+        Temp = new SHIFT_RIGHT(Source.Line, Source.Filename);
         Temp->Left  = *Target;
         Temp->Right = Right;
         *Target     = Temp;

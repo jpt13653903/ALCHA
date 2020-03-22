@@ -37,7 +37,7 @@ MULTIPLY::~MULTIPLY(){
 //------------------------------------------------------------------------------
 
 BASE* MULTIPLY::Copy(bool CopyNext){
-  MULTIPLY* Copy = new MULTIPLY(Line, Filename.c_str());
+  MULTIPLY* Copy = new MULTIPLY(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);

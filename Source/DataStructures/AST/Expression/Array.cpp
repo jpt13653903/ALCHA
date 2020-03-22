@@ -38,7 +38,7 @@ ARRAY::~ARRAY(){
 //------------------------------------------------------------------------------
 
 BASE* ARRAY::Copy(bool CopyNext){
-  ARRAY* Copy = new ARRAY(Line, Filename.c_str());
+  ARRAY* Copy = new ARRAY(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);

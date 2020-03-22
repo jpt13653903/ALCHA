@@ -38,7 +38,7 @@ SUBTRACT::~SUBTRACT(){
 //------------------------------------------------------------------------------
 
 BASE* SUBTRACT::Copy(bool CopyNext){
-  SUBTRACT* Copy = new SUBTRACT(Line, Filename.c_str());
+  SUBTRACT* Copy = new SUBTRACT(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
@@ -86,7 +86,7 @@ EXPRESSION* SUBTRACT::Simplify(bool GenWire){
   EXPRESSION* Result = this;
 
   if(Left->Type == TYPE::Literal && Right->Type == TYPE::Literal){
-    auto Literal = new LITERAL(Line, Filename);
+    auto Literal = new LITERAL(Source.Line, Source.Filename);
     Literal->Value =   ((LITERAL*)Left )->Value;
     Literal->Value.Sub(((LITERAL*)Right)->Value);
     delete this;

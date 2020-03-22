@@ -37,7 +37,7 @@ XNOR_REDUCE::~XNOR_REDUCE(){
 //------------------------------------------------------------------------------
 
 BASE* XNOR_REDUCE::Copy(bool CopyNext){
-  XNOR_REDUCE* Copy = new XNOR_REDUCE(Line, Filename.c_str());
+  XNOR_REDUCE* Copy = new XNOR_REDUCE(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);

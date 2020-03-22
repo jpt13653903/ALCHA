@@ -37,7 +37,7 @@ XOR_REDUCE::~XOR_REDUCE(){
 //------------------------------------------------------------------------------
 
 BASE* XOR_REDUCE::Copy(bool CopyNext){
-  XOR_REDUCE* Copy = new XOR_REDUCE(Line, Filename.c_str());
+  XOR_REDUCE* Copy = new XOR_REDUCE(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);

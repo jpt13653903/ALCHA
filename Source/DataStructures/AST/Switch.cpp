@@ -67,7 +67,7 @@ SWITCH::~SWITCH(){
 //------------------------------------------------------------------------------
 
 BASE* SWITCH::Copy(bool CopyNext){
-  SWITCH* Copy = new SWITCH(Line, Filename.c_str());
+  SWITCH* Copy = new SWITCH(Source.Line, Source.Filename.c_str());
 
   if(Cases     ) Copy->Cases      = new CASE(*Cases);
   if(Default   ) Copy->Default    = (decltype(Default   ))Default   ->Copy(CopyNext);

@@ -25,10 +25,10 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 BASE::BASE(int Line, const char* Filename, TYPE Type){
-  this->Type     = Type;
-  this->Line     = Line;
-  this->Filename = Filename;
-  this->Next     = 0;
+  Source.Line     = Line;
+  Source.Filename = Filename;
+  this->Type      = Type;
+  this->Next      = 0;
 }
 //------------------------------------------------------------------------------
 
@@ -45,18 +45,18 @@ BASE::~BASE(){
 //------------------------------------------------------------------------------
 
 void BASE::Error(const char* Message){
-  ::Error(Line, Filename.c_str(), Message);
+  ::Error(Source.Line, Source.Filename.c_str(), Message);
 }
 //------------------------------------------------------------------------------
 
 void BASE::Warning(const char* Message){
-  ::Warning(Line, Filename.c_str(), Message);
+  ::Warning(Source.Line, Source.Filename.c_str(), Message);
 }
 //------------------------------------------------------------------------------
 
 void BASE::DisplayInfo(){
-  Debug.print("\n" ANSI_FG_BRIGHT_BLACK "%s:", Filename.c_str());
-  Debug.print(ANSI_FG_CYAN "%05d" ANSI_FG_YELLOW " -- " ANSI_RESET, Line);
+  Debug.print("\n" ANSI_FG_BRIGHT_BLACK "%s:", Source.Filename.c_str());
+  Debug.print(ANSI_FG_CYAN "%05d" ANSI_FG_YELLOW " -- " ANSI_RESET, Source.Line);
 }
 //------------------------------------------------------------------------------
 

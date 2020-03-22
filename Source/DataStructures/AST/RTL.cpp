@@ -43,7 +43,7 @@ RTL::~RTL(){
 //------------------------------------------------------------------------------
 
 BASE* RTL::Copy(bool CopyNext){
-  RTL* Copy = new RTL(Line, Filename.c_str());
+  RTL* Copy = new RTL(Source.Line, Source.Filename.c_str());
 
   if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy(CopyNext);
 

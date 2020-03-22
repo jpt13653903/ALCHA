@@ -37,7 +37,7 @@ SHIFT_LEFT::~SHIFT_LEFT(){
 //------------------------------------------------------------------------------
 
 BASE* SHIFT_LEFT::Copy(bool CopyNext){
-  SHIFT_LEFT* Copy = new SHIFT_LEFT(Line, Filename.c_str());
+  SHIFT_LEFT* Copy = new SHIFT_LEFT(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);

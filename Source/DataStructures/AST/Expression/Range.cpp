@@ -39,7 +39,7 @@ RANGE::~RANGE(){
 //------------------------------------------------------------------------------
 
 BASE* RANGE::Copy(bool CopyNext){
-  RANGE* Copy = new RANGE(Line, Filename.c_str());
+  RANGE* Copy = new RANGE(Source.Line, Source.Filename.c_str());
 
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
