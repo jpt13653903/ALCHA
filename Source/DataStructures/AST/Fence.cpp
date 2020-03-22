@@ -39,7 +39,10 @@ FENCE::~FENCE(){
 BASE* FENCE::Copy(bool CopyNext){
   FENCE* Copy = new FENCE(Source.Line, Source.Filename.c_str());
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -64,3 +67,11 @@ void FENCE::Display(){
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+
+void FENCE::ValidateMembers(){
+  assert(Type == TYPE::Fence);
+
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+

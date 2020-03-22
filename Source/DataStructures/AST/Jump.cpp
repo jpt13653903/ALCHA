@@ -45,7 +45,10 @@ BASE* JUMP::Copy(bool CopyNext){
 
   if(Expression) Copy->Expression = (decltype(Expression))Expression->Copy(CopyNext);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -79,3 +82,11 @@ void JUMP::Display(){
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+
+void JUMP::ValidateMembers(){
+  assert(Type == TYPE::Jump);
+
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+

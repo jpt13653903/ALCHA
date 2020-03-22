@@ -39,6 +39,8 @@ namespace NETLIST{
       virtual ~NAMESPACE(); // Also cleans up the children
 
       bool IsNamespace() override;
+
+      void Validate() override;
   };
 }
 //------------------------------------------------------------------------------

@@ -42,6 +42,8 @@ namespace AST{
     bool  GetVerilog(std::string& Body) override;
 
     void Display() override;
+
+    void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------

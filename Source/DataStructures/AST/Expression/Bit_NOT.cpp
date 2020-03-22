@@ -45,7 +45,10 @@ BASE* BIT_NOT::Copy(bool CopyNext){
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -122,3 +125,15 @@ void BIT_NOT::Display(){
   DisplayEnd();
 }
 //------------------------------------------------------------------------------
+
+void BIT_NOT::ValidateMembers(){
+  assert(Type == TYPE::Bit_NOT);
+
+  assert(!Next);
+  assert(!Prev);
+
+  assert(!Left);
+  assert(Right, return); Right->Validate();
+}
+//------------------------------------------------------------------------------
+

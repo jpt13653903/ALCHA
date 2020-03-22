@@ -36,6 +36,8 @@ namespace NETLIST{
       virtual ~GROUP(); // Also cleans up the children
 
       void Display() override;
+
+      void Validate() override;
   };
 }
 //------------------------------------------------------------------------------

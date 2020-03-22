@@ -44,7 +44,10 @@ BASE* STRING::Copy(bool CopyNext){
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -85,3 +88,15 @@ void STRING::Display(){
   DisplayEnd();
 }
 //------------------------------------------------------------------------------
+
+void STRING::ValidateMembers(){
+  assert(Type == TYPE::String);
+
+  assert(!Next);
+  assert(!Prev);
+
+  assert(!Left );
+  assert(!Right);
+}
+//------------------------------------------------------------------------------
+

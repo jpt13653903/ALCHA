@@ -64,7 +64,10 @@ BASE* ENUM_DEFINITION::Copy(bool CopyNext){
 
   if(Values) Copy->Values = new VALUE(*Values);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -98,3 +101,11 @@ void ENUM_DEFINITION::Display(){
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+
+void ENUM_DEFINITION::ValidateMembers(){
+  assert(Type == TYPE::EnumDefinition);
+
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+

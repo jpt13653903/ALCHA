@@ -64,6 +64,9 @@ namespace NETLIST{
           Group
       } Type;
 
+      virtual bool IsSynthesisable();
+      virtual bool IsNamespace    ();
+
       // The line and filename that resulted in this object, used for error reporting
       struct{
         int         Line;
@@ -80,9 +83,6 @@ namespace NETLIST{
                BASE(int Line, const std::string& Filename, const char* Name, TYPE Type);
       virtual ~BASE();
 
-      virtual bool IsSynthesisable();
-      virtual bool IsNamespace    ();
-
       bool ApplyAttributes(
         std::string&     Name,
         AST::EXPRESSION* Value,
@@ -97,6 +97,9 @@ namespace NETLIST{
 
       virtual void Display        () = 0;
               void DisplayLongName();
+
+      // Runs assertions to validate the members.
+      virtual void Validate();
 
       // Access the attribute, but searches up to the root and
       // returns null when not found

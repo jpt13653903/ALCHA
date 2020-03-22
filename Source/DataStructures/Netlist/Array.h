@@ -31,6 +31,8 @@ namespace NETLIST{
     virtual ~ARRAY();
 
     void Display() override;
+
+    void Validate() override;
   };
 }
 //------------------------------------------------------------------------------

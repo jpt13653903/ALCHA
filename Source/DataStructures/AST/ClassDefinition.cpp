@@ -85,7 +85,10 @@ BASE* CLASS_DEFINITION::Copy(bool CopyNext){
   if(Attributes) Copy->Attributes = (decltype(Attributes))Attributes->Copy(CopyNext);
   if(Parameters) Copy->Parameters = (decltype(Parameters))Parameters->Copy(CopyNext);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -137,3 +140,11 @@ void CLASS_DEFINITION::Display(){
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+
+void CLASS_DEFINITION::ValidateMembers(){
+  assert(Type == TYPE::ClassDefinition);
+
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+

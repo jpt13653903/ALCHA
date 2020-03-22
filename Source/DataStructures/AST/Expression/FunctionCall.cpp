@@ -49,7 +49,10 @@ BASE* FUNCTIONCALL::Copy(bool CopyNext){
     if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy(CopyNext));
   }
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -109,3 +112,17 @@ void FUNCTIONCALL::Display(){
   DisplayEnd();
 }
 //------------------------------------------------------------------------------
+
+void FUNCTIONCALL::ValidateMembers(){
+  assert(Type == TYPE::FunctionCall);
+
+  assert(!Next);
+  assert(!Prev);
+
+  // TODO: assert(!Left );
+  // TODO: assert(!Right);
+
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+

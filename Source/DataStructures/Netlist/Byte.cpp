@@ -39,3 +39,12 @@ void NETLIST::BYTE::Display(){
 }
 //------------------------------------------------------------------------------
 
+void NETLIST::BYTE::Validate(){
+  assert(Type == TYPE::Byte);
+
+  BASE::Validate();
+
+  error("Not implemented yet");
+}
+//------------------------------------------------------------------------------
+

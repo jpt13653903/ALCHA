@@ -40,3 +40,12 @@ void CHARACTER::Display(){
 }
 //------------------------------------------------------------------------------
 
+void CHARACTER::Validate(){
+  assert(Type == TYPE::Character);
+
+  BASE::Validate();
+
+  error("Not implemented yet");
+}
+//------------------------------------------------------------------------------
+

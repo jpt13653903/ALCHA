@@ -35,6 +35,8 @@ namespace NETLIST{
    ~PIN();
 
     void Display();
+
+    void Validate() override;
   };
 }
 //------------------------------------------------------------------------------

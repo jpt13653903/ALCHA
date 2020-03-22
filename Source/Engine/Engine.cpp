@@ -69,8 +69,9 @@ bool ENGINE::Run(const char* Filename){
     else                    Debug.print("AST is empty\n");
 
     foreach(Namespace, NETLIST::NamespaceStack){
-      (*Namespace)->Ast->ValidateList();
+      (*Namespace)->Ast->Validate();
     }
+    NETLIST::Global.Validate();
   #endif
 
   return NETLIST::Global.Ast;

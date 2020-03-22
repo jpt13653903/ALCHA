@@ -44,7 +44,10 @@ BASE* IMPORT::Copy(bool CopyNext){
   Copy->File      = File;
   Copy->Namespace = Namespace;
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -117,3 +120,9 @@ void IMPORT::Display(){
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+
+void IMPORT::ValidateMembers(){
+  assert(Type == TYPE::Import);
+}
+//------------------------------------------------------------------------------
+

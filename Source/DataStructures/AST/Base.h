@@ -138,6 +138,8 @@ namespace AST{
 
           Conditional
       } Type;
+
+      virtual bool IsExpression();
     //--------------------------------------------------------------------------
 
     public:
@@ -153,8 +155,6 @@ namespace AST{
                BASE(int Line, const char* Filename, TYPE Type);
       virtual ~BASE(); // Also deletes the rest of the linked list
 
-      virtual bool IsExpression();
-
       // Returns a copy of this instance
       virtual BASE* Copy(bool CopyNext) = 0;
 
@@ -169,9 +169,10 @@ namespace AST{
               void DisplayInfo();
       virtual void Display() = 0;
 
-      // Runs assertions on the Next and Prev pointers.
-      // Run this function on the head of the list.
-      void ValidateList();
+      // Runs assertions on the Next and Prev pointers, and then validates the
+      // members.  Run this function on the head of the list.
+      void         Validate();
+      virtual void ValidateMembers() = 0;
   };
 }
 //------------------------------------------------------------------------------

@@ -42,7 +42,10 @@ BASE* CONDITIONAL::Copy(bool CopyNext){
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -92,3 +95,17 @@ void CONDITIONAL::Display(){
   DisplayEnd();
 }
 //------------------------------------------------------------------------------
+
+void CONDITIONAL::ValidateMembers(){
+  assert(Type == TYPE::Conditional);
+
+  assert(!Next);
+  assert(!Prev);
+
+  // TODO: assert(!Left );
+  // TODO: assert(!Right);
+
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+

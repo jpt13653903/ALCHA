@@ -46,7 +46,10 @@ BASE* NAMESPACE_PUSH::Copy(bool CopyNext){
   if(Namespace ) Copy->Namespace  = (decltype(Namespace ))Namespace ->Copy(CopyNext);
   if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy(CopyNext);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -81,3 +84,11 @@ void NAMESPACE_PUSH::Display(){
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+
+void NAMESPACE_PUSH::ValidateMembers(){
+  assert(Type == TYPE::NamespacePush);
+
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+

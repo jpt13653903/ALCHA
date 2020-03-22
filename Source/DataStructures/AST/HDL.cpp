@@ -51,7 +51,10 @@ BASE* HDL::Copy(bool CopyNext){
   if(Ports     ) Copy->Ports      = (decltype(Ports     ))Ports     ->Copy(CopyNext);
   if(Parameters) Copy->Parameters = (decltype(Parameters))Parameters->Copy(CopyNext);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -79,3 +82,11 @@ void HDL::Display(){
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+
+void HDL::ValidateMembers(){
+  assert(Type == TYPE::HDL);
+
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+

@@ -132,7 +132,10 @@ BASE* DEFINITION::Copy(bool CopyNext){
   if(Attributes ) Copy->Attributes  = (decltype(Attributes))Attributes->Copy(CopyNext);
   if(Identifiers) Copy->Identifiers = new IDENTIFIER(*Identifiers);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   foreach(Parameter, Parameters){
     if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy(CopyNext));
@@ -325,6 +328,50 @@ void DEFINITION::Display(){
   }
 
   if(Next) Next->Display();
+}
+//------------------------------------------------------------------------------
+
+void DEFINITION::ValidateMembers(){
+  assert(Type == TYPE::Definition);
+
+  switch(DefinitionType){
+    case DEFINITION_TYPE::Pin : break;
+    case DEFINITION_TYPE::Net : break;
+    case DEFINITION_TYPE::Void: break;
+    case DEFINITION_TYPE::Auto: break;
+    case DEFINITION_TYPE::Byte: break;
+    case DEFINITION_TYPE::Char: break;
+    case DEFINITION_TYPE::Num : break;
+    case DEFINITION_TYPE::Func: break;
+
+    case DEFINITION_TYPE::ClassInstance:
+      if(ClassName) ClassName->Validate();
+      break;
+
+    default: assert(false);
+  }
+
+  if(!Parameters.empty()){
+    foreach(Parameter, Parameters) (*Parameter)->Validate();
+  }
+
+  if(Attributes) Attributes ->Validate();
+
+  IDENTIFIER* Identifier = Identifiers;
+  ARRAY     * Array;
+  while(Identifier){
+    Array = Identifier->Array;
+    while(Array){
+      if(Array->Size) Array->Size->Validate();
+      Array = Array->Next;
+    }
+
+    if(Identifier->Parameters  ) Identifier->Parameters  ->Validate();
+    if(Identifier->FunctionBody) Identifier->FunctionBody->Validate();
+    if(Identifier->Initialiser ) Identifier->Initialiser ->Validate();
+
+    Identifier = Identifier->Next;
+  }
 }
 //------------------------------------------------------------------------------
 

@@ -46,7 +46,10 @@ BASE* WHILE_LOOP::Copy(bool CopyNext){
   if(Condition)  Copy->Condition  = (decltype(Condition ))Condition ->Copy(CopyNext);
   if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy(CopyNext);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -75,3 +78,11 @@ void WHILE_LOOP::Display(){
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+
+void WHILE_LOOP::ValidateMembers(){
+  assert(Type == TYPE::WhileLoop);
+
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+

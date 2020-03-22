@@ -215,3 +215,9 @@ AST::EXPRESSION* BASE::GetAttrib(const string& Key){
 }
 //------------------------------------------------------------------------------
 
+void BASE::Validate(){
+  // Don't verify Namespace, it's circular
+  foreach(Attrib, Attributes) Attrib->second->Validate();
+}
+//------------------------------------------------------------------------------
+

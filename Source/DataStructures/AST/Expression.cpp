@@ -73,8 +73,6 @@ void EXPRESSION::DisplayEnd(){
       return;
     }
   }
-
-  assert(Next == 0, info("Line: %d", Source.Line)); // Expressions should not have a "Next"
 }
 //------------------------------------------------------------------------------
 

@@ -66,11 +66,7 @@ void BASE::DisplayInfo(){
 }
 //------------------------------------------------------------------------------
 
-void BASE::ValidateList(){
-  debug("Type = %d, Line = %d, File = %s",
-        (int)Type,
-        Source.Line,
-        Source.Filename.c_str());
+void BASE::Validate(){
   assert(Prev == 0);
 
   BASE* Node = this;
@@ -85,6 +81,7 @@ void BASE::ValidateList(){
                                (int)Node->Type,
                                Node->Source.Line,
                                Node->Source.Filename.c_str()));
+    Node->ValidateMembers();
     Node = Node->Next;
   }
 }

@@ -57,7 +57,10 @@ BASE* PARAMETER::Copy(bool CopyNext){
 
   if(ClassName) Copy->ClassName = (decltype(ClassName))ClassName->Copy(CopyNext);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -104,6 +107,14 @@ void PARAMETER::Display(){
 
   Debug.print("\n");
   if(Next) Next->Display();
+}
+//------------------------------------------------------------------------------
+
+
+void PARAMETER::ValidateMembers(){
+  assert(Type == TYPE::Parameter);
+
+  error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

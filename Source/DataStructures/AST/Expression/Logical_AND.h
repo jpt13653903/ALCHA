@@ -39,6 +39,8 @@ namespace AST{
     EXPRESSION* Simplify(bool GenWire) override;
 
     void Display() override;
+
+    void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------

@@ -50,7 +50,10 @@ BASE* AST::GROUP::Copy(bool CopyNext){
   if(Attributes) Copy->Attributes = (decltype(Attributes))Attributes->Copy(CopyNext);
   if(Body      ) Copy->Body       = (decltype(Body      ))Body      ->Copy(CopyNext);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -111,3 +114,12 @@ void AST::GROUP::Display(){
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+
+void AST::GROUP::ValidateMembers(){
+  assert(Type == TYPE::Group);
+
+  if(Attributes) Attributes->Validate();
+  if(Body      ) Body      ->Validate();
+}
+//------------------------------------------------------------------------------
+

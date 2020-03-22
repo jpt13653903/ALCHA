@@ -2423,7 +2423,7 @@ AST::BASE* PARSER::Run(const char* Filename){
     if(AST) AST->Display();
     else    Debug.print("AST is empty\n");
 
-    AST->ValidateList();
+    AST->Validate();
   #endif
   return AST;
 }

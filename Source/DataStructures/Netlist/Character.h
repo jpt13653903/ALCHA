@@ -34,6 +34,8 @@ namespace NETLIST{
     virtual ~CHARACTER();
 
     void Display() override;
+
+    void Validate() override;
   };
 }
 //------------------------------------------------------------------------------

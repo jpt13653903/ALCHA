@@ -47,7 +47,10 @@ BASE* ARRAY::Copy(bool CopyNext){
     Copy->Elements.push_back((EXPRESSION*)(*Element)->Copy(CopyNext));
   }
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -79,8 +82,6 @@ EXPRESSION* ARRAY::Simplify(bool GenWire){
 //------------------------------------------------------------------------------
 
 void ARRAY::Display(){
-  assert(!Left);
-
   Debug.print("(Array: (");
   bool isFirst = true;
   foreach(Element, Elements){
@@ -89,8 +90,19 @@ void ARRAY::Display(){
     isFirst = false;
   }
   Debug.print("))");
-
-  assert(!Right);
-  assert(!Next );
 }
 //------------------------------------------------------------------------------
+
+void ARRAY::ValidateMembers(){
+  assert(Type == TYPE::Array);
+  
+  assert(!Next);
+  assert(!Prev);
+
+  assert(!Left);
+  assert(!Right);
+
+  foreach(Element, Elements) (*Element)->Validate();
+}
+//------------------------------------------------------------------------------
+

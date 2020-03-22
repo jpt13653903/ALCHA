@@ -40,3 +40,14 @@ bool NAMESPACE::IsNamespace(){
 }
 //------------------------------------------------------------------------------
 
+void NAMESPACE::Validate(){
+  BASE::Validate();
+
+  if(Ast) Ast->Validate();
+  foreach(Symbol, Symbols){
+    assert(Symbol->second, return);
+    Symbol->second->Validate();
+  }
+}
+//------------------------------------------------------------------------------
+

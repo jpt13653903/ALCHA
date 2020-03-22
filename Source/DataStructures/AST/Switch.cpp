@@ -73,7 +73,10 @@ BASE* SWITCH::Copy(bool CopyNext){
   if(Default   ) Copy->Default    = (decltype(Default   ))Default   ->Copy(CopyNext);
   if(Expression) Copy->Expression = (decltype(Expression))Expression->Copy(CopyNext);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -118,3 +121,11 @@ void SWITCH::Display(){
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+
+void SWITCH::ValidateMembers(){
+  assert(Type == TYPE::Switch);
+
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+

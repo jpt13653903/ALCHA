@@ -47,7 +47,10 @@ BASE* VECTORCONCATENATE::Copy(bool CopyNext){
     Copy->Elements.push_back((EXPRESSION*)(*Element)->Copy(CopyNext));
   }
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -97,8 +100,6 @@ EXPRESSION* VECTORCONCATENATE::Simplify(bool GenWire){
 //------------------------------------------------------------------------------
 
 void VECTORCONCATENATE::Display(){
-  assert(!Left);
-
   Debug.print("(VectorConcat: (");
   bool isFirst = true;
   foreach(Element, Elements){
@@ -107,8 +108,22 @@ void VECTORCONCATENATE::Display(){
     isFirst = false;
   }
   Debug.print("))");
-
-  assert(!Right);
-  assert(!Next );
 }
 //------------------------------------------------------------------------------
+
+void VECTORCONCATENATE::ValidateMembers(){
+  assert(Type == TYPE::VectorConcatenate);
+
+  assert(!Next);
+  assert(!Prev);
+
+  assert(!Left);
+  assert(!Right);
+
+  foreach(Element, Elements){
+    assert(*Element);
+    (*Element)->Validate();
+  }
+}
+//------------------------------------------------------------------------------
+

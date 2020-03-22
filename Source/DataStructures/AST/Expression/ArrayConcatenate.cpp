@@ -47,7 +47,10 @@ BASE* ARRAYCONCATENATE::Copy(bool CopyNext){
     Copy->Elements.push_back((EXPRESSION*)(*Element)->Copy(CopyNext));
   }
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -81,8 +84,6 @@ EXPRESSION* ARRAYCONCATENATE::Simplify(bool GenWire){
 //------------------------------------------------------------------------------
 
 void ARRAYCONCATENATE::Display(){
-  assert(!Left);
-
   Debug.print("(ArrayConcat: (");
   bool isFirst = true;
   foreach(Element, Elements){
@@ -91,8 +92,19 @@ void ARRAYCONCATENATE::Display(){
     isFirst = false;
   }
   Debug.print("))");
-
-  assert(!Right);
-  assert(!Next );
 }
 //------------------------------------------------------------------------------
+
+void ARRAYCONCATENATE::ValidateMembers(){
+  assert(Type == TYPE::ArrayConcatenate);
+
+  assert(!Next);
+  assert(!Prev);
+
+  assert(!Left );
+  assert(!Right);
+
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+

@@ -46,7 +46,10 @@ BASE* LOOP_LOOP::Copy(bool CopyNext){
   if(Count     ) Copy->Count      = (decltype(Count     ))Count     ->Copy(CopyNext);
   if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy(CopyNext);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -76,3 +79,11 @@ void LOOP_LOOP::Display(){
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+
+void LOOP_LOOP::ValidateMembers(){
+  assert(Type == TYPE::LoopLoop);
+
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+

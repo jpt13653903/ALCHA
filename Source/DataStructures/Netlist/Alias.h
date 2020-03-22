@@ -34,6 +34,8 @@ namespace NETLIST{
     virtual ~ALIAS();
 
     void Display() override;
+
+    void Validate() override;
   };
 }
 //------------------------------------------------------------------------------

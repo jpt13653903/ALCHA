@@ -47,7 +47,10 @@ BASE* ALIAS::Copy(bool CopyNext){
 
   if(Expression) Copy->Expression = (decltype(Expression))Expression->Copy(CopyNext);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -85,3 +88,11 @@ void ALIAS::Display(){
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+
+void ALIAS::ValidateMembers(){
+  assert(Type == TYPE::Alias);
+  assert(Expression, return);
+  Expression->Validate();
+}
+//------------------------------------------------------------------------------
+

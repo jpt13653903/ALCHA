@@ -33,6 +33,8 @@ namespace NETLIST{
     virtual ~BYTE();
 
     void Display() override;
+
+    void Validate() override;
   };
 }
 //------------------------------------------------------------------------------

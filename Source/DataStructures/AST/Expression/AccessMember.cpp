@@ -48,7 +48,10 @@ BASE* ACCESSMEMBER::Copy(bool CopyNext){
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -73,7 +76,7 @@ EXPRESSION* ACCESSMEMBER::Evaluate(){
 
   if(!this->Left || !this->Right || !this->Right->IsExpression()){
     // Typically caused by a syntax error
-    delete this->Left;
+    if(this->Left) delete this->Left;
     this->Left = 0;
     return 0;
   }
@@ -116,13 +119,11 @@ EXPRESSION* ACCESSMEMBER::Evaluate(){
               Object->ObjectRef = Found->second;
               if(Object->ObjectRef->IsSynthesisable()){
                 auto ObjectRef = (NETLIST::SYNTHESISABLE*)Object->ObjectRef;
-                ObjectRef->Used      = true;
+                ObjectRef->Used = true;
               }
               Result = Object;
             }
           }
-          delete Left;
-          this->Left = 0;
           break;
         }
         default:{
@@ -165,3 +166,15 @@ void ACCESSMEMBER::Display(){
   DisplayEnd();
 }
 //------------------------------------------------------------------------------
+
+void ACCESSMEMBER::ValidateMembers(){
+  assert(Type == TYPE::AccessMember);
+  
+  assert(!Next);
+  assert(!Prev);
+  
+  assert(Left , return); Left ->Validate();
+  assert(Right, return); Right->Validate();
+}
+//------------------------------------------------------------------------------
+

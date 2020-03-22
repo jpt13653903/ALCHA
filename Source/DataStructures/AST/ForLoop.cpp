@@ -48,7 +48,10 @@ BASE* FOR_LOOP::Copy(bool CopyNext){
   if(Range     ) Copy->Range      = (decltype(Range     ))Range     ->Copy(CopyNext);
   if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy(CopyNext);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -77,3 +80,11 @@ void FOR_LOOP::Display(){
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+
+void FOR_LOOP::ValidateMembers(){
+  assert(Type == TYPE::ForLoop);
+
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+

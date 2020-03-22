@@ -55,3 +55,13 @@ void PIN::Display(){
 }
 //------------------------------------------------------------------------------
 
+void PIN::Validate(){
+  assert(Type == TYPE::Pin);
+
+  SYNTHESISABLE::Validate();
+
+  if(Driver ) Driver ->Validate();
+  if(Enabled) Enabled->Validate();
+}
+//------------------------------------------------------------------------------
+

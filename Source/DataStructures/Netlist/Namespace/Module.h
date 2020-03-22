@@ -36,6 +36,8 @@ namespace NETLIST{
       virtual ~MODULE(); // Also cleans up the children
 
       void Display() override;
+
+      void Validate() override;
   };
   //----------------------------------------------------------------------------
 

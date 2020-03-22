@@ -50,7 +50,10 @@ BASE* IDENTIFIER::Copy(bool CopyNext){
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -146,8 +149,11 @@ void IDENTIFIER::Display(){
 
 void IDENTIFIER::ValidateMembers(){
   assert(Type == TYPE::Identifier);
+
+  assert(!Next);
+  assert(!Prev);
   
-  assert(!Left);
+  assert(!Left );
   assert(!Right);
 }
 //------------------------------------------------------------------------------

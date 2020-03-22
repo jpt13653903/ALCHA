@@ -51,7 +51,10 @@ BASE* RTL::Copy(bool CopyNext){
     if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy(CopyNext));
   }
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -85,3 +88,11 @@ void RTL::Display(){
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+
+void RTL::ValidateMembers(){
+  assert(Type == TYPE::RTL);
+
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+

@@ -41,3 +41,12 @@ void ALIAS::Display(){
 }
 //------------------------------------------------------------------------------
 
+void ALIAS::Validate(){
+  assert(Type == TYPE::Alias);
+
+  BASE::Validate();
+
+  if(Expression) Expression->Validate();
+}
+//------------------------------------------------------------------------------
+

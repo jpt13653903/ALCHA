@@ -51,7 +51,10 @@ BASE* FSM::Copy(bool CopyNext){
     if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy(CopyNext));
   }
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -85,3 +88,11 @@ void FSM::Display(){
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+
+void FSM::ValidateMembers(){
+  assert(Type == TYPE::FSM);
+
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+

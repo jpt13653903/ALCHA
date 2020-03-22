@@ -42,7 +42,10 @@ BASE* LESS_EQUAL::Copy(bool CopyNext){
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -95,3 +98,17 @@ void LESS_EQUAL::Display(){
   DisplayEnd();
 }
 //------------------------------------------------------------------------------
+
+void LESS_EQUAL::ValidateMembers(){
+  assert(Type == TYPE::Less_Equal);
+
+  assert(!Next);
+  assert(!Prev);
+
+  // TODO: assert(!Left );
+  // TODO: assert(!Right);
+
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+

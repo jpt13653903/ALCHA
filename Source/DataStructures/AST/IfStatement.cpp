@@ -49,7 +49,10 @@ BASE* IF_STATEMENT::Copy(bool CopyNext){
   if(TrueStatements ) Copy->TrueStatements  = (decltype(TrueStatements ))TrueStatements ->Copy(CopyNext);
   if(FalseStatements) Copy->FalseStatements = (decltype(FalseStatements))FalseStatements->Copy(CopyNext);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -80,3 +83,11 @@ void IF_STATEMENT::Display(){
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+
+void IF_STATEMENT::ValidateMembers(){
+  assert(Type == TYPE::IfStatement);
+
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+

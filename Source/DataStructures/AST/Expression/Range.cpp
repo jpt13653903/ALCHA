@@ -45,7 +45,10 @@ BASE* RANGE::Copy(bool CopyNext){
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
   if(Step ) Copy->Step  = (decltype(Step ))Step ->Copy(CopyNext);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -94,3 +97,17 @@ void RANGE::Display(){
   }
 }
 //------------------------------------------------------------------------------
+
+void RANGE::ValidateMembers(){
+  assert(Type == TYPE::Range);
+
+  assert(!Next);
+  assert(!Prev);
+
+  // TODO: assert(!Left );
+  // TODO: assert(!Right);
+
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+

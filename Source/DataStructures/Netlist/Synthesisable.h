@@ -51,6 +51,8 @@ namespace NETLIST{
       bool IsSynthesisable() override;
 
       bool ApplyParameters(std::list<AST::BASE*>& Parameters);
+
+      void Validate() override;
   };
 }
 //------------------------------------------------------------------------------

@@ -45,7 +45,10 @@ BASE* ACCESSATTRIBUTE::Copy(bool CopyNext){
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 
-  if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
 
   return Copy;
 }
@@ -117,3 +120,15 @@ void ACCESSATTRIBUTE::Display(){
   DisplayEnd();
 }
 //------------------------------------------------------------------------------
+
+void ACCESSATTRIBUTE::ValidateMembers(){
+  assert(Type == TYPE::AccessAttribute);
+  
+  assert(!Next);
+  assert(!Prev);
+
+  if(Left) Left->Validate();
+  assert(Right, return); Right->Validate();
+}
+//------------------------------------------------------------------------------
+
