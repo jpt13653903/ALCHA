@@ -56,9 +56,9 @@ BASE* VECTORCONCATENATE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* VECTORCONCATENATE::RunScripting(){
+bool VECTORCONCATENATE::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -79,7 +79,9 @@ bool VECTORCONCATENATE::GetVerilog(string& Body){
 
 EXPRESSION* VECTORCONCATENATE::Evaluate(){
   auto Array = (VECTORCONCATENATE*)Copy(true);
-  foreach(Element, Array->Elements) (*Element) = (*Element)->Evaluate();
+  foreach(Element, Array->Elements){
+    (*Element) = (*Element)->Evaluate();
+  }
 
   return Array->Simplify(false);
 }

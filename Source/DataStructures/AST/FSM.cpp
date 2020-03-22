@@ -60,9 +60,9 @@ BASE* FSM::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* FSM::RunScripting(){
+bool FSM::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

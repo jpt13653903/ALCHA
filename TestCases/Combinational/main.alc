@@ -1,23 +1,29 @@
-import "../Target/BeMicro Max 10";
+import "../Target/BeMicro Max 10" as Target;
 
-alias LED    = USER_LED;
-alias Button = SW;
+alias LED    = Target.USER_LED;
+alias Button = Target.SW;
 
-LED := :(Button, ~Button);
+// Target.USER_LED = 1;
+Target.LED = 1;
+// Target.USER_LED = Target.Button;
+// Target.USER_LED = Target_Button;
 
-ADT7420.SCL = AD5681R.SCL;
-
-net Data = 0;
-
-ADT7420.SDA'pullup  = true;
-ADT7420.SDA.driver  = 0;
-ADT7420.SDA.enabled = ~Data;
-
-num MyNumber = 1.23456;
-
-net(14, 3 ) TestNet  = GPIO;
-
-pin(14, 3 ) Testing1 =  0.1 *TestNet;
+// 
+// LED := :(Button, ~Button);
+// 
+// Target.ADT7420.SCL = Target.AD5681R.SCL;
+// 
+// net Data = 0;
+// 
+// Target.ADT7420.SDA'pullup  = true;
+// Target.ADT7420.SDA.driver  = 0;
+// Target.ADT7420.SDA.enabled = ~Data;
+// 
+// num MyNumber = 1.23456;
+// 
+// net(14, 3 ) TestNet  = Target.GPIO;
+// 
+// pin(14, 3 ) Testing1 =  0.1 *TestNet;
 // pin(14, 3 ) Testing2 = 10   *TestNet;
 // pin(14, 3 ) Testing3 =  4   *TestNet;
 // pin(14, 3 ) Testing4 =  0.25*TestNet;

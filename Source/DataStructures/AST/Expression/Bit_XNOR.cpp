@@ -51,9 +51,9 @@ BASE* BIT_XNOR::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* BIT_XNOR::RunScripting(){
+bool BIT_XNOR::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

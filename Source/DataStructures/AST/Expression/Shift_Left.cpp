@@ -51,9 +51,9 @@ BASE* SHIFT_LEFT::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* SHIFT_LEFT::RunScripting(){
+bool SHIFT_LEFT::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

@@ -55,9 +55,9 @@ BASE* LITERAL::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* LITERAL::RunScripting(){
+bool LITERAL::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

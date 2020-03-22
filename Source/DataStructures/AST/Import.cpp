@@ -31,10 +31,12 @@ IMPORT::IMPORT(int Line, string& Filename): IMPORT(Line, Filename.c_str()){}
 //------------------------------------------------------------------------------
 
 IMPORT::IMPORT(int Line, const char* Filename): BASE(Line, Filename, TYPE::Import){
+  Ast = 0;
 }
 //------------------------------------------------------------------------------
 
 IMPORT::~IMPORT(){
+  if(Ast) delete Ast;
 }
 //------------------------------------------------------------------------------
 
@@ -53,7 +55,7 @@ BASE* IMPORT::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* IMPORT::RunScripting(){
+bool IMPORT::RunAST(){
   string ImportFilename;
   bool   OwnNamespace = !Namespace.empty();
 
@@ -65,7 +67,7 @@ BASE* IMPORT::RunScripting(){
       Error();
       printf("Symbol \"%s\" already exists in the current namespace\n",
              Namespace.c_str());
-      return 0;
+      return false;
     }
     Module = new NETLIST::MODULE(Source.Line, Source.Filename, Namespace.c_str());
     NETLIST::NamespaceStack.front()->Symbols[Namespace] = Module;
@@ -83,25 +85,17 @@ BASE* IMPORT::RunScripting(){
   SimplifyFilename(ImportFilename);
   Debug.print("\nFilename = %s\n", ImportFilename);
 
-  auto Ast = Engine->RunScripting(ImportFilename.c_str());
-  if(!Ast) return 0;
+  auto Ast = Engine->RunAST(ImportFilename.c_str());
+  if(!Ast) return false;
 
   if(OwnNamespace){
     Module->Ast = Ast;
     NETLIST::NamespaceStack.pop_front();
 
-  }else{ // Inject into the current namespace, after the "import" statement
-    // TODO: Inject in place of the import node instead of after
-    //       But what to return when OwnNamespace is true???
-    auto AstTail = Ast;
-    while(AstTail->Next) AstTail = AstTail->Next;
-    AstTail->Next = Next;
-    AstTail->Next->Prev = AstTail;
-    Next = Ast;
-    Ast->Prev = this;
-    return AstTail;
+  }else{
+    this->Ast = Ast;
   }
-  return this;
+  return true;
 }
 //------------------------------------------------------------------------------
 
@@ -117,12 +111,15 @@ void IMPORT::Display(){
   if(Namespace.empty()) Debug.print("\n");
   else                  Debug.print(" as %s\n", Namespace.c_str());
 
+  if(Ast ) Ast ->Display();
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
 
 void IMPORT::ValidateMembers(){
   assert(Type == TYPE::Import);
+
+  if(Ast) Ast->Validate();
 }
 //------------------------------------------------------------------------------
 

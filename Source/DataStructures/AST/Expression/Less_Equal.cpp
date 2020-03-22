@@ -51,9 +51,9 @@ BASE* LESS_EQUAL::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* LESS_EQUAL::RunScripting(){
+bool LESS_EQUAL::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

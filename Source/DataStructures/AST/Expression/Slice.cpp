@@ -51,9 +51,9 @@ BASE* SLICE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* SLICE::RunScripting(){
+bool SLICE::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

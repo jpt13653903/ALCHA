@@ -56,9 +56,9 @@ BASE* ARRAY::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* ARRAY::RunScripting(){
+bool ARRAY::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

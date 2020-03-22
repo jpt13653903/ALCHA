@@ -37,16 +37,16 @@ ENGINE::~ENGINE(){
 }
 //------------------------------------------------------------------------------
 
-AST::BASE* ENGINE::RunScripting(const char* Filename){
+AST::BASE* ENGINE::RunAST(const char* Filename){
   AST::BASE* Ast = Parser.Run(Filename);
   if(!Ast) return 0;
 
   auto Node = Ast;
   while(Node){
-    Node = Node->RunScripting();
-    if(!Node){
-      delete Ast;
-      return 0;
+    if(!Node->RunAST()){
+      return Ast;
+      // delete Ast; // TODO: Running this breaks the clean-up stage -- fix
+      // return 0;
     }
     Node = Node->Next;
   }
@@ -59,7 +59,7 @@ bool ENGINE::Run(const char* Filename){
 
   NETLIST::NamespaceStack.push_front(&NETLIST::Global);
 
-  NETLIST::Global.Ast = RunScripting(Filename);
+  NETLIST::Global.Ast = RunAST(Filename);
 
   #ifdef DEBUG
     Debug.print(ANSI_FG_GREEN "\nDisplaying Global AST ");
@@ -68,8 +68,13 @@ bool ENGINE::Run(const char* Filename){
     if(NETLIST::Global.Ast) NETLIST::Global.Ast->Display();
     else                    Debug.print("AST is empty\n");
 
+    Debug.print(ANSI_FG_GREEN "\nDisplaying Global Symbols ");
+    Debug.print(Filename);
+    Debug.print(" -------------------------------------\n\n" ANSI_RESET);
+    NETLIST::Global.Display();
+
     foreach(Namespace, NETLIST::NamespaceStack){
-      (*Namespace)->Ast->Validate();
+      if((*Namespace)->Ast) (*Namespace)->Ast->Validate();
     }
     NETLIST::Global.Validate();
   #endif

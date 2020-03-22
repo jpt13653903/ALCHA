@@ -54,9 +54,9 @@ BASE* RANGE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* RANGE::RunScripting(){
+bool RANGE::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

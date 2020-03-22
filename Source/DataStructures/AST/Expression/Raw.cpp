@@ -51,9 +51,9 @@ BASE* RAW::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* RAW::RunScripting(){
+bool RAW::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

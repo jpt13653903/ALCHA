@@ -51,9 +51,9 @@ BASE* INCREMENT::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* INCREMENT::RunScripting(){
+bool INCREMENT::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

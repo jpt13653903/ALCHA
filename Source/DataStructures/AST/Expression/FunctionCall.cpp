@@ -58,9 +58,9 @@ BASE* FUNCTIONCALL::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* FUNCTIONCALL::RunScripting(){
+bool FUNCTIONCALL::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

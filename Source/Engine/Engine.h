@@ -35,13 +35,12 @@ class ENGINE{
   //----------------------------------------------------------------------------
 
   public: // Engine functions
-    /* Builds the namespace tree:
-     * - Parse the file
-     * - Create instances of global objects (scripting variables, net and pins)
-     * - Evaluate the scripting statements
-     * - Import files into the specified namespaces
-     */
-    AST::BASE* RunScripting(const char* Filename);
+    // Parses the file and runs through the resulting AST:
+    // - Builds the namespaces
+    // - Creates object instances
+    // - Evaluates scripting expressions
+    // - Runs import statements
+    AST::BASE* RunAST(const char* Filename);
   //----------------------------------------------------------------------------
 
   public:

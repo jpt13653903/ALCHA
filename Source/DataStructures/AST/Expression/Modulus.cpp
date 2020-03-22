@@ -51,9 +51,9 @@ BASE* MODULUS::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* MODULUS::RunScripting(){
+bool MODULUS::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

@@ -55,9 +55,9 @@ BASE* WHILE_LOOP::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* WHILE_LOOP::RunScripting(){
+bool WHILE_LOOP::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

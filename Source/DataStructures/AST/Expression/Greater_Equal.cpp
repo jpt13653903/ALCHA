@@ -51,9 +51,9 @@ BASE* GREATER_EQUAL::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* GREATER_EQUAL::RunScripting(){
+bool GREATER_EQUAL::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

@@ -73,9 +73,9 @@ BASE* ENUM_DEFINITION::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* ENUM_DEFINITION::RunScripting(){
+bool ENUM_DEFINITION::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

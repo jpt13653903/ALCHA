@@ -51,9 +51,9 @@ BASE* DIVIDE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* DIVIDE::RunScripting(){
+bool DIVIDE::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

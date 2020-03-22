@@ -56,9 +56,9 @@ BASE* ARRAYCONCATENATE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* ARRAYCONCATENATE::RunScripting(){
+bool ARRAYCONCATENATE::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

@@ -56,20 +56,21 @@ BASE* ALIAS::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* ALIAS::RunScripting(){
+bool ALIAS::RunAST(){
   auto Symbol = NETLIST::NamespaceStack.front()->Symbols.find(Identifier);
   if(Symbol != NETLIST::NamespaceStack.front()->Symbols.end()){
     Error();
     printf("Symbol \"%s\" already defined in the current namespace\n",
            Identifier.c_str());
-    return 0;
+    return false;
   }
 
   auto Object = new NETLIST::ALIAS(Source.Line, Source.Filename, Identifier.c_str(), Expression);
+  Expression = 0; // It's been moved to Object, so remove it from this node.
 
   NETLIST::NamespaceStack.front()->Symbols[Object->Name] = Object;
 
-  return this;
+  return true;
 }
 //------------------------------------------------------------------------------
 
@@ -83,7 +84,8 @@ void ALIAS::Display(){
   DisplayInfo();
   Debug.print("Alias (%s):\n", Identifier.c_str());
 
-  Expression->Display();
+  if(Expression) Expression->Display();
+  else           Debug.print("{Moved Expression}\n");
 
   if(Next) Next->Display();
 }
@@ -91,8 +93,7 @@ void ALIAS::Display(){
 
 void ALIAS::ValidateMembers(){
   assert(Type == TYPE::Alias);
-  assert(Expression, return);
-  Expression->Validate();
+  if(Expression) Expression->Validate();
 }
 //------------------------------------------------------------------------------
 

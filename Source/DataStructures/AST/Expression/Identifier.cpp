@@ -59,9 +59,9 @@ BASE* IDENTIFIER::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* IDENTIFIER::RunScripting(){
+bool IDENTIFIER::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

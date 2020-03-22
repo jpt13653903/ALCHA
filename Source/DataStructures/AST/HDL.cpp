@@ -60,9 +60,9 @@ BASE* HDL::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* HDL::RunScripting(){
+bool HDL::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

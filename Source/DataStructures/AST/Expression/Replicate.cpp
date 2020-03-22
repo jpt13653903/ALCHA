@@ -51,9 +51,9 @@ BASE* REPLICATE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* REPLICATE::RunScripting(){
+bool REPLICATE::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

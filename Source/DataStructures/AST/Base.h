@@ -158,10 +158,12 @@ namespace AST{
       // Returns a copy of this instance
       virtual BASE* Copy(bool CopyNext) = 0;
 
-      // Runs scripting commands and creates instances in the namespace tree
-      // It potentially changes the node, in which case the new node is 
-      // returned.
-      virtual BASE* RunScripting() = 0;
+      // Runs through the AST:
+      // - Builds the namespaces
+      // - Creates object instances
+      // - Evaluates scripting expressions
+      // - Runs import statements
+      virtual bool RunAST() = 0;
 
       // Appends the Verilog code of this node to Body
       virtual bool GetVerilog(std::string& Body) = 0;

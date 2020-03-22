@@ -51,9 +51,9 @@ BASE* FACTORIAL::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* FACTORIAL::RunScripting(){
+bool FACTORIAL::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

@@ -66,9 +66,9 @@ BASE* PARAMETER::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* PARAMETER::RunScripting(){
+bool PARAMETER::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

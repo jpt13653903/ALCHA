@@ -51,9 +51,9 @@ BASE* NOR_REDUCE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* NOR_REDUCE::RunScripting(){
+bool NOR_REDUCE::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

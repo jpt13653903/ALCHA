@@ -59,10 +59,10 @@ BASE* AST::GROUP::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* AST::GROUP::RunScripting(){
+bool AST::GROUP::RunAST(){
   if(Identifier.empty()){
     error("Anonymous groups not supported yet");
-    return 0;
+    return false;
   }
 
   auto Found = NETLIST::NamespaceStack.front()->Symbols.find(Identifier);
@@ -70,22 +70,22 @@ BASE* AST::GROUP::RunScripting(){
     Error();
     printf("Symbol \"%s\" already exists in the current namespace\n",
            Identifier.c_str());
-    return 0;
+    return false;
   }
   auto Object = new NETLIST::GROUP(Source.Line, Source.Filename, Identifier.c_str());
   Object->ApplyAttributes(Attributes);
   NETLIST::NamespaceStack.front()->Symbols[Identifier] = Object;
   NETLIST::NamespaceStack.push_front(Object);
 
+  bool Result  = true;
   auto Element = Body;
-  while(Element){
-    Element = Element->RunScripting();
-    if(!Element) return 0;
+  while(Result && Element){
+    Result  = Element->RunAST();
     Element = Element->Next;
   }
 
   NETLIST::NamespaceStack.pop_front();
-  return this;
+  return Result;
 }
 //------------------------------------------------------------------------------
 

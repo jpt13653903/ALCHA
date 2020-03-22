@@ -214,10 +214,9 @@ bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List){
       break;
 
     case TYPE::AccessMember:{
-      if(!Node->Left || !Node->Right || !Node->Right->IsExpression()){
-        error("Invalid member access expression");
-        return 0;
-      }
+      assert(Node->Left                 , return false);
+      assert(Node->Right                , return false);
+      assert(Node->Right->IsExpression(), return false);
 
       target_list LeftList;
       if(!GetLHS(Node->Left, LeftList)) return false;
@@ -337,37 +336,37 @@ bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List){
 }
 //------------------------------------------------------------------------------
 
-BASE* ASSIGNMENT::RunScripting(){
-  target_list Left;
-  EXPRESSION* Right;
+bool ASSIGNMENT::RunAST(){
+  target_list TargetList;
+  EXPRESSION* Expression;
   EXPRESSION* Temp;
 
-  if(!GetLHS(this->Left, Left)) return 0;
-  if(Left.empty()){
+  if(!GetLHS(Left, TargetList)) return false;
+  if(TargetList.empty()){
     Error("Target object list is empty");
-    return 0;
+    return false;
   }
 
-  if(Left.size() > 1){
+  if(TargetList.size() > 1){
     error("Multiple assignment targets not supported yet");
-    return 0;
+    return false;
   }
 
-  Right = this->Right->Evaluate();
-  if(!Right){
+  Expression = Right->Evaluate();
+  if(!Expression){
     // This is ok -- generally caused by a syntax or semantic error, but should
     // halt further compilation anyway
-    return 0;
+    return false;
   }
 
-  NETLIST::BASE* Object = Left.front().Object;
+  NETLIST::BASE* Object = TargetList.front().Object;
   if(!Object){
     error("Unexpected null reference");
-    return 0;
+    return false;
   }
 
   EXPRESSION*  ScriptTarget = 0;
-  EXPRESSION** Target = Left.front().Expression;
+  EXPRESSION** Target = TargetList.front().Expression;
   if(!Target){
     switch(Object->Type){
       case NETLIST::BASE::TYPE::Byte:
@@ -381,16 +380,16 @@ BASE* ASSIGNMENT::RunScripting(){
 
       default:
         error("Unexpected null reference");
-        return 0;
+        return false;
     }
   }
 
   bool RawAssign = true;
 
-  if(Right->Type == TYPE::Literal){
+  if(Expression->Type == TYPE::Literal){
     if(Object->IsSynthesisable()){
       auto Synth   = (NETLIST::SYNTHESISABLE*)Object;
-      auto Literal = (LITERAL*)Right;
+      auto Literal = (LITERAL*)Expression;
       Literal->Signed = Synth->Signed;
       Literal->Width  = Synth->Width;
     }
@@ -400,13 +399,13 @@ BASE* ASSIGNMENT::RunScripting(){
     case ASSIGNMENT_TYPE::Assign:
       RawAssign = false;
       if(*Target) delete *Target;
-      *Target = Right;
+      *Target = Expression;
       break;
 
     case ASSIGNMENT_TYPE::Raw_Assign:
       RawAssign = true;
       if(*Target) delete *Target;
-      *Target = Right;
+      *Target = Expression;
       break;
 
     case ASSIGNMENT_TYPE::Append_Assign:
@@ -414,14 +413,14 @@ BASE* ASSIGNMENT::RunScripting(){
       if(*Target){
         Temp = new ARRAYCONCATENATE(Source.Line, Source.Filename);
         Temp->Left  = *Target;
-        Temp->Right = Right;
+        Temp->Right = Expression;
         *Target     = Temp;
         break;
       }else{
         Error("Append-Assign with null target");
-        delete Right;
+        delete Expression;
         if(ScriptTarget) delete ScriptTarget;
-        return 0;
+        return false;
       }
 
     case ASSIGNMENT_TYPE::Add_Assign:
@@ -429,14 +428,14 @@ BASE* ASSIGNMENT::RunScripting(){
       if(*Target){
         Temp = new ADD(Source.Line, Source.Filename);
         Temp->Left  = *Target;
-        Temp->Right = Right;
+        Temp->Right = Expression;
         *Target     = Temp;
         break;
       }else{
         Error("Add-Assign with null target");
-        delete Right;
+        delete Expression;
         if(ScriptTarget) delete ScriptTarget;
-        return 0;
+        return false;
       }
 
     case ASSIGNMENT_TYPE::Subtract_Assign:
@@ -444,14 +443,14 @@ BASE* ASSIGNMENT::RunScripting(){
       if(*Target){
         Temp = new SUBTRACT(Source.Line, Source.Filename);
         Temp->Left  = *Target;
-        Temp->Right = Right;
+        Temp->Right = Expression;
         *Target     = Temp;
         break;
       }else{
         Error("Subtract-Assign with null target");
-        delete Right;
+        delete Expression;
         if(ScriptTarget) delete ScriptTarget;
-        return 0;
+        return false;
       }
 
     case ASSIGNMENT_TYPE::Multiply_Assign:
@@ -459,14 +458,14 @@ BASE* ASSIGNMENT::RunScripting(){
       if(*Target){
         Temp = new MULTIPLY(Source.Line, Source.Filename);
         Temp->Left  = *Target;
-        Temp->Right = Right;
+        Temp->Right = Expression;
         *Target = Temp;
         break;
       }else{
         Error("Multiply-Assign with null target");
-        delete Right;
+        delete Expression;
         if(ScriptTarget) delete ScriptTarget;
-        return 0;
+        return false;
       }
 
     case ASSIGNMENT_TYPE::Divide_Assign:
@@ -474,14 +473,14 @@ BASE* ASSIGNMENT::RunScripting(){
       if(*Target){
         Temp = new DIVIDE(Source.Line, Source.Filename);
         Temp->Left  = *Target;
-        Temp->Right = Right;
+        Temp->Right = Expression;
         *Target     = Temp;
         break;
       }else{
         Error("Divide-Assign with null target");
-        delete Right;
+        delete Expression;
         if(ScriptTarget) delete ScriptTarget;
-        return 0;
+        return false;
       }
 
     case ASSIGNMENT_TYPE::Modulus_Assign:
@@ -489,14 +488,14 @@ BASE* ASSIGNMENT::RunScripting(){
       if(*Target){
         Temp = new MODULUS(Source.Line, Source.Filename);
         Temp->Left  = *Target;
-        Temp->Right = Right;
+        Temp->Right = Expression;
         *Target     = Temp;
         break;
       }else{
         Error("Modulus-Assign with null target");
-        delete Right;
+        delete Expression;
         if(ScriptTarget) delete ScriptTarget;
-        return 0;
+        return false;
       }
 
     case ASSIGNMENT_TYPE::Exponential_Assign:
@@ -504,14 +503,14 @@ BASE* ASSIGNMENT::RunScripting(){
       if(*Target){
         Temp = new EXPONENTIAL(Source.Line, Source.Filename);
         Temp->Left  = *Target;
-        Temp->Right = Right;
+        Temp->Right = Expression;
         *Target     = Temp;
         break;
       }else{
         Error("Exponential-Assign with null target");
-        delete Right;
+        delete Expression;
         if(ScriptTarget) delete ScriptTarget;
-        return 0;
+        return false;
       }
 
     case ASSIGNMENT_TYPE::AND_Assign:
@@ -519,14 +518,14 @@ BASE* ASSIGNMENT::RunScripting(){
       if(*Target){
         Temp = new BIT_AND(Source.Line, Source.Filename);
         Temp->Left  = *Target;
-        Temp->Right = Right;
+        Temp->Right = Expression;
         *Target     = Temp;
         break;
       }else{
         Error("AND-Assign with null target");
-        delete Right;
+        delete Expression;
         if(ScriptTarget) delete ScriptTarget;
-        return 0;
+        return false;
       }
 
     case ASSIGNMENT_TYPE::OR_Assign:
@@ -534,14 +533,14 @@ BASE* ASSIGNMENT::RunScripting(){
       if(*Target){
         Temp = new BIT_OR(Source.Line, Source.Filename);
         Temp->Left  = *Target;
-        Temp->Right = Right;
+        Temp->Right = Expression;
         *Target     = Temp;
         break;
       }else{
         Error("OR-Assign with null target");
-        delete Right;
+        delete Expression;
         if(ScriptTarget) delete ScriptTarget;
-        return 0;
+        return false;
       }
 
     case ASSIGNMENT_TYPE::XOR_Assign:
@@ -549,14 +548,14 @@ BASE* ASSIGNMENT::RunScripting(){
       if(*Target){
         Temp = new BIT_XOR(Source.Line, Source.Filename);
         Temp->Left  = *Target;
-        Temp->Right = Right;
+        Temp->Right = Expression;
         *Target     = Temp;
         break;
       }else{
         Error("XOR-Assign with null target");
-        delete Right;
+        delete Expression;
         if(ScriptTarget) delete ScriptTarget;
-        return 0;
+        return false;
       }
 
     case ASSIGNMENT_TYPE::Shift_Left_Assign:
@@ -564,14 +563,14 @@ BASE* ASSIGNMENT::RunScripting(){
       if(*Target){
         Temp = new SHIFT_LEFT(Source.Line, Source.Filename);
         Temp->Left  = *Target;
-        Temp->Right = Right;
+        Temp->Right = Expression;
         *Target     = Temp;
         break;
       }else{
         Error("Shift-Assign with null target");
-        delete Right;
+        delete Expression;
         if(ScriptTarget) delete ScriptTarget;
-        return 0;
+        return false;
       }
 
     case ASSIGNMENT_TYPE::Shift_Right_Assign:
@@ -579,21 +578,21 @@ BASE* ASSIGNMENT::RunScripting(){
       if(*Target){
         Temp = new SHIFT_RIGHT(Source.Line, Source.Filename);
         Temp->Left  = *Target;
-        Temp->Right = Right;
+        Temp->Right = Expression;
         *Target     = Temp;
         break;
       }else{
         Error("Shift-Assign with null target");
-        delete Right;
+        delete Expression;
         if(ScriptTarget) delete ScriptTarget;
-        return 0;
+        return false;
       }
 
     default:
       error("Unknown assignment type: %d", (int)AssignmentType);
-      delete Right;
+      delete Expression;
       if(ScriptTarget) delete ScriptTarget;
-      return 0;
+      return false;
   }
   *Target = (*Target)->Simplify(false);
 
@@ -643,7 +642,7 @@ BASE* ASSIGNMENT::RunScripting(){
           // TODO Check that the RHS is non-synthesisable
           error("Not yet implemented");
           delete ScriptTarget;
-          return 0;
+          return false;
         }
         break;
       }
@@ -653,7 +652,7 @@ BASE* ASSIGNMENT::RunScripting(){
     }
     delete ScriptTarget;
   }
-  return this;
+  return true;
 }
 //------------------------------------------------------------------------------
 

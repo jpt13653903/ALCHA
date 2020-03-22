@@ -30,6 +30,7 @@ ALIAS::ALIAS(int Line, const std::string& Filename, const char* Name, AST::EXPRE
 //------------------------------------------------------------------------------
 
 ALIAS::~ALIAS(){
+  if(Expression) delete Expression;
 }
 //------------------------------------------------------------------------------
 

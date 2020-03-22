@@ -54,8 +54,8 @@ namespace AST{
 
     BASE* Copy(bool CopyNext) override;
 
-    BASE* RunScripting() override;
-    bool  GetVerilog(std::string& Body) override;
+    bool RunAST() override;
+    bool GetVerilog(std::string& Body) override;
 
     void Display() override;
 

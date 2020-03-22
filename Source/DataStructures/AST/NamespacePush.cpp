@@ -55,9 +55,9 @@ BASE* NAMESPACE_PUSH::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* NAMESPACE_PUSH::RunScripting(){
+bool NAMESPACE_PUSH::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 

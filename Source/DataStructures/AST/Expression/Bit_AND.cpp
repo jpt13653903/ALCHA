@@ -51,9 +51,9 @@ BASE* BIT_AND::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-BASE* BIT_AND::RunScripting(){
+bool BIT_AND::RunAST(){
   error("Not yet implemented");
-  return 0;
+  return false;
 }
 //------------------------------------------------------------------------------
 
