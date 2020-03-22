@@ -35,28 +35,6 @@ IDENTIFIER::IDENTIFIER(int Line, const string& Filename): IDENTIFIER(Line, Filen
 //------------------------------------------------------------------------------
 
 IDENTIFIER::IDENTIFIER(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Identifier){
-  // TODO: Maybe pull constants into a class of their own?
-  Constants["e" ].Set_e ();
-  Constants["π" ].Set_pi();
-  Constants["pi"].Set_pi();
-  Constants["i" ].Set_i ();
-  Constants["j" ].Set_i ();
-
-  time_t RawTime;
-  struct tm* Time;
-
-  time(&RawTime);
-  Time = localtime(&RawTime);
-
-  Constants["__YEAR__"   ] = Time->tm_year+1900;
-  Constants["__MONTH__"  ] = Time->tm_mon+1;
-  Constants["__DAY__"    ] = Time->tm_mday;
-  Constants["__HOUR__"   ] = Time->tm_hour;
-  Constants["__MINUTE__" ] = Time->tm_min;
-  Constants["__SECOND__" ] = Time->tm_sec;
-
-  Constants["__WEEKDAY__"] = ((Time->tm_wday+6)%7)+1;
-  Constants["__YEARDAY__"] = Time->tm_yday+1;
 }
 //------------------------------------------------------------------------------
 
@@ -75,16 +53,6 @@ BASE* IDENTIFIER::Copy(bool CopyNext){
   if(CopyNext && Next) Copy->Next = Next->Copy(CopyNext);
 
   return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool IDENTIFIER::GetConstant(const string& Name, NUMBER* Constant){
-  auto Result = Constants.find(Name);
-  if(Result == Constants.end()) return false;
-
-  *Constant = Result->second;
-
-  return true;
 }
 //------------------------------------------------------------------------------
 
@@ -140,7 +108,7 @@ EXPRESSION* IDENTIFIER::Evaluate(){
   }
   if(!Result){
     NUMBER Constant;
-    if(GetConstant(this->Name.c_str(), &Constant)){
+    if(Constants.GetConstant(this->Name.c_str(), &Constant)){
       Result = new LITERAL(Source.Line, Source.Filename);
       ((LITERAL*)Result)->Value = Constant;
     }else{
@@ -175,3 +143,12 @@ void IDENTIFIER::Display(){
   DisplayEnd();
 }
 //------------------------------------------------------------------------------
+
+void IDENTIFIER::ValidateMembers(){
+  assert(Type == TYPE::Identifier);
+  
+  assert(!Left);
+  assert(!Right);
+}
+//------------------------------------------------------------------------------
+

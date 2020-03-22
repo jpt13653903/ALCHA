@@ -18,34 +18,31 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Expression_Identifier_h
-#define AST_Expression_Identifier_h
+#ifndef Constants_h
+#define Constants_h
 //------------------------------------------------------------------------------
 
-#include "../Expression.h"
-#include "Constants.h"
+#include <map>
+#include <string>
+#include <time.h>
 //------------------------------------------------------------------------------
 
-namespace AST{
-  struct IDENTIFIER: public EXPRESSION{
-    std::string Name;
+#include "Number.h"
+//------------------------------------------------------------------------------
 
-    IDENTIFIER(int Line, const std::string& Filename);
-    IDENTIFIER(int Line, const char*        Filename);
-   ~IDENTIFIER();
+class CONSTANTS{
+  private:
+    std::map<std::string, NUMBER> Constants;
 
-    BASE* Copy(bool CopyNext) override;
+  public:
+    CONSTANTS();
+   ~CONSTANTS();
 
-    BASE* RunScripting() override;
-    bool  GetVerilog(std::string& Body) override;
-    EXPRESSION* Evaluate() override;
-    EXPRESSION* Simplify(bool GenWire) override;
+    bool GetConstant(const std::string& Name, NUMBER* Constant);
+};
+//------------------------------------------------------------------------------
 
-    void Display() override;
-
-    void ValidateMembers() override;
-  };
-}
+extern CONSTANTS Constants;
 //------------------------------------------------------------------------------
 
 #endif

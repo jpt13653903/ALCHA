@@ -174,6 +174,7 @@ Objects += $(ObjectPath)/FrontEnd/Scanner.o
 Objects += $(ObjectPath)/FrontEnd/Token.o
 
 Objects += $(ObjectPath)/Engine/Engine.o
+Objects += $(ObjectPath)/Engine/Constants.o
 
 Objects += $(ObjectPath)/BackEnd/BackEnd.o
 Objects += $(ObjectPath)/BackEnd/SDC.o

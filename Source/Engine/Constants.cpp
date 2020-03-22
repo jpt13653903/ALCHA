@@ -18,36 +18,51 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Expression_Identifier_h
-#define AST_Expression_Identifier_h
-//------------------------------------------------------------------------------
-
-#include "../Expression.h"
 #include "Constants.h"
 //------------------------------------------------------------------------------
 
-namespace AST{
-  struct IDENTIFIER: public EXPRESSION{
-    std::string Name;
+CONSTANTS Constants;
+//------------------------------------------------------------------------------
 
-    IDENTIFIER(int Line, const std::string& Filename);
-    IDENTIFIER(int Line, const char*        Filename);
-   ~IDENTIFIER();
+using namespace std;
+//------------------------------------------------------------------------------
 
-    BASE* Copy(bool CopyNext) override;
+CONSTANTS::CONSTANTS(){
+  Constants["e" ].Set_e ();
+  Constants["π" ].Set_pi();
+  Constants["pi"].Set_pi();
+  Constants["i" ].Set_i ();
+  Constants["j" ].Set_i ();
 
-    BASE* RunScripting() override;
-    bool  GetVerilog(std::string& Body) override;
-    EXPRESSION* Evaluate() override;
-    EXPRESSION* Simplify(bool GenWire) override;
+  time_t RawTime;
+  struct tm* Time;
 
-    void Display() override;
+  time(&RawTime);
+  Time = localtime(&RawTime);
 
-    void ValidateMembers() override;
-  };
+  Constants["__YEAR__"   ] = Time->tm_year+1900;
+  Constants["__MONTH__"  ] = Time->tm_mon+1;
+  Constants["__DAY__"    ] = Time->tm_mday;
+  Constants["__HOUR__"   ] = Time->tm_hour;
+  Constants["__MINUTE__" ] = Time->tm_min;
+  Constants["__SECOND__" ] = Time->tm_sec;
+
+  Constants["__WEEKDAY__"] = ((Time->tm_wday+6)%7)+1;
+  Constants["__YEARDAY__"] = Time->tm_yday+1;
 }
 //------------------------------------------------------------------------------
 
-#endif
+CONSTANTS::~CONSTANTS(){
+}
+//------------------------------------------------------------------------------
+
+bool CONSTANTS::GetConstant(const string& Name, NUMBER* Constant){
+  auto Result = Constants.find(Name);
+  if(Result == Constants.end()) return false;
+
+  *Constant = Result->second;
+
+  return true;
+}
 //------------------------------------------------------------------------------
 
