@@ -67,6 +67,10 @@ bool ENGINE::Run(const char* Filename){
     Debug.print(" -------------------------------------\n\n" ANSI_RESET);
     if(NETLIST::Global.Ast) NETLIST::Global.Ast->Display();
     else                    Debug.print("AST is empty\n");
+
+    foreach(Namespace, NETLIST::NamespaceStack){
+      (*Namespace)->Ast->ValidateList();
+    }
   #endif
 
   return NETLIST::Global.Ast;

@@ -71,7 +71,7 @@ EXPRESSION* ACCESSMEMBER::Evaluate(){
 
   if(this->Left) this->Left = this->Left->Evaluate();
 
-  if(!this->Left || !this->Right || this->Right->Type <= TYPE::Expression){
+  if(!this->Left || !this->Right || !this->Right->IsExpression()){
     // Typically caused by a syntax error
     delete this->Left;
     this->Left = 0;
@@ -114,8 +114,7 @@ EXPRESSION* ACCESSMEMBER::Evaluate(){
             }else{
               OBJECT* Object = new OBJECT(Source.Line, Source.Filename);
               Object->ObjectRef = Found->second;
-              if(Object->ObjectRef->Type == NETLIST::BASE::TYPE::Pin ||
-                 Object->ObjectRef->Type == NETLIST::BASE::TYPE::Net ){
+              if(Object->ObjectRef->IsSynthesisable()){
                 auto ObjectRef = (NETLIST::SYNTHESISABLE*)Object->ObjectRef;
                 ObjectRef->Used      = true;
               }

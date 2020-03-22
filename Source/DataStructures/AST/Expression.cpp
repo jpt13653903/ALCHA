@@ -38,6 +38,11 @@ EXPRESSION::~EXPRESSION(){
 }
 //------------------------------------------------------------------------------
 
+bool EXPRESSION::IsExpression(){
+  return true;
+}
+//------------------------------------------------------------------------------
+
 void EXPRESSION::DisplayStart(){
   if(Left){
     if(Left->Left || Left->Right) Debug.print("(");
@@ -51,7 +56,7 @@ void EXPRESSION::DisplayEnd(){
   if(Right){
     EXPRESSION* ExprRight;
     ASSIGNMENT* AssignRight;
-    if(Right->Type > TYPE::Expression){
+    if(Right->IsExpression()){
       ExprRight = (EXPRESSION*)Right;
       if(ExprRight->Left || ExprRight->Right || ExprRight->Next) Debug.print("(");
       ExprRight->Display();

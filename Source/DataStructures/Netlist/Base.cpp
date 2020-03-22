@@ -27,8 +27,6 @@ using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-
 BASE::BASE(int Line, const string& Filename, const char* Name, TYPE Type){
   Source.Line      = Line;
   Source.Filename  = Filename;
@@ -53,6 +51,16 @@ BASE::BASE(int Line, const string& Filename, const char* Name, TYPE Type){
 
 BASE::~BASE(){
   foreach(a, Attributes) delete a->second;
+}
+//------------------------------------------------------------------------------
+
+bool BASE::IsSynthesisable(){
+  return false;
+}
+//------------------------------------------------------------------------------
+
+bool BASE::IsNamespace(){
+  return false;
 }
 //------------------------------------------------------------------------------
 

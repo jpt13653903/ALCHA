@@ -31,10 +31,8 @@ namespace AST{
     SHIFT_RIGHT(int Line, const char*        Filename);
    ~SHIFT_RIGHT();
 
-    // Returns a copy of this instance
     BASE* Copy(bool CopyNext) override;
 
-    // Runs scripting commands and creates instances in the namespace tree
     BASE* RunScripting() override;
     bool  GetVerilog(std::string& Body) override;
     EXPRESSION* Evaluate() override;

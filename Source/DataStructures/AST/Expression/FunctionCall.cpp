@@ -83,7 +83,7 @@ EXPRESSION* FUNCTIONCALL::Simplify(bool GenWire){
   Left = Left->Simplify(true);
   if(!Parameters.empty()){
     foreach(Parameter, Parameters){
-      assert((*Parameter)->Type > TYPE::Expression, return this);
+      assert((*Parameter)->IsExpression(), return this);
       (*Parameter) = ((EXPRESSION*)(*Parameter))->Simplify(true);
     }
   }

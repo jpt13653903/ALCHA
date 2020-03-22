@@ -38,12 +38,17 @@ SYNTHESISABLE::~SYNTHESISABLE(){
 }
 //------------------------------------------------------------------------------
 
+bool SYNTHESISABLE::IsSynthesisable(){
+  return true;
+}
+//------------------------------------------------------------------------------
+
 bool SYNTHESISABLE::ApplyParameters(list<AST::BASE*>& Parameters){
   int  Position          = 0; // Negative => named parameters
   bool ExplicitFullScale = false;
 
   foreach(Parameter, Parameters){
-    if((*Parameter)->Type > AST::BASE::TYPE::Expression){
+    if((*Parameter)->IsExpression()){
       if(Position < 0) return false; // Mixing named and positional parameters
 
       AST::EXPRESSION* Param = ((AST::EXPRESSION*)(*Parameter))->Evaluate();

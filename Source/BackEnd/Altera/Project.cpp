@@ -153,7 +153,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
             }
             for(int n = 0; n < Pin->Width; n++){
               AST::BASE* Temp = LocationArray->Elements[n];
-              assert(Temp && Temp->Type > AST::BASE::TYPE::Expression, return false);
+              assert(Temp && Temp->IsExpression(), return false);
               AST::EXPRESSION* Element = (AST::EXPRESSION*)Temp;
               if(Element->Type != AST::BASE::TYPE::String){
                 Error(Element, "Pin location not a string");

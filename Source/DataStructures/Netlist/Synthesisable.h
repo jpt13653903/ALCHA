@@ -48,6 +48,8 @@ namespace NETLIST{
                SYNTHESISABLE(int Line, const std::string& Filename, const char* Name, TYPE Type);
       virtual ~SYNTHESISABLE();
 
+      bool IsSynthesisable() override;
+
       bool ApplyParameters(std::list<AST::BASE*>& Parameters);
   };
 }
@@ -55,3 +57,4 @@ namespace NETLIST{
 
 #endif
 //------------------------------------------------------------------------------
+

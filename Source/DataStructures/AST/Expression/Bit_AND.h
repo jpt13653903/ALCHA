@@ -31,10 +31,8 @@ namespace AST{
     BIT_AND(int Line, const char*        Filename);
    ~BIT_AND();
 
-    // Returns a copy of this instance
     BASE* Copy(bool CopyNext) override;
 
-    // Runs scripting commands and creates instances in the namespace tree
     BASE* RunScripting() override;
     bool  GetVerilog(std::string& Body) override;
     EXPRESSION* Evaluate() override;

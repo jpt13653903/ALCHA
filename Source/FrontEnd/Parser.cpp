@@ -121,8 +121,12 @@ AST::ASSIGNMENT* PARSER::AttributeList(){
       if(Head) delete Head;
       return 0;
     }
-    if(Tail) Tail->Next = Node;
-    else     Head       = Node;
+    if(Tail){
+      Tail->Next = Node;
+      Node->Prev = Tail;
+    }else{
+      Head = Node;
+    }
     Tail = Node;
 
     if(Token.Type == TOKEN::TYPE::CloseAngle){
@@ -544,6 +548,7 @@ AST::EXPRESSION* PARSER::CastEpr(AST::EXPRESSION* Node){
         delete Node;
         return 0;
       }
+      Node->Right->Next->Prev = Node->Right;
     }
     if(Token.Type != TOKEN::TYPE::CloseRound){
       Error(") expected");
@@ -1173,6 +1178,7 @@ AST::EXPRESSION* PARSER::Expression(){
       delete Node;
       return 0;
     }
+    Node->Right->Next->Prev = Node->Right;
   }
   return Node;
 }
@@ -1351,7 +1357,8 @@ AST::PARAMETER* PARSER::DefParameterList(){
   while(Token.Type == TOKEN::TYPE::Comma){
     GetToken();
     Node->Next = DefParameter();
-    Node       = (AST::PARAMETER*)Node->Next;
+    if(Node->Next) Node->Next->Prev = Node;
+    Node = (AST::PARAMETER*)Node->Next;
     if(!Node){
       Error("DefParameter expected");
       delete Head;
@@ -1559,7 +1566,7 @@ bool PARSER::ValidNamespaceSpecifier(AST::EXPRESSION* Node){
     if(!ValidNamespaceSpecifier(Node->Left)) return false;
   }
   if(Node->Right){
-    if(Node->Right->Type > AST::BASE::TYPE::Expression){
+    if(Node->Right->IsExpression()){
       if(!ValidNamespaceSpecifier((AST::EXPRESSION*)Node->Right)) return false;
     }else{
       return false;
@@ -1592,7 +1599,7 @@ bool PARSER::ValidTypeSpecifier(AST::EXPRESSION* Node){
     if(!ValidTypeSpecifier(Node->Left)) return false;
   }
   if(Node->Right){
-    if(Node->Right->Type > AST::BASE::TYPE::Expression){
+    if(Node->Right->IsExpression()){
       AST::EXPRESSION* Right = (AST::EXPRESSION*)Node->Right;
       if(Right->Type == AST::BASE::TYPE::FunctionCall) return false;
       if(!ValidTypeSpecifier(Right)) return false;
@@ -1628,7 +1635,7 @@ bool PARSER::ValidLHS(AST::EXPRESSION* Node){
     if(!ValidLHS(Node->Left)) return false;
   }
   if(Node->Right){
-    if(Node->Right->Type > AST::BASE::TYPE::Expression){
+    if(Node->Right->IsExpression()){
       if(!ValidLHS((AST::EXPRESSION*)Node->Right)) return false;
     }else{
       return false;
@@ -1659,6 +1666,7 @@ AST::BASE* PARSER::Other(){
       Expr->Next = new AST::FENCE(
         Token.Line, Scanner.Filename
       );
+      if(Expr->Next) Expr->Next->Prev = Expr;
     }
     GetToken();
     return Expr;
@@ -2233,6 +2241,7 @@ AST::HDL* PARSER::HDL(){
   while(Token.Type == TOKEN::TYPE::Comma){
     GetToken();
     File->Next = String();
+    if(File->Next) File->Next->Prev = File;
     File = (AST::EXPRESSION*)File->Next;
     if(!File){
       Error("File name string expected");
@@ -2267,8 +2276,12 @@ AST::HDL* PARSER::HDL(){
         delete Node;
         return 0;
       }
-      if(Tail) Tail->Next       = Temp;
-      else     Node->Parameters = (AST::ASSIGNMENT*)Temp;
+      if(Tail){
+        Tail->Next = Temp;
+        Temp->Prev = Tail;
+      }else{
+        Node->Parameters = (AST::ASSIGNMENT*)Temp;
+      }
       Tail = Temp;
       while(Tail->Next) Tail = Tail->Next;
       Temp = Other();
@@ -2290,8 +2303,12 @@ AST::HDL* PARSER::HDL(){
   AST::DEFINITION* Tail = 0;
   AST::DEFINITION* Temp = Definition();
   while(Temp){
-    if(Tail) Tail->Next  = Temp;
-    else     Node->Ports = Temp;
+    if(Tail){
+      Tail->Next  = Temp;
+      Temp->Prev  = Tail;
+    }else{
+      Node->Ports = Temp;
+    }
     Tail = Temp;
     Temp = Definition();
   }
@@ -2345,8 +2362,12 @@ AST::BASE* PARSER::Statements(){
     if(error) break;
     if(!Node) return Head;
 
-    if(Tail) Tail->Next = Node;
-    else     Head       = Node;
+    if(Tail){
+      Tail->Next = Node;
+      Node->Prev = Tail;
+    }else{
+      Head       = Node;
+    }
     Tail = Node;
     while(Tail->Next) Tail = Tail->Next;
   }
@@ -2401,6 +2422,8 @@ AST::BASE* PARSER::Run(const char* Filename){
     Debug.print(" -------------------------------------\n\n" ANSI_RESET);
     if(AST) AST->Display();
     else    Debug.print("AST is empty\n");
+
+    AST->ValidateList();
   #endif
   return AST;
 }

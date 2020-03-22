@@ -74,7 +74,7 @@ EXPRESSION* BIT_NOT::Evaluate(){
     delete Result;
     return 0;
   }
-  assert(Result->Right->Type > TYPE::Expression,
+  assert(Result->Right->IsExpression(),
     delete Result;
     return 0;
   );
@@ -86,7 +86,7 @@ EXPRESSION* BIT_NOT::Evaluate(){
 
 EXPRESSION* BIT_NOT::Simplify(bool GenWire){
   assert(Right, return this);
-  assert(Right->Type > TYPE::Expression, return this);
+  assert(Right->IsExpression(), return this);
 
   EXPRESSION* Result = this;
 
@@ -99,9 +99,7 @@ EXPRESSION* BIT_NOT::Simplify(bool GenWire){
     Net->Value = this;
 
     auto ObjectRef = ((OBJECT*)Right)->ObjectRef;
-    if(ObjectRef && (ObjectRef->Type == NETLIST::BASE::TYPE::Net ||
-                     ObjectRef->Type == NETLIST::BASE::TYPE::Pin)
-    ){
+    if(ObjectRef && ObjectRef->IsSynthesisable()){
       auto Synthesisable = (NETLIST::SYNTHESISABLE*)ObjectRef;
       Net->Width     = Synthesisable->Width;
       Net->FullScale = Synthesisable->FullScale;

@@ -40,6 +40,8 @@ namespace AST{
       EXPRESSION(int Line, const char* Filename, TYPE ExpressionType);
       virtual ~EXPRESSION();
 
+      bool IsExpression() override;
+
       virtual EXPRESSION* Evaluate() = 0;
       virtual EXPRESSION* Simplify(bool GenWire) = 0;
   };

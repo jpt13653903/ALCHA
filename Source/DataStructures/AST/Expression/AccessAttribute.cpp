@@ -69,7 +69,7 @@ EXPRESSION* ACCESSATTRIBUTE::Evaluate(){
   EXPRESSION* Left = 0;
   if(this->Left) Left = this->Left->Evaluate();
 
-  if(!Left || !this->Right || this->Right->Type <= TYPE::Expression){
+  if(!Left || !this->Right || !this->Right->IsExpression()){
     error("Invalid attribute access expression");
     delete Left;
     return 0;
@@ -89,7 +89,7 @@ EXPRESSION* ACCESSATTRIBUTE::Evaluate(){
       return 0;
     }
     Result = (EXPRESSION*)Found->Copy(true);
-    assert(Result->Type > TYPE::Expression);
+    assert(Result->IsExpression());
     delete Left;
   }else{
     // TODO Could be a slice expression, which is not supported yet

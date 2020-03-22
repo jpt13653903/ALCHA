@@ -137,7 +137,6 @@ namespace AST{
           Logical_OR,
 
           Conditional
-        // End of expressions -- don't add other stuff below this point
       } Type;
     //--------------------------------------------------------------------------
 
@@ -147,11 +146,14 @@ namespace AST{
         std::string Filename;
       } Source;
       BASE* Next; // Next instruction
+      BASE* Prev; // Previous instruction
     //--------------------------------------------------------------------------
 
     public:
                BASE(int Line, const char* Filename, TYPE Type);
       virtual ~BASE(); // Also deletes the rest of the linked list
+
+      virtual bool IsExpression();
 
       // Returns a copy of this instance
       virtual BASE* Copy(bool CopyNext) = 0;
@@ -166,6 +168,10 @@ namespace AST{
 
               void DisplayInfo();
       virtual void Display() = 0;
+
+      // Runs assertions on the Next and Prev pointers.
+      // Run this function on the head of the list.
+      void ValidateList();
   };
 }
 //------------------------------------------------------------------------------

@@ -75,7 +75,7 @@ EXPRESSION* LOGICAL_NOT::Evaluate(){
 
 EXPRESSION* LOGICAL_NOT::Simplify(bool GenWire){
   assert(Right, return this);
-  assert(Right->Type > TYPE::Expression, return this);
+  assert(Right->IsExpression(), return this);
 
   Right = ((EXPRESSION*)Right)->Simplify(true);
 

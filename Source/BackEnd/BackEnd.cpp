@@ -150,9 +150,8 @@ bool BACK_END::RoutePorts(NAMESPACE* Namespace){
 
   // Do the children first
   foreach(SymbolIterator, Namespace->Symbols){
-    if(SymbolIterator->second->Type == BASE::TYPE::Module ||
-       SymbolIterator->second->Type == BASE::TYPE::Group  ){
-      RoutePorts((MODULE*)(SymbolIterator->second));
+    if(SymbolIterator->second->IsNamespace()){
+      RoutePorts((NAMESPACE*)(SymbolIterator->second));
     }
   }
 

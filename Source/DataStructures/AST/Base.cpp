@@ -29,6 +29,7 @@ BASE::BASE(int Line, const char* Filename, TYPE Type){
   Source.Filename = Filename;
   this->Type      = Type;
   this->Next      = 0;
+  this->Prev      = 0;
 }
 //------------------------------------------------------------------------------
 
@@ -41,6 +42,11 @@ BASE::~BASE(){
     Temp->Next = 0;
     delete Temp;
   }
+}
+//------------------------------------------------------------------------------
+
+bool BASE::IsExpression(){
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -57,6 +63,30 @@ void BASE::Warning(const char* Message){
 void BASE::DisplayInfo(){
   Debug.print("\n" ANSI_FG_BRIGHT_BLACK "%s:", Source.Filename.c_str());
   Debug.print(ANSI_FG_CYAN "%05d" ANSI_FG_YELLOW " -- " ANSI_RESET, Source.Line);
+}
+//------------------------------------------------------------------------------
+
+void BASE::ValidateList(){
+  debug("Type = %d, Line = %d, File = %s",
+        (int)Type,
+        Source.Line,
+        Source.Filename.c_str());
+  assert(Prev == 0);
+
+  BASE* Node = this;
+  while(Node){
+    if(Node->Next) assert(Node->Next->Prev == Node,
+                          info("Type = %d, Line = %d, File = %s",
+                               (int)Node->Type,
+                               Node->Source.Line,
+                               Node->Source.Filename.c_str()));
+    if(Node->Prev) assert(Node->Prev->Next == Node,
+                          info("Type = %d, Line = %d, File = %s",
+                               (int)Node->Type,
+                               Node->Source.Line,
+                               Node->Source.Filename.c_str()));
+    Node = Node->Next;
+  }
 }
 //------------------------------------------------------------------------------
 

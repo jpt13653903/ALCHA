@@ -149,7 +149,7 @@ EXPRESSION* IDENTIFIER::Evaluate(){
     }
   }
   if(this->Next){
-    assert(this->Next->Type > TYPE::Expression);
+    assert(this->Next->IsExpression());
     Result->Next = ((EXPRESSION*)this->Next)->Evaluate();
   }
 

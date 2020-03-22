@@ -72,7 +72,7 @@ EXPRESSION* DIVIDE::Evaluate(){
 
 EXPRESSION* DIVIDE::Simplify(bool GenWire){
   assert(Left && Right, return this);
-  assert(Right->Type > TYPE::Expression, return this);
+  assert(Right->IsExpression(), return this);
 
   Left = Left->Simplify(true);
   Right = ((EXPRESSION*)Right)->Simplify(true);

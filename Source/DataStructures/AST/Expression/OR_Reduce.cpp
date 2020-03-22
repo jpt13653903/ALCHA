@@ -75,7 +75,7 @@ EXPRESSION* OR_REDUCE::Evaluate(){
 
 EXPRESSION* OR_REDUCE::Simplify(bool GenWire){
   assert(Right, return this);
-  assert(Right->Type > TYPE::Expression, return this);
+  assert(Right->IsExpression(), return this);
 
   Right = ((EXPRESSION*)Right)->Simplify(true);
 

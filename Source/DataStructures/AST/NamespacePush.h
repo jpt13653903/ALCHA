@@ -34,10 +34,8 @@ namespace AST{
     NAMESPACE_PUSH(int Line, const char*  Filename);
    ~NAMESPACE_PUSH();
 
-    // Returns a copy of this instance
     BASE* Copy(bool CopyNext) override;
 
-    // Runs scripting commands and creates instances in the namespace tree
     BASE* RunScripting() override;
     bool  GetVerilog(std::string& Body) override;
 

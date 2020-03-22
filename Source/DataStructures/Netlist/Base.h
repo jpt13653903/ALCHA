@@ -80,6 +80,9 @@ namespace NETLIST{
                BASE(int Line, const std::string& Filename, const char* Name, TYPE Type);
       virtual ~BASE();
 
+      virtual bool IsSynthesisable();
+      virtual bool IsNamespace    ();
+
       bool ApplyAttributes(
         std::string&     Name,
         AST::EXPRESSION* Value,

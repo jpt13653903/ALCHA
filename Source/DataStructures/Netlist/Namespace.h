@@ -37,6 +37,8 @@ namespace NETLIST{
 
                NAMESPACE(int Line, const std::string& Filename, const char* Name = "");
       virtual ~NAMESPACE(); // Also cleans up the children
+
+      bool IsNamespace() override;
   };
 }
 //------------------------------------------------------------------------------

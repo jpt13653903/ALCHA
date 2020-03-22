@@ -62,7 +62,7 @@ BASE* IMPORT::RunScripting(){
       Error();
       printf("Symbol \"%s\" already exists in the current namespace\n",
              Namespace.c_str());
-      return false;
+      return 0;
     }
     Module = new NETLIST::MODULE(Source.Line, Source.Filename, Namespace.c_str());
     NETLIST::NamespaceStack.front()->Symbols[Namespace] = Module;
@@ -90,11 +90,13 @@ BASE* IMPORT::RunScripting(){
   }else{ // Inject into the current namespace, after the "import" statement
     // TODO: Inject in place of the import node instead of after
     //       But what to return when OwnNamespace is true???
-    auto Temp = Next;
+    auto AstTail = Ast;
+    while(AstTail->Next) AstTail = AstTail->Next;
+    AstTail->Next = Next;
+    AstTail->Next->Prev = AstTail;
     Next = Ast;
-    while(Ast->Next) Ast = Ast->Next;
-    Ast->Next = Temp;
-    return Ast;
+    Ast->Prev = this;
+    return AstTail;
   }
   return this;
 }

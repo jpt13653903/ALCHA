@@ -211,7 +211,7 @@ bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List){
       break;
 
     case TYPE::AccessMember:{
-      if(!Node->Left || !Node->Right || Node->Right->Type <= TYPE::Expression){
+      if(!Node->Left || !Node->Right || !Node->Right->IsExpression()){
         error("Invalid member access expression");
         return 0;
       }
@@ -309,7 +309,7 @@ bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List){
         return false;
       }
 
-      if(Node->Right && Node->Right->Type > TYPE::Expression){
+      if(Node->Right && Node->Right->IsExpression()){
         auto Right = (EXPRESSION*)Node->Right;
         if(Right->Type == TYPE::Identifier){
           // The process of adding an entry initialises the pointer to null.
@@ -385,10 +385,7 @@ BASE* ASSIGNMENT::RunScripting(){
   bool RawAssign = true;
 
   if(Right->Type == TYPE::Literal){
-    if(Object->Type == NETLIST::BASE::TYPE::Pin ||
-       Object->Type == NETLIST::BASE::TYPE::Net ||
-       Object->Type == NETLIST::BASE::TYPE::Synthesisable
-    ){
+    if(Object->IsSynthesisable()){
       auto Synth   = (NETLIST::SYNTHESISABLE*)Object;
       auto Literal = (LITERAL*)Right;
       Literal->Signed = Synth->Signed;
@@ -599,9 +596,7 @@ BASE* ASSIGNMENT::RunScripting(){
 
   if(*Target){
     if(!RawAssign){
-      if(Object->Type == NETLIST::BASE::TYPE::Pin ||
-         Object->Type == NETLIST::BASE::TYPE::Net
-      ){
+      if(Object->IsSynthesisable()){
         NETLIST::SYNTHESISABLE* Synth = (NETLIST::SYNTHESISABLE*)Object;
         if((*Target)->Type == TYPE::Literal){
           auto Literal = (LITERAL*)(*Target);

@@ -72,7 +72,7 @@ EXPRESSION* NEGATE::Evaluate(){
     delete Result;
     return 0;
   }
-  assert(Result->Right->Type > TYPE::Expression,
+  assert(Result->Right->IsExpression(),
     delete Result;
     return 0;
   );
@@ -84,7 +84,7 @@ EXPRESSION* NEGATE::Evaluate(){
 
 EXPRESSION* NEGATE::Simplify(bool GenWire){
   assert(Right, return this);
-  assert(Right->Type > AST::BASE::TYPE::Expression, return this);
+  assert(Right->IsExpression(), return this);
 
   Right = ((EXPRESSION*)Right)->Simplify(true);
 
