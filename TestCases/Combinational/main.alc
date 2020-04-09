@@ -4,11 +4,11 @@ alias LED    = Target.USER_LED;
 alias Button = Target.SW;
 
 // Target.USER_LED = 1;
-Target.LED = 1;
+// Target.LED = 1;
+Target.USER_LED = Target.SW;
 // Target.USER_LED = Target.Button;
 // Target.USER_LED = Target_Button;
 
-// 
 // LED := :(Button, ~Button);
 // 
 // Target.ADT7420.SCL = Target.AD5681R.SCL;

@@ -25,8 +25,8 @@
 
 void Pause(){
   printf("\nPress Enter to continue\n");
-  char c; fflush(stdout);
-  scanf("%c", &c);
+  fflush(stdout);
+  getchar();
 }
 //------------------------------------------------------------------------------
 
