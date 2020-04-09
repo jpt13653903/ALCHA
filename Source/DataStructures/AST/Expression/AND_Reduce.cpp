@@ -91,7 +91,7 @@ EXPRESSION* AND_REDUCE::Simplify(bool GenWire){
 void AND_REDUCE::Display(){
   DisplayStart();
 
-  Debug.print( " &");
+  Debug.Print( " &");
 
   DisplayEnd();
 }

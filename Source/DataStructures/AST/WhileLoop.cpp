@@ -69,11 +69,11 @@ bool WHILE_LOOP::GetVerilog(string& Body){
 
 void WHILE_LOOP::Display(){
   DisplayInfo();
-  Debug.print("while(");
+  Debug.Print("while(");
     if(Condition) Condition->Display();
-  Debug.print("){\n");
+  Debug.Print("){\n");
     if(Statements) Statements->Display();
-  Debug.print("}\n");
+  Debug.Print("}\n");
 
   if(Next) Next->Display();
 }

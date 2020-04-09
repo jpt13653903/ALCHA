@@ -90,7 +90,7 @@ EXPRESSION* NOR_REDUCE::Simplify(bool GenWire){
 void NOR_REDUCE::Display(){
   DisplayStart();
 
-  Debug.print(" ~|");
+  Debug.Print(" ~|");
 
   DisplayEnd();
 }

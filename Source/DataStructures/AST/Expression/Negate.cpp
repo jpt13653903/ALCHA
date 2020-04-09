@@ -107,7 +107,7 @@ EXPRESSION* NEGATE::Simplify(bool GenWire){
 void NEGATE::Display(){
   DisplayStart();
 
-  Debug.print(" -");
+  Debug.Print(" -");
 
   DisplayEnd();
 }

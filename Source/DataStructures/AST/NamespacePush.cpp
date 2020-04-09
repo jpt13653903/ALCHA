@@ -69,17 +69,17 @@ bool NAMESPACE_PUSH::GetVerilog(string& Body){
 
 void NAMESPACE_PUSH::Display(){
   DisplayInfo();
-  Debug.print("NamespacePush:\n ");
+  Debug.Print("NamespacePush:\n ");
 
   if(Namespace){
-    if(Namespace->Left || Namespace->Right) Debug.print("(");
+    if(Namespace->Left || Namespace->Right) Debug.Print("(");
     Namespace->Display();
-    if(Namespace->Left || Namespace->Right) Debug.print(")");
+    if(Namespace->Left || Namespace->Right) Debug.Print(")");
   }
 
-  Debug.print(".{\n");
+  Debug.Print(".{\n");
     if(Statements) Statements->Display();
-  Debug.print("}\n");
+  Debug.Print("}\n");
 
   if(Next) Next->Display();
 }

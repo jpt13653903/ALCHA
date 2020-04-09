@@ -88,7 +88,7 @@ EXPRESSION* DIVIDE::Simplify(bool GenWire){
 void DIVIDE::Display(){
   DisplayStart();
 
-  Debug.print(" / " );
+  Debug.Print(" / " );
 
   DisplayEnd();
 }

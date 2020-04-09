@@ -93,7 +93,7 @@ EXPRESSION* BIT_AND::Simplify(bool GenWire){
 void BIT_AND::Display(){
   DisplayStart();
 
-  Debug.print( " & ");
+  Debug.Print( " & ");
 
   DisplayEnd();
 }

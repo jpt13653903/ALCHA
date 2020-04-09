@@ -115,7 +115,7 @@ EXPRESSION* ACCESSATTRIBUTE::Simplify(bool GenWire){
 void ACCESSATTRIBUTE::Display(){
   DisplayStart();
 
-  Debug.print("'" );
+  Debug.Print("'" );
 
   DisplayEnd();
 }

@@ -106,7 +106,7 @@ EXPRESSION* ADD::Simplify(bool GenWire){
 void ADD::Display(){
   DisplayStart();
 
-  Debug.print(" + " );
+  Debug.Print(" + " );
 
   DisplayEnd();
 }

@@ -83,7 +83,7 @@ EXPRESSION* STRING::Simplify(bool GenWire){
 void STRING::Display(){
   DisplayStart();
 
-  Debug.print("\"%s\"", Value.c_str());
+  Debug.Print("\"%s\"", Value.c_str());
 
   DisplayEnd();
 }

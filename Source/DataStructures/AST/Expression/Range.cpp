@@ -85,15 +85,15 @@ EXPRESSION* RANGE::Simplify(bool GenWire){
 void RANGE::Display(){
   DisplayStart();
 
-  Debug.print("..");
+  Debug.Print("..");
 
   DisplayEnd();
 
   if(Step){
-    Debug.print(":");
-    if(Step->Left || Step->Right) Debug.print("(");
+    Debug.Print(":");
+    if(Step->Left || Step->Right) Debug.Print("(");
     Step->Display();
-    if(Step->Left || Step->Right) Debug.print(")");
+    if(Step->Left || Step->Right) Debug.Print(")");
   }
 }
 //------------------------------------------------------------------------------

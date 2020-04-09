@@ -82,7 +82,7 @@ EXPRESSION* INCREMENT::Simplify(bool GenWire){
 void INCREMENT::Display(){
   DisplayStart();
 
-  Debug.print("++");
+  Debug.Print("++");
 
   DisplayEnd();
 }

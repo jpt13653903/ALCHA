@@ -111,7 +111,7 @@ EXPRESSION* LITERAL::Simplify(bool GenWire){
 void LITERAL::Display(){
   DisplayStart();
 
-  Debug.print(Value.Display());
+  Debug.Print(Value.Display());
 
   DisplayEnd();
 }

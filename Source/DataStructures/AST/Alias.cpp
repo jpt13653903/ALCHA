@@ -82,10 +82,10 @@ bool ALIAS::GetVerilog(string& Body){
 
 void ALIAS::Display(){
   DisplayInfo();
-  Debug.print("Alias (%s):\n", Identifier.c_str());
+  Debug.Print("Alias (%s):\n", Identifier.c_str());
 
   if(Expression) Expression->Display();
-  else           Debug.print("{Moved Expression}\n");
+  else           Debug.Print("{Moved Expression}\n");
 
   if(Next) Next->Display();
 }

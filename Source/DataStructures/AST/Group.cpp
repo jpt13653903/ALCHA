@@ -98,18 +98,18 @@ bool AST::GROUP::GetVerilog(string& Body){
 void AST::GROUP::Display(){
   DisplayInfo();
 
-  if(Identifier.empty()) Debug.print("Group:\n");
-  else                   Debug.print("Group (%s):\n", Identifier.c_str());
+  if(Identifier.empty()) Debug.Print("Group:\n");
+  else                   Debug.Print("Group (%s):\n", Identifier.c_str());
 
-  Debug.print(" Attributes: ");
+  Debug.Print(" Attributes: ");
   if(Attributes){
     Attributes->Display();
-    Debug.print("\n");
+    Debug.Print("\n");
   }
 
-  Debug.print(" {\n");
+  Debug.Print(" {\n");
   if(Body) Body->Display();
-  Debug.print(" }\n");
+  Debug.Print(" }\n");
 
   if(Next) Next->Display();
 }

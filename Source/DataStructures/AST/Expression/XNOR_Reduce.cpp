@@ -90,7 +90,7 @@ EXPRESSION* XNOR_REDUCE::Simplify(bool GenWire){
 void XNOR_REDUCE::Display(){
   DisplayStart();
 
-  Debug.print(" ~#");
+  Debug.Print(" ~#");
 
   DisplayEnd();
 }

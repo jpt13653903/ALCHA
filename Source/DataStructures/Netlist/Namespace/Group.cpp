@@ -36,24 +36,24 @@ NETLIST::GROUP::~GROUP(){
 
 void NETLIST::GROUP::Display(int Indent){
   Debug.Indent(Indent);
-  Debug.print("Group: ");
+  Debug.Print("Group: ");
 
-  if(Name.empty()) Debug.print("{Anonymous}");
+  if(Name.empty()) Debug.Print("{Anonymous}");
   else             DisplayLongName();
-  Debug.print("\n");
+  Debug.Print("\n");
 
   Indent++;
   DisplayAttributes(Indent);
-  Debug.print("\n");
+  Debug.Print("\n");
 
   foreach(s, Symbols){
     if(s->second){
       s->second->Display(Indent);
     }else{
       Debug.Indent(Indent);
-      Debug.print("- %s: {null}\n", s->first.c_str());
+      Debug.Print("- %s: {null}\n", s->first.c_str());
     }
-    Debug.print("\n");
+    Debug.Print("\n");
   }
 }
 //------------------------------------------------------------------------------

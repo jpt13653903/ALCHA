@@ -36,16 +36,16 @@ NET::~NET(){
 
 void NET::Display(int Indent){
   Debug.Indent(Indent);
-  Debug.print("Net: ");
+  Debug.Print("Net: ");
 
   Indent++;
   DisplayParameters(Indent);
 
   Debug.Indent(Indent);
-  Debug.print("Value      = ");
+  Debug.Print("Value      = ");
   if(Value) Value->Display();
-  else      Debug.print("{open}");
-  Debug.print("\n");
+  else      Debug.Print("{open}");
+  Debug.Print("\n");
 
   DisplayAttributes(Indent);
 }

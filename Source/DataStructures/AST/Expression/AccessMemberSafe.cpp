@@ -82,7 +82,7 @@ EXPRESSION* ACCESSMEMBERSAFE::Simplify(bool GenWire){
 void ACCESSMEMBERSAFE::Display(){
   DisplayStart();
 
-  Debug.print("?." );
+  Debug.Print("?." );
 
   DisplayEnd();
 }

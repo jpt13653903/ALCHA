@@ -93,7 +93,7 @@ EXPRESSION* SHIFT_RIGHT::Simplify(bool GenWire){
 void SHIFT_RIGHT::Display(){
   DisplayStart();
 
-  Debug.print(" >> ");
+  Debug.Print(" >> ");
 
   DisplayEnd();
 }

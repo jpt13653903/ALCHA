@@ -82,7 +82,7 @@ EXPRESSION* DECREMENT::Simplify(bool GenWire){
 void DECREMENT::Display(){
   DisplayStart();
 
-  Debug.print("--");
+  Debug.Print("--");
 
   DisplayEnd();
 }

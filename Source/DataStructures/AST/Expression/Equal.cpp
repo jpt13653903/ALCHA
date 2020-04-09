@@ -93,7 +93,7 @@ EXPRESSION* EQUAL::Simplify(bool GenWire){
 void EQUAL::Display(){
   DisplayStart();
 
-  Debug.print(" == ");
+  Debug.Print(" == ");
 
   DisplayEnd();
 }

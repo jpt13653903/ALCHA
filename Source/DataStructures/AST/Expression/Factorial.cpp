@@ -86,7 +86,7 @@ EXPRESSION* FACTORIAL::Simplify(bool GenWire){
 void FACTORIAL::Display(){
   DisplayStart();
 
-  Debug.print("!" );
+  Debug.Print("!" );
 
   DisplayEnd();
 }

@@ -74,16 +74,16 @@ bool FSM::GetVerilog(string& Body){
 
 void FSM::Display(){
   DisplayInfo();
-  Debug.print("fsm(");
+  Debug.Print("fsm(");
     bool isFirst = true;
     foreach(Parameter, Parameters){
-      if(isFirst) Debug.print(", ");
+      if(isFirst) Debug.Print(", ");
       isFirst = false;
       if(*Parameter) (*Parameter)->Display();
     }
-  Debug.print("){\n");
+  Debug.Print("){\n");
     if(Statements) Statements->Display();
-  Debug.print("}\n");
+  Debug.Print("}\n");
 
   if(Next) Next->Display();
 }

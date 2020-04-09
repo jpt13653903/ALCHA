@@ -62,7 +62,7 @@ bool FENCE::GetVerilog(string& Body){
 
 void FENCE::Display(){
   DisplayInfo();
-  Debug.print("Fence\n");
+  Debug.Print("Fence\n");
 
   if(Next) Next->Display();
 }

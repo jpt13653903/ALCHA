@@ -82,7 +82,7 @@ EXPRESSION* RAW::Simplify(bool GenWire){
 void RAW::Display(){
   DisplayStart();
 
-  Debug.print(" :");
+  Debug.Print(" :");
 
   DisplayEnd();
 }

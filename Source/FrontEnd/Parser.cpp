@@ -49,24 +49,24 @@ void PARSER::GetToken(){
   if(!Scanner.GetToken(&Token)) return;
 
   #ifdef DEBUG
-    Debug.print(ANSI_FG_BRIGHT_BLACK);
-    Debug.print(Scanner.Filename);
-    Debug.print(":" ANSI_FG_CYAN "");
-    Debug.print("%05d", Token.Line);
-    Debug.print("  \t" ANSI_RESET);
+    Debug.Print(ANSI_FG_BRIGHT_BLACK);
+    Debug.Print(Scanner.Filename);
+    Debug.Print(":" ANSI_FG_CYAN "");
+    Debug.Print("%05d", Token.Line);
+    Debug.Print("  \t" ANSI_RESET);
     switch(Token.Type){
-      case TOKEN::TYPE::Identifier: Debug.print("Identifier\t"                 ); break;
-      case TOKEN::TYPE::Literal   : Debug.print("Literal   \t"                 ); break;
-      case TOKEN::TYPE::String    : Debug.print("String    \t\""               ); break;
-      default                     : Debug.print("Token %d  \t", (int)Token.Type); break;
+      case TOKEN::TYPE::Identifier: Debug.Print("Identifier\t"                 ); break;
+      case TOKEN::TYPE::Literal   : Debug.Print("Literal   \t"                 ); break;
+      case TOKEN::TYPE::String    : Debug.Print("String    \t\""               ); break;
+      default                     : Debug.Print("Token %d  \t", (int)Token.Type); break;
     }
-    Debug.print(Token.Data.c_str());
+    Debug.Print(Token.Data.c_str());
     switch(Token.Type){
-      case TOKEN::TYPE::Literal: Debug.print(" = %s", Token.Value.Display()); break;
-      case TOKEN::TYPE::String : Debug.print("\""); break;
+      case TOKEN::TYPE::Literal: Debug.Print(" = %s", Token.Value.Display()); break;
+      case TOKEN::TYPE::String : Debug.Print("\""); break;
       default                  : break;
     }
-    Debug.print("\n");
+    Debug.Print("\n");
   #endif
 }
 //------------------------------------------------------------------------------
@@ -2400,9 +2400,9 @@ AST::BASE* PARSER::StatementBlock(){
 //------------------------------------------------------------------------------
 
 AST::BASE* PARSER::Run(const char* Filename){
-  Debug.print("Building AST for ");
-  Debug.print(Filename);
-  Debug.print("...\n");
+  Debug.Print("Building AST for ");
+  Debug.Print(Filename);
+  Debug.Print("...\n");
 
   error = false;
 
@@ -2417,11 +2417,11 @@ AST::BASE* PARSER::Run(const char* Filename){
   }
 
   #ifdef DEBUG
-    Debug.print(ANSI_FG_GREEN "\nDisplaying AST of ");
-    Debug.print(Filename);
-    Debug.print(" -------------------------------------\n\n" ANSI_RESET);
+    Debug.Print(ANSI_FG_GREEN "\nDisplaying AST of ");
+    Debug.Print(Filename);
+    Debug.Print(" -------------------------------------\n\n" ANSI_RESET);
     if(AST) AST->Display();
-    else    Debug.print("AST is empty\n");
+    else    Debug.Print("AST is empty\n");
 
     AST->Validate();
   #endif

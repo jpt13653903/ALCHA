@@ -88,7 +88,7 @@ EXPRESSION* MODULUS::Simplify(bool GenWire){
 void MODULUS::Display(){
   DisplayStart();
 
-  Debug.print(" %% ");
+  Debug.Print(" %% ");
 
   DisplayEnd();
 }

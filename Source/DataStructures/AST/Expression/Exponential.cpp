@@ -88,7 +88,7 @@ EXPRESSION* EXPONENTIAL::Simplify(bool GenWire){
 void EXPONENTIAL::Display(){
   DisplayStart();
 
-  Debug.print(" ^ " );
+  Debug.Print(" ^ " );
 
   DisplayEnd();
 }

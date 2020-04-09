@@ -181,28 +181,28 @@ string& BASE::EscapedName(){
 void BASE::DisplayLongName(){
   if(Namespace != (NAMESPACE*)&Global){
     Namespace->DisplayLongName();
-    Debug.print("::");
+    Debug.Print("::");
   }
-  Debug.print("%s", Name.c_str());
+  Debug.Print("%s", Name.c_str());
 }
 //------------------------------------------------------------------------------
 
 void BASE::DisplayAttributes(int Indent){
   Debug.Indent(Indent);
-  Debug.print("Line       = %d\n", Source.Line);
+  Debug.Print("Line       = %d\n", Source.Line);
 
   Debug.Indent(Indent);
-  Debug.print("Filename   = \"%s\"\n", Source.Filename);
+  Debug.Print("Filename   = \"%s\"\n", Source.Filename);
 
   Debug.Indent(Indent);
-  Debug.print("Attributes:\n");
+  Debug.Print("Attributes:\n");
 
   foreach(a, Attributes){
     Debug.Indent(Indent+1);
-    Debug.print("%s = ", a->first.c_str());
+    Debug.Print("%s = ", a->first.c_str());
     if(a->second) a->second->Display();
-    else          Debug.print("{null}");
-    Debug.print("\n");
+    else          Debug.Print("{null}");
+    Debug.Print("\n");
   }
 }
 //------------------------------------------------------------------------------

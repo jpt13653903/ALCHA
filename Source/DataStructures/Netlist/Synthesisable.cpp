@@ -111,25 +111,25 @@ bool SYNTHESISABLE::ApplyParameters(list<AST::BASE*>& Parameters){
 //------------------------------------------------------------------------------
 
 void SYNTHESISABLE::DisplayParameters(int Indent){
-  Debug.print(" %s\n", Name.c_str());
+  Debug.Print(" %s\n", Name.c_str());
 
   Debug.Indent(Indent);
-  Debug.print("Used       = %s\n", Used   ? "true" : "false");
+  Debug.Print("Used       = %s\n", Used   ? "true" : "false");
   Debug.Indent(Indent);
-  Debug.print("Width      = %u\n", Width);
+  Debug.Print("Width      = %u\n", Width);
   Debug.Indent(Indent);
-  Debug.print("Full-scale = %s\n", FullScale.Display());
+  Debug.Print("Full-scale = %s\n", FullScale.Display());
   Debug.Indent(Indent);
-  Debug.print("Signed     = %s\n", Signed ? "true" : "false");
+  Debug.Print("Signed     = %s\n", Signed ? "true" : "false");
 
   Debug.Indent(Indent);
-  Debug.print("Direction  = ");
+  Debug.Print("Direction  = ");
   switch(Direction){
-    case AST::DEFINITION::DIRECTION::Inferred     : Debug.print("Inferred\n"     ); break;
-    case AST::DEFINITION::DIRECTION::Input        : Debug.print("Input\n"        ); break;
-    case AST::DEFINITION::DIRECTION::Output       : Debug.print("Output\n"       ); break;
-    case AST::DEFINITION::DIRECTION::Bidirectional: Debug.print("Bidirectional\n"); break;
-    default                                       : Debug.print("Invalid\n"      ); break;
+    case AST::DEFINITION::DIRECTION::Inferred     : Debug.Print("Inferred\n"     ); break;
+    case AST::DEFINITION::DIRECTION::Input        : Debug.Print("Input\n"        ); break;
+    case AST::DEFINITION::DIRECTION::Output       : Debug.Print("Output\n"       ); break;
+    case AST::DEFINITION::DIRECTION::Bidirectional: Debug.Print("Bidirectional\n"); break;
+    default                                       : Debug.Print("Invalid\n"      ); break;
   }
 }
 //------------------------------------------------------------------------------

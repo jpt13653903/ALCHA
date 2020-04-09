@@ -42,15 +42,15 @@ MODULE::~MODULE(){
 
 void MODULE::Display(int Indent){
   Debug.Indent(Indent);
-  Debug.print("Module: ");
+  Debug.Print("Module: ");
 
-  if(this == &Global) Debug.print("{Global}");
+  if(this == &Global) Debug.Print("{Global}");
   else                DisplayLongName();
-  Debug.print("\n");
+  Debug.Print("\n");
   Indent++;
 
   DisplayAttributes(Indent);
-  Debug.print("\n");
+  Debug.Print("\n");
 
   list<BASE*> Modules;
 
@@ -60,14 +60,14 @@ void MODULE::Display(int Indent){
       else s->second->Display(Indent);
     }else{
       Debug.Indent(Indent);
-      Debug.print("- %s: {null}\n", s->first.c_str());
+      Debug.Print("- %s: {null}\n", s->first.c_str());
     }
-    Debug.print("\n");
+    Debug.Print("\n");
   }
 
   foreach(s, Modules){
     (*s)->Display(Indent);
-    Debug.print("\n");
+    Debug.Print("\n");
   }
 }
 //------------------------------------------------------------------------------

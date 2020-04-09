@@ -253,77 +253,77 @@ bool DEFINITION::GetVerilog(string& Body){
 
 void DEFINITION::Display(){
   DisplayInfo();
-  Debug.print("Definition (");
+  Debug.Print("Definition (");
 
   switch(DefinitionType){
-    case DEFINITION_TYPE::Pin : Debug.print("Pin):\n"     ); break;
-    case DEFINITION_TYPE::Net : Debug.print("Net):\n"     ); break;
-    case DEFINITION_TYPE::Void: Debug.print("Void):\n"    ); break;
-    case DEFINITION_TYPE::Auto: Debug.print("Auto):\n"    ); break;
-    case DEFINITION_TYPE::Byte: Debug.print("Byte):"      ); break;
-    case DEFINITION_TYPE::Char: Debug.print("Character):" ); break;
-    case DEFINITION_TYPE::Num : Debug.print("Number):\n"  ); break;
-    case DEFINITION_TYPE::Func: Debug.print("Function):\n"); break;
+    case DEFINITION_TYPE::Pin : Debug.Print("Pin):\n"     ); break;
+    case DEFINITION_TYPE::Net : Debug.Print("Net):\n"     ); break;
+    case DEFINITION_TYPE::Void: Debug.Print("Void):\n"    ); break;
+    case DEFINITION_TYPE::Auto: Debug.Print("Auto):\n"    ); break;
+    case DEFINITION_TYPE::Byte: Debug.Print("Byte):"      ); break;
+    case DEFINITION_TYPE::Char: Debug.Print("Character):" ); break;
+    case DEFINITION_TYPE::Num : Debug.Print("Number):\n"  ); break;
+    case DEFINITION_TYPE::Func: Debug.Print("Function):\n"); break;
 
     case DEFINITION_TYPE::ClassInstance:
-      Debug.print("Class instance definition (");
+      Debug.Print("Class instance definition (");
       if(ClassName) ClassName->Display();
-      else          Debug.print("Class instance with no class name");
-      Debug.print("):\n");
+      else          Debug.Print("Class instance with no class name");
+      Debug.Print("):\n");
       break;
 
-    default: Debug.print("Invalid definition type:\n");
+    default: Debug.Print("Invalid definition type:\n");
   }
 
-  Debug.print(" Direction = ");
+  Debug.Print(" Direction = ");
   switch(Direction){
-    case DIRECTION::Input : Debug.print("Input\n"   ); break;
-    case DIRECTION::Output: Debug.print("Output\n"  ); break;
-    default               : Debug.print("Inferred\n"); break;
+    case DIRECTION::Input : Debug.Print("Input\n"   ); break;
+    case DIRECTION::Output: Debug.Print("Output\n"  ); break;
+    default               : Debug.Print("Inferred\n"); break;
   }
 
-  Debug.print(" Parameters: ");
+  Debug.Print(" Parameters: ");
   if(Parameters.empty()){
-    Debug.print("none / default\n");
+    Debug.Print("none / default\n");
   }else{
     foreach(Parameter, Parameters){
       (*Parameter)->Display();
-      Debug.print("\n");
+      Debug.Print("\n");
     }
   }
 
-  Debug.print(" Attributes: ");
+  Debug.Print(" Attributes: ");
   if(Attributes){
     Attributes->Display();
-    Debug.print("\n");
+    Debug.Print("\n");
   }
 
-  Debug.print(" Identifiers:\n");
+  Debug.Print(" Identifiers:\n");
   IDENTIFIER* Identifier = Identifiers;
   ARRAY     * Array;
   while(Identifier){
-    Debug.print(" - %s", Identifier->Identifier.c_str());
+    Debug.Print(" - %s", Identifier->Identifier.c_str());
     Array = Identifier->Array;
     while(Array){
-      Debug.print("[");
+      Debug.Print("[");
       if(Array->Size) Array->Size->Display();
-      Debug.print("]");
+      Debug.Print("]");
       Array = Array->Next;
     }
 
     if(Identifier->Function){
-      Debug.print(" -- function:\n  Parameters: (\n");
+      Debug.Print(" -- function:\n  Parameters: (\n");
       if(Identifier->Parameters) Identifier->Parameters->Display();
-      Debug.print(" )\n  Body:{\n");
+      Debug.Print(" )\n  Body:{\n");
       if(Identifier->FunctionBody) Identifier->FunctionBody->Display();
-      Debug.print("  }\n");
+      Debug.Print("  }\n");
     }
     if(Identifier->Initialiser){
-      Debug.print(" -- initialiser:");
+      Debug.Print(" -- initialiser:");
       Identifier->Initialiser->Display();
     }
 
-    Debug.print("\n");
+    Debug.Print("\n");
     Identifier = Identifier->Next;
   }
 

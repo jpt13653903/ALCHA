@@ -141,7 +141,7 @@ void IDENTIFIER::Display(){
   DisplayStart();
 
   if(Name.empty()) error ("(Identifier node has no name)");
-  else             Debug.print("%s", Name.c_str());
+  else             Debug.Print("%s", Name.c_str());
 
   DisplayEnd();
 }

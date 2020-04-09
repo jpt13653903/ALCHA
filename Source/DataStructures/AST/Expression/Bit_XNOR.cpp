@@ -93,7 +93,7 @@ EXPRESSION* BIT_XNOR::Simplify(bool GenWire){
 void BIT_XNOR::Display(){
   DisplayStart();
 
-  Debug.print(" ~# ");
+  Debug.Print(" ~# ");
 
   DisplayEnd();
 }

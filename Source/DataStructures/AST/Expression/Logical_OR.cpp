@@ -93,7 +93,7 @@ EXPRESSION* LOGICAL_OR::Simplify(bool GenWire){
 void LOGICAL_OR::Display(){
   DisplayStart();
 
-  Debug.print(" || ");
+  Debug.Print(" || ");
 
   DisplayEnd();
 }

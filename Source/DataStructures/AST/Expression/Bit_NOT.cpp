@@ -120,7 +120,7 @@ EXPRESSION* BIT_NOT::Simplify(bool GenWire){
 void BIT_NOT::Display(){
   DisplayStart();
 
-  Debug.print(" ~");
+  Debug.Print(" ~");
 
   DisplayEnd();
 }

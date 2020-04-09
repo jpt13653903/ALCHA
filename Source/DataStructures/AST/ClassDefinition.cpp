@@ -108,34 +108,34 @@ bool CLASS_DEFINITION::GetVerilog(string& Body){
 
 void CLASS_DEFINITION::Display(){
   DisplayInfo();
-  Debug.print("Class Definition (%s):\n", Identifier.c_str());
+  Debug.Print("Class Definition (%s):\n", Identifier.c_str());
 
   if(Attributes){
-    Debug.print(" Attributes:\n"); Attributes->Display(); Debug.print("\n");
+    Debug.Print(" Attributes:\n"); Attributes->Display(); Debug.Print("\n");
   }
   if(Parameters){
-    Debug.print(" Parameters:\n"); Parameters->Display(); Debug.print("\n");
+    Debug.Print(" Parameters:\n"); Parameters->Display(); Debug.Print("\n");
   }
 
-  if(Parents) Debug.print(" Parents:\n");
+  if(Parents) Debug.Print(" Parents:\n");
   PARENT* Parent = Parents;
   while(Parent){
-    Debug.print(" - ");
+    Debug.Print(" - ");
     if(Parent->ClassName) Parent->ClassName->Display();
-    Debug.print("(");
+    Debug.Print("(");
     bool isFirst = true;
     foreach(Parameter, Parent->Parameters){
-      if(isFirst) Debug.print(", ");
+      if(isFirst) Debug.Print(", ");
       isFirst = false;
       (*Parameter)->Display();
     }
-    Debug.print(")\n");
+    Debug.Print(")\n");
     Parent = Parent->Next;
   }
 
-  Debug.print(" {\n");
+  Debug.Print(" {\n");
   if(Body) Body->Display();
-  Debug.print(" }\n");
+  Debug.Print(" }\n");
 
   if(Next) Next->Display();
 }

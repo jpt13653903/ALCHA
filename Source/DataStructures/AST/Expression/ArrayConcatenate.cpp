@@ -84,14 +84,14 @@ EXPRESSION* ARRAYCONCATENATE::Simplify(bool GenWire){
 //------------------------------------------------------------------------------
 
 void ARRAYCONCATENATE::Display(){
-  Debug.print("(ArrayConcat: (");
+  Debug.Print("(ArrayConcat: (");
   bool isFirst = true;
   foreach(Element, Elements){
-    if(!isFirst) Debug.print(", ");
+    if(!isFirst) Debug.Print(", ");
     (*Element)->Display();
     isFirst = false;
   }
-  Debug.print("))");
+  Debug.Print("))");
 }
 //------------------------------------------------------------------------------
 

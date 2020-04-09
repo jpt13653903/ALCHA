@@ -90,7 +90,7 @@ EXPRESSION* SLICE::Simplify(bool GenWire){
 void SLICE::Display(){
   DisplayStart();
 
-  Debug.print("{slice}");
+  Debug.Print("{slice}");
 
   DisplayEnd();
 }

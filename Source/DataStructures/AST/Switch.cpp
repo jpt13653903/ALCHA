@@ -96,27 +96,27 @@ bool SWITCH::GetVerilog(string& Body){
 
 void SWITCH::Display(){
   DisplayInfo();
-  Debug.print("switch(");
+  Debug.Print("switch(");
     if(Expression) Expression->Display();
-  Debug.print("){\n");
+  Debug.Print("){\n");
     CASE* Temp = Cases;
     while(Temp){
-      Debug.print(" case(");
+      Debug.Print(" case(");
         bool isFirst = true;
         foreach(Expression, Temp->Expressions){
-          if(!isFirst) Debug.print(", ");
+          if(!isFirst) Debug.Print(", ");
           (*Expression)->Display();
           isFirst = false;
         }
-      Debug.print("){\n");
+      Debug.Print("){\n");
         if(Temp->Statements) Temp->Statements->Display();
-      Debug.print(" }\n");
+      Debug.Print(" }\n");
       Temp = Temp->Next;
     }
-    Debug.print(" default{\n");
+    Debug.Print(" default{\n");
       if(Default) Default->Display();
-    Debug.print(" }\n");
-  Debug.print("}\n");
+    Debug.Print(" }\n");
+  Debug.Print("}\n");
 
   if(Next) Next->Display();
 }

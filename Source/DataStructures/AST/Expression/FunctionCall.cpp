@@ -99,15 +99,15 @@ EXPRESSION* FUNCTIONCALL::Simplify(bool GenWire){
 void FUNCTIONCALL::Display(){
   DisplayStart();
 
-  Debug.print("{call}(");
+  Debug.Print("{call}(");
 
   bool isFirst = true;
   foreach(Parameter, Parameters){
-    if(!isFirst) Debug.print(", ");
+    if(!isFirst) Debug.Print(", ");
     isFirst = false;
     (*Parameter)->Display();
   }
-  Debug.print(")");
+  Debug.Print(")");
 
   DisplayEnd();
 }

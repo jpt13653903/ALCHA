@@ -93,7 +93,7 @@ EXPRESSION* REPLICATE::Simplify(bool GenWire){
 void REPLICATE::Display(){
   DisplayStart();
 
-  Debug.print("{rep}");
+  Debug.Print("{rep}");
 
   DisplayEnd();
 }

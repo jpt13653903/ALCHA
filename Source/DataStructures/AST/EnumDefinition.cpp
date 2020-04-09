@@ -87,15 +87,15 @@ bool ENUM_DEFINITION::GetVerilog(string& Body){
 
 void ENUM_DEFINITION::Display(){
   DisplayInfo();
-  Debug.print("Enum Definition (%s):\n", Identifier.c_str());
+  Debug.Print("Enum Definition (%s):\n", Identifier.c_str());
 
-  Debug.print(" Values: ");
+  Debug.Print(" Values: ");
   VALUE* Value = Values;
   while(Value){
-    Debug.print("%s", Value->Identifier.c_str());
+    Debug.Print("%s", Value->Identifier.c_str());
     Value = Value->Next;
-    if(Value) Debug.print(", ");
-    else      Debug.print("\n");
+    if(Value) Debug.Print(", ");
+    else      Debug.Print("\n");
   }
 
   if(Next) Next->Display();

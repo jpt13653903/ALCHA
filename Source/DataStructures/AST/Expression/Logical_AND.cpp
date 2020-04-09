@@ -93,7 +93,7 @@ EXPRESSION* LOGICAL_AND::Simplify(bool GenWire){
 void LOGICAL_AND::Display(){
   DisplayStart();
 
-  Debug.print(" && ");
+  Debug.Print(" && ");
 
   DisplayEnd();
 }

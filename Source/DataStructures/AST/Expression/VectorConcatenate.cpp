@@ -102,14 +102,14 @@ EXPRESSION* VECTORCONCATENATE::Simplify(bool GenWire){
 //------------------------------------------------------------------------------
 
 void VECTORCONCATENATE::Display(){
-  Debug.print("(VectorConcat: (");
+  Debug.Print("(VectorConcat: (");
   bool isFirst = true;
   foreach(Element, Elements){
-    if(!isFirst) Debug.print(", ");
+    if(!isFirst) Debug.Print(", ");
     (*Element)->Display();
     isFirst = false;
   }
-  Debug.print("))");
+  Debug.Print("))");
 }
 //------------------------------------------------------------------------------
 

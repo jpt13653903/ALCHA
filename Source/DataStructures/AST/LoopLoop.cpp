@@ -69,12 +69,12 @@ bool LOOP_LOOP::GetVerilog(string& Body){
 
 void LOOP_LOOP::Display(){
   DisplayInfo();
-  Debug.print("loop(");
+  Debug.Print("loop(");
     if(Count) Count->Display();
-    else      Debug.print("{inf}");
-  Debug.print("){\n");
+    else      Debug.Print("{inf}");
+  Debug.Print("){\n");
     if(Statements) Statements->Display();
-  Debug.print("}\n");
+  Debug.Print("}\n");
 
   if(Next) Next->Display();
 }

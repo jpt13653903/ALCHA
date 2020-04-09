@@ -90,7 +90,7 @@ EXPRESSION* CONDITIONAL::Simplify(bool GenWire){
 void CONDITIONAL::Display(){
   DisplayStart();
 
-  Debug.print(" ? ");
+  Debug.Print(" ? ");
 
   DisplayEnd();
 }

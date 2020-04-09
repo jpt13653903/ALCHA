@@ -93,7 +93,7 @@ EXPRESSION* GREATER_EQUAL::Simplify(bool GenWire){
 void GREATER_EQUAL::Display(){
   DisplayStart();
 
-  Debug.print(" >= ");
+  Debug.Print(" >= ");
 
   DisplayEnd();
 }

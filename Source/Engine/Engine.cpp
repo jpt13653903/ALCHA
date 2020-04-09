@@ -62,15 +62,15 @@ bool ENGINE::Run(const char* Filename){
   NETLIST::Global.Ast = RunAST(Filename);
 
   #ifdef DEBUG
-    Debug.print(ANSI_FG_GREEN "\nDisplaying Global AST ");
-    Debug.print(Filename);
-    Debug.print(" -------------------------------------\n\n" ANSI_RESET);
+    Debug.Print(ANSI_FG_GREEN "\nDisplaying Global AST ");
+    Debug.Print(Filename);
+    Debug.Print(" -------------------------------------\n\n" ANSI_RESET);
     if(NETLIST::Global.Ast) NETLIST::Global.Ast->Display();
-    else                    Debug.print("AST is empty\n");
+    else                    Debug.Print("AST is empty\n");
 
-    Debug.print(ANSI_FG_GREEN "\nDisplaying Global Symbols ");
-    Debug.print(Filename);
-    Debug.print(" -------------------------------------\n\n" ANSI_RESET);
+    Debug.Print(ANSI_FG_GREEN "\nDisplaying Global Symbols ");
+    Debug.Print(Filename);
+    Debug.Print(" -------------------------------------\n\n" ANSI_RESET);
     NETLIST::Global.Display();
 
     foreach(Namespace, NETLIST::NamespaceStack){

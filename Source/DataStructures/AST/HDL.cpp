@@ -74,10 +74,10 @@ bool HDL::GetVerilog(string& Body){
 
 void HDL::Display(){
   DisplayInfo();
-  Debug.print("hdl (%s):\n", Identifier.c_str());
-  Debug.print(" Files:\n  "     ); if(Files     ) Files     ->Display(); Debug.print("\n");
-  Debug.print(" Parameters:\n  "); if(Parameters) Parameters->Display();
-  Debug.print(" Ports:\n  "     ); if(Ports     ) Ports     ->Display();
+  Debug.Print("hdl (%s):\n", Identifier.c_str());
+  Debug.Print(" Files:\n  "     ); if(Files     ) Files     ->Display(); Debug.Print("\n");
+  Debug.Print(" Parameters:\n  "); if(Parameters) Parameters->Display();
+  Debug.Print(" Ports:\n  "     ); if(Ports     ) Ports     ->Display();
 
   if(Next) Next->Display();
 }

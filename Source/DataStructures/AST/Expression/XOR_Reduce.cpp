@@ -90,7 +90,7 @@ EXPRESSION* XOR_REDUCE::Simplify(bool GenWire){
 void XOR_REDUCE::Display(){
   DisplayStart();
 
-  Debug.print(" #");
+  Debug.Print(" #");
 
   DisplayEnd();
 }

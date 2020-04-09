@@ -93,7 +93,7 @@ EXPRESSION* LESS_EQUAL::Simplify(bool GenWire){
 void LESS_EQUAL::Display(){
   DisplayStart();
 
-  Debug.print(" <= ");
+  Debug.Print(" <= ");
 
   DisplayEnd();
 }

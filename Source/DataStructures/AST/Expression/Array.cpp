@@ -82,14 +82,14 @@ EXPRESSION* ARRAY::Simplify(bool GenWire){
 //------------------------------------------------------------------------------
 
 void ARRAY::Display(){
-  Debug.print("(Array: (");
+  Debug.Print("(Array: (");
   bool isFirst = true;
   foreach(Element, Elements){
-    if(!isFirst) Debug.print(", ");
+    if(!isFirst) Debug.Print(", ");
     (*Element)->Display();
     isFirst = false;
   }
-  Debug.print("))");
+  Debug.Print("))");
 }
 //------------------------------------------------------------------------------
 

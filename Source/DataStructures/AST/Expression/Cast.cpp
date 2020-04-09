@@ -183,7 +183,7 @@ EXPRESSION* CAST::Simplify(bool GenWire){
 void CAST::Display(){
   DisplayStart();
 
-  Debug.print(" {cast} ");
+  Debug.Print(" {cast} ");
 
   DisplayEnd();
 }

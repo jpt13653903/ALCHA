@@ -89,7 +89,7 @@ EXPRESSION* MULTIPLY::Simplify(bool GenWire){
 void MULTIPLY::Display(){
   DisplayStart();
 
-  Debug.print(" * " );
+  Debug.Print(" * " );
 
   DisplayEnd();
 }

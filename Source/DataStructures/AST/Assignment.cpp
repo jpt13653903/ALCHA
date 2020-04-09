@@ -664,42 +664,42 @@ bool ASSIGNMENT::GetVerilog(string& Body){
 
 void ASSIGNMENT::Display(){
   DisplayInfo();
-  Debug.print("Assignment: ");
+  Debug.Print("Assignment: ");
 
   if(Left){
-    if(Left->Left || Left->Right) Debug.print("(");
+    if(Left->Left || Left->Right) Debug.Print("(");
     Left->Display();
-    if(Left->Left || Left->Right) Debug.print(")");
+    if(Left->Left || Left->Right) Debug.Print(")");
   }
 
   switch(AssignmentType){
-    case ASSIGNMENT_TYPE::Assign            : Debug.print(  " = "); break;
-    case ASSIGNMENT_TYPE::Raw_Assign        : Debug.print( " := "); break;
-    case ASSIGNMENT_TYPE::Append_Assign     : Debug.print( " ~= "); break;
-    case ASSIGNMENT_TYPE::Add_Assign        : Debug.print( " += "); break;
-    case ASSIGNMENT_TYPE::Subtract_Assign   : Debug.print( " -= "); break;
-    case ASSIGNMENT_TYPE::Multiply_Assign   : Debug.print( " *= "); break;
-    case ASSIGNMENT_TYPE::Divide_Assign     : Debug.print( " /= "); break;
-    case ASSIGNMENT_TYPE::Modulus_Assign    : Debug.print(" %%= "); break;
-    case ASSIGNMENT_TYPE::Exponential_Assign: Debug.print( "**= "); break;
-    case ASSIGNMENT_TYPE::AND_Assign        : Debug.print( " &= "); break;
-    case ASSIGNMENT_TYPE::OR_Assign         : Debug.print( " |= "); break;
-    case ASSIGNMENT_TYPE::XOR_Assign        : Debug.print( " ^= "); break;
-    case ASSIGNMENT_TYPE::Shift_Left_Assign : Debug.print(" <<= "); break;
-    case ASSIGNMENT_TYPE::Shift_Right_Assign: Debug.print(" >>= "); break;
+    case ASSIGNMENT_TYPE::Assign            : Debug.Print(  " = "); break;
+    case ASSIGNMENT_TYPE::Raw_Assign        : Debug.Print( " := "); break;
+    case ASSIGNMENT_TYPE::Append_Assign     : Debug.Print( " ~= "); break;
+    case ASSIGNMENT_TYPE::Add_Assign        : Debug.Print( " += "); break;
+    case ASSIGNMENT_TYPE::Subtract_Assign   : Debug.Print( " -= "); break;
+    case ASSIGNMENT_TYPE::Multiply_Assign   : Debug.Print( " *= "); break;
+    case ASSIGNMENT_TYPE::Divide_Assign     : Debug.Print( " /= "); break;
+    case ASSIGNMENT_TYPE::Modulus_Assign    : Debug.Print(" %%= "); break;
+    case ASSIGNMENT_TYPE::Exponential_Assign: Debug.Print( "**= "); break;
+    case ASSIGNMENT_TYPE::AND_Assign        : Debug.Print( " &= "); break;
+    case ASSIGNMENT_TYPE::OR_Assign         : Debug.Print( " |= "); break;
+    case ASSIGNMENT_TYPE::XOR_Assign        : Debug.Print( " ^= "); break;
+    case ASSIGNMENT_TYPE::Shift_Left_Assign : Debug.Print(" <<= "); break;
+    case ASSIGNMENT_TYPE::Shift_Right_Assign: Debug.Print(" >>= "); break;
 
-    default: Debug.print("(Unknown assignment type)");
+    default: Debug.Print("(Unknown assignment type)");
   }
 
   if(Right){
-    if(Right->Left || Right->Right) Debug.print("(");
+    if(Right->Left || Right->Right) Debug.Print("(");
     Right->Display();
-    if(Right->Left || Right->Right) Debug.print(")");
+    if(Right->Left || Right->Right) Debug.Print(")");
   }
 
-  if(Fence) Debug.print("{Fence}");
+  if(Fence) Debug.Print("{Fence}");
 
-  Debug.print("\n");
+  Debug.Print("\n");
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

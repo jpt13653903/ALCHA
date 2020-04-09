@@ -93,7 +93,7 @@ EXPRESSION* NOT_EQUAL::Simplify(bool GenWire){
 void NOT_EQUAL::Display(){
   DisplayStart();
 
-  Debug.print(" != ");
+  Debug.Print(" != ");
 
   DisplayEnd();
 }

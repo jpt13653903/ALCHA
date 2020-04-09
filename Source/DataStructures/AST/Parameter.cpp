@@ -80,32 +80,32 @@ bool PARAMETER::GetVerilog(string& Body){
 
 void PARAMETER::Display(){
   DisplayInfo();
-  Debug.print("Parameter (");
+  Debug.Print("Parameter (");
 
   switch(DefinitionType){
-    case DEFINITION_TYPE::Auto   : Debug.print("Auto):"     ); break;
-    case DEFINITION_TYPE::Pin    : Debug.print("Pin):"      ); break;
-    case DEFINITION_TYPE::Net    : Debug.print("Net):"      ); break;
-    case DEFINITION_TYPE::Byte   : Debug.print("Byte):"     ); break;
-    case DEFINITION_TYPE::Char   : Debug.print("Char):"     ); break;
-    case DEFINITION_TYPE::Number : Debug.print("Number):"   ); break;
-    case DEFINITION_TYPE::Func   : Debug.print("Function):" ); break;
+    case DEFINITION_TYPE::Auto   : Debug.Print("Auto):"     ); break;
+    case DEFINITION_TYPE::Pin    : Debug.Print("Pin):"      ); break;
+    case DEFINITION_TYPE::Net    : Debug.Print("Net):"      ); break;
+    case DEFINITION_TYPE::Byte   : Debug.Print("Byte):"     ); break;
+    case DEFINITION_TYPE::Char   : Debug.Print("Char):"     ); break;
+    case DEFINITION_TYPE::Number : Debug.Print("Number):"   ); break;
+    case DEFINITION_TYPE::Func   : Debug.Print("Function):" ); break;
 
     case DEFINITION_TYPE::ClassInstance:
       if(ClassName) ClassName->Display();
-      else          Debug.print("Class instance with no class name");
-      Debug.print("):");
+      else          Debug.Print("Class instance with no class name");
+      Debug.Print("):");
       break;
 
-    default: Debug.print("Invalid definition type:\n");
+    default: Debug.Print("Invalid definition type:\n");
   }
 
-  Debug.print(" %s", Identifier.c_str());
+  Debug.Print(" %s", Identifier.c_str());
 
   int j;
-  for(j = 0; j < ArrayDimensions; j++) Debug.print("[]");
+  for(j = 0; j < ArrayDimensions; j++) Debug.Print("[]");
 
-  Debug.print("\n");
+  Debug.Print("\n");
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------

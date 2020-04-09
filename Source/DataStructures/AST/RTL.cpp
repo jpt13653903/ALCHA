@@ -74,16 +74,16 @@ bool RTL::GetVerilog(string& Body){
 
 void RTL::Display(){
   DisplayInfo();
-  Debug.print("rtl(");
+  Debug.Print("rtl(");
     bool isFirst = true;
     foreach(Parameter, Parameters){
-      if(isFirst) Debug.print(", ");
+      if(isFirst) Debug.Print(", ");
       isFirst = false;
       if(*Parameter) (*Parameter)->Display();
     }
-  Debug.print("){\n");
+  Debug.Print("){\n");
     if(Statements) Statements->Display();
-  Debug.print("}\n");
+  Debug.Print("}\n");
 
   if(Next) Next->Display();
 }

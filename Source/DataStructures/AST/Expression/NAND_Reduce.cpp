@@ -90,7 +90,7 @@ EXPRESSION* NAND_REDUCE::Simplify(bool GenWire){
 void NAND_REDUCE::Display(){
   DisplayStart();
 
-  Debug.print(" ~&");
+  Debug.Print(" ~&");
 
   DisplayEnd();
 }

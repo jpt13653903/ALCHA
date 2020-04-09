@@ -90,7 +90,7 @@ EXPRESSION* OR_REDUCE::Simplify(bool GenWire){
 void OR_REDUCE::Display(){
   DisplayStart();
 
-  Debug.print(" |");
+  Debug.Print(" |");
 
   DisplayEnd();
 }

@@ -35,11 +35,11 @@ CHARACTER::~CHARACTER(){
 
 void CHARACTER::Display(int Indent){
   Debug.Indent(Indent+1);
-  Debug.print("Character: %s\n", Name.c_str());
+  Debug.Print("Character: %s\n", Name.c_str());
 
   Debug.Indent(Indent+2);
-  Debug.print("Value = '%s' ", UTF_Converter.UTF8(Value));
-  Debug.print("(%d)\n", Value);
+  Debug.Print("Value = '%s' ", UTF_Converter.UTF8(Value));
+  Debug.Print("(%d)\n", Value);
 }
 //------------------------------------------------------------------------------
 

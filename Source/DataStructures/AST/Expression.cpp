@@ -45,9 +45,9 @@ bool EXPRESSION::IsExpression(){
 
 void EXPRESSION::DisplayStart(){
   if(Left){
-    if(Left->Left || Left->Right) Debug.print("(");
+    if(Left->Left || Left->Right) Debug.Print("(");
     Left->Display();
-    if(Left->Left || Left->Right) Debug.print(")");
+    if(Left->Left || Left->Right) Debug.Print(")");
   }
 }
 //------------------------------------------------------------------------------
@@ -58,15 +58,15 @@ void EXPRESSION::DisplayEnd(){
     ASSIGNMENT* AssignRight;
     if(Right->IsExpression()){
       ExprRight = (EXPRESSION*)Right;
-      if(ExprRight->Left || ExprRight->Right || ExprRight->Next) Debug.print("(");
+      if(ExprRight->Left || ExprRight->Right || ExprRight->Next) Debug.Print("(");
       ExprRight->Display();
-      if(ExprRight->Left || ExprRight->Right || ExprRight->Next) Debug.print(")");
+      if(ExprRight->Left || ExprRight->Right || ExprRight->Next) Debug.Print(")");
 
     }else if(Right->Type == TYPE::Assignment){
       AssignRight = (ASSIGNMENT*)Right;
-      if(AssignRight->Left || AssignRight->Right || AssignRight->Next) Debug.print("(");
+      if(AssignRight->Left || AssignRight->Right || AssignRight->Next) Debug.Print("(");
       AssignRight->Display();
-      if(AssignRight->Left || AssignRight->Right || AssignRight->Next) Debug.print(")");
+      if(AssignRight->Left || AssignRight->Right || AssignRight->Next) Debug.Print(")");
 
     }else{
       error("Invalid type");

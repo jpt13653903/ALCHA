@@ -90,7 +90,7 @@ EXPRESSION* LOGICAL_NOT::Simplify(bool GenWire){
 void LOGICAL_NOT::Display(){
   DisplayStart();
 
-  Debug.print( " !");
+  Debug.Print( " !");
 
   DisplayEnd();
 }

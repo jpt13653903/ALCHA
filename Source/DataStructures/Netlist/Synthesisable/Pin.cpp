@@ -38,22 +38,22 @@ PIN::~PIN(){
 
 void PIN::Display(int Indent){
   Debug.Indent(Indent);
-  Debug.print("Pin: ");
+  Debug.Print("Pin: ");
 
   Indent++;
   DisplayParameters(Indent);
 
   Debug.Indent(Indent);
-  Debug.print("Driver     = ");
+  Debug.Print("Driver     = ");
   if(Driver) Driver->Display();
-  else       Debug.print("{open}");
-  Debug.print("\n");
+  else       Debug.Print("{open}");
+  Debug.Print("\n");
 
   Debug.Indent(Indent);
-  Debug.print("Enabled    = ");
+  Debug.Print("Enabled    = ");
   if(Enabled) Enabled->Display();
-  else        Debug.print("{open}");
-  Debug.print("\n");
+  else        Debug.Print("{open}");
+  Debug.Print("\n");
 
   DisplayAttributes(Indent);
 }

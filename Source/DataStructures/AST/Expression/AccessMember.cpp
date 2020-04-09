@@ -161,7 +161,7 @@ EXPRESSION* ACCESSMEMBER::Simplify(bool GenWire){
 void ACCESSMEMBER::Display(){
   DisplayStart();
 
-  Debug.print("." );
+  Debug.Print("." );
 
   DisplayEnd();
 }

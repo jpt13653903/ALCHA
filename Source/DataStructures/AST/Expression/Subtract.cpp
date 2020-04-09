@@ -106,7 +106,7 @@ EXPRESSION* SUBTRACT::Simplify(bool GenWire){
 void SUBTRACT::Display(){
   DisplayStart();
 
-  Debug.print(" - " );
+  Debug.Print(" - " );
 
   DisplayEnd();
 }
