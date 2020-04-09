@@ -37,6 +37,11 @@ LOGGER::~LOGGER(){
 }
 //------------------------------------------------------------------------------
 
+void LOGGER::Indent(int Level){
+  for(int n = 0; n < Level; n++) fprintf(File, "    ");
+}
+//------------------------------------------------------------------------------
+
 void LOGGER::print(const char* String){
   fprintf(File, "%s", String);
 }

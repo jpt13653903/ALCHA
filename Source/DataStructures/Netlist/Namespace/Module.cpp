@@ -40,14 +40,16 @@ MODULE::~MODULE(){
 }
 //------------------------------------------------------------------------------
 
-void MODULE::Display(){
-  Debug.print("\nModule: ");
+void MODULE::Display(int Indent){
+  Debug.Indent(Indent);
+  Debug.print("Module: ");
 
   if(this == &Global) Debug.print("{Global}");
   else                DisplayLongName();
   Debug.print("\n");
+  Indent++;
 
-  DisplayAttributes(2);
+  DisplayAttributes(Indent);
   Debug.print("\n");
 
   list<BASE*> Modules;
@@ -55,15 +57,16 @@ void MODULE::Display(){
   foreach(s, Symbols){
     if(s->second){
       if(s->second->Type == TYPE::Module) Modules.push_back(s->second);
-      else s->second->Display();
+      else s->second->Display(Indent);
     }else{
+      Debug.Indent(Indent);
       Debug.print("- %s: {null}\n", s->first.c_str());
     }
     Debug.print("\n");
   }
 
   foreach(s, Modules){
-    (*s)->Display();
+    (*s)->Display(Indent);
     Debug.print("\n");
   }
 }

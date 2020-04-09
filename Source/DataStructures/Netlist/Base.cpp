@@ -188,18 +188,18 @@ void BASE::DisplayLongName(){
 //------------------------------------------------------------------------------
 
 void BASE::DisplayAttributes(int Indent){
-  for(int n = 0; n < Indent; n++) Debug.print(" ");
+  Debug.Indent(Indent);
   Debug.print("Line       = %d\n", Source.Line);
 
-  for(int n = 0; n < Indent; n++) Debug.print(" ");
+  Debug.Indent(Indent);
   Debug.print("Filename   = \"%s\"\n", Source.Filename);
 
-  for(int n = 0; n < Indent; n++) Debug.print(" ");
+  Debug.Indent(Indent);
   Debug.print("Attributes:\n");
 
   foreach(a, Attributes){
-    for(int n = 0; n < Indent; n++) Debug.print(" ");
-    Debug.print("  %s = ", a->first.c_str());
+    Debug.Indent(Indent+1);
+    Debug.print("%s = ", a->first.c_str());
     if(a->second) a->second->Display();
     else          Debug.print("{null}");
     Debug.print("\n");

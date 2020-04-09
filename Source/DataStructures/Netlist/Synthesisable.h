@@ -35,7 +35,7 @@
 namespace NETLIST{
   class SYNTHESISABLE: public BASE{
     protected:
-      void DisplayParameters();
+      void DisplayParameters(int Indent);
 
     public:
       bool   Used; // Actually used in an expression somewhere

@@ -34,22 +34,27 @@ NETLIST::GROUP::~GROUP(){
 }
 //------------------------------------------------------------------------------
 
-void NETLIST::GROUP::Display(){
-  Debug.print("\n  Group: ");
+void NETLIST::GROUP::Display(int Indent){
+  Debug.Indent(Indent);
+  Debug.print("Group: ");
 
   if(Name.empty()) Debug.print("{Anonymous}");
   else             DisplayLongName();
-  Debug.print("{\n");
+  Debug.print("\n");
 
-  DisplayAttributes(4);
+  Indent++;
+  DisplayAttributes(Indent);
   Debug.print("\n");
 
   foreach(s, Symbols){
-    if(s->second) s->second->Display();
-    else          Debug.print("    - %s: {null}\n", s->first.c_str());
+    if(s->second){
+      s->second->Display(Indent);
+    }else{
+      Debug.Indent(Indent);
+      Debug.print("- %s: {null}\n", s->first.c_str());
+    }
     Debug.print("\n");
   }
-  Debug.print("  }\n");
 }
 //------------------------------------------------------------------------------
 

@@ -39,6 +39,8 @@ class LOGGER{
     LOGGER(const char* Filename);
    ~LOGGER();
 
+    void Indent(int Level);
+
     void print(const char*        String);
     void print(const std::string& String);
     void print(const char* Format, int i);

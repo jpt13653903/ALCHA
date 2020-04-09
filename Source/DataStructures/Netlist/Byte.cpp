@@ -33,9 +33,11 @@ NETLIST::BYTE::~BYTE(){
 }
 //------------------------------------------------------------------------------
 
-void NETLIST::BYTE::Display(){
-  Debug.print("  Byte: %s\n", Name.c_str());
-  Debug.print("    Value = 0x%02X\n", Value);
+void NETLIST::BYTE::Display(int Indent){
+  Debug.Indent(Indent+1);
+  Debug.print("Byte: %s\n", Name.c_str());
+  Debug.Indent(Indent+2);
+  Debug.print("Value = 0x%02X\n", Value);
 }
 //------------------------------------------------------------------------------
 

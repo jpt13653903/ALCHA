@@ -34,10 +34,13 @@ ALIAS::~ALIAS(){
 }
 //------------------------------------------------------------------------------
 
-void ALIAS::Display(){
-  Debug.print("  Alias: %s\n", Name.c_str());
-  Debug.print("    ");
+void ALIAS::Display(int Indent){
+  Debug.Indent(Indent);
+  Debug.print("Alias: %s\n", Name.c_str());
+
+  Debug.Indent(Indent+1);
   if(Expression) Expression->Display();
+  else           Debug.print("{null}");
   Debug.print("\n");
 }
 //------------------------------------------------------------------------------

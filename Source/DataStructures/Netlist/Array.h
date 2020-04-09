@@ -30,7 +30,7 @@ namespace NETLIST{
              ARRAY(int Line, const std::string& Filename, const char* Name);
     virtual ~ARRAY();
 
-    void Display() override;
+    void Display(int Indent = 0) override;
 
     void Validate() override;
   };

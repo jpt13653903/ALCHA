@@ -33,9 +33,12 @@ NUM::~NUM(){
 }
 //------------------------------------------------------------------------------
 
-void NUM::Display(){
-  Debug.print("  Num: %s\n", Name.c_str());
-  Debug.print("    Value = ");
+void NUM::Display(int Indent){
+  Debug.Indent(Indent);
+  Debug.print("Num: %s\n", Name.c_str());
+
+  Debug.Indent(Indent+1);
+  Debug.print("Value = ");
   Debug.print(Value.Display());
   Debug.print("\n");
 }

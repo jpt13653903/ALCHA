@@ -34,17 +34,20 @@ NET::~NET(){
 }
 //------------------------------------------------------------------------------
 
-void NET::Display(){
-  Debug.print("  Net: ");
+void NET::Display(int Indent){
+  Debug.Indent(Indent);
+  Debug.print("Net: ");
 
-  DisplayParameters();
+  Indent++;
+  DisplayParameters(Indent);
 
-  Debug.print("    Value      = ");
+  Debug.Indent(Indent);
+  Debug.print("Value      = ");
   if(Value) Value->Display();
   else      Debug.print("{open}");
   Debug.print("\n");
 
-  DisplayAttributes(4);
+  DisplayAttributes(Indent);
 }
 //------------------------------------------------------------------------------
 

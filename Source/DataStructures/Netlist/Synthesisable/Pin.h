@@ -34,7 +34,7 @@ namespace NETLIST{
     PIN(int Line, const std::string& Filename, const char* Name);
    ~PIN();
 
-    void Display();
+    void Display(int Indent = 0) override;
 
     void Validate() override;
   };

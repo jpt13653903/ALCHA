@@ -95,7 +95,7 @@ namespace NETLIST{
       std::string& HDL_Name();
       std::string& EscapedName(); // Inserts '\' in front if required
 
-      virtual void Display        () = 0;
+      virtual void Display        (int Indent = 0) = 0;
               void DisplayLongName();
 
       // Runs assertions to validate the members.

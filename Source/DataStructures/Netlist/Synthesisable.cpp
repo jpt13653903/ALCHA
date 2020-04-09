@@ -110,14 +110,20 @@ bool SYNTHESISABLE::ApplyParameters(list<AST::BASE*>& Parameters){
 }
 //------------------------------------------------------------------------------
 
-void SYNTHESISABLE::DisplayParameters(){
-  Debug.print("%s\n", Name.c_str());
-  Debug.print("    Used       = %s\n", Used   ? "true" : "false");
-  Debug.print("    Width      = %u\n", Width);
-  Debug.print("    Full-scale = %s\n", FullScale.Display());
-  Debug.print("    Signed     = %s\n", Signed ? "true" : "false");
+void SYNTHESISABLE::DisplayParameters(int Indent){
+  Debug.print(" %s\n", Name.c_str());
 
-  Debug.print("    Direction  = ");
+  Debug.Indent(Indent);
+  Debug.print("Used       = %s\n", Used   ? "true" : "false");
+  Debug.Indent(Indent);
+  Debug.print("Width      = %u\n", Width);
+  Debug.Indent(Indent);
+  Debug.print("Full-scale = %s\n", FullScale.Display());
+  Debug.Indent(Indent);
+  Debug.print("Signed     = %s\n", Signed ? "true" : "false");
+
+  Debug.Indent(Indent);
+  Debug.print("Direction  = ");
   switch(Direction){
     case AST::DEFINITION::DIRECTION::Inferred     : Debug.print("Inferred\n"     ); break;
     case AST::DEFINITION::DIRECTION::Input        : Debug.print("Input\n"        ); break;

@@ -32,7 +32,7 @@ namespace NETLIST{
              BYTE(int Line, const std::string& Filename, const char* Name);
     virtual ~BYTE();
 
-    void Display() override;
+    void Display(int Indent = 0) override;
 
     void Validate() override;
   };

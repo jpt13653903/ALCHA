@@ -35,7 +35,7 @@ namespace NETLIST{
                GROUP(int Line, const std::string& Filename, const char* Name = "");
       virtual ~GROUP(); // Also cleans up the children
 
-      void Display() override;
+      void Display(int Indent = 0) override;
 
       void Validate() override;
   };

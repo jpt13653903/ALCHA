@@ -33,7 +33,7 @@ namespace NETLIST{
              ALIAS(int Line, const std::string& Filename, const char* Name, AST::EXPRESSION* Expression);
     virtual ~ALIAS();
 
-    void Display() override;
+    void Display(int Indent = 0) override;
 
     void Validate() override;
   };
