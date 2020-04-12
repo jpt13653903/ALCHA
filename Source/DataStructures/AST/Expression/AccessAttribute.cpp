@@ -83,7 +83,7 @@ EXPRESSION* ACCESSATTRIBUTE::Evaluate(){
     assert(Right->Type == TYPE::Identifier, delete Left; return 0);
     auto Right = (IDENTIFIER*)this->Right;
     auto Object = ((OBJECT*)Left)->ObjectRef;
-    auto Found  = Object->GetAttrib(Right->Name);
+    auto Found  = Object->GetAttribValue(Right->Name);
     if(!Found){
       Error();
       printf("Attribute %s not found in object %s\n",

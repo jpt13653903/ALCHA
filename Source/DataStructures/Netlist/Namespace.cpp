@@ -53,6 +53,13 @@ bool NAMESPACE::IsNamespace(){
 }
 //------------------------------------------------------------------------------
 
+BASE* NAMESPACE::GetMember(const std::string& Name){
+  auto Member = Symbols.find(Name);
+  if(Member != Symbols.end()) return Member->second;
+  return 0;
+}
+//------------------------------------------------------------------------------
+
 void NAMESPACE::Validate(){
   BASE::Validate();
 

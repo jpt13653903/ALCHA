@@ -48,8 +48,19 @@ AST::EXPRESSION* PIN::GetExpression(int Line, const string& Filename){
 //------------------------------------------------------------------------------
 
 bool PIN::Assign(AST::EXPRESSION* Expression){
-  error("Not yet implemented");
-  return false;
+  if(Direction == AST::DEFINITION::DIRECTION::Input){
+    Expression->Error("Cannot assign to an input pin");
+    return false;
+  }
+  Used = true;
+  return Driver->Assign(Expression);
+}
+//------------------------------------------------------------------------------
+
+BASE* PIN::GetMember(const std::string& Name){
+  if(Name == "driver" ) return Driver;
+  if(Name == "enabled") return Enabled;
+  return 0;
 }
 //------------------------------------------------------------------------------
 

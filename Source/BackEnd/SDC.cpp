@@ -40,7 +40,7 @@ void SDC::BuildClocks(){
   foreach(SymbolIterator, Global.Symbols){
     if(SymbolIterator->second->Type == BASE::TYPE::Pin){
       auto Pin  = (PIN*)(SymbolIterator->second);
-      auto Freq = Pin->GetAttrib("frequency");
+      auto Freq = Pin->GetAttribValue("frequency");
       if(Freq){
         if(Freq->Type != AST::BASE::TYPE::Literal){
           error("frequency attribute not a literal");
@@ -69,7 +69,7 @@ void SDC::BuildClocks(){
     foreach(SymbolIterator, Global.Symbols){
       if(SymbolIterator->second->Type == BASE::TYPE::Pin){
         auto Pin  = (PIN*)(SymbolIterator->second);
-        auto Freq = Pin->GetAttrib("frequency");
+        auto Freq = Pin->GetAttribValue("frequency");
         // Already checked for validity above, so no need to check again
         if(Freq) Constraints += " \\\n  -group {"+ Pin->HDL_Name() +"}";
       }
@@ -87,7 +87,7 @@ void SDC::BuildPorts(NETLIST::NAMESPACE* Namespace){
     switch(SymbolIterator->second->Type){
       case BASE::TYPE::Pin:{
         auto Pin = (PIN*)(SymbolIterator->second);
-        if(!Pin->GetAttrib("frequency")){ // Not a clock
+        if(!Pin->GetAttribValue("frequency")){ // Not a clock
           if(Pin->Direction != AST::DEFINITION::DIRECTION::Output){ // Input or bidirectional
             Constraints += "set_false_path -to   * -from ";
             Constraints += "[get_ports {" + Pin->HDL_Name();

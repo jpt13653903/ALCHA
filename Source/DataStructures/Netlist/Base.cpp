@@ -179,17 +179,32 @@ void BASE::DisplayAttributes(int Indent){
 }
 //------------------------------------------------------------------------------
 
-AST::EXPRESSION* BASE::GetAttrib(const string& Key){
-  auto Value = Attributes.find(Key);
-  if(Value != Attributes.end()) return Value->second->Value;
-  if(Namespace) return Namespace->GetAttrib(Key);
+ATTRIBUTE* BASE::GetAttribute(const std::string& Name){
+  auto Attribute = Attributes.find(Name);
+  if(Attribute != Attributes.end()) return Attribute->second;
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+BASE* BASE::GetMember(const std::string& Name){
+  return 0; // By default, objects do not have members
+}
+//------------------------------------------------------------------------------
+
+AST::EXPRESSION* BASE::GetAttribValue(const string& Name){
+  auto Attribute = GetAttribute(Name);
+  if(Attribute) return Attribute->Value;
+  if(Namespace) return Namespace->GetAttribValue(Name);
   return 0;
 }
 //------------------------------------------------------------------------------
 
 void BASE::Validate(){
   // Don't verify Namespace, it's circular
-  foreach(Attrib, Attributes) Attrib->second->Validate();
+  foreach(Attrib, Attributes){
+    assert(Attrib->first == Attrib->second->Name);
+    Attrib->second->Validate();
+  }
 }
 //------------------------------------------------------------------------------
 

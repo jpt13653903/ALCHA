@@ -43,7 +43,12 @@ AST::EXPRESSION* NET::GetExpression(int Line, const string& Filename){
 //------------------------------------------------------------------------------
 
 bool NET::Assign(AST::EXPRESSION* Expression){
-  if(Value) delete Value;
+  if(Value){
+    Expression->Warning();
+    printf("Overwriting net value %s\n", Name.c_str());
+    delete Value;
+  }
+  Used  = true;
   Value = Expression;
   return true;
 }

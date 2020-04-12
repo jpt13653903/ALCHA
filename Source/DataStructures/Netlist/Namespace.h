@@ -43,6 +43,8 @@ namespace NETLIST{
 
       bool IsNamespace() override;
 
+      BASE* GetMember(const std::string& Name) override;
+
       void Validate() override;
   };
 }

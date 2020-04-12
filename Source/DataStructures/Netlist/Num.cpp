@@ -47,6 +47,7 @@ AST::EXPRESSION* NUM::GetExpression(int Line, const string& Filename){
 
 bool NUM::Assign(AST::EXPRESSION* Expression){
   error("Not yet implemented");
+  // TODO: Change the evaluation and simplification of expressions...
   return false;
 }
 //------------------------------------------------------------------------------

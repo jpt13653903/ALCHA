@@ -106,9 +106,14 @@ namespace NETLIST{
       // Runs assertions to validate the members.
       virtual void Validate();
 
+      // Access the attribute or member object
+      // Only searches this object and returns null when not found
+              ATTRIBUTE* GetAttribute(const std::string& Name);
+      virtual BASE*      GetMember   (const std::string& Name);
+
       // Access the attribute, but searches up to the root and
       // returns null when not found
-      AST::EXPRESSION* GetAttrib(const std::string& Key);
+      AST::EXPRESSION* GetAttribValue(const std::string& Name);
   };
 }
 //------------------------------------------------------------------------------

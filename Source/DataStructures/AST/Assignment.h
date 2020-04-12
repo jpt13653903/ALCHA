@@ -44,7 +44,7 @@ namespace AST{
       // Populates a list of existing expressions, except when the target is an
       // undefined attribute, in which case the attribute is created first.
       typedef std::list<NETLIST::BASE*> target_list;
-      bool GetLHS_Object(NETLIST::BASE* Object, target_list& List, BASE* Ast);
+      bool AddLHS_Object(NETLIST::BASE* Object, target_list& List);
       bool GetLHS(EXPRESSION* Node, target_list& List);
 
     protected:

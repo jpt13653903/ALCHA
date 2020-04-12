@@ -122,7 +122,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
     switch(SymbolIterator->second->Type){
       case BASE::TYPE::Pin:{
         auto Pin = (PIN*)(SymbolIterator->second);
-        auto Standard = Pin->GetAttrib("standard");
+        auto Standard = Pin->GetAttribValue("standard");
         if(Standard){
           if(Standard->Type != AST::BASE::TYPE::String){
             Error(Standard, "Standard attribute not a string");
@@ -133,7 +133,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
           if(Pin->Width > 1) Body += "[*]";
           Body += "\n";
         }
-        auto Location = Pin->GetAttrib("location");
+        auto Location = Pin->GetAttribValue("location");
         if(Location){
           if(Pin->Width == 1){
             if(Location->Type != AST::BASE::TYPE::String){
@@ -170,7 +170,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
           if(Pin->Width > 1) Body += "[*]";
           Body += "\n";
         }
-        auto Current = Pin->GetAttrib("current");
+        auto Current = Pin->GetAttribValue("current");
         if(Current){
           Body += "set_instance_assignment "
                   "-name CURRENT_STRENGTH_NEW ";
@@ -197,7 +197,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
           if(Pin->Width > 1) Body += "[*]";
           Body += "\n";
         }
-        auto WeakPullup = Pin->GetAttrib("pullup");
+        auto WeakPullup = Pin->GetAttribValue("pullup");
         if(WeakPullup){
           Body += "set_instance_assignment "
                   "-name WEAK_PULL_UP_RESISTOR ";
@@ -287,7 +287,7 @@ bool PROJECT::BuildSettings(){
     "#-------------------------------------------------------------------------------\n"
     "\n";
 
-  auto Standard = Global.GetAttrib("standard");
+  auto Standard = Global.GetAttribValue("standard");
   Body += "set_global_assignment -name STRATIX_DEVICE_IO_STANDARD ";
   if(Standard){
     if(Standard->Type != AST::BASE::TYPE::String){
@@ -364,7 +364,7 @@ bool PROJECT::Build(const char* Path, const char* Filename){
   strftime(Time, 0x100, "%H:%M:%S  %B %d, %Y", localtime(&RawTime));
   this->Time = Time;
 
-  auto Device = Global.GetAttrib("target_device");
+  auto Device = Global.GetAttribValue("target_device");
   if(!Device){
     Error("Global attribute \"target_device\" not defined");
     return false;
@@ -375,7 +375,7 @@ bool PROJECT::Build(const char* Path, const char* Filename){
   }
   this->Device = ((AST::STRING*)Device)->Value;
 
-  auto Series = Global.GetAttrib("target_series");
+  auto Series = Global.GetAttribValue("target_series");
   if(!Series){
     Error("Global attribute \"target_series\" not defined");
     return false;
