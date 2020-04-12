@@ -19,17 +19,35 @@
 //==============================================================================
 
 #include "Byte.h"
+
+#include "AST/Expression/Literal.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-NETLIST::BYTE::BYTE(int Line, const std::string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Byte){
+NETLIST::BYTE::BYTE(int Line, const string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Byte){
   Value = 0;
 }
 //------------------------------------------------------------------------------
 
 NETLIST::BYTE::~BYTE(){
+}
+//------------------------------------------------------------------------------
+
+AST::EXPRESSION* NETLIST::BYTE::GetExpression(int Line, const string& Filename){
+  AST::LITERAL* Result = new AST::LITERAL(Line, Filename);
+  Result->Value  = Value;
+  Result->Signed = false;
+  Result->Width  = 8;
+  return Result;
+}
+//------------------------------------------------------------------------------
+
+bool NETLIST::BYTE::Assign(AST::EXPRESSION* Expression){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 

@@ -18,46 +18,57 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Array.h"
+#include "Attribute.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-ARRAY::ARRAY(int Line, const string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Array){
-  error("Not yet implemented");
+ATTRIBUTE::ATTRIBUTE(int Line, const string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Number){
+  Value = 0;
 }
 //------------------------------------------------------------------------------
 
-ARRAY::~ARRAY(){
+ATTRIBUTE::~ATTRIBUTE(){
+  if(Value) delete Value;
 }
 //------------------------------------------------------------------------------
 
-AST::EXPRESSION* ARRAY::GetExpression(int Line, const string& Filename){
-  error("Not yet implemented");
-  // TODO: Generate an AST::ARRAY expression and fill with elements
+AST::EXPRESSION* ATTRIBUTE::GetExpression(int Line, const string& Filename){
+  if(Value) return (AST::EXPRESSION*)Value->Copy(false);
+  Error(Line, Filename, "Cannot get expression: no value has been assigned yet");
   return 0;
 }
 //------------------------------------------------------------------------------
 
-bool ARRAY::Assign(AST::EXPRESSION* Expression){
-  error("Not yet implemented");
-  return false;
+bool ATTRIBUTE::Assign(AST::EXPRESSION* Expression){
+  if(Value){
+    Expression->Warning();
+    printf("Overwriting attribute %s\n", Name.c_str());
+    delete Value;
+  }
+  Value = Expression;
+  return true;
 }
 //------------------------------------------------------------------------------
 
-void ARRAY::Display(int Indent){
-  error("Not implemented yet");
+void ATTRIBUTE::Display(int Indent){
+  Debug.Indent(Indent);
+  Debug.Print(Name);
+  Debug.Print(" = ");
+  if(Value) Value->Display();
+  else      Debug.Print("{null}");
+  Debug.Print("\n");
 }
 //------------------------------------------------------------------------------
 
-void ARRAY::Validate(){
-  assert(Type == TYPE::Array);
+void ATTRIBUTE::Validate(){
+  assert(Type == TYPE::Attribute);
+
+  assert(Attributes.size() == 0);
 
   BASE::Validate();
-
-  error("Not implemented yet");
 }
 //------------------------------------------------------------------------------
 

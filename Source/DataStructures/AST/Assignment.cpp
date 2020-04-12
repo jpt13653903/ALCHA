@@ -21,6 +21,7 @@
 #include "Assignment.h"
 
 #include "Netlist/Alias.h"
+#include "Netlist/Attribute.h"
 #include "Netlist/Synthesisable/Pin.h"
 #include "Netlist/Synthesisable/Net.h"
 #include "Netlist/Namespace/Module.h"
@@ -54,8 +55,6 @@ bool ASSIGNMENT::IsAssignment(){
 //------------------------------------------------------------------------------
 
 bool ASSIGNMENT::GetLHS_Object(NETLIST::BASE* Object, target_list& List, BASE* Ast){
-  TARGET_LIST ListNode;
-
   bool Result = false;
 
   if(Object){
@@ -67,26 +66,20 @@ bool ASSIGNMENT::GetLHS_Object(NETLIST::BASE* Object, target_list& List, BASE* A
           return false;
         }
         Pin->Used = true;
-        ListNode.Object     =  Pin;
-        ListNode.Expression = &Pin->Driver;
-        List.push_back(ListNode);
+        List.push_back(Pin->Driver);
         Result = true;
         break;
       }
       case NETLIST::BASE::TYPE::Net:{
         auto Net = (NETLIST::NET*)Object;
-        ListNode.Object     =  Net;
-        ListNode.Expression = &Net->Value;
-        List.push_back(ListNode);
+        List.push_back(Net);
         Result = true;
         break;
       }
       case NETLIST::BASE::TYPE::Number:
       case NETLIST::BASE::TYPE::Byte:
       case NETLIST::BASE::TYPE::Character:{
-        ListNode.Object = Object;
-        ListNode.Expression = 0;
-        List.push_back(ListNode);
+        List.push_back(Object);
         Result = true;
         break;
       }
@@ -103,9 +96,7 @@ bool ASSIGNMENT::GetLHS_Object(NETLIST::BASE* Object, target_list& List, BASE* A
       }
       case NETLIST::BASE::TYPE::Module:
       case NETLIST::BASE::TYPE::Group:{
-        ListNode.Object     = Object;
-        ListNode.Expression = 0;
-        List.push_back(ListNode);
+        List.push_back(Object);
         Result = true;
         break;
       }
@@ -121,8 +112,7 @@ bool ASSIGNMENT::GetLHS_Object(NETLIST::BASE* Object, target_list& List, BASE* A
 bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List){
   if(!Node) return 0;
 
-  bool        Result = false;
-  TARGET_LIST ListNode;
+  bool Result = false;
 
   switch(Node->Type){
     case TYPE::Array:{
@@ -192,15 +182,14 @@ bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List){
       auto Left  = LeftList.front();
       auto Right = (EXPRESSION*)Node->Right;
 
-      if(Left.isAttribute){
-        Node->Error("Attributes cannot be structures");
-        return false;
-      }
+      switch(Left->Type){
+        case NETLIST::BASE::TYPE::Attribute:
+          Node->Error("Attributes cannot be structures");
+          return false;
 
-      switch(Left.Object->Type){
         case NETLIST::BASE::TYPE::Pin:{
-          auto Pin = (NETLIST::PIN*)Left.Object;
-          ListNode.Object = Pin;
+          auto Pin = (NETLIST::PIN*)Left;
+          NETLIST::BASE* Object = Pin;
           if(Right->Type != TYPE::Identifier){
             Node->Error("Invalid pin member");
             return false;
@@ -210,21 +199,21 @@ bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List){
             return false;
           }
           if(((IDENTIFIER*)Right)->Name == "driver"){
-            ListNode.Expression = &Pin->Driver;
+            Object = Pin->Driver;
           }else if(((IDENTIFIER*)Right)->Name == "enabled"){
-            ListNode.Expression = &Pin->Enabled;
+            Object = Pin->Enabled;
           }else{
             Node->Error("Valid pin members are \"driver\" and \"enabled\" only");
             return false;
           }
-          List.push_back(ListNode);
+          List.push_back(Object);
           Result = true;
           break;
         }
         case NETLIST::BASE::TYPE::Module:
         case NETLIST::BASE::TYPE::Group:{
           assert(Right->Type == TYPE::Identifier, return false);
-          auto Namespace = (NETLIST::NAMESPACE*)Left.Object;
+          auto Namespace = (NETLIST::NAMESPACE*)Left;
           auto Object    = Namespace->Symbols.find(((IDENTIFIER*)Right)->Name);
           if(Object == Namespace->Symbols.end()){
             Node->Error();
@@ -241,7 +230,7 @@ bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List){
         }
         default:
           Node->Error();
-          printf("Invalid type for member access: %d\n", (int)Left.Object->Type);
+          printf("Invalid type for member access: %d\n", (int)Left->Type);
           return false;
       }
       break;
@@ -252,6 +241,7 @@ bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List){
       break;
 
     case TYPE::AccessAttribute:{
+      NETLIST::BASE* Object = 0;
       if(Node->Left){
         target_list LeftList;
         if(!GetLHS(Node->Left, LeftList)) return false;
@@ -263,11 +253,11 @@ bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List){
           error("Multiple assignment targets not yet supported");
           return false;
         }
-        ListNode = LeftList.front();
+        Object = LeftList.front();
       }else{ // An attribute of the current namespace
-        ListNode.Object = NETLIST::NamespaceStack.front();
+        Object = NETLIST::NamespaceStack.front();
       }
-      if(ListNode.isAttribute){
+      if(Object->Type == NETLIST::BASE::TYPE::Attribute){
         Node->Error("Attributes are not hierarchical");
         return false;
       }
@@ -277,9 +267,14 @@ bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List){
         if(Right->Type == TYPE::Identifier){
           // The process of adding an entry initialises the pointer to null.
           // The default constructor of the pointer type is called.
-          ListNode.Expression = &ListNode.Object->Attributes[((IDENTIFIER*)Right)->Name];
-          ListNode.isAttribute = true;
-          List.push_back(ListNode);
+          NETLIST::ATTRIBUTE* Attribute = Object->Attributes[((IDENTIFIER*)Right)->Name];
+          if(!Attribute){ // Create a new attribute
+            Attribute = new NETLIST::ATTRIBUTE(Right->Source.Line,
+                                               Right->Source.Filename,
+                                               ((IDENTIFIER*)Right)->Name.c_str());
+            Object->Attributes[((IDENTIFIER*)Right)->Name] = Attribute;
+          }
+          List.push_back(Attribute);
           Result = true;
         }else{
           // TODO Could be a slice expression, which is not supported yet
@@ -294,6 +289,31 @@ bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List){
       break;
   }
   return Result;
+}
+//------------------------------------------------------------------------------
+
+void ASSIGNMENT::DisplayAssignment(const char* Operator){
+  DisplayInfo();
+  Debug.Print("Assignment: ");
+
+  if(Left){
+    if(Left->Left || Left->Right) Debug.Print("(");
+    Left->Display();
+    if(Left->Left || Left->Right) Debug.Print(")");
+  }
+
+  Debug.Print(" %s ", Operator);
+
+  if(Right){
+    if(Right->Left || Right->Right) Debug.Print("(");
+    Right->Display();
+    if(Right->Left || Right->Right) Debug.Print(")");
+  }else{
+    Debug.Print("{Moved Expression}");
+  }
+
+  Debug.Print("\n");
+  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
 

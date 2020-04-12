@@ -21,10 +21,11 @@
 #include "Namespace.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-NAMESPACE::NAMESPACE(int Line, const std::string& Filename, const char* Name): BASE(Line, Filename, Name, TYPE::Namespace){
+NAMESPACE::NAMESPACE(int Line, const string& Filename, const char* Name): BASE(Line, Filename, Name, TYPE::Namespace){
   Ast = 0;
 }
 //------------------------------------------------------------------------------
@@ -32,6 +33,18 @@ NAMESPACE::NAMESPACE(int Line, const std::string& Filename, const char* Name): B
 NAMESPACE::~NAMESPACE(){
   if(Ast) delete Ast;
   foreach(s, Symbols) delete s->second;
+}
+//------------------------------------------------------------------------------
+
+AST::EXPRESSION* NAMESPACE::GetExpression(int Line, const string& Filename){
+  Error(Line, Filename, "Cannot obtain an expression from a namespace");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+bool NAMESPACE::Assign(AST::EXPRESSION* Expression){
+  Expression->Error("Cannot assign to a namespace");
+  return false;
 }
 //------------------------------------------------------------------------------
 

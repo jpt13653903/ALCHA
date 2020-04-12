@@ -175,6 +175,7 @@ Objects += $(ObjectPath)/DataStructures/AST/Expression/XOR_Reduce.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Base.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Alias.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Array.o
+Objects += $(ObjectPath)/DataStructures/Netlist/Attribute.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Byte.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Character.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Namespace.o

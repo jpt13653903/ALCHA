@@ -21,16 +21,30 @@
 #include "Net.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-NET::NET(int Line, const std::string& Filename, const char* Name) : SYNTHESISABLE(Line, Filename, Name, TYPE::Net){
+NET::NET(int Line, const string& Filename, const char* Name) : SYNTHESISABLE(Line, Filename, Name, TYPE::Net){
   Value = 0;
 }
 //------------------------------------------------------------------------------
 
 NET::~NET(){
   if(Value) delete Value;
+}
+//------------------------------------------------------------------------------
+
+AST::EXPRESSION* NET::GetExpression(int Line, const string& Filename){
+  if(Value) return (AST::EXPRESSION*)Value->Copy(false);
+  Error(Line, Filename, "Cannot get expression: no value has been assigned yet");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+bool NET::Assign(AST::EXPRESSION* Expression){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 

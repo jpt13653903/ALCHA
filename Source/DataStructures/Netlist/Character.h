@@ -33,6 +33,9 @@ namespace NETLIST{
              CHARACTER(int Line, const std::string& Filename, const char* Name);
     virtual ~CHARACTER();
 
+    AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
+    bool Assign(AST::EXPRESSION* Expression) override;
+
     void Display(int Indent = 0) override;
 
     void Validate() override;

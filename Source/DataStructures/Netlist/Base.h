@@ -39,6 +39,7 @@ namespace AST{
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
+  class ATTRIBUTE;
   class NAMESPACE;
   class SYNTHESISABLE;
 
@@ -50,6 +51,8 @@ namespace NETLIST{
     public:
       // Indentation follows the inheritance tree
       enum class TYPE{
+        Attribute,
+        
         Synthesisable,
           Pin,
           Net,
@@ -73,9 +76,9 @@ namespace NETLIST{
         std::string Filename;
       } Source;
 
-      std::string                             Name;
-      NAMESPACE*                              Namespace;
-      std::map<std::string, AST::EXPRESSION*> Attributes;
+      std::string Name;
+      NAMESPACE*  Namespace;
+      std::map<std::string, ATTRIBUTE*> Attributes;
     //--------------------------------------------------------------------------
 
     public:
@@ -83,12 +86,14 @@ namespace NETLIST{
                BASE(int Line, const std::string& Filename, const char* Name, TYPE Type);
       virtual ~BASE();
 
-      bool ApplyAttributes(
-        std::string&     Name,
-        AST::EXPRESSION* Value,
-        AST::BASE*       Ast
-      );
       bool ApplyAttributes(AST::ASSIGNMENT* AttributeList);
+
+      // Either generates a new node or a copy of the current node
+      // It is used specifically for operate-and-assign expressions
+      virtual AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) = 0;
+
+      // Assigns the expression, taking ownership (i.e. will delete later)
+      virtual bool Assign(AST::EXPRESSION* Expression) = 0;
 
       // Generates a name based on the parent group(s), if it is not directly
       // part of the module.  This is the name used in the output HDL.

@@ -21,16 +21,28 @@
 #include "Alias.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-ALIAS::ALIAS(int Line, const std::string& Filename, const char* Name, AST::EXPRESSION* Expression): BASE(Line, Filename, Name, TYPE::Alias){
+ALIAS::ALIAS(int Line, const string& Filename, const char* Name, AST::EXPRESSION* Expression): BASE(Line, Filename, Name, TYPE::Alias){
   this->Expression = Expression;
 }
 //------------------------------------------------------------------------------
 
 ALIAS::~ALIAS(){
   if(Expression) delete Expression;
+}
+//------------------------------------------------------------------------------
+
+AST::EXPRESSION* ALIAS::GetExpression(int Line, const string& Filename){
+  return (AST::EXPRESSION*)Expression->Copy(false);
+}
+//------------------------------------------------------------------------------
+
+bool ALIAS::Assign(AST::EXPRESSION* Expression){
+  Expression->Error("Cannot assign to an alias");
+  return false;
 }
 //------------------------------------------------------------------------------
 

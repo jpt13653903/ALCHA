@@ -18,17 +18,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Netlist_Array_h
-#define Netlist_Array_h
+#ifndef Netlist_Attribute_h
+#define Netlist_Attribute_h
 //------------------------------------------------------------------------------
 
 #include "Base.h"
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
-  struct ARRAY: public BASE{
-             ARRAY(int Line, const std::string& Filename, const char* Name);
-    virtual ~ARRAY();
+  struct ATTRIBUTE: public BASE{
+    AST::EXPRESSION* Value;
+
+             ATTRIBUTE(int Line, const std::string& Filename, const char* Name);
+    virtual ~ATTRIBUTE();
 
     AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
     bool Assign(AST::EXPRESSION* Expression) override;

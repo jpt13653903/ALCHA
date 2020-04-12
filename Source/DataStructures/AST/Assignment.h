@@ -43,15 +43,12 @@ namespace AST{
     protected:
       // Populates a list of existing expressions, except when the target is an
       // undefined attribute, in which case the attribute is created first.
-      struct TARGET_LIST{
-        bool           isAttribute;
-        NETLIST::BASE* Object;
-        EXPRESSION**   Expression;
-        TARGET_LIST(){ isAttribute = false; }
-      };
-      typedef std::list<TARGET_LIST> target_list;
+      typedef std::list<NETLIST::BASE*> target_list;
       bool GetLHS_Object(NETLIST::BASE* Object, target_list& List, BASE* Ast);
       bool GetLHS(EXPRESSION* Node, target_list& List);
+
+    protected:
+      void DisplayAssignment(const char* Operator);
 
     public:
       ASSIGNMENT(int          Line,

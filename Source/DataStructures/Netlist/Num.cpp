@@ -19,17 +19,35 @@
 //==============================================================================
 
 #include "Num.h"
+
+#include "AST/Expression/Literal.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-NUM::NUM(int Line, const std::string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Number){
+NUM::NUM(int Line, const string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Number){
   Value = 0;
 }
 //------------------------------------------------------------------------------
 
 NUM::~NUM(){
+}
+//------------------------------------------------------------------------------
+
+AST::EXPRESSION* NUM::GetExpression(int Line, const string& Filename){
+  AST::LITERAL* Result = new AST::LITERAL(Line, Filename);
+  Result->Value  = Value;
+  Result->Signed = false;
+  Result->Width  = 0;
+  return Result;
+}
+//------------------------------------------------------------------------------
+
+bool NUM::Assign(AST::EXPRESSION* Expression){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 

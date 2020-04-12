@@ -85,7 +85,7 @@ bool SYNTHESISABLE::ApplyParameters(list<AST::BASE*>& Parameters){
       }
       delete Param;
 
-    }else if((*Parameter)->Type == AST::BASE::TYPE::Assignment){
+    }else if((*Parameter)->IsAssignment()){
       // auto Param = (AST::EXPRESSION*)(*Parameter);
       Position = -1;
       error("Not yet implemented");

@@ -2231,7 +2231,7 @@ AST::HDL* PARSER::HDL(){
     AST::BASE* Tail = 0;
     AST::BASE* Temp = Other(); // Also returns assignments
     while(Temp){
-      if(Temp->Type != AST::BASE::TYPE::Assignment){
+      if(!Temp->IsAssignment()){
         Error("Assignment expected");
         delete Temp;
         delete Node;

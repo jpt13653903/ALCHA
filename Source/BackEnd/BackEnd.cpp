@@ -105,9 +105,9 @@ bool BACK_END::AssignPinDirections(NAMESPACE* Namespace){
       case BASE::TYPE::Pin:{
         auto Pin = (PIN*)(SymbolIterator->second);
         if(Pin->Direction == AST::DEFINITION::DIRECTION::Inferred){
-          if(Pin->Enabled){ // Possible bidirectional
-            if(Pin->Enabled->Type == AST::BASE::TYPE::Literal){
-              if(((AST::LITERAL*)Pin->Enabled)->Value == 0){
+          if(Pin->Enabled->Value){ // Possible bidirectional
+            if(Pin->Enabled->Value->Type == AST::BASE::TYPE::Literal){
+              if(((AST::LITERAL*)Pin->Enabled->Value)->Value == 0){
                 Pin->Direction = AST::DEFINITION::DIRECTION::Input;
               }else{
                 Pin->Direction = AST::DEFINITION::DIRECTION::Output;
@@ -116,7 +116,7 @@ bool BACK_END::AssignPinDirections(NAMESPACE* Namespace){
               Pin->Direction = AST::DEFINITION::DIRECTION::Bidirectional;
             }
           }else{ // Enabled is undefined
-            if(Pin->Driver){
+            if(Pin->Driver->Value){
               Pin->Direction = AST::DEFINITION::DIRECTION::Output;
             }else{
               Pin->Direction = AST::DEFINITION::DIRECTION::Input;
@@ -176,14 +176,14 @@ bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
     switch(Object->Type){
       case BASE::TYPE::Pin:{
         auto Pin = (PIN*)Object;
-        if(Pin->Driver){
+        if(Pin->Driver->Value){
           string Driver;
-          Body += "// " + Pin->Driver->Source.Filename +" +"+ to_string(Pin->Driver->Source.Line) + "\n";
-          if(!Pin->Driver->GetVerilog(Driver)) return false;
-          if(Pin->Enabled){
+          Body += "// " + Pin->Driver->Value->Source.Filename +" +"+ to_string(Pin->Driver->Value->Source.Line) + "\n";
+          if(!Pin->Driver->Value->GetVerilog(Driver)) return false;
+          if(Pin->Enabled->Value){
             string Enabled;
-            Body += "// " + Pin->Enabled->Source.Filename +" +"+ to_string(Pin->Enabled->Source.Line) + "\n";
-            if(!Pin->Enabled->GetVerilog(Enabled)) return false;
+            Body += "// " + Pin->Enabled->Value->Source.Filename +" +"+ to_string(Pin->Enabled->Value->Source.Line) + "\n";
+            if(!Pin->Enabled->Value->GetVerilog(Enabled)) return false;
             Body += "assign "+ Pin->EscapedName() +
                     " = |("+ Enabled + ")"
                     " ? ("+ Driver + ")"

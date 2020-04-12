@@ -19,6 +19,7 @@
 //==============================================================================
 
 #include "Base.h"
+#include "Attribute.h"
 #include "Namespace/Module.h"
 #include "AST/Expression/Identifier.h"
 //------------------------------------------------------------------------------
@@ -50,7 +51,7 @@ BASE::BASE(int Line, const string& Filename, const char* Name, TYPE Type){
 //------------------------------------------------------------------------------
 
 BASE::~BASE(){
-  foreach(a, Attributes) delete a->second;
+  foreach(Attribute, Attributes) delete Attribute->second;
 }
 //------------------------------------------------------------------------------
 
@@ -64,63 +65,36 @@ bool BASE::IsNamespace(){
 }
 //------------------------------------------------------------------------------
 
-bool BASE::ApplyAttributes(
-  string&          Name,
-  AST::EXPRESSION* Value,
-  AST::BASE*       Ast
-){
-  if(!Value){
-    Ast->Error("Invalid attribute expression");
-    return false;
-  }
-
-  switch(Value->Type){
-    case AST::BASE::TYPE::String:
-    case AST::BASE::TYPE::Literal:
-      break;
-
-    case AST::BASE::TYPE::Array:
-      // TODO Make sure that the array only contains strings or literals
-      break;
-
-    default:
-      Ast->Error("Attribute values must be strings, literals or arrays");
-      delete Value;
-      return false;
-  }
-  Attributes[Name] = Value;
-  return true;
-}
-//------------------------------------------------------------------------------
-
 bool BASE::ApplyAttributes(AST::ASSIGNMENT* AttributeList){
   while(AttributeList){
-    if(!AttributeList->Left){
-      error("Null attribute name");
-      return false;
-    }
-    if(!AttributeList->Right){
-      error("Null attribute value");
-      return false;
-    }
-    if(AttributeList->Left->Type != AST::BASE::TYPE::Identifier){
-      error("Attribute LHS not an identifier");
-      return false;
-    }
+    assert(AttributeList->Left , return false);
+    assert(AttributeList->Right, return false);
     assert(AttributeList->Left->Type == AST::BASE::TYPE::Identifier, return false);
-    auto AttributeList__Left = (AST::IDENTIFIER*)AttributeList->Left;
-    auto a = Attributes.find(AttributeList__Left->Name);
-    if(a != Attributes.end()){
-      AttributeList->Warning();
-      printf("Overwriting attribute %s\n", AttributeList__Left->Name.c_str());
-      if(a->second) delete a->second;
-    }
 
-    if(!ApplyAttributes(
-      AttributeList__Left->Name,
-      AttributeList->Right->Evaluate(),
-      AttributeList
-    )) return false;
+    auto Name  = ((AST::IDENTIFIER*)AttributeList->Left)->Name;
+    auto Value = AttributeList->Right;
+    AttributeList->Right = 0;
+
+    switch(Value->Type){
+      case AST::BASE::TYPE::String:
+      case AST::BASE::TYPE::Literal:
+        break;
+
+      case AST::BASE::TYPE::Array:
+        // TODO Make sure that the array only contains strings or literals
+        break;
+
+      default:
+        AttributeList->Error("Attribute values must be strings, literals or arrays");
+        delete Value;
+        return false;
+    }
+    auto Attribute = Attributes[Name];
+    if(!Attribute){
+      Attribute = new ATTRIBUTE(Value->Source.Line, Value->Source.Filename, Name.c_str());
+      Attributes[Name] = Attribute;
+    }
+    Attribute->Assign(Value);
 
     AttributeList = (AST::ASSIGNMENT*)AttributeList->Next;
   }
@@ -197,19 +171,17 @@ void BASE::DisplayAttributes(int Indent){
   Debug.Indent(Indent);
   Debug.Print("Attributes:\n");
 
-  foreach(a, Attributes){
-    Debug.Indent(Indent+1);
-    Debug.Print("%s = ", a->first.c_str());
-    if(a->second) a->second->Display();
-    else          Debug.Print("{null}");
-    Debug.Print("\n");
+  Indent++;
+  foreach(Attribute, Attributes){
+    assert(Attribute->second, break);
+    Attribute->second->Display(Indent);
   }
 }
 //------------------------------------------------------------------------------
 
 AST::EXPRESSION* BASE::GetAttrib(const string& Key){
   auto Value = Attributes.find(Key);
-  if(Value != Attributes.end()) return Value->second;
+  if(Value != Attributes.end()) return Value->second->Value;
   if(Namespace) return Namespace->GetAttrib(Key);
   return 0;
 }

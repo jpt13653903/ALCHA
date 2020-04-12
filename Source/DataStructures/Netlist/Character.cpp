@@ -19,17 +19,35 @@
 //==============================================================================
 
 #include "Character.h"
+
+#include "AST/Expression/Literal.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-CHARACTER::CHARACTER(int Line, const std::string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Character){
+CHARACTER::CHARACTER(int Line, const string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Character){
   Value = 0;
 }
 //------------------------------------------------------------------------------
 
 CHARACTER::~CHARACTER(){
+}
+//------------------------------------------------------------------------------
+
+AST::EXPRESSION* CHARACTER::GetExpression(int Line, const string& Filename){
+  AST::LITERAL* Result = new AST::LITERAL(Line, Filename);
+  Result->Value  = Value;
+  Result->Signed = false;
+  Result->Width  = 32;
+  return Result;
+}
+//------------------------------------------------------------------------------
+
+bool CHARACTER::Assign(AST::EXPRESSION* Expression){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 

@@ -33,6 +33,9 @@ namespace NETLIST{
              ALIAS(int Line, const std::string& Filename, const char* Name, AST::EXPRESSION* Expression);
     virtual ~ALIAS();
 
+    AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
+    bool Assign(AST::EXPRESSION* Expression) override;
+
     void Display(int Indent = 0) override;
 
     void Validate() override;

@@ -19,20 +19,37 @@
 //==============================================================================
 
 #include "Pin.h"
+
+#include "AST/Expression/Object.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-PIN::PIN(int Line, const std::string& Filename, const char* Name) : SYNTHESISABLE(Line, Filename, Name, TYPE::Pin){
-  Driver  = 0;
-  Enabled = 0;
+PIN::PIN(int Line, const string& Filename, const char* Name) : SYNTHESISABLE(Line, Filename, Name, TYPE::Pin){
+  Driver  = new NET(Line, Filename, "Driver");
+  Enabled = new NET(Line, Filename, "Enabled");
 }
 //------------------------------------------------------------------------------
 
 PIN::~PIN(){
-  if(Driver ) delete Driver;
-  if(Enabled) delete Enabled;
+  delete Driver;
+  delete Enabled;
+}
+//------------------------------------------------------------------------------
+
+AST::EXPRESSION* PIN::GetExpression(int Line, const string& Filename){
+  if(Driver->Value) return (AST::EXPRESSION*)Driver->Value->Copy(false);
+  AST::OBJECT* Result = new AST::OBJECT(Line, Filename);
+  Result->ObjectRef = this;
+  return Result;
+}
+//------------------------------------------------------------------------------
+
+bool PIN::Assign(AST::EXPRESSION* Expression){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -42,20 +59,10 @@ void PIN::Display(int Indent){
 
   Indent++;
   DisplayParameters(Indent);
-
-  Debug.Indent(Indent);
-  Debug.Print("Driver     = ");
-  if(Driver) Driver->Display();
-  else       Debug.Print("{open}");
-  Debug.Print("\n");
-
-  Debug.Indent(Indent);
-  Debug.Print("Enabled    = ");
-  if(Enabled) Enabled->Display();
-  else        Debug.Print("{open}");
-  Debug.Print("\n");
-
   DisplayAttributes(Indent);
+
+  Driver ->Display(Indent);
+  Enabled->Display(Indent);
 }
 //------------------------------------------------------------------------------
 
@@ -64,8 +71,8 @@ void PIN::Validate(){
 
   SYNTHESISABLE::Validate();
 
-  if(Driver ) Driver ->Validate();
-  if(Enabled) Enabled->Validate();
+  Driver ->Validate();
+  Enabled->Validate();
 }
 //------------------------------------------------------------------------------
 

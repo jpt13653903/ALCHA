@@ -36,6 +36,7 @@ BASE(Line, Filename, ExpressionType){
 EXPRESSION::~EXPRESSION(){
   if(Left ) delete Left;
   if(Right) delete Right;
+  assert(!Next);
 }
 //------------------------------------------------------------------------------
 
@@ -63,7 +64,7 @@ void EXPRESSION::DisplayEnd(){
       ExprRight->Display();
       if(ExprRight->Left || ExprRight->Right || ExprRight->Next) Debug.Print(")");
 
-    }else if(Right->Type == TYPE::Assignment){
+    }else if(Right->IsAssignment()){
       AssignRight = (ASSIGNMENT*)Right;
       if(AssignRight->Left || AssignRight->Right || AssignRight->Next) Debug.Print("(");
       AssignRight->Display();

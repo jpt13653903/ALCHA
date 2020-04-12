@@ -22,17 +22,20 @@
 #define Netlist_Pin_h
 //------------------------------------------------------------------------------
 
-#include "../Synthesisable.h"
+#include "Net.h"
 #include "AST/Expression.h"
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
   struct PIN: public SYNTHESISABLE{
-    AST::EXPRESSION* Driver;
-    AST::EXPRESSION* Enabled;
+    NET* Driver;
+    NET* Enabled;
 
     PIN(int Line, const std::string& Filename, const char* Name);
    ~PIN();
+
+    AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
+    bool Assign(AST::EXPRESSION* Expression) override;
 
     void Display(int Indent = 0) override;
 

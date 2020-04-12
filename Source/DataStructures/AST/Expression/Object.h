@@ -32,7 +32,8 @@ namespace NETLIST{
 
 namespace AST{
   struct OBJECT: public EXPRESSION{
-    NETLIST::BASE* ObjectRef;
+    NETLIST::BASE* ObjectRef; // Not deleted by this class
+                              // (it's part of the namespace tree)
 
     OBJECT(int Line, const std::string& Filename);
     OBJECT(int Line, const char*        Filename);

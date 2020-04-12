@@ -38,6 +38,9 @@ namespace NETLIST{
                NAMESPACE(int Line, const std::string& Filename, const char* Name = "");
       virtual ~NAMESPACE(); // Also cleans up the children
 
+      AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
+      bool Assign(AST::EXPRESSION* Expression) override;
+
       bool IsNamespace() override;
 
       void Validate() override;
