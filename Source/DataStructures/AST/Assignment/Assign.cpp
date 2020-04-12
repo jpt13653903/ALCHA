@@ -103,11 +103,10 @@ void ASSIGN::Display(){
 void ASSIGN::ValidateMembers(){
   assert(Type == TYPE::Assign);
 
-  assert(Left , return);
-  assert(Right, return);
+  assert(Left, return);
+  Left->Validate();
 
-  Left ->Validate();
-  Right->Validate();
+  if(Right) Right->Validate();
 }
 //------------------------------------------------------------------------------
 

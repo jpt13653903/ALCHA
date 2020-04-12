@@ -25,7 +25,7 @@ using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-ATTRIBUTE::ATTRIBUTE(int Line, const string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Number){
+ATTRIBUTE::ATTRIBUTE(int Line, const string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Attribute){
   Value = 0;
 }
 //------------------------------------------------------------------------------

@@ -43,8 +43,9 @@ AST::EXPRESSION* NET::GetExpression(int Line, const string& Filename){
 //------------------------------------------------------------------------------
 
 bool NET::Assign(AST::EXPRESSION* Expression){
-  error("Not yet implemented");
-  return false;
+  if(Value) delete Value;
+  Value = Expression;
+  return true;
 }
 //------------------------------------------------------------------------------
 
