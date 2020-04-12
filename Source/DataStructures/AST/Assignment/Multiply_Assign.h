@@ -18,50 +18,27 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Assignment_h
-#define AST_Assignment_h
+#ifndef AST_Assignment_Multiply_Assign_h
+#define AST_Assignment_Multiply_Assign_h
 //------------------------------------------------------------------------------
 
-#include <list>
-//------------------------------------------------------------------------------
-
-#include "Expression.h"
-//------------------------------------------------------------------------------
-
-namespace NETLIST{
-  class BASE;
-}
+#include "../Assignment.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
-  class ASSIGNMENT: public BASE{
-    public:
-      bool Fence; // Assignment terminates in a ";" and not a ","
+  struct MULTIPLY_ASSIGN: public ASSIGNMENT{
+    MULTIPLY_ASSIGN(int Line, std::string Filename);
+    MULTIPLY_ASSIGN(int Line, const char* Filename);
+   ~MULTIPLY_ASSIGN();
 
-      // Left and Right operands
-      EXPRESSION* Left;
-      EXPRESSION* Right;
+    bool RunAST() override;
+    bool GetVerilog(std::string& Body) override;
 
-    protected:
-      // Populates a list of existing expressions, except when the target is an
-      // undefined attribute, in which case the attribute is created first.
-      struct TARGET_LIST{
-        bool           isAttribute;
-        NETLIST::BASE* Object;
-        EXPRESSION**   Expression;
-        TARGET_LIST(){ isAttribute = false; }
-      };
-      typedef std::list<TARGET_LIST> target_list;
-      bool GetLHS_Object(NETLIST::BASE* Object, target_list& List, BASE* Ast);
-      bool GetLHS(EXPRESSION* Node, target_list& List);
+    void Display() override;
 
-    public:
-      ASSIGNMENT(int          Line,
-                 const char*  Filename,
-                 TYPE         AssignmentType);
-     ~ASSIGNMENT();
+    void ValidateMembers() override;
 
-      bool IsAssignment() override;
+    BASE* Copy(bool CopyNext) override;
   };
 }
 //------------------------------------------------------------------------------

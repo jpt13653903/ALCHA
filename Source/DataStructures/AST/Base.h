@@ -58,7 +58,6 @@ namespace AST{
         Definition, // pin, net, byte, char, num and
                     // class instance
         Parameter,  // Parameter definition, not function call
-        Assignment,
         NamespacePush,
         IfStatement,
         ForLoop,
@@ -69,6 +68,22 @@ namespace AST{
         RTL,
         FSM,
         HDL,
+
+        Assignment,
+          Assign,             //   =
+          Raw_Assign,         //  :=
+          Append_Assign,      //  ~=
+          Add_Assign,         //  +=
+          Subtract_Assign,    //  -=
+          Multiply_Assign,    //  *=
+          Divide_Assign,      //  /=
+          Modulus_Assign,     //  %=
+          Exponential_Assign, // **=
+          AND_Assign,         //  &=
+          OR_Assign,          //  |=
+          XOR_Assign,         //  ^=
+          Shift_Left_Assign,  // <<=
+          Shift_Right_Assign, // >>=
 
         Expression, // Used only as a starting index for if-statements
           String,
@@ -139,6 +154,7 @@ namespace AST{
           Conditional
       } Type;
 
+      virtual bool IsAssignment();
       virtual bool IsExpression();
     //--------------------------------------------------------------------------
 

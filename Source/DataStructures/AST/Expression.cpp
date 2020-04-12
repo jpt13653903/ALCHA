@@ -26,7 +26,8 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-EXPRESSION::EXPRESSION(int Line, const char* Filename, TYPE ExpressionType): BASE(Line, Filename, ExpressionType){
+EXPRESSION::EXPRESSION(int Line, const char* Filename, TYPE ExpressionType):
+BASE(Line, Filename, ExpressionType){
   Left  = 0;
   Right = 0;
 }

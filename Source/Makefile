@@ -51,6 +51,7 @@ Headers += Tools/*.h
 Headers += $(Toolbox)/*.h
 Headers += DataStructures/*.h
 Headers += DataStructures/AST/*.h
+Headers += DataStructures/AST/Assignment/*.h
 Headers += DataStructures/AST/Expression/*.h
 Headers += DataStructures/Netlist/*.h
 
@@ -84,7 +85,6 @@ Objects += $(ObjectPath)/DataStructures/TokenTree.o
 
 Objects += $(ObjectPath)/DataStructures/AST/Base.o
 Objects += $(ObjectPath)/DataStructures/AST/Alias.o
-Objects += $(ObjectPath)/DataStructures/AST/Assignment.o
 Objects += $(ObjectPath)/DataStructures/AST/ClassDefinition.o
 Objects += $(ObjectPath)/DataStructures/AST/Definition.o
 Objects += $(ObjectPath)/DataStructures/AST/EnumDefinition.o
@@ -102,6 +102,22 @@ Objects += $(ObjectPath)/DataStructures/AST/Parameter.o
 Objects += $(ObjectPath)/DataStructures/AST/RTL.o
 Objects += $(ObjectPath)/DataStructures/AST/Switch.o
 Objects += $(ObjectPath)/DataStructures/AST/WhileLoop.o
+
+Objects += $(ObjectPath)/DataStructures/AST/Assignment.o
+Objects += $(ObjectPath)/DataStructures/AST/Assignment/Add_Assign.o
+Objects += $(ObjectPath)/DataStructures/AST/Assignment/AND_Assign.o
+Objects += $(ObjectPath)/DataStructures/AST/Assignment/Append_Assign.o
+Objects += $(ObjectPath)/DataStructures/AST/Assignment/Assign.o
+Objects += $(ObjectPath)/DataStructures/AST/Assignment/Divide_Assign.o
+Objects += $(ObjectPath)/DataStructures/AST/Assignment/Exponential_Assign.o
+Objects += $(ObjectPath)/DataStructures/AST/Assignment/Modulus_Assign.o
+Objects += $(ObjectPath)/DataStructures/AST/Assignment/Multiply_Assign.o
+Objects += $(ObjectPath)/DataStructures/AST/Assignment/OR_Assign.o
+Objects += $(ObjectPath)/DataStructures/AST/Assignment/Raw_Assign.o
+Objects += $(ObjectPath)/DataStructures/AST/Assignment/Shift_Left_Assign.o
+Objects += $(ObjectPath)/DataStructures/AST/Assignment/Shift_Right_Assign.o
+Objects += $(ObjectPath)/DataStructures/AST/Assignment/Subtract_Assign.o
+Objects += $(ObjectPath)/DataStructures/AST/Assignment/XOR_Assign.o
 
 Objects += $(ObjectPath)/DataStructures/AST/Expression.o
 Objects += $(ObjectPath)/DataStructures/AST/Expression/AccessAttribute.o

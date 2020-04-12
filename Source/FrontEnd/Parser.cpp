@@ -78,9 +78,7 @@ AST::ASSIGNMENT* PARSER::AttributeAssignment(){
     Error("Attribute expected");
     return 0;
   }
-  Node = new AST::ASSIGNMENT(
-    Token.Line, Scanner.Filename, AST::ASSIGNMENT::ASSIGNMENT_TYPE::Assign
-  );
+  Node = new AST::ASSIGN(Token.Line, Scanner.Filename);
   Node->Left = Identifier();
   if(!Node->Left){
     Error("Identifier expected");
@@ -339,15 +337,11 @@ AST::BASE* PARSER::Parameter(){
   if(Expr->Type == AST::BASE::TYPE::Identifier){
     switch(Token.Type){
       case TOKEN::TYPE::Assign:
-        Node = new AST::ASSIGNMENT(
-          Token.Line, Scanner.Filename, AST::ASSIGNMENT::ASSIGNMENT_TYPE::Assign
-        );
+        Node = new AST::ASSIGN(Token.Line, Scanner.Filename);
         break;
 
       case TOKEN::TYPE::Raw_Assign:
-        Node = new AST::ASSIGNMENT(
-          Token.Line, Scanner.Filename, AST::ASSIGNMENT::ASSIGNMENT_TYPE::Raw_Assign
-        );
+        Node = new AST::RAW_ASSIGN(Token.Line, Scanner.Filename);
         break;
 
       default:
@@ -1217,14 +1211,10 @@ AST::ASSIGNMENT* PARSER::Initialiser(std::string& Identifier){
 
   switch(Token.Type){
     case TOKEN::TYPE::Assign:
-      Node = new AST::ASSIGNMENT(
-        Token.Line, Scanner.Filename, AST::ASSIGNMENT::ASSIGNMENT_TYPE::Assign
-      );
+      Node = new AST::ASSIGN(Token.Line, Scanner.Filename);
       break;
     case TOKEN::TYPE::Raw_Assign:
-      Node = new AST::ASSIGNMENT(
-        Token.Line, Scanner.Filename, AST::ASSIGNMENT::ASSIGNMENT_TYPE::Raw_Assign
-      );
+      Node = new AST::RAW_ASSIGN(Token.Line, Scanner.Filename);
       break;
     default:
       return 0;
@@ -1732,74 +1722,46 @@ AST::BASE* PARSER::Other(){
   AST::ASSIGNMENT* Assign;
   switch(Token.Type){
     case TOKEN::TYPE::Assign:
-      Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner.Filename, AST::ASSIGNMENT::ASSIGNMENT_TYPE::Assign
-      );
+      Assign = new AST::ASSIGN(Token.Line, Scanner.Filename);
       break;
     case TOKEN::TYPE::Raw_Assign:
-      Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner.Filename, AST::ASSIGNMENT::ASSIGNMENT_TYPE::Raw_Assign
-      );
+      Assign = new AST::RAW_ASSIGN(Token.Line, Scanner.Filename);
       break;
     case TOKEN::TYPE::Append_Assign:
-      Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner.Filename, AST::ASSIGNMENT::ASSIGNMENT_TYPE::Append_Assign
-      );
+      Assign = new AST::APPEND_ASSIGN(Token.Line, Scanner.Filename);
       break;
     case TOKEN::TYPE::Add_Assign:
-      Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner.Filename, AST::ASSIGNMENT::ASSIGNMENT_TYPE::Add_Assign
-      );
+      Assign = new AST::ADD_ASSIGN(Token.Line, Scanner.Filename);
       break;
     case TOKEN::TYPE::Subtract_Assign:
-      Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner.Filename, AST::ASSIGNMENT::ASSIGNMENT_TYPE::Subtract_Assign
-      );
+      Assign = new AST::SUBTRACT_ASSIGN(Token.Line, Scanner.Filename);
       break;
     case TOKEN::TYPE::Multiply_Assign:
-      Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner.Filename, AST::ASSIGNMENT::ASSIGNMENT_TYPE::Multiply_Assign
-      );
+      Assign = new AST::MULTIPLY_ASSIGN(Token.Line, Scanner.Filename);
       break;
     case TOKEN::TYPE::Divide_Assign:
-      Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner.Filename, AST::ASSIGNMENT::ASSIGNMENT_TYPE::Divide_Assign
-      );
+      Assign = new AST::DIVIDE_ASSIGN(Token.Line, Scanner.Filename);
       break;
     case TOKEN::TYPE::Modulus_Assign:
-      Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner.Filename, AST::ASSIGNMENT::ASSIGNMENT_TYPE::Modulus_Assign
-      );
+      Assign = new AST::MODULUS_ASSIGN(Token.Line, Scanner.Filename);
       break;
     case TOKEN::TYPE::Exponential_Assign:
-      Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner.Filename, AST::ASSIGNMENT::ASSIGNMENT_TYPE::Exponential_Assign
-      );
+      Assign = new AST::EXPONENTIAL_ASSIGN(Token.Line, Scanner.Filename);
       break;
     case TOKEN::TYPE::AND_Assign:
-      Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner.Filename, AST::ASSIGNMENT::ASSIGNMENT_TYPE::AND_Assign
-      );
+      Assign = new AST::AND_ASSIGN(Token.Line, Scanner.Filename);
       break;
     case TOKEN::TYPE::OR_Assign:
-      Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner.Filename, AST::ASSIGNMENT::ASSIGNMENT_TYPE::OR_Assign
-      );
+      Assign = new AST::OR_ASSIGN(Token.Line, Scanner.Filename);
       break;
     case TOKEN::TYPE::XOR_Assign:
-      Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner.Filename, AST::ASSIGNMENT::ASSIGNMENT_TYPE::XOR_Assign
-      );
+      Assign = new AST::XOR_ASSIGN(Token.Line, Scanner.Filename);
       break;
     case TOKEN::TYPE::Shift_Left_Assign:
-      Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner.Filename, AST::ASSIGNMENT::ASSIGNMENT_TYPE::Shift_Left_Assign
-      );
+      Assign = new AST::SHIFT_LEFT_ASSIGN(Token.Line, Scanner.Filename);
       break;
     case TOKEN::TYPE::Shift_Right_Assign:
-      Assign = new AST::ASSIGNMENT(
-        Token.Line, Scanner.Filename, AST::ASSIGNMENT::ASSIGNMENT_TYPE::Shift_Right_Assign
-      );
+      Assign = new AST::SHIFT_RIGHT_ASSIGN(Token.Line, Scanner.Filename);
       break;
 
     default:

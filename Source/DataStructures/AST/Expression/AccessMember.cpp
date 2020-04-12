@@ -172,7 +172,8 @@ void ACCESSMEMBER::ValidateMembers(){
   
   assert(!Next);
   assert(!Prev);
-  
+
+  // TODO: The "Left" assertion fails when the member cannot be found
   assert(Left , return); Left ->Validate();
   assert(Right, return); Right->Validate();
 }
