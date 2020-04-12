@@ -38,8 +38,7 @@ ASSIGNMENT::ASSIGNMENT(
   const char*     Filename,
   TYPE            AssignmentType
 ): BASE(Line, Filename, AssignmentType){
-  Fence = false;
-  Left  = Right = 0;
+  Left = Right = 0;
 }
 //------------------------------------------------------------------------------
 

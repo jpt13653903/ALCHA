@@ -49,8 +49,6 @@ RAW_ASSIGN::~RAW_ASSIGN(){
 BASE* RAW_ASSIGN::Copy(bool CopyNext){
   RAW_ASSIGN* Copy = new RAW_ASSIGN(Source.Line, Source.Filename.c_str());
 
-  Copy->Fence = Fence;
-
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 
@@ -66,7 +64,6 @@ BASE* RAW_ASSIGN::Copy(bool CopyNext){
 bool RAW_ASSIGN::RunAST(){
   target_list TargetList;
   EXPRESSION* Expression;
-  EXPRESSION* Temp;
 
   if(!GetLHS(Left, TargetList)) return false;
   if(TargetList.empty()){
@@ -223,8 +220,6 @@ void RAW_ASSIGN::Display(){
     Right->Display();
     if(Right->Left || Right->Right) Debug.Print(")");
   }
-
-  if(Fence) Debug.Print("{Fence}");
 
   Debug.Print("\n");
   if(Next) Next->Display();

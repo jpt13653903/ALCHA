@@ -36,8 +36,6 @@ namespace NETLIST{
 namespace AST{
   class ASSIGNMENT: public BASE{
     public:
-      bool Fence; // Assignment terminates in a ";" and not a ","
-
       // Left and Right operands
       EXPRESSION* Left;
       EXPRESSION* Right;

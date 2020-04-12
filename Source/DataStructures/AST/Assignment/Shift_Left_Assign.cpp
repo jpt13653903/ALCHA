@@ -50,8 +50,6 @@ SHIFT_LEFT_ASSIGN::~SHIFT_LEFT_ASSIGN(){
 BASE* SHIFT_LEFT_ASSIGN::Copy(bool CopyNext){
   SHIFT_LEFT_ASSIGN* Copy = new SHIFT_LEFT_ASSIGN(Source.Line, Source.Filename.c_str());
 
-  Copy->Fence = Fence;
-
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 
@@ -233,8 +231,6 @@ void SHIFT_LEFT_ASSIGN::Display(){
     Right->Display();
     if(Right->Left || Right->Right) Debug.Print(")");
   }
-
-  if(Fence) Debug.Print("{Fence}");
 
   Debug.Print("\n");
   if(Next) Next->Display();

@@ -50,8 +50,6 @@ OR_ASSIGN::~OR_ASSIGN(){
 BASE* OR_ASSIGN::Copy(bool CopyNext){
   OR_ASSIGN* Copy = new OR_ASSIGN(Source.Line, Source.Filename.c_str());
 
-  Copy->Fence = Fence;
-
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 
@@ -233,8 +231,6 @@ void OR_ASSIGN::Display(){
     Right->Display();
     if(Right->Left || Right->Right) Debug.Print(")");
   }
-
-  if(Fence) Debug.Print("{Fence}");
 
   Debug.Print("\n");
   if(Next) Next->Display();

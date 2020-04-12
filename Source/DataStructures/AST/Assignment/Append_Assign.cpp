@@ -50,8 +50,6 @@ APPEND_ASSIGN::~APPEND_ASSIGN(){
 BASE* APPEND_ASSIGN::Copy(bool CopyNext){
   APPEND_ASSIGN* Copy = new APPEND_ASSIGN(Source.Line, Source.Filename.c_str());
 
-  Copy->Fence = Fence;
-
   if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
   if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
 
@@ -233,8 +231,6 @@ void APPEND_ASSIGN::Display(){
     Right->Display();
     if(Right->Left || Right->Right) Debug.Print(")");
   }
-
-  if(Fence) Debug.Print("{Fence}");
 
   Debug.Print("\n");
   if(Next) Next->Display();

@@ -49,8 +49,9 @@ BASE* FENCE::Copy(bool CopyNext){
 //------------------------------------------------------------------------------
 
 bool FENCE::RunAST(){
-  error("Not yet implemented");
-  return false;
+  // Fences are ignored during this stage.
+  // They only have significance within FSM constructs
+  return true;
 }
 //------------------------------------------------------------------------------
 
@@ -70,8 +71,6 @@ void FENCE::Display(){
 
 void FENCE::ValidateMembers(){
   assert(Type == TYPE::Fence);
-
-  error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

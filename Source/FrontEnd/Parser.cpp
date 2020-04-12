@@ -1780,14 +1780,13 @@ AST::BASE* PARSER::Other(){
     return 0;
   }
   switch(Token.Type){
-    case TOKEN::TYPE::Comma    : Assign->Fence = false; break;
-    case TOKEN::TYPE::Semicolon: Assign->Fence = true ; break;
+    case TOKEN::TYPE::Comma: GetToken(); break;
+    case TOKEN::TYPE::Semicolon: break;
     default:
       Error(", or ; expected");
       delete Assign;
       return 0;
   }
-  GetToken();
   return Assign;
 }
 //------------------------------------------------------------------------------
