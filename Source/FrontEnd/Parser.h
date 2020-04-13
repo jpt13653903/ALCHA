@@ -29,7 +29,8 @@
 #include "Dictionary.h"
 
 #include "AST/Alias.h"
-#include "AST/Assignment.h"
+#include "AST/Class_Definition.h"
+#include "AST/Enum_Definition.h"
 #include "AST/Fence.h"
 #include "AST/ForLoop.h"
 #include "AST/FSM.h"
@@ -40,7 +41,6 @@
 #include "AST/Jump.h"
 #include "AST/LoopLoop.h"
 #include "AST/NamespacePush.h"
-#include "AST/Parameter.h"
 #include "AST/RTL.h"
 #include "AST/Switch.h"
 #include "AST/WhileLoop.h"
@@ -60,13 +60,10 @@
 #include "AST/Assignment/Subtract_Assign.h"
 #include "AST/Assignment/XOR_Assign.h"
 
-#include "AST/Definition.h"
 #include "AST/Definition/Auto_Definition.h"
 #include "AST/Definition/Byte_Definition.h"
 #include "AST/Definition/Char_Definition.h"
-#include "AST/Definition/Class_Definition.h"
 #include "AST/Definition/Class_Instance.h"
-#include "AST/Definition/Enum_Definition.h"
 #include "AST/Definition/FuncPtr_Definition.h"
 #include "AST/Definition/Net_Definition.h"
 #include "AST/Definition/Num_Definition.h"
@@ -176,8 +173,8 @@ class PARSER{
     AST::DEFINITION::IDENTIFIER* IdentifierList ();
 
     // Define function parameters
-    AST::PARAMETER* DefParameter    ();
-    AST::PARAMETER* DefParameterList();
+    AST::DEFINITION* DefParameter    ();
+    AST::DEFINITION* DefParameterList();
 
     bool ValidNamespaceSpecifier(AST::EXPRESSION* Node); // Used by Other()
     bool ValidTypeSpecifier     (AST::EXPRESSION* Node); // Used by Other()

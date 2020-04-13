@@ -20,13 +20,7 @@
 
 #include "Void_Definition.h"
 
-#include "Netlist/Byte.h"
-#include "Netlist/Character.h"
-#include "Netlist/Synthesisable/Pin.h"
 #include "Netlist/Namespace/Module.h"
-#include "Netlist/Synthesisable/Net.h"
-#include "Netlist/Num.h"
-#include "Netlist/Synthesisable.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -53,19 +47,7 @@ VOID_DEFINITION::~VOID_DEFINITION(){
 BASE* VOID_DEFINITION::Copy(bool CopyNext){
   VOID_DEFINITION* Copy = new VOID_DEFINITION(Source.Line, Source.Filename.c_str());
 
-  Copy->Direction = Direction;
-
-  if(Attributes ) Copy->Attributes  = (decltype(Attributes))Attributes->Copy(CopyNext);
-  if(Identifiers) Copy->Identifiers = new IDENTIFIER(*Identifiers);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
-
-  foreach(Parameter, Parameters){
-    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy(CopyNext));
-  }
+  CopyMembers(Copy, CopyNext);
 
   return Copy;
 }
@@ -75,20 +57,13 @@ bool VOID_DEFINITION::RunAST(){
   auto Identifier = Identifiers;
 
   while(Identifier){
-    auto Symbol = NETLIST::NamespaceStack.front()->Symbols.find(Identifier->Identifier);
-    if(Symbol != NETLIST::NamespaceStack.front()->Symbols.end()){
-      Error();
-      printf("Symbol \"%s\" already defined in the current namespace\n",
-             Identifier->Identifier.c_str());
-      return false;
-    }
+    if(!VerifyNotDefined(Identifier)) return false;
 
     if(Identifier->Function){
       error("Not yet implemented");
       Identifier = Identifier->Next;
       continue;
     }
-    if(Identifier->Parameters) error("Not yet implemented");
 
     error("Not yet implemented");
 

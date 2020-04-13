@@ -18,30 +18,39 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Parameter_h
-#define AST_Parameter_h
+#ifndef AST_Class_Definition_h
+#define AST_Class_Definition_h
 //------------------------------------------------------------------------------
 
-#include "Expression.h"
+#include "Definition.h"
+#include "Assignment.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct PARAMETER: public BASE{
-    enum class DEFINITION_TYPE{
-      Auto,
-      Pin, Net,
-      Byte, Char, Number,
-      Func, // Function pointer
-      ClassInstance
-    } DefinitionType;
-    EXPRESSION* ClassName; // For class instances
+  struct CLASS_DEFINITION: public BASE{
+    struct PARENT{ // Link-list node for parent classes
+      EXPRESSION* ClassName;  // This class inherits from Parent
+      std::list<BASE*> Parameters; // Parent constructor call
 
-    int         ArrayDimensions;
+      PARENT* Next;
+
+      PARENT();
+      PARENT(const PARENT& Parent);
+     ~PARENT(); // Also deletes the rest of the list
+    };
+
+    ASSIGNMENT* Attributes;
+
     std::string Identifier;
+    DEFINITION* Parameters; // Constructor parameters
 
-    PARAMETER(int Line, std::string& Filename, DEFINITION_TYPE DefinitionType);
-    PARAMETER(int Line, const char*  Filename, DEFINITION_TYPE DefinitionType);
-   ~PARAMETER();
+    PARENT* Parents;
+
+    BASE* Body;
+
+    CLASS_DEFINITION(int Line, std::string& Filename);
+    CLASS_DEFINITION(int Line, const char*  Filename);
+   ~CLASS_DEFINITION();
 
     BASE* Copy(bool CopyNext) override;
 
@@ -57,3 +66,4 @@ namespace AST{
 
 #endif
 //------------------------------------------------------------------------------
+

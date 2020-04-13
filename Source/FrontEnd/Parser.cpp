@@ -1253,76 +1253,77 @@ AST::DEFINITION::ARRAY* PARSER::ArrayDefinition(){
 }
 //------------------------------------------------------------------------------
 
-AST::PARAMETER* PARSER::DefParameter(){
-  AST::PARAMETER* Node;
+AST::DEFINITION* PARSER::DefParameter(){
+  AST::DEFINITION* Node;
 
   switch(Token.Type){
     case TOKEN::TYPE::Pin:
-      Node = new AST::PARAMETER(
-        Token.Line, Scanner.Filename, AST::PARAMETER::DEFINITION_TYPE::Pin
-      ); GetToken();
+      Node = new AST::PIN_DEFINITION(Token.Line, Scanner.Filename);
+      GetToken();
       break;
     case TOKEN::TYPE::Net:
-      Node = new AST::PARAMETER(
-        Token.Line, Scanner.Filename, AST::PARAMETER::DEFINITION_TYPE::Net
-      ); GetToken();
+      Node = new AST::NET_DEFINITION(Token.Line, Scanner.Filename);
+      GetToken();
       break;
     case TOKEN::TYPE::Byte:
-      Node = new AST::PARAMETER(
-        Token.Line, Scanner.Filename, AST::PARAMETER::DEFINITION_TYPE::Byte
-      ); GetToken();
+      Node = new AST::BYTE_DEFINITION(Token.Line, Scanner.Filename);
+      GetToken();
       break;
     case TOKEN::TYPE::Char:
-      Node = new AST::PARAMETER(
-        Token.Line, Scanner.Filename, AST::PARAMETER::DEFINITION_TYPE::Char
-      ); GetToken();
+      Node = new AST::CHAR_DEFINITION(Token.Line, Scanner.Filename);
+      GetToken();
       break;
     case TOKEN::TYPE::Num:
-      Node = new AST::PARAMETER(
-        Token.Line, Scanner.Filename, AST::PARAMETER::DEFINITION_TYPE::Number
-      ); GetToken();
+      Node = new AST::NUM_DEFINITION(Token.Line, Scanner.Filename);
+      GetToken();
       break;
     case TOKEN::TYPE::Func:
-      Node = new AST::PARAMETER(
-        Token.Line, Scanner.Filename, AST::PARAMETER::DEFINITION_TYPE::Func
-      ); GetToken();
+      Node = new AST::FUNCPTR_DEFINITION(Token.Line, Scanner.Filename);
+      GetToken();
       break;
-    case TOKEN::TYPE::Identifier:
-      Node = new AST::PARAMETER(
-        Token.Line, Scanner.Filename, AST::PARAMETER::DEFINITION_TYPE::ClassInstance
-      );
-      Node->ClassName = TypeIdentifier();
-      if(!Node->ClassName){
-        Error("Invalid class name specifier");
+    case TOKEN::TYPE::Identifier:{
+      auto Temp = new AST::CLASS_INSTANCE(Token.Line, Scanner.Filename);
+      Temp->ClassName = TypeIdentifier();
+      Node = Temp;
+      if(!Temp->ClassName){
+        Error("Invalid identifier or class name specifier");
         delete Node;
         return 0;
       }
       break;
+    }
 
     default:
       return 0;
   }
 
   if(Token.Type == TOKEN::TYPE::Identifier){
-    Node->Identifier = Token.Data;
+    Node->Identifiers = new AST::DEFINITION::IDENTIFIER();
+    Node->Identifiers->Identifier = Token.Data;
     GetToken();
 
-  }else{
+  }else if(Node->Type == AST::BASE::TYPE::Class_Instance){
+    auto Temp = ((AST::CLASS_INSTANCE*)Node);
     if(
-      Node->ClassName &&
-      Node->ClassName->Type == AST::BASE::TYPE::Identifier
+      Temp->ClassName &&
+      Temp->ClassName->Type == AST::BASE::TYPE::Identifier
     ){
-      Node->Identifier = ((AST::IDENTIFIER*)Node->ClassName)->Name;
-      delete Node->ClassName;
-      Node->ClassName      = 0;
-      Node->DefinitionType = AST::PARAMETER::DEFINITION_TYPE::Auto;
+      Node = new AST::AUTO_DEFINITION(Temp->Source.Line, Temp->Source.Filename);
+      Node->Identifiers = Temp->Identifiers;
+      Temp->Identifiers = 0;
+      delete Temp;
 
     }else{
       Error("Identifier expected");
       delete Node;
       return 0;
     }
+  }else{
+    Error("Identifier expected");
+    delete Node;
+    return 0;
   }
+  assert(Node->Identifiers);
   while(Token.Type == TOKEN::TYPE::OpenSquare){
     GetToken();
     if(Token.Type != TOKEN::TYPE::CloseSquare){
@@ -1331,15 +1332,17 @@ AST::PARAMETER* PARSER::DefParameter(){
       return 0;
     }
     GetToken();
-    Node->ArrayDimensions++;
+    auto Temp = new AST::DEFINITION::ARRAY();
+    Temp->Next = Node->Identifiers->Array;
+    Node->Identifiers->Array = Temp;
   }
   return Node;
 }
 //------------------------------------------------------------------------------
 
-AST::PARAMETER* PARSER::DefParameterList(){
-  AST::PARAMETER* Head;
-  AST::PARAMETER* Node;
+AST::DEFINITION* PARSER::DefParameterList(){
+  AST::DEFINITION* Head;
+  AST::DEFINITION* Node;
 
   Head = Node = DefParameter();
   if(!Node) return 0;
@@ -1348,7 +1351,7 @@ AST::PARAMETER* PARSER::DefParameterList(){
     GetToken();
     Node->Next = DefParameter();
     if(Node->Next) Node->Next->Prev = Node;
-    Node = (AST::PARAMETER*)Node->Next;
+    Node = (AST::DEFINITION*)Node->Next;
     if(!Node){
       Error("DefParameter expected");
       delete Head;

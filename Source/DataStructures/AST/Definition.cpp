@@ -19,6 +19,8 @@
 //==============================================================================
 
 #include "Definition.h"
+
+#include "Netlist/Namespace/Module.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -106,6 +108,35 @@ DEFINITION::~DEFINITION(){
 //------------------------------------------------------------------------------
 
 bool DEFINITION::IsDefinition(){
+  return true;
+}
+//------------------------------------------------------------------------------
+
+void DEFINITION::CopyMembers(DEFINITION* Copy, bool CopyNext){
+  Copy->Direction = Direction;
+
+  if(Attributes ) Copy->Attributes  = (decltype(Attributes))Attributes->Copy(CopyNext);
+  if(Identifiers) Copy->Identifiers = new IDENTIFIER(*Identifiers);
+
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
+  }
+
+  foreach(Parameter, Parameters){
+    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy(CopyNext));
+  }
+}
+//------------------------------------------------------------------------------
+
+bool DEFINITION::VerifyNotDefined(IDENTIFIER* Identifier){
+  auto Symbol = NETLIST::NamespaceStack.front()->Symbols.find(Identifier->Identifier);
+  if(Symbol != NETLIST::NamespaceStack.front()->Symbols.end()){
+    Error();
+    printf("Symbol \"%s\" already defined in the current namespace\n",
+           Identifier->Identifier.c_str());
+    return false;
+  }
   return true;
 }
 //------------------------------------------------------------------------------

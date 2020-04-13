@@ -23,7 +23,6 @@
 //------------------------------------------------------------------------------
 
 #include <list>
-#include "Parameter.h"
 #include "Assignment.h"
 //------------------------------------------------------------------------------
 
@@ -52,9 +51,9 @@ namespace AST{
         ASSIGNMENT* Initialiser;
 
         // These are used for function definitions.
-        bool       Function; // True when this is a function definition
-        PARAMETER* Parameters; // List of identifiers (calls are duck-typed)
-        BASE     * FunctionBody;
+        bool        Function; // True when this is a function definition
+        DEFINITION* Parameters; // List of identifiers (calls are duck-typed)
+        BASE*       FunctionBody;
 
         IDENTIFIER* Next;
 
@@ -73,6 +72,9 @@ namespace AST{
     //--------------------------------------------------------------------------
 
     protected:
+      void CopyMembers(DEFINITION* Copy, bool CopyNext);
+      bool VerifyNotDefined(IDENTIFIER* Identifier);
+
       void DisplayParameters ();
       void DisplayAttributes ();
       void DisplayIdentifiers();

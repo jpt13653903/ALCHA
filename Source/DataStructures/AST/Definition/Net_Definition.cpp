@@ -20,13 +20,8 @@
 
 #include "Net_Definition.h"
 
-#include "Netlist/Byte.h"
-#include "Netlist/Character.h"
-#include "Netlist/Synthesisable/Pin.h"
 #include "Netlist/Namespace/Module.h"
 #include "Netlist/Synthesisable/Net.h"
-#include "Netlist/Num.h"
-#include "Netlist/Synthesisable.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -53,19 +48,7 @@ NET_DEFINITION::~NET_DEFINITION(){
 BASE* NET_DEFINITION::Copy(bool CopyNext){
   NET_DEFINITION* Copy = new NET_DEFINITION(Source.Line, Source.Filename.c_str());
 
-  Copy->Direction = Direction;
-
-  if(Attributes ) Copy->Attributes  = (decltype(Attributes))Attributes->Copy(CopyNext);
-  if(Identifiers) Copy->Identifiers = new IDENTIFIER(*Identifiers);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
-
-  foreach(Parameter, Parameters){
-    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy(CopyNext));
-  }
+  CopyMembers(Copy, CopyNext);
 
   return Copy;
 }
@@ -75,20 +58,13 @@ bool NET_DEFINITION::RunAST(){
   auto Identifier = Identifiers;
 
   while(Identifier){
-    auto Symbol = NETLIST::NamespaceStack.front()->Symbols.find(Identifier->Identifier);
-    if(Symbol != NETLIST::NamespaceStack.front()->Symbols.end()){
-      Error();
-      printf("Symbol \"%s\" already defined in the current namespace\n",
-             Identifier->Identifier.c_str());
-      return false;
-    }
+    if(!VerifyNotDefined(Identifier)) return false;
 
     if(Identifier->Function){
       error("Not yet implemented");
       Identifier = Identifier->Next;
       continue;
     }
-    if(Identifier->Parameters) error("Not yet implemented");
 
     auto Net = new NETLIST::NET(Source.Line, Source.Filename, Identifier->Identifier.c_str());
     Net->Direction = Direction;
