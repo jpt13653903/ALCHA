@@ -28,20 +28,25 @@
 //------------------------------------------------------------------------------
 
 #include "Base.h"
-#include "Number.h"
+#include "Num.h"
 #include "AST/Definition.h"
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
   class SYNTHESISABLE: public BASE{
+    private:
+      NUM* WidthObj;
+      NUM* FullScaleObj;
+
     protected:
       void DisplayParameters(int Indent);
 
     public:
-      bool   Used; // Actually used in an expression somewhere
-      bool   Signed;
-      int    Width;
-      NUMBER FullScale;
+      bool    Used; // Actually used in an expression somewhere
+      bool    Signed   ();
+      int     Width    ();
+      NUMBER& FullScale();
+      void    SetFixedPoint(int Width, const NUMBER& FullScale);
 
       AST::DEFINITION::DIRECTION Direction;
 
@@ -52,6 +57,7 @@ namespace NETLIST{
 
       bool ApplyParameters(std::list<AST::BASE*>& Parameters);
 
+      BASE*            GetAttribute            (const std::string& Name) override;
       AST::EXPRESSION* GetBuiltInAttributeValue(const std::string& Name) override;
 
       void Validate() override;

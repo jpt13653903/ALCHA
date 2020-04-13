@@ -52,7 +52,7 @@ bool EXPONENTIAL::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* EXPONENTIAL::Evaluate(){
+EXPRESSION* EXPONENTIAL::Evaluate(bool CreateWires){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

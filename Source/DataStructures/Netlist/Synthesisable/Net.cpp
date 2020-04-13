@@ -36,7 +36,10 @@ NET::~NET(){
 //------------------------------------------------------------------------------
 
 AST::EXPRESSION* NET::GetExpression(int Line, const string& Filename){
-  if(Value) return (AST::EXPRESSION*)Value->Copy();
+  if(Value){
+    Used = true;
+    return (AST::EXPRESSION*)Value->Copy();
+  }
   Error(Line, Filename, "Cannot get expression: no value has been assigned yet");
   return 0;
 }
@@ -48,9 +51,9 @@ bool NET::Assign(AST::EXPRESSION* Expression){
     printf("Overwriting net value %s\n", Name.c_str());
     delete Value;
   }
-  Used  = true;
-  Value = Expression;
-  return true;
+  assert(Expression, return false);
+  Value = Expression->Evaluate(false);
+  return Value;
 }
 //------------------------------------------------------------------------------
 

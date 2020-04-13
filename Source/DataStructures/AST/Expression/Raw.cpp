@@ -52,7 +52,7 @@ bool RAW::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* RAW::Evaluate(){
+EXPRESSION* RAW::Evaluate(bool CreateWires){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

@@ -202,10 +202,11 @@ bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List){
         // The default constructor of the pointer type is called.
         auto Attribute = Left->GetAttribute(((IDENTIFIER*)Right)->Name);
         if(!Attribute){ // Create a new attribute
-          Attribute = new NETLIST::ATTRIBUTE(Right->Source.Line,
+          auto Attrib = new NETLIST::ATTRIBUTE(Right->Source.Line,
                                              Right->Source.Filename,
                                              ((IDENTIFIER*)Right)->Name.c_str());
-          Left->Attributes[((IDENTIFIER*)Right)->Name] = Attribute;
+          Left->Attributes[((IDENTIFIER*)Right)->Name] = Attrib;
+          Attribute = Attrib;
         }
         List.push_back(Attribute);
         Result = true;

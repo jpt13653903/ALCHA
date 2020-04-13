@@ -52,7 +52,7 @@ bool MODULUS::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* MODULUS::Evaluate(){
+EXPRESSION* MODULUS::Evaluate(bool CreateWires){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

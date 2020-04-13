@@ -19,6 +19,7 @@
 //==============================================================================
 
 #include "Synthesisable.h"
+
 #include "Ast/Expression/Literal.h"
 //------------------------------------------------------------------------------
 
@@ -27,19 +28,45 @@ using namespace NETLIST;
 //------------------------------------------------------------------------------
 
 SYNTHESISABLE::SYNTHESISABLE(int Line, const std::string& Filename, const char* Name, TYPE Type) : BASE(Line, Filename, Name, Type){
-  Used      = false;
-  Signed    = false;
-  Width     = 1;
-  FullScale = 2;
+  Used = false;
+
+  WidthObj     = new NUM(Line, Filename, Name);
+  FullScaleObj = new NUM(Line, Filename, Name);
+
+  WidthObj    ->Value = 1;
+  FullScaleObj->Value = 2;
 }
 //------------------------------------------------------------------------------
 
 SYNTHESISABLE::~SYNTHESISABLE(){
+  delete WidthObj;
+  delete FullScaleObj;
 }
 //------------------------------------------------------------------------------
 
 bool SYNTHESISABLE::IsSynthesisable(){
   return true;
+}
+//------------------------------------------------------------------------------
+
+bool SYNTHESISABLE::Signed(){
+  return FullScaleObj->Value < 0;
+}
+//------------------------------------------------------------------------------
+
+int SYNTHESISABLE::Width(){
+  return WidthObj->Value.GetReal();
+}
+//------------------------------------------------------------------------------
+
+NUMBER& SYNTHESISABLE::FullScale(){
+  return FullScaleObj->Value;
+}
+//------------------------------------------------------------------------------
+
+void SYNTHESISABLE::SetFixedPoint(int Width, const NUMBER& FullScale){
+  WidthObj    ->Value = Width;
+  FullScaleObj->Value = FullScale;
 }
 //------------------------------------------------------------------------------
 
@@ -51,7 +78,7 @@ bool SYNTHESISABLE::ApplyParameters(list<AST::BASE*>& Parameters){
     if((*Parameter)->IsExpression()){
       if(Position < 0) return false; // Mixing named and positional parameters
 
-      *Parameter = ((AST::EXPRESSION*)(*Parameter))->Evaluate();
+      *Parameter = ((AST::EXPRESSION*)(*Parameter))->Evaluate(false);
 
       AST::EXPRESSION* Param = (AST::EXPRESSION*)(*Parameter);
       if(!Param){
@@ -65,12 +92,12 @@ bool SYNTHESISABLE::ApplyParameters(list<AST::BASE*>& Parameters){
           switch(Position){
             case 0:
               if(!Literal->Value.IsInt()) return false;
-              Width = round(Literal->Value.GetReal());
+              WidthObj->Value = round(Literal->Value.GetReal());
               break;
 
             case 1:
               ExplicitFullScale = true;
-              FullScale = Literal->Value;
+              FullScaleObj->Value = Literal->Value;
               break;
 
             default: // Too many parameters
@@ -94,16 +121,17 @@ bool SYNTHESISABLE::ApplyParameters(list<AST::BASE*>& Parameters){
     }
     if(Position >= 0) Position++;
   }
-  if(Width < 0){
-    Width *= -1;
+  bool Signed = false;
+  if(WidthObj->Value < 0){
+    WidthObj->Value.Mul(-1);
     Signed = true;
   }
   if(!ExplicitFullScale){
-    FullScale = pow(2.0, Width);
+    FullScaleObj->Value = 1;
+    FullScaleObj->Value.BinScale(Width());
   }
-  if(FullScale.IsReal() && (FullScale.GetReal() < 0)){
-    FullScale.Mul(-1);
-    Signed = true;
+  if(FullScaleObj->Value > 0){
+    if(Signed) FullScaleObj->Value.Mul(-1);
   }
   return true;
 }
@@ -115,11 +143,9 @@ void SYNTHESISABLE::DisplayParameters(int Indent){
   Debug.Indent(Indent);
   Debug.Print("Used       = %s\n", Used   ? "true" : "false");
   Debug.Indent(Indent);
-  Debug.Print("Width      = %u\n", Width);
+  Debug.Print("Width      = %u\n", Width());
   Debug.Indent(Indent);
-  Debug.Print("Full-scale = %s\n", FullScale.Display());
-  Debug.Indent(Indent);
-  Debug.Print("Signed     = %s\n", Signed ? "true" : "false");
+  Debug.Print("Full-scale = %s\n", FullScale().Display());
 
   Debug.Indent(Indent);
   Debug.Print("Direction  = ");
@@ -133,16 +159,23 @@ void SYNTHESISABLE::DisplayParameters(int Indent){
 }
 //------------------------------------------------------------------------------
 
+BASE* SYNTHESISABLE::GetAttribute(const std::string& Name){
+  if(Name == "width"    ) return WidthObj;
+  if(Name == "fullscale") return FullScaleObj;
+
+  return BASE::GetAttribute(Name);
+}
+//------------------------------------------------------------------------------
+
 AST::EXPRESSION* SYNTHESISABLE::GetBuiltInAttributeValue(const std::string& Name){
   if(Name == "width"){
     auto Result = new AST::LITERAL(0, "");
-    Result->Value = Width;
+    Result->Value = Width();
     return Result;
   }
   if(Name == "fullscale"){
     auto Result = new AST::LITERAL(0, "");
-    Result->Value = FullScale;
-    if(Signed) Result->Value.Mul(-1);
+    Result->Value = FullScale();
     return Result;
   }
   return BASE::GetBuiltInAttributeValue(Name);

@@ -39,7 +39,7 @@ namespace AST{
     bool GetVerilog(std::string& Body) override;
 
     // Evaluates to an OBJECT
-    EXPRESSION* Evaluate() override;
+    EXPRESSION* Evaluate(bool CreateWires) override;
 
     void Display() override;
 

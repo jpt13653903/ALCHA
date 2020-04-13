@@ -52,7 +52,7 @@ bool FACTORIAL::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* FACTORIAL::Evaluate(){
+EXPRESSION* FACTORIAL::Evaluate(bool CreateWires){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

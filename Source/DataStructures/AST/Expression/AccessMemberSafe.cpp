@@ -52,7 +52,7 @@ bool ACCESSMEMBERSAFE::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ACCESSMEMBERSAFE::Evaluate(){
+EXPRESSION* ACCESSMEMBERSAFE::Evaluate(bool CreateWires){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

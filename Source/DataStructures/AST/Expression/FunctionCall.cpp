@@ -65,7 +65,7 @@ bool FUNCTIONCALL::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* FUNCTIONCALL::Evaluate(){
+EXPRESSION* FUNCTIONCALL::Evaluate(bool CreateWires){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

@@ -66,30 +66,14 @@ bool VECTORCONCATENATE::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* VECTORCONCATENATE::Evaluate(){
-  error("Not yet implemented");
+EXPRESSION* VECTORCONCATENATE::Evaluate(bool CreateWires){
+  foreach(Element, Elements){
+    (*Element) = (*Element)->Evaluate(true);
+  }
+  warning("Incomplete implementation");
+  // TODO: If there are elements that can be combined, do so
   return this;
-//   auto Array = (VECTORCONCATENATE*)Copy(true);
-//   foreach(Element, Array->Elements){
-//     (*Element) = (*Element)->Evaluate();
-//   }
-// 
-//   return Array->Simplify(false);
 }
-//------------------------------------------------------------------------------
-
-// EXPRESSION* VECTORCONCATENATE::Simplify(bool GenWire){
-//   foreach(Element, Elements){
-//     *Element = (*Element)->Simplify(true);
-//     assert((*Element)->Type == TYPE::Object, return this);
-//   }
-// 
-//   if(GenWire){
-//     error("Not yet implemented");
-//   }
-// 
-//   return this;
-// }
 //------------------------------------------------------------------------------
 
 void VECTORCONCATENATE::Display(){

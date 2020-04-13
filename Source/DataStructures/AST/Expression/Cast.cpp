@@ -143,7 +143,7 @@ bool CAST::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* CAST::Evaluate(){
+EXPRESSION* CAST::Evaluate(bool CreateWires){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

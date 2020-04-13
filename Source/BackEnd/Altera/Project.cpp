@@ -130,12 +130,12 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
           }
           Body += "set_instance_assignment -name "
                   "IO_STANDARD \""+ ((AST::STRING*)Standard)->Value +"\" -to "+ Pin->HDL_Name();
-          if(Pin->Width > 1) Body += "[*]";
+          if(Pin->Width() > 1) Body += "[*]";
           Body += "\n";
         }
         auto Location = Pin->GetAttribValue("location");
         if(Location){
-          if(Pin->Width == 1){
+          if(Pin->Width() == 1){
             if(Location->Type != AST::BASE::TYPE::String){
               Error(Location, "Scalar pin location not a string");
               return false;
@@ -147,11 +147,11 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
               return false;
             }
             auto LocationArray = (AST::ARRAY*)Location;
-            if(LocationArray->Elements.size() != (size_t)Pin->Width){
+            if(LocationArray->Elements.size() != (size_t)Pin->Width()){
               Error(LocationArray, "Vector pin location array of wrong size");
               return false;
             }
-            for(int n = 0; n < Pin->Width; n++){
+            for(int n = 0; n < Pin->Width(); n++){
               AST::BASE* Temp = LocationArray->Elements[n];
               assert(Temp && Temp->IsExpression(), return false);
               AST::EXPRESSION* Element = (AST::EXPRESSION*)Temp;
@@ -160,14 +160,14 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
                 return false;
               }
               AssignPin(Body, ((AST::STRING*)Element)->Value,
-                        Pin->HDL_Name() +"["+ to_string(Pin->Width-1-n) +"]");
+                        Pin->HDL_Name() +"["+ to_string(Pin->Width()-1-n) +"]");
             }
           }
         }else{
           Warning(Pin, "Pin without location attribute, creating virtual pin");
           Body += "set_instance_assignment "
                   "-name VIRTUAL_PIN ON -to "+ Pin->HDL_Name();
-          if(Pin->Width > 1) Body += "[*]";
+          if(Pin->Width() > 1) Body += "[*]";
           Body += "\n";
         }
         auto Current = Pin->GetAttribValue("current");
@@ -194,7 +194,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
               break;
           }
           Body += " -to "+ Pin->HDL_Name();
-          if(Pin->Width > 1) Body += "[*]";
+          if(Pin->Width() > 1) Body += "[*]";
           Body += "\n";
         }
         auto WeakPullup = Pin->GetAttribValue("pullup");
@@ -216,7 +216,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
               break;
           }
           Body += " -to "+ Pin->HDL_Name();
-          if(Pin->Width > 1) Body += "[*]";
+          if(Pin->Width() > 1) Body += "[*]";
           Body += "\n";
         }
         break;

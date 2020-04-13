@@ -58,7 +58,7 @@ bool SUBTRACT::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* SUBTRACT::Evaluate(){
+EXPRESSION* SUBTRACT::Evaluate(bool CreateWires){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

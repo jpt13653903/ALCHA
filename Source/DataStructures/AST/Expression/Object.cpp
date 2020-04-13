@@ -64,7 +64,7 @@ bool OBJECT::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* OBJECT::Evaluate(){
+EXPRESSION* OBJECT::Evaluate(bool CreateWires){
   if(!ObjectRef){
     error("Null object reference");
     delete this;
@@ -103,7 +103,7 @@ EXPRESSION* OBJECT::Evaluate(){
       }
       Result = (EXPRESSION*)Result->Copy();
       NETLIST::NamespaceStack.push_front(Alias->Namespace);
-        Result = Result->Evaluate();
+        Result = Result->Evaluate(true);
       NETLIST::NamespaceStack.pop_front();
       if(!Result){
         Error("Error evaluating alias");

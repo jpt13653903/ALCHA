@@ -55,7 +55,7 @@ bool NAND_REDUCE::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* NAND_REDUCE::Evaluate(){
+EXPRESSION* NAND_REDUCE::Evaluate(bool CreateWires){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

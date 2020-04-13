@@ -57,7 +57,7 @@ bool GREATER_EQUAL::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* GREATER_EQUAL::Evaluate(){
+EXPRESSION* GREATER_EQUAL::Evaluate(bool CreateWires){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

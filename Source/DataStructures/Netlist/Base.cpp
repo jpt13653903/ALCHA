@@ -179,7 +179,7 @@ void BASE::DisplayAttributes(int Indent){
 }
 //------------------------------------------------------------------------------
 
-ATTRIBUTE* BASE::GetAttribute(const std::string& Name){
+BASE* BASE::GetAttribute(const std::string& Name){
   auto Attribute = Attributes.find(Name);
   if(Attribute != Attributes.end()) return Attribute->second;
   return 0;
@@ -193,7 +193,11 @@ BASE* BASE::GetMember(const std::string& Name){
 
 AST::EXPRESSION* BASE::GetAttribValue(const string& Name){
   auto Attribute = GetAttribute(Name);
-  if(Attribute) return Attribute->Value;
+  if(Attribute){
+    // Check for accidental built-in attribute access
+    assert(Attribute->Type == TYPE::Attribute, return 0);
+    return ((ATTRIBUTE*)Attribute)->Value;
+  }
   if(Namespace) return Namespace->GetAttribValue(Name);
   return 0;
 }

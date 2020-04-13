@@ -57,7 +57,7 @@ bool EQUAL::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* EQUAL::Evaluate(){
+EXPRESSION* EQUAL::Evaluate(bool CreateWires){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

@@ -57,7 +57,7 @@ bool BIT_OR::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* BIT_OR::Evaluate(){
+EXPRESSION* BIT_OR::Evaluate(bool CreateWires){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

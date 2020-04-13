@@ -57,7 +57,7 @@ bool ARRAYCONCATENATE::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ARRAYCONCATENATE::Evaluate(){
+EXPRESSION* ARRAYCONCATENATE::Evaluate(bool CreateWires){
   error("Not yet implemented");
   return this;
 //   auto Array = (AST::ARRAYCONCATENATE*)Copy(true);

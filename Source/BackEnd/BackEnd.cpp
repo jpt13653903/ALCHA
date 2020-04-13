@@ -187,7 +187,7 @@ bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
             Body += "assign "+ Pin->EscapedName() +
                     " = |("+ Enabled + ")"
                     " ? ("+ Driver + ")"
-                    " : " + to_string(Pin->Width) + "'bZ;\n\n";
+                    " : " + to_string(Pin->Width()) + "'bZ;\n\n";
           }else{
             Body += "assign "+ Pin->EscapedName() +" = "+ Driver + ";\n\n";
           }
@@ -230,9 +230,9 @@ void BACK_END::BuildPorts(string& Body, NAMESPACE* Namespace, bool& isFirst){
           case AST::DEFINITION::DIRECTION::Output: Body += "  output logic "; break;
           default                                : Body += "  inout  logic "; break;
         }
-        if(Pin->Width > 1){
-          if(Pin->Signed) Body += "["+ to_string(Pin->Width  ) +":0]";
-          else            Body += "["+ to_string(Pin->Width-1) +":0]";
+        if(Pin->Width() > 1){
+          if(Pin->Signed()) Body += "["+ to_string(Pin->Width()  ) +":0]";
+          else              Body += "["+ to_string(Pin->Width()-1) +":0]";
         }
         Body += Pin->EscapedName();
         break;
@@ -254,9 +254,9 @@ void BACK_END::BuildNets(string& Body, NAMESPACE* Namespace){
       case BASE::TYPE::Net:{
         auto Net = (NET*)SymbolIterator->second;
         Body += "logic ";
-        if(Net->Width > 1){
-          if(Net->Signed) Body += "["+ to_string(Net->Width  ) +":0]";
-          else            Body += "["+ to_string(Net->Width-1) +":0]";
+        if(Net->Width() > 1){
+          if(Net->Signed()) Body += "["+ to_string(Net->Width()  ) +":0]";
+          else              Body += "["+ to_string(Net->Width()-1) +":0]";
         }
         Body += Net->EscapedName() + ";\n";
         break;

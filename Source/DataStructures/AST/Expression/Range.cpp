@@ -55,7 +55,7 @@ bool RANGE::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* RANGE::Evaluate(){
+EXPRESSION* RANGE::Evaluate(bool CreateWires){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

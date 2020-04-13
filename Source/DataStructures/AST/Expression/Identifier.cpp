@@ -60,7 +60,7 @@ bool IDENTIFIER::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* IDENTIFIER::Evaluate(){
+EXPRESSION* IDENTIFIER::Evaluate(bool CreateWires){
   foreach(NamespaceIterator, NETLIST::NamespaceStack){
     auto Namespace = *NamespaceIterator;
     while(Namespace){
@@ -70,7 +70,7 @@ EXPRESSION* IDENTIFIER::Evaluate(){
         Result->ObjectRef = Object;
         delete this;
         // It might be an alias, or evaluate further to a literal
-        return Result->Evaluate();
+        return Result->Evaluate(true);
       }
       Namespace = Namespace->Namespace;
     }

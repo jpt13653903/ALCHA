@@ -57,7 +57,7 @@ bool LESS_EQUAL::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LESS_EQUAL::Evaluate(){
+EXPRESSION* LESS_EQUAL::Evaluate(bool CreateWires){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

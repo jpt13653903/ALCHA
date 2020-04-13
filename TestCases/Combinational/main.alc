@@ -19,10 +19,10 @@ num LED_Width     = LED'width;
 num LED_FullScale = LED'fullscale;
 num LED_Current   = LED'current;
 
-Button'width = 5;
+Button'fullscale = 1;
 
-// net(14, 3 ) TestNet  = GPIO;
-// 
+net(14, 3 ) TestNet  = GPIO;
+
 // pin(14, 3 ) Testing1 =  0.1 *TestNet;
 // pin(14, 3 ) Testing2 = 10   *TestNet;
 // pin(14, 3 ) Testing3 =  4   *TestNet;

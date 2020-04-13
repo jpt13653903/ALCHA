@@ -52,7 +52,7 @@ bool DECREMENT::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* DECREMENT::Evaluate(){
+EXPRESSION* DECREMENT::Evaluate(bool CreateWires){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

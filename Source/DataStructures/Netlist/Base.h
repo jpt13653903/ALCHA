@@ -108,8 +108,9 @@ namespace NETLIST{
 
       // Access the attribute or member object
       // Only searches this object and returns null when not found
-              ATTRIBUTE* GetAttribute(const std::string& Name);
-      virtual BASE*      GetMember   (const std::string& Name);
+      // It returns the original, not a copy; used to modify the original
+      virtual BASE* GetAttribute(const std::string& Name);
+      virtual BASE* GetMember   (const std::string& Name);
 
       // Access the attribute, but searches up to the root and
       // returns null when not found

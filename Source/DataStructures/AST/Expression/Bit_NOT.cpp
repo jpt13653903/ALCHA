@@ -19,6 +19,7 @@
 //==============================================================================
 
 #include "Bit_NOT.h"
+#include "Literal.h"
 #include "Object.h"
 #include "Netlist/Synthesisable/Net.h"
 #include "Netlist/Namespace/Module.h"
@@ -58,49 +59,52 @@ bool BIT_NOT::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* BIT_NOT::Evaluate(){
-  error("Not yet implemented");
-  return this;
-//   EXPRESSION* Result = 0;
-// 
-//   Result = (EXPRESSION*)Copy(true);
-//   if(!Result->Right){
-//     delete Result;
-//     return 0;
-//   }
-// 
-//   if(!Result) return 0;
-//   return Result->Simplify(false);
-}
-//------------------------------------------------------------------------------
+EXPRESSION* BIT_NOT::Evaluate(bool CreateWires){
+  assert(Right, delete this; return 0);
+  Right = Right->Evaluate(true);
+  assert(Right, delete this; return 0);
 
-// EXPRESSION* BIT_NOT::Simplify(bool GenWire){
-//   assert(Right, return this);
-// 
-//   EXPRESSION* Result = this;
-// 
-//   Right = Right->Simplify(true);
-//   assert(Right->Type == TYPE::Object, return Result);
-// 
-//   if(GenWire){
-//     auto Net = new NETLIST::NET(Source.Line, Source.Filename, 0);
-//     Net->Used  = true;
-//     Net->Value = this;
-// 
-//     auto ObjectRef = ((OBJECT*)Right)->ObjectRef;
-//     if(ObjectRef && ObjectRef->IsSynthesisable()){
-//       auto Synthesisable = (NETLIST::SYNTHESISABLE*)ObjectRef;
-//       Net->Width     = Synthesisable->Width;
-//       Net->FullScale = Synthesisable->FullScale;
-//     }
-//     NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
-// 
-//     auto Object = new OBJECT(Source.Line, Source.Filename);
-//     Object->ObjectRef = Net;
-//     Result = Object;
-//   }
-//   return Result;
-// }
+  switch(Right->Type){
+    case TYPE::Literal:{
+      auto Result = (LITERAL*)Right;
+      Right = 0;
+      if(Result->Width){
+        NUMBER n(1);
+        n.BinScale(Result->Width);
+        n.Sub(Result->Value);
+        n.Sub(1);
+        Result->Value = n;
+      }else{
+        Error("Taking bitwise NOT of literal with unknown width");
+        delete Result;
+        Result = 0;
+      }
+      delete this;
+      return Result;
+    }
+    case TYPE::Object:{
+      if(!CreateWires) return this;
+
+      auto Net = new NETLIST::NET(Source.Line, Source.Filename, 0);
+      Net->Used  = true;
+      Net->Value = this;
+  
+      auto ObjectRef = ((OBJECT*)Right)->ObjectRef;
+      if(ObjectRef && ObjectRef->IsSynthesisable()){
+        auto Synthesisable = (NETLIST::SYNTHESISABLE*)ObjectRef;
+        Net->SetFixedPoint(Synthesisable->Width(), Synthesisable->FullScale());
+      }
+      NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
+  
+      auto Object = new OBJECT(Source.Line, Source.Filename);
+      Object->ObjectRef = Net;
+      return Object;
+    }
+    default:
+      break;
+  }
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void BIT_NOT::Display(){

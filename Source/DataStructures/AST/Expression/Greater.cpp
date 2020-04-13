@@ -57,7 +57,7 @@ bool GREATER::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* GREATER::Evaluate(){
+EXPRESSION* GREATER::Evaluate(bool CreateWires){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;
