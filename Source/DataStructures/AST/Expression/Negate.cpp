@@ -71,10 +71,6 @@ EXPRESSION* NEGATE::Evaluate(){
 //     delete Result;
 //     return 0;
 //   }
-//   assert(Result->Right->IsExpression(),
-//     delete Result;
-//     return 0;
-//   );
 // 
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
@@ -83,16 +79,14 @@ EXPRESSION* NEGATE::Evaluate(){
 
 // EXPRESSION* NEGATE::Simplify(bool GenWire){
 //   assert(Right, return this);
-//   assert(Right->IsExpression(), return this);
 // 
-//   Right = ((EXPRESSION*)Right)->Simplify(true);
+//   Right = Right->Simplify(true);
 // 
 //   EXPRESSION* Result = this;
 // 
-//   auto Right = (EXPRESSION*)this->Right;
 //   if(Right->Type == TYPE::Literal){
 //     Result = Right;
-//     this->Right = 0;
+//     Right = 0;
 //     ((LITERAL*)Result)->Value.Mul(-1);
 //     delete this;
 //   }

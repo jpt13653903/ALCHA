@@ -121,8 +121,8 @@ void FUNCTIONCALL::ValidateMembers(){
   assert(!Next);
   assert(!Prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+  assert(!Left );
+  assert(!Right);
 
   error("Not yet implemented");
 }

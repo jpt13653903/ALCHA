@@ -73,10 +73,9 @@ EXPRESSION* CONDITIONAL::Evaluate(){
 //   // TODO: There should be a third component...  Left and Right of Right?
 //   //       Or break it down to an if-statement?
 //   assert(Left && Right, return this);
-//   assert(Right->IsExpression(), return this);
 // 
 //   Left = Left->Simplify(true);
-//   Right = ((EXPRESSION*)Right)->Simplify(true);
+//   Right = Right->Simplify(true);
 // 
 //   error("Not yet implemented");
 //   return this;

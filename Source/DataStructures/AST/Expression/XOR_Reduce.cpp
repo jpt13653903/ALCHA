@@ -74,9 +74,8 @@ EXPRESSION* XOR_REDUCE::Evaluate(){
 
 // EXPRESSION* XOR_REDUCE::Simplify(bool GenWire){
 //   assert(Right, return this);
-//   assert(Right->IsExpression(), return this);
 // 
-//   Right = ((EXPRESSION*)Right)->Simplify(true);
+//   Right = Right->Simplify(true);
 // 
 //   error("Not yet implemented");
 //   return this;

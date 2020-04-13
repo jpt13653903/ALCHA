@@ -15,8 +15,10 @@ ADT7420.SDA.enabled = ~Data;
 
 num MyNumber = 1.23456;
 
-// num LED_Width = LED'width; // this is part of AST::AccessAttribute::Evaluate()
-// 
+num LED_Width     = LED'width;
+num LED_FullScale = LED'fullscale;
+// Button'width = 5;
+
 // net(14, 3 ) TestNet  = GPIO;
 // 
 // pin(14, 3 ) Testing1 =  0.1 *TestNet;

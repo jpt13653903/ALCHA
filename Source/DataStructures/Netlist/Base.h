@@ -114,6 +114,10 @@ namespace NETLIST{
       // Access the attribute, but searches up to the root and
       // returns null when not found
       AST::EXPRESSION* GetAttribValue(const std::string& Name);
+
+      // If the named built-in attribute exists, creates a new EXPRESSION node
+      // and populates in appropriately.  Returns null otherwise.
+      virtual AST::EXPRESSION* GetBuiltInAttributeValue(const std::string& Name);
   };
 }
 //------------------------------------------------------------------------------

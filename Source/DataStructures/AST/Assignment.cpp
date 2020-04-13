@@ -145,9 +145,8 @@ bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List){
       break;
 
     case TYPE::AccessMember:{
-      assert(Node->Left                 , return false);
-      assert(Node->Right                , return false);
-      assert(Node->Right->IsExpression(), return false);
+      assert(Node->Left , return false);
+      assert(Node->Right, return false);
 
       target_list LeftList;
       if(!GetLHS(Node->Left, LeftList)) return false;
@@ -157,7 +156,7 @@ bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List){
         return false;
       }
       auto Left  = LeftList.front();
-      auto Right = (EXPRESSION*)Node->Right;
+      auto Right = Node->Right;
 
       assert(Right->Type == TYPE::Identifier, return false);
       auto Object = Left->GetMember(((IDENTIFIER*)Right)->Name);
@@ -177,8 +176,7 @@ bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List){
       break;
 
     case TYPE::AccessAttribute:{
-      assert(Node->Right                , return false);
-      assert(Node->Right->IsExpression(), return false);
+      assert(Node->Right, return false);
 
       NETLIST::BASE* Left = 0;
       if(Node->Left){
@@ -198,7 +196,7 @@ bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List){
         return false;
       }
 
-      auto Right = (EXPRESSION*)Node->Right;
+      auto Right = Node->Right;
       if(Right->Type == TYPE::Identifier){
         // The process of adding an entry initialises the pointer to null.
         // The default constructor of the pointer type is called.

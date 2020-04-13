@@ -70,13 +70,13 @@ EXPRESSION* ACCESSMEMBER::Evaluate(){
 // 
 //   if(this->Left) this->Left = this->Left->Evaluate();
 // 
-//   if(!this->Left || !this->Right || !this->Right->IsExpression()){
+//   if(!this->Left || !this->Right){
 //     // Typically caused by a syntax error
 //     if(this->Left) delete this->Left;
 //     this->Left = 0;
 //     return 0;
 //   }
-//   auto Right = (EXPRESSION*)this->Right;
+//   auto Right = this->Right;
 // 
 //   if(this->Left->Type == TYPE::Object){
 //     auto Left = (OBJECT*)this->Left;

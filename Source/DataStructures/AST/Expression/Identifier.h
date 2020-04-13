@@ -37,6 +37,8 @@ namespace AST{
     BASE* Copy(bool CopyNext) override;
 
     bool GetVerilog(std::string& Body) override;
+
+    // Evaluates to an OBJECT
     EXPRESSION* Evaluate() override;
 
     void Display() override;

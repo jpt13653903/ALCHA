@@ -71,10 +71,9 @@ EXPRESSION* SLICE::Evaluate(){
 
 // EXPRESSION* SLICE::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
-//   assert(Right->IsExpression(), return this);
 // 
 //   Left = Left->Simplify(true);
-//   Right = ((EXPRESSION*)Right)->Simplify(true);
+//   Right = Right->Simplify(true);
 // 
 //   // TODO Returns a new array (or scalar)
 // 

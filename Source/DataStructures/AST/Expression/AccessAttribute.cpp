@@ -61,51 +61,54 @@ bool ACCESSATTRIBUTE::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* ACCESSATTRIBUTE::Evaluate(){
-  error("Not yet implemented");
-  return this;
-//   EXPRESSION* Result = 0;
-// 
-//   EXPRESSION* Left = 0;
-//   if(this->Left) Left = this->Left->Evaluate();
-// 
-//   if(!Left || !this->Right || !this->Right->IsExpression()){
-//     error("Invalid attribute access expression");
-//     delete Left;
-//     return 0;
-//   }
-//   auto Right = (EXPRESSION*)this->Right;
-// 
-//   if(Left->Type == TYPE::Object){
-//     assert(Right->Type == TYPE::Identifier, delete Left; return 0);
-//     auto Right = (IDENTIFIER*)this->Right;
-//     auto Object = ((OBJECT*)Left)->ObjectRef;
-//     auto Found  = Object->GetAttribValue(Right->Name);
-//     if(!Found){
-//       Error();
-//       printf("Attribute %s not found in object %s\n",
-//              Right->Name.c_str(), Object->Name.c_str());
-//       delete Left;
-//       return 0;
-//     }
-//     Result = (EXPRESSION*)Found->Copy(true);
-//     assert(Result->IsExpression());
-//     delete Left;
-//   }else{
-//     // TODO Could be a slice expression, which is not supported yet
-//     error("Unimplemented attribute access expression");
-//     delete Left;
-//     return 0;
-//   }
-// 
-//   if(!Result) return 0;
-//   return Result->Simplify(false);
-}
-//------------------------------------------------------------------------------
+  assert(Left , delete this; return 0);
+  assert(Right, delete this; return 0);
 
-// EXPRESSION* ACCESSATTRIBUTE::Simplify(bool GenWire){
-//   error("Not yet implemented");
-//   return this;
-// }
+  Left = Left->Evaluate();
+
+  assert(Left, delete this; return 0);
+
+  if(Left->Type != TYPE::Object){
+    Error("Invalid attribute access expression");
+    delete this;
+    return 0;
+  }
+  switch(Right->Type){
+    case TYPE::Identifier:
+      break;
+
+    case TYPE::Slice:
+      error("Not yet implemented");
+      delete this;
+      return 0;
+      
+    default:
+      Error("Invalid attribute access expression");
+      delete this;
+      return 0;
+  }
+  
+  auto Object = ((OBJECT    *)Left )->ObjectRef;
+  auto Name   = ((IDENTIFIER*)Right)->Name;
+
+  auto Result = Object->GetBuiltInAttributeValue(Name);
+  if(Result){
+    delete this;
+    return Result;
+  }
+
+  Result = Object->GetAttribValue(Name);
+  if(Result){
+    delete this;
+    return (decltype(Result))Result->Copy(false);
+  }
+
+  Error();
+  printf("Attribute %s not found in object %s\n",
+         Name.c_str(), Object->Name.c_str());
+  delete this;
+  return 0;
+}
 //------------------------------------------------------------------------------
 
 void ACCESSATTRIBUTE::Display(){

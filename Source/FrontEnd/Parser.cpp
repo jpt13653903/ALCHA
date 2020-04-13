@@ -1537,11 +1537,7 @@ bool PARSER::ValidNamespaceSpecifier(AST::EXPRESSION* Node){
     if(!ValidNamespaceSpecifier(Node->Left)) return false;
   }
   if(Node->Right){
-    if(Node->Right->IsExpression()){
-      if(!ValidNamespaceSpecifier((AST::EXPRESSION*)Node->Right)) return false;
-    }else{
-      return false;
-    }
+    if(!ValidNamespaceSpecifier(Node->Right)) return false;
   }
   return true;
 }
@@ -1570,13 +1566,8 @@ bool PARSER::ValidTypeSpecifier(AST::EXPRESSION* Node){
     if(!ValidTypeSpecifier(Node->Left)) return false;
   }
   if(Node->Right){
-    if(Node->Right->IsExpression()){
-      AST::EXPRESSION* Right = (AST::EXPRESSION*)Node->Right;
-      if(Right->Type == AST::BASE::TYPE::FunctionCall) return false;
-      if(!ValidTypeSpecifier(Right)) return false;
-    }else{
-      return false;
-    }
+    if(Node->Right->Type == AST::BASE::TYPE::FunctionCall) return false;
+    if(!ValidTypeSpecifier(Node->Right)) return false;
   }
   return true;
 }
@@ -1606,14 +1597,12 @@ bool PARSER::ValidLHS(AST::EXPRESSION* Node){
     if(!ValidLHS(Node->Left)) return false;
   }
   if(Node->Right){
-    if(Node->Right->IsExpression()){
-      if(!ValidLHS((AST::EXPRESSION*)Node->Right)) return false;
-    }else{
-      return false;
-    }
+    if(!ValidLHS(Node->Right)) return false;
   }
-  if(Node->Next){ // In the case of an array concatenation
-    if(!ValidLHS((AST::EXPRESSION*)Node->Next)) return false;
+  if(Node->Type == AST::BASE::TYPE::ArrayConcatenate){
+    foreach(Element, ((AST::ARRAYCONCATENATE*)Node)->Elements){
+      if(!ValidLHS(*Element)) return false;
+    }
   }
   return true;
 }

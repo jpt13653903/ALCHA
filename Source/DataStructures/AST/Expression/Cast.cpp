@@ -167,8 +167,7 @@ EXPRESSION* CAST::Evaluate(){
 // 
 //   Left = Left->Simplify(true);
 //   if(Right){
-//     assert(Right->IsExpression(), return this);
-//     Right = ((EXPRESSION*)Right)->Simplify(true);
+//     Right = Right->Simplify(true);
 //   }
 // 
 //   error("Not yet implemented");

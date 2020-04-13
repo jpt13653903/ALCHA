@@ -199,6 +199,12 @@ AST::EXPRESSION* BASE::GetAttribValue(const string& Name){
 }
 //------------------------------------------------------------------------------
 
+AST::EXPRESSION* BASE::GetBuiltInAttributeValue(const string& Name){
+  // TODO: Build stuff like Line, Filename, etc.
+  return 0;
+}
+//------------------------------------------------------------------------------
+
 void BASE::Validate(){
   // Don't verify Namespace, it's circular
   foreach(Attrib, Attributes){

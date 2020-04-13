@@ -35,7 +35,7 @@ namespace AST{
     public:
       // Left and Right operands
       EXPRESSION* Left;
-      BASE*       Right; // Can be expression or assignment (for function calls)
+      EXPRESSION* Right;
 
                EXPRESSION(int Line, const char* Filename, TYPE ExpressionType);
       virtual ~EXPRESSION();

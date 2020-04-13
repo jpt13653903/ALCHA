@@ -133,6 +133,22 @@ void SYNTHESISABLE::DisplayParameters(int Indent){
 }
 //------------------------------------------------------------------------------
 
+AST::EXPRESSION* SYNTHESISABLE::GetBuiltInAttributeValue(const std::string& Name){
+  if(Name == "width"){
+    auto Result = new AST::LITERAL(0, "");
+    Result->Value = Width;
+    return Result;
+  }
+  if(Name == "fullscale"){
+    auto Result = new AST::LITERAL(0, "");
+    Result->Value = FullScale;
+    if(Signed) Result->Value.Mul(-1);
+    return Result;
+  }
+  return BASE::GetBuiltInAttributeValue(Name);
+}
+//------------------------------------------------------------------------------
+
 void SYNTHESISABLE::Validate(){
   BASE::Validate();
 }

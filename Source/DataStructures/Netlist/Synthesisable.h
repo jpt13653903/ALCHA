@@ -52,6 +52,8 @@ namespace NETLIST{
 
       bool ApplyParameters(std::list<AST::BASE*>& Parameters);
 
+      AST::EXPRESSION* GetBuiltInAttributeValue(const std::string& Name) override;
+
       void Validate() override;
   };
 }

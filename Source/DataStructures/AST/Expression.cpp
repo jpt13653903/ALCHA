@@ -56,24 +56,9 @@ void EXPRESSION::DisplayStart(){
 
 void EXPRESSION::DisplayEnd(){
   if(Right){
-    EXPRESSION* ExprRight;
-    ASSIGNMENT* AssignRight;
-    if(Right->IsExpression()){
-      ExprRight = (EXPRESSION*)Right;
-      if(ExprRight->Left || ExprRight->Right || ExprRight->Next) Debug.Print("(");
-      ExprRight->Display();
-      if(ExprRight->Left || ExprRight->Right || ExprRight->Next) Debug.Print(")");
-
-    }else if(Right->IsAssignment()){
-      AssignRight = (ASSIGNMENT*)Right;
-      if(AssignRight->Left || AssignRight->Right || AssignRight->Next) Debug.Print("(");
-      AssignRight->Display();
-      if(AssignRight->Left || AssignRight->Right || AssignRight->Next) Debug.Print(")");
-
-    }else{
-      error("Invalid type");
-      return;
-    }
+    if(Right->Left || Right->Right || Right->Next) Debug.Print("(");
+    Right->Display();
+    if(Right->Left || Right->Right || Right->Next) Debug.Print(")");
   }
 }
 //------------------------------------------------------------------------------

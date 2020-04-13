@@ -76,10 +76,9 @@ EXPRESSION* BIT_AND::Evaluate(){
 
 // EXPRESSION* BIT_AND::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
-//   assert(Right->IsExpression(), return this);
 // 
 //   Left = Left->Simplify(true);
-//   Right = ((EXPRESSION*)Right)->Simplify(true);
+//   Right = Right->Simplify(true);
 // 
 //   error("Not yet implemented");
 //   return this;

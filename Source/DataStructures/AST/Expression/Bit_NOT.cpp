@@ -73,10 +73,6 @@ EXPRESSION* BIT_NOT::Evaluate(){
 //     delete Result;
 //     return 0;
 //   }
-//   assert(Result->Right->IsExpression(),
-//     delete Result;
-//     return 0;
-//   );
 // 
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
@@ -85,11 +81,10 @@ EXPRESSION* BIT_NOT::Evaluate(){
 
 // EXPRESSION* BIT_NOT::Simplify(bool GenWire){
 //   assert(Right, return this);
-//   assert(Right->IsExpression(), return this);
 // 
 //   EXPRESSION* Result = this;
 // 
-//   Right = ((EXPRESSION*)Right)->Simplify(true);
+//   Right = Right->Simplify(true);
 //   assert(Right->Type == TYPE::Object, return Result);
 // 
 //   if(GenWire){
