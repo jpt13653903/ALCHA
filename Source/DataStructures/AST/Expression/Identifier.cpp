@@ -66,8 +66,26 @@ bool IDENTIFIER::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* IDENTIFIER::Evaluate(){
-  error("Not yet implemented");
-  return this;
+  foreach(NamespaceIterator, NETLIST::NamespaceStack){
+    auto Namespace = *NamespaceIterator;
+    while(Namespace){
+      auto Object = Namespace->GetMember(Name);
+      if(Object){
+        auto Result = new OBJECT(Source.Line, Source.Filename);
+        Result->ObjectRef = Object;
+        delete this;
+        // It might be an alias, or evaluate further to a literal
+        return Result->Evaluate();
+      }
+      Namespace = Namespace->Namespace;
+    }
+  }
+  Error();
+  printf("Undefined identifier: \"%s\"\n", Name.c_str());
+
+  delete this;
+  return 0;
+
 //   EXPRESSION* Result = 0;
 // 
 //   auto NamespaceIterator = NETLIST::NamespaceStack.begin();
@@ -123,14 +141,6 @@ EXPRESSION* IDENTIFIER::Evaluate(){
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
 }
-//------------------------------------------------------------------------------
-
-// EXPRESSION* IDENTIFIER::Simplify(bool GenWire){
-//   EXPRESSION* Result = Evaluate();
-// 
-//   if(Result != this) delete this;
-//   return Result;
-// }
 //------------------------------------------------------------------------------
 
 void IDENTIFIER::Display(){

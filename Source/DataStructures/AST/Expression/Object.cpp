@@ -20,8 +20,10 @@
 
 #include "Object.h"
 #include "Literal.h"
+#include "Netlist/Alias.h"
 #include "Netlist/Byte.h"
 #include "Netlist/Character.h"
+#include "Netlist/Namespace/Module.h"
 #include "Netlist/Num.h"
 //------------------------------------------------------------------------------
 
@@ -68,46 +70,59 @@ bool OBJECT::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* OBJECT::Evaluate(){
-  error("Not yet implemented");
-  return this;
-//   EXPRESSION* Result = 0;
-// 
-//   error("Not yet implemented");
-// 
-//   if(!Result) return 0;
-//   return Result->Simplify(false);
-}
-//------------------------------------------------------------------------------
+  if(!ObjectRef){
+    error("Null object reference");
+    delete this;
+    return 0;
+  }
 
-// EXPRESSION* OBJECT::Simplify(bool GenWire){
-//   EXPRESSION* Result = this;
-// 
-//   if(ObjectRef){
-//     switch(ObjectRef->Type){
-//       case NETLIST::BASE::TYPE::Byte:{
-//         auto Byte = (NETLIST::BYTE*)ObjectRef;
-//         Result = new LITERAL(Source.Line, Source.Filename);
-//         ((LITERAL*)Result)->Value = Byte->Value;
-//         delete this;
-//       }
-//       case NETLIST::BASE::TYPE::Character:{
-//         auto Char = (NETLIST::CHARACTER*)ObjectRef;
-//         Result = new LITERAL(Source.Line, Source.Filename);
-//         ((LITERAL*)Result)->Value = Char->Value;
-//         delete this;
-//       }
-//       case NETLIST::BASE::TYPE::Number:{
-//         auto Num = (NETLIST::NUM*)ObjectRef;
-//         Result = new LITERAL(Source.Line, Source.Filename);
-//         ((LITERAL*)Result)->Value = Num->Value;
-//         delete this;
-//       }
-//       default:
-//         break;
-//     }
-//   }
-//   return Result;
-// }
+  switch(ObjectRef->Type){
+    case NETLIST::BASE::TYPE::Byte:{
+      auto Byte = (NETLIST::BYTE*)ObjectRef;
+      auto Result = new LITERAL(Source.Line, Source.Filename);
+      Result->Value = Byte->Value;
+      delete this;
+      return Result;
+    }
+    case NETLIST::BASE::TYPE::Character:{
+      auto Char = (NETLIST::CHARACTER*)ObjectRef;
+      auto Result = new LITERAL(Source.Line, Source.Filename);
+      Result->Value = Char->Value;
+      delete this;
+      return Result;
+    }
+    case NETLIST::BASE::TYPE::Number:{
+      auto Num = (NETLIST::NUM*)ObjectRef;
+      auto Result = new LITERAL(Source.Line, Source.Filename);
+      Result->Value = Num->Value;
+      delete this;
+      return Result;
+    }
+    case NETLIST::BASE::TYPE::Alias:{
+      auto Alias  = (NETLIST::ALIAS*)ObjectRef;
+      auto Result = Alias->Expression;
+      if(!Result){
+        Error("Alias has no expression");
+        delete this;
+        return 0;
+      }
+      Result = (EXPRESSION*)Result->Copy(false);
+      NETLIST::NamespaceStack.push_front(Alias->Namespace);
+        Result = Result->Evaluate();
+      NETLIST::NamespaceStack.pop_front();
+      if(!Result){
+        Error("Error evaluating alias");
+        delete this;
+        return 0;
+      }
+      delete this;
+      return Result;
+    }
+    default:
+      break;
+  }
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void OBJECT::Display(){

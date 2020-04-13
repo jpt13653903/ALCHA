@@ -17,6 +17,8 @@ num MyNumber = 1.23456;
 
 num LED_Width     = LED'width;
 num LED_FullScale = LED'fullscale;
+num LED_Current   = LED'current;
+
 // Button'width = 5;
 
 // net(14, 3 ) TestNet  = GPIO;
