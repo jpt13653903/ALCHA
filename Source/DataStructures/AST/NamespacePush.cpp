@@ -40,16 +40,11 @@ NAMESPACE_PUSH::~NAMESPACE_PUSH(){
 }
 //------------------------------------------------------------------------------
 
-BASE* NAMESPACE_PUSH::Copy(bool CopyNext){
+BASE* NAMESPACE_PUSH::Copy(){
   NAMESPACE_PUSH* Copy = new NAMESPACE_PUSH(Source.Line, Source.Filename.c_str());
 
-  if(Namespace ) Copy->Namespace  = (decltype(Namespace ))Namespace ->Copy(CopyNext);
-  if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy(CopyNext);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  if(Namespace ) Copy->Namespace  = (decltype(Namespace ))Namespace ->Copy();
+  if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy();
 
   return Copy;
 }

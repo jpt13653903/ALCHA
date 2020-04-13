@@ -39,19 +39,14 @@ FUNCTIONCALL::~FUNCTIONCALL(){
 }
 //------------------------------------------------------------------------------
 
-BASE* FUNCTIONCALL::Copy(bool CopyNext){
+BASE* FUNCTIONCALL::Copy(){
   FUNCTIONCALL* Copy = new FUNCTIONCALL(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
-  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+  if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
   foreach(Parameter, Parameters){
-    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy(CopyNext));
-  }
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
+    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy());
   }
 
   return Copy;

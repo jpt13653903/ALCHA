@@ -35,7 +35,7 @@ namespace AST{
       CLASS_INSTANCE(int Line, const char*  Filename);
      ~CLASS_INSTANCE();
 
-      BASE* Copy(bool CopyNext) override;
+      BASE* Copy() override;
 
       bool RunAST() override;
       bool GetVerilog(std::string& Body) override;

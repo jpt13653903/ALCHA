@@ -42,18 +42,13 @@ RTL::~RTL(){
 }
 //------------------------------------------------------------------------------
 
-BASE* RTL::Copy(bool CopyNext){
+BASE* RTL::Copy(){
   RTL* Copy = new RTL(Source.Line, Source.Filename.c_str());
 
-  if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy(CopyNext);
+  Copy->Statements = (decltype(Statements))CopyList(Statements);
 
   foreach(Parameter, Parameters){
-    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy(CopyNext));
-  }
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
+    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy());
   }
 
   return Copy;

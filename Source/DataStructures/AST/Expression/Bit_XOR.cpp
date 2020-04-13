@@ -36,16 +36,11 @@ BIT_XOR::~BIT_XOR(){
 }
 //------------------------------------------------------------------------------
 
-BASE* BIT_XOR::Copy(bool CopyNext){
+BASE* BIT_XOR::Copy(){
   BIT_XOR* Copy = new BIT_XOR(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
-  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+  if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
   return Copy;
 }

@@ -70,6 +70,27 @@ void BASE::Warning(const char* Message){
 }
 //------------------------------------------------------------------------------
 
+BASE* BASE::CopyList(BASE* Source){
+  BASE* Node   = 0;
+  BASE* Tail   = 0;
+  BASE* Result = 0;
+
+  while(Source){
+    Node = Source->Copy();
+    if(Tail){
+      Tail->Next = Node;
+      Node->Prev = Tail;
+    }else{
+      Result = Node;
+    }
+    Tail   = Node;
+    Source = Source->Next;
+  }
+
+  return Result;
+}
+//------------------------------------------------------------------------------
+
 void BASE::DisplayInfo(){
   Debug.Print("\n" ANSI_FG_BRIGHT_BLACK "%s:", Source.Filename.c_str());
   Debug.Print(ANSI_FG_CYAN "%05d" ANSI_FG_YELLOW " -- " ANSI_RESET, Source.Line);

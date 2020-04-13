@@ -38,7 +38,7 @@ namespace AST{
 
     void ValidateMembers() override;
 
-    BASE* Copy(bool CopyNext) override;
+    BASE* Copy() override;
   };
 }
 //------------------------------------------------------------------------------

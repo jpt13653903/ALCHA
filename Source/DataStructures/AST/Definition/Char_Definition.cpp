@@ -45,10 +45,10 @@ CHAR_DEFINITION::~CHAR_DEFINITION(){
 }
 //------------------------------------------------------------------------------
 
-BASE* CHAR_DEFINITION::Copy(bool CopyNext){
+BASE* CHAR_DEFINITION::Copy(){
   CHAR_DEFINITION* Copy = new CHAR_DEFINITION(Source.Line, Source.Filename.c_str());
 
-  CopyMembers(Copy, CopyNext);
+  CopyMembers(Copy);
 
   return Copy;
 }

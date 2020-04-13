@@ -46,12 +46,12 @@ CLASS_INSTANCE::~CLASS_INSTANCE(){
 }
 //------------------------------------------------------------------------------
 
-BASE* CLASS_INSTANCE::Copy(bool CopyNext){
+BASE* CLASS_INSTANCE::Copy(){
   CLASS_INSTANCE* Copy = new CLASS_INSTANCE(Source.Line, Source.Filename.c_str());
 
-  CopyMembers(Copy, CopyNext);
+  CopyMembers(Copy);
 
-  if(ClassName) Copy->ClassName = (decltype(ClassName))ClassName->Copy(CopyNext);
+  if(ClassName) Copy->ClassName = (decltype(ClassName))ClassName->Copy();
 
   return Copy;
 }

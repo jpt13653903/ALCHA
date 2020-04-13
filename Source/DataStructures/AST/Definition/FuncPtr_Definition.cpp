@@ -44,10 +44,10 @@ FUNCPTR_DEFINITION::~FUNCPTR_DEFINITION(){
 }
 //------------------------------------------------------------------------------
 
-BASE* FUNCPTR_DEFINITION::Copy(bool CopyNext){
+BASE* FUNCPTR_DEFINITION::Copy(){
   FUNCPTR_DEFINITION* Copy = new FUNCPTR_DEFINITION(Source.Line, Source.Filename.c_str());
 
-  CopyMembers(Copy, CopyNext);
+  CopyMembers(Copy);
 
   return Copy;
 }

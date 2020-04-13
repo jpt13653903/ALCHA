@@ -38,7 +38,7 @@ namespace AST{
     JUMP(int Line, const char*  Filename, JUMP_TYPE JumpType);
    ~JUMP();
 
-    BASE* Copy(bool CopyNext) override;
+    BASE* Copy() override;
 
     bool RunAST() override;
     bool GetVerilog(std::string& Body) override;

@@ -44,7 +44,7 @@ namespace AST{
     ENUM_DEFINITION(int Line, const char*  Filename);
    ~ENUM_DEFINITION();
 
-    BASE* Copy(bool CopyNext) override;
+    BASE* Copy() override;
 
     bool RunAST() override;
     bool GetVerilog(std::string& Body) override;

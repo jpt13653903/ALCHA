@@ -36,16 +36,11 @@ NAND_REDUCE::~NAND_REDUCE(){
 }
 //------------------------------------------------------------------------------
 
-BASE* NAND_REDUCE::Copy(bool CopyNext){
+BASE* NAND_REDUCE::Copy(){
   NAND_REDUCE* Copy = new NAND_REDUCE(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
-  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+  if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
   return Copy;
 }

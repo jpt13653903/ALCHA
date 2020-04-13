@@ -31,7 +31,7 @@ namespace AST{
     EQUAL(int Line, const char*        Filename);
    ~EQUAL();
 
-    BASE* Copy(bool CopyNext) override;
+    BASE* Copy() override;
 
     bool GetVerilog(std::string& Body) override;
     EXPRESSION* Evaluate() override;

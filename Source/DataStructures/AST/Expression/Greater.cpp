@@ -36,16 +36,11 @@ GREATER::~GREATER(){
 }
 //------------------------------------------------------------------------------
 
-BASE* GREATER::Copy(bool CopyNext){
+BASE* GREATER::Copy(){
   GREATER* Copy = new GREATER(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
-  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+  if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
   return Copy;
 }

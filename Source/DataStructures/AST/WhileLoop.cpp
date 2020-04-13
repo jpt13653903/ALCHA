@@ -40,16 +40,12 @@ WHILE_LOOP::~WHILE_LOOP(){
 }
 //------------------------------------------------------------------------------
 
-BASE* WHILE_LOOP::Copy(bool CopyNext){
+BASE* WHILE_LOOP::Copy(){
   WHILE_LOOP* Copy = new WHILE_LOOP(Source.Line, Source.Filename.c_str());
 
-  if(Condition)  Copy->Condition  = (decltype(Condition ))Condition ->Copy(CopyNext);
-  if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy(CopyNext);
+  if(Condition) Copy->Condition = (decltype(Condition))Condition->Copy();
 
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  Copy->Statements = CopyList(Statements);
 
   return Copy;
 }

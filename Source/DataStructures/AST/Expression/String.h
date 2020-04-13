@@ -33,7 +33,7 @@ namespace AST{
     STRING(int Line, const char*        Filename);
    ~STRING();
 
-    BASE* Copy(bool CopyNext) override;
+    BASE* Copy() override;
 
     bool GetVerilog(std::string& Body) override;
     EXPRESSION* Evaluate() override;

@@ -40,16 +40,12 @@ LOOP_LOOP::~LOOP_LOOP(){
 }
 //------------------------------------------------------------------------------
 
-BASE* LOOP_LOOP::Copy(bool CopyNext){
+BASE* LOOP_LOOP::Copy(){
   LOOP_LOOP* Copy = new LOOP_LOOP(Source.Line, Source.Filename.c_str());
 
-  if(Count     ) Copy->Count      = (decltype(Count     ))Count     ->Copy(CopyNext);
-  if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy(CopyNext);
+  if(Count) Copy->Count = (decltype(Count))Count->Copy();
 
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  Copy->Statements = CopyList(Statements);
 
   return Copy;
 }

@@ -37,19 +37,14 @@ ARRAY::~ARRAY(){
 }
 //------------------------------------------------------------------------------
 
-BASE* ARRAY::Copy(bool CopyNext){
+BASE* ARRAY::Copy(){
   ARRAY* Copy = new ARRAY(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
-  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+  if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
   foreach(Element, Elements){
-    Copy->Elements.push_back((EXPRESSION*)(*Element)->Copy(CopyNext));
-  }
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
+    Copy->Elements.push_back((EXPRESSION*)(*Element)->Copy());
   }
 
   return Copy;

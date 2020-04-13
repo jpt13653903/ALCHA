@@ -40,18 +40,14 @@ FOR_LOOP::~FOR_LOOP(){
 }
 //------------------------------------------------------------------------------
 
-BASE* FOR_LOOP::Copy(bool CopyNext){
+BASE* FOR_LOOP::Copy(){
   FOR_LOOP* Copy = new FOR_LOOP(Source.Line, Source.Filename.c_str());
 
   Copy->Identifier = Identifier;
 
-  if(Range     ) Copy->Range      = (decltype(Range     ))Range     ->Copy(CopyNext);
-  if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy(CopyNext);
+  if(Range) Copy->Range = (decltype(Range))Range->Copy();
 
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  Copy->Statements = CopyList(Statements);
 
   return Copy;
 }

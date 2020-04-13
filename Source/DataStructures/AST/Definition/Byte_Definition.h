@@ -32,7 +32,7 @@ namespace AST{
       BYTE_DEFINITION(int Line, const char*  Filename);
      ~BYTE_DEFINITION();
 
-      BASE* Copy(bool CopyNext) override;
+      BASE* Copy() override;
 
       bool RunAST() override;
       bool GetVerilog(std::string& Body) override;

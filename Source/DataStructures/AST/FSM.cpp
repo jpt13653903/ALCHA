@@ -42,18 +42,13 @@ FSM::~FSM(){
 }
 //------------------------------------------------------------------------------
 
-BASE* FSM::Copy(bool CopyNext){
+BASE* FSM::Copy(){
   FSM* Copy = new FSM(Source.Line, Source.Filename.c_str());
 
-  if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy(CopyNext);
+  Copy->Statements = CopyList(Statements);
 
   foreach(Parameter, Parameters){
-    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy(CopyNext));
-  }
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
+    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy());
   }
 
   return Copy;

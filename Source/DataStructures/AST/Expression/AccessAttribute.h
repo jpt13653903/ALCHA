@@ -31,7 +31,7 @@ namespace AST{
     ACCESSATTRIBUTE(int Line, const char*        Filename);
    ~ACCESSATTRIBUTE();
 
-    BASE* Copy(bool CopyNext) override;
+    BASE* Copy() override;
 
     bool GetVerilog(std::string& Body) override;
     EXPRESSION* Evaluate() override;

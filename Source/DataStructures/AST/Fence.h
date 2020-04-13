@@ -31,7 +31,7 @@ namespace AST{
     FENCE(int Line, const char*  Filename);
    ~FENCE();
 
-    BASE* Copy(bool CopyNext) override;
+    BASE* Copy() override;
 
     bool RunAST() override;
     bool GetVerilog(std::string& Body) override;

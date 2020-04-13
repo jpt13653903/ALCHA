@@ -44,10 +44,10 @@ AUTO_DEFINITION::~AUTO_DEFINITION(){
 }
 //------------------------------------------------------------------------------
 
-BASE* AUTO_DEFINITION::Copy(bool CopyNext){
+BASE* AUTO_DEFINITION::Copy(){
   AUTO_DEFINITION* Copy = new AUTO_DEFINITION(Source.Line, Source.Filename.c_str());
 
-  CopyMembers(Copy, CopyNext);
+  CopyMembers(Copy);
 
   return Copy;
 }

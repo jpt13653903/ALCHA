@@ -34,7 +34,7 @@ namespace AST{
     IDENTIFIER(int Line, const char*        Filename);
    ~IDENTIFIER();
 
-    BASE* Copy(bool CopyNext) override;
+    BASE* Copy() override;
 
     bool GetVerilog(std::string& Body) override;
 

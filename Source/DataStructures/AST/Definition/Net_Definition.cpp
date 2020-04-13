@@ -45,10 +45,10 @@ NET_DEFINITION::~NET_DEFINITION(){
 }
 //------------------------------------------------------------------------------
 
-BASE* NET_DEFINITION::Copy(bool CopyNext){
+BASE* NET_DEFINITION::Copy(){
   NET_DEFINITION* Copy = new NET_DEFINITION(Source.Line, Source.Filename.c_str());
 
-  CopyMembers(Copy, CopyNext);
+  CopyMembers(Copy);
 
   return Copy;
 }

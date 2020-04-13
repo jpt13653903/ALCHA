@@ -31,7 +31,7 @@ namespace AST{
     BIT_XOR(int Line, const char*        Filename);
    ~BIT_XOR();
 
-    BASE* Copy(bool CopyNext) override;
+    BASE* Copy() override;
 
     bool GetVerilog(std::string& Body) override;
     EXPRESSION* Evaluate() override;

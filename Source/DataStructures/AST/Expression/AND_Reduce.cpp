@@ -36,16 +36,11 @@ AND_REDUCE::~AND_REDUCE(){
 }
 //------------------------------------------------------------------------------
 
-BASE* AND_REDUCE::Copy(bool CopyNext){
+BASE* AND_REDUCE::Copy(){
   AND_REDUCE* Copy = new AND_REDUCE(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
-  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+  if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
   return Copy;
 }

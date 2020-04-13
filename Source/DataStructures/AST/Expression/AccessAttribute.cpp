@@ -39,16 +39,11 @@ ACCESSATTRIBUTE::~ACCESSATTRIBUTE(){
 }
 //------------------------------------------------------------------------------
 
-BASE* ACCESSATTRIBUTE::Copy(bool CopyNext){
+BASE* ACCESSATTRIBUTE::Copy(){
   ACCESSATTRIBUTE* Copy = new ACCESSATTRIBUTE(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
-  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+  if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
   return Copy;
 }
@@ -100,7 +95,7 @@ EXPRESSION* ACCESSATTRIBUTE::Evaluate(){
   Result = Object->GetAttribValue(Name);
   if(Result){
     delete this;
-    return (decltype(Result))Result->Copy(false);
+    return (decltype(Result))Result->Copy();
   }
 
   Error();

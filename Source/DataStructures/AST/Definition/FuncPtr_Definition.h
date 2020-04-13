@@ -32,7 +32,7 @@ namespace AST{
       FUNCPTR_DEFINITION(int Line, const char*  Filename);
      ~FUNCPTR_DEFINITION();
 
-      BASE* Copy(bool CopyNext) override;
+      BASE* Copy() override;
 
       bool RunAST() override;
       bool GetVerilog(std::string& Body) override;

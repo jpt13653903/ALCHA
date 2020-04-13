@@ -36,16 +36,11 @@ NOT_EQUAL::~NOT_EQUAL(){
 }
 //------------------------------------------------------------------------------
 
-BASE* NOT_EQUAL::Copy(bool CopyNext){
+BASE* NOT_EQUAL::Copy(){
   NOT_EQUAL* Copy = new NOT_EQUAL(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
-  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+  if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
   return Copy;
 }

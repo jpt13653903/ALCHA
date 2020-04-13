@@ -31,7 +31,7 @@ namespace AST{
     SHIFT_RIGHT(int Line, const char*        Filename);
    ~SHIFT_RIGHT();
 
-    BASE* Copy(bool CopyNext) override;
+    BASE* Copy() override;
 
     bool GetVerilog(std::string& Body) override;
     EXPRESSION* Evaluate() override;

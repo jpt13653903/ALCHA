@@ -42,19 +42,14 @@ HDL::~HDL(){
 }
 //------------------------------------------------------------------------------
 
-BASE* HDL::Copy(bool CopyNext){
+BASE* HDL::Copy(){
   HDL* Copy = new HDL(Source.Line, Source.Filename.c_str());
 
   Copy->Identifier = Identifier;
 
-  if(Files     ) Copy->Files      = (decltype(Files     ))Files     ->Copy(CopyNext);
-  if(Ports     ) Copy->Ports      = (decltype(Ports     ))Ports     ->Copy(CopyNext);
-  if(Parameters) Copy->Parameters = (decltype(Parameters))Parameters->Copy(CopyNext);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  Copy->Files      = (decltype(Files     ))CopyList(Files);
+  Copy->Ports      = (decltype(Ports     ))CopyList(Ports);
+  Copy->Parameters = (decltype(Parameters))CopyList(Parameters);
 
   return Copy;
 }

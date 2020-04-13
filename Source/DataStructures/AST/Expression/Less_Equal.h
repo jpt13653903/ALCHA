@@ -31,7 +31,7 @@ namespace AST{
     LESS_EQUAL(int Line, const char*        Filename);
    ~LESS_EQUAL();
 
-    BASE* Copy(bool CopyNext) override;
+    BASE* Copy() override;
 
     bool GetVerilog(std::string& Body) override;
     EXPRESSION* Evaluate() override;

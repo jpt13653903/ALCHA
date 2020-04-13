@@ -36,16 +36,11 @@ BIT_AND::~BIT_AND(){
 }
 //------------------------------------------------------------------------------
 
-BASE* BIT_AND::Copy(bool CopyNext){
+BASE* BIT_AND::Copy(){
   BIT_AND* Copy = new BIT_AND(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
-  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+  if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
   return Copy;
 }

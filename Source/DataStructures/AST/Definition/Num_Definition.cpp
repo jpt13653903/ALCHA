@@ -45,10 +45,10 @@ NUM_DEFINITION::~NUM_DEFINITION(){
 }
 //------------------------------------------------------------------------------
 
-BASE* NUM_DEFINITION::Copy(bool CopyNext){
+BASE* NUM_DEFINITION::Copy(){
   NUM_DEFINITION* Copy = new NUM_DEFINITION(Source.Line, Source.Filename.c_str());
 
-  CopyMembers(Copy, CopyNext);
+  CopyMembers(Copy);
 
   return Copy;
 }

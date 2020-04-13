@@ -44,10 +44,10 @@ VOID_DEFINITION::~VOID_DEFINITION(){
 }
 //------------------------------------------------------------------------------
 
-BASE* VOID_DEFINITION::Copy(bool CopyNext){
+BASE* VOID_DEFINITION::Copy(){
   VOID_DEFINITION* Copy = new VOID_DEFINITION(Source.Line, Source.Filename.c_str());
 
-  CopyMembers(Copy, CopyNext);
+  CopyMembers(Copy);
 
   return Copy;
 }

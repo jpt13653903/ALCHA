@@ -47,16 +47,11 @@ MODULUS_ASSIGN::~MODULUS_ASSIGN(){
 }
 //------------------------------------------------------------------------------
 
-BASE* MODULUS_ASSIGN::Copy(bool CopyNext){
+BASE* MODULUS_ASSIGN::Copy(){
   MODULUS_ASSIGN* Copy = new MODULUS_ASSIGN(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
-  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+  if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
   return Copy;
 }

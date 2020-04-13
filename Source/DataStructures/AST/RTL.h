@@ -35,7 +35,7 @@ namespace AST{
     RTL(int Line, const char*  Filename);
    ~RTL();
 
-    BASE* Copy(bool CopyNext) override;
+    BASE* Copy() override;
 
     bool RunAST() override;
     bool GetVerilog(std::string& Body) override;

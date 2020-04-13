@@ -32,7 +32,7 @@ namespace AST{
       VOID_DEFINITION(int Line, const char*  Filename);
      ~VOID_DEFINITION();
 
-      BASE* Copy(bool CopyNext) override;
+      BASE* Copy() override;
 
       bool RunAST() override;
       bool GetVerilog(std::string& Body) override;

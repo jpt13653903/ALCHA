@@ -36,16 +36,11 @@ EXPONENTIAL::~EXPONENTIAL(){
 }
 //------------------------------------------------------------------------------
 
-BASE* EXPONENTIAL::Copy(bool CopyNext){
+BASE* EXPONENTIAL::Copy(){
   EXPONENTIAL* Copy = new EXPONENTIAL(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
-  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+  if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
   return Copy;
 }

@@ -45,10 +45,10 @@ PIN_DEFINITION::~PIN_DEFINITION(){
 }
 //------------------------------------------------------------------------------
 
-BASE* PIN_DEFINITION::Copy(bool CopyNext){
+BASE* PIN_DEFINITION::Copy(){
   PIN_DEFINITION* Copy = new PIN_DEFINITION(Source.Line, Source.Filename.c_str());
 
-  CopyMembers(Copy, CopyNext);
+  CopyMembers(Copy);
 
   return Copy;
 }

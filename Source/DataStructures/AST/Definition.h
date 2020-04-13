@@ -72,7 +72,7 @@ namespace AST{
     //--------------------------------------------------------------------------
 
     protected:
-      void CopyMembers(DEFINITION* Copy, bool CopyNext);
+      void CopyMembers(DEFINITION* Copy);
       bool VerifyNotDefined(IDENTIFIER* Identifier);
 
       void DisplayParameters ();

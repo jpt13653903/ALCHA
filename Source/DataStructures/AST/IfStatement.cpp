@@ -42,17 +42,13 @@ IF_STATEMENT::~IF_STATEMENT(){
 }
 //------------------------------------------------------------------------------
 
-BASE* IF_STATEMENT::Copy(bool CopyNext){
+BASE* IF_STATEMENT::Copy(){
   IF_STATEMENT* Copy = new IF_STATEMENT(Source.Line, Source.Filename.c_str());
 
-  if(Condition      ) Copy->Condition       = (decltype(Condition      ))Condition      ->Copy(CopyNext);
-  if(TrueStatements ) Copy->TrueStatements  = (decltype(TrueStatements ))TrueStatements ->Copy(CopyNext);
-  if(FalseStatements) Copy->FalseStatements = (decltype(FalseStatements))FalseStatements->Copy(CopyNext);
+  if(Condition) Copy->Condition = (decltype(Condition))Condition->Copy();
 
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  Copy->TrueStatements  = CopyList(TrueStatements );
+  Copy->FalseStatements = CopyList(FalseStatements);
 
   return Copy;
 }

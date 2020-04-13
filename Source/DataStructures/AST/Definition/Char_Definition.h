@@ -32,7 +32,7 @@ namespace AST{
       CHAR_DEFINITION(int Line, const char*  Filename);
      ~CHAR_DEFINITION();
 
-      BASE* Copy(bool CopyNext) override;
+      BASE* Copy() override;
 
       bool RunAST() override;
       bool GetVerilog(std::string& Body) override;

@@ -47,16 +47,11 @@ AND_ASSIGN::~AND_ASSIGN(){
 }
 //------------------------------------------------------------------------------
 
-BASE* AND_ASSIGN::Copy(bool CopyNext){
+BASE* AND_ASSIGN::Copy(){
   AND_ASSIGN* Copy = new AND_ASSIGN(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
-  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+  if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
   return Copy;
 }

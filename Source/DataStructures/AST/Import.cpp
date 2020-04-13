@@ -40,16 +40,11 @@ IMPORT::~IMPORT(){
 }
 //------------------------------------------------------------------------------
 
-BASE* IMPORT::Copy(bool CopyNext){
+BASE* IMPORT::Copy(){
   IMPORT* Copy = new IMPORT(Source.Line, Source.Filename.c_str());
   
   Copy->File      = File;
   Copy->Namespace = Namespace;
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
 
   return Copy;
 }

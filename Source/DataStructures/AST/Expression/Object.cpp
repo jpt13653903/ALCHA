@@ -44,18 +44,13 @@ OBJECT::~OBJECT(){
 }
 //------------------------------------------------------------------------------
 
-BASE* OBJECT::Copy(bool CopyNext){
+BASE* OBJECT::Copy(){
   OBJECT* Copy = new OBJECT(Source.Line, Source.Filename.c_str());
 
   Copy->ObjectRef = ObjectRef;
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
-  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+  if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
   return Copy;
 }
@@ -106,7 +101,7 @@ EXPRESSION* OBJECT::Evaluate(){
         delete this;
         return 0;
       }
-      Result = (EXPRESSION*)Result->Copy(false);
+      Result = (EXPRESSION*)Result->Copy();
       NETLIST::NamespaceStack.push_front(Alias->Namespace);
         Result = Result->Evaluate();
       NETLIST::NamespaceStack.pop_front();

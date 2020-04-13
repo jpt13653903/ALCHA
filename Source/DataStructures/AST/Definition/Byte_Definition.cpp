@@ -45,10 +45,10 @@ BYTE_DEFINITION::~BYTE_DEFINITION(){
 }
 //------------------------------------------------------------------------------
 
-BASE* BYTE_DEFINITION::Copy(bool CopyNext){
+BASE* BYTE_DEFINITION::Copy(){
   BYTE_DEFINITION* Copy = new BYTE_DEFINITION(Source.Line, Source.Filename.c_str());
 
-  CopyMembers(Copy, CopyNext);
+  CopyMembers(Copy);
 
   return Copy;
 }

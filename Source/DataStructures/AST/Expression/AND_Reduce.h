@@ -31,7 +31,7 @@ namespace AST{
     AND_REDUCE(int Line, const char*        Filename);
    ~AND_REDUCE();
 
-    BASE* Copy(bool CopyNext) override;
+    BASE* Copy() override;
 
     bool GetVerilog(std::string& Body) override;
     EXPRESSION* Evaluate() override;

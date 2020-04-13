@@ -34,7 +34,7 @@ namespace AST{
     VECTORCONCATENATE(int Line, const char*        Filename);
    ~VECTORCONCATENATE();
 
-    BASE* Copy(bool CopyNext) override;
+    BASE* Copy() override;
 
     bool GetVerilog(std::string& Body) override;
     EXPRESSION* Evaluate() override;

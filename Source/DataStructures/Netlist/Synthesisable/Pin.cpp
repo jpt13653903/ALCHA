@@ -40,7 +40,7 @@ PIN::~PIN(){
 //------------------------------------------------------------------------------
 
 AST::EXPRESSION* PIN::GetExpression(int Line, const string& Filename){
-  if(Driver->Value) return (AST::EXPRESSION*)Driver->Value->Copy(false);
+  if(Driver->Value) return (AST::EXPRESSION*)Driver->Value->Copy();
   AST::OBJECT* Result = new AST::OBJECT(Line, Filename);
   Result->ObjectRef = this;
   return Result;

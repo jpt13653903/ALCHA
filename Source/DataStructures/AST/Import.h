@@ -39,7 +39,7 @@ namespace AST{
      ~IMPORT();
 
       // Returns a copy of this instance
-      BASE* Copy(bool CopyNext) override;
+      BASE* Copy() override;
 
       bool RunAST() override;
       bool GetVerilog(std::string& Body) override;

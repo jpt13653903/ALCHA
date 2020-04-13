@@ -35,7 +35,7 @@ namespace AST{
     FOR_LOOP(int Line, const char*  Filename);
    ~FOR_LOOP();
 
-    BASE* Copy(bool CopyNext) override;
+    BASE* Copy() override;
 
     bool RunAST() override;
     bool GetVerilog(std::string& Body) override;

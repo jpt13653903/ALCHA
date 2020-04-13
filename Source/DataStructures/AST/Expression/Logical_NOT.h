@@ -31,7 +31,7 @@ namespace AST{
     LOGICAL_NOT(int Line, const char*        Filename);
    ~LOGICAL_NOT();
 
-    BASE* Copy(bool CopyNext) override;
+    BASE* Copy() override;
 
     bool GetVerilog(std::string& Body) override;
     EXPRESSION* Evaluate() override;

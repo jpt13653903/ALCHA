@@ -35,7 +35,7 @@ namespace AST{
     FSM(int Line, const char*  Filename);
    ~FSM();
 
-    BASE* Copy(bool CopyNext) override;
+    BASE* Copy() override;
 
     bool RunAST() override;
     bool GetVerilog(std::string& Body) override;

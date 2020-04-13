@@ -35,11 +35,11 @@ CLASS_DEFINITION::PARENT::PARENT(const PARENT& Parent){
   ClassName  = 0;
   Next       = 0;
 
-  if(Parent.ClassName) ClassName  = (decltype(Parent.ClassName ))Parent.ClassName ->Copy(true);
+  if(Parent.ClassName) ClassName  = (decltype(Parent.ClassName))Parent.ClassName->Copy();
   if(Parent.Next     ) Next       = new PARENT(*Parent.Next);
 
   foreach(Parameter, Parent.Parameters){
-    if(*Parameter) Parameters.push_back((*Parameter)->Copy(true));
+    if(*Parameter) Parameters.push_back((*Parameter)->Copy());
   }
 }
 //------------------------------------------------------------------------------
@@ -75,20 +75,16 @@ CLASS_DEFINITION::~CLASS_DEFINITION(){
 }
 //------------------------------------------------------------------------------
 
-BASE* CLASS_DEFINITION::Copy(bool CopyNext){
+BASE* CLASS_DEFINITION::Copy(){
   CLASS_DEFINITION* Copy = new CLASS_DEFINITION(Source.Line, Source.Filename.c_str());
 
   Copy->Identifier = Identifier;
 
-  if(Parents   ) Copy->Parents    = new PARENT(*Parents);
-  if(Body      ) Copy->Body       = (decltype(Body      ))Body      ->Copy(CopyNext);
-  if(Attributes) Copy->Attributes = (decltype(Attributes))Attributes->Copy(CopyNext);
-  if(Parameters) Copy->Parameters = (decltype(Parameters))Parameters->Copy(CopyNext);
+  if(Parents) Copy->Parents = new PARENT(*Parents);
 
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  Copy->Body       = (decltype(Body      ))CopyList(Body);
+  Copy->Attributes = (decltype(Attributes))CopyList(Attributes);
+  Copy->Parameters = (decltype(Parameters))CopyList(Parameters);
 
   return Copy;
 }

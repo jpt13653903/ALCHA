@@ -38,18 +38,13 @@ LITERAL::~LITERAL(){
 }
 //------------------------------------------------------------------------------
 
-BASE* LITERAL::Copy(bool CopyNext){
+BASE* LITERAL::Copy(){
   LITERAL* Copy = new LITERAL(Source.Line, Source.Filename.c_str());
 
   Copy->Value = Value;
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
-  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+  if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
   return Copy;
 }

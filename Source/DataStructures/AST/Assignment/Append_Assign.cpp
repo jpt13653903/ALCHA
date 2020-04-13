@@ -47,16 +47,11 @@ APPEND_ASSIGN::~APPEND_ASSIGN(){
 }
 //------------------------------------------------------------------------------
 
-BASE* APPEND_ASSIGN::Copy(bool CopyNext){
+BASE* APPEND_ASSIGN::Copy(){
   APPEND_ASSIGN* Copy = new APPEND_ASSIGN(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
-  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+  if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
   return Copy;
 }

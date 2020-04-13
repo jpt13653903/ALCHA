@@ -38,17 +38,12 @@ RANGE::~RANGE(){
 }
 //------------------------------------------------------------------------------
 
-BASE* RANGE::Copy(bool CopyNext){
+BASE* RANGE::Copy(){
   RANGE* Copy = new RANGE(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
-  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
-  if(Step ) Copy->Step  = (decltype(Step ))Step ->Copy(CopyNext);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+  if(Step ) Copy->Step  = (decltype(Step ))Step ->Copy();
 
   return Copy;
 }

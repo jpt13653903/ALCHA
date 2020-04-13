@@ -36,13 +36,8 @@ FENCE::~FENCE(){
 }
 //------------------------------------------------------------------------------
 
-BASE* FENCE::Copy(bool CopyNext){
+BASE* FENCE::Copy(){
   FENCE* Copy = new FENCE(Source.Line, Source.Filename.c_str());
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
 
   return Copy;
 }

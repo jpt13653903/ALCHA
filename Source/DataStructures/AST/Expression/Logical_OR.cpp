@@ -36,16 +36,11 @@ LOGICAL_OR::~LOGICAL_OR(){
 }
 //------------------------------------------------------------------------------
 
-BASE* LOGICAL_OR::Copy(bool CopyNext){
+BASE* LOGICAL_OR::Copy(){
   LOGICAL_OR* Copy = new LOGICAL_OR(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
-  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+  if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
   return Copy;
 }

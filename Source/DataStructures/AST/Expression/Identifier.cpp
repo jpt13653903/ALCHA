@@ -42,18 +42,13 @@ IDENTIFIER::~IDENTIFIER(){
 }
 //------------------------------------------------------------------------------
 
-BASE* IDENTIFIER::Copy(bool CopyNext){
+BASE* IDENTIFIER::Copy(){
   IDENTIFIER* Copy = new IDENTIFIER(Source.Line, Source.Filename.c_str());
 
   Copy->Name = Name;
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
-  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+  if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
   return Copy;
 }
@@ -85,61 +80,6 @@ EXPRESSION* IDENTIFIER::Evaluate(){
 
   delete this;
   return 0;
-
-//   EXPRESSION* Result = 0;
-// 
-//   auto NamespaceIterator = NETLIST::NamespaceStack.begin();
-//   while(!Result && NamespaceIterator != NETLIST::NamespaceStack.end()){
-//     NETLIST::NAMESPACE* Namespace = *NamespaceIterator;
-//     while(!Result && Namespace){
-//       auto Object = Namespace->Symbols.find(this->Name);
-//       if(Object != Namespace->Symbols.end()){
-//         if(Object->second){
-//           switch(Object->second->Type){
-//             case NETLIST::BASE::TYPE::Alias:{
-//               auto Alias = (NETLIST::ALIAS*)Object->second;
-//               NETLIST::NamespaceStack.push_front(Alias->Namespace);
-//                 Result = Alias->Expression->Evaluate();
-//               NETLIST::NamespaceStack.pop_front();
-//               break;
-//             }
-//             case NETLIST::BASE::TYPE::Pin:
-//             case NETLIST::BASE::TYPE::Net:{
-//               auto Synthesisable = (NETLIST::SYNTHESISABLE*)Object->second;
-//               Result = new OBJECT(Source.Line, Source.Filename);
-//               ((OBJECT*)Result)->ObjectRef = Synthesisable;
-//               Synthesisable->Used = true;
-//               break;
-//             }
-//             default:{
-//               Result = new OBJECT(Source.Line, Source.Filename);
-//               ((OBJECT*)Result)->ObjectRef = Object->second;
-//               break;
-//             }
-//           }
-//         }
-//       }
-//       Namespace = Namespace->Namespace;
-//     }
-//     NamespaceIterator++;
-//   }
-//   if(!Result){
-//     NUMBER Constant;
-//     if(Constants.GetConstant(this->Name.c_str(), &Constant)){
-//       Result = new LITERAL(Source.Line, Source.Filename);
-//       ((LITERAL*)Result)->Value = Constant;
-//     }else{
-//       Error();
-//       printf("Identifier \"%s\" not defined\n", this->Name.c_str());
-//     }
-//   }
-//   if(this->Next){
-//     assert(this->Next->IsExpression());
-//     Result->Next = ((EXPRESSION*)this->Next)->Evaluate();
-//   }
-// 
-//   if(!Result) return 0;
-//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 

@@ -178,12 +178,16 @@ namespace AST{
       BASE* Prev; // Previous instruction
     //--------------------------------------------------------------------------
 
+    protected:
+      static BASE* CopyList(BASE* Source);
+    //--------------------------------------------------------------------------
+
     public:
                BASE(int Line, const char* Filename, TYPE Type);
       virtual ~BASE(); // Also deletes the rest of the linked list
 
       // Returns a copy of this instance
-      virtual BASE* Copy(bool CopyNext) = 0;
+      virtual BASE* Copy() = 0;
 
       // Runs through the AST:
       // - Builds the namespaces

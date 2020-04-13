@@ -57,17 +57,12 @@ ENUM_DEFINITION::~ENUM_DEFINITION(){
 }
 //------------------------------------------------------------------------------
 
-BASE* ENUM_DEFINITION::Copy(bool CopyNext){
+BASE* ENUM_DEFINITION::Copy(){
   ENUM_DEFINITION* Copy = new ENUM_DEFINITION(Source.Line, Source.Filename.c_str());
 
   Copy->Identifier = Identifier;
 
   if(Values) Copy->Values = new VALUE(*Values);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
 
   return Copy;
 }

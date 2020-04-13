@@ -36,16 +36,11 @@ GREATER_EQUAL::~GREATER_EQUAL(){
 }
 //------------------------------------------------------------------------------
 
-BASE* GREATER_EQUAL::Copy(bool CopyNext){
+BASE* GREATER_EQUAL::Copy(){
   GREATER_EQUAL* Copy = new GREATER_EQUAL(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy(CopyNext);
-  if(Right) Copy->Right = (decltype(Right))Right->Copy(CopyNext);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
+  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+  if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
   return Copy;
 }

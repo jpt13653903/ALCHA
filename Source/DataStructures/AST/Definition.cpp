@@ -37,7 +37,7 @@ DEFINITION::ARRAY::ARRAY(const ARRAY& Array){
   Size = 0;
   Next = 0;
 
-  if(Array.Size) Size = (decltype(Array.Size))Array.Size->Copy(true);
+  if(Array.Size) Size = (decltype(Array.Size))Array.Size->Copy();
   if(Array.Next) Next = new ARRAY(*Array.Next);
 }
 //------------------------------------------------------------------------------
@@ -68,11 +68,12 @@ DEFINITION::IDENTIFIER::IDENTIFIER(const IDENTIFIER& Identifier){
   Parameters   = 0;
   FunctionBody = 0;
 
-  if(Identifier.Next        ) Next         = new IDENTIFIER(*Identifier.Next );
-  if(Identifier.Array       ) Array        = new ARRAY     (*Identifier.Array);
-  if(Identifier.Parameters  ) Parameters   = (decltype(Identifier.Parameters  ))Identifier.Parameters  ->Copy(true);
-  if(Identifier.Initialiser ) Initialiser  = (decltype(Identifier.Initialiser ))Identifier.Initialiser ->Copy(true);
-  if(Identifier.FunctionBody) FunctionBody = (decltype(Identifier.FunctionBody))Identifier.FunctionBody->Copy(true);
+  if(Identifier.Next       ) Next        = new IDENTIFIER(*Identifier.Next );
+  if(Identifier.Array      ) Array       = new ARRAY     (*Identifier.Array);
+  if(Identifier.Initialiser) Initialiser = (decltype(Identifier.Initialiser))Identifier.Initialiser->Copy();
+
+  FunctionBody =              CopyList(Identifier.FunctionBody);
+  Parameters   = (DEFINITION*)CopyList(Identifier.Parameters  );
 }
 //------------------------------------------------------------------------------
 
@@ -112,19 +113,14 @@ bool DEFINITION::IsDefinition(){
 }
 //------------------------------------------------------------------------------
 
-void DEFINITION::CopyMembers(DEFINITION* Copy, bool CopyNext){
+void DEFINITION::CopyMembers(DEFINITION* Copy){
   Copy->Direction = Direction;
 
-  if(Attributes ) Copy->Attributes  = (decltype(Attributes))Attributes->Copy(CopyNext);
+  if(Attributes ) Copy->Attributes  = (decltype(Attributes))Attributes->Copy();
   if(Identifiers) Copy->Identifiers = new IDENTIFIER(*Identifiers);
 
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
-
   foreach(Parameter, Parameters){
-    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy(CopyNext));
+    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy());
   }
 }
 //------------------------------------------------------------------------------
