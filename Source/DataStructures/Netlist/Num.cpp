@@ -46,9 +46,24 @@ AST::EXPRESSION* NUM::GetExpression(int Line, const string& Filename){
 //------------------------------------------------------------------------------
 
 bool NUM::Assign(AST::EXPRESSION* Expression){
-  error("Not yet implemented");
-  // TODO: Change the evaluation and simplification of expressions...
-  return false;
+  if(!Expression) return false;
+
+  Expression = Expression->Evaluate();
+  if(!Expression) return false;
+
+  bool Result = false;
+
+  if(Expression->Type == AST::BASE::TYPE::Literal){
+    Value = ((AST::LITERAL*)Expression)->Value;
+    Result = true;
+  }else{
+    Expression->Error("Expression must evaluate to a literal");
+    Result = false;
+  }
+
+  // Expression has been moved and then used, so it must be deleted
+  delete Expression;
+  return Result;
 }
 //------------------------------------------------------------------------------
 

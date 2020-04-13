@@ -55,12 +55,6 @@ BASE* LITERAL::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool LITERAL::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool LITERAL::GetVerilog(string& Body){
   if(!Width){
     Error("Literal has unknown width");
@@ -94,16 +88,6 @@ bool LITERAL::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* LITERAL::Evaluate(){
-  EXPRESSION* Result = 0;
-
-  Result = (EXPRESSION*)Copy(false);
-
-  if(!Result) return 0;
-  return Result->Simplify(false);
-}
-//------------------------------------------------------------------------------
-
-EXPRESSION* LITERAL::Simplify(bool GenWire){
   return this;
 }
 //------------------------------------------------------------------------------

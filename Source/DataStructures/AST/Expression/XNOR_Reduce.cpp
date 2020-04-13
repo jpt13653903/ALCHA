@@ -51,12 +51,6 @@ BASE* XNOR_REDUCE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool XNOR_REDUCE::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool XNOR_REDUCE::GetVerilog(string& Body){
   Body += "~^(";
   Right->GetVerilog(Body);
@@ -67,24 +61,26 @@ bool XNOR_REDUCE::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* XNOR_REDUCE::Evaluate(){
-  EXPRESSION* Result = 0;
-
   error("Not yet implemented");
-
-  if(!Result) return 0;
-  return Result->Simplify(false);
+  return this;
+//   EXPRESSION* Result = 0;
+// 
+//   error("Not yet implemented");
+// 
+//   if(!Result) return 0;
+//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* XNOR_REDUCE::Simplify(bool GenWire){
-  assert(Right, return this);
-  assert(Right->IsExpression(), return this);
-
-  Right = ((EXPRESSION*)Right)->Simplify(true);
-
-  error("Not yet implemented");
-  return this;
-}
+// EXPRESSION* XNOR_REDUCE::Simplify(bool GenWire){
+//   assert(Right, return this);
+//   assert(Right->IsExpression(), return this);
+// 
+//   Right = ((EXPRESSION*)Right)->Simplify(true);
+// 
+//   error("Not yet implemented");
+//   return this;
+// }
 //------------------------------------------------------------------------------
 
 void XNOR_REDUCE::Display(){

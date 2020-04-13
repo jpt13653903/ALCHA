@@ -78,3 +78,10 @@ void EXPRESSION::DisplayEnd(){
 }
 //------------------------------------------------------------------------------
 
+bool EXPRESSION::RunAST(){
+  // For most expression types, this function is never called
+  error("Unexpected RunAST call");
+  return false;
+}
+//------------------------------------------------------------------------------
+

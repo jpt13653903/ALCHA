@@ -51,12 +51,6 @@ BASE* LOGICAL_OR::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool LOGICAL_OR::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool LOGICAL_OR::GetVerilog(string& Body){
   Body += "(";
   Left->GetVerilog(Body);
@@ -69,25 +63,27 @@ bool LOGICAL_OR::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* LOGICAL_OR::Evaluate(){
-  EXPRESSION* Result = 0;
-
   error("Not yet implemented");
-
-  if(!Result) return 0;
-  return Result->Simplify(false);
+  return this;
+//   EXPRESSION* Result = 0;
+// 
+//   error("Not yet implemented");
+// 
+//   if(!Result) return 0;
+//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LOGICAL_OR::Simplify(bool GenWire){
-  assert(Left && Right, return this);
-  assert(Right->IsExpression(), return this);
-
-  Left = Left->Simplify(true);
-  Right = ((EXPRESSION*)Right)->Simplify(true);
-
-  error("Not yet implemented");
-  return this;
-}
+// EXPRESSION* LOGICAL_OR::Simplify(bool GenWire){
+//   assert(Left && Right, return this);
+//   assert(Right->IsExpression(), return this);
+// 
+//   Left = Left->Simplify(true);
+//   Right = ((EXPRESSION*)Right)->Simplify(true);
+// 
+//   error("Not yet implemented");
+//   return this;
+// }
 //------------------------------------------------------------------------------
 
 void LOGICAL_OR::Display(){

@@ -51,12 +51,6 @@ BASE* MODULUS::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool MODULUS::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool MODULUS::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
@@ -64,25 +58,27 @@ bool MODULUS::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* MODULUS::Evaluate(){
-  EXPRESSION* Result = 0;
-
   error("Not yet implemented");
-
-  if(!Result) return 0;
-  return Result->Simplify(false);
+  return this;
+//   EXPRESSION* Result = 0;
+// 
+//   error("Not yet implemented");
+// 
+//   if(!Result) return 0;
+//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* MODULUS::Simplify(bool GenWire){
-  assert(Left && Right, return this);
-  assert(Right->IsExpression(), return this);
-
-  Left = Left->Simplify(true);
-  Right = ((EXPRESSION*)Right)->Simplify(true);
-
-  error("Not yet implemented");
-  return this;
-}
+// EXPRESSION* MODULUS::Simplify(bool GenWire){
+//   assert(Left && Right, return this);
+//   assert(Right->IsExpression(), return this);
+// 
+//   Left = Left->Simplify(true);
+//   Right = ((EXPRESSION*)Right)->Simplify(true);
+// 
+//   error("Not yet implemented");
+//   return this;
+// }
 //------------------------------------------------------------------------------
 
 void MODULUS::Display(){

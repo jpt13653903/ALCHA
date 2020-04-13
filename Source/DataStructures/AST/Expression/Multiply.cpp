@@ -51,12 +51,6 @@ BASE* MULTIPLY::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool MULTIPLY::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool MULTIPLY::GetVerilog(string& Body){
   Body += "(";
   Left->GetVerilog(Body);
@@ -69,21 +63,23 @@ bool MULTIPLY::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* MULTIPLY::Evaluate(){
-  EXPRESSION* Result = (EXPRESSION*)Copy(true);
-  return Result->Simplify(false);
+  error("Not yet implemented");
+  return this;
+//   EXPRESSION* Result = (EXPRESSION*)Copy(true);
+//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* MULTIPLY::Simplify(bool GenWire){
-  assert(Left && Right, return this);
-  assert(Right->IsExpression(), return this);
-
-  Left = Left->Simplify(true);
-  Right = ((EXPRESSION*)Right)->Simplify(true);
-
-  error("Not yet implemented");
-  return this;
-}
+// EXPRESSION* MULTIPLY::Simplify(bool GenWire){
+//   assert(Left && Right, return this);
+//   assert(Right->IsExpression(), return this);
+// 
+//   Left = Left->Simplify(true);
+//   Right = ((EXPRESSION*)Right)->Simplify(true);
+// 
+//   error("Not yet implemented");
+//   return this;
+// }
 //------------------------------------------------------------------------------
 
 void MULTIPLY::Display(){

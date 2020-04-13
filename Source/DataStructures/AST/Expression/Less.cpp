@@ -51,12 +51,6 @@ BASE* LESS::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool LESS::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool LESS::GetVerilog(string& Body){
   Body += "(";
   Left->GetVerilog(Body);
@@ -69,25 +63,27 @@ bool LESS::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* LESS::Evaluate(){
-  EXPRESSION* Result = 0;
-
   error("Not yet implemented");
-
-  if(!Result) return 0;
-  return Result->Simplify(false);
+  return this;
+//   EXPRESSION* Result = 0;
+// 
+//   error("Not yet implemented");
+// 
+//   if(!Result) return 0;
+//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LESS::Simplify(bool GenWire){
-  assert(Left && Right, return this);
-  assert(Right->IsExpression(), return this);
-
-  Left = Left->Simplify(true);
-  Right = ((EXPRESSION*)Right)->Simplify(true);
-
-  error("Not yet implemented");
-  return this;
-}
+// EXPRESSION* LESS::Simplify(bool GenWire){
+//   assert(Left && Right, return this);
+//   assert(Right->IsExpression(), return this);
+// 
+//   Left = Left->Simplify(true);
+//   Right = ((EXPRESSION*)Right)->Simplify(true);
+// 
+//   error("Not yet implemented");
+//   return this;
+// }
 //------------------------------------------------------------------------------
 
 void LESS::Display(){

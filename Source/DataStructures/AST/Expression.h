@@ -42,8 +42,11 @@ namespace AST{
 
       bool IsExpression() override;
 
+      bool RunAST() override;
+
+      // Returns the instance of the node to use as replacement
+      // For example: Node = Node->Evaluate() might change the value of Node
       virtual EXPRESSION* Evaluate() = 0;
-      virtual EXPRESSION* Simplify(bool GenWire) = 0;
   };
 }
 //------------------------------------------------------------------------------

@@ -71,29 +71,31 @@ bool FUNCTIONCALL::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* FUNCTIONCALL::Evaluate(){
-  EXPRESSION* Result = 0;
-
   error("Not yet implemented");
-
-  if(!Result) return 0;
-  return Result->Simplify(false);
+  return this;
+//   EXPRESSION* Result = 0;
+// 
+//   error("Not yet implemented");
+// 
+//   if(!Result) return 0;
+//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* FUNCTIONCALL::Simplify(bool GenWire){
-  assert(Left, return this);
-
-  Left = Left->Simplify(true);
-  if(!Parameters.empty()){
-    foreach(Parameter, Parameters){
-      assert((*Parameter)->IsExpression(), return this);
-      (*Parameter) = ((EXPRESSION*)(*Parameter))->Simplify(true);
-    }
-  }
-
-  error("Not yet implemented");
-  return this;
-}
+// EXPRESSION* FUNCTIONCALL::Simplify(bool GenWire){
+//   assert(Left, return this);
+// 
+//   Left = Left->Simplify(true);
+//   if(!Parameters.empty()){
+//     foreach(Parameter, Parameters){
+//       assert((*Parameter)->IsExpression(), return this);
+//       (*Parameter) = ((EXPRESSION*)(*Parameter))->Simplify(true);
+//     }
+//   }
+// 
+//   error("Not yet implemented");
+//   return this;
+// }
 //------------------------------------------------------------------------------
 
 void FUNCTIONCALL::Display(){

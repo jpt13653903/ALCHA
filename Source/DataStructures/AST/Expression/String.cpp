@@ -53,12 +53,6 @@ BASE* STRING::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool STRING::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool STRING::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
@@ -66,18 +60,20 @@ bool STRING::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* STRING::Evaluate(){
-  EXPRESSION* Result = 0;
-
-  Result = (EXPRESSION*)Copy(false);
-
-  if(!Result) return 0;
-  return Result->Simplify(false);
+  error("Not yet implemented");
+  return this;
+//   EXPRESSION* Result = 0;
+// 
+//   Result = (EXPRESSION*)Copy(false);
+// 
+//   if(!Result) return 0;
+//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* STRING::Simplify(bool GenWire){
-  return this;
-}
+// EXPRESSION* STRING::Simplify(bool GenWire){
+//   return this;
+// }
 //------------------------------------------------------------------------------
 
 void STRING::Display(){

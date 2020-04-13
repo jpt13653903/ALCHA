@@ -206,9 +206,9 @@ void DEFINITION::DisplayDefinition(const char* Type){
   DisplayInfo();
   Debug.Print("Definition (%s):\n", Type);
 
-  void DisplayParameters ();
-  void DisplayAttributes ();
-  void DisplayIdentifiers();
+  DisplayParameters ();
+  DisplayAttributes ();
+  DisplayIdentifiers();
 
   if(Next) Next->Display();
 }

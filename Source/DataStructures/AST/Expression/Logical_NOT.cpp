@@ -51,12 +51,6 @@ BASE* LOGICAL_NOT::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool LOGICAL_NOT::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool LOGICAL_NOT::GetVerilog(string& Body){
   Body += "!(";
   Right->GetVerilog(Body);
@@ -67,24 +61,26 @@ bool LOGICAL_NOT::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* LOGICAL_NOT::Evaluate(){
-  EXPRESSION* Result = 0;
-
   error("Not yet implemented");
-
-  if(!Result) return 0;
-  return Result->Simplify(false);
+  return this;
+//   EXPRESSION* Result = 0;
+// 
+//   error("Not yet implemented");
+// 
+//   if(!Result) return 0;
+//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LOGICAL_NOT::Simplify(bool GenWire){
-  assert(Right, return this);
-  assert(Right->IsExpression(), return this);
-
-  Right = ((EXPRESSION*)Right)->Simplify(true);
-
-  error("Not yet implemented");
-  return this;
-}
+// EXPRESSION* LOGICAL_NOT::Simplify(bool GenWire){
+//   assert(Right, return this);
+//   assert(Right->IsExpression(), return this);
+// 
+//   Right = ((EXPRESSION*)Right)->Simplify(true);
+// 
+//   error("Not yet implemented");
+//   return this;
+// }
 //------------------------------------------------------------------------------
 
 void LOGICAL_NOT::Display(){

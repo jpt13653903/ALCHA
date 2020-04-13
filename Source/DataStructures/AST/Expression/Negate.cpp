@@ -52,12 +52,6 @@ BASE* NEGATE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool NEGATE::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool NEGATE::GetVerilog(string& Body){
   Body += "-(";
   Right->GetVerilog(Body);
@@ -68,40 +62,42 @@ bool NEGATE::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* NEGATE::Evaluate(){
-  EXPRESSION* Result = 0;
-
-  Result = (EXPRESSION*)Copy(true);
-  if(!Result->Right){
-    delete Result;
-    return 0;
-  }
-  assert(Result->Right->IsExpression(),
-    delete Result;
-    return 0;
-  );
-
-  if(!Result) return 0;
-  return Result->Simplify(false);
+  error("Not yet implemented");
+  return this;
+//   EXPRESSION* Result = 0;
+// 
+//   Result = (EXPRESSION*)Copy(true);
+//   if(!Result->Right){
+//     delete Result;
+//     return 0;
+//   }
+//   assert(Result->Right->IsExpression(),
+//     delete Result;
+//     return 0;
+//   );
+// 
+//   if(!Result) return 0;
+//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* NEGATE::Simplify(bool GenWire){
-  assert(Right, return this);
-  assert(Right->IsExpression(), return this);
-
-  Right = ((EXPRESSION*)Right)->Simplify(true);
-
-  EXPRESSION* Result = this;
-
-  auto Right = (EXPRESSION*)this->Right;
-  if(Right->Type == TYPE::Literal){
-    Result = Right;
-    this->Right = 0;
-    ((LITERAL*)Result)->Value.Mul(-1);
-    delete this;
-  }
-  return Result;
-}
+// EXPRESSION* NEGATE::Simplify(bool GenWire){
+//   assert(Right, return this);
+//   assert(Right->IsExpression(), return this);
+// 
+//   Right = ((EXPRESSION*)Right)->Simplify(true);
+// 
+//   EXPRESSION* Result = this;
+// 
+//   auto Right = (EXPRESSION*)this->Right;
+//   if(Right->Type == TYPE::Literal){
+//     Result = Right;
+//     this->Right = 0;
+//     ((LITERAL*)Result)->Value.Mul(-1);
+//     delete this;
+//   }
+//   return Result;
+// }
 //------------------------------------------------------------------------------
 
 void NEGATE::Display(){

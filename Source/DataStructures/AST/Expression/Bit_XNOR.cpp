@@ -51,12 +51,6 @@ BASE* BIT_XNOR::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool BIT_XNOR::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool BIT_XNOR::GetVerilog(string& Body){
   Body += "(";
   Left->GetVerilog(Body);
@@ -69,25 +63,27 @@ bool BIT_XNOR::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* BIT_XNOR::Evaluate(){
-  EXPRESSION* Result = 0;
-
   error("Not yet implemented");
-
-  if(!Result) return 0;
-  return Result->Simplify(false);
+  return this;
+//   EXPRESSION* Result = 0;
+// 
+//   error("Not yet implemented");
+// 
+//   if(!Result) return 0;
+//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* BIT_XNOR::Simplify(bool GenWire){
-  assert(Left && Right, return this);
-  assert(Right->IsExpression(), return this);
-
-  Left = Left->Simplify(true);
-  Right = ((EXPRESSION*)Right)->Simplify(true);
-
-  error("Not yet implemented");
-  return this;
-}
+// EXPRESSION* BIT_XNOR::Simplify(bool GenWire){
+//   assert(Left && Right, return this);
+//   assert(Right->IsExpression(), return this);
+// 
+//   Left = Left->Simplify(true);
+//   Right = ((EXPRESSION*)Right)->Simplify(true);
+// 
+//   error("Not yet implemented");
+//   return this;
+// }
 //------------------------------------------------------------------------------
 
 void BIT_XNOR::Display(){

@@ -51,12 +51,6 @@ BASE* RAW::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool RAW::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool RAW::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
@@ -64,19 +58,21 @@ bool RAW::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* RAW::Evaluate(){
-  EXPRESSION* Result = 0;
-
   error("Not yet implemented");
-
-  if(!Result) return 0;
-  return Result->Simplify(false);
+  return this;
+//   EXPRESSION* Result = 0;
+// 
+//   error("Not yet implemented");
+// 
+//   if(!Result) return 0;
+//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* RAW::Simplify(bool GenWire){
-  error("Not yet implemented");
-  return this;
-}
+// EXPRESSION* RAW::Simplify(bool GenWire){
+//   error("Not yet implemented");
+//   return this;
+// }
 //------------------------------------------------------------------------------
 
 void RAW::Display(){

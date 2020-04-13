@@ -51,12 +51,6 @@ BASE* CAST::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool CAST::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool CAST::GetVerilog(string& Body){
   // TODO: Move to new strategy of synthesising single operations into temporaries
   error("Not yet implemented");
@@ -155,29 +149,31 @@ bool CAST::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* CAST::Evaluate(){
-  EXPRESSION* Result = 0;
-
   error("Not yet implemented");
-
-  if(!Result) return 0;
-  return Result->Simplify(false);
+  return this;
+//   EXPRESSION* Result = 0;
+// 
+//   error("Not yet implemented");
+// 
+//   if(!Result) return 0;
+//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* CAST::Simplify(bool GenWire){
-  // TODO: Root has the target type; Left has the original expression
-  //       Right is optional and carry the class name (when applicable)
-  assert(Left, return this);
-
-  Left = Left->Simplify(true);
-  if(Right){
-    assert(Right->IsExpression(), return this);
-    Right = ((EXPRESSION*)Right)->Simplify(true);
-  }
-
-  error("Not yet implemented");
-  return this;
-}
+// EXPRESSION* CAST::Simplify(bool GenWire){
+//   // TODO: Root has the target type; Left has the original expression
+//   //       Right is optional and carry the class name (when applicable)
+//   assert(Left, return this);
+// 
+//   Left = Left->Simplify(true);
+//   if(Right){
+//     assert(Right->IsExpression(), return this);
+//     Right = ((EXPRESSION*)Right)->Simplify(true);
+//   }
+// 
+//   error("Not yet implemented");
+//   return this;
+// }
 //------------------------------------------------------------------------------
 
 void CAST::Display(){

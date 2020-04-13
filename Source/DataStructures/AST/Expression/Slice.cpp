@@ -51,12 +51,6 @@ BASE* SLICE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool SLICE::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool SLICE::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
@@ -64,27 +58,29 @@ bool SLICE::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* SLICE::Evaluate(){
-  EXPRESSION* Result = 0;
-
   error("Not yet implemented");
-
-  if(!Result) return 0;
-  return Result->Simplify(false);
+  return this;
+//   EXPRESSION* Result = 0;
+// 
+//   error("Not yet implemented");
+// 
+//   if(!Result) return 0;
+//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* SLICE::Simplify(bool GenWire){
-  assert(Left && Right, return this);
-  assert(Right->IsExpression(), return this);
-
-  Left = Left->Simplify(true);
-  Right = ((EXPRESSION*)Right)->Simplify(true);
-
-  // TODO Returns a new array (or scalar)
-
-  error("Not yet implemented");
-  return this;
-}
+// EXPRESSION* SLICE::Simplify(bool GenWire){
+//   assert(Left && Right, return this);
+//   assert(Right->IsExpression(), return this);
+// 
+//   Left = Left->Simplify(true);
+//   Right = ((EXPRESSION*)Right)->Simplify(true);
+// 
+//   // TODO Returns a new array (or scalar)
+// 
+//   error("Not yet implemented");
+//   return this;
+// }
 //------------------------------------------------------------------------------
 
 void SLICE::Display(){

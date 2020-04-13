@@ -56,12 +56,6 @@ BASE* ARRAY::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool ARRAY::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool ARRAY::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
@@ -69,16 +63,18 @@ bool ARRAY::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* ARRAY::Evaluate(){
-  ARRAY* Array = (ARRAY*)Copy(true);
-  foreach(Element, Array->Elements) (*Element) = (*Element)->Evaluate();
-
-  return Array->Simplify(false);
+  error("Not yet implemented");
+  return this;
+//   ARRAY* Array = (ARRAY*)Copy(true);
+//   foreach(Element, Array->Elements) (*Element) = (*Element)->Evaluate();
+// 
+//   return Array->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ARRAY::Simplify(bool GenWire){
-  return this;
-}
+// EXPRESSION* ARRAY::Simplify(bool GenWire){
+//   return this;
+// }
 //------------------------------------------------------------------------------
 
 void ARRAY::Display(){

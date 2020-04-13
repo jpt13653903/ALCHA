@@ -51,12 +51,6 @@ BASE* ACCESSMEMBERSAFE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool ACCESSMEMBERSAFE::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool ACCESSMEMBERSAFE::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
@@ -64,19 +58,21 @@ bool ACCESSMEMBERSAFE::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* ACCESSMEMBERSAFE::Evaluate(){
-  EXPRESSION* Result = 0;
-
   error("Not yet implemented");
-
-  if(!Result) return 0;
-  return Result->Simplify(false);
+  return this;
+//   EXPRESSION* Result = 0;
+// 
+//   error("Not yet implemented");
+// 
+//   if(!Result) return 0;
+//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ACCESSMEMBERSAFE::Simplify(bool GenWire){
-  error("Not yet implemented");
-  return this;
-}
+// EXPRESSION* ACCESSMEMBERSAFE::Simplify(bool GenWire){
+//   error("Not yet implemented");
+//   return this;
+// }
 //------------------------------------------------------------------------------
 
 void ACCESSMEMBERSAFE::Display(){

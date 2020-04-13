@@ -51,12 +51,6 @@ BASE* INCREMENT::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool INCREMENT::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool INCREMENT::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
@@ -64,19 +58,21 @@ bool INCREMENT::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* INCREMENT::Evaluate(){
-  EXPRESSION* Result = 0;
-
   error("Not yet implemented");
-
-  if(!Result) return 0;
-  return Result->Simplify(false);
+  return this;
+//   EXPRESSION* Result = 0;
+// 
+//   error("Not yet implemented");
+// 
+//   if(!Result) return 0;
+//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* INCREMENT::Simplify(bool GenWire){
-  error("Not yet implemented");
-  return this;
-}
+// EXPRESSION* INCREMENT::Simplify(bool GenWire){
+//   error("Not yet implemented");
+//   return this;
+// }
 //------------------------------------------------------------------------------
 
 void INCREMENT::Display(){

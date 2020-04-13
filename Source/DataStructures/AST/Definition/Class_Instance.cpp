@@ -92,9 +92,9 @@ void CLASS_INSTANCE::Display(){
   else          Debug.Print("Class instance with no class name");
   Debug.Print("):\n");
 
-  void DisplayParameters ();
-  void DisplayAttributes ();
-  void DisplayIdentifiers();
+  DisplayParameters ();
+  DisplayAttributes ();
+  DisplayIdentifiers();
 
   if(Next) Next->Display();
 }

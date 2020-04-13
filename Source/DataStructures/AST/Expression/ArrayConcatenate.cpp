@@ -56,12 +56,6 @@ BASE* ARRAYCONCATENATE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool ARRAYCONCATENATE::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool ARRAYCONCATENATE::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
@@ -69,18 +63,20 @@ bool ARRAYCONCATENATE::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* ARRAYCONCATENATE::Evaluate(){
-  auto Array = (AST::ARRAYCONCATENATE*)Copy(true);
-  foreach(Element, Array->Elements) (*Element) = (*Element)->Evaluate();
-
-  return Array->Simplify(false);
+  error("Not yet implemented");
+  return this;
+//   auto Array = (AST::ARRAYCONCATENATE*)Copy(true);
+//   foreach(Element, Array->Elements) (*Element) = (*Element)->Evaluate();
+// 
+//   return Array->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ARRAYCONCATENATE::Simplify(bool GenWire){
-  // TODO: Simplify the elements
-  error("Not yet implemented");
-  return this;
-}
+// EXPRESSION* ARRAYCONCATENATE::Simplify(bool GenWire){
+//   // TODO: Simplify the elements
+//   error("Not yet implemented");
+//   return this;
+// }
 //------------------------------------------------------------------------------
 
 void ARRAYCONCATENATE::Display(){

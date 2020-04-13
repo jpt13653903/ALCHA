@@ -59,12 +59,6 @@ BASE* OBJECT::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool OBJECT::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool OBJECT::GetVerilog(string& Body){
   assert(ObjectRef, return false);
   Body += ObjectRef->EscapedName();
@@ -74,44 +68,46 @@ bool OBJECT::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* OBJECT::Evaluate(){
-  EXPRESSION* Result = 0;
-
   error("Not yet implemented");
-
-  if(!Result) return 0;
-  return Result->Simplify(false);
+  return this;
+//   EXPRESSION* Result = 0;
+// 
+//   error("Not yet implemented");
+// 
+//   if(!Result) return 0;
+//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* OBJECT::Simplify(bool GenWire){
-  EXPRESSION* Result = this;
-
-  if(ObjectRef){
-    switch(ObjectRef->Type){
-      case NETLIST::BASE::TYPE::Byte:{
-        auto Byte = (NETLIST::BYTE*)ObjectRef;
-        Result = new LITERAL(Source.Line, Source.Filename);
-        ((LITERAL*)Result)->Value = Byte->Value;
-        delete this;
-      }
-      case NETLIST::BASE::TYPE::Character:{
-        auto Char = (NETLIST::CHARACTER*)ObjectRef;
-        Result = new LITERAL(Source.Line, Source.Filename);
-        ((LITERAL*)Result)->Value = Char->Value;
-        delete this;
-      }
-      case NETLIST::BASE::TYPE::Number:{
-        auto Num = (NETLIST::NUM*)ObjectRef;
-        Result = new LITERAL(Source.Line, Source.Filename);
-        ((LITERAL*)Result)->Value = Num->Value;
-        delete this;
-      }
-      default:
-        break;
-    }
-  }
-  return Result;
-}
+// EXPRESSION* OBJECT::Simplify(bool GenWire){
+//   EXPRESSION* Result = this;
+// 
+//   if(ObjectRef){
+//     switch(ObjectRef->Type){
+//       case NETLIST::BASE::TYPE::Byte:{
+//         auto Byte = (NETLIST::BYTE*)ObjectRef;
+//         Result = new LITERAL(Source.Line, Source.Filename);
+//         ((LITERAL*)Result)->Value = Byte->Value;
+//         delete this;
+//       }
+//       case NETLIST::BASE::TYPE::Character:{
+//         auto Char = (NETLIST::CHARACTER*)ObjectRef;
+//         Result = new LITERAL(Source.Line, Source.Filename);
+//         ((LITERAL*)Result)->Value = Char->Value;
+//         delete this;
+//       }
+//       case NETLIST::BASE::TYPE::Number:{
+//         auto Num = (NETLIST::NUM*)ObjectRef;
+//         Result = new LITERAL(Source.Line, Source.Filename);
+//         ((LITERAL*)Result)->Value = Num->Value;
+//         delete this;
+//       }
+//       default:
+//         break;
+//     }
+//   }
+//   return Result;
+// }
 //------------------------------------------------------------------------------
 
 void OBJECT::Display(){

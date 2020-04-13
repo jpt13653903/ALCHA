@@ -68,8 +68,19 @@ bool PIN_DEFINITION::RunAST(){
 
     auto Pin = new NETLIST::PIN(Source.Line, Source.Filename, Identifier->Identifier.c_str());
     Pin->Direction = Direction;
+
     if(!Pin->ApplyParameters(Parameters)) Error("Invalid parameters");
+
+    Pin->Driver ->Signed    = Pin->Signed;
+    Pin->Driver ->Width     = Pin->Width;
+    Pin->Driver ->FullScale = Pin->FullScale;
+
+    Pin->Enabled->Signed    = Pin->Signed;
+    Pin->Enabled->Width     = Pin->Width;
+    Pin->Enabled->FullScale = Pin->FullScale;
+
     if(!Pin->ApplyAttributes(Attributes)) Error("Invalid attributes");
+
     NETLIST::NamespaceStack.front()->Symbols[Pin->Name] = Pin;
     if(Identifier->Initialiser){
       if(!Identifier->Initialiser->RunAST()) return false;

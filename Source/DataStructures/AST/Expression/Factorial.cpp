@@ -51,12 +51,6 @@ BASE* FACTORIAL::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool FACTORIAL::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool FACTORIAL::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
@@ -64,23 +58,25 @@ bool FACTORIAL::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* FACTORIAL::Evaluate(){
-  EXPRESSION* Result = 0;
-
   error("Not yet implemented");
-
-  if(!Result) return 0;
-  return Result->Simplify(false);
+  return this;
+//   EXPRESSION* Result = 0;
+// 
+//   error("Not yet implemented");
+// 
+//   if(!Result) return 0;
+//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* FACTORIAL::Simplify(bool GenWire){
-  assert(Left, return this);
-
-  Left = Left->Simplify(true);
-
-  error("Not yet implemented");
-  return this;
-}
+// EXPRESSION* FACTORIAL::Simplify(bool GenWire){
+//   assert(Left, return this);
+// 
+//   Left = Left->Simplify(true);
+// 
+//   error("Not yet implemented");
+//   return this;
+// }
 //------------------------------------------------------------------------------
 
 void FACTORIAL::Display(){

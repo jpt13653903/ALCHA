@@ -51,12 +51,6 @@ BASE* OR_REDUCE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool OR_REDUCE::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool OR_REDUCE::GetVerilog(string& Body){
   Body += "|(";
   Right->GetVerilog(Body);
@@ -67,24 +61,26 @@ bool OR_REDUCE::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* OR_REDUCE::Evaluate(){
-  EXPRESSION* Result = 0;
-
   error("Not yet implemented");
-
-  if(!Result) return 0;
-  return Result->Simplify(false);
+  return this;
+//   EXPRESSION* Result = 0;
+// 
+//   error("Not yet implemented");
+// 
+//   if(!Result) return 0;
+//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* OR_REDUCE::Simplify(bool GenWire){
-  assert(Right, return this);
-  assert(Right->IsExpression(), return this);
-
-  Right = ((EXPRESSION*)Right)->Simplify(true);
-
-  error("Not yet implemented");
-  return this;
-}
+// EXPRESSION* OR_REDUCE::Simplify(bool GenWire){
+//   assert(Right, return this);
+//   assert(Right->IsExpression(), return this);
+// 
+//   Right = ((EXPRESSION*)Right)->Simplify(true);
+// 
+//   error("Not yet implemented");
+//   return this;
+// }
 //------------------------------------------------------------------------------
 
 void OR_REDUCE::Display(){

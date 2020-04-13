@@ -41,10 +41,8 @@ namespace AST{
 
     BASE* Copy(bool CopyNext) override;
 
-    bool RunAST() override;
     bool GetVerilog(std::string& Body) override;
     EXPRESSION* Evaluate() override;
-    EXPRESSION* Simplify(bool GenWire) override;
 
     void Display() override;
 

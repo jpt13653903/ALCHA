@@ -51,12 +51,6 @@ BASE* AND_REDUCE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool AND_REDUCE::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool AND_REDUCE::GetVerilog(string& Body){
   Body += "&(";
   Right->GetVerilog(Body);
@@ -68,24 +62,26 @@ bool AND_REDUCE::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* AND_REDUCE::Evaluate(){
-  EXPRESSION* Result = 0;
-
   error("Not yet implemented");
-
-  if(!Result) return 0;
-  return Result->Simplify(false);
+  return this;
+//   EXPRESSION* Result = 0;
+// 
+//   error("Not yet implemented");
+// 
+//   if(!Result) return 0;
+//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* AND_REDUCE::Simplify(bool GenWire){
-  assert(Right, return this);
-  assert(Right->IsExpression(), return this);
-
-  Right = ((EXPRESSION*)Right)->Simplify(true);
-
-  error("Not yet implemented");
-  return this;
-}
+// EXPRESSION* AND_REDUCE::Simplify(bool GenWire){
+//   assert(Right, return this);
+//   assert(Right->IsExpression(), return this);
+// 
+//   Right = ((EXPRESSION*)Right)->Simplify(true);
+// 
+//   error("Not yet implemented");
+//   return this;
+// }
 //------------------------------------------------------------------------------
 
 void AND_REDUCE::Display(){

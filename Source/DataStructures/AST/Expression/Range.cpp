@@ -54,12 +54,6 @@ BASE* RANGE::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool RANGE::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool RANGE::GetVerilog(string& Body){
   error("Not yet implemented");
   return false;
@@ -67,19 +61,21 @@ bool RANGE::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* RANGE::Evaluate(){
-  EXPRESSION* Result = 0;
-
   error("Not yet implemented");
-
-  if(!Result) return 0;
-  return Result->Simplify(false);
+  return this;
+//   EXPRESSION* Result = 0;
+// 
+//   error("Not yet implemented");
+// 
+//   if(!Result) return 0;
+//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* RANGE::Simplify(bool GenWire){
-  error("Not yet implemented");
-  return this;
-}
+// EXPRESSION* RANGE::Simplify(bool GenWire){
+//   error("Not yet implemented");
+//   return this;
+// }
 //------------------------------------------------------------------------------
 
 void RANGE::Display(){

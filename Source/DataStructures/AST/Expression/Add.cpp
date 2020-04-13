@@ -52,12 +52,6 @@ BASE* ADD::Copy(bool CopyNext){
 }
 //------------------------------------------------------------------------------
 
-bool ADD::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
 bool ADD::GetVerilog(string& Body){
   Body += "(";
   Left->GetVerilog(Body);
@@ -70,37 +64,39 @@ bool ADD::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* ADD::Evaluate(){
-  EXPRESSION* Result = 0;
-
   error("Not yet implemented");
-
-  if(!Result) return 0;
-  return Result->Simplify(false);
+  return this;
+//   EXPRESSION* Result = 0;
+// 
+//   error("Not yet implemented");
+// 
+//   if(!Result) return 0;
+//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ADD::Simplify(bool GenWire){
-  assert(Left && Right, return this);
-  assert(Right->IsExpression(), return this);
-
-  Left = Left->Simplify(true);
-  Right = ((EXPRESSION*)Right)->Simplify(true);
-
-  EXPRESSION* Result = this;
-
-  if(Left->Type == TYPE::Literal && Right->Type == TYPE::Literal){
-    auto Literal = new LITERAL(Source.Line, Source.Filename);
-    Literal->Value =   ((LITERAL*)Left )->Value;
-    Literal->Value.Add(((LITERAL*)Right)->Value);
-    delete this;
-    Result = Literal;
-  }
-  // TODO When adding an expression to a literal, follow the rules
-  //      in the SIPS article
-
-  error("Not yet implemented");
-  return Result;
-}
+// EXPRESSION* ADD::Simplify(bool GenWire){
+//   assert(Left && Right, return this);
+//   assert(Right->IsExpression(), return this);
+// 
+//   Left = Left->Simplify(true);
+//   Right = ((EXPRESSION*)Right)->Simplify(true);
+// 
+//   EXPRESSION* Result = this;
+// 
+//   if(Left->Type == TYPE::Literal && Right->Type == TYPE::Literal){
+//     auto Literal = new LITERAL(Source.Line, Source.Filename);
+//     Literal->Value =   ((LITERAL*)Left )->Value;
+//     Literal->Value.Add(((LITERAL*)Right)->Value);
+//     delete this;
+//     Result = Literal;
+//   }
+//   // TODO When adding an expression to a literal, follow the rules
+//   //      in the SIPS article
+// 
+//   error("Not yet implemented");
+//   return Result;
+// }
 //------------------------------------------------------------------------------
 
 void ADD::Display(){

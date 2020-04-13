@@ -51,9 +51,11 @@ bool SYNTHESISABLE::ApplyParameters(list<AST::BASE*>& Parameters){
     if((*Parameter)->IsExpression()){
       if(Position < 0) return false; // Mixing named and positional parameters
 
-      AST::EXPRESSION* Param = ((AST::EXPRESSION*)(*Parameter))->Evaluate();
+      *Parameter = ((AST::EXPRESSION*)(*Parameter))->Evaluate();
+
+      AST::EXPRESSION* Param = (AST::EXPRESSION*)(*Parameter);
       if(!Param){
-        (*Parameter)->Error("Invalid parameter expression");
+        Param->Error("Invalid parameter expression");
         return false;
       }
 
@@ -79,14 +81,11 @@ bool SYNTHESISABLE::ApplyParameters(list<AST::BASE*>& Parameters){
         }
 
         default:
-          (*Parameter)->Error("Parameters must be pure scripting expressions");
-          delete Param;
+          Param->Error("Parameters must be pure scripting expressions");
           return false;
       }
-      delete Param;
 
     }else if((*Parameter)->IsAssignment()){
-      // auto Param = (AST::EXPRESSION*)(*Parameter);
       Position = -1;
       error("Not yet implemented");
 
