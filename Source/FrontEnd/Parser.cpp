@@ -1456,37 +1456,21 @@ AST::DEFINITION* PARSER::Definition(){
   AST::DEFINITION* Node = 0;
   switch(Token.Type){
     case TOKEN::TYPE::Pin:
-      Node = new AST::DEFINITION(
-        Token.Line, Scanner.Filename, AST::DEFINITION::DEFINITION_TYPE::Pin
-      ); break;
+      Node = new AST::PIN_DEFINITION    (Token.Line, Scanner.Filename); break;
     case TOKEN::TYPE::Net:
-      Node = new AST::DEFINITION(
-        Token.Line, Scanner.Filename, AST::DEFINITION::DEFINITION_TYPE::Net
-      ); break;
+      Node = new AST::NET_DEFINITION    (Token.Line, Scanner.Filename); break;
     case TOKEN::TYPE::Void:
-      Node = new AST::DEFINITION(
-        Token.Line, Scanner.Filename, AST::DEFINITION::DEFINITION_TYPE::Void
-      ); break;
+      Node = new AST::VOID_DEFINITION   (Token.Line, Scanner.Filename); break;
     case TOKEN::TYPE::Auto:
-      Node = new AST::DEFINITION(
-        Token.Line, Scanner.Filename, AST::DEFINITION::DEFINITION_TYPE::Auto
-      ); break;
+      Node = new AST::AUTO_DEFINITION   (Token.Line, Scanner.Filename); break;
     case TOKEN::TYPE::Byte:
-      Node = new AST::DEFINITION(
-        Token.Line, Scanner.Filename, AST::DEFINITION::DEFINITION_TYPE::Byte
-      ); break;
+      Node = new AST::BYTE_DEFINITION   (Token.Line, Scanner.Filename); break;
     case TOKEN::TYPE::Char:
-      Node = new AST::DEFINITION(
-        Token.Line, Scanner.Filename, AST::DEFINITION::DEFINITION_TYPE::Char
-      ); break;
+      Node = new AST::CHAR_DEFINITION   (Token.Line, Scanner.Filename); break;
     case TOKEN::TYPE::Num:
-      Node = new AST::DEFINITION(
-        Token.Line, Scanner.Filename, AST::DEFINITION::DEFINITION_TYPE::Num
-      ); break;
+      Node = new AST::NUM_DEFINITION    (Token.Line, Scanner.Filename); break;
     case TOKEN::TYPE::Func:
-      Node = new AST::DEFINITION(
-        Token.Line, Scanner.Filename, AST::DEFINITION::DEFINITION_TYPE::Func
-      ); break;
+      Node = new AST::FUNCPTR_DEFINITION(Token.Line, Scanner.Filename); break;
     default:
       if(Direction != AST::DEFINITION::DIRECTION::Inferred) Error("Type name expected");
       return 0;
@@ -1497,17 +1481,17 @@ AST::DEFINITION* PARSER::Definition(){
   ParameterList(Node->Parameters);
 
   if(!Node->Parameters.empty()){
-    if(Node->DefinitionType == AST::DEFINITION::DEFINITION_TYPE::Void){
+    if(Node->Type == AST::BASE::TYPE::Void_Definition){
       Error("Void type does not take parameters");
       delete Node;
       return 0;
     }
-    if(Node->DefinitionType == AST::DEFINITION::DEFINITION_TYPE::Auto){
+    if(Node->Type == AST::BASE::TYPE::Auto_Definition){
       Error("Auto type does not take parameters");
       delete Node;
       return 0;
     }
-    if(Node->DefinitionType == AST::DEFINITION::DEFINITION_TYPE::Func){
+    if(Node->Type == AST::BASE::TYPE::FuncPtr_Definition){
       Error("Func type does not take parameters");
       delete Node;
       return 0;
@@ -1526,15 +1510,9 @@ AST::DEFINITION* PARSER::Definition(){
     delete Node;
     return 0;
   }
-  if(
-    Node->DefinitionType == AST::DEFINITION::DEFINITION_TYPE::Void ||
-    Node->DefinitionType == AST::DEFINITION::DEFINITION_TYPE::Auto
-  ){
+  if(Node->Type == AST::BASE::TYPE::Void_Definition){
     if(!Node->Identifiers->Function){
-      Error(
-        "Only functions can have \"void\" or \"auto\" types.\n         "
-        "For auto variables and nets, don't declare them at all."
-      );
+      Error("Only functions can have \"void\" type.\n");
     }
   }
   return Node;
@@ -1692,9 +1670,7 @@ AST::BASE* PARSER::Other(){
       return 0;
     }
 
-    AST::DEFINITION* Def = new AST::DEFINITION(
-      Token.Line, Scanner.Filename, AST::DEFINITION::DEFINITION_TYPE::ClassInstance
-    );
+    AST::CLASS_INSTANCE* Def = new AST::CLASS_INSTANCE(Token.Line, Scanner.Filename);
     if(Expr->Type == AST::BASE::TYPE::FunctionCall){
       Def->ClassName  = Expr->Left;
       Def->Parameters = ((AST::FUNCTIONCALL*)Expr)->Parameters;

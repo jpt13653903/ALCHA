@@ -111,7 +111,7 @@ bool SYNTHESISABLE::ApplyParameters(list<AST::BASE*>& Parameters){
 //------------------------------------------------------------------------------
 
 void SYNTHESISABLE::DisplayParameters(int Indent){
-  Debug.Print(" %s\n", Name.c_str());
+  Debug.Print("%s\n", Name.c_str());
 
   Debug.Indent(Indent);
   Debug.Print("Used       = %s\n", Used   ? "true" : "false");

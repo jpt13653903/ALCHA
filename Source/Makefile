@@ -52,6 +52,7 @@ Headers += $(Toolbox)/*.h
 Headers += DataStructures/*.h
 Headers += DataStructures/AST/*.h
 Headers += DataStructures/AST/Assignment/*.h
+Headers += DataStructures/AST/Definition/*.h
 Headers += DataStructures/AST/Expression/*.h
 Headers += DataStructures/Netlist/*.h
 
@@ -85,9 +86,6 @@ Objects += $(ObjectPath)/DataStructures/TokenTree.o
 
 Objects += $(ObjectPath)/DataStructures/AST/Base.o
 Objects += $(ObjectPath)/DataStructures/AST/Alias.o
-Objects += $(ObjectPath)/DataStructures/AST/ClassDefinition.o
-Objects += $(ObjectPath)/DataStructures/AST/Definition.o
-Objects += $(ObjectPath)/DataStructures/AST/EnumDefinition.o
 Objects += $(ObjectPath)/DataStructures/AST/Fence.o
 Objects += $(ObjectPath)/DataStructures/AST/ForLoop.o
 Objects += $(ObjectPath)/DataStructures/AST/FSM.o
@@ -118,6 +116,19 @@ Objects += $(ObjectPath)/DataStructures/AST/Assignment/Shift_Left_Assign.o
 Objects += $(ObjectPath)/DataStructures/AST/Assignment/Shift_Right_Assign.o
 Objects += $(ObjectPath)/DataStructures/AST/Assignment/Subtract_Assign.o
 Objects += $(ObjectPath)/DataStructures/AST/Assignment/XOR_Assign.o
+
+Objects += $(ObjectPath)/DataStructures/AST/Definition.o
+Objects += $(ObjectPath)/DataStructures/AST/Definition/Auto_Definition.o
+Objects += $(ObjectPath)/DataStructures/AST/Definition/Byte_Definition.o
+Objects += $(ObjectPath)/DataStructures/AST/Definition/Char_Definition.o
+Objects += $(ObjectPath)/DataStructures/AST/Definition/Class_Definition.o
+Objects += $(ObjectPath)/DataStructures/AST/Definition/Class_Instance.o
+Objects += $(ObjectPath)/DataStructures/AST/Definition/Enum_Definition.o
+Objects += $(ObjectPath)/DataStructures/AST/Definition/FuncPtr_Definition.o
+Objects += $(ObjectPath)/DataStructures/AST/Definition/Net_Definition.o
+Objects += $(ObjectPath)/DataStructures/AST/Definition/Num_Definition.o
+Objects += $(ObjectPath)/DataStructures/AST/Definition/Pin_Definition.o
+Objects += $(ObjectPath)/DataStructures/AST/Definition/Void_Definition.o
 
 Objects += $(ObjectPath)/DataStructures/AST/Expression.o
 Objects += $(ObjectPath)/DataStructures/AST/Expression/AccessAttribute.o

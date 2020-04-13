@@ -18,52 +18,31 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_ClassDefinition_h
-#define AST_ClassDefinition_h
+#ifndef AST_Definition_Void_Definition_h
+#define AST_Definition_Void_Definition_h
 //------------------------------------------------------------------------------
 
-#include "Parameter.h"
-#include "Assignment.h"
+#include "../Definition.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct CLASS_DEFINITION: public BASE{
-    struct PARENT{ // Link-list node for parent classes
-      EXPRESSION* ClassName;  // This class inherits from Parent
-      std::list<BASE*> Parameters; // Parent constructor call
+  class VOID_DEFINITION: public DEFINITION{
+    public:
+      VOID_DEFINITION(int Line, std::string& Filename);
+      VOID_DEFINITION(int Line, const char*  Filename);
+     ~VOID_DEFINITION();
 
-      PARENT* Next;
+      BASE* Copy(bool CopyNext) override;
 
-      PARENT();
-      PARENT(const PARENT& Parent);
-     ~PARENT(); // Also deletes the rest of the list
-    };
+      bool RunAST() override;
+      bool GetVerilog(std::string& Body) override;
 
-    ASSIGNMENT* Attributes;
+      void Display() override;
 
-    std::string Identifier;
-    PARAMETER*  Parameters; // Constructor parameters
-
-    PARENT* Parents;
-
-    BASE* Body;
-
-    CLASS_DEFINITION(int Line, std::string& Filename);
-    CLASS_DEFINITION(int Line, const char*  Filename);
-   ~CLASS_DEFINITION();
-
-    BASE* Copy(bool CopyNext) override;
-
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
-
-    void Display() override;
-
-    void ValidateMembers() override;
+      void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------
-

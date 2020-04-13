@@ -18,44 +18,31 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_EnumDefinition_h
-#define AST_EnumDefinition_h
+#ifndef AST_Definition_Pin_Definition_h
+#define AST_Definition_Pin_Definition_h
 //------------------------------------------------------------------------------
 
-#include "Base.h"
+#include "../Definition.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct ENUM_DEFINITION: public BASE{
-    struct VALUE{ // Link-list node for enumeration values
-      std::string Identifier;
+  class PIN_DEFINITION: public DEFINITION{
+    public:
+      PIN_DEFINITION(int Line, std::string& Filename);
+      PIN_DEFINITION(int Line, const char*  Filename);
+     ~PIN_DEFINITION();
 
-      VALUE* Next;
+      BASE* Copy(bool CopyNext) override;
 
-      VALUE();
-      VALUE(const VALUE& Value);
-     ~VALUE(); // Also deletes the rest of the list
-    };
+      bool RunAST() override;
+      bool GetVerilog(std::string& Body) override;
 
-    std::string Identifier;
-    VALUE*      Values;
+      void Display() override;
 
-    ENUM_DEFINITION(int Line, std::string& Filename);
-    ENUM_DEFINITION(int Line, const char*  Filename);
-   ~ENUM_DEFINITION();
-
-    BASE* Copy(bool CopyNext) override;
-
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
-
-    void Display() override;
-
-    void ValidateMembers() override;
+      void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------
-

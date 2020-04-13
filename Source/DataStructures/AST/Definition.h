@@ -36,15 +36,6 @@ namespace NETLIST{
 namespace AST{
   class DEFINITION: public BASE{
     public:
-      enum class DEFINITION_TYPE{
-        Void, Auto, // Used for functions only
-        Pin, Net,
-        Byte, Char, Num,
-        Func, // Function pointer
-        ClassInstance
-      } DefinitionType;
-      EXPRESSION* ClassName; // For class instances
-
       struct ARRAY{
         EXPRESSION* Size;
         ARRAY     * Next; // Next dimension of the array
@@ -81,21 +72,18 @@ namespace AST{
       IDENTIFIER* Identifiers;
     //--------------------------------------------------------------------------
 
+    protected:
+      void DisplayParameters ();
+      void DisplayAttributes ();
+      void DisplayIdentifiers();
+      void DisplayDefinition (const char* Type);
+    //--------------------------------------------------------------------------
+
     public:
-      DEFINITION(int             Line,
-                 std::string&    Filename,
-                 DEFINITION_TYPE DefinitionType);
-      DEFINITION(int             Line,
-                 const char*     Filename,
-                 DEFINITION_TYPE DefinitionType);
-     ~DEFINITION();
+               DEFINITION(int Line, const char* Filename, TYPE DefinitionType);
+      virtual ~DEFINITION();
 
-      BASE* Copy(bool CopyNext) override;
-
-      bool RunAST() override;
-      bool GetVerilog(std::string& Body) override;
-
-      void Display() override;
+      bool IsDefinition() override;
 
       void ValidateMembers() override;
   };

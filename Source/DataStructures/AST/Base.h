@@ -52,12 +52,22 @@ namespace AST{
         Import,
         Group,
         Alias,
-        TargetDefinition,
-        ClassDefinition,
-        EnumDefinition,
-        Definition, // pin, net, byte, char, num and
-                    // class instance
+
+        // Definition
+          Void_Definition,
+          Auto_Definition,
+          Pin_Definition,
+          Net_Definition,
+          Byte_Definition,
+          Char_Definition,
+          Num_Definition,
+          FuncPtr_Definition,
+          Enum_Definition,
+          Class_Definition,
+          Class_Instance,
+
         Parameter,  // Parameter definition, not function call
+
         NamespacePush,
         IfStatement,
         ForLoop,
@@ -69,7 +79,7 @@ namespace AST{
         FSM,
         HDL,
 
-        Assignment,
+        // Assignment
           Assign,             //   =
           Raw_Assign,         //  :=
           Append_Assign,      //  ~=
@@ -85,7 +95,7 @@ namespace AST{
           Shift_Left_Assign,  // <<=
           Shift_Right_Assign, // >>=
 
-        Expression, // Used only as a starting index for if-statements
+        // Expression
           String,
           Literal,
           Array,
@@ -155,6 +165,7 @@ namespace AST{
       } Type;
 
       virtual bool IsAssignment();
+      virtual bool IsDefinition();
       virtual bool IsExpression();
     //--------------------------------------------------------------------------
 

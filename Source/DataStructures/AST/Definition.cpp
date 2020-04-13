@@ -19,13 +19,6 @@
 //==============================================================================
 
 #include "Definition.h"
-#include "Netlist/Byte.h"
-#include "Netlist/Character.h"
-#include "Netlist/Synthesisable/Pin.h"
-#include "Netlist/Namespace/Module.h"
-#include "Netlist/Synthesisable/Net.h"
-#include "Netlist/Num.h"
-#include "Netlist/Synthesisable.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -91,29 +84,18 @@ DEFINITION::IDENTIFIER::~IDENTIFIER(){
 //------------------------------------------------------------------------------
 
 DEFINITION::DEFINITION(
-  int             Line,
-  string&         Filename,
-  DEFINITION_TYPE DefinitionType
-): DEFINITION(Line, Filename.c_str(), DefinitionType){}
-//------------------------------------------------------------------------------
-
-DEFINITION::DEFINITION(
-  int             Line,
-  const char*     Filename,
-  DEFINITION_TYPE DefinitionType
-): BASE(Line, Filename, TYPE::Definition){
-  this->DefinitionType = DefinitionType;
-
+  int         Line,
+  const char* Filename,
+  TYPE        DefinitionType
+): BASE(Line, Filename, DefinitionType){
   Direction = DIRECTION::Inferred;
 
-  ClassName   = 0;
   Attributes  = 0;
   Identifiers = 0;
 }
 //------------------------------------------------------------------------------
 
 DEFINITION::~DEFINITION(){
-  if(ClassName  ) delete ClassName;
   if(Attributes ) delete Attributes;
   if(Identifiers) delete Identifiers;
 
@@ -123,158 +105,12 @@ DEFINITION::~DEFINITION(){
 }
 //------------------------------------------------------------------------------
 
-BASE* DEFINITION::Copy(bool CopyNext){
-  DEFINITION* Copy = new DEFINITION(Source.Line, Source.Filename.c_str(), DefinitionType);
-
-  Copy->Direction = Direction;
-
-  if(ClassName  ) Copy->ClassName   = (decltype(ClassName ))ClassName ->Copy(CopyNext);
-  if(Attributes ) Copy->Attributes  = (decltype(Attributes))Attributes->Copy(CopyNext);
-  if(Identifiers) Copy->Identifiers = new IDENTIFIER(*Identifiers);
-
-  if(CopyNext && Next){
-    assert(false);
-    // Copy->Next = Next->Copy(CopyNext);
-  }
-
-  foreach(Parameter, Parameters){
-    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy(CopyNext));
-  }
-
-  return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool DEFINITION::RunAST(){
-  auto Identifier = Identifiers;
-
-  while(Identifier){
-    auto Symbol = NETLIST::NamespaceStack.front()->Symbols.find(Identifier->Identifier);
-    if(Symbol != NETLIST::NamespaceStack.front()->Symbols.end()){
-      Error();
-      printf("Symbol \"%s\" already defined in the current namespace\n",
-             Identifier->Identifier.c_str());
-      return false;
-    }
-
-    if(Identifier->Function){
-      error("Not yet implemented");
-      Identifier = Identifier->Next;
-      continue;
-    }
-    if(Identifier->Parameters) error("Not yet implemented");
-
-    switch(DefinitionType){
-      case DEFINITION_TYPE::Void:
-        error("Not yet implemented");
-        break;
-
-      case DEFINITION_TYPE::Auto:
-        error("Not yet implemented");
-        break;
-
-      case DEFINITION_TYPE::Pin:{
-        auto Pin = new NETLIST::PIN(Source.Line, Source.Filename, Identifier->Identifier.c_str());
-        Pin->Direction = Direction;
-        if(!Pin->ApplyParameters(Parameters)) Error("Invalid parameters");
-        if(!Pin->ApplyAttributes(Attributes)) Error("Invalid attributes");
-        NETLIST::NamespaceStack.front()->Symbols[Pin->Name] = Pin;
-        if(Identifier->Initialiser){
-          if(!Identifier->Initialiser->RunAST()) return false;
-        }
-        break;
-      }
-
-      case DEFINITION_TYPE::Net:{
-        auto Net = new NETLIST::NET(Source.Line, Source.Filename, Identifier->Identifier.c_str());
-        Net->Direction = Direction;
-        if(!Net->ApplyParameters(Parameters)) Error("Invalid parameters");
-        if(!Net->ApplyAttributes(Attributes)) Error("Invalid attributes");
-        NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
-        if(Identifier->Initialiser){
-          if(!Identifier->Initialiser->RunAST()) return false;
-        }
-        break;
-      }
-
-      case DEFINITION_TYPE::Byte:{
-        auto Byte = new NETLIST::BYTE(Source.Line, Source.Filename, Identifier->Identifier.c_str());
-        if(!Byte->ApplyAttributes(Attributes)) Error("Invalid attributes");
-        NETLIST::NamespaceStack.front()->Symbols[Byte->Name] = Byte;
-        if(Identifier->Initialiser){
-          if(!Identifier->Initialiser->RunAST()) return false;
-        }
-        break;
-      }
-
-      case DEFINITION_TYPE::Char:{
-        auto Char = new NETLIST::CHARACTER(Source.Line, Source.Filename, Identifier->Identifier.c_str());
-        if(!Char->ApplyAttributes(Attributes)) Error("Invalid attributes");
-        NETLIST::NamespaceStack.front()->Symbols[Char->Name] = Char;
-        if(Identifier->Initialiser){
-          if(!Identifier->Initialiser->RunAST()) return false;
-        }
-        break;
-      }
-
-      case DEFINITION_TYPE::Num:{
-        auto Number = new NETLIST::NUM(Source.Line, Source.Filename, Identifier->Identifier.c_str());
-        if(!Number->ApplyAttributes(Attributes)) Error("Invalid attributes");
-        NETLIST::NamespaceStack.front()->Symbols[Number->Name] = Number;
-        if(Identifier->Initialiser){
-          if(!Identifier->Initialiser->RunAST()) return false;
-        }
-        break;
-      }
-
-      case DEFINITION_TYPE::Func:
-        error("Not yet implemented");
-        break;
-
-      case DEFINITION_TYPE::ClassInstance:
-        error("Not yet implemented");
-        break;
-
-      default:
-        error("Unknown definition type: %d", (int)DefinitionType);
-        return false;
-    }
-    Identifier = Identifier->Next;
-  }
+bool DEFINITION::IsDefinition(){
   return true;
 }
 //------------------------------------------------------------------------------
 
-bool DEFINITION::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
-void DEFINITION::Display(){
-  DisplayInfo();
-  Debug.Print("Definition (");
-
-  switch(DefinitionType){
-    case DEFINITION_TYPE::Pin : Debug.Print("Pin):\n"     ); break;
-    case DEFINITION_TYPE::Net : Debug.Print("Net):\n"     ); break;
-    case DEFINITION_TYPE::Void: Debug.Print("Void):\n"    ); break;
-    case DEFINITION_TYPE::Auto: Debug.Print("Auto):\n"    ); break;
-    case DEFINITION_TYPE::Byte: Debug.Print("Byte):"      ); break;
-    case DEFINITION_TYPE::Char: Debug.Print("Character):" ); break;
-    case DEFINITION_TYPE::Num : Debug.Print("Number):\n"  ); break;
-    case DEFINITION_TYPE::Func: Debug.Print("Function):\n"); break;
-
-    case DEFINITION_TYPE::ClassInstance:
-      Debug.Print("Class instance definition (");
-      if(ClassName) ClassName->Display();
-      else          Debug.Print("Class instance with no class name");
-      Debug.Print("):\n");
-      break;
-
-    default: Debug.Print("Invalid definition type:\n");
-  }
-
+void DEFINITION::DisplayParameters(){
   Debug.Print(" Direction = ");
   switch(Direction){
     case DIRECTION::Input : Debug.Print("Input\n"   ); break;
@@ -291,13 +127,19 @@ void DEFINITION::Display(){
       Debug.Print("\n");
     }
   }
+}
+//------------------------------------------------------------------------------
 
+void DEFINITION::DisplayAttributes(){
   Debug.Print(" Attributes: ");
   if(Attributes){
     Attributes->Display();
     Debug.Print("\n");
   }
+}
+//------------------------------------------------------------------------------
 
+void DEFINITION::DisplayIdentifiers(){
   Debug.Print(" Identifiers:\n");
   IDENTIFIER* Identifier = Identifiers;
   ARRAY     * Array;
@@ -326,31 +168,22 @@ void DEFINITION::Display(){
     Debug.Print("\n");
     Identifier = Identifier->Next;
   }
+}
+//------------------------------------------------------------------------------
+
+void DEFINITION::DisplayDefinition(const char* Type){
+  DisplayInfo();
+  Debug.Print("Definition (%s):\n", Type);
+
+  void DisplayParameters ();
+  void DisplayAttributes ();
+  void DisplayIdentifiers();
 
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
 
 void DEFINITION::ValidateMembers(){
-  assert(Type == TYPE::Definition);
-
-  switch(DefinitionType){
-    case DEFINITION_TYPE::Pin : break;
-    case DEFINITION_TYPE::Net : break;
-    case DEFINITION_TYPE::Void: break;
-    case DEFINITION_TYPE::Auto: break;
-    case DEFINITION_TYPE::Byte: break;
-    case DEFINITION_TYPE::Char: break;
-    case DEFINITION_TYPE::Num : break;
-    case DEFINITION_TYPE::Func: break;
-
-    case DEFINITION_TYPE::ClassInstance:
-      if(ClassName) ClassName->Validate();
-      break;
-
-    default: assert(false);
-  }
-
   if(!Parameters.empty()){
     foreach(Parameter, Parameters) (*Parameter)->Validate();
   }
@@ -359,6 +192,7 @@ void DEFINITION::ValidateMembers(){
 
   IDENTIFIER* Identifier = Identifiers;
   ARRAY     * Array;
+
   while(Identifier){
     Array = Identifier->Array;
     while(Array){
@@ -366,9 +200,20 @@ void DEFINITION::ValidateMembers(){
       Array = Array->Next;
     }
 
-    if(Identifier->Parameters  ) Identifier->Parameters  ->Validate();
-    if(Identifier->FunctionBody) Identifier->FunctionBody->Validate();
-    if(Identifier->Initialiser ) Identifier->Initialiser ->Validate();
+    if(Identifier->Function){
+      assert(Identifier              == Identifiers);
+      assert(Identifier->Next        == 0);
+      assert(Identifier->Initialiser == 0);
+
+      if(Identifier->Parameters  ) Identifier->Parameters  ->Validate();
+      if(Identifier->FunctionBody) Identifier->FunctionBody->Validate();
+
+    }else{
+      assert(Identifier->Parameters   == 0);
+      assert(Identifier->FunctionBody == 0);
+
+      if(Identifier->Initialiser) Identifier->Initialiser ->Validate();
+    }
 
     Identifier = Identifier->Next;
   }

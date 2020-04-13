@@ -18,82 +18,94 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Base.h"
+#include "Enum_Definition.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-BASE::BASE(int Line, const char* Filename, TYPE Type){
-  Source.Line     = Line;
-  Source.Filename = Filename;
-  this->Type      = Type;
-  this->Next      = 0;
-  this->Prev      = 0;
+ENUM_DEFINITION::VALUE::VALUE(){
+  Next = 0;
 }
 //------------------------------------------------------------------------------
 
-BASE::~BASE(){
-  // The list might be too long for a recursive formulation.
-  BASE* Temp;
-  while(Next){
-    Temp       = Next;
-    Next       = Temp->Next;
-    Temp->Next = 0;
-    delete Temp;
+ENUM_DEFINITION::VALUE::VALUE(const VALUE& Value){
+  Next = 0;
+
+  if(Value.Next) Next = new VALUE(*Value.Next);
+}
+//------------------------------------------------------------------------------
+
+ENUM_DEFINITION::VALUE::~VALUE(){
+  if(Next) delete Next;
+}
+//------------------------------------------------------------------------------
+
+ENUM_DEFINITION::ENUM_DEFINITION(int Line, std::string& Filename):
+ENUM_DEFINITION(Line, Filename.c_str()){}
+//------------------------------------------------------------------------------
+
+ENUM_DEFINITION::ENUM_DEFINITION(int Line, const char* Filename):
+BASE(Line, Filename, TYPE::Enum_Definition){
+  Values = 0;
+}
+//------------------------------------------------------------------------------
+
+ENUM_DEFINITION::~ENUM_DEFINITION(){
+  if(Values) delete Values;
+}
+//------------------------------------------------------------------------------
+
+BASE* ENUM_DEFINITION::Copy(bool CopyNext){
+  ENUM_DEFINITION* Copy = new ENUM_DEFINITION(Source.Line, Source.Filename.c_str());
+
+  Copy->Identifier = Identifier;
+
+  if(Values) Copy->Values = new VALUE(*Values);
+
+  if(CopyNext && Next){
+    assert(false);
+    // Copy->Next = Next->Copy(CopyNext);
   }
+
+  return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool BASE::IsAssignment(){
+bool ENUM_DEFINITION::RunAST(){
+  error("Not yet implemented");
   return false;
 }
 //------------------------------------------------------------------------------
 
-bool BASE::IsDefinition(){
+bool ENUM_DEFINITION::GetVerilog(string& Body){
+  error("Not yet implemented");
   return false;
 }
 //------------------------------------------------------------------------------
 
-bool BASE::IsExpression(){
-  return false;
-}
-//------------------------------------------------------------------------------
+void ENUM_DEFINITION::Display(){
+  DisplayInfo();
+  Debug.Print("Enum Definition (%s):\n", Identifier.c_str());
 
-void BASE::Error(const char* Message){
-  ::Error(Source.Line, Source.Filename.c_str(), Message);
-}
-//------------------------------------------------------------------------------
-
-void BASE::Warning(const char* Message){
-  ::Warning(Source.Line, Source.Filename.c_str(), Message);
-}
-//------------------------------------------------------------------------------
-
-void BASE::DisplayInfo(){
-  Debug.Print("\n" ANSI_FG_BRIGHT_BLACK "%s:", Source.Filename.c_str());
-  Debug.Print(ANSI_FG_CYAN "%05d" ANSI_FG_YELLOW " -- " ANSI_RESET, Source.Line);
-}
-//------------------------------------------------------------------------------
-
-void BASE::Validate(){
-  assert(Prev == 0);
-
-  BASE* Node = this;
-  while(Node){
-    if(Node->Next) assert(Node->Next->Prev == Node,
-                          info("Type = %d, Line = %d, File = %s",
-                               (int)Node->Type,
-                               Node->Source.Line,
-                               Node->Source.Filename.c_str()));
-    if(Node->Prev) assert(Node->Prev->Next == Node,
-                          info("Type = %d, Line = %d, File = %s",
-                               (int)Node->Type,
-                               Node->Source.Line,
-                               Node->Source.Filename.c_str()));
-    Node->ValidateMembers();
-    Node = Node->Next;
+  Debug.Print(" Values: ");
+  VALUE* Value = Values;
+  while(Value){
+    Debug.Print("%s", Value->Identifier.c_str());
+    Value = Value->Next;
+    if(Value) Debug.Print(", ");
+    else      Debug.Print("\n");
   }
+
+  if(Next) Next->Display();
+}
+//------------------------------------------------------------------------------
+
+void ENUM_DEFINITION::ValidateMembers(){
+  assert(Type == TYPE::Enum_Definition);
+
+  error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

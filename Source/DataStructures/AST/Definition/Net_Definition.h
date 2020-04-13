@@ -18,47 +18,31 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Assignment_h
-#define AST_Assignment_h
+#ifndef AST_Definition_Net_Definition_h
+#define AST_Definition_Net_Definition_h
 //------------------------------------------------------------------------------
 
-#include <list>
-//------------------------------------------------------------------------------
-
-#include "Expression.h"
-//------------------------------------------------------------------------------
-
-namespace NETLIST{
-  class BASE;
-}
+#include "../Definition.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
-  class ASSIGNMENT: public BASE{
+  class NET_DEFINITION: public DEFINITION{
     public:
-      // Left and Right operands
-      EXPRESSION* Left;
-      EXPRESSION* Right;
+      NET_DEFINITION(int Line, std::string& Filename);
+      NET_DEFINITION(int Line, const char*  Filename);
+     ~NET_DEFINITION();
 
-    protected:
-      // Populates a list of existing expressions, except when the target is an
-      // undefined attribute, in which case the attribute is created first.
-      typedef std::list<NETLIST::BASE*> target_list;
-      bool AddLHS_Object(NETLIST::BASE* Object, target_list& List);
-      bool GetLHS(EXPRESSION* Node, target_list& List);
+      BASE* Copy(bool CopyNext) override;
 
-    protected:
-      void DisplayAssignment(const char* Operator);
+      bool RunAST() override;
+      bool GetVerilog(std::string& Body) override;
 
-    public:
-               ASSIGNMENT(int Line, const char* Filename, TYPE AssignmentType);
-      virtual ~ASSIGNMENT();
+      void Display() override;
 
-      bool IsAssignment() override;
+      void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------
-

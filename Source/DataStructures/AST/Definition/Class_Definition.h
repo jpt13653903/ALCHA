@@ -18,43 +18,48 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Assignment_h
-#define AST_Assignment_h
+#ifndef AST_Class_Definition_h
+#define AST_Class_Definition_h
 //------------------------------------------------------------------------------
 
-#include <list>
-//------------------------------------------------------------------------------
-
-#include "Expression.h"
-//------------------------------------------------------------------------------
-
-namespace NETLIST{
-  class BASE;
-}
+#include "../Parameter.h"
+#include "../Assignment.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
-  class ASSIGNMENT: public BASE{
-    public:
-      // Left and Right operands
-      EXPRESSION* Left;
-      EXPRESSION* Right;
+  struct CLASS_DEFINITION: public BASE{
+    struct PARENT{ // Link-list node for parent classes
+      EXPRESSION* ClassName;  // This class inherits from Parent
+      std::list<BASE*> Parameters; // Parent constructor call
 
-    protected:
-      // Populates a list of existing expressions, except when the target is an
-      // undefined attribute, in which case the attribute is created first.
-      typedef std::list<NETLIST::BASE*> target_list;
-      bool AddLHS_Object(NETLIST::BASE* Object, target_list& List);
-      bool GetLHS(EXPRESSION* Node, target_list& List);
+      PARENT* Next;
 
-    protected:
-      void DisplayAssignment(const char* Operator);
+      PARENT();
+      PARENT(const PARENT& Parent);
+     ~PARENT(); // Also deletes the rest of the list
+    };
 
-    public:
-               ASSIGNMENT(int Line, const char* Filename, TYPE AssignmentType);
-      virtual ~ASSIGNMENT();
+    ASSIGNMENT* Attributes;
 
-      bool IsAssignment() override;
+    std::string Identifier;
+    PARAMETER*  Parameters; // Constructor parameters
+
+    PARENT* Parents;
+
+    BASE* Body;
+
+    CLASS_DEFINITION(int Line, std::string& Filename);
+    CLASS_DEFINITION(int Line, const char*  Filename);
+   ~CLASS_DEFINITION();
+
+    BASE* Copy(bool CopyNext) override;
+
+    bool RunAST() override;
+    bool GetVerilog(std::string& Body) override;
+
+    void Display() override;
+
+    void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------

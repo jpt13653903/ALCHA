@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "ClassDefinition.h"
+#include "Class_Definition.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -57,7 +57,7 @@ CLASS_DEFINITION::PARENT::~PARENT(){
 CLASS_DEFINITION::CLASS_DEFINITION(int Line, std::string& Filename): CLASS_DEFINITION(Line, Filename.c_str()){}
 //------------------------------------------------------------------------------
 
-CLASS_DEFINITION::CLASS_DEFINITION(int Line, const char* Filename): BASE(Line, Filename, TYPE::ClassDefinition){
+CLASS_DEFINITION::CLASS_DEFINITION(int Line, const char* Filename): BASE(Line, Filename, TYPE::Class_Definition){
   Attributes = 0;
   Parameters = 0;
 
@@ -142,7 +142,7 @@ void CLASS_DEFINITION::Display(){
 //------------------------------------------------------------------------------
 
 void CLASS_DEFINITION::ValidateMembers(){
-  assert(Type == TYPE::ClassDefinition);
+  assert(Type == TYPE::Class_Definition);
 
   error("Not yet implemented");
 }

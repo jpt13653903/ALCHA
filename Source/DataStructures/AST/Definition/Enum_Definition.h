@@ -18,43 +18,40 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Assignment_h
-#define AST_Assignment_h
+#ifndef AST_Enum_Definition_h
+#define AST_Enum_Definition_h
 //------------------------------------------------------------------------------
 
-#include <list>
-//------------------------------------------------------------------------------
-
-#include "Expression.h"
-//------------------------------------------------------------------------------
-
-namespace NETLIST{
-  class BASE;
-}
+#include "../Base.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
-  class ASSIGNMENT: public BASE{
-    public:
-      // Left and Right operands
-      EXPRESSION* Left;
-      EXPRESSION* Right;
+  struct ENUM_DEFINITION: public BASE{
+    struct VALUE{ // Link-list node for enumeration values
+      std::string Identifier;
 
-    protected:
-      // Populates a list of existing expressions, except when the target is an
-      // undefined attribute, in which case the attribute is created first.
-      typedef std::list<NETLIST::BASE*> target_list;
-      bool AddLHS_Object(NETLIST::BASE* Object, target_list& List);
-      bool GetLHS(EXPRESSION* Node, target_list& List);
+      VALUE* Next;
 
-    protected:
-      void DisplayAssignment(const char* Operator);
+      VALUE();
+      VALUE(const VALUE& Value);
+     ~VALUE(); // Also deletes the rest of the list
+    };
 
-    public:
-               ASSIGNMENT(int Line, const char* Filename, TYPE AssignmentType);
-      virtual ~ASSIGNMENT();
+    std::string Identifier;
+    VALUE*      Values;
 
-      bool IsAssignment() override;
+    ENUM_DEFINITION(int Line, std::string& Filename);
+    ENUM_DEFINITION(int Line, const char*  Filename);
+   ~ENUM_DEFINITION();
+
+    BASE* Copy(bool CopyNext) override;
+
+    bool RunAST() override;
+    bool GetVerilog(std::string& Body) override;
+
+    void Display() override;
+
+    void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------

@@ -37,7 +37,7 @@ namespace AST{
       EXPRESSION* Left;
       BASE*       Right; // Can be expression or assignment (for function calls)
 
-      EXPRESSION(int Line, const char* Filename, TYPE ExpressionType);
+               EXPRESSION(int Line, const char* Filename, TYPE ExpressionType);
       virtual ~EXPRESSION();
 
       bool IsExpression() override;

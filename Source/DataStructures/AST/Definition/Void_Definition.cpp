@@ -18,94 +18,103 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "EnumDefinition.h"
+#include "Void_Definition.h"
+
+#include "Netlist/Byte.h"
+#include "Netlist/Character.h"
+#include "Netlist/Synthesisable/Pin.h"
+#include "Netlist/Namespace/Module.h"
+#include "Netlist/Synthesisable/Net.h"
+#include "Netlist/Num.h"
+#include "Netlist/Synthesisable.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-ENUM_DEFINITION::VALUE::VALUE(){
-  Next = 0;
+VOID_DEFINITION::VOID_DEFINITION(
+  int     Line,
+  string& Filename
+): VOID_DEFINITION(Line, Filename.c_str()){}
+//------------------------------------------------------------------------------
+
+VOID_DEFINITION::VOID_DEFINITION(
+  int             Line,
+  const char*     Filename
+): DEFINITION(Line, Filename, TYPE::Void_Definition){
 }
 //------------------------------------------------------------------------------
 
-ENUM_DEFINITION::VALUE::VALUE(const VALUE& Value){
-  Next = 0;
-
-  if(Value.Next) Next = new VALUE(*Value.Next);
+VOID_DEFINITION::~VOID_DEFINITION(){
 }
 //------------------------------------------------------------------------------
 
-ENUM_DEFINITION::VALUE::~VALUE(){
-  if(Next) delete Next;
-}
-//------------------------------------------------------------------------------
+BASE* VOID_DEFINITION::Copy(bool CopyNext){
+  VOID_DEFINITION* Copy = new VOID_DEFINITION(Source.Line, Source.Filename.c_str());
 
-ENUM_DEFINITION::ENUM_DEFINITION(int Line, std::string& Filename):
-ENUM_DEFINITION(Line, Filename.c_str()){}
-//------------------------------------------------------------------------------
+  Copy->Direction = Direction;
 
-ENUM_DEFINITION::ENUM_DEFINITION(int Line, const char* Filename):
-BASE(Line, Filename, TYPE::EnumDefinition){
-  Values = 0;
-}
-//------------------------------------------------------------------------------
-
-ENUM_DEFINITION::~ENUM_DEFINITION(){
-  if(Values) delete Values;
-}
-//------------------------------------------------------------------------------
-
-BASE* ENUM_DEFINITION::Copy(bool CopyNext){
-  ENUM_DEFINITION* Copy = new ENUM_DEFINITION(Source.Line, Source.Filename.c_str());
-
-  Copy->Identifier = Identifier;
-
-  if(Values) Copy->Values = new VALUE(*Values);
+  if(Attributes ) Copy->Attributes  = (decltype(Attributes))Attributes->Copy(CopyNext);
+  if(Identifiers) Copy->Identifiers = new IDENTIFIER(*Identifiers);
 
   if(CopyNext && Next){
     assert(false);
     // Copy->Next = Next->Copy(CopyNext);
   }
 
+  foreach(Parameter, Parameters){
+    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy(CopyNext));
+  }
+
   return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool ENUM_DEFINITION::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
+bool VOID_DEFINITION::RunAST(){
+  auto Identifier = Identifiers;
 
-bool ENUM_DEFINITION::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
+  while(Identifier){
+    auto Symbol = NETLIST::NamespaceStack.front()->Symbols.find(Identifier->Identifier);
+    if(Symbol != NETLIST::NamespaceStack.front()->Symbols.end()){
+      Error();
+      printf("Symbol \"%s\" already defined in the current namespace\n",
+             Identifier->Identifier.c_str());
+      return false;
+    }
 
-void ENUM_DEFINITION::Display(){
-  DisplayInfo();
-  Debug.Print("Enum Definition (%s):\n", Identifier.c_str());
+    if(Identifier->Function){
+      error("Not yet implemented");
+      Identifier = Identifier->Next;
+      continue;
+    }
+    if(Identifier->Parameters) error("Not yet implemented");
 
-  Debug.Print(" Values: ");
-  VALUE* Value = Values;
-  while(Value){
-    Debug.Print("%s", Value->Identifier.c_str());
-    Value = Value->Next;
-    if(Value) Debug.Print(", ");
-    else      Debug.Print("\n");
+    error("Not yet implemented");
+
+    Identifier = Identifier->Next;
   }
-
-  if(Next) Next->Display();
+  return true;
 }
 //------------------------------------------------------------------------------
 
-void ENUM_DEFINITION::ValidateMembers(){
-  assert(Type == TYPE::EnumDefinition);
-
+bool VOID_DEFINITION::GetVerilog(string& Body){
   error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+void VOID_DEFINITION::Display(){
+  DisplayDefinition("Void");
+}
+//------------------------------------------------------------------------------
+
+void VOID_DEFINITION::ValidateMembers(){
+  assert(Type == TYPE::Void_Definition);
+
+  assert(Parameters.empty());
+
+  DEFINITION::ValidateMembers();
 }
 //------------------------------------------------------------------------------
 
