@@ -64,8 +64,7 @@ bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
       }
 
       case BASE::TYPE::Pin:
-      case BASE::TYPE::Net:
-      case BASE::TYPE::Synthesisable:{
+      case BASE::TYPE::Net:{
         auto Object = (SYNTHESISABLE*)(SymbolIterator->second);
         SymbolIterator++;
         if(!Object->Used){
@@ -76,8 +75,7 @@ bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
       }
 
       case BASE::TYPE::Module:
-      case BASE::TYPE::Group:
-      case BASE::TYPE::Namespace:{
+      case BASE::TYPE::Group:{
         auto Object = (NAMESPACE*)(SymbolIterator->second);
         DeleteUnused(Object);
         SymbolIterator++;
@@ -127,7 +125,6 @@ bool BACK_END::AssignPinDirections(NAMESPACE* Namespace){
       }
       case BASE::TYPE::Module:
       case BASE::TYPE::Group:
-      case BASE::TYPE::Namespace:
         AssignPinDirections((NAMESPACE*)(SymbolIterator->second));
         break;
 

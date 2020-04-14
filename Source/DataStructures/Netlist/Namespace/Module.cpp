@@ -31,8 +31,8 @@ using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-MODULE::MODULE(int Line, const std::string& Filename, const char* Name): NAMESPACE(Line, Filename, Name){
-  Type = TYPE::Module;
+MODULE::MODULE(int Line, const std::string& Filename, const char* Name):
+NAMESPACE(Line, Filename, Name, TYPE::Module){
 }
 //------------------------------------------------------------------------------
 

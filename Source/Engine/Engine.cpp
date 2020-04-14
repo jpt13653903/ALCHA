@@ -44,9 +44,8 @@ AST::BASE* ENGINE::RunAST(const char* Filename){
   auto Node = Ast;
   while(Node){
     if(!Node->RunAST()){
-      return Ast;
-      // delete Ast; // TODO: Running this breaks the clean-up stage -- fix
-      // return 0;
+      delete Ast;
+      return 0;
     }
     Node = Node->Next;
   }

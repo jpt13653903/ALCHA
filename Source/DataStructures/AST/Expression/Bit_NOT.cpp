@@ -86,7 +86,6 @@ EXPRESSION* BIT_NOT::Evaluate(bool CreateWires){
       if(!CreateWires) return this;
 
       auto Net = new NETLIST::NET(Source.Line, Source.Filename, 0);
-      Net->Used  = true;
       Net->Value = this;
   
       auto ObjectRef = ((OBJECT*)Right)->ObjectRef;

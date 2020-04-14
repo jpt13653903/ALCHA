@@ -41,12 +41,10 @@ PIN::~PIN(){
 
 AST::EXPRESSION* PIN::GetExpression(int Line, const string& Filename){
   if(Driver->Value){
-    Driver->Used = true;
     return (AST::EXPRESSION*)Driver->Value->Copy();
   }
   AST::OBJECT* Result = new AST::OBJECT(Line, Filename);
   Result->ObjectRef = this;
-  Used = true;
   return Result;
 }
 //------------------------------------------------------------------------------
@@ -56,26 +54,13 @@ bool PIN::Assign(AST::EXPRESSION* Expression){
     Expression->Error("Cannot assign to an input pin");
     return false;
   }
-  Used          = true;
-  Driver ->Used = true;
-  Enabled->Used = true;
   return Driver->Assign(Expression);
 }
 //------------------------------------------------------------------------------
 
 BASE* PIN::GetMember(const std::string& Name){
-  if(Name == "driver" ){
-    Used          = true;
-    Driver ->Used = true;
-    Enabled->Used = true;
-    return Driver;
-  }
-  if(Name == "enabled"){
-    Used          = true;
-    Driver ->Used = true;
-    Enabled->Used = true;
-    return Enabled;
-  }
+  if(Name == "driver" ) return Driver;
+  if(Name == "enabled") return Enabled;
   return 0;
 }
 //------------------------------------------------------------------------------

@@ -25,7 +25,9 @@ using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-NAMESPACE::NAMESPACE(int Line, const string& Filename, const char* Name): BASE(Line, Filename, Name, TYPE::Namespace){
+NAMESPACE::NAMESPACE(int Line, const string& Filename,
+                     const char* Name, TYPE NamespaceType):
+BASE(Line, Filename, Name, NamespaceType){
   Ast = 0;
 }
 //------------------------------------------------------------------------------

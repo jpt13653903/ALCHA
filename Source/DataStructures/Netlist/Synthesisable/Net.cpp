@@ -37,7 +37,6 @@ NET::~NET(){
 
 AST::EXPRESSION* NET::GetExpression(int Line, const string& Filename){
   if(Value){
-    Used = true;
     return (AST::EXPRESSION*)Value->Copy();
   }
   Error(Line, Filename, "Cannot get expression: no value has been assigned yet");

@@ -52,17 +52,18 @@ namespace NETLIST{
       // Indentation follows the inheritance tree
       enum class TYPE{
         Attribute,
-        
-        Synthesisable,
-          Pin,
-          Net,
         Number,
         Byte,
         Character,
 
         Alias,
         Array, // An array of objects
-        Namespace,
+        
+        // Synthesisable
+          Pin,
+          Net,
+
+        // Namespace
           Module,
           Group
       } Type;

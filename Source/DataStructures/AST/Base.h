@@ -53,19 +53,6 @@ namespace AST{
         Group,
         Alias,
 
-        // Definition
-          Void_Definition,
-          Auto_Definition,
-          Pin_Definition,
-          Net_Definition,
-          Byte_Definition,
-          Char_Definition,
-          Num_Definition,
-          FuncPtr_Definition,
-          Enum_Definition,
-          Class_Definition,
-          Class_Instance,
-
         Parameter,  // Parameter definition, not function call
 
         NamespacePush,
@@ -78,6 +65,19 @@ namespace AST{
         RTL,
         FSM,
         HDL,
+
+        // Definition
+          Void_Definition,
+          Auto_Definition,
+          Pin_Definition,
+          Net_Definition,
+          Byte_Definition,
+          Char_Definition,
+          Num_Definition,
+          FuncPtr_Definition,
+          Enum_Definition,
+          Class_Definition,
+          Class_Instance,
 
         // Assignment
           Assign,             //   =

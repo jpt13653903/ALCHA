@@ -35,7 +35,8 @@ namespace NETLIST{
       AST::BASE* Ast;
       std::map<std::string, BASE*> Symbols;
 
-               NAMESPACE(int Line, const std::string& Filename, const char* Name = "");
+               NAMESPACE(int Line, const std::string& Filename,
+                         const char* Name, TYPE NamespaceType);
       virtual ~NAMESPACE(); // Also cleans up the children
 
       AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
