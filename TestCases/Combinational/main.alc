@@ -20,6 +20,7 @@ num LED_FullScale = LED'fullscale;
 num LED_Current   = LED'current;
 
 Button'fullscale = 1;
+Button'Whatnot   = 3;
 
 net(14, 3 ) TestNet  = GPIO;
 

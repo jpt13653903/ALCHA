@@ -55,6 +55,8 @@ Headers += DataStructures/AST/Assignment/*.h
 Headers += DataStructures/AST/Definition/*.h
 Headers += DataStructures/AST/Expression/*.h
 Headers += DataStructures/Netlist/*.h
+Headers += DataStructures/Netlist/Namespace/*.h
+Headers += DataStructures/Netlist/Synthesisable/*.h
 
 Headers += FrontEnd/*.h
 
@@ -192,6 +194,7 @@ Objects += $(ObjectPath)/DataStructures/Netlist/Namespace.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Namespace/Group.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Namespace/Module.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Num.o
+Objects += $(ObjectPath)/DataStructures/Netlist/PinComponent.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Synthesisable.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Synthesisable/Net.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Synthesisable/Pin.o

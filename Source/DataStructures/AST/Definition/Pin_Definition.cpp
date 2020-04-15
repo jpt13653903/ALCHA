@@ -69,10 +69,7 @@ bool PIN_DEFINITION::RunAST(){
     auto Pin = new NETLIST::PIN(Source.Line, Source.Filename, Identifier->Identifier.c_str());
     Pin->Direction = Direction;
 
-    if(!Pin         ->ApplyParameters(Parameters)) Error("Invalid parameters");
-    if(!Pin->Driver ->ApplyParameters(Parameters)) Error("Invalid parameters");
-    if(!Pin->Enabled->ApplyParameters(Parameters)) Error("Invalid parameters");
-
+    if(!Pin->ApplyParameters(Parameters)) Error("Invalid parameters");
     if(!Pin->ApplyAttributes(Attributes)) Error("Invalid attributes");
 
     NETLIST::NamespaceStack.front()->Symbols[Pin->Name] = Pin;

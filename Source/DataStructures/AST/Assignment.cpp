@@ -60,6 +60,7 @@ bool ASSIGNMENT::AddLHS_Object(NETLIST::BASE* Object, target_list& List){
   if(Object){
     switch(Object->Type){
       case NETLIST::BASE::TYPE::Pin:
+      case NETLIST::BASE::TYPE::PinComponent:
       case NETLIST::BASE::TYPE::Net:
       case NETLIST::BASE::TYPE::Number:
       case NETLIST::BASE::TYPE::Byte:
@@ -193,6 +194,10 @@ bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List){
       }
       if(Left->Type == NETLIST::BASE::TYPE::Attribute){
         Node->Error("Attributes are not hierarchical");
+        return false;
+      }
+      if(Left->Type == NETLIST::BASE::TYPE::PinComponent){
+        Node->Error("Cannot assign attributes to pin components.  Assign to the pin directly");
         return false;
       }
 

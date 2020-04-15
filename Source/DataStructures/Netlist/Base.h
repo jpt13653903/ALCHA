@@ -58,6 +58,8 @@ namespace NETLIST{
 
         Alias,
         Array, // An array of objects
+
+        PinComponent,
         
         // Synthesisable
           Pin,
@@ -87,6 +89,7 @@ namespace NETLIST{
                BASE(int Line, const std::string& Filename, const char* Name, TYPE Type);
       virtual ~BASE();
 
+      // Called by the definition to assign the attribute list
       bool ApplyAttributes(AST::ASSIGNMENT* AttributeList);
 
       // Either generates a new node or a copy of the current node
@@ -115,7 +118,7 @@ namespace NETLIST{
 
       // Access the attribute, but searches up to the root and
       // returns null when not found
-      AST::EXPRESSION* GetAttribValue(const std::string& Name);
+      virtual AST::EXPRESSION* GetAttribValue(const std::string& Name);
 
       // If the named built-in attribute exists, creates a new EXPRESSION node
       // and populates in appropriately.  Returns null otherwise.

@@ -18,73 +18,77 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Pin.h"
+#include "PinComponent.h"
 
-#include "AST/Expression/Object.h"
+#include "Synthesisable/Pin.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-PIN::PIN(int Line, const string& Filename, const char* Name) : SYNTHESISABLE(Line, Filename, Name, TYPE::Pin){
-  Driver  = new PIN_COMPONENT(Line, Filename, "Driver" , this);
-  Enabled = new PIN_COMPONENT(Line, Filename, "Enabled", this);
+PIN_COMPONENT::PIN_COMPONENT(int Line, const string& Filename, const char* Name, PIN* Pin):
+BASE(Line, Filename, Name, TYPE::PinComponent){
+  this->Pin = Pin;
+  Namespace = Pin->Namespace;
+  Value     = 0;
 }
 //------------------------------------------------------------------------------
 
-PIN::~PIN(){
-  delete Driver;
-  delete Enabled;
+PIN_COMPONENT::~PIN_COMPONENT(){
+  if(Value) delete Value;
 }
 //------------------------------------------------------------------------------
 
-AST::EXPRESSION* PIN::GetExpression(int Line, const string& Filename){
-  if(Driver->Value){
-    return (AST::EXPRESSION*)Driver->Value->Copy();
-  }
-  AST::OBJECT* Result = new AST::OBJECT(Line, Filename);
-  Result->ObjectRef = this;
-  return Result;
-}
-//------------------------------------------------------------------------------
-
-bool PIN::Assign(AST::EXPRESSION* Expression){
-  if(Direction == AST::DEFINITION::DIRECTION::Input){
-    Expression->Error("Cannot assign to an input pin");
-    return false;
-  }
-  return Driver->Assign(Expression);
-}
-//------------------------------------------------------------------------------
-
-BASE* PIN::GetMember(const std::string& Name){
-  if(Name == "driver" ) return Driver;
-  if(Name == "enabled") return Enabled;
+AST::EXPRESSION* PIN_COMPONENT::GetExpression(int Line, const string& Filename){
+  if(Value) return (AST::EXPRESSION*)Value->Copy();
+  Error(Line, Filename, "Cannot get expression: no value has been assigned yet");
   return 0;
 }
 //------------------------------------------------------------------------------
 
-void PIN::Display(int Indent){
-  Debug.Indent(Indent);
-  Debug.Print("Pin: ");
-
-  Indent++;
-  DisplayParameters(Indent);
-  DisplayAttributes(Indent);
-
-  Driver ->Display(Indent);
-  Enabled->Display(Indent);
+bool PIN_COMPONENT::Assign(AST::EXPRESSION* Expression){
+  if(Value) delete Value;
+  Value = Expression;
+  return true;
 }
 //------------------------------------------------------------------------------
 
-void PIN::Validate(){
-  assert(Type == TYPE::Pin);
+BASE* PIN_COMPONENT::GetAttribute(const std::string& Name){
+  return Pin->GetAttribute(Name);
+}
+//------------------------------------------------------------------------------
 
-  SYNTHESISABLE::Validate();
+AST::EXPRESSION* PIN_COMPONENT::GetAttribValue(const std::string& Name){
+  return Pin->GetAttribValue(Name);
+}
+//------------------------------------------------------------------------------
 
-  Driver ->Validate();
-  Enabled->Validate();
+AST::EXPRESSION* PIN_COMPONENT::GetBuiltInAttributeValue(const std::string& Name){
+  return Pin->GetBuiltInAttributeValue(Name);
+}
+//------------------------------------------------------------------------------
+
+void PIN_COMPONENT::Display(int Indent){
+  Debug.Indent(Indent);
+  Debug.Print("Pin Component: %s\n", Name.c_str());
+
+  Indent++;
+  Debug.Indent(Indent);
+  Debug.Print("Value = ");
+  if(Value) Value->Display();
+  else      Debug.Print("{null}");
+  Debug.Print("\n");
+}
+//------------------------------------------------------------------------------
+
+void PIN_COMPONENT::Validate(){
+  assert(Type == TYPE::PinComponent);
+
+  assert(Attributes.size() == 0);
+  assert(Namespace == Pin->Namespace);
+
+  BASE::Validate();
 }
 //------------------------------------------------------------------------------
 

@@ -18,27 +18,30 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Netlist_Pin_h
-#define Netlist_Pin_h
+#ifndef Netlist_PinComponent_h
+#define Netlist_PinComponent_h
 //------------------------------------------------------------------------------
 
-#include "Net.h"
-#include "../PinComponent.h"
-#include "AST/Expression.h"
+#include "Base.h"
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
-  struct PIN: public SYNTHESISABLE{
-    PIN_COMPONENT* Driver;
-    PIN_COMPONENT* Enabled;
+  struct PIN;
 
-    PIN(int Line, const std::string& Filename, const char* Name);
-   ~PIN();
+  struct PIN_COMPONENT: public BASE{
+    PIN* Pin;
+
+    AST::EXPRESSION* Value;
+
+    PIN_COMPONENT(int Line, const std::string& Filename, const char* Name, PIN* Pin);
+    virtual ~PIN_COMPONENT();
 
     AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
     bool Assign(AST::EXPRESSION* Expression) override;
 
-    BASE* GetMember(const std::string& Name) override;
+    BASE*            GetAttribute            (const std::string& Name);
+    AST::EXPRESSION* GetAttribValue          (const std::string& Name);
+    AST::EXPRESSION* GetBuiltInAttributeValue(const std::string& Name);
 
     void Display(int Indent = 0) override;
 
