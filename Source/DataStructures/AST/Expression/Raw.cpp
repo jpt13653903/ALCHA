@@ -64,6 +64,18 @@ EXPRESSION* RAW::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int RAW::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* RAW::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* RAW::Simplify(bool GenWire){
 //   error("Not yet implemented");
 //   return this;

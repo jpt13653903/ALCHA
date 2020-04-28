@@ -105,6 +105,22 @@ EXPRESSION* ACCESSMEMBER::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int ACCESSMEMBER::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* ACCESSMEMBER::FixedPointScale(int Width, NUMBER& FullScale){
+  auto Result = this->Evaluate(true);
+
+  if(Result == NULL) return this;
+  if(Result == this) return this;
+
+  return Result->FixedPointScale(Width, FullScale);
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* ACCESSMEMBER::Simplify(bool GenWire){
 //   error("Not yet implemented");
 //   return this;

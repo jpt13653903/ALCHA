@@ -83,6 +83,22 @@ EXPRESSION* IDENTIFIER::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int IDENTIFIER::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* IDENTIFIER::FixedPointScale(int Width, NUMBER& FullScale){
+  auto Result = this->Evaluate(true);
+
+  if(Result == NULL) return this;
+  if(Result == this) return this;
+
+  return Result->FixedPointScale(Width, FullScale);
+}
+//------------------------------------------------------------------------------
+
 void IDENTIFIER::Display(){
   DisplayStart();
 

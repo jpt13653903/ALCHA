@@ -67,6 +67,18 @@ EXPRESSION* XNOR_REDUCE::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int XNOR_REDUCE::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* XNOR_REDUCE::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* XNOR_REDUCE::Simplify(bool GenWire){
 //   assert(Right, return this);
 // 

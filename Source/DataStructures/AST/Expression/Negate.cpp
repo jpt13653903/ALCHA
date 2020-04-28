@@ -72,6 +72,18 @@ EXPRESSION* NEGATE::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int NEGATE::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* NEGATE::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* NEGATE::Simplify(bool GenWire){
 //   assert(Right, return this);
 // 

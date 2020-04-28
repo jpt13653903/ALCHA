@@ -41,6 +41,9 @@ namespace AST{
     // Evaluates to an OBJECT
     EXPRESSION* Evaluate(bool CreateWires) override;
 
+    int GetWidth() override;
+    EXPRESSION* FixedPointScale(int Width, NUMBER& FullScale) override;
+
     void Display() override;
 
     void ValidateMembers() override;

@@ -68,6 +68,18 @@ EXPRESSION* AND_REDUCE::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int AND_REDUCE::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* AND_REDUCE::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* AND_REDUCE::Simplify(bool GenWire){
 //   assert(Right, return this);
 // 

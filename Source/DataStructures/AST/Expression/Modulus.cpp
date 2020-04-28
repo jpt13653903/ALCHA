@@ -64,6 +64,18 @@ EXPRESSION* MODULUS::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int MODULUS::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* MODULUS::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* MODULUS::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

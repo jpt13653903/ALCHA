@@ -67,6 +67,18 @@ EXPRESSION* NOR_REDUCE::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int NOR_REDUCE::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* NOR_REDUCE::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* NOR_REDUCE::Simplify(bool GenWire){
 //   assert(Right, return this);
 // 

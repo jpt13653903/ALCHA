@@ -69,6 +69,18 @@ EXPRESSION* GREATER_EQUAL::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int GREATER_EQUAL::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* GREATER_EQUAL::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* GREATER_EQUAL::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

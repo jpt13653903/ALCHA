@@ -67,6 +67,18 @@ EXPRESSION* LOGICAL_NOT::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int LOGICAL_NOT::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* LOGICAL_NOT::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* LOGICAL_NOT::Simplify(bool GenWire){
 //   assert(Right, return this);
 // 

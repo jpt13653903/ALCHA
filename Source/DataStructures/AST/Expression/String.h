@@ -38,6 +38,9 @@ namespace AST{
     bool GetVerilog(std::string& Body) override;
     EXPRESSION* Evaluate(bool CreateWires) override;
 
+    int GetWidth() override;
+    EXPRESSION* FixedPointScale(int Width, NUMBER& FullScale) override;
+
     void Display() override;
 
     void ValidateMembers() override;

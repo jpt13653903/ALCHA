@@ -48,9 +48,14 @@ AST::EXPRESSION* PIN_COMPONENT::GetExpression(int Line, const string& Filename){
 //------------------------------------------------------------------------------
 
 bool PIN_COMPONENT::Assign(AST::EXPRESSION* Expression){
+  assert(Expression, return false);
+
+  Expression = Expression->FixedPointScale(Pin->Width(), Pin->FullScale());
+  assert(Expression, return false);
+
   if(Value) delete Value;
-  Value = Expression;
-  return true;
+  Value = Expression->Evaluate(false);
+  return Value;
 }
 //------------------------------------------------------------------------------
 
@@ -66,6 +71,16 @@ AST::EXPRESSION* PIN_COMPONENT::GetAttribValue(const std::string& Name){
 
 AST::EXPRESSION* PIN_COMPONENT::GetBuiltInAttributeValue(const std::string& Name){
   return Pin->GetBuiltInAttributeValue(Name);
+}
+//------------------------------------------------------------------------------
+
+int PIN_COMPONENT::Width(){
+  return Pin->Width();
+}
+//------------------------------------------------------------------------------
+
+NUMBER& PIN_COMPONENT::FullScale(){
+  return Pin->FullScale();
 }
 //------------------------------------------------------------------------------
 

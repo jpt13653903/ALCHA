@@ -64,6 +64,18 @@ EXPRESSION* EXPONENTIAL::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int EXPONENTIAL::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* EXPONENTIAL::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* EXPONENTIAL::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

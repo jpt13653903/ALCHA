@@ -155,6 +155,18 @@ EXPRESSION* CAST::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int CAST::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* CAST::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* CAST::Simplify(bool GenWire){
 //   // TODO: Root has the target type; Left has the original expression
 //   //       Right is optional and carry the class name (when applicable)

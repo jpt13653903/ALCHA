@@ -77,6 +77,18 @@ EXPRESSION* FUNCTIONCALL::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int FUNCTIONCALL::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* FUNCTIONCALL::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* FUNCTIONCALL::Simplify(bool GenWire){
 //   assert(Left, return this);
 // 

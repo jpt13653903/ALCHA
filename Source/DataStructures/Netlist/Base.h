@@ -123,6 +123,11 @@ namespace NETLIST{
       // If the named built-in attribute exists, creates a new EXPRESSION node
       // and populates in appropriately.  Returns null otherwise.
       virtual AST::EXPRESSION* GetBuiltInAttributeValue(const std::string& Name);
+
+      // Returns the number of bits when synthesising the object.
+      // Returns 0 by default, indicating an invalid question.
+      virtual int     Width    ();
+      virtual NUMBER& FullScale();
   };
 }
 //------------------------------------------------------------------------------

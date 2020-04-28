@@ -45,12 +45,16 @@ AST::EXPRESSION* NET::GetExpression(int Line, const string& Filename){
 //------------------------------------------------------------------------------
 
 bool NET::Assign(AST::EXPRESSION* Expression){
+  assert(Expression, return false);
+
+  Expression = Expression->FixedPointScale(Width(), FullScale());
+  assert(Expression, return false);
+
   if(Value){
     Expression->Warning();
     printf("Overwriting net value %s\n", Name.c_str());
     delete Value;
   }
-  assert(Expression, return false);
   Value = Expression->Evaluate(false);
   return Value;
 }

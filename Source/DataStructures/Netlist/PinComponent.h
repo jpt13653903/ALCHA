@@ -43,6 +43,9 @@ namespace NETLIST{
     AST::EXPRESSION* GetAttribValue          (const std::string& Name);
     AST::EXPRESSION* GetBuiltInAttributeValue(const std::string& Name);
 
+    int     Width    () override;
+    NUMBER& FullScale() override;
+
     void Display(int Indent = 0) override;
 
     void Validate() override;

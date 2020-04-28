@@ -69,6 +69,18 @@ EXPRESSION* REPLICATE::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int REPLICATE::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* REPLICATE::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* REPLICATE::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

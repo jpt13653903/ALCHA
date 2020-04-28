@@ -20,11 +20,14 @@
 
 #include "Object.h"
 #include "Literal.h"
+#include "Multiply.h"
+
 #include "Netlist/Alias.h"
 #include "Netlist/Byte.h"
 #include "Netlist/Character.h"
 #include "Netlist/Namespace/Module.h"
 #include "Netlist/Num.h"
+#include "Netlist/Synthesisable/Net.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -76,6 +79,7 @@ EXPRESSION* OBJECT::Evaluate(bool CreateWires){
       auto Byte = (NETLIST::BYTE*)ObjectRef;
       auto Result = new LITERAL(Source.Line, Source.Filename);
       Result->Value = Byte->Value;
+      Result->Width = 8;
       delete this;
       return Result;
     }
@@ -83,6 +87,7 @@ EXPRESSION* OBJECT::Evaluate(bool CreateWires){
       auto Char = (NETLIST::CHARACTER*)ObjectRef;
       auto Result = new LITERAL(Source.Line, Source.Filename);
       Result->Value = Char->Value;
+      Result->Width = 32;
       delete this;
       return Result;
     }
@@ -117,6 +122,49 @@ EXPRESSION* OBJECT::Evaluate(bool CreateWires){
       break;
   }
   return this;
+}
+//------------------------------------------------------------------------------
+
+int OBJECT::GetWidth(){
+  return ObjectRef->Width();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* OBJECT::FixedPointScale(int Width, NUMBER& FullScale){
+  // Could be an alias, so evaluate it first
+  auto Result = this->Evaluate(true);
+
+  if(Result == NULL) return this;
+  if(Result != this) return Result->FixedPointScale(Width, FullScale);
+
+  int    ThisWidth     = ObjectRef->Width    ();
+  NUMBER ThisFullScale = ObjectRef->FullScale();
+
+  assert(ThisWidth, return this);
+
+  NUMBER Scale = 1;
+  Scale.BinScale(Width - ThisWidth);
+  Scale.Mul(ThisFullScale);
+  Scale.Div(FullScale);
+
+  if(Scale == 1) return this;
+
+  auto Object  = new OBJECT      (Source.Line, Source.Filename);
+  auto Net     = new NETLIST::NET(Source.Line, Source.Filename, 0);
+  auto Mul     = new MULTIPLY    (Source.Line, Source.Filename);
+  auto Literal = new LITERAL     (Source.Line, Source.Filename);
+
+  Net->SetFixedPoint(Width, FullScale);
+
+  Literal->Value     = Scale;
+  Mul    ->Left      = this;
+  Mul    ->Right     = Literal;
+  Net    ->Value     = Mul;
+  Object ->ObjectRef = Net;
+
+  NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
+
+  return Object;
 }
 //------------------------------------------------------------------------------
 

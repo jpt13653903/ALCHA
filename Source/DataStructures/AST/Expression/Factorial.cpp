@@ -64,6 +64,18 @@ EXPRESSION* FACTORIAL::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int FACTORIAL::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* FACTORIAL::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* FACTORIAL::Simplify(bool GenWire){
 //   assert(Left, return this);
 // 

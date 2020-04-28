@@ -69,6 +69,18 @@ EXPRESSION* SHIFT_RIGHT::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int SHIFT_RIGHT::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* SHIFT_RIGHT::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* SHIFT_RIGHT::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

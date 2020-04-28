@@ -64,6 +64,18 @@ EXPRESSION* ACCESSMEMBERSAFE::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int ACCESSMEMBERSAFE::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* ACCESSMEMBERSAFE::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* ACCESSMEMBERSAFE::Simplify(bool GenWire){
 //   error("Not yet implemented");
 //   return this;

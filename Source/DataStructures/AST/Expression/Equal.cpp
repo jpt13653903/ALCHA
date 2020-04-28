@@ -69,6 +69,18 @@ EXPRESSION* EQUAL::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int EQUAL::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* EQUAL::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* EQUAL::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

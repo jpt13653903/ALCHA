@@ -47,6 +47,15 @@ namespace AST{
       // Returns the instance of the node to use as replacement
       // For example: Node = Node->Evaluate() might change the value of Node
       virtual EXPRESSION* Evaluate(bool CreateWires) = 0;
+
+      // Returns the width of the result, if known.  Issues an error if the 
+      // width is not defined (like an uncast literal, for instance)
+      virtual int GetWidth() = 0;
+
+      // Evaluates using fixed-point scaling.  The parameters indicate the 
+      // target type.  Passing Width = 0 implies that the target is a scripting
+      // variable.  The result can be raw-assigned to the target.
+      virtual EXPRESSION* FixedPointScale(int Width, NUMBER& FullScale) = 0;
   };
 }
 //------------------------------------------------------------------------------

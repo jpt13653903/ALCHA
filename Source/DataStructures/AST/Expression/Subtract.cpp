@@ -70,6 +70,18 @@ EXPRESSION* SUBTRACT::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int SUBTRACT::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* SUBTRACT::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* SUBTRACT::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

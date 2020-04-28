@@ -209,6 +209,17 @@ AST::EXPRESSION* BASE::GetBuiltInAttributeValue(const string& Name){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& BASE::FullScale(){
+  static NUMBER Zero = 0;
+  return Zero;
+}
+//------------------------------------------------------------------------------
+
+int BASE::Width(){
+  return 0;
+}
+//------------------------------------------------------------------------------
+
 void BASE::Validate(){
   // Don't verify Namespace, it's circular
   foreach(Attrib, Attributes){

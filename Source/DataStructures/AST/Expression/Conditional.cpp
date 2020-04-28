@@ -64,6 +64,18 @@ EXPRESSION* CONDITIONAL::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int CONDITIONAL::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* CONDITIONAL::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* CONDITIONAL::Simplify(bool GenWire){
 //   // TODO: There should be a third component...  Left and Right of Right?
 //   //       Or break it down to an if-statement?

@@ -69,6 +69,18 @@ EXPRESSION* NOT_EQUAL::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int NOT_EQUAL::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* NOT_EQUAL::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* NOT_EQUAL::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

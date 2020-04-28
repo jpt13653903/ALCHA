@@ -69,6 +69,18 @@ EXPRESSION* BIT_XNOR::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int BIT_XNOR::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* BIT_XNOR::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* BIT_XNOR::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

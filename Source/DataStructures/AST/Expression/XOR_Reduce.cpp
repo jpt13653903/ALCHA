@@ -67,6 +67,18 @@ EXPRESSION* XOR_REDUCE::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int XOR_REDUCE::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* XOR_REDUCE::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* XOR_REDUCE::Simplify(bool GenWire){
 //   assert(Right, return this);
 // 

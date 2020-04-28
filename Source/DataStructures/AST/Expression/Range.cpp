@@ -67,6 +67,18 @@ EXPRESSION* RANGE::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int RANGE::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* RANGE::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* RANGE::Simplify(bool GenWire){
 //   error("Not yet implemented");
 //   return this;

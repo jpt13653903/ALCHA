@@ -69,6 +69,18 @@ EXPRESSION* BIT_AND::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int BIT_AND::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* BIT_AND::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* BIT_AND::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

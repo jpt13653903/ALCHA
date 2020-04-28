@@ -64,6 +64,18 @@ EXPRESSION* SLICE::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int SLICE::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* SLICE::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* SLICE::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

@@ -64,6 +64,18 @@ EXPRESSION* DECREMENT::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int DECREMENT::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* DECREMENT::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* DECREMENT::Simplify(bool GenWire){
 //   error("Not yet implemented");
 //   return this;

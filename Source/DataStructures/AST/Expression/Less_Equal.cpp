@@ -69,6 +69,18 @@ EXPRESSION* LESS_EQUAL::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int LESS_EQUAL::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* LESS_EQUAL::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* LESS_EQUAL::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

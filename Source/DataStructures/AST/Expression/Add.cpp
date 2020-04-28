@@ -70,6 +70,18 @@ EXPRESSION* ADD::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int ADD::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* ADD::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* ADD::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

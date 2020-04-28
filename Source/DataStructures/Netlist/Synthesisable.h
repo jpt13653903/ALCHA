@@ -44,8 +44,8 @@ namespace NETLIST{
     public:
       bool    Used; // Actually used in an expression somewhere
       bool    Signed   ();
-      int     Width    ();
-      NUMBER& FullScale();
+      int     Width    () override;
+      NUMBER& FullScale() override;
       void    SetFixedPoint(int Width, const NUMBER& FullScale);
 
       AST::DEFINITION::DIRECTION Direction;

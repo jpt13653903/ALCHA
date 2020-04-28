@@ -69,6 +69,18 @@ EXPRESSION* BIT_NAND::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int BIT_NAND::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* BIT_NAND::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* BIT_NAND::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

@@ -67,6 +67,18 @@ EXPRESSION* OR_REDUCE::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int OR_REDUCE::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* OR_REDUCE::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* OR_REDUCE::Simplify(bool GenWire){
 //   assert(Right, return this);
 // 

@@ -66,6 +66,18 @@ EXPRESSION* STRING::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int STRING::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* STRING::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* STRING::Simplify(bool GenWire){
 //   return this;
 // }

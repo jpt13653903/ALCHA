@@ -65,6 +65,18 @@ EXPRESSION* MULTIPLY::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int MULTIPLY::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* MULTIPLY::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* MULTIPLY::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

@@ -67,6 +67,18 @@ EXPRESSION* ARRAYCONCATENATE::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int ARRAYCONCATENATE::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* ARRAYCONCATENATE::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* ARRAYCONCATENATE::Simplify(bool GenWire){
 //   // TODO: Simplify the elements
 //   error("Not yet implemented");

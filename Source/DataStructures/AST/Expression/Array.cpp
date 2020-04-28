@@ -67,6 +67,18 @@ EXPRESSION* ARRAY::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int ARRAY::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* ARRAY::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* ARRAY::Simplify(bool GenWire){
 //   return this;
 // }

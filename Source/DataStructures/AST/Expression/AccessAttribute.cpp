@@ -106,6 +106,18 @@ EXPRESSION* ACCESSATTRIBUTE::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int ACCESSATTRIBUTE::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* ACCESSATTRIBUTE::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void ACCESSATTRIBUTE::Display(){
   DisplayStart();
 

@@ -64,6 +64,18 @@ EXPRESSION* DIVIDE::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int DIVIDE::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* DIVIDE::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* DIVIDE::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

@@ -64,6 +64,18 @@ EXPRESSION* INCREMENT::Evaluate(bool CreateWires){
 }
 //------------------------------------------------------------------------------
 
+int INCREMENT::GetWidth(){
+  error("Not yet implemented");
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* INCREMENT::FixedPointScale(int Width, NUMBER& FullScale){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* INCREMENT::Simplify(bool GenWire){
 //   error("Not yet implemented");
 //   return this;
