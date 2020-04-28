@@ -57,7 +57,7 @@ bool NOT_EQUAL::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* NOT_EQUAL::Evaluate(bool CreateWires){
+EXPRESSION* NOT_EQUAL::Evaluate(){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

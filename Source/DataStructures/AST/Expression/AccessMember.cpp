@@ -58,11 +58,11 @@ bool ACCESSMEMBER::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ACCESSMEMBER::Evaluate(bool CreateWires){
+EXPRESSION* ACCESSMEMBER::Evaluate(){
   assert(Left , delete this; return 0);
   assert(Right, delete this; return 0);
 
-  Left = Left->Evaluate(true);
+  Left = Left->Evaluate();
 
   assert(Left, delete this; return 0);
 
@@ -101,7 +101,7 @@ EXPRESSION* ACCESSMEMBER::Evaluate(bool CreateWires){
   auto Result = new OBJECT(Source.Line, Source.Filename);
   Result->ObjectRef = Member;
   delete this;
-  return Result->Evaluate(true);
+  return Result->Evaluate();
 }
 //------------------------------------------------------------------------------
 
@@ -112,7 +112,7 @@ int ACCESSMEMBER::GetWidth(){
 //------------------------------------------------------------------------------
 
 EXPRESSION* ACCESSMEMBER::FixedPointScale(int Width, NUMBER& FullScale){
-  auto Result = this->Evaluate(true);
+  auto Result = this->Evaluate();
 
   if(Result == NULL) return this;
   if(Result == this) return this;

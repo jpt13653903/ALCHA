@@ -34,7 +34,7 @@ namespace AST{
     BASE* Copy() override;
 
     bool GetVerilog(std::string& Body) override;
-    EXPRESSION* Evaluate(bool CreateWires) override;
+    EXPRESSION* Evaluate() override;
 
     int GetWidth() override;
     EXPRESSION* FixedPointScale(int Width, NUMBER& FullScale) override;

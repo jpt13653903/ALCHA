@@ -57,7 +57,7 @@ bool MULTIPLY::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* MULTIPLY::Evaluate(bool CreateWires){
+EXPRESSION* MULTIPLY::Evaluate(){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = (EXPRESSION*)Copy(true);

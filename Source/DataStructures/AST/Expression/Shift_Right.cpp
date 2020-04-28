@@ -57,7 +57,7 @@ bool SHIFT_RIGHT::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* SHIFT_RIGHT::Evaluate(bool CreateWires){
+EXPRESSION* SHIFT_RIGHT::Evaluate(){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

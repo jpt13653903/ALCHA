@@ -52,7 +52,7 @@ bool DIVIDE::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* DIVIDE::Evaluate(bool CreateWires){
+EXPRESSION* DIVIDE::Evaluate(){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

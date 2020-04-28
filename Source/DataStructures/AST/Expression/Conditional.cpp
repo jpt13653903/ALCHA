@@ -52,7 +52,7 @@ bool CONDITIONAL::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* CONDITIONAL::Evaluate(bool CreateWires){
+EXPRESSION* CONDITIONAL::Evaluate(){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

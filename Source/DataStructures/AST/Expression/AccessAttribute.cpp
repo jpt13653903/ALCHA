@@ -55,11 +55,11 @@ bool ACCESSATTRIBUTE::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ACCESSATTRIBUTE::Evaluate(bool CreateWires){
+EXPRESSION* ACCESSATTRIBUTE::Evaluate(){
   assert(Left , delete this; return 0);
   assert(Right, delete this; return 0);
 
-  Left = Left->Evaluate(true);
+  Left = Left->Evaluate();
 
   assert(Left, delete this; return 0);
 

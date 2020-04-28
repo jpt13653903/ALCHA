@@ -78,7 +78,7 @@ bool SYNTHESISABLE::ApplyParameters(list<AST::BASE*>& Parameters){
     if((*Parameter)->IsExpression()){
       if(Position < 0) return false; // Mixing named and positional parameters
 
-      *Parameter = ((AST::EXPRESSION*)(*Parameter))->Evaluate(false);
+      *Parameter = ((AST::EXPRESSION*)(*Parameter))->Evaluate();
 
       AST::EXPRESSION* Param = (AST::EXPRESSION*)(*Parameter);
       if(!Param){

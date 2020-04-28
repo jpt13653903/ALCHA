@@ -58,7 +58,7 @@ bool ADD::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ADD::Evaluate(bool CreateWires){
+EXPRESSION* ADD::Evaluate(){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

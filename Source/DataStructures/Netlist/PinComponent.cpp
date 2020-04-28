@@ -54,7 +54,7 @@ bool PIN_COMPONENT::Assign(AST::EXPRESSION* Expression){
   assert(Expression, return false);
 
   if(Value) delete Value;
-  Value = Expression->Evaluate(false);
+  Value = Expression->Evaluate();
   return Value;
 }
 //------------------------------------------------------------------------------

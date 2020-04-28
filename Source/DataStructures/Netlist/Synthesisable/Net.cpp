@@ -55,7 +55,7 @@ bool NET::Assign(AST::EXPRESSION* Expression){
     printf("Overwriting net value %s\n", Name.c_str());
     delete Value;
   }
-  Value = Expression->Evaluate(false);
+  Value = Expression->Evaluate();
   return Value;
 }
 //------------------------------------------------------------------------------

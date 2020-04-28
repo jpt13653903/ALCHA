@@ -44,9 +44,10 @@ namespace AST{
 
       bool RunAST() override;
 
+      // Evaluates the expression as far as possible, creating new wires if required
       // Returns the instance of the node to use as replacement
       // For example: Node = Node->Evaluate() might change the value of Node
-      virtual EXPRESSION* Evaluate(bool CreateWires) = 0;
+      virtual EXPRESSION* Evaluate() = 0;
 
       // Returns the width of the result, if known.  Issues an error if the 
       // width is not defined (like an uncast literal, for instance)

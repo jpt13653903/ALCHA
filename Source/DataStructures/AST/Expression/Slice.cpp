@@ -52,7 +52,7 @@ bool SLICE::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* SLICE::Evaluate(bool CreateWires){
+EXPRESSION* SLICE::Evaluate(){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

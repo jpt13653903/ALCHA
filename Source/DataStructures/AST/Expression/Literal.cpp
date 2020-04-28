@@ -87,7 +87,7 @@ bool LITERAL::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LITERAL::Evaluate(bool CreateWires){
+EXPRESSION* LITERAL::Evaluate(){
   return this;
 }
 //------------------------------------------------------------------------------

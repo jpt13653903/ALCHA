@@ -73,9 +73,9 @@ bool VECTORCONCATENATE::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* VECTORCONCATENATE::Evaluate(bool CreateWires){
+EXPRESSION* VECTORCONCATENATE::Evaluate(){
   foreach(Element, Elements){
-    (*Element) = (*Element)->Evaluate(true);
+    (*Element) = (*Element)->Evaluate();
   }
   warning("Incomplete implementation");
   // TODO: If there are elements that can be combined, do so
@@ -86,7 +86,7 @@ EXPRESSION* VECTORCONCATENATE::Evaluate(bool CreateWires){
 int VECTORCONCATENATE::GetWidth(){
   int Result = 0;
   foreach(Element, Elements){
-   *Element = (*Element)->Evaluate(true);
+   *Element = (*Element)->Evaluate();
     Result += (*Element)->GetWidth();
   }
   return Result;

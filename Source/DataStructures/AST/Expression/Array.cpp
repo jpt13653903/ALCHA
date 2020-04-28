@@ -57,7 +57,7 @@ bool ARRAY::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ARRAY::Evaluate(bool CreateWires){
+EXPRESSION* ARRAY::Evaluate(){
   error("Not yet implemented");
   return this;
 //   ARRAY* Array = (ARRAY*)Copy(true);

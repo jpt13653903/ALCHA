@@ -56,7 +56,7 @@ bool NEGATE::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* NEGATE::Evaluate(bool CreateWires){
+EXPRESSION* NEGATE::Evaluate(){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

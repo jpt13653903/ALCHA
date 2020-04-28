@@ -55,7 +55,7 @@ bool NOR_REDUCE::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* NOR_REDUCE::Evaluate(bool CreateWires){
+EXPRESSION* NOR_REDUCE::Evaluate(){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

@@ -57,7 +57,7 @@ bool BIT_NAND::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* BIT_NAND::Evaluate(bool CreateWires){
+EXPRESSION* BIT_NAND::Evaluate(){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

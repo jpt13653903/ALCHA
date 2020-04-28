@@ -67,7 +67,7 @@ bool OBJECT::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* OBJECT::Evaluate(bool CreateWires){
+EXPRESSION* OBJECT::Evaluate(){
   if(!ObjectRef){
     error("Null object reference");
     delete this;
@@ -108,7 +108,7 @@ EXPRESSION* OBJECT::Evaluate(bool CreateWires){
       }
       Result = (EXPRESSION*)Result->Copy();
       NETLIST::NamespaceStack.push_front(Alias->Namespace);
-        Result = Result->Evaluate(true);
+        Result = Result->Evaluate();
       NETLIST::NamespaceStack.pop_front();
       if(!Result){
         Error("Error evaluating alias");
@@ -132,7 +132,7 @@ int OBJECT::GetWidth(){
 
 EXPRESSION* OBJECT::FixedPointScale(int Width, NUMBER& FullScale){
   // Could be an alias, so evaluate it first
-  auto Result = this->Evaluate(true);
+  auto Result = this->Evaluate();
 
   if(Result == NULL) return this;
   if(Result != this) return Result->FixedPointScale(Width, FullScale);

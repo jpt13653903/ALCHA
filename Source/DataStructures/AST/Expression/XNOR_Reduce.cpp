@@ -55,7 +55,7 @@ bool XNOR_REDUCE::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* XNOR_REDUCE::Evaluate(bool CreateWires){
+EXPRESSION* XNOR_REDUCE::Evaluate(){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

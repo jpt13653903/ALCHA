@@ -52,7 +52,7 @@ bool INCREMENT::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* INCREMENT::Evaluate(bool CreateWires){
+EXPRESSION* INCREMENT::Evaluate(){
   error("Not yet implemented");
   return this;
 //   EXPRESSION* Result = 0;

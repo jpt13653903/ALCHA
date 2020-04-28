@@ -61,9 +61,9 @@ bool BIT_NOT::GetVerilog(string& Body){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* BIT_NOT::Evaluate(bool CreateWires){
+EXPRESSION* BIT_NOT::Evaluate(){
   assert(Right, delete this; return 0);
-  Right = Right->Evaluate(true);
+  Right = Right->Evaluate();
   assert(Right, delete this; return 0);
 
   switch(Right->Type){
@@ -85,8 +85,6 @@ EXPRESSION* BIT_NOT::Evaluate(bool CreateWires){
       return Result;
     }
     case TYPE::Object:{
-      if(!CreateWires) return this;
-
       auto Net = new NETLIST::NET(Source.Line, Source.Filename, 0);
       Net->Value = this;
   
