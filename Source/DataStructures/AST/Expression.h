@@ -32,6 +32,8 @@ namespace AST{
       void DisplayStart();
       void DisplayEnd  ();
 
+      EXPRESSION* ScaleWith(NUMBER& Scale, int Width, NUMBER& FullScale);
+
     public:
       // Left and Right operands
       EXPRESSION* Left;

@@ -19,12 +19,12 @@ num LED_Width     = LED'width;
 num LED_FullScale = LED'fullscale;
 num LED_Current   = LED'current;
 
-net(14, 3 ) TestNet = LED;
+net(14, pi) TestNet = LED;
 
-pin(14, 3 ) Testing1 =  0.1 *TestNet;
-pin(14, 3 ) Testing2 = 10   *TestNet;
-pin(14, 3 ) Testing3 =  4   *TestNet;
-pin(14, 3 ) Testing4 =  0.25*TestNet;
+// pin(14, 3 ) Testing1 =  0.1 *TestNet;
+// pin(14, 3 ) Testing2 = 10   *TestNet;
+// pin(14, 3 ) Testing3 =  4   *TestNet;
+// pin(14, 3 ) Testing4 =  0.25*TestNet;
 
 // pin(14, pi) Testing5 =  0.1 *TestNet;
 // pin(14, pi) Testing6 = 10   *TestNet;

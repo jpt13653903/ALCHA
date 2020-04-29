@@ -20,7 +20,6 @@
 
 #include "Bit_NOT.h"
 #include "Literal.h"
-#include "Multiply.h"
 #include "Object.h"
 
 #include "Netlist/Namespace/Module.h"
@@ -117,24 +116,7 @@ EXPRESSION* BIT_NOT::FixedPointScale(int Width, NUMBER& FullScale){
   Scale.BinScale(Width);
   Scale.Div(FullScale);
 
-  if(Scale == 1) return this;
-
-  auto Object  = new OBJECT      (Source.Line, Source.Filename);
-  auto Net     = new NETLIST::NET(Source.Line, Source.Filename, 0);
-  auto Mul     = new MULTIPLY    (Source.Line, Source.Filename);
-  auto Literal = new LITERAL     (Source.Line, Source.Filename);
-
-  Net->SetFixedPoint(Width, FullScale);
-
-  Literal->Value     = Scale;
-  Mul    ->Left      = this;
-  Mul    ->Right     = Literal;
-  Net    ->Value     = Mul;
-  Object ->ObjectRef = Net;
-
-  NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
-
-  return Object;
+  return ScaleWith(Scale, Width, FullScale);
 }
 //------------------------------------------------------------------------------
 

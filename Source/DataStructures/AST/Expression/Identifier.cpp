@@ -75,6 +75,16 @@ EXPRESSION* IDENTIFIER::Evaluate(){
       Namespace = Namespace->Namespace;
     }
   }
+
+  // Identifier not found, so try the constants table
+  NUMBER Constant;
+  if(Constants.GetConstant(Name, &Constant)){
+    auto Result = new LITERAL(Source.Line, Source.Filename);
+    Result->Value = Constant;
+    delete this;
+    return Result;
+  }
+
   Error();
   printf("Undefined identifier: \"%s\"\n", Name.c_str());
 

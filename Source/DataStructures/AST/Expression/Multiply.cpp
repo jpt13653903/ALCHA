@@ -19,6 +19,11 @@
 //==============================================================================
 
 #include "Multiply.h"
+#include "Literal.h"
+#include "Object.h"
+
+#include "Netlist/Namespace/Module.h"
+#include "Netlist/Synthesisable/Net.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -58,10 +63,58 @@ bool MULTIPLY::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* MULTIPLY::Evaluate(){
-  error("Not yet implemented");
+  assert(Left , return this);
+  assert(Right, return this);
+
+  Left  = Left ->Evaluate();
+  Right = Right->Evaluate();
+
+  assert(Left , return this);
+  assert(Right, return this);
+
+  if(Left->Type == TYPE::Literal && Right->Type == TYPE::Literal){
+    auto Result = new LITERAL(Source.Line, Source.Filename);
+    auto left  = (LITERAL*)Left;
+    auto right = (LITERAL*)Right;
+    Result->Value =   left ->Value;
+    Result->Value.Mul(right->Value);
+    Result->Width  = left->Width  + right->Width;
+    Result->Signed = left->Signed ^ right->Signed;
+    delete this;
+    return Result;
+  }
+
+  // Put the literal on the right (if there is one)
+  if(Left->Type == TYPE::Literal){
+    auto Temp = Left;
+    Left  = Right;
+    Right = Temp;
+  }
+
+  // Replace a object * object with a wire
+  if(Left->Type == TYPE::Object && Right->Type == TYPE::Object){
+    auto left  = ((OBJECT*)Left )->ObjectRef;
+    auto right = ((OBJECT*)Right)->ObjectRef;
+
+    assert(left );
+    assert(right);
+
+    auto Object = new OBJECT      (Source.Line, Source.Filename);
+    auto Net    = new NETLIST::NET(Source.Line, Source.Filename, 0);
+
+    NUMBER FullScale = left->FullScale();
+    FullScale.Mul(right->FullScale());
+    Net->SetFixedPoint(left->Width() + right->Width(), FullScale);
+
+    Net   ->Value     = this;
+    Object->ObjectRef = Net;
+
+    NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
+
+    return Object;
+  }
+
   return this;
-//   EXPRESSION* Result = (EXPRESSION*)Copy(true);
-//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
@@ -72,7 +125,36 @@ int MULTIPLY::GetWidth(){
 //------------------------------------------------------------------------------
 
 EXPRESSION* MULTIPLY::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
+  auto Result = this->Evaluate();
+
+  if(Result == NULL) return this;
+  if(Result != this) return Result->FixedPointScale(Width, FullScale);
+
+  assert(Left , return this);
+  assert(Right, return this);
+
+  assert(Left->Type != TYPE::Literal); // Ensured by Evaluate();
+
+  if(Left->Type == TYPE::Object && Right->Type == TYPE::Literal){
+    auto left  = ((OBJECT *)Left )->ObjectRef;
+    auto right =  (LITERAL*)Right;
+
+    assert(left);
+
+    auto Object = new OBJECT      (Source.Line, Source.Filename);
+    auto Net    = new NETLIST::NET(Source.Line, Source.Filename, 0);
+
+    NUMBER ThisFullScale = left->FullScale();
+    ThisFullScale.Mul(right->Value);
+    Net->SetFixedPoint(left->Width(), ThisFullScale);
+
+    Net   ->Value     = Left;
+    Object->ObjectRef = Net;
+
+    NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
+
+    return Object->FixedPointScale(Width, FullScale);
+  }
   return this;
 }
 //------------------------------------------------------------------------------

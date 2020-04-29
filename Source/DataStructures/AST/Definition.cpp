@@ -150,7 +150,7 @@ void DEFINITION::DisplayParameters(){
     Debug.Print("none / default\n");
   }else{
     foreach(Parameter, Parameters){
-      (*Parameter)->Display();
+      if(*Parameter) (*Parameter)->Display();
       Debug.Print("\n");
     }
   }
@@ -212,7 +212,9 @@ void DEFINITION::DisplayDefinition(const char* Type){
 
 void DEFINITION::ValidateMembers(){
   if(!Parameters.empty()){
-    foreach(Parameter, Parameters) (*Parameter)->Validate();
+    foreach(Parameter, Parameters){
+      if(*Parameter) (*Parameter)->Validate();
+    }
   }
 
   if(Attributes) Attributes ->Validate();
