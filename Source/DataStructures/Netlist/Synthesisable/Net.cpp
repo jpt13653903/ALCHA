@@ -36,10 +36,8 @@ NET::~NET(){
 //------------------------------------------------------------------------------
 
 AST::EXPRESSION* NET::GetExpression(int Line, const string& Filename){
-  if(Value){
-    return (AST::EXPRESSION*)Value->Copy();
-  }
-  Error(Line, Filename, "Cannot get expression: no value has been assigned yet");
+  if(Value) return (AST::EXPRESSION*)Value->Copy();
+  Error(Line, Filename, "Operate-assign on empty object");
   return 0;
 }
 //------------------------------------------------------------------------------

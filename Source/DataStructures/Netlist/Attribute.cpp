@@ -38,7 +38,7 @@ ATTRIBUTE::~ATTRIBUTE(){
 
 AST::EXPRESSION* ATTRIBUTE::GetExpression(int Line, const string& Filename){
   if(Value) return (AST::EXPRESSION*)Value->Copy();
-  Error(Line, Filename, "Cannot get expression: no value has been assigned yet");
+  Error(Line, Filename, "Operate-assign on empty object");
   return 0;
 }
 //------------------------------------------------------------------------------

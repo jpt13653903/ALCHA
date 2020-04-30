@@ -79,10 +79,17 @@ bool MODULUS_ASSIGN::RunAST(){
 
   // Move the expression
   EXPRESSION* Expression = new MODULUS(Right->Source.Line, Right->Source.Filename);
-  Expression->Left  = Target->GetExpression(Right->Source.Line, Right->Source.Filename);
+  Expression->Left = Target->GetExpression(Right->Source.Line, Right->Source.Filename);
+
+  if(!Expression->Left){
+    delete Expression;
+    return false;
+  }
+
   Expression->Right = Right;
+  Right = 0;
+
   bool Result = Target->Assign(Expression);
-  Right  = 0;
 
   return Result;
 }

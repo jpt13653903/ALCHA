@@ -81,9 +81,16 @@ bool APPEND_ASSIGN::RunAST(){
   ARRAYCONCATENATE* Expression = new ARRAYCONCATENATE(Right->Source.Line, Right->Source.Filename);
   error("Not yet implemented"); // TODO: Should append in-place if left is an array, otherwise create a new array
   Expression->Elements.push_back(Target->GetExpression(Right->Source.Line, Right->Source.Filename));
+
+  if(!Expression->Elements.back()){
+    delete Expression;
+    return false;
+  }
+
   Expression->Elements.push_back(Right);
+  Right = 0;
+
   bool Result = Target->Assign(Expression);
-  Right  = 0;
 
   return Result;
 }

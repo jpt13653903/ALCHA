@@ -92,8 +92,10 @@ namespace NETLIST{
       // Called by the definition to assign the attribute list
       bool ApplyAttributes(AST::ASSIGNMENT* AttributeList);
 
-      // Either generates a new node or a copy of the current node
-      // It is used specifically for operate-and-assign expressions
+      // Used specifically for operate-and-assign expressions.
+      // If a value has been assigned, returns a copy of the expression.
+      // For pins, the "Driver" component is used.
+      // Returns null on error, or when no value has been assigned yet.
       virtual AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) = 0;
 
       // Assigns the expression, taking ownership (i.e. will delete later)

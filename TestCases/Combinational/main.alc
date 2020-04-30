@@ -26,7 +26,7 @@ pin(14, 3 ) Testing2 = 10   *TestNet;
 pin(14, 3 ) Testing3 =  4   *TestNet;
 pin(14, 3 ) Testing4 =  0.25*TestNet;
 
-pin(14, pi) Testing5 =  0.1 *TestNet;
+pin(14, pi) Testing5;!! =  0.1 *TestNet;
 pin(14, pi) Testing6 = 10   *TestNet;
 pin(14, pi) Testing7 =  4   *TestNet;
 pin(14, pi) Testing8 =  0.25*TestNet;

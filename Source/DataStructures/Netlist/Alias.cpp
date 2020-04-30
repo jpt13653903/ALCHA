@@ -36,6 +36,7 @@ ALIAS::~ALIAS(){
 //------------------------------------------------------------------------------
 
 AST::EXPRESSION* ALIAS::GetExpression(int Line, const string& Filename){
+  assert(Expression, return 0);
   return (AST::EXPRESSION*)Expression->Copy();
 }
 //------------------------------------------------------------------------------

@@ -59,6 +59,7 @@ bool ENGINE::Run(const char* Filename){
   NETLIST::NamespaceStack.push_front(&NETLIST::Global);
 
   NETLIST::Global.Ast = RunAST(Filename);
+  if(!NETLIST::Global.Ast) return 0;
 
   #ifdef DEBUG
     Debug.Print(ANSI_FG_GREEN "\nDisplaying Global AST ");
