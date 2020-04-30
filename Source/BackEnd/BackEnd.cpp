@@ -47,6 +47,8 @@ void BACK_END::Warning(AST::EXPRESSION* Expression, const char* Message){
 //------------------------------------------------------------------------------
 
 bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
+  Debug.Print("Delete unused...\n");
+
   auto SymbolIterator = Namespace->Symbols.begin();
 
   while(SymbolIterator != Namespace->Symbols.end()){
@@ -100,7 +102,7 @@ bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
 //------------------------------------------------------------------------------
 
 bool BACK_END::AssignPinDirections(NAMESPACE* Namespace){
-  info("Assign pin directions...");
+  Debug.Print("Assign pin directions...\n");
 
   foreach(SymbolIterator, Namespace->Symbols){
     switch(SymbolIterator->second->Type){
@@ -141,7 +143,7 @@ bool BACK_END::AssignPinDirections(NAMESPACE* Namespace){
 //------------------------------------------------------------------------------
 
 bool BACK_END::RoutePorts(NAMESPACE* Namespace){
-  info("Route ports...");
+  Debug.Print("Route ports...\n");
 
   // At this point, the expressions use pointers, not names.  Any inter-module
   // usage needs to be broken into temporary signals throughout the hierarchy
@@ -342,10 +344,13 @@ bool BACK_END::BuildAltera(const char* Path, const char* Filename){
   );
 
   if(!DeleteUnused(&Global)) return false;
+  Debug.Print("\n");
 
-  // if(!AssignPinDirections(&Global)) return false;
+  if(!AssignPinDirections(&Global)) return false;
+  Debug.Print("\n");
 
   // if(!RoutePorts(&Global)) return false;
+  Debug.Print("\n");
 
   Global.Display();
 
@@ -354,7 +359,6 @@ bool BACK_END::BuildAltera(const char* Path, const char* Filename){
   //                 "----------------------------------------\n\n"
   //   ANSI_RESET
   // );
-  // Global.Display();
 
   // ALTERA::PROJECT Project;
   // Project.Build(Path, Filename);
