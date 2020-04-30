@@ -63,6 +63,7 @@ namespace ALTERA{
 
       bool BuildProject          ();
       bool BuildSettings         ();
+      bool BuildPins             ();
       bool BuildDesignConstraints();
       bool BuildConfigChain      ();
 

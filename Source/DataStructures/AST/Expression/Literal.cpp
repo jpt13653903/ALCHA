@@ -100,6 +100,7 @@ int LITERAL::GetWidth(){
     Num.BinScale(-1);
     Width++;
   }
+  if(!Width) return 1;
   return Width;
 }
 //------------------------------------------------------------------------------

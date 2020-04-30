@@ -361,9 +361,8 @@ bool BACK_END::BuildAltera(const char* Path, const char* Filename){
     ANSI_RESET
   );
 
-  warning("TODO");
-  // ALTERA::PROJECT Project;
-  // Project.Build(Path, Filename);
+  ALTERA::PROJECT Project;
+  Project.Build(Path, Filename);
 
   if(!BuildHDL(&Global, "")) return false;
 
