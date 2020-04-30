@@ -19,6 +19,7 @@
 //==============================================================================
 
 #include "Replicate.h"
+#include "Literal.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -58,31 +59,59 @@ bool REPLICATE::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* REPLICATE::Evaluate(){
-  error("Not yet implemented");
+  assert(Left , return this);
+  assert(Right, return this);
+
+  Left  = Left ->Evaluate();
+  Right = Right->Evaluate();
+
+  assert(Left , return this);
+  assert(Right, return this);
+
+  if(Right->Type != TYPE::Literal){
+    Error("Replicate number should evaluate to a literal");
+    return this;
+  }
+  
   return this;
-//   EXPRESSION* Result = 0;
-// 
-//   error("Not yet implemented");
-// 
-//   if(!Result) return 0;
-//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
 int REPLICATE::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+  assert(Left , return 0);
+  assert(Right, return 0);
+
+  Left  = Left->Evaluate();
+  Right = Right->Evaluate();
+
+  assert(Left , return 0);
+  assert(Right, return 0);
+
+  if(Right->Type != TYPE::Literal){
+    Error("Replicate number should evaluate to a literal");
+    return 0;
+  }
+
+  return Left->GetWidth() * ((LITERAL*)Right)->Value.GetReal();
 }
 //------------------------------------------------------------------------------
 
 EXPRESSION* REPLICATE::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
+  NUMBER Scale = 1;
+  Scale.BinScale(Width);
+  Scale.Div(FullScale);
+
+  return ScaleWith(Scale, Width, FullScale);
 }
 //------------------------------------------------------------------------------
 
 bool REPLICATE::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
+  assert(Left , return false);
+  assert(Right, return false);
+  
+  if(Left ->HasCircularReference(Object)) return true;
+  if(Right->HasCircularReference(Object)) return true;
+
   return false;
 }
 //------------------------------------------------------------------------------
@@ -113,10 +142,8 @@ void REPLICATE::ValidateMembers(){
   assert(!Next);
   assert(!Prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
-
-  error("Not yet implemented");
+  assert(Left , return); Left ->Validate();
+  assert(Right, return); Right->Validate();
 }
 //------------------------------------------------------------------------------
 

@@ -26,7 +26,7 @@ pin(14, 3 ) Testing2 = 10   *TestNet;
 pin(14, 3 ) Testing3 =  4   *TestNet;
 pin(14, 3 ) Testing4 =  0.25*TestNet;
 
-pin(14, pi) Testing5;!! =  0.1 *TestNet;
+pin(14, pi) Testing5 =  0.1 *TestNet;
 pin(14, pi) Testing6 = 10   *TestNet;
 pin(14, pi) Testing7 =  4   *TestNet;
 pin(14, pi) Testing8 =  0.25*TestNet;
@@ -38,14 +38,14 @@ pin(14, 255.99999999999) Testing10 = TestNet2;
 
 Testing5 *= TestNet;
 
-// LVDS_TX = 0xABC;
-// 
-// net(16, 1) a  = 0.123;
-// pin(32, 1) b  = 2*a;
-// pin(32, 1) c := 2*a;
-// 
-// // pin( 8) d = 123;
-// // pin(40) e = a`5;
-// 
-// GPIO := Testing5;
+LVDS_TX = 0xABC;
+
+net(16, 1) a  = 0.123;
+pin(32, 1) b  = 2*a;
+pin(32, 1) c := 2*a;
+
+pin( 8) d = 123;
+pin(40) e = a`5;
+
+GPIO := Testing5;
 

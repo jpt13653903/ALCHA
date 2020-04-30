@@ -98,7 +98,10 @@ EXPRESSION* LITERAL::FixedPointScale(int Width, NUMBER& FullScale){
   Scale.BinScale(Width);
   Scale.Div(FullScale);
 
-  return ScaleWith(Scale, Width, FullScale);
+  Value.Mul(Scale);
+  Value.Round();
+
+  return this;
 }
 //------------------------------------------------------------------------------
 
