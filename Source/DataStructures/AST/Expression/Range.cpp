@@ -79,6 +79,12 @@ EXPRESSION* RANGE::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool RANGE::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* RANGE::Simplify(bool GenWire){
 //   error("Not yet implemented");
 //   return this;

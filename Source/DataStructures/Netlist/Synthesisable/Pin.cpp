@@ -67,6 +67,14 @@ bool PIN::RawAssign(AST::EXPRESSION* Expression){
 }
 //------------------------------------------------------------------------------
 
+bool PIN::HasCircularReference(BASE* Object){
+  if(this == Object) return true;
+  if(Driver ->HasCircularReference(Object)) return true;
+  if(Enabled->HasCircularReference(Object)) return true;
+  return false;
+}
+//------------------------------------------------------------------------------
+
 BASE* PIN::GetMember(const std::string& Name){
   if(Name == "driver" ) return Driver;
   if(Name == "enabled") return Enabled;

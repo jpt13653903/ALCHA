@@ -59,7 +59,17 @@ bool NET::RawAssign(AST::EXPRESSION* Expression){
     delete Value;
   }
   Value = Expression->Evaluate();
+  if(Value && Value->HasCircularReference(this)){
+    Value->Error("Circular combinational circuit");
+  }
   return Value;
+}
+//------------------------------------------------------------------------------
+
+bool NET::HasCircularReference(BASE* Object){
+  if(this == Object) return true;
+  if(!Value) return false;
+  return Value->HasCircularReference(Object);
 }
 //------------------------------------------------------------------------------
 

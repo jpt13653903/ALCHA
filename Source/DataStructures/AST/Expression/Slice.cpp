@@ -76,6 +76,12 @@ EXPRESSION* SLICE::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool SLICE::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* SLICE::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

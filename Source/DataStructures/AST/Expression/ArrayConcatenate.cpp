@@ -79,6 +79,12 @@ EXPRESSION* ARRAYCONCATENATE::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool ARRAYCONCATENATE::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* ARRAYCONCATENATE::Simplify(bool GenWire){
 //   // TODO: Simplify the elements
 //   error("Not yet implemented");

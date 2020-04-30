@@ -76,6 +76,12 @@ EXPRESSION* CONDITIONAL::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool CONDITIONAL::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* CONDITIONAL::Simplify(bool GenWire){
 //   // TODO: There should be a third component...  Left and Right of Right?
 //   //       Or break it down to an if-statement?

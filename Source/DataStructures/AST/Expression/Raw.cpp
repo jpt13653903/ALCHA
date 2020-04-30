@@ -76,6 +76,12 @@ EXPRESSION* RAW::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool RAW::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* RAW::Simplify(bool GenWire){
 //   error("Not yet implemented");
 //   return this;

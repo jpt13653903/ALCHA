@@ -26,6 +26,11 @@
 #include "Number.h"
 //------------------------------------------------------------------------------
 
+namespace NETLIST{
+  class BASE;
+}
+//------------------------------------------------------------------------------
+
 namespace AST{
   class EXPRESSION: public BASE{
     protected:
@@ -35,6 +40,7 @@ namespace AST{
       // Used for fixed-point scaling...
       // If the scaling is not a power-of-two, it also synthesises a multiplier.
       EXPRESSION* ScaleWith(NUMBER& Scale, int Width, NUMBER& FullScale);
+    //--------------------------------------------------------------------------
 
     public:
       // Left and Right operands
@@ -61,6 +67,9 @@ namespace AST{
       // target type.  Passing Width = 0 implies that the target is a scripting
       // variable.  The result can be raw-assigned to the target.
       virtual EXPRESSION* FixedPointScale(int Width, NUMBER& FullScale) = 0;
+
+      // Check for circular reference to the netlist object specified
+      virtual bool HasCircularReference(NETLIST::BASE* Object) = 0;
   };
 }
 //------------------------------------------------------------------------------

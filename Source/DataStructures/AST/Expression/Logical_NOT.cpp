@@ -79,6 +79,12 @@ EXPRESSION* LOGICAL_NOT::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool LOGICAL_NOT::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* LOGICAL_NOT::Simplify(bool GenWire){
 //   assert(Right, return this);
 // 

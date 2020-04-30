@@ -80,6 +80,12 @@ EXPRESSION* AND_REDUCE::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool AND_REDUCE::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* AND_REDUCE::Simplify(bool GenWire){
 //   assert(Right, return this);
 // 

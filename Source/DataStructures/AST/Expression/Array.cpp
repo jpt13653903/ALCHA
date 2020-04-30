@@ -79,6 +79,12 @@ EXPRESSION* ARRAY::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool ARRAY::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* ARRAY::Simplify(bool GenWire){
 //   return this;
 // }

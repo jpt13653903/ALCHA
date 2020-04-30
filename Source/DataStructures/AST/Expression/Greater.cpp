@@ -81,6 +81,12 @@ EXPRESSION* GREATER::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool GREATER::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* GREATER::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

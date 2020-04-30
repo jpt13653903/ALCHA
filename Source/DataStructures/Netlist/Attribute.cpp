@@ -59,6 +59,13 @@ bool ATTRIBUTE::RawAssign(AST::EXPRESSION* Expression){
 }
 //------------------------------------------------------------------------------
 
+bool ATTRIBUTE::HasCircularReference(BASE* Object){
+  if(this == Object) return true;
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void ATTRIBUTE::Display(int Indent){
   Debug.Indent(Indent);
   Debug.Print(Name);

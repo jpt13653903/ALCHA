@@ -81,6 +81,12 @@ EXPRESSION* REPLICATE::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool REPLICATE::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* REPLICATE::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

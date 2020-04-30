@@ -102,11 +102,10 @@ void MULTIPLY_ASSIGN::Display(){
 void MULTIPLY_ASSIGN::ValidateMembers(){
   assert(Type == TYPE::Multiply_Assign);
 
-  assert(Left , return);
-  assert(Right, return);
+  assert(Left, return);
+  Left->Validate();
 
-  Left ->Validate();
-  Right->Validate();
+  if(Right) Right->Validate();
 }
 //------------------------------------------------------------------------------
 

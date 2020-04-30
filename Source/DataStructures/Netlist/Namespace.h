@@ -43,6 +43,8 @@ namespace NETLIST{
       bool Assign   (AST::EXPRESSION* Expression) override;
       bool RawAssign(AST::EXPRESSION* Expression) override;
 
+      bool HasCircularReference(BASE* Object) override;
+
       bool IsNamespace() override;
 
       BASE* GetMember(const std::string& Name) override;

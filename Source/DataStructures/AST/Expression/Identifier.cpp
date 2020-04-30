@@ -66,11 +66,16 @@ EXPRESSION* IDENTIFIER::Evaluate(){
     while(Namespace){
       auto Object = Namespace->GetMember(Name);
       if(Object){
-        auto Result = new OBJECT(Source.Line, Source.Filename);
-        Result->ObjectRef = Object;
-        delete this;
+        auto ObjResult = new OBJECT(Source.Line, Source.Filename);
+        ObjResult->ObjectRef = Object;
         // It might be an alias, or evaluate further to a literal
-        return Result->Evaluate();
+        auto Result = ObjResult->Evaluate();
+        if(Result){ // The source reference gets messed up during alias expansion
+          Result->Source.Line     = Source.Line;
+          Result->Source.Filename = Source.Filename;
+        }
+        delete this;
+        return Result;
       }
       Namespace = Namespace->Namespace;
     }
@@ -106,6 +111,12 @@ EXPRESSION* IDENTIFIER::FixedPointScale(int Width, NUMBER& FullScale){
   if(Result == this) return this;
 
   return Result->FixedPointScale(Width, FullScale);
+}
+//------------------------------------------------------------------------------
+
+bool IDENTIFIER::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 

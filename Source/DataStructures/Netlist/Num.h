@@ -37,6 +37,8 @@ namespace NETLIST{
     bool Assign   (AST::EXPRESSION* Expression) override;
     bool RawAssign(AST::EXPRESSION* Expression) override;
 
+    bool HasCircularReference(BASE* Object) override;
+
     void Display(int Indent = 0) override;
 
     void Validate() override;

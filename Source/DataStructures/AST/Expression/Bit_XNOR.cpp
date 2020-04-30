@@ -81,6 +81,12 @@ EXPRESSION* BIT_XNOR::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool BIT_XNOR::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* BIT_XNOR::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

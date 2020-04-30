@@ -76,6 +76,12 @@ EXPRESSION* DECREMENT::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool DECREMENT::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* DECREMENT::Simplify(bool GenWire){
 //   error("Not yet implemented");
 //   return this;

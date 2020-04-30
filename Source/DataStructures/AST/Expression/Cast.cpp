@@ -167,6 +167,12 @@ EXPRESSION* CAST::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool CAST::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* CAST::Simplify(bool GenWire){
 //   // TODO: Root has the target type; Left has the original expression
 //   //       Right is optional and carry the class name (when applicable)

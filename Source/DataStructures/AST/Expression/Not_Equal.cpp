@@ -81,6 +81,12 @@ EXPRESSION* NOT_EQUAL::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool NOT_EQUAL::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* NOT_EQUAL::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

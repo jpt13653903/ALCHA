@@ -10,14 +10,14 @@
 'standard = "2.5 V";
 //------------------------------------------------------------------------------
 
-// group ADXL362{
-//   output pin<location = "L14"> CS;
-//   input  pin<location = "M15"> INT1;
-//   input  pin<location = "M14"> INT2;
-//   input  pin<location = "L18"> MISO;
-//   output pin<location = "L19"> MOSI;
-//   output pin<location = "M18"> SCLK;
-// }
+group ADXL362{
+  output pin<location = "L14"> CS;
+  input  pin<location = "M15"> INT1;
+  input  pin<location = "M14"> INT2;
+  input  pin<location = "L18"> MISO;
+  output pin<location = "L19"> MOSI;
+  output pin<location = "M18"> SCLK;
+}
 //------------------------------------------------------------------------------
 
 group AD5681R{
@@ -37,35 +37,35 @@ group ADT7420{
 }
 //------------------------------------------------------------------------------
 
-// group SDRAM{
-//   pin(13) <location = [
-//     "T20" , "T19", "T18", "AA21",
-//     "AA22", "U22", "T22", "R22" ,
-//     "P20" , "P22", "U21", "P19" , "N20"]> A;
-// 
-//   pin(2) <location = ["R20", "T21"]> BA;
-// 
-//   pin<location = "N21"> CASn;
-//   pin<location = "N22"> CKE;
-//   pin<location = "M22"> CLK;
-//   pin<location = "P21"> CSn;
-//   pin<location = "L22"> DQMH;
-//   pin<location = "L20"> DQML;
-//   pin<location = "M20"> RASn;
-//   pin<location = "M21"> WEn;
-// 
-//   pin(16) <location = [
-//     "C22", "D22", "E22", "F22", "G22", "H22", "J22", "K22",
-//     "K21", "J21", "H21", "G20", "F21", "E21", "D21", "C21"]> DQ;
-// }
+group SDRAM{
+  pin(13) <location = [
+    "T20" , "T19", "T18", "AA21",
+    "AA22", "U22", "T22", "R22" ,
+    "P20" , "P22", "U21", "P19" , "N20"]> A;
+
+  pin(2) <location = ["R20", "T21"]> BA;
+
+  pin<location = "N21"> CASn;
+  pin<location = "N22"> CKE;
+  pin<location = "M22"> CLK;
+  pin<location = "P21"> CSn;
+  pin<location = "L22"> DQMH;
+  pin<location = "L20"> DQML;
+  pin<location = "M20"> RASn;
+  pin<location = "M21"> WEn;
+
+  pin(16) <location = [
+    "C22", "D22", "E22", "F22", "G22", "H22", "J22", "K22",
+    "K21", "J21", "H21", "G20", "F21", "E21", "D21", "C21"]> DQ;
+}
 //------------------------------------------------------------------------------
 
-// group SFLASH{
-//   output pin<location = "R11"> ASDI;
-//   output pin<location = "R10"> CSn;
-//   input  pin<location = "P10"> DATA;
-//   output pin<location = "P11"> DCLK;
-// }
+group SFLASH{
+  output pin<location = "R11"> ASDI;
+  output pin<location = "R10"> CSn;
+  input  pin<location = "P10"> DATA;
+  output pin<location = "P11"> DCLK;
+}
 //------------------------------------------------------------------------------
 
 pin(8) <current = 8e-3, location = [
@@ -75,68 +75,68 @@ pin(8) <current = 8e-3, location = [
 pin(4) <location = ["M1", "R1", "V5", "AB5"]> SW;
 //------------------------------------------------------------------------------
 
-// pin(8) <location = ["F5", "E4", "F4", "E3", "J8", "G4", "J9", "F3"]> AIN;
+pin(8) <location = ["F5", "E4", "F4", "E3", "J8", "G4", "J9", "F3"]> AIN;
 //------------------------------------------------------------------------------
 
-// group EG{ // Incomplete array
-//   pin<location = "C1" > P1;
-//   pin<location = "D2" > P2;
-//   pin<location = "D1" > P3;
-//   pin<location = "D3" > P4;
-//   pin<location = "E1" > P5;
-//   pin<location = "F2" > P6;
-//   pin<location = "F1" > P7;
-//   pin<location = "G1" > P8;
-//   pin<location = "H1" > P9;
-//   pin<location = "J1" > P10;
-//   pin<location = "K2" > P11;
-//   pin<location = "L2" > P12;
-//   pin<location = "N2" > P13;
-//   pin<location = "P3" > P14;
-//   pin<location = "P1" > P15;
-//   pin<location = "R3" > P16;
-//   pin<location = "T2" > P17;
-//   pin<location = "R4" > P18;
-//   pin<location = "T5" > P19;
-//   pin<location = "Y1" > P20;
-//   pin<location = "Y2" > P21;
-//   pin<location = "AA1"> P22;
-//   pin<location = "AA2"> P23;
-//   pin<location = "Y3" > P24;
-//   pin<location = "Y4" > P25;
-//   pin<location = "AB6"> P26;
-//   pin<location = "AB7"> P27;
-//   pin<location = "AA8"> P28;
-//   pin<location = "AB8"> P29;
-//   pin<location = "E11"> P35;
-//   pin<location = "E10"> P36;
-//   pin<location = "D9" > P37;
-//   pin<location = "E9" > P38;
-//   pin<location = "E8" > P39;
-//   pin<location = "D8" > P40;
-//   pin<location = "E6" > P41;
-//   pin<location = "D7" > P42;
-//   pin<location = "C8" > P43;
-//   pin<location = "C7" > P44;
-//   pin<location = "D6" > P45;
-//   pin<location = "C6" > P46;
-//   pin<location = "D5" > P47;
-//   pin<location = "C5" > P48;
-//   pin<location = "C4" > P49;
-//   pin<location = "H11"> P50;
-//   pin<location = "J10"> P51;
-//   pin<location = "M9" > P52;
-//   pin<location = "M8" > P53;
-//   pin<location = "N9" > P54;
-//   pin<location = "N8" > P55;
-//   pin<location = "N5" > P56;
-//   pin<location = "N4" > P57;
-//   pin<location = "N3" > P58;
-//   pin<location = "P5" > P59;
-//   pin<location = "P4" > P60;
-// }
-// pin<location = "R5"> EXP_PRESENT;
-// pin<location = "C2"> RESET_EXPn;
+group EG{ // Incomplete array
+  pin<location = "C1" > P1;
+  pin<location = "D2" > P2;
+  pin<location = "D1" > P3;
+  pin<location = "D3" > P4;
+  pin<location = "E1" > P5;
+  pin<location = "F2" > P6;
+  pin<location = "F1" > P7;
+  pin<location = "G1" > P8;
+  pin<location = "H1" > P9;
+  pin<location = "J1" > P10;
+  pin<location = "K2" > P11;
+  pin<location = "L2" > P12;
+  pin<location = "N2" > P13;
+  pin<location = "P3" > P14;
+  pin<location = "P1" > P15;
+  pin<location = "R3" > P16;
+  pin<location = "T2" > P17;
+  pin<location = "R4" > P18;
+  pin<location = "T5" > P19;
+  pin<location = "Y1" > P20;
+  pin<location = "Y2" > P21;
+  pin<location = "AA1"> P22;
+  pin<location = "AA2"> P23;
+  pin<location = "Y3" > P24;
+  pin<location = "Y4" > P25;
+  pin<location = "AB6"> P26;
+  pin<location = "AB7"> P27;
+  pin<location = "AA8"> P28;
+  pin<location = "AB8"> P29;
+  pin<location = "E11"> P35;
+  pin<location = "E10"> P36;
+  pin<location = "D9" > P37;
+  pin<location = "E9" > P38;
+  pin<location = "E8" > P39;
+  pin<location = "D8" > P40;
+  pin<location = "E6" > P41;
+  pin<location = "D7" > P42;
+  pin<location = "C8" > P43;
+  pin<location = "C7" > P44;
+  pin<location = "D6" > P45;
+  pin<location = "C6" > P46;
+  pin<location = "D5" > P47;
+  pin<location = "C5" > P48;
+  pin<location = "C4" > P49;
+  pin<location = "H11"> P50;
+  pin<location = "J10"> P51;
+  pin<location = "M9" > P52;
+  pin<location = "M8" > P53;
+  pin<location = "N9" > P54;
+  pin<location = "N8" > P55;
+  pin<location = "N5" > P56;
+  pin<location = "N4" > P57;
+  pin<location = "N3" > P58;
+  pin<location = "P5" > P59;
+  pin<location = "P4" > P60;
+}
+pin<location = "R5"> EXP_PRESENT;
+pin<location = "C2"> RESET_EXPn;
 //------------------------------------------------------------------------------
 
 pin(36) <location = [
@@ -146,32 +146,32 @@ pin(36) <location = [
   "A14", "B14", "C14", "C13", "H14", "J13", "D17", "C17",
   "E16", "E15", "K14", "K15"]> GPIO;
 
-// pin(12) <standard = "LVDS", location = [
-//   "K14-K15", "E16-E15", "D17-C17", "H14-J13",
-//   "C14-C13", "A14-B14", "D14-E13", "E12-D13",
-//   "H12-J11", "B10-C9" , "A9 -B8" , "A7 -A8" ]> DIFF_RX_P;
-// 
-// group I2C{
-//   pin<location = "AA14"> SDA;
-//   pin<location = "AB15"> SCL;
-// }
-// pin<location = "AA15"> GPIO_A;
-// pin<location = "Y16" > GPIO_B;
-// pin(12) <standard = "LVDS", location = [
-//   "V17-W17", "V16 -U15", "W15-V14", "W14-V13",
-//   "Y14-Y13", "AA10-Y10", "V10-V9" , "AA7-AA6",
-//   "W8 -W7" , "U7  -U6" , "W6 -W5" , "W3 -W4" ]> LVDS_TX;
+pin(12) <standard = "LVDS", location = [
+  "K14-K15", "E16-E15", "D17-C17", "H14-J13",
+  "C14-C13", "A14-B14", "D14-E13", "E12-D13",
+  "H12-J11", "B10-C9" , "A9 -B8" , "A7 -A8" ]> DIFF_RX_P;
+
+group I2C{
+  pin<location = "AA14"> SDA;
+  pin<location = "AB15"> SCL;
+}
+pin<location = "AA15"> GPIO_A;
+pin<location = "Y16" > GPIO_B;
+pin(12) <standard = "LVDS", location = [
+  "V17-W17", "V16 -U15", "W15-V14", "W14-V13",
+  "Y14-Y13", "AA10-Y10", "V10-V9" , "AA7-AA6",
+  "W8 -W7" , "U7  -U6" , "W6 -W5" , "W3 -W4" ]> LVDS_TX;
 //------------------------------------------------------------------------------
 
-// group PMOD{
-//   pin(4) <location = ["C20", "D19", "D18", "E18"]> A;
-//   pin(4) <location = ["E19", "F18", "F20", "G19"]> B;
-//   pin(4) <location = ["U18", "U17", "R18", "P18"]> C;
-//   pin(4) <location = ["R14", "R15", "P15", "P14"]> D;
-// }
+group PMOD{
+  pin(4) <location = ["C20", "D19", "D18", "E18"]> A;
+  pin(4) <location = ["E19", "F18", "F20", "G19"]> B;
+  pin(4) <location = ["U18", "U17", "R18", "P18"]> C;
+  pin(4) <location = ["R14", "R15", "P15", "P14"]> D;
+}
 //------------------------------------------------------------------------------
 
-// pin<frequency = 50e6, location = "N14"> SYS_CLK;
-// pin<frequency = 50e6, location = "N15"> USER_CLK;
+pin<frequency = 50e6, location = "N14"> SYS_CLK;
+pin<frequency = 50e6, location = "N15"> USER_CLK;
 //------------------------------------------------------------------------------
 

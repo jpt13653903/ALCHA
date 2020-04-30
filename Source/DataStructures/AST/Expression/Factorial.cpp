@@ -76,6 +76,12 @@ EXPRESSION* FACTORIAL::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool FACTORIAL::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* FACTORIAL::Simplify(bool GenWire){
 //   assert(Left, return this);
 // 

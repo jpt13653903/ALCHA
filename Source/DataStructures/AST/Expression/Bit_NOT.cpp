@@ -120,6 +120,12 @@ EXPRESSION* BIT_NOT::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool BIT_NOT::HasCircularReference(NETLIST::BASE* Object){
+  assert(Right, return false);
+  return Right->HasCircularReference(Object);
+}
+//------------------------------------------------------------------------------
+
 void BIT_NOT::Display(){
   DisplayStart();
 

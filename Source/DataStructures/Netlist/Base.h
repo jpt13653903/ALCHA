@@ -129,6 +129,8 @@ namespace NETLIST{
       // Returns 0 by default, indicating an invalid question.
       virtual int     Width    ();
       virtual NUMBER& FullScale();
+
+      virtual bool HasCircularReference(BASE* Object) = 0;
   };
 }
 //------------------------------------------------------------------------------

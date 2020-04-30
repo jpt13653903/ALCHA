@@ -79,6 +79,12 @@ EXPRESSION* NAND_REDUCE::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool NAND_REDUCE::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* NAND_REDUCE::Simplify(bool GenWire){
 //   assert(Right, return this);
 // 

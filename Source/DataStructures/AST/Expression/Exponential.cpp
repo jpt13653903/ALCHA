@@ -76,6 +76,12 @@ EXPRESSION* EXPONENTIAL::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool EXPONENTIAL::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* EXPONENTIAL::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

@@ -81,6 +81,12 @@ EXPRESSION* LESS::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool LESS::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* LESS::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

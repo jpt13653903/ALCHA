@@ -43,6 +43,8 @@ namespace AST{
     int GetWidth() override;
     EXPRESSION* FixedPointScale(int Width, NUMBER& FullScale) override;
 
+    bool HasCircularReference(NETLIST::BASE* Object) override;
+
     void Display() override;
 
     void ValidateMembers() override;

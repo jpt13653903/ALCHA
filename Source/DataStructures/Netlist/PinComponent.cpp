@@ -58,7 +58,20 @@ bool PIN_COMPONENT::RawAssign(AST::EXPRESSION* Expression){
 
   if(Value) delete Value;
   Value = Expression->Evaluate();
+  if(Value){
+    if(Value->HasCircularReference(this) ||
+       Value->HasCircularReference(Pin ) ){
+      Value->Error("Circular combinational circuit");
+    }
+  }
   return Value;
+}
+//------------------------------------------------------------------------------
+
+bool PIN_COMPONENT::HasCircularReference(BASE* Object){
+  if(this == Object) return true;
+  if(!Value) return false;
+  return Value->HasCircularReference(Object);
 }
 //------------------------------------------------------------------------------
 

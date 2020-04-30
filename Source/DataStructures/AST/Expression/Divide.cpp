@@ -76,6 +76,12 @@ EXPRESSION* DIVIDE::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool DIVIDE::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* DIVIDE::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

@@ -95,6 +95,15 @@ EXPRESSION* VECTORCONCATENATE::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool VECTORCONCATENATE::HasCircularReference(NETLIST::BASE* Object){
+  foreach(Element, Elements){
+    assert(*Element, return false);
+    if((*Element)->HasCircularReference(Object)) return true;
+  }
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void VECTORCONCATENATE::Display(){
   Debug.Print("(VectorConcat: (");
   bool isFirst = true;

@@ -89,6 +89,12 @@ EXPRESSION* FUNCTIONCALL::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool FUNCTIONCALL::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* FUNCTIONCALL::Simplify(bool GenWire){
 //   assert(Left, return this);
 // 

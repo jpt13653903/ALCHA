@@ -102,6 +102,11 @@ EXPRESSION* LITERAL::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool LITERAL::HasCircularReference(NETLIST::BASE* Object){
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void LITERAL::Display(){
   DisplayStart();
 

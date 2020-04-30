@@ -55,6 +55,12 @@ bool NAMESPACE::RawAssign(AST::EXPRESSION* Expression){
 }
 //------------------------------------------------------------------------------
 
+bool NAMESPACE::HasCircularReference(BASE* Object){
+  if(this == Object) return true;
+  return false;
+}
+//------------------------------------------------------------------------------
+
 bool NAMESPACE::IsNamespace(){
   return true;
 }

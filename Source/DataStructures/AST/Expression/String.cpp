@@ -78,6 +78,12 @@ EXPRESSION* STRING::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool STRING::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* STRING::Simplify(bool GenWire){
 //   return this;
 // }

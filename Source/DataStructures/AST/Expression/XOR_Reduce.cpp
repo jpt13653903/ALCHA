@@ -79,6 +79,12 @@ EXPRESSION* XOR_REDUCE::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool XOR_REDUCE::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* XOR_REDUCE::Simplify(bool GenWire){
 //   assert(Right, return this);
 // 

@@ -51,6 +51,13 @@ bool ALIAS::RawAssign(AST::EXPRESSION* Expression){
 }
 //------------------------------------------------------------------------------
 
+bool ALIAS::HasCircularReference(BASE* Object){
+  if(this == Object) return true;
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void ALIAS::Display(int Indent){
   Debug.Indent(Indent);
   Debug.Print("Alias: %s\n", Name.c_str());

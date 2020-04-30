@@ -53,6 +53,13 @@ bool ARRAY::RawAssign(AST::EXPRESSION* Expression){
 }
 //------------------------------------------------------------------------------
 
+bool ARRAY::HasCircularReference(BASE* Object){
+  if(this == Object) return true;
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void ARRAY::Display(int Indent){
   error("Not implemented yet");
 }

@@ -72,6 +72,13 @@ bool NUM::RawAssign(AST::EXPRESSION* Expression){
 }
 //------------------------------------------------------------------------------
 
+bool NUM::HasCircularReference(BASE* Object){
+  if(this == Object) return true;
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void NUM::Display(int Indent){
   Debug.Indent(Indent);
   Debug.Print("Num: %s\n", Name.c_str());

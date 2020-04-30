@@ -57,6 +57,13 @@ bool CHARACTER::RawAssign(AST::EXPRESSION* Expression){
 }
 //------------------------------------------------------------------------------
 
+bool CHARACTER::HasCircularReference(BASE* Object){
+  if(this == Object) return true;
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void CHARACTER::Display(int Indent){
   Debug.Indent(Indent+1);
   Debug.Print("Character: %s\n", Name.c_str());

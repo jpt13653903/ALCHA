@@ -57,6 +57,13 @@ bool NETLIST::BYTE::RawAssign(AST::EXPRESSION* Expression){
 }
 //------------------------------------------------------------------------------
 
+bool NETLIST::BYTE::HasCircularReference(BASE* Object){
+  if(this == Object) return true;
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void NETLIST::BYTE::Display(int Indent){
   Debug.Indent(Indent+1);
   Debug.Print("Byte: %s\n", Name.c_str());

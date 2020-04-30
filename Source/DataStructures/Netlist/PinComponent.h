@@ -40,6 +40,8 @@ namespace NETLIST{
     bool Assign   (AST::EXPRESSION* Expression) override;
     bool RawAssign(AST::EXPRESSION* Expression) override;
 
+    bool HasCircularReference(BASE* Object) override;
+
     BASE*            GetAttribute            (const std::string& Name);
     AST::EXPRESSION* GetAttribValue          (const std::string& Name);
     AST::EXPRESSION* GetBuiltInAttributeValue(const std::string& Name);

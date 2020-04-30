@@ -82,6 +82,12 @@ EXPRESSION* SUBTRACT::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool SUBTRACT::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* SUBTRACT::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

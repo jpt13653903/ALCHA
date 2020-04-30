@@ -81,6 +81,17 @@ EXPRESSION* SHIFT_LEFT::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool SHIFT_LEFT::HasCircularReference(NETLIST::BASE* Object){
+  assert(Left , return false);
+  assert(Right, return false);
+  
+  if(Left ->HasCircularReference(Object)) return true;
+  if(Right->HasCircularReference(Object)) return true;
+
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* SHIFT_LEFT::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 
@@ -107,10 +118,8 @@ void SHIFT_LEFT::ValidateMembers(){
   assert(!Next);
   assert(!Prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
-
-  error("Not yet implemented");
+  assert(Left , return); Left ->Validate();
+  assert(Right, return); Right->Validate();
 }
 //------------------------------------------------------------------------------
 

@@ -23,6 +23,8 @@
 #include "Expression/Literal.h"
 #include "Expression/Multiply.h"
 #include "Expression/Object.h"
+#include "Expression/Shift_Left.h"
+#include "Expression/Shift_Right.h"
 
 #include "Netlist/Namespace/Module.h"
 #include "Netlist/Synthesisable/Net.h"
@@ -53,22 +55,105 @@ bool EXPRESSION::IsExpression(){
 
 EXPRESSION* EXPRESSION::ScaleWith(NUMBER& Scale, int Width, NUMBER& FullScale){
   if(Scale == 1) return this;
+
+  // Calculate the limit of the inferred multiplier size.  Most FPGAs have 
+  // 18-bit multipliers, so make that the minimum limit, otherwise use the 
+  // target width as the limit so that no to little resolution is lost.
+  NUMBER Limit(1);
+  if(Width < 18) Limit.BinScale(18);
+  else           Limit.BinScale(Width);
+
+  // Convert the multiplication to a shift, as far as possible
+  int Shift = 0;
+  while(Scale.IsInt()){
+    Scale.BinScale(-1);
+    Shift--;
+  }
+  while(!Scale.IsInt() && (Scale < Limit)){
+    Scale.BinScale(1);
+    Shift++;
+  }
+  while(Scale >= Limit){
+    Scale.BinScale(-1);
+    Shift--;
+  }
+  NUMBER FullFactor(Scale);
+  Scale.Round();
+  if(Scale != FullFactor){
+    Warning("Rounding the scaling factor - this can be fixed "
+            "with an explicit scaling multiplication.");
+    while(Scale.IsInt()){ // Make sure it's still minimised after rounding
+      Scale.BinScale(-1);
+      Shift--;
+    }
+    while(!Scale.IsInt()){
+      Scale.BinScale(1);
+      Shift++;
+    }
+  }
   
-  auto Object  = new OBJECT      (Source.Line, Source.Filename);
-  auto Net     = new NETLIST::NET(Source.Line, Source.Filename, 0);
-  auto Mul     = new MULTIPLY    (Source.Line, Source.Filename);
-  auto Literal = new LITERAL     (Source.Line, Source.Filename);
-
+  auto Net = new NETLIST::NET(Source.Line, Source.Filename, 0);
   Net->SetFixedPoint(Width, FullScale);
-
-  Literal->Value     = Scale;
-  Mul    ->Left      = this;
-  Mul    ->Right     = Literal;
-  Net    ->Value     = Mul;
-  Object ->ObjectRef = Net;
-
   NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
+  
+  if(Scale == 1){ // Shift only
+    auto Literal = new LITERAL(Source.Line, Source.Filename);
 
+    if(Shift > 0){
+      Net->Value = new SHIFT_RIGHT(Source.Line, Source.Filename);
+      Literal->Value = Shift;
+
+    }else{
+      Net->Value = new SHIFT_LEFT(Source.Line, Source.Filename);
+      Literal->Value = -Shift;
+    }
+
+    Net->Value->Left  = this;
+    Net->Value->Right = Literal;
+
+  }else if(Shift == 0){ // Multiply only
+    auto Literal = new LITERAL(Source.Line, Source.Filename);
+    Literal->Value = Scale;
+
+    auto Mul = new MULTIPLY(Source.Line, Source.Filename);
+    Mul->Left  = this;
+    Mul->Right = Literal;
+
+    Net->Value = Mul;
+
+  }else{ // Multiply and shift
+    auto MulLiteral = new LITERAL(Source.Line, Source.Filename);
+    MulLiteral->Value = Scale;
+
+    auto Mul = new MULTIPLY(Source.Line, Source.Filename);
+    Mul->Left  = this;
+    Mul->Right = MulLiteral;
+
+    auto MulNet = new NETLIST::NET(Source.Line, Source.Filename, 0);
+    MulNet->SetFixedPoint(Width + Shift, FullScale);
+    MulNet->Value = Mul;
+    NETLIST::NamespaceStack.front()->Symbols[MulNet->Name] = MulNet;
+
+    auto MulObject = new OBJECT(Source.Line, Source.Filename);
+    MulObject->ObjectRef = MulNet;
+
+    auto ShiftLiteral = new LITERAL(Source.Line, Source.Filename);
+
+    if(Shift > 0){
+      Net->Value = new SHIFT_RIGHT(Source.Line, Source.Filename);
+      ShiftLiteral->Value = Shift;
+
+    }else{
+      Net->Value = new SHIFT_LEFT(Source.Line, Source.Filename);
+      ShiftLiteral->Value = -Shift;
+    }
+
+    Net->Value->Left  = MulObject;
+    Net->Value->Right = ShiftLiteral;
+  }
+
+  auto Object = new OBJECT(Source.Line, Source.Filename);
+  Object->ObjectRef = Net;
   return Object;
 }
 //------------------------------------------------------------------------------

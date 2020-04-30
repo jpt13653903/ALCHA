@@ -149,6 +149,12 @@ EXPRESSION* OBJECT::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool OBJECT::HasCircularReference(NETLIST::BASE* Object){
+  if(!ObjectRef) return false;
+  return ObjectRef->HasCircularReference(Object);
+}
+//------------------------------------------------------------------------------
+
 void OBJECT::Display(){
   DisplayStart();
 

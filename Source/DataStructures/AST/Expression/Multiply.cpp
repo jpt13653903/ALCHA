@@ -159,6 +159,17 @@ EXPRESSION* MULTIPLY::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool MULTIPLY::HasCircularReference(NETLIST::BASE* Object){
+  assert(Left , return false);
+  assert(Right, return false);
+  
+  if(Left ->HasCircularReference(Object)) return true;
+  if(Right->HasCircularReference(Object)) return true;
+
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* MULTIPLY::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

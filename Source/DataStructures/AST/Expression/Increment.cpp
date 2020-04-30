@@ -76,6 +76,12 @@ EXPRESSION* INCREMENT::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool INCREMENT::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* INCREMENT::Simplify(bool GenWire){
 //   error("Not yet implemented");
 //   return this;

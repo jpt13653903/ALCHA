@@ -118,6 +118,12 @@ EXPRESSION* ACCESSATTRIBUTE::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool ACCESSATTRIBUTE::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void ACCESSATTRIBUTE::Display(){
   DisplayStart();
 

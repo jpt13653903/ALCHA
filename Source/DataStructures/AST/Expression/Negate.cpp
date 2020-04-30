@@ -84,6 +84,12 @@ EXPRESSION* NEGATE::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool NEGATE::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* NEGATE::Simplify(bool GenWire){
 //   assert(Right, return this);
 // 

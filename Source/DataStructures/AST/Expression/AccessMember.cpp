@@ -121,6 +121,12 @@ EXPRESSION* ACCESSMEMBER::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool ACCESSMEMBER::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* ACCESSMEMBER::Simplify(bool GenWire){
 //   error("Not yet implemented");
 //   return this;

@@ -81,6 +81,12 @@ EXPRESSION* BIT_NAND::FixedPointScale(int Width, NUMBER& FullScale){
 }
 //------------------------------------------------------------------------------
 
+bool BIT_NAND::HasCircularReference(NETLIST::BASE* Object){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* BIT_NAND::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 
