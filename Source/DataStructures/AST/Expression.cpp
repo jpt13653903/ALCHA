@@ -20,151 +20,166 @@
 
 #include "Expression.h"
 #include "Assignment.h"
+#include "Expression/Literal.h"
+#include "Expression/Multiply.h"
+#include "Expression/Object.h"
+#include "Expression/Shift_Left.h"
+#include "Expression/Shift_Right.h"
+
+#include "Netlist/Namespace/Module.h"
+#include "Netlist/Synthesisable/Net.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-EXPRESSION::EXPRESSION(
-  int             Line,
-  const char*     Filename,
-  EXPRESSION_TYPE ExpressionType
-): BASE(Line, Filename, TYPE::Expression){
-  this->ExpressionType = ExpressionType;
-
-  Value    = 0;
-  StrValue = 0;
-
+EXPRESSION::EXPRESSION(int Line, const char* Filename, TYPE ExpressionType):
+BASE(Line, Filename, ExpressionType){
   Left  = 0;
   Right = 0;
 }
 //------------------------------------------------------------------------------
 
 EXPRESSION::~EXPRESSION(){
-  if(Value   ) delete Value;
-  if(StrValue) delete StrValue;
-
   if(Left ) delete Left;
   if(Right) delete Right;
+  assert(!Next);
 }
 //------------------------------------------------------------------------------
 
-void EXPRESSION::Display(){
-  if(Left){
-    if(Left->Left || Left->Right) Debug.print("(");
-    Left->Display();
-    if(Left->Left || Left->Right) Debug.print(")");
+bool EXPRESSION::IsExpression(){
+  return true;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* EXPRESSION::ScaleWith(NUMBER& Scale, int Width, NUMBER& FullScale){
+  if(Scale == 1) return this;
+
+  // Calculate the limit of the inferred multiplier size.  Most FPGAs have 
+  // 18-bit multipliers, so make that the minimum limit, otherwise use the 
+  // target width as the limit so that no to little resolution is lost.
+  NUMBER Limit(1);
+  if(Width < 18) Limit.BinScale(18);
+  else           Limit.BinScale(Width);
+
+  // Convert the multiplication to a shift, as far as possible
+  int Shift = 0;
+  while(Scale.IsInt()){
+    Scale.BinScale(-1);
+    Shift--;
   }
-
-  switch(ExpressionType){
-    case EXPRESSION_TYPE::String:
-      if(StrValue) Debug.print("\"%s\"", StrValue->c_str());
-      else         error ("(String literal node has no value)");
-      break;
-
-    case EXPRESSION_TYPE::Literal:
-      if(Value) Debug.print(Value->Display());
-      else      error("(Literal node has no value)");
-      break;
-
-    case EXPRESSION_TYPE::Identifier:
-      if(Name.empty()) error ("(Identifier node has no name)");
-      else             Debug.print("%s", Name.c_str());
-      break;
-
-    case EXPRESSION_TYPE::Array            : Debug.print("{Array}"       ); break;
-    case EXPRESSION_TYPE::VectorConcatenate: Debug.print("{VectorConcat}"); break;
-    case EXPRESSION_TYPE::ArrayConcatenate : Debug.print("{ArrayConcat}" ); break;
-
-    case EXPRESSION_TYPE::FunctionCall: Debug.print("{call}" ); break;
-
-    case EXPRESSION_TYPE::Slice: Debug.print("{slice}"); break;
-
-    case EXPRESSION_TYPE::AccessMember:     Debug.print("." ); break;
-    case EXPRESSION_TYPE::AccessMemberSafe: Debug.print("?." ); break;
-    case EXPRESSION_TYPE::AccessAttribute:  Debug.print("'" ); break;
-
-    case EXPRESSION_TYPE::Increment: Debug.print("++"); break;
-    case EXPRESSION_TYPE::Decrement: Debug.print("--"); break;
-    case EXPRESSION_TYPE::Factorial: Debug.print("!" ); break;
-
-    case EXPRESSION_TYPE::Range: Debug.print(".."); break;
-
-    case EXPRESSION_TYPE::Negate : Debug.print(" -"); break;
-    case EXPRESSION_TYPE::Bit_NOT: Debug.print(" ~"); break;
-    case EXPRESSION_TYPE::Raw    : Debug.print(" :"); break;
-
-    case EXPRESSION_TYPE::AND_Reduce : Debug.print( " &"); break;
-    case EXPRESSION_TYPE::NAND_Reduce: Debug.print(" ~&"); break;
-    case EXPRESSION_TYPE::OR_Reduce  : Debug.print( " |"); break;
-    case EXPRESSION_TYPE::NOR_Reduce : Debug.print(" ~|"); break;
-    case EXPRESSION_TYPE::XOR_Reduce : Debug.print( " #"); break;
-    case EXPRESSION_TYPE::XNOR_Reduce: Debug.print(" ~#"); break;
-    case EXPRESSION_TYPE::Logical_NOT: Debug.print( " !"); break;
-
-    case EXPRESSION_TYPE::Cast       : Debug.print(" {cast} "); break;
-
-    case EXPRESSION_TYPE::Replicate  : Debug.print("{rep}"); break;
-
-    case EXPRESSION_TYPE::Exponential: Debug.print(" ^ " ); break;
-    case EXPRESSION_TYPE::Multiply   : Debug.print(" * " ); break;
-    case EXPRESSION_TYPE::Divide     : Debug.print(" / " ); break;
-    case EXPRESSION_TYPE::Modulus    : Debug.print(" %% "); break;
-    case EXPRESSION_TYPE::Add        : Debug.print(" + " ); break;
-    case EXPRESSION_TYPE::Subtract   : Debug.print(" - " ); break;
-
-    case EXPRESSION_TYPE::Shift_Left : Debug.print(" << "); break;
-    case EXPRESSION_TYPE::Shift_Right: Debug.print(" >> "); break;
-
-    case EXPRESSION_TYPE::Less         : Debug.print(" < " ); break;
-    case EXPRESSION_TYPE::Greater      : Debug.print(" > " ); break;
-    case EXPRESSION_TYPE::Less_Equal   : Debug.print(" <= "); break;
-    case EXPRESSION_TYPE::Greater_Equal: Debug.print(" >= "); break;
-    case EXPRESSION_TYPE::Equal        : Debug.print(" == "); break;
-    case EXPRESSION_TYPE::Not_Equal    : Debug.print(" != "); break;
-
-    case EXPRESSION_TYPE::Bit_AND : Debug.print( " & "); break;
-    case EXPRESSION_TYPE::Bit_NAND: Debug.print(" ~& "); break;
-    case EXPRESSION_TYPE::Bit_OR  : Debug.print( " | "); break;
-    case EXPRESSION_TYPE::Bit_NOR : Debug.print(" ~| "); break;
-    case EXPRESSION_TYPE::Bit_XOR : Debug.print( " # "); break;
-    case EXPRESSION_TYPE::Bit_XNOR: Debug.print(" ~# "); break;
-
-    case EXPRESSION_TYPE::Logical_AND: Debug.print(" && "); break;
-    case EXPRESSION_TYPE::Logical_OR : Debug.print(" || "); break;
-
-    case EXPRESSION_TYPE::Conditional : Debug.print(" ? "); break;
-
-    default: error("(Unknown expression type: %d)", (int)ExpressionType);
+  while(!Scale.IsInt() && (Scale < Limit)){
+    Scale.BinScale(1);
+    Shift++;
   }
-
-  if(Right){
-    EXPRESSION* ExprRight;
-    ASSIGNMENT* AssignRight;
-    switch(Right->Type){
-      case TYPE::Expression:
-        ExprRight = (EXPRESSION*)Right;
-        if(ExprRight->Left || ExprRight->Right || ExprRight->Next) Debug.print("(");
-        ExprRight->Display();
-        if(ExprRight->Left || ExprRight->Right || ExprRight->Next) Debug.print(")");
-        break;
-
-      case TYPE::Assignment:
-        AssignRight = (ASSIGNMENT*)Right;
-        if(AssignRight->Left || AssignRight->Right || AssignRight->Next) Debug.print("(");
-        AssignRight->Display();
-        if(AssignRight->Left || AssignRight->Right || AssignRight->Next) Debug.print(")");
-        break;
-
-      default:
-        error("Invalid type");
-        return;
+  while(Scale >= Limit){
+    Scale.BinScale(-1);
+    Shift--;
+  }
+  NUMBER FullFactor(Scale);
+  Scale.Round();
+  if(Scale != FullFactor){
+    Warning("Rounding the scaling factor - this can be fixed "
+            "with an explicit scaling multiplication.");
+    while(Scale.IsInt()){ // Make sure it's still minimised after rounding
+      Scale.BinScale(-1);
+      Shift--;
+    }
+    while(!Scale.IsInt()){
+      Scale.BinScale(1);
+      Shift++;
     }
   }
+  
+  auto Net = new NETLIST::NET(Source.Line, Source.Filename, 0);
+  Net->SetFixedPoint(Width, FullScale);
+  NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
+  
+  if(Scale == 1){ // Shift only
+    auto Literal = new LITERAL(Source.Line, Source.Filename);
 
-  if(Next){
-    Debug.print(", ");
-    Next->Display();
+    if(Shift > 0){
+      Net->Value = new SHIFT_RIGHT(Source.Line, Source.Filename);
+      Literal->Value = Shift;
+
+    }else{
+      Net->Value = new SHIFT_LEFT(Source.Line, Source.Filename);
+      Literal->Value = -Shift;
+    }
+
+    Net->Value->Left  = this;
+    Net->Value->Right = Literal;
+
+  }else if(Shift == 0){ // Multiply only
+    auto Literal = new LITERAL(Source.Line, Source.Filename);
+    Literal->Value = Scale;
+
+    auto Mul = new MULTIPLY(Source.Line, Source.Filename);
+    Mul->Left  = this;
+    Mul->Right = Literal;
+
+    Net->Value = Mul;
+
+  }else{ // Multiply and shift
+    auto MulLiteral = new LITERAL(Source.Line, Source.Filename);
+    MulLiteral->Value = Scale;
+
+    auto Mul = new MULTIPLY(Source.Line, Source.Filename);
+    Mul->Left  = this;
+    Mul->Right = MulLiteral;
+
+    auto MulNet = new NETLIST::NET(Source.Line, Source.Filename, 0);
+    MulNet->SetFixedPoint(Width + Shift, FullScale);
+    MulNet->Value = Mul;
+    NETLIST::NamespaceStack.front()->Symbols[MulNet->Name] = MulNet;
+
+    auto MulObject = new OBJECT(Source.Line, Source.Filename);
+    MulObject->ObjectRef = MulNet;
+
+    auto ShiftLiteral = new LITERAL(Source.Line, Source.Filename);
+
+    if(Shift > 0){
+      Net->Value = new SHIFT_RIGHT(Source.Line, Source.Filename);
+      ShiftLiteral->Value = Shift;
+
+    }else{
+      Net->Value = new SHIFT_LEFT(Source.Line, Source.Filename);
+      ShiftLiteral->Value = -Shift;
+    }
+
+    Net->Value->Left  = MulObject;
+    Net->Value->Right = ShiftLiteral;
+  }
+
+  auto Object = new OBJECT(Source.Line, Source.Filename);
+  Object->ObjectRef = Net;
+  return Object;
+}
+//------------------------------------------------------------------------------
+
+void EXPRESSION::DisplayStart(){
+  if(Left){
+    if(Left->Left || Left->Right) Debug.Print("(");
+    Left->Display();
+    if(Left->Left || Left->Right) Debug.Print(")");
   }
 }
 //------------------------------------------------------------------------------
+
+void EXPRESSION::DisplayEnd(){
+  if(Right){
+    if(Right->Left || Right->Right || Right->Next) Debug.Print("(");
+    Right->Display();
+    if(Right->Left || Right->Right || Right->Next) Debug.Print(")");
+  }
+}
+//------------------------------------------------------------------------------
+
+bool EXPRESSION::RunAST(){
+  // For most expression types, this function is never called
+  error("Unexpected RunAST call");
+  return false;
+}
+//------------------------------------------------------------------------------
+

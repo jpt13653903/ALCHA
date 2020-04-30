@@ -19,14 +19,26 @@
 //==============================================================================
 
 #include "Definition.h"
+
+#include "Netlist/Namespace/Module.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
 DEFINITION::ARRAY::ARRAY(){
   Size = 0;
   Next = 0;
+}
+//------------------------------------------------------------------------------
+
+DEFINITION::ARRAY::ARRAY(const ARRAY& Array){
+  Size = 0;
+  Next = 0;
+
+  if(Array.Size) Size = (decltype(Array.Size))Array.Size->Copy();
+  if(Array.Next) Next = new ARRAY(*Array.Next);
 }
 //------------------------------------------------------------------------------
 
@@ -47,6 +59,24 @@ DEFINITION::IDENTIFIER::IDENTIFIER(){
 }
 //------------------------------------------------------------------------------
 
+DEFINITION::IDENTIFIER::IDENTIFIER(const IDENTIFIER& Identifier){
+  Next        = 0;
+  Array       = 0;
+  Initialiser = 0;
+
+  Function     = Identifier.Function;
+  Parameters   = 0;
+  FunctionBody = 0;
+
+  if(Identifier.Next       ) Next        = new IDENTIFIER(*Identifier.Next );
+  if(Identifier.Array      ) Array       = new ARRAY     (*Identifier.Array);
+  if(Identifier.Initialiser) Initialiser = (decltype(Identifier.Initialiser))Identifier.Initialiser->Copy();
+
+  FunctionBody =              CopyList(Identifier.FunctionBody);
+  Parameters   = (DEFINITION*)CopyList(Identifier.Parameters  );
+}
+//------------------------------------------------------------------------------
+
 DEFINITION::IDENTIFIER::~IDENTIFIER(){
   if(Next        ) delete Next;
   if(Array       ) delete Array;
@@ -57,102 +87,165 @@ DEFINITION::IDENTIFIER::~IDENTIFIER(){
 //------------------------------------------------------------------------------
 
 DEFINITION::DEFINITION(
-  int             Line,
-  const char*     Filename,
-  DEFINITION_TYPE DefinitionType
-): BASE(Line, Filename, TYPE::Definition){
-  this->DefinitionType = DefinitionType;
-
+  int         Line,
+  const char* Filename,
+  TYPE        DefinitionType
+): BASE(Line, Filename, DefinitionType){
   Direction = DIRECTION::Inferred;
 
-  ClassName  = 0;
-  Parameters = 0;
-  Attributes = 0;
+  Attributes  = 0;
+  Identifiers = 0;
 }
 //------------------------------------------------------------------------------
 
 DEFINITION::~DEFINITION(){
-  if(ClassName ) delete ClassName;
-  if(Parameters) delete Parameters;
-  if(Attributes) delete Attributes;
+  if(Attributes ) delete Attributes;
+  if(Identifiers) delete Identifiers;
+
+  foreach(Parameter, Parameters){
+    if(*Parameter) delete *Parameter;
+  }
 }
 //------------------------------------------------------------------------------
 
-void DEFINITION::Display(){
-  DisplayInfo();
-  Debug.print("Definition (");
+bool DEFINITION::IsDefinition(){
+  return true;
+}
+//------------------------------------------------------------------------------
 
-  switch(DefinitionType){
-    case DEFINITION_TYPE::Pin : Debug.print("Pin):\n"     ); break;
-    case DEFINITION_TYPE::Net : Debug.print("Net):\n"     ); break;
-    case DEFINITION_TYPE::Void: Debug.print("Void):\n"    ); break;
-    case DEFINITION_TYPE::Auto: Debug.print("Auto):\n"    ); break;
-    case DEFINITION_TYPE::Byte: Debug.print("Byte):"      ); break;
-    case DEFINITION_TYPE::Char: Debug.print("Character):" ); break;
-    case DEFINITION_TYPE::Num : Debug.print("Number):\n"  ); break;
-    case DEFINITION_TYPE::Func: Debug.print("Function):\n"); break;
+void DEFINITION::CopyMembers(DEFINITION* Copy){
+  Copy->Direction = Direction;
 
-    case DEFINITION_TYPE::ClassInstance:
-      Debug.print("Class instance definition (");
-      if(ClassName) ClassName->Display();
-      else          Debug.print("Class instance with no class name");
-      Debug.print("):\n");
-      break;
+  if(Attributes ) Copy->Attributes  = (decltype(Attributes))Attributes->Copy();
+  if(Identifiers) Copy->Identifiers = new IDENTIFIER(*Identifiers);
 
-    default: Debug.print("Invalid definition type:\n");
+  foreach(Parameter, Parameters){
+    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy());
   }
+}
+//------------------------------------------------------------------------------
 
-  Debug.print(" Direction = ");
+bool DEFINITION::VerifyNotDefined(IDENTIFIER* Identifier){
+  auto Symbol = NETLIST::NamespaceStack.front()->Symbols.find(Identifier->Identifier);
+  if(Symbol != NETLIST::NamespaceStack.front()->Symbols.end()){
+    Error();
+    printf("Symbol \"%s\" already defined in the current namespace\n",
+           Identifier->Identifier.c_str());
+    return false;
+  }
+  return true;
+}
+//------------------------------------------------------------------------------
+
+void DEFINITION::DisplayParameters(){
+  Debug.Print(" Direction = ");
   switch(Direction){
-    case DIRECTION::Input : Debug.print("Input\n"   ); break;
-    case DIRECTION::Output: Debug.print("Output\n"  ); break;
-    default               : Debug.print("Inferred\n"); break;
+    case DIRECTION::Input : Debug.Print("Input\n"   ); break;
+    case DIRECTION::Output: Debug.Print("Output\n"  ); break;
+    default               : Debug.Print("Inferred\n"); break;
   }
 
-  Debug.print(" Parameters: ");
-  if(Parameters){
-    Parameters->Display();
-    Debug.print("\n");
+  Debug.Print(" Parameters: ");
+  if(Parameters.empty()){
+    Debug.Print("none / default\n");
   }else{
-    Debug.print("none / default\n");
+    foreach(Parameter, Parameters){
+      if(*Parameter) (*Parameter)->Display();
+      Debug.Print("\n");
+    }
   }
+}
+//------------------------------------------------------------------------------
 
-  Debug.print(" Attributes: ");
+void DEFINITION::DisplayAttributes(){
+  Debug.Print(" Attributes: ");
   if(Attributes){
     Attributes->Display();
-    Debug.print("\n");
+    Debug.Print("\n");
   }
+}
+//------------------------------------------------------------------------------
 
-  Debug.print(" Identifiers:\n");
+void DEFINITION::DisplayIdentifiers(){
+  Debug.Print(" Identifiers:\n");
   IDENTIFIER* Identifier = Identifiers;
   ARRAY     * Array;
   while(Identifier){
-    Debug.print(" - %s", Identifier->Identifier.c_str());
+    Debug.Print(" - %s", Identifier->Identifier.c_str());
     Array = Identifier->Array;
     while(Array){
-      Debug.print("[");
+      Debug.Print("[");
       if(Array->Size) Array->Size->Display();
-      Debug.print("]");
+      Debug.Print("]");
       Array = Array->Next;
     }
 
     if(Identifier->Function){
-      Debug.print(" -- function:\n  Parameters: (\n");
+      Debug.Print(" -- function:\n  Parameters: (\n");
       if(Identifier->Parameters) Identifier->Parameters->Display();
-      Debug.print(" )\n  Body:{\n");
+      Debug.Print(" )\n  Body:{\n");
       if(Identifier->FunctionBody) Identifier->FunctionBody->Display();
-      Debug.print("  }\n");
+      Debug.Print("  }\n");
     }
     if(Identifier->Initialiser){
-      Debug.print(" -- initialiser:");
+      Debug.Print(" -- initialiser:");
       Identifier->Initialiser->Display();
     }
 
-    Debug.print("\n");
+    Debug.Print("\n");
     Identifier = Identifier->Next;
   }
+}
+//------------------------------------------------------------------------------
+
+void DEFINITION::DisplayDefinition(const char* Type){
+  DisplayInfo();
+  Debug.Print("Definition (%s):\n", Type);
+
+  DisplayParameters ();
+  DisplayAttributes ();
+  DisplayIdentifiers();
 
   if(Next) Next->Display();
+}
+//------------------------------------------------------------------------------
+
+void DEFINITION::ValidateMembers(){
+  if(!Parameters.empty()){
+    foreach(Parameter, Parameters){
+      if(*Parameter) (*Parameter)->Validate();
+    }
+  }
+
+  if(Attributes) Attributes ->Validate();
+
+  IDENTIFIER* Identifier = Identifiers;
+  ARRAY     * Array;
+
+  while(Identifier){
+    Array = Identifier->Array;
+    while(Array){
+      if(Array->Size) Array->Size->Validate();
+      Array = Array->Next;
+    }
+
+    if(Identifier->Function){
+      assert(Identifier              == Identifiers);
+      assert(Identifier->Next        == 0);
+      assert(Identifier->Initialiser == 0);
+
+      if(Identifier->Parameters  ) Identifier->Parameters  ->Validate();
+      if(Identifier->FunctionBody) Identifier->FunctionBody->Validate();
+
+    }else{
+      assert(Identifier->Parameters   == 0);
+      assert(Identifier->FunctionBody == 0);
+
+      if(Identifier->Initialiser) Identifier->Initialiser ->Validate();
+    }
+
+    Identifier = Identifier->Next;
+  }
 }
 //------------------------------------------------------------------------------
 

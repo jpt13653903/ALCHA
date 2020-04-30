@@ -30,10 +30,18 @@ namespace AST{
     EXPRESSION* Count;
     BASE      * Statements;
 
-    LOOP_LOOP(int Line, const char* Filename);
+    LOOP_LOOP(int Line, std::string& Filename);
+    LOOP_LOOP(int Line, const char*  Filename);
    ~LOOP_LOOP();
 
-    void Display();
+    BASE* Copy() override;
+
+    bool RunAST() override;
+    bool GetVerilog(std::string& Body) override;
+
+    void Display() override;
+
+    void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------

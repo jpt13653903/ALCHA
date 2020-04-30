@@ -34,10 +34,18 @@ namespace AST{
     } JumpType;
     EXPRESSION* Expression;
 
-    JUMP(int Line, const char* Filename, JUMP_TYPE JumpType);
+    JUMP(int Line, std::string& Filename, JUMP_TYPE JumpType);
+    JUMP(int Line, const char*  Filename, JUMP_TYPE JumpType);
    ~JUMP();
 
-    void Display();
+    BASE* Copy() override;
+
+    bool RunAST() override;
+    bool GetVerilog(std::string& Body) override;
+
+    void Display() override;
+
+    void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------

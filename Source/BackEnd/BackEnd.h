@@ -22,8 +22,10 @@
 #define BackEnd_h
 //------------------------------------------------------------------------------
 
-#include "Messages.h"
+#include "Utilities.h"
 #include "AST/Definition.h"
+#include "AST/Expression.h"
+#include "Netlist/Namespace/Module.h"
 #include "Altera/Project.h"
 //------------------------------------------------------------------------------
 
@@ -32,8 +34,8 @@ class BACK_END{
     std::string Path;
     std::string Filename;
 
-    void Error  (NETLIST::EXPRESSION* Expression, const char* Message = 0);
-    void Warning(NETLIST::EXPRESSION* Expression, const char* Message = 0);
+    void Error  (AST::EXPRESSION* Expression, const char* Message = 0);
+    void Warning(AST::EXPRESSION* Expression, const char* Message = 0);
 
     bool WriteFile(std::string& Filename, const char* Ext, std::string& Body);
 
@@ -41,12 +43,9 @@ class BACK_END{
     bool AssignPinDirections(NETLIST::NAMESPACE* Module);
     bool RoutePorts         (NETLIST::NAMESPACE* Module);
 
-    const char* GetWireName();
-
-    bool BuildExpression (std::string& Body, NETLIST::EXPRESSION* Expression, std::string& Wire);
-    bool BuildAssignments(std::string& Body, NETLIST::NAMESPACE*  Namespace);
-    void BuildPorts      (std::string& Body, NETLIST::NAMESPACE*  Namespace, bool& isFirst);
-    void BuildNets       (std::string& Body, NETLIST::NAMESPACE*  Namespace);
+    bool BuildAssignments(std::string& Body, NETLIST::NAMESPACE* Namespace);
+    void BuildPorts      (std::string& Body, NETLIST::NAMESPACE* Namespace, bool& isFirst);
+    void BuildNets       (std::string& Body, NETLIST::NAMESPACE* Namespace);
 
     bool BuildHDL(NETLIST::MODULE* Module, std::string Path);
 

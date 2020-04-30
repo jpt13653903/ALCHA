@@ -19,6 +19,9 @@
 //==============================================================================
 
 #include "BackEnd.h"
+#include "Ast/Expression/Object.h"
+#include "Netlist/Synthesisable/Pin.h"
+#include "Netlist/Synthesisable/Net.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -33,18 +36,18 @@ BACK_END::~BACK_END(){
 }
 //------------------------------------------------------------------------------
 
-void BACK_END::Error(EXPRESSION* Expression, const char* Message){
-  ::Error(Expression->Line, Expression->Filename, Message);
+void BACK_END::Error(AST::EXPRESSION* Expression, const char* Message){
+  ::Error(Expression->Source.Line, Expression->Source.Filename, Message);
 }
 //------------------------------------------------------------------------------
 
-void BACK_END::Warning(EXPRESSION* Expression, const char* Message){
-  ::Warning(Expression->Line, Expression->Filename.c_str(), Message);
+void BACK_END::Warning(AST::EXPRESSION* Expression, const char* Message){
+  ::Warning(Expression->Source.Line, Expression->Source.Filename.c_str(), Message);
 }
 //------------------------------------------------------------------------------
 
 bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
-  info("Delete unused...");
+  Debug.Print("Delete unused...\n");
 
   auto SymbolIterator = Namespace->Symbols.begin();
 
@@ -52,7 +55,8 @@ bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
     switch(SymbolIterator->second->Type){
       case BASE::TYPE::Byte:
       case BASE::TYPE::Character:
-      case BASE::TYPE::Number:{
+      case BASE::TYPE::Number:
+      case BASE::TYPE::Alias:{
         auto Object = (SYNTHESISABLE*)(SymbolIterator->second);
         SymbolIterator++;
         Namespace->Symbols.erase(Object->Name);
@@ -61,11 +65,12 @@ bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
       }
 
       case BASE::TYPE::Pin:
-      case BASE::TYPE::Net:
-      case BASE::TYPE::Synthesisable:{
+      case BASE::TYPE::Net:{
         auto Object = (SYNTHESISABLE*)(SymbolIterator->second);
         SymbolIterator++;
         if(!Object->Used){
+          Object->Warning(0);
+          printf("Deleting unused object %s\n", Object->HDL_Name().c_str());
           Namespace->Symbols.erase(Object->Name);
           delete Object;
         }
@@ -73,12 +78,13 @@ bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
       }
 
       case BASE::TYPE::Module:
-      case BASE::TYPE::Group:
-      case BASE::TYPE::Namespace:{
+      case BASE::TYPE::Group:{
         auto Object = (NAMESPACE*)(SymbolIterator->second);
         DeleteUnused(Object);
         SymbolIterator++;
         if(Object->Symbols.empty()){
+          Object->Warning(0);
+          printf("Deleting unused object %s\n", Object->HDL_Name().c_str());
           Namespace->Symbols.erase(Object->Name);
           delete Object;
         }
@@ -86,6 +92,7 @@ bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
       }
 
       default:
+        error("Type %d not handled", (int)SymbolIterator->second->Type);
         SymbolIterator++;
         break;
     }
@@ -95,18 +102,16 @@ bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
 //------------------------------------------------------------------------------
 
 bool BACK_END::AssignPinDirections(NAMESPACE* Namespace){
-  info("Assign pin directions...");
+  Debug.Print("Assign pin directions...\n");
 
-  for(auto SymbolIterator  = Namespace->Symbols.begin();
-           SymbolIterator != Namespace->Symbols.end  ();
-           SymbolIterator++){
+  foreach(SymbolIterator, Namespace->Symbols){
     switch(SymbolIterator->second->Type){
       case BASE::TYPE::Pin:{
         auto Pin = (PIN*)(SymbolIterator->second);
         if(Pin->Direction == AST::DEFINITION::DIRECTION::Inferred){
-          if(Pin->Enabled){ // Possible bidirectional
-            if(Pin->Enabled->ExpressionType == EXPRESSION::EXPRESSION_TYPE::Literal){
-              if(Pin->Enabled->Value == 0){
+          if(Pin->Enabled->Value){ // Possible bidirectional
+            if(Pin->Enabled->Value->Type == AST::BASE::TYPE::Literal){
+              if(((AST::LITERAL*)Pin->Enabled->Value)->Value == 0){
                 Pin->Direction = AST::DEFINITION::DIRECTION::Input;
               }else{
                 Pin->Direction = AST::DEFINITION::DIRECTION::Output;
@@ -115,7 +120,7 @@ bool BACK_END::AssignPinDirections(NAMESPACE* Namespace){
               Pin->Direction = AST::DEFINITION::DIRECTION::Bidirectional;
             }
           }else{ // Enabled is undefined
-            if(Pin->Driver){
+            if(Pin->Driver->Value){
               Pin->Direction = AST::DEFINITION::DIRECTION::Output;
             }else{
               Pin->Direction = AST::DEFINITION::DIRECTION::Input;
@@ -126,7 +131,6 @@ bool BACK_END::AssignPinDirections(NAMESPACE* Namespace){
       }
       case BASE::TYPE::Module:
       case BASE::TYPE::Group:
-      case BASE::TYPE::Namespace:
         AssignPinDirections((NAMESPACE*)(SymbolIterator->second));
         break;
 
@@ -139,7 +143,7 @@ bool BACK_END::AssignPinDirections(NAMESPACE* Namespace){
 //------------------------------------------------------------------------------
 
 bool BACK_END::RoutePorts(NAMESPACE* Namespace){
-  info("Route ports...");
+  Debug.Print("Route ports...\n");
 
   // At this point, the expressions use pointers, not names.  Any inter-module
   // usage needs to be broken into temporary signals throughout the hierarchy
@@ -148,12 +152,9 @@ bool BACK_END::RoutePorts(NAMESPACE* Namespace){
   // with HDL module ports.
 
   // Do the children first
-  for(auto SymbolIterator  = Namespace->Symbols.begin();
-           SymbolIterator != Namespace->Symbols.end  ();
-           SymbolIterator++){
-    if(SymbolIterator->second->Type == BASE::TYPE::Module ||
-       SymbolIterator->second->Type == BASE::TYPE::Group  ){
-      RoutePorts((MODULE*)(SymbolIterator->second));
+  foreach(SymbolIterator, Namespace->Symbols){
+    if(SymbolIterator->second->IsNamespace()){
+      RoutePorts((NAMESPACE*)(SymbolIterator->second));
     }
   }
 
@@ -161,6 +162,7 @@ bool BACK_END::RoutePorts(NAMESPACE* Namespace){
   if(!Namespace->Namespace) return true;
 
   // Route inter-module connections to the parent
+  error("Not yet implemented");
   return true;
 }
 //------------------------------------------------------------------------------
@@ -172,509 +174,24 @@ bool BACK_END::WriteFile(string& Filename, const char* Ext, string& Body){
 }
 //------------------------------------------------------------------------------
 
-const char* BACK_END::GetWireName(){
-  static unsigned Count = 0;
-  static char     Name[0x10];
-  sprintf(Name, "\\t..%d ", Count++);
-  return Name;
-}
-//------------------------------------------------------------------------------
-
-bool BACK_END::BuildExpression(string& Body, EXPRESSION* Expression, string& Wire){
-  if(!Expression) return false;
-
-  switch(Expression->ExpressionType){
-    case EXPRESSION::EXPRESSION_TYPE::Literal:{
-      if(!Expression->Value.IsReal()){
-        Error(Expression, "non-real literal");
-        return false;
-      }
-      NUMBER Result(Expression->Value);
-      if(!Result.IsPositive()){
-        if(!Expression->Signed){
-          Error(Expression, "Cannot store a negative literal to an unsigned target");
-          return false;
-        }
-        Wire += "-";
-        Result.Mul(-1);
-      }
-      if(Expression->Signed) Wire += to_string(Expression->Width+1) + "'h";
-      else                   Wire += to_string(Expression->Width  ) + "'h";
-      Result.Round();
-      Wire += Result.GetString(16);
-      Result.BinScale(-Expression->Width);
-      if(Result > 1){
-        Error(Expression, "The literal does not fit in its full-scale range");
-        return false;
-      }
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Object:
-      if(!Expression->ObjectRef){
-        error("Null object reference");
-        return false;
-      }
-      Wire += Expression->ObjectRef->EscapedName();
-      break;
-
-    case EXPRESSION::EXPRESSION_TYPE::VectorConcatenate:{
-      vector<string> Elements;
-      Elements.resize(Expression->Elements.size());
-
-      for(size_t n = 0; n < Expression->Elements.size(); n++){
-        if(!BuildExpression(Body, Expression->Elements[n], Elements[n])) return false;
-      }
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= {";
-      for(size_t n = 0; n < Expression->Elements.size(); n++){
-        Body += Elements[n];
-        if(n < Expression->Elements.size()-1) Body += ", ";
-      }
-      Body += "};\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Slice:
-      error("Not yet implemented");
-      break;
-
-    case EXPRESSION::EXPRESSION_TYPE::Negate:{
-      string Right;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= -("+ Right +");\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Bit_NOT:{
-      string Right;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= ~("+ Right +");\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::AND_Reduce:{
-      string Right;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire ";
-      Body += Wire +"= &("+ Right +");\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::NAND_Reduce:{
-      string Right;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire ";
-      Body += Wire +"= ~&("+ Right +");\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::OR_Reduce:{
-      string Right;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire ";
-      Body += Wire +"= |("+ Right +");\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::NOR_Reduce:{
-      string Right;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire ";
-      Body += Wire +"= ~|("+ Right +");\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::XOR_Reduce:{
-      string Right;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire ";
-      Body += Wire +"= ^("+ Right +");\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::XNOR_Reduce:{
-      string Right;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire ";
-      Body += Wire +"= ~^("+ Right +");\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Logical_NOT:{
-      string Right;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire ";
-      Body += Wire +"= !("+ Right +");\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Replicate:{ // TODO: Test
-      string Left, Right;
-
-      if(Expression->Right->ExpressionType != EXPRESSION::EXPRESSION_TYPE::Literal){
-        Error(Expression, "Replication count must break down to a run-time constant");
-        return false;
-      }
-      if(!Expression->Right->Value.IsInt()){
-        Error(Expression, "Replication count must be an integer");
-        return false;
-      }
-      if(!Expression->Right->Value.IsPositive()){
-        Error(Expression, "Replication count must be real and positive");
-        return false;
-      }
-      if(!BuildExpression(Body, Expression->Left, Left)) return false;
-      Right = Expression->Right->Value.GetString(10);
-
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= {"+ Right +"{"+ Left +"}};\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Multiply:{
-      string Left, Right;
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= "+ Left +" * "+ Right +";\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Add:{
-      string Left, Right;
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= "+ Left +" + "+ Right +";\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Subtract:{
-      string Left, Right;
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= "+ Left +" - "+ Right +";\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Shift_Left:{
-      string Left, Right;
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= "+ Left +" << "+ Right +";\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Shift_Right:{
-      string Left, Right;
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= "+ Left +" >> "+ Right +";\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Less:{
-      string Left, Right;
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire "+ Wire +"= "+ Left +" < "+ Right +";\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Greater:{
-      string Left, Right;
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire "+ Wire +"= "+ Left +" > "+ Right +";\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Less_Equal:{
-      string Left, Right;
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire "+ Wire +"= "+ Left +" <= "+ Right +";\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Greater_Equal:{
-      string Left, Right;
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire "+ Wire +"= "+ Left +" >= "+ Right +";\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Equal:{
-      string Left, Right;
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire "+ Wire +"= "+ Left +" == "+ Right +";\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Not_Equal:{
-      string Left, Right;
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire "+ Wire +"= "+ Left +" != "+ Right +";\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Bit_AND:{
-      string Left, Right;
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= "+ Left +" & "+ Right +";\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Bit_NAND:{
-      string Left, Right;
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= ~("+ Left +" & "+ Right +");\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Bit_OR:{
-      string Left, Right;
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= "+ Left +" | "+ Right +";\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Bit_NOR:{
-      string Left, Right;
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= ~("+ Left +" | "+ Right +");\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Bit_XOR:{
-      string Left, Right;
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= "+ Left +" ^ "+ Right +";\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Bit_XNOR:{
-      string Left, Right;
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      if(Expression->Width > 1) Body += "wire ["+ to_string(Expression->Width - 1) +":0] ";
-      else                      Body += "wire ";
-      Body += Wire +"= "+ Left +" ~^ "+ Right +";\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Logical_AND:{
-      string Left, Right;
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire "+ Wire +"= "+ Left +" && "+ Right +";\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Logical_OR:{
-      string Left, Right;
-      if(!BuildExpression(Body, Expression->Left , Left )) return false;
-      if(!BuildExpression(Body, Expression->Right, Right)) return false;
-      Wire = GetWireName();
-      Body += "wire "+ Wire +"= "+ Left +" || "+ Right +";\n";
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Cast:{
-      if(!Expression->Left){
-        error("Unexpected null reference");
-        return false;
-      }
-      if(Expression->Right){
-        error("Unexpected cast to class");
-        return false;
-      }
-      EXPRESSION* From = Expression->Left;
-      EXPRESSION* To   = Expression;
-      NUMBER Factor = From->FullScale;
-      Factor.Div(To->FullScale);
-      Factor.BinScale(To->Width - From->Width);
-      if(Factor == 0){
-        error("Unexpected 0 full-scale");
-        return false;
-      }
-
-      // Calculate the limit of the inferred multiplier size.  Most FPGAs have 
-      // 18-bit multipliers, so make that the minimum limit, otherwise use the 
-      // target width as the limit so that no to little resolution is lost.
-      NUMBER Limit(1);
-      if(To->Width < 18) Limit.BinScale(18);
-      else               Limit.BinScale(To->Width);
-      int Shift = 0;
-      while(Factor.IsInt()){
-        Factor.BinScale(-1);
-        Shift--;
-      }
-      while(!Factor.IsInt() && (Factor < Limit)){
-        Factor.BinScale(1);
-        Shift++;
-      }
-      while(Factor >= Limit){
-        Factor.BinScale(-1);
-        Shift--;
-      }
-      NUMBER FullFactor(Factor);
-      Factor.Round();
-      if(Factor != FullFactor){
-        Warning(Expression, "Rounding the scaling factor - this can be fixed "
-                            "with an explicit scaling multiplication.");
-        while(Factor.IsInt()){ // Make sure it's still minimised after rounding
-          Factor.BinScale(-1);
-          Shift--;
-        }
-        while(!Factor.IsInt()){
-          Factor.BinScale(1);
-          Shift++;
-        }
-      }
-
-      int Width = 0;
-      NUMBER Num(Factor);
-      while(Num >= 1){
-        Num.BinScale(-1);
-        Width++;
-      }
-
-      string FromString;
-      if(!BuildExpression(Body, From, FromString)) return false;
-
-      if(Factor == 1){
-        Body += "wire ";
-        if(To->Width > 1){
-          if(To->Signed) Body += "["+ to_string(To->Width  ) +":0] ";
-          else           Body += "["+ to_string(To->Width-1) +":0] ";
-        }
-        Wire = GetWireName();
-        Body += Wire +"= ";
-        if     (Shift > 0) Body += FromString +" >> "+ to_string( Shift);
-        else if(Shift < 0) Body += FromString +" << "+ to_string(-Shift);
-        Body += ";\n";
-
-      }else{
-        Warning(Expression, "Non power-of-two scaling factor: synthesising a multiplier");
-        string MulWireName = GetWireName();
-
-        // TODO: Signed
-        Body += "wire ["+ to_string(From->Width + Width - 1) +":0] ";
-        Body += MulWireName +"= "+ FromString + " * ";
-
-        Body += to_string(Width) + "'h";
-        Body += Factor.GetString(16);
-        Body += ";\n";
-
-        Body += "wire ";
-        if(To->Width > 1){
-          if(To->Signed) Body += "["+ to_string(To->Width  ) +":0] ";
-          else           Body += "["+ to_string(To->Width-1) +":0] ";
-        }
-        Wire = GetWireName();
-        Body += Wire +"= ";
-        if     (Shift > 0) Body += MulWireName +" >> "+ to_string( Shift);
-        else if(Shift < 0) Body += MulWireName +" << "+ to_string(-Shift);
-        Body += ";\n";
-      }
-      break;
-    }
-
-    case EXPRESSION::EXPRESSION_TYPE::Conditional:
-      error("Not yet implemented");
-      break;
-
-    default:
-      error("Unexpected expression type");
-      break;
-  }
-  return true;
-}
-//------------------------------------------------------------------------------
-
 bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
-  for(auto SymbolIterator  = Namespace->Symbols.begin();
-           SymbolIterator != Namespace->Symbols.end  ();
-           SymbolIterator++){
+  foreach(SymbolIterator, Namespace->Symbols){
     auto Object = SymbolIterator->second;
     switch(Object->Type){
       case BASE::TYPE::Pin:{
         auto Pin = (PIN*)Object;
-        if(Pin->Driver){
+        if(Pin->Driver->Value){
           string Driver;
-          Body += "// " + Pin->Driver->Filename +" +"+ to_string(Pin->Driver->Line) + "\n";
-          if(!BuildExpression(Body, Pin->Driver, Driver)) return false;
-          if(Pin->Enabled){
+          Body += "// " + Pin->Driver->Value->Source.Filename +" +"+ to_string(Pin->Driver->Value->Source.Line) + "\n";
+          if(!Pin->Driver->Value->GetVerilog(Driver)) return false;
+          if(Pin->Enabled->Value){
             string Enabled;
-            Body += "// " + Pin->Enabled->Filename +" +"+ to_string(Pin->Enabled->Line) + "\n";
-            if(!BuildExpression(Body, Pin->Enabled, Enabled)) return false;
+            Body += "// " + Pin->Enabled->Value->Source.Filename +" +"+ to_string(Pin->Enabled->Value->Source.Line) + "\n";
+            if(!Pin->Enabled->Value->GetVerilog(Enabled)) return false;
             Body += "assign "+ Pin->EscapedName() +
                     " = |("+ Enabled + ")"
                     " ? ("+ Driver + ")"
-                    " : " + to_string(Pin->Width) + "'bZ;\n\n";
+                    " : " + to_string(Pin->Width()) + "'bZ;\n\n";
           }else{
             Body += "assign "+ Pin->EscapedName() +" = "+ Driver + ";\n\n";
           }
@@ -685,9 +202,9 @@ bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
         auto Net = (NET*)Object;
         if(Net->Value){
           string Value;
-          Body += "// " + Net->Value->Filename +" +"+ to_string(Net->Value->Line) + "\n";
-          if(!BuildExpression(Body, Net->Value, Value)) return false;
-          Body += "assign "+ Net->EscapedName() +" = "+ Value +";\n\n";
+          Body += "// " + Net->Value->Source.Filename +" +"+ to_string(Net->Value->Source.Line) + "\n";
+          if(!Net->Value->GetVerilog(Value)) return false;
+          Body += "assign "+ Net->EscapedName() +" = "+ Value +";\n";
         }
         break;
       }
@@ -704,9 +221,7 @@ bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
 //------------------------------------------------------------------------------
 
 void BACK_END::BuildPorts(string& Body, NAMESPACE* Namespace, bool& isFirst){
-  for(auto SymbolIterator  = Namespace->Symbols.begin();
-           SymbolIterator != Namespace->Symbols.end  ();
-           SymbolIterator++){
+  foreach(SymbolIterator, Namespace->Symbols){
     auto Object = SymbolIterator->second;
     switch(Object->Type){
       case BASE::TYPE::Pin:{
@@ -719,9 +234,9 @@ void BACK_END::BuildPorts(string& Body, NAMESPACE* Namespace, bool& isFirst){
           case AST::DEFINITION::DIRECTION::Output: Body += "  output logic "; break;
           default                                : Body += "  inout  logic "; break;
         }
-        if(Pin->Width > 1){
-          if(Pin->Signed) Body += "["+ to_string(Pin->Width  ) +":0]";
-          else            Body += "["+ to_string(Pin->Width-1) +":0]";
+        if(Pin->Width() > 1){
+          if(Pin->Signed()) Body += "["+ to_string(Pin->Width()  ) +":0]";
+          else              Body += "["+ to_string(Pin->Width()-1) +":0]";
         }
         Body += Pin->EscapedName();
         break;
@@ -738,16 +253,14 @@ void BACK_END::BuildPorts(string& Body, NAMESPACE* Namespace, bool& isFirst){
 //------------------------------------------------------------------------------
 
 void BACK_END::BuildNets(string& Body, NAMESPACE* Namespace){
-  for(auto SymbolIterator  = Namespace->Symbols.begin();
-           SymbolIterator != Namespace->Symbols.end  ();
-           SymbolIterator++){
+  foreach(SymbolIterator, Namespace->Symbols){
     switch(SymbolIterator->second->Type){
       case BASE::TYPE::Net:{
         auto Net = (NET*)SymbolIterator->second;
         Body += "logic ";
-        if(Net->Width > 1){
-          if(Net->Signed) Body += "["+ to_string(Net->Width  ) +":0]";
-          else            Body += "["+ to_string(Net->Width-1) +":0]";
+        if(Net->Width() > 1){
+          if(Net->Signed()) Body += "["+ to_string(Net->Width()  ) +":0]";
+          else              Body += "["+ to_string(Net->Width()-1) +":0]";
         }
         Body += Net->EscapedName() + ";\n";
         break;
@@ -767,9 +280,7 @@ bool BACK_END::BuildHDL(MODULE* Module, string Path){
   bool isGlobal = (Module == &Global);
 
   // Recursively generate the modules (each namespace is a module)
-  for(auto SymbolIterator  = Module->Symbols.begin();
-           SymbolIterator != Module->Symbols.end  ();
-           SymbolIterator++){
+  foreach(SymbolIterator, Module->Symbols){
     auto Symbol = SymbolIterator->second;
     if(Symbol->Type == BASE::TYPE::Module){
       auto Child = (MODULE*)Symbol;
@@ -827,25 +338,28 @@ bool BACK_END::BuildAltera(const char* Path, const char* Filename){
   this->Path     = Path;
   this->Filename = Filename;
 
-  Debug.print(
+  Debug.Print(
     ANSI_FG_GREEN "\nStarting BackEnd -----------------------"
                   "----------------------------------------\n\n"
     ANSI_RESET
   );
-  Global.Display();
 
   if(!DeleteUnused(&Global)) return false;
+  Debug.Print("\n");
 
   if(!AssignPinDirections(&Global)) return false;
+  Debug.Print("\n");
 
   if(!RoutePorts(&Global)) return false;
+  Debug.Print("\n");
 
-  Debug.print(
+  Global.Display();
+
+  Debug.Print(
     ANSI_FG_GREEN "\nBuilding Project -----------------------"
                   "----------------------------------------\n\n"
     ANSI_RESET
   );
-  Global.Display();
 
   ALTERA::PROJECT Project;
   Project.Build(Path, Filename);

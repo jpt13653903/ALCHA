@@ -19,8 +19,9 @@
 //==============================================================================
 
 #include "Base.h"
-#include "Module.h"
-#include "Expression.h"
+#include "Attribute.h"
+#include "Namespace/Module.h"
+#include "AST/Expression/Identifier.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -28,20 +29,85 @@ using namespace NETLIST;
 //------------------------------------------------------------------------------
 
 BASE::BASE(int Line, const string& Filename, const char* Name, TYPE Type){
-  this->Line      = Line;
-  this->Filename  = Filename;
-  this->Name      = Name;
-  this->Type      = Type;
-  this->Namespace = 0;
+  Source.Line      = Line;
+  Source.Filename  = Filename;
+  this->Type       = Type;
+  this->Namespace  = 0;
+
+  static unsigned GenNameCount = 0;
+  if(Name){
+    this->Name = Name;
+  }else{
+    switch(Type){
+      case TYPE::Net   : this->Name = "w.."; break;
+      case TYPE::Module: this->Name = "m.."; break;
+      default          : this->Name = "t.."; break;
+    }
+    this->Name += to_string(GenNameCount++);
+  }
 
   if(!NamespaceStack.empty()) Namespace = NamespaceStack.front();
 }
 //------------------------------------------------------------------------------
 
 BASE::~BASE(){
-  for(auto a = Attributes.begin(); a != Attributes.end(); a++){
-    delete a->second;
+  foreach(Attribute, Attributes) delete Attribute->second;
+}
+//------------------------------------------------------------------------------
+
+void BASE::Error(const char* Message){
+  ::Error(Source.Line, Source.Filename, Message);
+}
+//------------------------------------------------------------------------------
+
+void BASE::Warning(const char* Message){
+  ::Warning(Source.Line, Source.Filename.c_str(), Message);
+}
+//------------------------------------------------------------------------------
+bool BASE::IsSynthesisable(){
+  return false;
+}
+//------------------------------------------------------------------------------
+
+bool BASE::IsNamespace(){
+  return false;
+}
+//------------------------------------------------------------------------------
+
+bool BASE::ApplyAttributes(AST::ASSIGNMENT* AttributeList){
+  while(AttributeList){
+    assert(AttributeList->Left , return false);
+    assert(AttributeList->Right, return false);
+    assert(AttributeList->Left->Type == AST::BASE::TYPE::Identifier, return false);
+
+    auto Name  = ((AST::IDENTIFIER*)AttributeList->Left)->Name;
+    auto Value = AttributeList->Right;
+    AttributeList->Right = 0;
+
+    switch(Value->Type){
+      case AST::BASE::TYPE::String:
+      case AST::BASE::TYPE::Literal:
+        break;
+
+      case AST::BASE::TYPE::Array:
+        // TODO Make sure that the array only contains strings or literals
+        break;
+
+      default:
+        AttributeList->Error("Attribute values must be strings, literals or arrays");
+        delete Value;
+        return false;
+    }
+    auto Attribute = Attributes[Name];
+    if(!Attribute){
+      Attribute = new ATTRIBUTE(Value->Source.Line, Value->Source.Filename, Name.c_str());
+      Attributes[Name] = Attribute;
+    }
+    Attribute->Assign(Value);
+
+    AttributeList = (AST::ASSIGNMENT*)AttributeList->Next;
   }
+  return true;
 }
 //------------------------------------------------------------------------------
 
@@ -98,37 +164,77 @@ string& BASE::EscapedName(){
 void BASE::DisplayLongName(){
   if(Namespace != (NAMESPACE*)&Global){
     Namespace->DisplayLongName();
-    Debug.print("::");
+    Debug.Print("::");
   }
-  Debug.print("%s", Name.c_str());
+  Debug.Print("%s", Name.c_str());
 }
 //------------------------------------------------------------------------------
 
 void BASE::DisplayAttributes(int Indent){
-  for(int n = 0; n < Indent; n++) Debug.print(" ");
-  Debug.print("Line       = %d\n", Line);
+  Debug.Indent(Indent);
+  Debug.Print("Line       = %d\n", Source.Line);
 
-  for(int n = 0; n < Indent; n++) Debug.print(" ");
-  Debug.print("Filename   = \"%s\"\n", Filename);
+  Debug.Indent(Indent);
+  Debug.Print("Filename   = \"%s\"\n", Source.Filename);
 
-  for(int n = 0; n < Indent; n++) Debug.print(" ");
-  Debug.print("Attributes:\n");
+  Debug.Indent(Indent);
+  Debug.Print("Attributes:\n");
 
-  for(auto a = Attributes.begin(); a != Attributes.end(); a++){
-    for(int n = 0; n < Indent; n++) Debug.print(" ");
-    Debug.print("  %s = ", a->first.c_str());
-    if(a->second) a->second->Display();
-    else          Debug.print("{null}");
-    Debug.print("\n");
+  Indent++;
+  foreach(Attribute, Attributes){
+    assert(Attribute->second, break);
+    Attribute->second->Display(Indent);
   }
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* BASE::GetAttrib(const string& Key){
-  auto Value = Attributes.find(Key);
-  if(Value != Attributes.end()) return Value->second;
-  if(Namespace) return Namespace->GetAttrib(Key);
+BASE* BASE::GetAttribute(const std::string& Name){
+  auto Attribute = Attributes.find(Name);
+  if(Attribute != Attributes.end()) return Attribute->second;
   return 0;
+}
+//------------------------------------------------------------------------------
+
+BASE* BASE::GetMember(const std::string& Name){
+  return 0; // By default, objects do not have members
+}
+//------------------------------------------------------------------------------
+
+AST::EXPRESSION* BASE::GetAttribValue(const string& Name){
+  auto Attribute = GetAttribute(Name);
+  if(Attribute){
+    // Check for accidental built-in attribute access
+    assert(Attribute->Type == TYPE::Attribute, return 0);
+    return ((ATTRIBUTE*)Attribute)->Value;
+  }
+  if(Namespace) return Namespace->GetAttribValue(Name);
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+AST::EXPRESSION* BASE::GetBuiltInAttributeValue(const string& Name){
+  // TODO: Build stuff like Line, Filename, etc.
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+NUMBER& BASE::FullScale(){
+  static NUMBER Zero = 0;
+  return Zero;
+}
+//------------------------------------------------------------------------------
+
+int BASE::Width(){
+  return 0;
+}
+//------------------------------------------------------------------------------
+
+void BASE::Validate(){
+  // Don't verify Namespace, it's circular
+  foreach(Attrib, Attributes){
+    assert(Attrib->first == Attrib->second->Name);
+    Attrib->second->Validate();
+  }
 }
 //------------------------------------------------------------------------------
 

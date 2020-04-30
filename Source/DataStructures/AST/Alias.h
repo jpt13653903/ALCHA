@@ -27,12 +27,21 @@
 
 namespace AST{
   struct ALIAS: public BASE{
-      std::string Identifier;
-      EXPRESSION* Expression;
-      ALIAS(int Line, const char* Filename);
-     ~ALIAS();
+    std::string Identifier;
+    EXPRESSION* Expression;
 
-      void Display();
+    ALIAS(int Line, std::string& Filename);
+    ALIAS(int Line, const char*  Filename);
+   ~ALIAS();
+
+    BASE* Copy() override;
+
+    bool RunAST() override;
+    bool GetVerilog(std::string& Body) override;
+
+    void Display() override;
+
+    void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------

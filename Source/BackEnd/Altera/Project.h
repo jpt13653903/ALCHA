@@ -28,9 +28,14 @@
 //------------------------------------------------------------------------------
 
 #include "Engine.h"
-#include "Messages.h"
+#include "Utilities.h"
 #include "FileWrapper.h"
 #include "SDC.h"
+
+#include "AST/Expression.h"
+
+#include "Netlist/Namespace/Module.h"
+#include "Netlist/Namespace.h"
 //------------------------------------------------------------------------------
 
 namespace ALTERA{
@@ -43,12 +48,12 @@ namespace ALTERA{
       std::string Device;
       std::string Series;
 
-      void Error  (                                 const char* Message = 0);
-      void Warning(                                 const char* Message = 0);
-      void Error  (NETLIST::BASE      * Netlist   , const char* Message = 0);
-      void Warning(NETLIST::BASE      * Netlist   , const char* Message = 0);
-      void Error  (NETLIST::EXPRESSION* Expression, const char* Message = 0);
-      void Warning(NETLIST::EXPRESSION* Expression, const char* Message = 0);
+      void Error  (                             const char* Message = 0);
+      void Warning(                             const char* Message = 0);
+      void Error  (NETLIST::BASE  * Netlist   , const char* Message = 0);
+      void Warning(NETLIST::BASE  * Netlist   , const char* Message = 0);
+      void Error  (AST::EXPRESSION* Expression, const char* Message = 0);
+      void Warning(AST::EXPRESSION* Expression, const char* Message = 0);
 
       bool WriteFile(std::string& Filename, const char* Ext, std::string& Body);
 
@@ -58,6 +63,7 @@ namespace ALTERA{
 
       bool BuildProject          ();
       bool BuildSettings         ();
+      bool BuildPins             ();
       bool BuildDesignConstraints();
       bool BuildConfigChain      ();
 

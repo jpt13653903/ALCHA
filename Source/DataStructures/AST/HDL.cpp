@@ -21,7 +21,11 @@
 #include "HDL.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
+//------------------------------------------------------------------------------
+
+HDL::HDL(int Line, std::string& Filename): HDL(Line, Filename.c_str()){}
 //------------------------------------------------------------------------------
 
 HDL::HDL(int Line, const char* Filename): BASE(Line, Filename, TYPE::HDL){
@@ -38,13 +42,46 @@ HDL::~HDL(){
 }
 //------------------------------------------------------------------------------
 
+BASE* HDL::Copy(){
+  HDL* Copy = new HDL(Source.Line, Source.Filename.c_str());
+
+  Copy->Identifier = Identifier;
+
+  Copy->Files      = (decltype(Files     ))CopyList(Files);
+  Copy->Ports      = (decltype(Ports     ))CopyList(Ports);
+  Copy->Parameters = (decltype(Parameters))CopyList(Parameters);
+
+  return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool HDL::RunAST(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+bool HDL::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void HDL::Display(){
   DisplayInfo();
-  Debug.print("hdl (%s):\n", Identifier.c_str());
-  Debug.print(" Files:\n  "     ); if(Files     ) Files     ->Display(); Debug.print("\n");
-  Debug.print(" Parameters:\n  "); if(Parameters) Parameters->Display();
-  Debug.print(" Ports:\n  "     ); if(Ports     ) Ports     ->Display();
+  Debug.Print("hdl (%s):\n", Identifier.c_str());
+  Debug.Print(" Files:\n  "     ); if(Files     ) Files     ->Display(); Debug.Print("\n");
+  Debug.Print(" Parameters:\n  "); if(Parameters) Parameters->Display();
+  Debug.Print(" Ports:\n  "     ); if(Ports     ) Ports     ->Display();
 
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+
+void HDL::ValidateMembers(){
+  assert(Type == TYPE::HDL);
+
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+

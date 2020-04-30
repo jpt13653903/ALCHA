@@ -21,11 +21,14 @@
 #include "IfStatement.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-IF_STATEMENT::IF_STATEMENT(int Line, const char* Filename):
-BASE(Line, Filename, TYPE::IfStatement){
+IF_STATEMENT::IF_STATEMENT(int Line, std::string& Filename): IF_STATEMENT(Line, Filename.c_str()){}
+//------------------------------------------------------------------------------
+
+IF_STATEMENT::IF_STATEMENT(int Line, const char* Filename): BASE(Line, Filename, TYPE::IfStatement){
   Condition       = 0;
   TrueStatements  = 0;
   FalseStatements = 0;
@@ -39,16 +42,48 @@ IF_STATEMENT::~IF_STATEMENT(){
 }
 //------------------------------------------------------------------------------
 
+BASE* IF_STATEMENT::Copy(){
+  IF_STATEMENT* Copy = new IF_STATEMENT(Source.Line, Source.Filename.c_str());
+
+  if(Condition) Copy->Condition = (decltype(Condition))Condition->Copy();
+
+  Copy->TrueStatements  = CopyList(TrueStatements );
+  Copy->FalseStatements = CopyList(FalseStatements);
+
+  return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool IF_STATEMENT::RunAST(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+bool IF_STATEMENT::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void IF_STATEMENT::Display(){
   DisplayInfo();
-  Debug.print("if(");
+  Debug.Print("if(");
     if(Condition) Condition->Display();
-  Debug.print("){\n");
+  Debug.Print("){\n");
     if(TrueStatements) TrueStatements->Display();
-  Debug.print("}else{\n");
+  Debug.Print("}else{\n");
     if(FalseStatements) FalseStatements->Display();
-  Debug.print("}\n");
+  Debug.Print("}\n");
 
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+
+void IF_STATEMENT::ValidateMembers(){
+  assert(Type == TYPE::IfStatement);
+
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+

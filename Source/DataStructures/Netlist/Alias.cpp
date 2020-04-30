@@ -21,23 +21,61 @@
 #include "Alias.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-ALIAS::ALIAS(int Line, const std::string& Filename, const char* Name, AST::EXPRESSION* Expression): BASE(Line, Filename, Name, TYPE::Alias){
+ALIAS::ALIAS(int Line, const string& Filename, const char* Name, AST::EXPRESSION* Expression): BASE(Line, Filename, Name, TYPE::Alias){
   this->Expression = Expression;
 }
 //------------------------------------------------------------------------------
 
 ALIAS::~ALIAS(){
+  if(Expression) delete Expression;
 }
 //------------------------------------------------------------------------------
 
-void ALIAS::Display(){
-  Debug.print("  Alias: %s\n", Name.c_str());
-  Debug.print("    ");
+AST::EXPRESSION* ALIAS::GetExpression(int Line, const string& Filename){
+  assert(Expression, return 0);
+  return (AST::EXPRESSION*)Expression->Copy();
+}
+//------------------------------------------------------------------------------
+
+bool ALIAS::Assign(AST::EXPRESSION* Expression){
+  return RawAssign(Expression);
+}
+//------------------------------------------------------------------------------
+
+bool ALIAS::RawAssign(AST::EXPRESSION* Expression){
+  Expression->Error("Cannot assign to an alias");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+bool ALIAS::HasCircularReference(BASE* Object){
+  if(this == Object) return true;
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+void ALIAS::Display(int Indent){
+  Debug.Indent(Indent);
+  Debug.Print("Alias: %s\n", Name.c_str());
+
+  Debug.Indent(Indent+1);
   if(Expression) Expression->Display();
-  Debug.print("\n");
+  else           Debug.Print("{null}");
+  Debug.Print("\n");
+}
+//------------------------------------------------------------------------------
+
+void ALIAS::Validate(){
+  assert(Type == TYPE::Alias);
+
+  BASE::Validate();
+
+  if(Expression) Expression->Validate();
 }
 //------------------------------------------------------------------------------
 

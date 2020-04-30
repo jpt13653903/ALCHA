@@ -19,12 +19,15 @@
 //==============================================================================
 
 #include "Byte.h"
+
+#include "AST/Expression/Literal.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-NETLIST::BYTE::BYTE(int Line, const std::string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Byte){
+NETLIST::BYTE::BYTE(int Line, const string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Byte){
   Value = 0;
 }
 //------------------------------------------------------------------------------
@@ -33,9 +36,47 @@ NETLIST::BYTE::~BYTE(){
 }
 //------------------------------------------------------------------------------
 
-void NETLIST::BYTE::Display(){
-  Debug.print("  Byte: %s\n", Name.c_str());
-  Debug.print("    Value = 0x%02X\n", Value);
+AST::EXPRESSION* NETLIST::BYTE::GetExpression(int Line, const string& Filename){
+  AST::LITERAL* Result = new AST::LITERAL(Line, Filename);
+  Result->Value = Value;
+  Result->SetWidth(8);
+  return Result;
+}
+//------------------------------------------------------------------------------
+
+bool NETLIST::BYTE::Assign(AST::EXPRESSION* Expression){
+  error("Not yet implemented");
+  return RawAssign(Expression);
+}
+//------------------------------------------------------------------------------
+
+bool NETLIST::BYTE::RawAssign(AST::EXPRESSION* Expression){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+bool NETLIST::BYTE::HasCircularReference(BASE* Object){
+  if(this == Object) return true;
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+void NETLIST::BYTE::Display(int Indent){
+  Debug.Indent(Indent+1);
+  Debug.Print("Byte: %s\n", Name.c_str());
+  Debug.Indent(Indent+2);
+  Debug.Print("Value = 0x%02X\n", Value);
+}
+//------------------------------------------------------------------------------
+
+void NETLIST::BYTE::Validate(){
+  assert(Type == TYPE::Byte);
+
+  BASE::Validate();
+
+  error("Not implemented yet");
 }
 //------------------------------------------------------------------------------
 

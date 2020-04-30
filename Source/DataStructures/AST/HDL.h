@@ -33,10 +33,18 @@ namespace AST{
     ASSIGNMENT* Parameters;
     DEFINITION* Ports;
 
-    HDL(int Line, const char* Filename);
+    HDL(int Line, std::string& Filename);
+    HDL(int Line, const char*  Filename);
    ~HDL();
 
-    void Display();
+    BASE* Copy() override;
+
+    bool RunAST() override;
+    bool GetVerilog(std::string& Body) override;
+
+    void Display() override;
+
+    void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------

@@ -31,10 +31,18 @@ namespace AST{
     BASE      * TrueStatements;
     BASE      * FalseStatements;
 
-    IF_STATEMENT(int Line, const char* Filename);
+    IF_STATEMENT(int Line, std::string& Filename);
+    IF_STATEMENT(int Line, const char*  Filename);
    ~IF_STATEMENT();
 
-    void Display();
+    BASE* Copy() override;
+
+    bool RunAST() override;
+    bool GetVerilog(std::string& Body) override;
+
+    void Display() override;
+
+    void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------

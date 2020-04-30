@@ -21,7 +21,11 @@
 #include "Fence.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
+//------------------------------------------------------------------------------
+
+FENCE::FENCE(int Line, std::string& Filename): FENCE(Line, Filename.c_str()){}
 //------------------------------------------------------------------------------
 
 FENCE::FENCE(int Line, const char* Filename): BASE(Line, Filename, TYPE::Fence){
@@ -32,10 +36,36 @@ FENCE::~FENCE(){
 }
 //------------------------------------------------------------------------------
 
+BASE* FENCE::Copy(){
+  FENCE* Copy = new FENCE(Source.Line, Source.Filename.c_str());
+
+  return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool FENCE::RunAST(){
+  // Fences are ignored during this stage.
+  // They only have significance within FSM constructs
+  return true;
+}
+//------------------------------------------------------------------------------
+
+bool FENCE::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void FENCE::Display(){
   DisplayInfo();
-  Debug.print("Fence\n");
+  Debug.Print("Fence\n");
 
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+
+void FENCE::ValidateMembers(){
+  assert(Type == TYPE::Fence);
+}
+//------------------------------------------------------------------------------
+

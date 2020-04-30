@@ -27,10 +27,18 @@
 
 namespace AST{
   struct FENCE: public BASE{
-      FENCE(int Line, const char* Filename);
-     ~FENCE();
+    FENCE(int Line, std::string& Filename);
+    FENCE(int Line, const char*  Filename);
+   ~FENCE();
 
-      void Display();
+    BASE* Copy() override;
+
+    bool RunAST() override;
+    bool GetVerilog(std::string& Body) override;
+
+    void Display() override;
+
+    void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------

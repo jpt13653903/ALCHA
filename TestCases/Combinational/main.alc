@@ -15,8 +15,11 @@ ADT7420.SDA.enabled = ~Data;
 
 num MyNumber = 1.23456;
 
-!! Testing virtual pins
-net(14, 3 ) TestNet  = GPIO;
+num LED_Width     = LED'width;
+num LED_FullScale = LED'fullscale;
+num LED_Current   = LED'current;
+
+net(14, 3 ) TestNet = LED;
 
 pin(14, 3 ) Testing1 =  0.1 *TestNet;
 pin(14, 3 ) Testing2 = 10   *TestNet;
@@ -41,8 +44,8 @@ net(16, 1) a  = 0.123;
 pin(32, 1) b  = 2*a;
 pin(32, 1) c := 2*a;
 
-// pin( 8) d = 123;
-// pin(40) e = a`5;
+pin( 8) d = 123;
+pin(40) e = a`5;
 
 GPIO := Testing5;
 

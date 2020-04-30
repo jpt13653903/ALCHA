@@ -19,12 +19,15 @@
 //==============================================================================
 
 #include "Num.h"
+
+#include "AST/Expression/Literal.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-NUM::NUM(int Line, const std::string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Number){
+NUM::NUM(int Line, const string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Number){
   Value = 0;
 }
 //------------------------------------------------------------------------------
@@ -33,11 +36,62 @@ NUM::~NUM(){
 }
 //------------------------------------------------------------------------------
 
-void NUM::Display(){
-  Debug.print("  Num: %s\n", Name.c_str());
-  Debug.print("    Value = ");
-  Debug.print(Value.Display());
-  Debug.print("\n");
+AST::EXPRESSION* NUM::GetExpression(int Line, const string& Filename){
+  AST::LITERAL* Result = new AST::LITERAL(Line, Filename);
+  Result->Value = Value;
+  return Result;
+}
+//------------------------------------------------------------------------------
+
+bool NUM::Assign(AST::EXPRESSION* Expression){
+  return RawAssign(Expression);
+}
+//------------------------------------------------------------------------------
+
+bool NUM::RawAssign(AST::EXPRESSION* Expression){
+  if(!Expression) return false;
+
+  Expression = Expression->Evaluate();
+  if(!Expression) return false;
+
+  bool Result = false;
+
+  if(Expression->Type == AST::BASE::TYPE::Literal){
+    Value = ((AST::LITERAL*)Expression)->Value;
+    Result = true;
+  }else{
+    Expression->Error("Expression must evaluate to a literal");
+    Result = false;
+  }
+
+  // Expression has been moved and then used, so it must be deleted
+  delete Expression;
+  return Result;
+}
+//------------------------------------------------------------------------------
+
+bool NUM::HasCircularReference(BASE* Object){
+  if(this == Object) return true;
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+void NUM::Display(int Indent){
+  Debug.Indent(Indent);
+  Debug.Print("Num: %s\n", Name.c_str());
+
+  Debug.Indent(Indent+1);
+  Debug.Print("Value = ");
+  Debug.Print(Value.Display());
+  Debug.Print("\n");
+}
+//------------------------------------------------------------------------------
+
+void NUM::Validate(){
+  assert(Type == TYPE::Number);
+
+  BASE::Validate();
 }
 //------------------------------------------------------------------------------
 

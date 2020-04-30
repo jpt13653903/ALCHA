@@ -26,14 +26,27 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct IMPORT: public BASE{
-    std::string File;
-    std::string Namespace;
+  class IMPORT: public BASE{
+    private:
+      BASE* Ast; // Used to store in-line ASTs
 
-    IMPORT(int Line, const char* Filename);
-   ~IMPORT();
+    public:
+      std::string File;
+      std::string Namespace;
 
-    void Display();
+      IMPORT(int Line, std::string& Filename);
+      IMPORT(int Line, const char*  Filename);
+     ~IMPORT();
+
+      // Returns a copy of this instance
+      BASE* Copy() override;
+
+      bool RunAST() override;
+      bool GetVerilog(std::string& Body) override;
+
+      void Display() override;
+
+      void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------

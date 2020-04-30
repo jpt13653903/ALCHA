@@ -19,9 +19,15 @@
 //==============================================================================
 
 #include "Alias.h"
+#include "Netlist/Alias.h"
+#include "Netlist/Namespace/Module.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
+//------------------------------------------------------------------------------
+
+ALIAS::ALIAS(int Line, std::string& Filename): ALIAS(Line, Filename.c_str()){}
 //------------------------------------------------------------------------------
 
 ALIAS::ALIAS(int Line, const char* Filename): BASE(Line, Filename, TYPE::Alias){
@@ -34,12 +40,55 @@ ALIAS::~ALIAS(){
 }
 //------------------------------------------------------------------------------
 
+BASE* ALIAS::Copy(){
+  ALIAS* Copy = new ALIAS(Source.Line, Source.Filename.c_str());
+
+  Copy->Identifier = Identifier;
+
+  if(Expression) Copy->Expression = (decltype(Expression))Expression->Copy();
+
+  return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool ALIAS::RunAST(){
+  auto Symbol = NETLIST::NamespaceStack.front()->Symbols.find(Identifier);
+  if(Symbol != NETLIST::NamespaceStack.front()->Symbols.end()){
+    Error();
+    printf("Symbol \"%s\" already defined in the current namespace\n",
+           Identifier.c_str());
+    return false;
+  }
+
+  auto Object = new NETLIST::ALIAS(Source.Line, Source.Filename, Identifier.c_str(), Expression);
+  Expression = 0; // It's been moved to Object, so remove it from this node.
+
+  NETLIST::NamespaceStack.front()->Symbols[Object->Name] = Object;
+
+  return true;
+}
+//------------------------------------------------------------------------------
+
+bool ALIAS::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void ALIAS::Display(){
   DisplayInfo();
-  Debug.print("Alias (%s):\n", Identifier.c_str());
+  Debug.Print("Alias (%s):\n", Identifier.c_str());
 
-  Expression->Display();
+  if(Expression) Expression->Display();
+  else           Debug.Print("{Moved Expression}\n");
 
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+
+void ALIAS::ValidateMembers(){
+  assert(Type == TYPE::Alias);
+  if(Expression) Expression->Validate();
+}
+//------------------------------------------------------------------------------
+

@@ -28,28 +28,43 @@
 //------------------------------------------------------------------------------
 
 #include "Base.h"
-#include "Number.h"
+#include "Num.h"
 #include "AST/Definition.h"
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
-  struct SYNTHESISABLE: public BASE{
-    bool   Used; // Actually used in an expression somewhere
-    bool   Signed;
-    int    Width;
-    NUMBER FullScale;
+  class SYNTHESISABLE: public BASE{
+    private:
+      NUM* WidthObj;
+      NUM* FullScaleObj;
 
-    AST::DEFINITION::DIRECTION Direction;
+    protected:
+      void DisplayParameters(int Indent);
 
-             SYNTHESISABLE(int Line, const std::string& Filename, const char* Name, TYPE Type);
-    virtual ~SYNTHESISABLE();
+    public:
+      bool    Used; // Actually used in an expression somewhere
+      bool    Signed   ();
+      int     Width    () override;
+      NUMBER& FullScale() override;
+      void    SetFixedPoint(int Width, const NUMBER& FullScale);
 
-    bool ApplyParameters(AST::BASE* Parameter);
+      AST::DEFINITION::DIRECTION Direction;
 
-    void Display();
+               SYNTHESISABLE(int Line, const std::string& Filename, const char* Name, TYPE Type);
+      virtual ~SYNTHESISABLE();
+
+      bool IsSynthesisable() override;
+
+      bool ApplyParameters(std::list<AST::BASE*>& Parameters);
+
+      BASE*            GetAttribute            (const std::string& Name) override;
+      AST::EXPRESSION* GetBuiltInAttributeValue(const std::string& Name) override;
+
+      void Validate() override;
   };
 }
 //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------
+

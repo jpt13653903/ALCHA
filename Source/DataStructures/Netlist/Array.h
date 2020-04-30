@@ -30,7 +30,15 @@ namespace NETLIST{
              ARRAY(int Line, const std::string& Filename, const char* Name);
     virtual ~ARRAY();
 
-    virtual void Display();
+    AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
+    bool Assign   (AST::EXPRESSION* Expression) override;
+    bool RawAssign(AST::EXPRESSION* Expression) override;
+
+    bool HasCircularReference(BASE* Object) override;
+
+    void Display(int Indent = 0) override;
+
+    void Validate() override;
   };
 }
 //------------------------------------------------------------------------------

@@ -22,18 +22,27 @@
 #define AST_FSM_h
 //------------------------------------------------------------------------------
 
+#include <list>
 #include "Base.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
   struct FSM: public BASE{
-    BASE* Parameters;
+    std::list<BASE*> Parameters;
     BASE* Statements;
 
-    FSM(int Line, const char* Filename);
+    FSM(int Line, std::string& Filename);
+    FSM(int Line, const char*  Filename);
    ~FSM();
 
-    void Display();
+    BASE* Copy() override;
+
+    bool RunAST() override;
+    bool GetVerilog(std::string& Body) override;
+
+    void Display() override;
+
+    void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------

@@ -18,100 +18,58 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Expression_h
-#define AST_Expression_h
+#ifndef AST_Expression_Expression_h
+#define AST_Expression_Expression_h
 //------------------------------------------------------------------------------
 
 #include "Base.h"
 #include "Number.h"
 //------------------------------------------------------------------------------
 
+namespace NETLIST{
+  class BASE;
+}
+//------------------------------------------------------------------------------
+
 namespace AST{
-  struct EXPRESSION: public BASE{
-    enum class EXPRESSION_TYPE{
-      String,
-      Literal,
-      Array,
-      Identifier,
+  class EXPRESSION: public BASE{
+    protected:
+      void DisplayStart();
+      void DisplayEnd  ();
 
-      VectorConcatenate,
-      ArrayConcatenate,
+      // Used for fixed-point scaling...
+      // If the scaling is not a power-of-two, it also synthesises a multiplier.
+      EXPRESSION* ScaleWith(NUMBER& Scale, int Width, NUMBER& FullScale);
+    //--------------------------------------------------------------------------
 
-      FunctionCall, // Left is the function name; right is the parameter list
-      Slice,
-      AccessMember,
-      AccessMemberSafe,
-      AccessAttribute,
-      Range, // Left = from; Right = to; Right->Next = step
+    public:
+      // Left and Right operands
+      EXPRESSION* Left;
+      EXPRESSION* Right;
 
-      Increment, // If child is on the left, post-increment
-      Decrement, // If child is on the left, post-decrement
-      Factorial,
+               EXPRESSION(int Line, const char* Filename, TYPE ExpressionType);
+      virtual ~EXPRESSION();
 
-      Negate,
-      Bit_NOT,
-      Raw,     // Unary operator to cast to "raw bits", or "unsigned int"
+      bool IsExpression() override;
 
-      AND_Reduce,
-      NAND_Reduce,
-      OR_Reduce,
-      NOR_Reduce,
-      XOR_Reduce,
-      XNOR_Reduce,
-      Logical_NOT,
+      bool RunAST() override;
 
-      Cast,
+      // Evaluates the expression as far as possible, creating new wires if required
+      // Returns the instance of the node to use as replacement
+      // For example: Node = Node->Evaluate() might change the value of Node
+      virtual EXPRESSION* Evaluate() = 0;
 
-      Replicate,
+      // Returns the width of the result, if known.  Issues an error if the 
+      // width is not defined (like an uncast literal, for instance)
+      virtual int GetWidth() = 0;
 
-      Multiply,
-      Divide,
-      Modulus,
-      Exponential,
+      // Evaluates using fixed-point scaling.  The parameters indicate the 
+      // target type.  Passing Width = 0 implies that the target is a scripting
+      // variable.  The result can be raw-assigned to the target.
+      virtual EXPRESSION* FixedPointScale(int Width, NUMBER& FullScale) = 0;
 
-      Add,
-      Subtract,
-
-      Shift_Left,
-      Shift_Right,
-
-      Less,
-      Greater,
-      Less_Equal,
-      Greater_Equal,
-
-      Equal,
-      Not_Equal,
-
-      Bit_AND,
-      Bit_NAND,
-      Bit_OR,
-      Bit_NOR,
-      Bit_XOR,
-      Bit_XNOR,
-
-      Logical_AND,
-      Logical_OR,
-
-      Conditional
-    } ExpressionType;
-
-    std::string  Name;
-    NUMBER     * Value;    // Only used for numerical literals
-    std::string* StrValue; // Only used for string literals
-
-    // Left and Right operands
-    EXPRESSION* Left;
-    BASE*       Right; // Can be expression or assignment (for function calls)
-
-    EXPRESSION(
-      int             Line,
-      const char*     Filename,
-      EXPRESSION_TYPE ExpressionType
-    );
-   ~EXPRESSION();
-
-    void Display();
+      // Check for circular reference to the netlist object specified
+      virtual bool HasCircularReference(NETLIST::BASE* Object) = 0;
   };
 }
 //------------------------------------------------------------------------------

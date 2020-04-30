@@ -37,32 +37,42 @@ LOGGER::~LOGGER(){
 }
 //------------------------------------------------------------------------------
 
-void LOGGER::print(const char* String){
+void LOGGER::Indent(int Level){
+  for(int n = 0; n < Level; n++) fprintf(File, "    ");
+}
+//------------------------------------------------------------------------------
+
+void LOGGER::Print(const char* String){
   fprintf(File, "%s", String);
 }
 //------------------------------------------------------------------------------
 
-void LOGGER::print(const std::string& String){
+void LOGGER::Print(const std::string& String){
   fprintf(File, "%s", String.c_str());
 }
 //------------------------------------------------------------------------------
 
-void LOGGER::print(const char* Format, int i){
+void LOGGER::Print(const char* Format, int i){
   fprintf(File, Format, i);
 }
 //------------------------------------------------------------------------------
 
-void LOGGER::print(const char* Format, unsigned u){
+void LOGGER::Print(const char* Format, double d){
+  fprintf(File, Format, d);
+}
+//------------------------------------------------------------------------------
+
+void LOGGER::Print(const char* Format, unsigned u){
   fprintf(File, Format, u);
 }
 //------------------------------------------------------------------------------
 
-void LOGGER::print(const char* Format, const char* s){
+void LOGGER::Print(const char* Format, const char* s){
   fprintf(File, Format, s);
 }
 //------------------------------------------------------------------------------
 
-void LOGGER::print(const char* Format, const string& s){
+void LOGGER::Print(const char* Format, const string& s){
   fprintf(File, Format, s.c_str());
 }
 //------------------------------------------------------------------------------

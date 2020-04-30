@@ -22,28 +22,38 @@
 #define AST_Switch_h
 //------------------------------------------------------------------------------
 
+#include <vector>
 #include "Expression.h"
 //------------------------------------------------------------------------------
 
 namespace AST{
   struct SWITCH: public BASE{
     struct CASE{
-      EXPRESSION* Expressions; // List through the BASE::Next pointer
-      BASE      * Statements;
+      std::vector<EXPRESSION*> Expressions;
+      BASE* Statements;
 
       CASE* Next; // The next case (this can be turned into a BST later...)
 
       CASE();
+      CASE(const CASE& Case);
      ~CASE();
     };
     CASE      * Cases;
     BASE      * Default;
     EXPRESSION* Expression;
 
-    SWITCH(int Line, const char* Filename);
+    SWITCH(int Line, std::string& Filename);
+    SWITCH(int Line, const char*  Filename);
    ~SWITCH();
 
-    void Display();
+    BASE* Copy() override;
+
+    bool RunAST() override;
+    bool GetVerilog(std::string& Body) override;
+
+    void Display() override;
+
+    void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------

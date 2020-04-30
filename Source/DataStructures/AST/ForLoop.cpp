@@ -21,11 +21,14 @@
 #include "ForLoop.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-FOR_LOOP::FOR_LOOP(int Line, const char* Filename):
-BASE(Line, Filename, TYPE::ForLoop){
+FOR_LOOP::FOR_LOOP(int Line, std::string& Filename): FOR_LOOP(Line, Filename.c_str()){}
+//------------------------------------------------------------------------------
+
+FOR_LOOP::FOR_LOOP(int Line, const char* Filename): BASE(Line, Filename, TYPE::ForLoop){
   Range      = 0;
   Statements = 0;
 }
@@ -37,14 +40,47 @@ FOR_LOOP::~FOR_LOOP(){
 }
 //------------------------------------------------------------------------------
 
+BASE* FOR_LOOP::Copy(){
+  FOR_LOOP* Copy = new FOR_LOOP(Source.Line, Source.Filename.c_str());
+
+  Copy->Identifier = Identifier;
+
+  if(Range) Copy->Range = (decltype(Range))Range->Copy();
+
+  Copy->Statements = CopyList(Statements);
+
+  return Copy;
+}
+//------------------------------------------------------------------------------
+
+bool FOR_LOOP::RunAST(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
+bool FOR_LOOP::GetVerilog(string& Body){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 void FOR_LOOP::Display(){
   DisplayInfo();
-  Debug.print("for(%s in ", Identifier.c_str());
+  Debug.Print("for(%s in ", Identifier.c_str());
     if(Range) Range->Display();
-  Debug.print("){\n");
+  Debug.Print("){\n");
     if(Statements) Statements->Display();
-  Debug.print("}\n");
+  Debug.Print("}\n");
 
   if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
+
+void FOR_LOOP::ValidateMembers(){
+  assert(Type == TYPE::ForLoop);
+
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+

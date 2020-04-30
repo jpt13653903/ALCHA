@@ -19,6 +19,7 @@
 //==============================================================================
 
 #include "SDC.h"
+#include "Netlist/Synthesisable/Pin.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -36,22 +37,20 @@ SDC::~SDC(){
 void SDC::BuildClocks(){
   int ClockCount = 0;
 
-  for(auto SymbolIterator  = Global.Symbols.begin();
-           SymbolIterator != Global.Symbols.end();
-           SymbolIterator++){
+  foreach(SymbolIterator, Global.Symbols){
     if(SymbolIterator->second->Type == BASE::TYPE::Pin){
       auto Pin  = (PIN*)(SymbolIterator->second);
-      auto Freq = Pin->GetAttrib("frequency");
+      auto Freq = Pin->GetAttribValue("frequency");
       if(Freq){
-        if(Freq->ExpressionType != EXPRESSION::EXPRESSION_TYPE::Literal){
+        if(Freq->Type != AST::BASE::TYPE::Literal){
           error("frequency attribute not a literal");
           return;
         }
-        if(!Freq->Value.IsReal()){
+        if(!((AST::LITERAL*)Freq)->Value.IsReal()){
           error("frequency attribute not real");
           return;
         }
-        double Period = 1e9/Freq->Value.GetReal(); // ns
+        double Period = 1e9/((AST::LITERAL*)Freq)->Value.GetReal(); // ns
         Constraints +=
           "create_clock -name {" + Pin->HDL_Name()     + "}"   +
           " -period "            + to_string(Period)   + "ns"  +
@@ -67,12 +66,10 @@ void SDC::BuildClocks(){
   if(ClockCount){
     Constraints += "\nset_clock_groups -asynchronous";
 
-    for(auto SymbolIterator  = Global.Symbols.begin();
-             SymbolIterator != Global.Symbols.end();
-             SymbolIterator++){
+    foreach(SymbolIterator, Global.Symbols){
       if(SymbolIterator->second->Type == BASE::TYPE::Pin){
         auto Pin  = (PIN*)(SymbolIterator->second);
-        auto Freq = Pin->GetAttrib("frequency");
+        auto Freq = Pin->GetAttribValue("frequency");
         // Already checked for validity above, so no need to check again
         if(Freq) Constraints += " \\\n  -group {"+ Pin->HDL_Name() +"}";
       }
@@ -86,23 +83,21 @@ void SDC::BuildPorts(NETLIST::NAMESPACE* Namespace){
   // TODO: Handle the input and output delays properly
   warning("input_delay and output_delay not yet implemented");
 
-  for(auto SymbolIterator  = Namespace->Symbols.begin();
-           SymbolIterator != Namespace->Symbols.end();
-           SymbolIterator++){
+  foreach(SymbolIterator, Namespace->Symbols){
     switch(SymbolIterator->second->Type){
       case BASE::TYPE::Pin:{
         auto Pin = (PIN*)(SymbolIterator->second);
-        if(!Pin->GetAttrib("frequency")){ // Not a clock
+        if(!Pin->GetAttribValue("frequency")){ // Not a clock
           if(Pin->Direction != AST::DEFINITION::DIRECTION::Output){ // Input or bidirectional
             Constraints += "set_false_path -to   * -from ";
             Constraints += "[get_ports {" + Pin->HDL_Name();
-            if(Pin->Width > 1) Constraints += "[*]";
+            if(Pin->Width() > 1) Constraints += "[*]";
             Constraints += "} ]\n";
           }
           if(Pin->Direction != AST::DEFINITION::DIRECTION::Input){ // Output or bidirectional
             Constraints += "set_false_path -from * -to   ";
             Constraints += "[get_ports {" + Pin->HDL_Name();
-            if(Pin->Width > 1) Constraints += "[*]";
+            if(Pin->Width() > 1) Constraints += "[*]";
             Constraints += "} ]\n";
           }
         }

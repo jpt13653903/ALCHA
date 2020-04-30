@@ -19,44 +19,167 @@
 //==============================================================================
 
 #include "Synthesisable.h"
+
+#include "Ast/Expression/Literal.h"
 //------------------------------------------------------------------------------
 
+using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
 SYNTHESISABLE::SYNTHESISABLE(int Line, const std::string& Filename, const char* Name, TYPE Type) : BASE(Line, Filename, Name, Type){
-  Used      = false;
-  Signed    = false;
-  Width     = 1;
-  FullScale = 2;
+  Used = false;
+
+  WidthObj     = new NUM(Line, Filename, Name);
+  FullScaleObj = new NUM(Line, Filename, Name);
+
+  WidthObj    ->Value = 1;
+  FullScaleObj->Value = 2;
 }
 //------------------------------------------------------------------------------
 
 SYNTHESISABLE::~SYNTHESISABLE(){
+  delete WidthObj;
+  delete FullScaleObj;
 }
 //------------------------------------------------------------------------------
 
-void SYNTHESISABLE::Display(){
-  switch(Type){
-    case TYPE::Pin: Debug.print("  Pin: "); break;
-    case TYPE::Net: Debug.print("  Net: "); break;
-    default: error ("Unknown synthesisable type"); break;
-  }
-  Debug.print("%s\n", Name.c_str());
-  Debug.print("    Used       = %s\n", Used   ? "true" : "false");
-  Debug.print("    Width      = %u\n", Width);
-  Debug.print("    Full-scale = %s\n", FullScale.Display());
-  Debug.print("    Signed     = %s\n", Signed ? "true" : "false");
+bool SYNTHESISABLE::IsSynthesisable(){
+  return true;
+}
+//------------------------------------------------------------------------------
 
-  Debug.print("    Direction  = ");
+bool SYNTHESISABLE::Signed(){
+  return FullScaleObj->Value < 0;
+}
+//------------------------------------------------------------------------------
+
+int SYNTHESISABLE::Width(){
+  return WidthObj->Value.GetReal();
+}
+//------------------------------------------------------------------------------
+
+NUMBER& SYNTHESISABLE::FullScale(){
+  return FullScaleObj->Value;
+}
+//------------------------------------------------------------------------------
+
+void SYNTHESISABLE::SetFixedPoint(int Width, const NUMBER& FullScale){
+  WidthObj    ->Value = Width;
+  FullScaleObj->Value = FullScale;
+}
+//------------------------------------------------------------------------------
+
+bool SYNTHESISABLE::ApplyParameters(list<AST::BASE*>& Parameters){
+  int  Position          = 0; // Negative => named parameters
+  bool ExplicitFullScale = false;
+
+  foreach(Parameter, Parameters){
+    if((*Parameter)->IsExpression()){
+      if(Position < 0) return false; // Mixing named and positional parameters
+
+      AST::EXPRESSION* Param = ((AST::EXPRESSION*)(*Parameter))->Evaluate();
+      *Parameter = Param;
+      if(!Param) return false;
+
+      switch(Param->Type){
+        case AST::BASE::TYPE::Literal:{
+          auto Literal = (AST::LITERAL*)Param;
+          switch(Position){
+            case 0:
+              if(!Literal->Value.IsInt()) return false;
+              WidthObj->Value = round(Literal->Value.GetReal());
+              break;
+
+            case 1:
+              ExplicitFullScale = true;
+              FullScaleObj->Value = Literal->Value;
+              break;
+
+            default: // Too many parameters
+              delete Literal;
+              return false;
+          }
+          break;
+        }
+
+        default:
+          Param->Error("Parameters must be pure scripting expressions");
+          return false;
+      }
+
+    }else if((*Parameter)->IsAssignment()){
+      Position = -1;
+      error("Not yet implemented");
+
+    }else{
+      return false;
+    }
+    if(Position >= 0) Position++;
+  }
+  bool Signed = false;
+  if(WidthObj->Value < 0){
+    WidthObj->Value.Mul(-1);
+    Signed = true;
+  }
+  if(!ExplicitFullScale){
+    FullScaleObj->Value = 1;
+    FullScaleObj->Value.BinScale(Width());
+  }
+  if(FullScaleObj->Value > 0){
+    if(Signed) FullScaleObj->Value.Mul(-1);
+  }
+  return true;
+}
+//------------------------------------------------------------------------------
+
+void SYNTHESISABLE::DisplayParameters(int Indent){
+  Debug.Print("%s\n", Name.c_str());
+
+  Debug.Indent(Indent);
+  Debug.Print("Used       = %s\n", Used   ? "true" : "false");
+  Debug.Indent(Indent);
+  Debug.Print("Width      = %u\n", Width());
+  Debug.Indent(Indent);
+  Debug.Print("Full-scale = %s\n", FullScale().Display());
+
+  Debug.Indent(Indent);
+  Debug.Print("Direction  = ");
   switch(Direction){
-    case AST::DEFINITION::DIRECTION::Inferred     : Debug.print("Inferred\n"     ); break;
-    case AST::DEFINITION::DIRECTION::Input        : Debug.print("Input\n"        ); break;
-    case AST::DEFINITION::DIRECTION::Output       : Debug.print("Output\n"       ); break;
-    case AST::DEFINITION::DIRECTION::Bidirectional: Debug.print("Bidirectional\n"); break;
-    default                                       : Debug.print("Invalid\n"      ); break;
+    case AST::DEFINITION::DIRECTION::Inferred     : Debug.Print("Inferred\n"     ); break;
+    case AST::DEFINITION::DIRECTION::Input        : Debug.Print("Input\n"        ); break;
+    case AST::DEFINITION::DIRECTION::Output       : Debug.Print("Output\n"       ); break;
+    case AST::DEFINITION::DIRECTION::Bidirectional: Debug.Print("Bidirectional\n"); break;
+    default                                       : Debug.Print("Invalid\n"      ); break;
   }
 }
 //------------------------------------------------------------------------------
 
+BASE* SYNTHESISABLE::GetAttribute(const std::string& Name){
+  if(Name == "width"    ) return WidthObj;
+  if(Name == "fullscale") return FullScaleObj;
+
+  return BASE::GetAttribute(Name);
+}
+//------------------------------------------------------------------------------
+
+AST::EXPRESSION* SYNTHESISABLE::GetBuiltInAttributeValue(const std::string& Name){
+  if(Name == "width"){
+    auto Result = new AST::LITERAL(0, "");
+    Result->Value = Width();
+    return Result;
+  }
+  if(Name == "fullscale"){
+    auto Result = new AST::LITERAL(0, "");
+    Result->Value = FullScale();
+    return Result;
+  }
+  return BASE::GetBuiltInAttributeValue(Name);
+}
+//------------------------------------------------------------------------------
+
+void SYNTHESISABLE::Validate(){
+  BASE::Validate();
+}
+//------------------------------------------------------------------------------
 

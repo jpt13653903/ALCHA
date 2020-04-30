@@ -30,10 +30,18 @@ namespace AST{
     EXPRESSION* Namespace;
     BASE      * Statements;
 
-    NAMESPACE_PUSH(int Line, const char* Filename);
+    NAMESPACE_PUSH(int Line, std::string& Filename);
+    NAMESPACE_PUSH(int Line, const char*  Filename);
    ~NAMESPACE_PUSH();
 
-    void Display();
+    BASE* Copy() override;
+
+    bool RunAST() override;
+    bool GetVerilog(std::string& Body) override;
+
+    void Display() override;
+
+    void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------

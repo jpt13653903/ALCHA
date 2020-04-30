@@ -22,26 +22,25 @@
 #define AST_Definition_h
 //------------------------------------------------------------------------------
 
-#include "Parameter.h"
+#include <list>
 #include "Assignment.h"
 //------------------------------------------------------------------------------
 
-namespace AST{
-  struct DEFINITION: public BASE{
-      enum class DEFINITION_TYPE{
-        Void, Auto, // Used for functions only
-        Pin, Net,
-        Byte, Char, Num,
-        Func, // Function pointer
-        ClassInstance
-      } DefinitionType;
-      EXPRESSION* ClassName; // For class instances
+namespace NETLIST{
+  class BASE;
+  class SYNTHESISABLE;
+}
+//------------------------------------------------------------------------------
 
+namespace AST{
+  class DEFINITION: public BASE{
+    public:
       struct ARRAY{
         EXPRESSION* Size;
         ARRAY     * Next; // Next dimension of the array
 
         ARRAY();
+        ARRAY(const ARRAY& Array);
        ~ARRAY();
       };
 
@@ -52,28 +51,43 @@ namespace AST{
         ASSIGNMENT* Initialiser;
 
         // These are used for function definitions.
-        bool       Function; // True when this is a function definition
-        PARAMETER* Parameters; // List of identifiers (calls are duck-typed)
-        BASE     * FunctionBody;
+        bool        Function; // True when this is a function definition
+        DEFINITION* Parameters; // List of identifiers (calls are duck-typed)
+        BASE*       FunctionBody;
 
         IDENTIFIER* Next;
 
         IDENTIFIER();
+        IDENTIFIER(const IDENTIFIER& Identifier);
        ~IDENTIFIER();
       };
+    //--------------------------------------------------------------------------
 
+    public:
       enum class DIRECTION{Inferred = 0, Input, Output, Bidirectional} Direction;
 
-      BASE*       Parameters; // Expression or Assignment
+      std::list<BASE*> Parameters; // Expression or Assignment
       ASSIGNMENT* Attributes;
       IDENTIFIER* Identifiers;
+    //--------------------------------------------------------------------------
 
-      DEFINITION(int             Line,
-                 const char*     Filename,
-                 DEFINITION_TYPE DefinitionType);
-     ~DEFINITION();
+    protected:
+      void CopyMembers(DEFINITION* Copy);
+      bool VerifyNotDefined(IDENTIFIER* Identifier);
 
-      void Display();
+      void DisplayParameters ();
+      void DisplayAttributes ();
+      void DisplayIdentifiers();
+      void DisplayDefinition (const char* Type);
+    //--------------------------------------------------------------------------
+
+    public:
+               DEFINITION(int Line, const char* Filename, TYPE DefinitionType);
+      virtual ~DEFINITION();
+
+      bool IsDefinition() override;
+
+      void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------

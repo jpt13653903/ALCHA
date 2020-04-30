@@ -24,6 +24,7 @@
 
 #include "Engine.h"
 #include "AST/Definition.h"
+#include "Netlist/Namespace/Module.h"
 //------------------------------------------------------------------------------
 
 class SDC{
