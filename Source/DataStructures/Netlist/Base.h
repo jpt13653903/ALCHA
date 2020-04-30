@@ -97,7 +97,8 @@ namespace NETLIST{
       virtual AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) = 0;
 
       // Assigns the expression, taking ownership (i.e. will delete later)
-      virtual bool Assign(AST::EXPRESSION* Expression) = 0;
+      virtual bool Assign   (AST::EXPRESSION* Expression) = 0;
+      virtual bool RawAssign(AST::EXPRESSION* Expression) = 0;
 
       // Generates a name based on the parent group(s), if it is not directly
       // part of the module.  This is the name used in the output HDL.

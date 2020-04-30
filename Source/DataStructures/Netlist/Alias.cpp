@@ -41,6 +41,11 @@ AST::EXPRESSION* ALIAS::GetExpression(int Line, const string& Filename){
 //------------------------------------------------------------------------------
 
 bool ALIAS::Assign(AST::EXPRESSION* Expression){
+  return RawAssign(Expression);
+}
+//------------------------------------------------------------------------------
+
+bool ALIAS::RawAssign(AST::EXPRESSION* Expression){
   Expression->Error("Cannot assign to an alias");
   return false;
 }

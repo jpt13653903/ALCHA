@@ -46,8 +46,11 @@ AST::EXPRESSION* NET::GetExpression(int Line, const string& Filename){
 
 bool NET::Assign(AST::EXPRESSION* Expression){
   assert(Expression, return false);
+  return RawAssign(Expression->FixedPointScale(Width(), FullScale()));
+}
+//------------------------------------------------------------------------------
 
-  Expression = Expression->FixedPointScale(Width(), FullScale());
+bool NET::RawAssign(AST::EXPRESSION* Expression){
   assert(Expression, return false);
 
   if(Value){

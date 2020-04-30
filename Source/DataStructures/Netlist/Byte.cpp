@@ -47,6 +47,12 @@ AST::EXPRESSION* NETLIST::BYTE::GetExpression(int Line, const string& Filename){
 
 bool NETLIST::BYTE::Assign(AST::EXPRESSION* Expression){
   error("Not yet implemented");
+  return RawAssign(Expression);
+}
+//------------------------------------------------------------------------------
+
+bool NETLIST::BYTE::RawAssign(AST::EXPRESSION* Expression){
+  error("Not yet implemented");
   return false;
 }
 //------------------------------------------------------------------------------

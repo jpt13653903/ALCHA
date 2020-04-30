@@ -77,7 +77,7 @@ bool RAW_ASSIGN::RunAST(){
   assert(Target, return false);
 
   // Move the expression
-  bool Result = Target->Assign(Right);
+  bool Result = Target->RawAssign(Right);
   Right  = 0;
 
   return Result;

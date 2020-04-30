@@ -45,6 +45,11 @@ AST::EXPRESSION* NAMESPACE::GetExpression(int Line, const string& Filename){
 //------------------------------------------------------------------------------
 
 bool NAMESPACE::Assign(AST::EXPRESSION* Expression){
+  return RawAssign(Expression);
+}
+//------------------------------------------------------------------------------
+
+bool NAMESPACE::RawAssign(AST::EXPRESSION* Expression){
   Expression->Error("Cannot assign to a namespace");
   return false;
 }

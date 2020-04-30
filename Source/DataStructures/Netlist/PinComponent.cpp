@@ -49,8 +49,11 @@ AST::EXPRESSION* PIN_COMPONENT::GetExpression(int Line, const string& Filename){
 
 bool PIN_COMPONENT::Assign(AST::EXPRESSION* Expression){
   assert(Expression, return false);
+  return RawAssign(Expression->FixedPointScale(Pin->Width(), Pin->FullScale()));
+}
+//------------------------------------------------------------------------------
 
-  Expression = Expression->FixedPointScale(Pin->Width(), Pin->FullScale());
+bool PIN_COMPONENT::RawAssign(AST::EXPRESSION* Expression){
   assert(Expression, return false);
 
   if(Value) delete Value;

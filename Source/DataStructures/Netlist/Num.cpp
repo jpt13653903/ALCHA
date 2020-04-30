@@ -46,6 +46,11 @@ AST::EXPRESSION* NUM::GetExpression(int Line, const string& Filename){
 //------------------------------------------------------------------------------
 
 bool NUM::Assign(AST::EXPRESSION* Expression){
+  return RawAssign(Expression);
+}
+//------------------------------------------------------------------------------
+
+bool NUM::RawAssign(AST::EXPRESSION* Expression){
   if(!Expression) return false;
 
   Expression = Expression->Evaluate();

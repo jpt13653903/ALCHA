@@ -32,6 +32,8 @@ namespace AST{
       void DisplayStart();
       void DisplayEnd  ();
 
+      // Used for fixed-point scaling...
+      // If the scaling is not a power-of-two, it also synthesises a multiplier.
       EXPRESSION* ScaleWith(NUMBER& Scale, int Width, NUMBER& FullScale);
 
     public:

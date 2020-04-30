@@ -47,6 +47,12 @@ AST::EXPRESSION* CHARACTER::GetExpression(int Line, const string& Filename){
 
 bool CHARACTER::Assign(AST::EXPRESSION* Expression){
   error("Not yet implemented");
+  return RawAssign(Expression);
+}
+//------------------------------------------------------------------------------
+
+bool CHARACTER::RawAssign(AST::EXPRESSION* Expression){
+  error("Not yet implemented");
   return false;
 }
 //------------------------------------------------------------------------------

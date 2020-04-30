@@ -40,7 +40,8 @@ namespace NETLIST{
       virtual ~NAMESPACE(); // Also cleans up the children
 
       AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
-      bool Assign(AST::EXPRESSION* Expression) override;
+      bool Assign   (AST::EXPRESSION* Expression) override;
+      bool RawAssign(AST::EXPRESSION* Expression) override;
 
       bool IsNamespace() override;
 

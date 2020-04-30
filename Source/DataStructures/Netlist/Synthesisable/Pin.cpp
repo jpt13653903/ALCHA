@@ -58,6 +58,15 @@ bool PIN::Assign(AST::EXPRESSION* Expression){
 }
 //------------------------------------------------------------------------------
 
+bool PIN::RawAssign(AST::EXPRESSION* Expression){
+  if(Direction == AST::DEFINITION::DIRECTION::Input){
+    Expression->Error("Cannot assign to an input pin");
+    return false;
+  }
+  return Driver->RawAssign(Expression);
+}
+//------------------------------------------------------------------------------
+
 BASE* PIN::GetMember(const std::string& Name){
   if(Name == "driver" ) return Driver;
   if(Name == "enabled") return Enabled;

@@ -43,6 +43,12 @@ AST::EXPRESSION* ARRAY::GetExpression(int Line, const string& Filename){
 
 bool ARRAY::Assign(AST::EXPRESSION* Expression){
   error("Not yet implemented");
+  return RawAssign(Expression);
+}
+//------------------------------------------------------------------------------
+
+bool ARRAY::RawAssign(AST::EXPRESSION* Expression){
+  error("Not yet implemented");
   return false;
 }
 //------------------------------------------------------------------------------

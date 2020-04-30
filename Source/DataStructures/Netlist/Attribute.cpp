@@ -44,6 +44,11 @@ AST::EXPRESSION* ATTRIBUTE::GetExpression(int Line, const string& Filename){
 //------------------------------------------------------------------------------
 
 bool ATTRIBUTE::Assign(AST::EXPRESSION* Expression){
+  return RawAssign(Expression);
+}
+//------------------------------------------------------------------------------
+
+bool ATTRIBUTE::RawAssign(AST::EXPRESSION* Expression){
   if(Value){
     Expression->Warning();
     printf("Overwriting attribute %s\n", Name.c_str());
