@@ -26,28 +26,31 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct LITERAL: public EXPRESSION{
-    NUMBER Value;
-    bool   Signed;
-    int    Width;
+  class LITERAL: public EXPRESSION{
+    private:
+      int WidthOverride = 0;
 
-    LITERAL(int Line, const std::string& Filename);
-    LITERAL(int Line, const char*        Filename);
-   ~LITERAL();
+    public:
+      NUMBER Value;
 
-    BASE* Copy() override;
+      LITERAL(int Line, const std::string& Filename);
+      LITERAL(int Line, const char*        Filename);
+     ~LITERAL();
 
-    bool GetVerilog(std::string& Body) override;
-    EXPRESSION* Evaluate() override;
+      BASE* Copy() override;
 
-    int GetWidth() override;
-    EXPRESSION* FixedPointScale(int Width, NUMBER& FullScale) override;
+      bool GetVerilog(std::string& Body) override;
+      EXPRESSION* Evaluate() override;
 
-    bool HasCircularReference(NETLIST::BASE* Object) override;
+      void SetWidth(int Width);
+      int  GetWidth() override;
+      EXPRESSION* FixedPointScale(int Width, NUMBER& FullScale) override;
 
-    void Display() override;
+      bool HasCircularReference(NETLIST::BASE* Object) override;
 
-    void ValidateMembers() override;
+      void Display() override;
+
+      void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------

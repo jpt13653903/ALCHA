@@ -78,8 +78,6 @@ EXPRESSION* MULTIPLY::Evaluate(){
     auto right = (LITERAL*)Right;
     Result->Value =   left ->Value;
     Result->Value.Mul(right->Value);
-    Result->Width  = left->Width  + right->Width;
-    Result->Signed = left->Signed ^ right->Signed;
     delete this;
     return Result;
   }

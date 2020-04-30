@@ -38,9 +38,8 @@ CHARACTER::~CHARACTER(){
 
 AST::EXPRESSION* CHARACTER::GetExpression(int Line, const string& Filename){
   AST::LITERAL* Result = new AST::LITERAL(Line, Filename);
-  Result->Value  = Value;
-  Result->Signed = false;
-  Result->Width  = 32;
+  Result->Value = Value;
+  Result->SetWidth(32);
   return Result;
 }
 //------------------------------------------------------------------------------

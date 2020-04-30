@@ -29,8 +29,6 @@ LITERAL::LITERAL(int Line, const string& Filename): LITERAL(Line, Filename.c_str
 //------------------------------------------------------------------------------
 
 LITERAL::LITERAL(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Literal){
-  Signed = false;
-  Width  = 0;
 }
 //------------------------------------------------------------------------------
 
@@ -51,15 +49,15 @@ BASE* LITERAL::Copy(){
 //------------------------------------------------------------------------------
 
 bool LITERAL::GetVerilog(string& Body){
-  if(!Width){
-    Error("Literal has unknown width");
-    return false;
-  }
   if(!Value.IsReal()){
     Error("non-real literal");
     return false;
   }
-  NUMBER Result(Value);
+
+  int  Width  = GetWidth();
+  bool Signed = !Value.IsPositive();
+
+  NUMBER Result = Value;
   bool IsPositive = Result.IsPositive();
   if(!IsPositive){
     if(!Signed){
@@ -87,9 +85,22 @@ EXPRESSION* LITERAL::Evaluate(){
 }
 //------------------------------------------------------------------------------
 
+void LITERAL::SetWidth(int Width){
+  WidthOverride = Width;
+}
+//------------------------------------------------------------------------------
+
 int LITERAL::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+  if(WidthOverride) return WidthOverride;
+
+  int Width = 0;
+  NUMBER Num = Value;
+  if(!Num.IsPositive()) Num.Mul(-1);
+  while(Num >= 1){
+    Num.BinScale(-1);
+    Width++;
+  }
+  return Width;
 }
 //------------------------------------------------------------------------------
 

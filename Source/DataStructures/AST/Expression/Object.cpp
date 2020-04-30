@@ -77,7 +77,7 @@ EXPRESSION* OBJECT::Evaluate(){
       auto Byte = (NETLIST::BYTE*)ObjectRef;
       auto Result = new LITERAL(Source.Line, Source.Filename);
       Result->Value = Byte->Value;
-      Result->Width = 8;
+      Result->SetWidth(8);
       delete this;
       return Result;
     }
@@ -85,7 +85,7 @@ EXPRESSION* OBJECT::Evaluate(){
       auto Char = (NETLIST::CHARACTER*)ObjectRef;
       auto Result = new LITERAL(Source.Line, Source.Filename);
       Result->Value = Char->Value;
-      Result->Width = 32;
+      Result->SetWidth(32);
       delete this;
       return Result;
     }

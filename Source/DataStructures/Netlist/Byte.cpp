@@ -38,9 +38,8 @@ NETLIST::BYTE::~BYTE(){
 
 AST::EXPRESSION* NETLIST::BYTE::GetExpression(int Line, const string& Filename){
   AST::LITERAL* Result = new AST::LITERAL(Line, Filename);
-  Result->Value  = Value;
-  Result->Signed = false;
-  Result->Width  = 8;
+  Result->Value = Value;
+  Result->SetWidth(8);
   return Result;
 }
 //------------------------------------------------------------------------------

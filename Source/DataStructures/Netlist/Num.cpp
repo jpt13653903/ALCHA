@@ -38,9 +38,7 @@ NUM::~NUM(){
 
 AST::EXPRESSION* NUM::GetExpression(int Line, const string& Filename){
   AST::LITERAL* Result = new AST::LITERAL(Line, Filename);
-  Result->Value  = Value;
-  Result->Signed = false;
-  Result->Width  = 0;
+  Result->Value = Value;
   return Result;
 }
 //------------------------------------------------------------------------------

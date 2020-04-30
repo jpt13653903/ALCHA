@@ -162,6 +162,7 @@ bool BACK_END::RoutePorts(NAMESPACE* Namespace){
   if(!Namespace->Namespace) return true;
 
   // Route inter-module connections to the parent
+  error("Not yet implemented");
   return true;
 }
 //------------------------------------------------------------------------------
@@ -349,21 +350,22 @@ bool BACK_END::BuildAltera(const char* Path, const char* Filename){
   if(!AssignPinDirections(&Global)) return false;
   Debug.Print("\n");
 
-  // if(!RoutePorts(&Global)) return false;
+  if(!RoutePorts(&Global)) return false;
   Debug.Print("\n");
 
   Global.Display();
 
-  // Debug.Print(
-  //   ANSI_FG_GREEN "\nBuilding Project -----------------------"
-  //                 "----------------------------------------\n\n"
-  //   ANSI_RESET
-  // );
+  Debug.Print(
+    ANSI_FG_GREEN "\nBuilding Project -----------------------"
+                  "----------------------------------------\n\n"
+    ANSI_RESET
+  );
 
+  warning("TODO");
   // ALTERA::PROJECT Project;
   // Project.Build(Path, Filename);
 
-  // if(!BuildHDL(&Global, "")) return false;
+  if(!BuildHDL(&Global, "")) return false;
 
   return true;
 }

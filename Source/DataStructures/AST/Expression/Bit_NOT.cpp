@@ -69,9 +69,10 @@ EXPRESSION* BIT_NOT::Evaluate(){
     case TYPE::Literal:{
       auto Result = (LITERAL*)Right;
       Right = 0;
-      if(Result->Width){
+      int ResultWidth = Result->GetWidth();
+      if(Result->GetWidth()){
         NUMBER n(1);
-        n.BinScale(Result->Width);
+        n.BinScale(ResultWidth);
         n.Sub(Result->Value);
         n.Sub(1);
         Result->Value = n;
