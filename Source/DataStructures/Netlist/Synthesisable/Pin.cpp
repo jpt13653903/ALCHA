@@ -63,6 +63,8 @@ bool PIN::RawAssign(AST::EXPRESSION* Expression){
 //------------------------------------------------------------------------------
 
 bool PIN::HasCircularReference(BASE* Object){
+  Used = true;
+
   if(this == Object) return true;
   if(Driver ->HasCircularReference(Object)) return true;
   if(Enabled->HasCircularReference(Object)) return true;

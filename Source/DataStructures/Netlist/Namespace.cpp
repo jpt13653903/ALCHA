@@ -39,7 +39,7 @@ NAMESPACE::~NAMESPACE(){
 //------------------------------------------------------------------------------
 
 AST::EXPRESSION* NAMESPACE::GetExpression(int Line, const string& Filename){
-  Error(Line, Filename, "Cannot obtain an expression from a namespace");
+  ::Error(Line, Filename, "Cannot obtain an expression from a namespace");
   return 0;
 }
 //------------------------------------------------------------------------------

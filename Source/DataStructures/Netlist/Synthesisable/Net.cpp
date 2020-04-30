@@ -37,7 +37,7 @@ NET::~NET(){
 
 AST::EXPRESSION* NET::GetExpression(int Line, const string& Filename){
   if(Value) return (AST::EXPRESSION*)Value->Copy();
-  Error(Line, Filename, "Operate-assign on empty object");
+  ::Error(Line, Filename, "Operate-assign on empty object");
   return 0;
 }
 //------------------------------------------------------------------------------
@@ -65,6 +65,8 @@ bool NET::RawAssign(AST::EXPRESSION* Expression){
 //------------------------------------------------------------------------------
 
 bool NET::HasCircularReference(BASE* Object){
+  Used = true;
+
   if(this == Object) return true;
   if(!Value) return false;
   return Value->HasCircularReference(Object);

@@ -42,7 +42,7 @@ PIN_COMPONENT::~PIN_COMPONENT(){
 
 AST::EXPRESSION* PIN_COMPONENT::GetExpression(int Line, const string& Filename){
   if(Value) return (AST::EXPRESSION*)Value->Copy();
-  Error(Line, Filename, "Operate-assign on empty object");
+  ::Error(Line, Filename, "Operate-assign on empty object");
   return 0;
 }
 //------------------------------------------------------------------------------
@@ -54,6 +54,8 @@ bool PIN_COMPONENT::Assign(AST::EXPRESSION* Expression){
 //------------------------------------------------------------------------------
 
 bool PIN_COMPONENT::RawAssign(AST::EXPRESSION* Expression){
+  Pin->Used = true;
+
   assert(Expression, return false);
 
   if(Value) delete Value;
@@ -69,6 +71,8 @@ bool PIN_COMPONENT::RawAssign(AST::EXPRESSION* Expression){
 //------------------------------------------------------------------------------
 
 bool PIN_COMPONENT::HasCircularReference(BASE* Object){
+  Pin->Used = true;
+
   if(this == Object) return true;
   if(!Value) return false;
   return Value->HasCircularReference(Object);

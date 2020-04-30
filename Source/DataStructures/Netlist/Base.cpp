@@ -55,6 +55,15 @@ BASE::~BASE(){
 }
 //------------------------------------------------------------------------------
 
+void BASE::Error(const char* Message){
+  ::Error(Source.Line, Source.Filename, Message);
+}
+//------------------------------------------------------------------------------
+
+void BASE::Warning(const char* Message){
+  ::Warning(Source.Line, Source.Filename.c_str(), Message);
+}
+//------------------------------------------------------------------------------
 bool BASE::IsSynthesisable(){
   return false;
 }

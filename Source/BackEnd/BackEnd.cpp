@@ -47,15 +47,14 @@ void BACK_END::Warning(AST::EXPRESSION* Expression, const char* Message){
 //------------------------------------------------------------------------------
 
 bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
-  info("Delete unused...");
-
   auto SymbolIterator = Namespace->Symbols.begin();
 
   while(SymbolIterator != Namespace->Symbols.end()){
     switch(SymbolIterator->second->Type){
       case BASE::TYPE::Byte:
       case BASE::TYPE::Character:
-      case BASE::TYPE::Number:{
+      case BASE::TYPE::Number:
+      case BASE::TYPE::Alias:{
         auto Object = (SYNTHESISABLE*)(SymbolIterator->second);
         SymbolIterator++;
         Namespace->Symbols.erase(Object->Name);
@@ -68,6 +67,8 @@ bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
         auto Object = (SYNTHESISABLE*)(SymbolIterator->second);
         SymbolIterator++;
         if(!Object->Used){
+          Object->Warning(0);
+          printf("Deleting unused object %s\n", Object->HDL_Name().c_str());
           Namespace->Symbols.erase(Object->Name);
           delete Object;
         }
@@ -80,6 +81,8 @@ bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
         DeleteUnused(Object);
         SymbolIterator++;
         if(Object->Symbols.empty()){
+          Object->Warning(0);
+          printf("Deleting unused object %s\n", Object->HDL_Name().c_str());
           Namespace->Symbols.erase(Object->Name);
           delete Object;
         }
@@ -87,6 +90,7 @@ bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
       }
 
       default:
+        error("Type %d not handled", (int)SymbolIterator->second->Type);
         SymbolIterator++;
         break;
     }
@@ -336,25 +340,26 @@ bool BACK_END::BuildAltera(const char* Path, const char* Filename){
                   "----------------------------------------\n\n"
     ANSI_RESET
   );
-  Global.Display();
 
   if(!DeleteUnused(&Global)) return false;
 
-  if(!AssignPinDirections(&Global)) return false;
+  // if(!AssignPinDirections(&Global)) return false;
 
-  if(!RoutePorts(&Global)) return false;
+  // if(!RoutePorts(&Global)) return false;
 
-  Debug.Print(
-    ANSI_FG_GREEN "\nBuilding Project -----------------------"
-                  "----------------------------------------\n\n"
-    ANSI_RESET
-  );
   Global.Display();
 
-  ALTERA::PROJECT Project;
-  Project.Build(Path, Filename);
+  // Debug.Print(
+  //   ANSI_FG_GREEN "\nBuilding Project -----------------------"
+  //                 "----------------------------------------\n\n"
+  //   ANSI_RESET
+  // );
+  // Global.Display();
 
-  if(!BuildHDL(&Global, "")) return false;
+  // ALTERA::PROJECT Project;
+  // Project.Build(Path, Filename);
+
+  // if(!BuildHDL(&Global, "")) return false;
 
   return true;
 }
