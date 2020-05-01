@@ -120,6 +120,11 @@ bool IDENTIFIER::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void IDENTIFIER::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 void IDENTIFIER::Display(){
   DisplayStart();
 

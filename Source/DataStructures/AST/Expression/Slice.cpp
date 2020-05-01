@@ -82,6 +82,11 @@ bool SLICE::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void SLICE::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* SLICE::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

@@ -90,6 +90,11 @@ bool NEGATE::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void NEGATE::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* NEGATE::Simplify(bool GenWire){
 //   assert(Right, return this);
 // 

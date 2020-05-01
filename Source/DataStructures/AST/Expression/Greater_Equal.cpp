@@ -87,6 +87,11 @@ bool GREATER_EQUAL::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void GREATER_EQUAL::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* GREATER_EQUAL::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

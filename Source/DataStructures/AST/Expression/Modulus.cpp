@@ -82,6 +82,11 @@ bool MODULUS::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void MODULUS::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* MODULUS::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

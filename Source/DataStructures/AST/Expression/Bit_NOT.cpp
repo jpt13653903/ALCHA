@@ -127,6 +127,12 @@ bool BIT_NOT::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void BIT_NOT::PopulateUsed(){
+  assert(Right, return);
+  Right->PopulateUsed();
+}
+//------------------------------------------------------------------------------
+
 void BIT_NOT::Display(){
   DisplayStart();
 

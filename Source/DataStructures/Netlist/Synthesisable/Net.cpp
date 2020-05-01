@@ -65,11 +65,16 @@ bool NET::RawAssign(AST::EXPRESSION* Expression){
 //------------------------------------------------------------------------------
 
 bool NET::HasCircularReference(BASE* Object){
-  Used = true;
-
   if(this == Object) return true;
   if(!Value) return false;
   return Value->HasCircularReference(Object);
+}
+//------------------------------------------------------------------------------
+
+void NET::PopulateUsed(bool SetUsed){
+  if(Used) return; // Prevents circular loops
+  Used = SetUsed;
+  if(Value) Value->PopulateUsed();
 }
 //------------------------------------------------------------------------------
 

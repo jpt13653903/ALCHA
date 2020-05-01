@@ -87,6 +87,11 @@ bool BIT_XOR::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void BIT_XOR::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* BIT_XOR::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

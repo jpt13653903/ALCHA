@@ -87,6 +87,11 @@ bool LOGICAL_AND::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void LOGICAL_AND::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* LOGICAL_AND::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

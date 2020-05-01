@@ -173,6 +173,11 @@ bool CAST::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void CAST::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* CAST::Simplify(bool GenWire){
 //   // TODO: Root has the target type; Left has the original expression
 //   //       Right is optional and carry the class name (when applicable)

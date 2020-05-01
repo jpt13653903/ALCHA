@@ -85,6 +85,11 @@ bool ARRAYCONCATENATE::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void ARRAYCONCATENATE::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* ARRAYCONCATENATE::Simplify(bool GenWire){
 //   // TODO: Simplify the elements
 //   error("Not yet implemented");

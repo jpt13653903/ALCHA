@@ -39,9 +39,10 @@ class BACK_END{
 
     bool WriteFile(std::string& Filename, const char* Ext, std::string& Body);
 
-    bool DeleteUnused       (NETLIST::NAMESPACE* Module);
-    bool AssignPinDirections(NETLIST::NAMESPACE* Module);
-    bool RoutePorts         (NETLIST::NAMESPACE* Module);
+    void PopulateUsed       (NETLIST::NAMESPACE* Namespace);
+    bool DeleteUnused       (NETLIST::NAMESPACE* Namespace);
+    bool AssignPinDirections(NETLIST::NAMESPACE* Namespace);
+    bool RoutePorts         (NETLIST::NAMESPACE* Namespace);
 
     void BuildSizeDef    (std::string& Body, int Width, bool Signed);
     bool BuildAssignments(std::string& Body, NETLIST::NAMESPACE* Namespace);

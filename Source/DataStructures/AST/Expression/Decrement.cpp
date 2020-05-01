@@ -82,6 +82,11 @@ bool DECREMENT::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void DECREMENT::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* DECREMENT::Simplify(bool GenWire){
 //   error("Not yet implemented");
 //   return this;

@@ -170,6 +170,15 @@ bool MULTIPLY::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void MULTIPLY::PopulateUsed(){
+  assert(Left , return);
+  assert(Right, return);
+  
+  Left ->PopulateUsed();
+  Right->PopulateUsed();
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* MULTIPLY::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

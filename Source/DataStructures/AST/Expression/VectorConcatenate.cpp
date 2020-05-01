@@ -104,6 +104,14 @@ bool VECTORCONCATENATE::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void VECTORCONCATENATE::PopulateUsed(){
+  foreach(Element, Elements){
+    assert(*Element, return);
+    (*Element)->PopulateUsed();
+  }
+}
+//------------------------------------------------------------------------------
+
 void VECTORCONCATENATE::Display(){
   Debug.Print("(VectorConcat: (");
   bool isFirst = true;

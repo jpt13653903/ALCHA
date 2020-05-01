@@ -85,6 +85,11 @@ bool NAND_REDUCE::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void NAND_REDUCE::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* NAND_REDUCE::Simplify(bool GenWire){
 //   assert(Right, return this);
 // 

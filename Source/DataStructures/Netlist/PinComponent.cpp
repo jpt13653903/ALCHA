@@ -54,8 +54,6 @@ bool PIN_COMPONENT::Assign(AST::EXPRESSION* Expression){
 //------------------------------------------------------------------------------
 
 bool PIN_COMPONENT::RawAssign(AST::EXPRESSION* Expression){
-  Pin->Used = true;
-
   assert(Expression, return false);
 
   if(Value) delete Value;
@@ -71,11 +69,14 @@ bool PIN_COMPONENT::RawAssign(AST::EXPRESSION* Expression){
 //------------------------------------------------------------------------------
 
 bool PIN_COMPONENT::HasCircularReference(BASE* Object){
-  Pin->Used = true;
-
   if(this == Object) return true;
   if(!Value) return false;
   return Value->HasCircularReference(Object);
+}
+//------------------------------------------------------------------------------
+
+void PIN_COMPONENT::PopulateUsed(bool SetUsed){
+  if(Value) Value->PopulateUsed();
 }
 //------------------------------------------------------------------------------
 

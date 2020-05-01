@@ -95,6 +95,11 @@ bool FUNCTIONCALL::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void FUNCTIONCALL::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* FUNCTIONCALL::Simplify(bool GenWire){
 //   assert(Left, return this);
 // 

@@ -87,6 +87,11 @@ bool LESS_EQUAL::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void LESS_EQUAL::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* LESS_EQUAL::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

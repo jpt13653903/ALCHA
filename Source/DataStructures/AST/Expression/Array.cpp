@@ -85,6 +85,11 @@ bool ARRAY::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void ARRAY::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* ARRAY::Simplify(bool GenWire){
 //   return this;
 // }

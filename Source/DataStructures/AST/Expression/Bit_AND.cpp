@@ -87,6 +87,11 @@ bool BIT_AND::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void BIT_AND::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* BIT_AND::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

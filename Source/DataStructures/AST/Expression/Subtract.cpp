@@ -88,6 +88,11 @@ bool SUBTRACT::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void SUBTRACT::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* SUBTRACT::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

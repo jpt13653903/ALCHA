@@ -82,6 +82,11 @@ bool EXPONENTIAL::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void EXPONENTIAL::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* EXPONENTIAL::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

@@ -85,6 +85,11 @@ bool RANGE::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void RANGE::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* RANGE::Simplify(bool GenWire){
 //   error("Not yet implemented");
 //   return this;

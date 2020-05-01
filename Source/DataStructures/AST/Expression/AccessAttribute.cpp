@@ -124,6 +124,11 @@ bool ACCESSATTRIBUTE::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void ACCESSATTRIBUTE::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 void ACCESSATTRIBUTE::Display(){
   DisplayStart();
 

@@ -122,6 +122,10 @@ bool LITERAL::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void LITERAL::PopulateUsed(){
+}
+//------------------------------------------------------------------------------
+
 void LITERAL::Display(){
   DisplayStart();
 

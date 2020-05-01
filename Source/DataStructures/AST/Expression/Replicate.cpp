@@ -116,6 +116,15 @@ bool REPLICATE::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void REPLICATE::PopulateUsed(){
+  assert(Left , return);
+  assert(Right, return);
+  
+  Left ->PopulateUsed();
+  Right->PopulateUsed();
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* REPLICATE::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

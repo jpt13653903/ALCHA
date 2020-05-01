@@ -82,6 +82,11 @@ bool DIVIDE::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void DIVIDE::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* DIVIDE::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

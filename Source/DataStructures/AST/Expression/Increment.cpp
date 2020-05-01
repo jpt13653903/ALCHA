@@ -82,6 +82,11 @@ bool INCREMENT::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void INCREMENT::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* INCREMENT::Simplify(bool GenWire){
 //   error("Not yet implemented");
 //   return this;

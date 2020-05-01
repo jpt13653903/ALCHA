@@ -70,6 +70,7 @@ namespace AST{
 
       // Check for circular reference to the netlist object specified
       virtual bool HasCircularReference(NETLIST::BASE* Object) = 0;
+      virtual void PopulateUsed() = 0;
   };
 }
 //------------------------------------------------------------------------------

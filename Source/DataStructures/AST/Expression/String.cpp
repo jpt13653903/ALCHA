@@ -84,6 +84,11 @@ bool STRING::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void STRING::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* STRING::Simplify(bool GenWire){
 //   return this;
 // }

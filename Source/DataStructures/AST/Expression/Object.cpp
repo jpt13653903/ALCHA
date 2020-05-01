@@ -155,6 +155,11 @@ bool OBJECT::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void OBJECT::PopulateUsed(){
+  if(ObjectRef) ObjectRef->PopulateUsed(true);
+}
+//------------------------------------------------------------------------------
+
 void OBJECT::Display(){
   DisplayStart();
 

@@ -63,12 +63,21 @@ bool PIN::RawAssign(AST::EXPRESSION* Expression){
 //------------------------------------------------------------------------------
 
 bool PIN::HasCircularReference(BASE* Object){
-  Used = true;
-
   if(this == Object) return true;
   if(Driver ->HasCircularReference(Object)) return true;
   if(Enabled->HasCircularReference(Object)) return true;
   return false;
+}
+//------------------------------------------------------------------------------
+
+void PIN::PopulateUsed(bool SetUsed){
+  if(Used) return; // Prevents circular loops
+  Used = SetUsed;
+  Driver ->PopulateUsed(SetUsed);
+  Enabled->PopulateUsed(SetUsed);
+
+  // Pins that have stuff assigned are always used
+  if(Driver->Value) Used = true;
 }
 //------------------------------------------------------------------------------
 

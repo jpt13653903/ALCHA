@@ -92,6 +92,15 @@ bool SHIFT_RIGHT::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void SHIFT_RIGHT::PopulateUsed(){
+  assert(Left , return);
+  assert(Right, return);
+  
+  Left ->PopulateUsed();
+  Right->PopulateUsed();
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* SHIFT_RIGHT::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

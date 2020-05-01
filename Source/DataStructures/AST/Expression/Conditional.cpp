@@ -82,6 +82,11 @@ bool CONDITIONAL::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void CONDITIONAL::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* CONDITIONAL::Simplify(bool GenWire){
 //   // TODO: There should be a third component...  Left and Right of Right?
 //   //       Or break it down to an if-statement?

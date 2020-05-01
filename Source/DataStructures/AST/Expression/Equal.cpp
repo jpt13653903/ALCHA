@@ -87,6 +87,11 @@ bool EQUAL::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void EQUAL::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* EQUAL::Simplify(bool GenWire){
 //   assert(Left && Right, return this);
 // 

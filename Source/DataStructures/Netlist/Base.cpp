@@ -233,6 +233,9 @@ int BASE::Width(){
 }
 //------------------------------------------------------------------------------
 
+void BASE::PopulateUsed(bool SetUsed){}
+//------------------------------------------------------------------------------
+
 void BASE::Validate(){
   // Don't verify Namespace, it's circular
   foreach(Attrib, Attributes){

@@ -151,7 +151,7 @@ void SYNTHESISABLE::DisplayParameters(int Indent){
   Debug.Print("%s\n", Name.c_str());
 
   Debug.Indent(Indent);
-  Debug.Print("Used       = %s\n", Used   ? "true" : "false");
+  Debug.Print("Used       = %s\n", Used ? "true" : "false");
   Debug.Indent(Indent);
   Debug.Print("Width      = %u\n", Width());
   Debug.Indent(Indent);

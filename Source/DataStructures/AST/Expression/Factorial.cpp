@@ -82,6 +82,11 @@ bool FACTORIAL::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void FACTORIAL::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* FACTORIAL::Simplify(bool GenWire){
 //   assert(Left, return this);
 // 

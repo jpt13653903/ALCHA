@@ -82,6 +82,11 @@ bool RAW::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void RAW::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* RAW::Simplify(bool GenWire){
 //   error("Not yet implemented");
 //   return this;

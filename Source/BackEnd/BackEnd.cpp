@@ -46,12 +46,32 @@ void BACK_END::Warning(AST::EXPRESSION* Expression, const char* Message){
 }
 //------------------------------------------------------------------------------
 
+void BACK_END::PopulateUsed(NAMESPACE* Namespace){
+  Debug.Print("Populate used...\n");
+
+  foreach(SymbolIterator, Namespace->Symbols){
+    SymbolIterator->second->PopulateUsed(false);
+
+    switch(SymbolIterator->second->Type){
+      case BASE::TYPE::Module:
+      case BASE::TYPE::Group:
+        PopulateUsed((NAMESPACE*)(SymbolIterator->second));
+        break;
+
+      default:
+        break;
+    }
+  }
+}
+//------------------------------------------------------------------------------
+
 bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
   Debug.Print("Delete unused...\n");
 
   auto SymbolIterator = Namespace->Symbols.begin();
 
   while(SymbolIterator != Namespace->Symbols.end()){
+
     switch(SymbolIterator->second->Type){
       case BASE::TYPE::Byte:
       case BASE::TYPE::Character:
@@ -353,6 +373,9 @@ bool BACK_END::BuildAltera(const char* Path, const char* Filename){
                   "----------------------------------------\n\n"
     ANSI_RESET
   );
+
+  PopulateUsed(&Global);
+  Debug.Print("\n");
 
   if(!DeleteUnused(&Global)) return false;
   Debug.Print("\n");

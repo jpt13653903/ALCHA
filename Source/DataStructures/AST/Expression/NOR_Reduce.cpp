@@ -85,6 +85,11 @@ bool NOR_REDUCE::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void NOR_REDUCE::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* NOR_REDUCE::Simplify(bool GenWire){
 //   assert(Right, return this);
 // 

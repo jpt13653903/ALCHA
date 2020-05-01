@@ -127,6 +127,11 @@ bool ACCESSMEMBER::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
+void ACCESSMEMBER::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
 // EXPRESSION* ACCESSMEMBER::Simplify(bool GenWire){
 //   error("Not yet implemented");
 //   return this;
