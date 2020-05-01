@@ -43,6 +43,10 @@ BASE::BASE(int Line, const string& Filename, const char* Name, TYPE Type){
       case TYPE::Module: this->Name = "m.."; break;
       default          : this->Name = "t.."; break;
     }
+    if(GenNameCount < 10000) this->Name += '0';
+    if(GenNameCount <  1000) this->Name += '0';
+    if(GenNameCount <   100) this->Name += '0';
+    if(GenNameCount <    10) this->Name += '0';
     this->Name += to_string(GenNameCount++);
   }
 

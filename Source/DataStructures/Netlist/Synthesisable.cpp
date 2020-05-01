@@ -30,17 +30,20 @@ using namespace NETLIST;
 SYNTHESISABLE::SYNTHESISABLE(int Line, const std::string& Filename, const char* Name, TYPE Type) : BASE(Line, Filename, Name, Type){
   Used = false;
 
-  WidthObj     = new NUM(Line, Filename, Name);
-  FullScaleObj = new NUM(Line, Filename, Name);
+  Format.Width     = new NUM(Line, Filename, "Width"    );
+  Format.FullScale = new NUM(Line, Filename, "FullScale");
+  Format.Signed    = new NUM(Line, Filename, "Signed"   );
 
-  WidthObj    ->Value = 1;
-  FullScaleObj->Value = 2;
+  Format.Width    ->Value = 1;
+  Format.FullScale->Value = 2;
+  Format.Signed   ->Value = 0;
 }
 //------------------------------------------------------------------------------
 
 SYNTHESISABLE::~SYNTHESISABLE(){
-  delete WidthObj;
-  delete FullScaleObj;
+  delete Format.Width;
+  delete Format.FullScale;
+  delete Format.Signed;
 }
 //------------------------------------------------------------------------------
 
@@ -49,30 +52,45 @@ bool SYNTHESISABLE::IsSynthesisable(){
 }
 //------------------------------------------------------------------------------
 
-bool SYNTHESISABLE::Signed(){
-  return FullScaleObj->Value < 0;
-}
-//------------------------------------------------------------------------------
-
 int SYNTHESISABLE::Width(){
-  return WidthObj->Value.GetReal();
+  return Format.Width->Value.GetReal();
 }
 //------------------------------------------------------------------------------
 
 NUMBER& SYNTHESISABLE::FullScale(){
-  return FullScaleObj->Value;
+  return Format.FullScale->Value;
+}
+//------------------------------------------------------------------------------
+
+bool SYNTHESISABLE::Signed(){
+  return !Format.Signed->Value.IsPositive();
 }
 //------------------------------------------------------------------------------
 
 void SYNTHESISABLE::SetFixedPoint(int Width, const NUMBER& FullScale){
-  WidthObj    ->Value = Width;
-  FullScaleObj->Value = FullScale;
+  Format.Signed->Value = 0;
+
+  if(Width > 0){
+    Format.Width ->Value =  Width;
+  }else{
+    Format.Width ->Value = -Width;
+    Format.Signed->Value =  1;
+  }
+
+  Format.FullScale->Value = FullScale;
+  if(!FullScale.IsPositive()){
+    Format.FullScale->Value.Mul(-1);
+    Format.Signed   ->Value = 1;
+  }
 }
 //------------------------------------------------------------------------------
 
 bool SYNTHESISABLE::ApplyParameters(list<AST::BASE*>& Parameters){
   int  Position          = 0; // Negative => named parameters
   bool ExplicitFullScale = false;
+
+  int    Width = 0;
+  NUMBER FullScale;
 
   foreach(Parameter, Parameters){
     if((*Parameter)->IsExpression()){
@@ -88,12 +106,12 @@ bool SYNTHESISABLE::ApplyParameters(list<AST::BASE*>& Parameters){
           switch(Position){
             case 0:
               if(!Literal->Value.IsInt()) return false;
-              WidthObj->Value = round(Literal->Value.GetReal());
+              Width = round(Literal->Value.GetReal());
               break;
 
             case 1:
               ExplicitFullScale = true;
-              FullScaleObj->Value = Literal->Value;
+              FullScale = Literal->Value;
               break;
 
             default: // Too many parameters
@@ -117,18 +135,14 @@ bool SYNTHESISABLE::ApplyParameters(list<AST::BASE*>& Parameters){
     }
     if(Position >= 0) Position++;
   }
-  bool Signed = false;
-  if(WidthObj->Value < 0){
-    WidthObj->Value.Mul(-1);
-    Signed = true;
-  }
+  if(Width == 0) Width = 1;
+
   if(!ExplicitFullScale){
-    FullScaleObj->Value = 1;
-    FullScaleObj->Value.BinScale(Width());
+    FullScale = 1;
+    FullScale.BinScale(Width);
   }
-  if(FullScaleObj->Value > 0){
-    if(Signed) FullScaleObj->Value.Mul(-1);
-  }
+  SetFixedPoint(Width, FullScale);
+
   return true;
 }
 //------------------------------------------------------------------------------
@@ -142,6 +156,8 @@ void SYNTHESISABLE::DisplayParameters(int Indent){
   Debug.Print("Width      = %u\n", Width());
   Debug.Indent(Indent);
   Debug.Print("Full-scale = %s\n", FullScale().Display());
+  Debug.Indent(Indent);
+  Debug.Print("Signed     = %s\n", Signed() ? "true" : "false");
 
   Debug.Indent(Indent);
   Debug.Print("Direction  = ");
@@ -156,8 +172,9 @@ void SYNTHESISABLE::DisplayParameters(int Indent){
 //------------------------------------------------------------------------------
 
 BASE* SYNTHESISABLE::GetAttribute(const std::string& Name){
-  if(Name == "width"    ) return WidthObj;
-  if(Name == "fullscale") return FullScaleObj;
+  if(Name == "width"    ) return Format.Width;
+  if(Name == "fullscale") return Format.FullScale;
+  if(Name == "signed"   ) return Format.Signed;
 
   return BASE::GetAttribute(Name);
 }
@@ -174,11 +191,20 @@ AST::EXPRESSION* SYNTHESISABLE::GetBuiltInAttributeValue(const std::string& Name
     Result->Value = FullScale();
     return Result;
   }
+  if(Name == "signed"){
+    auto Result = new AST::LITERAL(0, "");
+    Result->Value = Signed() ? 1 : 0;
+    return Result;
+  }
   return BASE::GetBuiltInAttributeValue(Name);
 }
 //------------------------------------------------------------------------------
 
 void SYNTHESISABLE::Validate(){
+  assert(Format.Width    ->Value.IsPositive());
+  assert(Format.FullScale->Value.IsPositive());
+  assert(Format.Signed   ->Value.IsPositive());
+
   BASE::Validate();
 }
 //------------------------------------------------------------------------------

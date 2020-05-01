@@ -35,17 +35,20 @@
 namespace NETLIST{
   class SYNTHESISABLE: public BASE{
     private:
-      NUM* WidthObj;
-      NUM* FullScaleObj;
+      struct FORMAT{
+        NUM* Width;
+        NUM* FullScale;
+        NUM* Signed;
+      } Format;
 
     protected:
       void DisplayParameters(int Indent);
 
     public:
       bool    Used; // Actually used in an expression somewhere
-      bool    Signed   ();
       int     Width    () override;
       NUMBER& FullScale() override;
+      bool    Signed   ();
       void    SetFixedPoint(int Width, const NUMBER& FullScale);
 
       AST::DEFINITION::DIRECTION Direction;

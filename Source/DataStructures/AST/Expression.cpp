@@ -130,7 +130,9 @@ EXPRESSION* EXPRESSION::ScaleWith(NUMBER& Scale, int Width, NUMBER& FullScale){
     Mul->Right = MulLiteral;
 
     auto MulNet = new NETLIST::NET(Source.Line, Source.Filename, 0);
-    MulNet->SetFixedPoint(Width + Shift, FullScale);
+    NUMBER MulFullScale = FullScale;
+    MulFullScale.BinScale(Shift);
+    MulNet->SetFixedPoint(Mul->GetWidth(), MulFullScale);
     MulNet->Value = Mul;
     NETLIST::NamespaceStack.front()->Symbols[MulNet->Name] = MulNet;
 

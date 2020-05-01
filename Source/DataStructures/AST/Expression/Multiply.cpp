@@ -117,8 +117,10 @@ EXPRESSION* MULTIPLY::Evaluate(){
 //------------------------------------------------------------------------------
 
 int MULTIPLY::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+  assert(Left , return 0);
+  assert(Right, return 0);
+
+  return Left->GetWidth() + Right->GetWidth();
 }
 //------------------------------------------------------------------------------
 

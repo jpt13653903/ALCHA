@@ -148,7 +148,7 @@ void NUMBER::operator= (const NUMBER& n){
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator== (int i){
+bool NUMBER::operator== (int i) const{
   if(!IsReal()) return false;
 
   NUMBER n(i);
@@ -156,7 +156,7 @@ bool NUMBER::operator== (int i){
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator== (unsigned u){
+bool NUMBER::operator== (unsigned u) const{
   if(!IsReal()) return false;
 
   NUMBER n(u);
@@ -164,7 +164,7 @@ bool NUMBER::operator== (unsigned u){
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator== (double d){
+bool NUMBER::operator== (double d) const{
   if(!IsReal()) return false;
 
   NUMBER n(d);
@@ -172,63 +172,63 @@ bool NUMBER::operator== (double d){
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator== (bool b){
+bool NUMBER::operator== (bool b) const{
   return (operator== (0)) != b;
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator== (const NUMBER& n){
+bool NUMBER::operator== (const NUMBER& n) const{
   if(!mpq_equal(Real, n.Real)) return false;
   if(!mpq_equal(Imag, n.Imag)) return false;
   return true;
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator!= (int i){
+bool NUMBER::operator!= (int i) const{
   return !operator==(i);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator!= (unsigned u){
+bool NUMBER::operator!= (unsigned u) const{
   return !operator==(u);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator!= (double d){
+bool NUMBER::operator!= (double d) const{
   return !operator==(d);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator!= (bool b){
+bool NUMBER::operator!= (bool b) const{
   return !operator==(b);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator!= (const NUMBER& n){
+bool NUMBER::operator!= (const NUMBER& n) const{
   return !operator==(n);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator< (int i){
+bool NUMBER::operator< (int i) const{
   NUMBER n(i);
   return operator<(n);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator< (unsigned u){
+bool NUMBER::operator< (unsigned u) const{
   NUMBER n(u);
   return operator<(n);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator< (double d){
+bool NUMBER::operator< (double d) const{
   NUMBER n(d);
   return operator<(n);
 }
 //------------------------------------------------------------------------------
 
 #include "General.h"
-bool NUMBER::operator< (const NUMBER& n){
+bool NUMBER::operator< (const NUMBER& n) const{
   int Result = mpq_cmp(Real, n.Real);
   if(Result < 0) return true;
   if(Result > 0) return false;
@@ -236,62 +236,62 @@ bool NUMBER::operator< (const NUMBER& n){
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator<= (int i){
+bool NUMBER::operator<= (int i) const{
   return operator<(i) || operator==(i);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator<= (unsigned u){
+bool NUMBER::operator<= (unsigned u) const{
   return operator<(u) || operator==(u);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator<= (double d){
+bool NUMBER::operator<= (double d) const{
   return operator<(d) || operator==(d);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator<= (const NUMBER& n){
+bool NUMBER::operator<= (const NUMBER& n) const{
   return operator<(n) || operator==(n);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator> (int i){
+bool NUMBER::operator> (int i) const{
   return !operator<(i) && !operator==(i);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator> (unsigned u){
+bool NUMBER::operator> (unsigned u) const{
   return !operator<(u) && !operator==(u);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator> (double d){
+bool NUMBER::operator> (double d) const{
   return !operator<(d) && !operator==(d);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator> (const NUMBER& n){
+bool NUMBER::operator> (const NUMBER& n) const{
   return !operator<(n) && !operator==(n);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator>= (int i){
+bool NUMBER::operator>= (int i) const{
   return !operator<(i);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator>= (unsigned u){
+bool NUMBER::operator>= (unsigned u) const{
   return !operator<(u);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator>= (double d){
+bool NUMBER::operator>= (double d) const{
   return !operator<(d);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator>= (const NUMBER& n){
+bool NUMBER::operator>= (const NUMBER& n) const{
   return !operator<(n);
 }
 //------------------------------------------------------------------------------
@@ -506,32 +506,32 @@ void NUMBER::Round(){
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::IsInt(){
+bool NUMBER::IsInt() const{
   return !mpq_cmp_ui(Imag, 0, 1) && !mpz_cmp_ui(mpq_denref(Real), 1);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::IsReal(){
+bool NUMBER::IsReal() const{
   return !mpq_cmp_ui(Imag, 0, 1);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::IsPositive(){
+bool NUMBER::IsPositive() const{
   return !mpq_cmp_ui(Imag, 0, 1) && (mpq_cmp_ui(Real, 0, 1) >= 0);
 }
 //------------------------------------------------------------------------------
 
-double NUMBER::GetReal(){
+double NUMBER::GetReal() const{
   return mpq_get_d(Real);
 }
 //------------------------------------------------------------------------------
 
-double NUMBER::GetImag(){
+double NUMBER::GetImag() const{
   return mpq_get_d(Imag);
 }
 //------------------------------------------------------------------------------
 
-string& NUMBER::GetString(int Base){
+string& NUMBER::GetString(int Base) const{
   static string Result;
   Result.clear();
 
@@ -562,7 +562,7 @@ string& NUMBER::GetString(int Base){
 }
 //------------------------------------------------------------------------------
 
-string& NUMBER::Display(){
+string& NUMBER::Display() const{
   static string Result;
   Result.clear();
 
