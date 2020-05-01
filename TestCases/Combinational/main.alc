@@ -1,3 +1,8 @@
+'target_vendor = "Altera";
+'target_series = "MAX 10";
+'target_device = "10M08DAF484C8GES";
+'target_board  = "BeMicro Max 10";
+
 // import "../Target/BeMicro Max 10";
 // 
 // alias LED    = USER_LED;
@@ -49,7 +54,7 @@
 // 
 // GPIO := Testing05;
 
-net(14, -3 ) SignedNet = -123;
+net(14, -3 ) SignedNet = -1.23;
 
 pin(14, -3 ) Signed01 =  0.1 *SignedNet;
 // pin(14, -3 ) Signed02 = 10   *SignedNet;

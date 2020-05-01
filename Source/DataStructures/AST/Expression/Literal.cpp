@@ -108,6 +108,8 @@ EXPRESSION* LITERAL::FixedPointScale(int Width, NUMBER& FullScale){
   Value.Mul(Scale);
   Value.Round();
 
+  SetWidth(Width);
+
   return this;
 }
 //------------------------------------------------------------------------------

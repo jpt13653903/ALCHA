@@ -50,9 +50,11 @@ void BACK_END::PopulateUsed(NAMESPACE* Namespace){
   Debug.Print("Populate used...\n");
 
   foreach(SymbolIterator, Namespace->Symbols){
-    SymbolIterator->second->PopulateUsed(false);
-
     switch(SymbolIterator->second->Type){
+      case BASE::TYPE::Pin: // If it's used, it must end up at a pin
+        SymbolIterator->second->PopulateUsed(false);
+        break;
+
       case BASE::TYPE::Module:
       case BASE::TYPE::Group:
         PopulateUsed((NAMESPACE*)(SymbolIterator->second));

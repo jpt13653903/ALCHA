@@ -70,11 +70,11 @@ bool SYNTHESISABLE::Signed(){
 void SYNTHESISABLE::SetFixedPoint(int Width, const NUMBER& FullScale){
   Format.Signed->Value = 0;
 
-  if(Width > 0){
-    Format.Width ->Value =  Width;
-  }else{
+  if(Width < 0){
     Format.Width ->Value = -Width;
     Format.Signed->Value =  1;
+  }else{
+    Format.Width ->Value =  Width;
   }
 
   Format.FullScale->Value = FullScale;

@@ -49,7 +49,7 @@ bool NET::Assign(AST::EXPRESSION* Expression){
 //------------------------------------------------------------------------------
 
 bool NET::RawAssign(AST::EXPRESSION* Expression){
-  assert(Expression, return false);
+  if(!Expression) return false;
 
   if(Value){
     Expression->Warning();
