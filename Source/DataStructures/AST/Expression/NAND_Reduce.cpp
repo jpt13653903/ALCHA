@@ -90,16 +90,6 @@ void NAND_REDUCE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* NAND_REDUCE::Simplify(bool GenWire){
-//   assert(Right, return this);
-// 
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void NAND_REDUCE::Display(){
   DisplayStart();
 

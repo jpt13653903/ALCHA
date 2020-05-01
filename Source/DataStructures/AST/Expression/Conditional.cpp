@@ -87,19 +87,6 @@ void CONDITIONAL::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* CONDITIONAL::Simplify(bool GenWire){
-//   // TODO: There should be a third component...  Left and Right of Right?
-//   //       Or break it down to an if-statement?
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void CONDITIONAL::Display(){
   DisplayStart();
 

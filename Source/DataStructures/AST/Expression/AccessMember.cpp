@@ -132,12 +132,6 @@ void ACCESSMEMBER::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* ACCESSMEMBER::Simplify(bool GenWire){
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void ACCESSMEMBER::Display(){
   DisplayStart();
 

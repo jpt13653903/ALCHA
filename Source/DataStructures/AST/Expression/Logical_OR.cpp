@@ -92,17 +92,6 @@ void LOGICAL_OR::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* LOGICAL_OR::Simplify(bool GenWire){
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void LOGICAL_OR::Display(){
   DisplayStart();
 

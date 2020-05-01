@@ -92,17 +92,6 @@ void NOT_EQUAL::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* NOT_EQUAL::Simplify(bool GenWire){
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void NOT_EQUAL::Display(){
   DisplayStart();
 

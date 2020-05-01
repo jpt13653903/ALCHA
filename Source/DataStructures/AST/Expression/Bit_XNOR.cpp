@@ -92,17 +92,6 @@ void BIT_XNOR::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* BIT_XNOR::Simplify(bool GenWire){
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void BIT_XNOR::Display(){
   DisplayStart();
 

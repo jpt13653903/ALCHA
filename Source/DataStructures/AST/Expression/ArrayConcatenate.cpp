@@ -90,13 +90,6 @@ void ARRAYCONCATENATE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* ARRAYCONCATENATE::Simplify(bool GenWire){
-//   // TODO: Simplify the elements
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void ARRAYCONCATENATE::Display(){
   Debug.Print("(ArrayConcat: (");
   bool isFirst = true;

@@ -87,12 +87,6 @@ void DECREMENT::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* DECREMENT::Simplify(bool GenWire){
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void DECREMENT::Display(){
   DisplayStart();
 

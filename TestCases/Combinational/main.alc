@@ -55,7 +55,7 @@ pin(14, -3 ) Signed01 =  0.1 *SignedNet;
 // pin(14, -3 ) Signed02 = 10   *SignedNet;
 // pin(14, -3 ) Signed03 =  4   *SignedNet;
 // pin(14, -3 ) Signed04 =  0.25*SignedNet;
-// 
+
 // pin(14, -pi) Signed05 =  0.1 *SignedNet;
 // pin(14, -pi) Signed06 = 10   *SignedNet;
 // pin(14, -pi) Signed07 =  4   *SignedNet;

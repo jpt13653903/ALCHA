@@ -118,23 +118,6 @@ void NEGATE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* NEGATE::Simplify(bool GenWire){
-//   assert(Right, return this);
-// 
-//   Right = Right->Simplify(true);
-// 
-//   EXPRESSION* Result = this;
-// 
-//   if(Right->Type == TYPE::Literal){
-//     Result = Right;
-//     Right = 0;
-//     ((LITERAL*)Result)->Value.Mul(-1);
-//     delete this;
-//   }
-//   return Result;
-// }
-//------------------------------------------------------------------------------
-
 void NEGATE::Display(){
   DisplayStart();
 

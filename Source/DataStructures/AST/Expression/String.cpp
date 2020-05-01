@@ -89,11 +89,6 @@ void STRING::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* STRING::Simplify(bool GenWire){
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void STRING::Display(){
   DisplayStart();
 

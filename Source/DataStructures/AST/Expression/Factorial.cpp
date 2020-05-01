@@ -87,16 +87,6 @@ void FACTORIAL::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* FACTORIAL::Simplify(bool GenWire){
-//   assert(Left, return this);
-// 
-//   Left = Left->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void FACTORIAL::Display(){
   DisplayStart();
 

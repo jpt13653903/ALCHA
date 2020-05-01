@@ -87,12 +87,6 @@ void RAW::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* RAW::Simplify(bool GenWire){
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void RAW::Display(){
   DisplayStart();
 

@@ -92,17 +92,6 @@ void LESS_EQUAL::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* LESS_EQUAL::Simplify(bool GenWire){
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void LESS_EQUAL::Display(){
   DisplayStart();
 

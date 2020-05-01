@@ -125,17 +125,6 @@ void REPLICATE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* REPLICATE::Simplify(bool GenWire){
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void REPLICATE::Display(){
   DisplayStart();
 

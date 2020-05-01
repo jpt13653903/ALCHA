@@ -92,17 +92,6 @@ void BIT_OR::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* BIT_OR::Simplify(bool GenWire){
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void BIT_OR::Display(){
   DisplayStart();
 

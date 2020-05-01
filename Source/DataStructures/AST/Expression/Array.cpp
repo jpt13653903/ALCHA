@@ -90,11 +90,6 @@ void ARRAY::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* ARRAY::Simplify(bool GenWire){
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void ARRAY::Display(){
   Debug.Print("(Array: (");
   bool isFirst = true;

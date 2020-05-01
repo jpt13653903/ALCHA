@@ -87,19 +87,6 @@ void SLICE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* SLICE::Simplify(bool GenWire){
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   // TODO Returns a new array (or scalar)
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void SLICE::Display(){
   DisplayStart();
 

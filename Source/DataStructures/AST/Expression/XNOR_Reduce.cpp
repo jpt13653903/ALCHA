@@ -90,16 +90,6 @@ void XNOR_REDUCE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* XNOR_REDUCE::Simplify(bool GenWire){
-//   assert(Right, return this);
-// 
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void XNOR_REDUCE::Display(){
   DisplayStart();
 

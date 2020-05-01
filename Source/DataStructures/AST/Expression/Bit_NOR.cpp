@@ -92,17 +92,6 @@ void BIT_NOR::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* BIT_NOR::Simplify(bool GenWire){
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void BIT_NOR::Display(){
   DisplayStart();
 

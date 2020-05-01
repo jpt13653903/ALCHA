@@ -87,12 +87,6 @@ void ACCESSMEMBERSAFE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* ACCESSMEMBERSAFE::Simplify(bool GenWire){
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void ACCESSMEMBERSAFE::Display(){
   DisplayStart();
 

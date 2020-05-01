@@ -93,29 +93,6 @@ void SUBTRACT::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* SUBTRACT::Simplify(bool GenWire){
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   EXPRESSION* Result = this;
-// 
-//   if(Left->Type == TYPE::Literal && Right->Type == TYPE::Literal){
-//     auto Literal = new LITERAL(Source.Line, Source.Filename);
-//     Literal->Value =   ((LITERAL*)Left )->Value;
-//     Literal->Value.Sub(((LITERAL*)Right)->Value);
-//     delete this;
-//     Result = Literal;
-//   }
-//   // TODO When subtracting an expression from a literal (or vice versa),
-//   //      follow the rules in the SIPS article
-// 
-//   error("Not yet implemented");
-//   return Result;
-// }
-//------------------------------------------------------------------------------
-
 void SUBTRACT::Display(){
   DisplayStart();
 

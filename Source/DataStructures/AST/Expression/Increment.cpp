@@ -87,12 +87,6 @@ void INCREMENT::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* INCREMENT::Simplify(bool GenWire){
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void INCREMENT::Display(){
   DisplayStart();
 

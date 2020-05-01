@@ -90,12 +90,6 @@ void RANGE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* RANGE::Simplify(bool GenWire){
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void RANGE::Display(){
   DisplayStart();
 

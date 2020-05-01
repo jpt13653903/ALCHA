@@ -90,16 +90,6 @@ void XOR_REDUCE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* XOR_REDUCE::Simplify(bool GenWire){
-//   assert(Right, return this);
-// 
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void XOR_REDUCE::Display(){
   DisplayStart();
 

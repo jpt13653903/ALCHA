@@ -91,16 +91,6 @@ void AND_REDUCE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* AND_REDUCE::Simplify(bool GenWire){
-//   assert(Right, return this);
-// 
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void AND_REDUCE::Display(){
   DisplayStart();
 

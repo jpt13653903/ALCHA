@@ -100,22 +100,6 @@ void FUNCTIONCALL::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* FUNCTIONCALL::Simplify(bool GenWire){
-//   assert(Left, return this);
-// 
-//   Left = Left->Simplify(true);
-//   if(!Parameters.empty()){
-//     foreach(Parameter, Parameters){
-//       assert((*Parameter)->IsExpression(), return this);
-//       (*Parameter) = ((EXPRESSION*)(*Parameter))->Simplify(true);
-//     }
-//   }
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void FUNCTIONCALL::Display(){
   DisplayStart();
 

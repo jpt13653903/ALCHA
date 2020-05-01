@@ -90,16 +90,6 @@ void OR_REDUCE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* OR_REDUCE::Simplify(bool GenWire){
-//   assert(Right, return this);
-// 
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void OR_REDUCE::Display(){
   DisplayStart();
 

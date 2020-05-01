@@ -101,17 +101,6 @@ void SHIFT_LEFT::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* SHIFT_LEFT::Simplify(bool GenWire){
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void SHIFT_LEFT::Display(){
   DisplayStart();
 

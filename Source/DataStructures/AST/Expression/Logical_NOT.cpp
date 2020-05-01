@@ -90,16 +90,6 @@ void LOGICAL_NOT::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* LOGICAL_NOT::Simplify(bool GenWire){
-//   assert(Right, return this);
-// 
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
-//------------------------------------------------------------------------------
-
 void LOGICAL_NOT::Display(){
   DisplayStart();
 
