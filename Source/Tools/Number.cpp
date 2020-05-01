@@ -516,11 +516,6 @@ bool NUMBER::IsReal() const{
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::IsPositive() const{
-  return !mpq_cmp_ui(Imag, 0, 1) && (mpq_cmp_ui(Real, 0, 1) >= 0);
-}
-//------------------------------------------------------------------------------
-
 double NUMBER::GetReal() const{
   return mpq_get_d(Real);
 }

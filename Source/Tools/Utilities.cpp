@@ -102,3 +102,20 @@ void SimplifyFilename(string& Filename){
 }
 //------------------------------------------------------------------------------
 
+void Align(string& Body, int Column){
+  Body += ' ';
+
+  int n = Body.length()-1;
+  while(n >= 0){
+    if(Body[n] == '\n') break;
+    n--;
+  }
+
+  n = Column - (Body.length() - n);
+  while(n > 0){
+    Body += ' ';
+    n--;
+  }
+}
+//------------------------------------------------------------------------------
+

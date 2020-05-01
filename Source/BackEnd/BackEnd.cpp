@@ -202,18 +202,29 @@ bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
         auto Pin = (PIN*)Object;
         if(Pin->Driver->Value){
           string Driver;
-          Body += "// " + Pin->Driver->Value->Source.Filename +" +"+ to_string(Pin->Driver->Value->Source.Line) + "\n";
           if(!Pin->Driver->Value->GetVerilog(Driver)) return false;
           if(Pin->Enabled->Value){
             string Enabled;
-            Body += "// " + Pin->Enabled->Value->Source.Filename +" +"+ to_string(Pin->Enabled->Value->Source.Line) + "\n";
             if(!Pin->Enabled->Value->GetVerilog(Enabled)) return false;
-            Body += "assign "+ Pin->EscapedName() +
-                    " = |("+ Enabled + ")"
-                    " ? ("+ Driver + ")"
-                    " : " + to_string(Pin->Width()) + "'bZ;\n\n";
+            Body += "assign "+ Pin->EscapedName();
+            Align(Body, 30);
+            Body += "= |("+ Enabled + ") ? ("+ Driver + ")"
+                    " : " + to_string(Pin->Width()) + "'bZ;";
+            Align(Body, 70);
+            Body += "// " + Pin->Driver ->Value->Source.Filename
+                          + " +" + to_string(Pin->Driver ->Value->Source.Line)
+                          + " (Driver); "
+                          + Pin->Enabled->Value->Source.Filename
+                          + " +" + to_string(Pin->Enabled->Value->Source.Line)
+                          + " (Enabled)\n";
           }else{
-            Body += "assign "+ Pin->EscapedName() +" = "+ Driver + ";\n\n";
+            Body += "assign "+ Pin->EscapedName();
+            Align(Body, 30);
+            Body += "= "+ Driver + ";";
+            Align(Body, 70);
+            Body += "// " + Pin->Driver->Value->Source.Filename
+                          + " +" + to_string(Pin->Driver->Value->Source.Line)
+                          + "\n";
           }
         }
         break;
@@ -222,9 +233,13 @@ bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
         auto Net = (NET*)Object;
         if(Net->Value){
           string Value;
-          Body += "// " + Net->Value->Source.Filename +" +"+ to_string(Net->Value->Source.Line) + "\n";
           if(!Net->Value->GetVerilog(Value)) return false;
-          Body += "assign "+ Net->EscapedName() +" = "+ Value +";\n";
+          Body += "assign "+ Net->EscapedName();
+          Align(Body, 30);
+          Body += "= "+ Value +";";
+          Align(Body, 70);
+          Body += "// " + Net->Value->Source.Filename
+                        + " +" + to_string(Net->Value->Source.Line) + "\n";
         }
         break;
       }
@@ -270,6 +285,8 @@ void BACK_END::BuildPorts(string& Body, NAMESPACE* Namespace, bool& isFirst){
           case AST::DEFINITION::DIRECTION::Output: Body += "  output logic "; break;
           default                                : Body += "  inout  logic "; break;
         }
+        if(Pin->Signed()) Body += "signed ";
+        else              Body += "       ";
         BuildSizeDef(Body, Pin->Width(), Pin->Signed());
         Body += Pin->EscapedName();
         break;
@@ -291,6 +308,8 @@ void BACK_END::BuildNets(string& Body, NAMESPACE* Namespace){
       case BASE::TYPE::Net:{
         auto Net = (NET*)SymbolIterator->second;
         Body += "logic ";
+        if(Net->Signed()) Body += "signed ";
+        else              Body += "       ";
         BuildSizeDef(Body, Net->Width(), Net->Signed());
         Body += Net->EscapedName() + ";\n";
         break;

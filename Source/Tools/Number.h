@@ -112,9 +112,8 @@ class NUMBER{
 
     void Round();
 
-    bool IsInt     () const; // Imag == 0 && Real.Denominator == 1
-    bool IsReal    () const; // Imag == 0
-    bool IsPositive() const; // Imag == 0 && Real >= 0
+    bool IsInt () const; // Imag == 0 && Real.Denominator == 1
+    bool IsReal() const; // Imag == 0
 
     double GetReal() const;
     double GetImag() const;

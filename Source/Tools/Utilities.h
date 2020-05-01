@@ -34,6 +34,9 @@ void Warning(int Line, const std::string& Filename, const char* Message = 0);
 // Replaces "path/../" patterns with "/".
 // In Windows, '\' is also an accepted path specifier.
 void SimplifyFilename(std::string& Filename);
+
+// Adds spaces so that the "cursor" is at the specified column
+void Align(std::string& Body, int Column);
 //------------------------------------------------------------------------------
 
 #endif

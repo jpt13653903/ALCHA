@@ -20,6 +20,10 @@
 
 #include "Negate.h"
 #include "Literal.h"
+#include "Object.h"
+
+#include "Netlist/Namespace/Module.h"
+#include "Netlist/Synthesisable/Net.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -57,18 +61,37 @@ bool NEGATE::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* NEGATE::Evaluate(){
-  error("Not yet implemented");
+  assert(Right, delete this; return 0);
+  Right = Right->Evaluate();
+  assert(Right, delete this; return 0);
+
+  switch(Right->Type){
+    case TYPE::Literal:{
+      auto Result = (LITERAL*)Right;
+      Right = 0;
+      Result->Value.Mul(-1);
+      delete this;
+      return Result;
+    }
+    case TYPE::Object:{
+      auto Net = new NETLIST::NET(Source.Line, Source.Filename, 0);
+      Net->Value = this;
+  
+      auto ObjectRef = ((OBJECT*)Right)->ObjectRef;
+      if(ObjectRef && ObjectRef->IsSynthesisable()){
+        auto Synthesisable = (NETLIST::SYNTHESISABLE*)ObjectRef;
+        Net->SetFixedPoint(Synthesisable->Width(), Synthesisable->FullScale());
+      }
+      NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
+  
+      auto Object = new OBJECT(Source.Line, Source.Filename);
+      Object->ObjectRef = Net;
+      return Object;
+    }
+    default:
+      break;
+  }
   return this;
-//   EXPRESSION* Result = 0;
-// 
-//   Result = (EXPRESSION*)Copy(true);
-//   if(!Result->Right){
-//     delete Result;
-//     return 0;
-//   }
-// 
-//   if(!Result) return 0;
-//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
@@ -127,10 +150,8 @@ void NEGATE::ValidateMembers(){
   assert(!Next);
   assert(!Prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
-
-  error("Not yet implemented");
+  assert(!Left);
+  assert(Right, return); Right->Validate();
 }
 //------------------------------------------------------------------------------
 

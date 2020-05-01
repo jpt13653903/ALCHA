@@ -55,15 +55,10 @@ bool LITERAL::GetVerilog(string& Body){
   }
 
   int  Width  = GetWidth();
-  bool Signed = !Value.IsPositive();
+  bool Signed = (Value < 0);
 
   NUMBER Result = Value;
-  bool IsPositive = Result.IsPositive();
-  if(!IsPositive){
-    if(!Signed){
-      Error("Cannot store a negative literal to an unsigned target");
-      return false;
-    }
+  if(Signed){
     Body += "-";
     Result.Mul(-1);
   }
@@ -72,7 +67,7 @@ bool LITERAL::GetVerilog(string& Body){
   Result.Round();
   Body += Result.GetString(16);
   Result.BinScale(-Width);
-  if((IsPositive && Result >= 1) || (!IsPositive && Result > 1)){
+  if((!Signed && Result >= 1) || (Signed && Result > 1)){
     Error("The literal does not fit in its full-scale range");
     return false;
   }
@@ -95,7 +90,7 @@ int LITERAL::GetWidth(){
 
   int Width = 0;
   NUMBER Num = Value;
-  if(!Num.IsPositive()) Num.Mul(-1);
+  if(Num < 0) Num.Mul(-1);
   while(Num >= 1){
     Num.BinScale(-1);
     Width++;

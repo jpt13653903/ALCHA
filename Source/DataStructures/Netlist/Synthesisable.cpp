@@ -63,7 +63,7 @@ NUMBER& SYNTHESISABLE::FullScale(){
 //------------------------------------------------------------------------------
 
 bool SYNTHESISABLE::Signed(){
-  return !Format.Signed->Value.IsPositive();
+  return Format.Signed->Value != 0;
 }
 //------------------------------------------------------------------------------
 
@@ -78,7 +78,7 @@ void SYNTHESISABLE::SetFixedPoint(int Width, const NUMBER& FullScale){
   }
 
   Format.FullScale->Value = FullScale;
-  if(!FullScale.IsPositive()){
+  if(FullScale < 0){
     Format.FullScale->Value.Mul(-1);
     Format.Signed   ->Value = 1;
   }
@@ -201,9 +201,9 @@ AST::EXPRESSION* SYNTHESISABLE::GetBuiltInAttributeValue(const std::string& Name
 //------------------------------------------------------------------------------
 
 void SYNTHESISABLE::Validate(){
-  assert(Format.Width    ->Value.IsPositive());
-  assert(Format.FullScale->Value.IsPositive());
-  assert(Format.Signed   ->Value.IsPositive());
+  assert(Format.Width    ->Value  > 0);
+  assert(Format.FullScale->Value  > 0);
+  assert(Format.Signed   ->Value == 0 || Format.Signed->Value == 1);
 
   BASE::Validate();
 }
