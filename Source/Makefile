@@ -194,10 +194,10 @@ Objects += $(ObjectPath)/DataStructures/Netlist/Namespace.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Namespace/Group.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Namespace/Module.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Num.o
-Objects += $(ObjectPath)/DataStructures/Netlist/PinComponent.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Synthesisable.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Synthesisable/Net.o
 Objects += $(ObjectPath)/DataStructures/Netlist/Synthesisable/Pin.o
+Objects += $(ObjectPath)/DataStructures/Netlist/Synthesisable/PinComponent.o
 
 Objects += $(ObjectPath)/FrontEnd/Parser.o
 Objects += $(ObjectPath)/FrontEnd/Scanner.o

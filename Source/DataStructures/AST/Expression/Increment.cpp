@@ -70,9 +70,16 @@ int INCREMENT::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* INCREMENT::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& INCREMENT::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool INCREMENT::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -82,10 +89,15 @@ bool INCREMENT::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* INCREMENT::Simplify(bool GenWire){
-//   error("Not yet implemented");
-//   return this;
-// }
+void INCREMENT::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* INCREMENT::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void INCREMENT::Display(){

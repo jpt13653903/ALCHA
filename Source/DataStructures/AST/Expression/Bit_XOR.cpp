@@ -75,9 +75,16 @@ int BIT_XOR::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* BIT_XOR::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& BIT_XOR::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool BIT_XOR::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -87,15 +94,15 @@ bool BIT_XOR::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* BIT_XOR::Simplify(bool GenWire){
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
+void BIT_XOR::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* BIT_XOR::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void BIT_XOR::Display(){

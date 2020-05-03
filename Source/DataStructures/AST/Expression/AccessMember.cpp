@@ -111,13 +111,16 @@ int ACCESSMEMBER::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ACCESSMEMBER::FixedPointScale(int Width, NUMBER& FullScale){
-  auto Result = this->Evaluate();
+NUMBER& ACCESSMEMBER::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
 
-  if(Result == NULL) return this;
-  if(Result == this) return this;
-
-  return Result->FixedPointScale(Width, FullScale);
+bool ACCESSMEMBER::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -127,10 +130,15 @@ bool ACCESSMEMBER::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* ACCESSMEMBER::Simplify(bool GenWire){
-//   error("Not yet implemented");
-//   return this;
-// }
+void ACCESSMEMBER::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* ACCESSMEMBER::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void ACCESSMEMBER::Display(){

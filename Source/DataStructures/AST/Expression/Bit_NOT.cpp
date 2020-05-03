@@ -100,6 +100,7 @@ EXPRESSION* BIT_NOT::Evaluate(){
       return Object;
     }
     default:
+      error("Unexpected default");
       break;
   }
   return this;
@@ -112,18 +113,34 @@ int BIT_NOT::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* BIT_NOT::FixedPointScale(int Width, NUMBER& FullScale){
-  NUMBER Scale = 1;
-  Scale.BinScale(Width);
-  Scale.Div(FullScale);
+NUMBER& BIT_NOT::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
 
-  return ScaleWith(Scale, Width, FullScale);
+bool BIT_NOT::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
 bool BIT_NOT::HasCircularReference(NETLIST::BASE* Object){
   assert(Right, return false);
   return Right->HasCircularReference(Object);
+}
+//------------------------------------------------------------------------------
+
+void BIT_NOT::PopulateUsed(){
+  assert(Right, return);
+  Right->PopulateUsed();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* BIT_NOT::RemoveTempNet(int Width, bool Signed){
+  if(Right) Right = Right->RemoveTempNet(0, false);
+  return this;
 }
 //------------------------------------------------------------------------------
 

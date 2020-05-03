@@ -19,8 +19,7 @@
 //==============================================================================
 
 #include "PinComponent.h"
-
-#include "Synthesisable/Pin.h"
+#include "Pin.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -28,34 +27,19 @@ using namespace NETLIST;
 //------------------------------------------------------------------------------
 
 PIN_COMPONENT::PIN_COMPONENT(int Line, const string& Filename, const char* Name, PIN* Pin):
-BASE(Line, Filename, Name, TYPE::PinComponent){
+NET(Line, Filename, Name){
+  Type = TYPE::PinComponent;
+
   this->Pin = Pin;
   Namespace = Pin->Namespace;
-  Value     = 0;
 }
 //------------------------------------------------------------------------------
 
 PIN_COMPONENT::~PIN_COMPONENT(){
-  if(Value) delete Value;
-}
-//------------------------------------------------------------------------------
-
-AST::EXPRESSION* PIN_COMPONENT::GetExpression(int Line, const string& Filename){
-  if(Value) return (AST::EXPRESSION*)Value->Copy();
-  ::Error(Line, Filename, "Operate-assign on empty object");
-  return 0;
-}
-//------------------------------------------------------------------------------
-
-bool PIN_COMPONENT::Assign(AST::EXPRESSION* Expression){
-  assert(Expression, return false);
-  return RawAssign(Expression->FixedPointScale(Pin->Width(), Pin->FullScale()));
 }
 //------------------------------------------------------------------------------
 
 bool PIN_COMPONENT::RawAssign(AST::EXPRESSION* Expression){
-  Pin->Used = true;
-
   assert(Expression, return false);
 
   if(Value) delete Value;
@@ -70,12 +54,8 @@ bool PIN_COMPONENT::RawAssign(AST::EXPRESSION* Expression){
 }
 //------------------------------------------------------------------------------
 
-bool PIN_COMPONENT::HasCircularReference(BASE* Object){
-  Pin->Used = true;
-
-  if(this == Object) return true;
-  if(!Value) return false;
-  return Value->HasCircularReference(Object);
+void PIN_COMPONENT::PopulateUsed(bool SetUsed){
+  if(Value) Value->PopulateUsed();
 }
 //------------------------------------------------------------------------------
 
@@ -101,6 +81,11 @@ int PIN_COMPONENT::Width(){
 
 NUMBER& PIN_COMPONENT::FullScale(){
   return Pin->FullScale();
+}
+//------------------------------------------------------------------------------
+
+bool PIN_COMPONENT::Signed(){
+  return Pin->Signed();
 }
 //------------------------------------------------------------------------------
 

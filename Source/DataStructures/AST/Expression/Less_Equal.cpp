@@ -75,9 +75,16 @@ int LESS_EQUAL::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LESS_EQUAL::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& LESS_EQUAL::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool LESS_EQUAL::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -87,15 +94,15 @@ bool LESS_EQUAL::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* LESS_EQUAL::Simplify(bool GenWire){
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
+void LESS_EQUAL::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* LESS_EQUAL::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void LESS_EQUAL::Display(){

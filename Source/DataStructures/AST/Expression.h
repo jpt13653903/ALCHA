@@ -37,9 +37,8 @@ namespace AST{
       void DisplayStart();
       void DisplayEnd  ();
 
-      // Used for fixed-point scaling...
-      // If the scaling is not a power-of-two, it also synthesises a multiplier.
-      EXPRESSION* ScaleWith(NUMBER& Scale, int Width, NUMBER& FullScale);
+      // Turns the current expression into a temporary net object
+      EXPRESSION* MakeObject();
     //--------------------------------------------------------------------------
 
     public:
@@ -61,15 +60,22 @@ namespace AST{
 
       // Returns the width of the result, if known.  Issues an error if the 
       // width is not defined (like an uncast literal, for instance)
-      virtual int GetWidth() = 0;
+      virtual int     GetWidth    () = 0;
+      virtual NUMBER& GetFullScale() = 0;
+      virtual bool    GetSigned   () = 0;
 
-      // Evaluates using fixed-point scaling.  The parameters indicate the 
-      // target type.  Passing Width = 0 implies that the target is a scripting
-      // variable.  The result can be raw-assigned to the target.
-      virtual EXPRESSION* FixedPointScale(int Width, NUMBER& FullScale) = 0;
+      // Used for fixed-point scaling...
+      // If the scaling is not a power-of-two, it also synthesises a multiplier.
+      EXPRESSION* ScaleWith(NUMBER& Scale, int Width, NUMBER& FullScale);
 
       // Check for circular reference to the netlist object specified
       virtual bool HasCircularReference(NETLIST::BASE* Object) = 0;
+      virtual void PopulateUsed() = 0;
+
+      // If the expression references an object, which in turn references 
+      // another object of the same width and signedness, the temporary net in 
+      // the middle is removed.
+      virtual EXPRESSION* RemoveTempNet(int Width, bool Signed) = 0;
   };
 }
 //------------------------------------------------------------------------------

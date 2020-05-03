@@ -22,32 +22,30 @@
 #define Netlist_PinComponent_h
 //------------------------------------------------------------------------------
 
-#include "Base.h"
+#include "../Base.h"
+#include "Net.h"
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
   struct PIN;
 
-  struct PIN_COMPONENT: public BASE{
+  struct PIN_COMPONENT: public NET{
     PIN* Pin;
-
-    AST::EXPRESSION* Value;
 
     PIN_COMPONENT(int Line, const std::string& Filename, const char* Name, PIN* Pin);
     virtual ~PIN_COMPONENT();
 
-    AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
-    bool Assign   (AST::EXPRESSION* Expression) override;
     bool RawAssign(AST::EXPRESSION* Expression) override;
 
-    bool HasCircularReference(BASE* Object) override;
+    void PopulateUsed(bool SetUsed) override;
 
-    BASE*            GetAttribute            (const std::string& Name);
-    AST::EXPRESSION* GetAttribValue          (const std::string& Name);
-    AST::EXPRESSION* GetBuiltInAttributeValue(const std::string& Name);
+    BASE*            GetAttribute            (const std::string& Name) override;
+    AST::EXPRESSION* GetAttribValue          (const std::string& Name) override;
+    AST::EXPRESSION* GetBuiltInAttributeValue(const std::string& Name) override;
 
     int     Width    () override;
     NUMBER& FullScale() override;
+    bool    Signed   () override;
 
     void Display(int Indent = 0) override;
 

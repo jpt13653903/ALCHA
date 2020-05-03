@@ -26,24 +26,29 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct MULTIPLY: public EXPRESSION{
-    MULTIPLY(int Line, const std::string& Filename);
-    MULTIPLY(int Line, const char*        Filename);
-   ~MULTIPLY();
+  class MULTIPLY: public EXPRESSION{
+    public:
+      MULTIPLY(int Line, const std::string& Filename);
+      MULTIPLY(int Line, const char*        Filename);
+     ~MULTIPLY();
 
-    BASE* Copy() override;
+      BASE* Copy() override;
 
-    bool GetVerilog(std::string& Body) override;
-    EXPRESSION* Evaluate() override;
+      bool GetVerilog(std::string& Body) override;
+      EXPRESSION* Evaluate() override;
 
-    int GetWidth() override;
-    EXPRESSION* FixedPointScale(int Width, NUMBER& FullScale) override;
+      int     GetWidth    () override;
+      NUMBER& GetFullScale() override;
+      bool    GetSigned   () override;
 
-    bool HasCircularReference(NETLIST::BASE* Object) override;
+      bool HasCircularReference(NETLIST::BASE* Object) override;
+      void PopulateUsed() override;
 
-    void Display() override;
+      EXPRESSION* RemoveTempNet(int Width, bool Signed) override;
 
-    void ValidateMembers() override;
+      void Display() override;
+
+      void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------

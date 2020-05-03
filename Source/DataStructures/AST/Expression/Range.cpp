@@ -73,9 +73,16 @@ int RANGE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* RANGE::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& RANGE::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool RANGE::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -85,10 +92,15 @@ bool RANGE::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* RANGE::Simplify(bool GenWire){
-//   error("Not yet implemented");
-//   return this;
-// }
+void RANGE::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* RANGE::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void RANGE::Display(){

@@ -72,8 +72,8 @@ EXPRESSION* REPLICATE::Evaluate(){
     Error("Replicate number should evaluate to a literal");
     return this;
   }
-  
-  return this;
+
+  return MakeObject();
 }
 //------------------------------------------------------------------------------
 
@@ -81,7 +81,7 @@ int REPLICATE::GetWidth(){
   assert(Left , return 0);
   assert(Right, return 0);
 
-  Left  = Left->Evaluate();
+  Left  = Left ->Evaluate();
   Right = Right->Evaluate();
 
   assert(Left , return 0);
@@ -96,12 +96,16 @@ int REPLICATE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* REPLICATE::FixedPointScale(int Width, NUMBER& FullScale){
-  NUMBER Scale = 1;
-  Scale.BinScale(Width);
-  Scale.Div(FullScale);
+NUMBER& REPLICATE::GetFullScale(){
+  static NUMBER Result;
+  Result = 1;
+  Result.BinScale(GetWidth());
+  return Result;
+}
+//------------------------------------------------------------------------------
 
-  return ScaleWith(Scale, Width, FullScale);
+bool REPLICATE::GetSigned(){
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -116,15 +120,20 @@ bool REPLICATE::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* REPLICATE::Simplify(bool GenWire){
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
+void REPLICATE::PopulateUsed(){
+  assert(Left , return);
+  assert(Right, return);
+  
+  Left ->PopulateUsed();
+  Right->PopulateUsed();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* REPLICATE::RemoveTempNet(int Width, bool Signed){
+  if(Left ) Left  = Left ->RemoveTempNet(0, false);
+  if(Right) Right = Right->RemoveTempNet(0, false);
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void REPLICATE::Display(){

@@ -70,9 +70,16 @@ int RAW::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* RAW::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& RAW::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool RAW::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -82,10 +89,15 @@ bool RAW::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* RAW::Simplify(bool GenWire){
-//   error("Not yet implemented");
-//   return this;
-// }
+void RAW::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* RAW::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void RAW::Display(){

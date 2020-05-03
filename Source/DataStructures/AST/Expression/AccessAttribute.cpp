@@ -112,15 +112,33 @@ int ACCESSATTRIBUTE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ACCESSATTRIBUTE::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& ACCESSATTRIBUTE::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool ACCESSATTRIBUTE::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
 bool ACCESSATTRIBUTE::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;
+}
+//------------------------------------------------------------------------------
+
+void ACCESSATTRIBUTE::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* ACCESSATTRIBUTE::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
 }
 //------------------------------------------------------------------------------
 

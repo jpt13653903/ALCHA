@@ -56,12 +56,15 @@ bool EXPRESSION::IsExpression(){
 EXPRESSION* EXPRESSION::ScaleWith(NUMBER& Scale, int Width, NUMBER& FullScale){
   if(Scale == 1) return this;
 
+  bool Signed = GetSigned();
+
   // Calculate the limit of the inferred multiplier size.  Most FPGAs have 
   // 18-bit multipliers, so make that the minimum limit, otherwise use the 
   // target width as the limit so that no to little resolution is lost.
   NUMBER Limit(1);
-  if(Width < 18) Limit.BinScale(18);
-  else           Limit.BinScale(Width);
+  if     (!Signed && Width < 18) Limit.BinScale(18);
+  else if( Signed && Width < 17) Limit.BinScale(17);
+  else                           Limit.BinScale(Width);
 
   // Convert the multiplication to a shift, as far as possible
   int Shift = 0;
@@ -93,7 +96,7 @@ EXPRESSION* EXPRESSION::ScaleWith(NUMBER& Scale, int Width, NUMBER& FullScale){
   }
   
   auto Net = new NETLIST::NET(Source.Line, Source.Filename, 0);
-  Net->SetFixedPoint(Width, FullScale);
+  Net->SetFixedPoint(Width, FullScale, Signed);
   NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
   
   if(Scale == 1){ // Shift only
@@ -130,7 +133,9 @@ EXPRESSION* EXPRESSION::ScaleWith(NUMBER& Scale, int Width, NUMBER& FullScale){
     Mul->Right = MulLiteral;
 
     auto MulNet = new NETLIST::NET(Source.Line, Source.Filename, 0);
-    MulNet->SetFixedPoint(Width + Shift, FullScale);
+    NUMBER MulFullScale = FullScale;
+    MulFullScale.BinScale(Shift);
+    MulNet->SetFixedPoint(Mul->GetWidth(), MulFullScale, GetSigned());
     MulNet->Value = Mul;
     NETLIST::NamespaceStack.front()->Symbols[MulNet->Name] = MulNet;
 
@@ -154,6 +159,22 @@ EXPRESSION* EXPRESSION::ScaleWith(NUMBER& Scale, int Width, NUMBER& FullScale){
 
   auto Object = new OBJECT(Source.Line, Source.Filename);
   Object->ObjectRef = Net;
+  return Object;
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* EXPRESSION::MakeObject(){
+  if(Type == TYPE::Object) return this;
+
+  auto Object = new OBJECT      (Source.Line, Source.Filename);
+  auto Net    = new NETLIST::NET(Source.Line, Source.Filename, 0);
+  Object->ObjectRef = Net;
+
+  Net->SetFixedPoint(GetWidth(), GetFullScale(), GetSigned());
+  Net->Value = this;
+
+  NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
+
   return Object;
 }
 //------------------------------------------------------------------------------

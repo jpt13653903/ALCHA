@@ -44,6 +44,10 @@ namespace NETLIST{
   class SYNTHESISABLE;
 
   class BASE{ // Base class for the symbol table
+    private:
+      bool Temporary;
+    //--------------------------------------------------------------------------
+
     protected:
       void DisplayAttributes(int Indent);
     //--------------------------------------------------------------------------
@@ -59,11 +63,11 @@ namespace NETLIST{
         Alias,
         Array, // An array of objects
 
-        PinComponent,
         
         // Synthesisable
           Pin,
           Net,
+            PinComponent,
 
         // Namespace
           Module,
@@ -82,6 +86,8 @@ namespace NETLIST{
       std::string Name;
       NAMESPACE*  Namespace;
       std::map<std::string, ATTRIBUTE*> Attributes;
+
+      bool IsTemporary();
     //--------------------------------------------------------------------------
 
     public:
@@ -113,9 +119,6 @@ namespace NETLIST{
       virtual void Display        (int Indent = 0) = 0;
               void DisplayLongName();
 
-      // Runs assertions to validate the members.
-      virtual void Validate();
-
       // Access the attribute or member object
       // Only searches this object and returns null when not found
       // It returns the original, not a copy; used to modify the original
@@ -134,8 +137,18 @@ namespace NETLIST{
       // Returns 0 by default, indicating an invalid question.
       virtual int     Width    ();
       virtual NUMBER& FullScale();
+      virtual bool    Signed   ();
 
       virtual bool HasCircularReference(BASE* Object) = 0;
+
+      // Populates the "Used" flag so that the back-end can remove unused objects.
+      // SetUsed means that this node must be marked as "Used".  When calling
+      // from AST::EXPRESSION, this is true; when calling from BACK_END, this
+      // is false.
+      virtual void PopulateUsed(bool SetUsed);
+
+      // Runs assertions to validate the members.
+      virtual void Validate();
   };
 }
 //------------------------------------------------------------------------------

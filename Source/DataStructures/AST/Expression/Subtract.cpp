@@ -76,9 +76,16 @@ int SUBTRACT::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* SUBTRACT::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& SUBTRACT::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool SUBTRACT::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -88,27 +95,15 @@ bool SUBTRACT::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* SUBTRACT::Simplify(bool GenWire){
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   EXPRESSION* Result = this;
-// 
-//   if(Left->Type == TYPE::Literal && Right->Type == TYPE::Literal){
-//     auto Literal = new LITERAL(Source.Line, Source.Filename);
-//     Literal->Value =   ((LITERAL*)Left )->Value;
-//     Literal->Value.Sub(((LITERAL*)Right)->Value);
-//     delete this;
-//     Result = Literal;
-//   }
-//   // TODO When subtracting an expression from a literal (or vice versa),
-//   //      follow the rules in the SIPS article
-// 
-//   error("Not yet implemented");
-//   return Result;
-// }
+void SUBTRACT::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* SUBTRACT::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void SUBTRACT::Display(){

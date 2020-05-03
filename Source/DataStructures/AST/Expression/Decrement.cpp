@@ -70,9 +70,16 @@ int DECREMENT::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* DECREMENT::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& DECREMENT::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool DECREMENT::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -82,10 +89,15 @@ bool DECREMENT::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* DECREMENT::Simplify(bool GenWire){
-//   error("Not yet implemented");
-//   return this;
-// }
+void DECREMENT::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* DECREMENT::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void DECREMENT::Display(){

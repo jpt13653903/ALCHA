@@ -73,9 +73,16 @@ int ARRAYCONCATENATE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ARRAYCONCATENATE::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& ARRAYCONCATENATE::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool ARRAYCONCATENATE::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -85,11 +92,15 @@ bool ARRAYCONCATENATE::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* ARRAYCONCATENATE::Simplify(bool GenWire){
-//   // TODO: Simplify the elements
-//   error("Not yet implemented");
-//   return this;
-// }
+void ARRAYCONCATENATE::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* ARRAYCONCATENATE::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void ARRAYCONCATENATE::Display(){

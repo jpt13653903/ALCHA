@@ -46,6 +46,64 @@ void BACK_END::Warning(AST::EXPRESSION* Expression, const char* Message){
 }
 //------------------------------------------------------------------------------
 
+void BACK_END::RemoveTempNet(NETLIST::NET* Target){
+  if(Target->Value){
+    Target->Value = Target->Value->RemoveTempNet(Target->Width(), Target->Signed());
+  }
+}
+//------------------------------------------------------------------------------
+
+void BACK_END::RemoveTempNets(NAMESPACE* Namespace){
+  if(!Namespace) return;
+
+  Debug.Print("Delete temporary nets...\n");
+
+  foreach(SymbolIterator, Namespace->Symbols){
+    switch(SymbolIterator->second->Type){
+      case BASE::TYPE::Pin:
+        RemoveTempNet(((PIN*)SymbolIterator->second)->Driver );
+        RemoveTempNet(((PIN*)SymbolIterator->second)->Enabled);
+        break;
+
+      case BASE::TYPE::Net:
+        RemoveTempNet((NET*)SymbolIterator->second);
+        break;
+
+      case BASE::TYPE::Module:
+      case BASE::TYPE::Group:{
+        RemoveTempNets((NAMESPACE*)(SymbolIterator->second));
+        break;
+      }
+
+      default:
+        break;
+    }
+  }
+  return;
+}
+//------------------------------------------------------------------------------
+
+void BACK_END::PopulateUsed(NAMESPACE* Namespace){
+  Debug.Print("Populate used...\n");
+
+  foreach(SymbolIterator, Namespace->Symbols){
+    switch(SymbolIterator->second->Type){
+      case BASE::TYPE::Pin: // If it's used, it must end up at a pin
+        SymbolIterator->second->PopulateUsed(false);
+        break;
+
+      case BASE::TYPE::Module:
+      case BASE::TYPE::Group:
+        PopulateUsed((NAMESPACE*)(SymbolIterator->second));
+        break;
+
+      default:
+        break;
+    }
+  }
+}
+//------------------------------------------------------------------------------
+
 bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
   Debug.Print("Delete unused...\n");
 
@@ -182,18 +240,29 @@ bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
         auto Pin = (PIN*)Object;
         if(Pin->Driver->Value){
           string Driver;
-          Body += "// " + Pin->Driver->Value->Source.Filename +" +"+ to_string(Pin->Driver->Value->Source.Line) + "\n";
           if(!Pin->Driver->Value->GetVerilog(Driver)) return false;
           if(Pin->Enabled->Value){
             string Enabled;
-            Body += "// " + Pin->Enabled->Value->Source.Filename +" +"+ to_string(Pin->Enabled->Value->Source.Line) + "\n";
             if(!Pin->Enabled->Value->GetVerilog(Enabled)) return false;
-            Body += "assign "+ Pin->EscapedName() +
-                    " = |("+ Enabled + ")"
-                    " ? ("+ Driver + ")"
-                    " : " + to_string(Pin->Width()) + "'bZ;\n\n";
+            Body += "assign "+ Pin->EscapedName();
+            Align(Body, 25);
+            Body += "= |("+ Enabled + ") ? ("+ Driver + ")"
+                    " : " + to_string(Pin->Width()) + "'bZ;";
+            Align(Body, 70);
+            Body += "// " + Pin->Driver ->Value->Source.Filename
+                          + " +" + to_string(Pin->Driver ->Value->Source.Line)
+                          + " (Driver); "
+                          + Pin->Enabled->Value->Source.Filename
+                          + " +" + to_string(Pin->Enabled->Value->Source.Line)
+                          + " (Enabled)\n";
           }else{
-            Body += "assign "+ Pin->EscapedName() +" = "+ Driver + ";\n\n";
+            Body += "assign "+ Pin->EscapedName();
+            Align(Body, 25);
+            Body += "= "+ Driver + ";";
+            Align(Body, 70);
+            Body += "// " + Pin->Driver->Value->Source.Filename
+                          + " +" + to_string(Pin->Driver->Value->Source.Line)
+                          + "\n";
           }
         }
         break;
@@ -202,9 +271,13 @@ bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
         auto Net = (NET*)Object;
         if(Net->Value){
           string Value;
-          Body += "// " + Net->Value->Source.Filename +" +"+ to_string(Net->Value->Source.Line) + "\n";
           if(!Net->Value->GetVerilog(Value)) return false;
-          Body += "assign "+ Net->EscapedName() +" = "+ Value +";\n";
+          Body += "assign "+ Net->EscapedName();
+          Align(Body, 25);
+          Body += "= "+ Value +";";
+          Align(Body, 70);
+          Body += "// " + Net->Value->Source.Filename
+                        + " +" + to_string(Net->Value->Source.Line) + "\n";
         }
         break;
       }
@@ -217,6 +290,22 @@ bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
     }
   }
   return true;
+}
+//------------------------------------------------------------------------------
+
+void BACK_END::BuildSizeDef(string& Body, int Width, bool Signed){
+  int Top;
+  if(Signed) Top = Width;
+  else       Top = Width-1;
+
+  if(Top > 0){
+    Body += "[";
+    if(Top < 100) Body += ' ';
+    if(Top <  10) Body += ' ';
+    Body += to_string(Top) +":0]";
+  }else{
+    Body += "       ";
+  }
 }
 //------------------------------------------------------------------------------
 
@@ -234,10 +323,9 @@ void BACK_END::BuildPorts(string& Body, NAMESPACE* Namespace, bool& isFirst){
           case AST::DEFINITION::DIRECTION::Output: Body += "  output logic "; break;
           default                                : Body += "  inout  logic "; break;
         }
-        if(Pin->Width() > 1){
-          if(Pin->Signed()) Body += "["+ to_string(Pin->Width()  ) +":0]";
-          else              Body += "["+ to_string(Pin->Width()-1) +":0]";
-        }
+        if(Pin->Signed()) Body += "signed ";
+        else              Body += "       ";
+        BuildSizeDef(Body, Pin->Width(), Pin->Signed());
         Body += Pin->EscapedName();
         break;
       }
@@ -258,10 +346,9 @@ void BACK_END::BuildNets(string& Body, NAMESPACE* Namespace){
       case BASE::TYPE::Net:{
         auto Net = (NET*)SymbolIterator->second;
         Body += "logic ";
-        if(Net->Width() > 1){
-          if(Net->Signed()) Body += "["+ to_string(Net->Width()  ) +":0]";
-          else              Body += "["+ to_string(Net->Width()-1) +":0]";
-        }
+        if(Net->Signed()) Body += "signed ";
+        else              Body += "       ";
+        BuildSizeDef(Body, Net->Width(), Net->Signed());
         Body += Net->EscapedName() + ";\n";
         break;
       }
@@ -343,6 +430,12 @@ bool BACK_END::BuildAltera(const char* Path, const char* Filename){
                   "----------------------------------------\n\n"
     ANSI_RESET
   );
+
+  RemoveTempNets(&Global);
+  Debug.Print("\n");
+
+  PopulateUsed(&Global);
+  Debug.Print("\n");
 
   if(!DeleteUnused(&Global)) return false;
   Debug.Print("\n");

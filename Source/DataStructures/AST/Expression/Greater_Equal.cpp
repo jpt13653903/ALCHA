@@ -75,9 +75,16 @@ int GREATER_EQUAL::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* GREATER_EQUAL::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& GREATER_EQUAL::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool GREATER_EQUAL::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -87,15 +94,15 @@ bool GREATER_EQUAL::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* GREATER_EQUAL::Simplify(bool GenWire){
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
+void GREATER_EQUAL::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* GREATER_EQUAL::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void GREATER_EQUAL::Display(){

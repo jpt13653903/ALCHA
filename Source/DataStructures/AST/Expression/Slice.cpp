@@ -70,9 +70,16 @@ int SLICE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* SLICE::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& SLICE::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool SLICE::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -82,17 +89,15 @@ bool SLICE::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* SLICE::Simplify(bool GenWire){
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   // TODO Returns a new array (or scalar)
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
+void SLICE::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* SLICE::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void SLICE::Display(){

@@ -72,9 +72,16 @@ int STRING::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* STRING::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& STRING::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool STRING::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -84,9 +91,15 @@ bool STRING::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* STRING::Simplify(bool GenWire){
-//   return this;
-// }
+void STRING::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* STRING::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void STRING::Display(){

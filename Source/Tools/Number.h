@@ -61,40 +61,40 @@ class NUMBER{
     void operator=  (bool          b);
     void operator=  (const NUMBER& n);
 
-    bool operator== (int           i);
-    bool operator== (unsigned      u);
-    bool operator== (double        d);
-    bool operator== (bool          b);
-    bool operator== (const NUMBER& n);
+    bool operator== (int           i) const;
+    bool operator== (unsigned      u) const;
+    bool operator== (double        d) const;
+    bool operator== (bool          b) const;
+    bool operator== (const NUMBER& n) const;
 
-    bool operator!= (int           i);
-    bool operator!= (unsigned      u);
-    bool operator!= (double        d);
-    bool operator!= (bool          b);
-    bool operator!= (const NUMBER& n);
+    bool operator!= (int           i) const;
+    bool operator!= (unsigned      u) const;
+    bool operator!= (double        d) const;
+    bool operator!= (bool          b) const;
+    bool operator!= (const NUMBER& n) const;
 
     // Relational comparisons for complex numbers follow the rules presented in
     // https://www.cut-the-knot.org/do_you_know/complex_compare.shtml
     // i.e. (a + ib) < (c + id), provided either a < c or a = c and b < d. 
-    bool operator<  (int           i);
-    bool operator<  (unsigned      u);
-    bool operator<  (double        d);
-    bool operator<  (const NUMBER& n);
+    bool operator<  (int           i) const;
+    bool operator<  (unsigned      u) const;
+    bool operator<  (double        d) const;
+    bool operator<  (const NUMBER& n) const;
 
-    bool operator<= (int           i);
-    bool operator<= (unsigned      u);
-    bool operator<= (double        d);
-    bool operator<= (const NUMBER& n);
+    bool operator<= (int           i) const;
+    bool operator<= (unsigned      u) const;
+    bool operator<= (double        d) const;
+    bool operator<= (const NUMBER& n) const;
 
-    bool operator>  (int           i);
-    bool operator>  (unsigned      u);
-    bool operator>  (double        d);
-    bool operator>  (const NUMBER& n);
+    bool operator>  (int           i) const;
+    bool operator>  (unsigned      u) const;
+    bool operator>  (double        d) const;
+    bool operator>  (const NUMBER& n) const;
 
-    bool operator>= (int           i);
-    bool operator>= (unsigned      u);
-    bool operator>= (double        d);
-    bool operator>= (const NUMBER& n);
+    bool operator>= (int           i) const;
+    bool operator>= (unsigned      u) const;
+    bool operator>= (double        d) const;
+    bool operator>= (const NUMBER& n) const;
 
     void Add(double r, double i = 0);
     void Add(const NUMBER& n);
@@ -112,15 +112,14 @@ class NUMBER{
 
     void Round();
 
-    bool IsInt     (); // Imag == 0 && Real.Denominator == 1
-    bool IsReal    (); // Imag == 0
-    bool IsPositive(); // Imag == 0 && Real >= 0
+    bool IsInt () const; // Imag == 0 && Real.Denominator == 1
+    bool IsReal() const; // Imag == 0
 
-    double GetReal();
-    double GetImag();
+    double GetReal() const;
+    double GetImag() const;
 
-    std::string& GetString(int Base = 10); // Format "123/456"
-    std::string& Display  ();              // Format "123/456 (~0.269737)"
+    std::string& GetString(int Base = 10) const; // Format "123/456"
+    std::string& Display  () const;              // Format "123/456 (~0.269737)"
 };
 //------------------------------------------------------------------------------
 

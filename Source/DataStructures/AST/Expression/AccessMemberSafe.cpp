@@ -70,9 +70,16 @@ int ACCESSMEMBERSAFE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ACCESSMEMBERSAFE::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& ACCESSMEMBERSAFE::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool ACCESSMEMBERSAFE::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -82,10 +89,15 @@ bool ACCESSMEMBERSAFE::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* ACCESSMEMBERSAFE::Simplify(bool GenWire){
-//   error("Not yet implemented");
-//   return this;
-// }
+void ACCESSMEMBERSAFE::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* ACCESSMEMBERSAFE::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void ACCESSMEMBERSAFE::Display(){

@@ -19,6 +19,9 @@
 //==============================================================================
 
 #include "Net.h"
+
+#include "AST/Expression/Literal.h"
+#include "AST/Expression/Object.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -44,12 +47,46 @@ AST::EXPRESSION* NET::GetExpression(int Line, const string& Filename){
 
 bool NET::Assign(AST::EXPRESSION* Expression){
   assert(Expression, return false);
-  return RawAssign(Expression->FixedPointScale(Width(), FullScale()));
+
+  Expression = Expression->Evaluate();
+  assert(Expression, return false);
+
+  switch(Expression->Type){
+    case AST::BASE::TYPE::Literal:{
+      NUMBER Scale = 1;
+      Scale.BinScale(Width());
+      Scale.Div(FullScale());
+      ((AST::LITERAL*)Expression)->Value.Mul(Scale);
+      break;
+    }
+
+    case AST::BASE::TYPE::Object:{
+      auto Object = ((AST::OBJECT*)Expression)->ObjectRef;
+      assert(Object, return false);
+
+      int    ExprWidth     = Object->Width    ();
+      NUMBER ExprFullScale = Object->FullScale();
+
+      NUMBER Scale = 1;
+      Scale.BinScale(Width() - ExprWidth);
+      Scale.Mul(ExprFullScale);
+      Scale.Div(FullScale());
+
+      Expression = Expression->ScaleWith(Scale, Width(), FullScale());
+      break;
+    }
+
+    default:
+      Error("Cannot assign this type to a net");
+      delete Expression;
+      return false;
+  }
+  return RawAssign(Expression);
 }
 //------------------------------------------------------------------------------
 
 bool NET::RawAssign(AST::EXPRESSION* Expression){
-  assert(Expression, return false);
+  if(!Expression) return false;
 
   if(Value){
     Expression->Warning();
@@ -65,11 +102,16 @@ bool NET::RawAssign(AST::EXPRESSION* Expression){
 //------------------------------------------------------------------------------
 
 bool NET::HasCircularReference(BASE* Object){
-  Used = true;
-
   if(this == Object) return true;
   if(!Value) return false;
   return Value->HasCircularReference(Object);
+}
+//------------------------------------------------------------------------------
+
+void NET::PopulateUsed(bool SetUsed){
+  if(Used) return; // Prevents circular loops
+  Used = SetUsed;
+  if(Value) Value->PopulateUsed();
 }
 //------------------------------------------------------------------------------
 

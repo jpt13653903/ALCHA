@@ -76,9 +76,16 @@ int ADD::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ADD::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& ADD::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool ADD::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -88,27 +95,15 @@ bool ADD::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* ADD::Simplify(bool GenWire){
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   EXPRESSION* Result = this;
-// 
-//   if(Left->Type == TYPE::Literal && Right->Type == TYPE::Literal){
-//     auto Literal = new LITERAL(Source.Line, Source.Filename);
-//     Literal->Value =   ((LITERAL*)Left )->Value;
-//     Literal->Value.Add(((LITERAL*)Right)->Value);
-//     delete this;
-//     Result = Literal;
-//   }
-//   // TODO When adding an expression to a literal, follow the rules
-//   //      in the SIPS article
-// 
-//   error("Not yet implemented");
-//   return Result;
-// }
+void ADD::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* ADD::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void ADD::Display(){

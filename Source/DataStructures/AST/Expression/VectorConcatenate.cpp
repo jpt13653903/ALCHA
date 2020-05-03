@@ -54,13 +54,17 @@ BASE* VECTORCONCATENATE::Copy(){
 bool VECTORCONCATENATE::GetVerilog(string& Body){
   bool isFirst = true;
 
-  foreach(Element, Elements){
-    if(isFirst) Body += "{";
-    else        Body += ", ";
-    (*Element)->GetVerilog(Body);
-    isFirst = false;
+  if(Elements.size() > 1){
+    foreach(Element, Elements){
+      if(isFirst) Body += "{";
+      else        Body += ", ";
+      (*Element)->GetVerilog(Body);
+      isFirst = false;
+    }
+    Body += "}";
+  }else{
+    Elements.front()->GetVerilog(Body);
   }
-  Body += "}";
 
   return true;
 }
@@ -86,12 +90,16 @@ int VECTORCONCATENATE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* VECTORCONCATENATE::FixedPointScale(int Width, NUMBER& FullScale){
-  NUMBER Scale = 1;
-  Scale.BinScale(Width);
-  Scale.Div(FullScale);
+NUMBER& VECTORCONCATENATE::GetFullScale(){
+  static NUMBER Result;
+  Result = 1;
+  Result.BinScale(GetWidth());
+  return Result;
+}
+//------------------------------------------------------------------------------
 
-  return ScaleWith(Scale, Width, FullScale);
+bool VECTORCONCATENATE::GetSigned(){
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -101,6 +109,22 @@ bool VECTORCONCATENATE::HasCircularReference(NETLIST::BASE* Object){
     if((*Element)->HasCircularReference(Object)) return true;
   }
   return false;
+}
+//------------------------------------------------------------------------------
+
+void VECTORCONCATENATE::PopulateUsed(){
+  foreach(Element, Elements){
+    assert(*Element, return);
+    (*Element)->PopulateUsed();
+  }
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* VECTORCONCATENATE::RemoveTempNet(int Width, bool Signed){
+  foreach(Element, Elements){
+    if(*Element) (*Element)->RemoveTempNet(0, false);
+  }
+  return this;
 }
 //------------------------------------------------------------------------------
 

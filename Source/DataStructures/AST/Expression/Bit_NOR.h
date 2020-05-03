@@ -36,10 +36,14 @@ namespace AST{
     bool GetVerilog(std::string& Body) override;
     EXPRESSION* Evaluate() override;
 
-    int GetWidth() override;
-    EXPRESSION* FixedPointScale(int Width, NUMBER& FullScale) override;
+    int     GetWidth    () override;
+    NUMBER& GetFullScale() override;
+    bool    GetSigned   () override;
 
     bool HasCircularReference(NETLIST::BASE* Object) override;
+    void PopulateUsed() override;
+
+    EXPRESSION* RemoveTempNet(int Width, bool Signed) override;
 
     void Display() override;
 

@@ -73,9 +73,16 @@ int OR_REDUCE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* OR_REDUCE::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& OR_REDUCE::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool OR_REDUCE::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -85,14 +92,15 @@ bool OR_REDUCE::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* OR_REDUCE::Simplify(bool GenWire){
-//   assert(Right, return this);
-// 
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
+void OR_REDUCE::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* OR_REDUCE::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void OR_REDUCE::Display(){

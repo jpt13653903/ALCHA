@@ -104,19 +104,33 @@ int IDENTIFIER::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* IDENTIFIER::FixedPointScale(int Width, NUMBER& FullScale){
-  auto Result = this->Evaluate();
+NUMBER& IDENTIFIER::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
 
-  if(Result == NULL) return this;
-  if(Result == this) return this;
-
-  return Result->FixedPointScale(Width, FullScale);
+bool IDENTIFIER::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
 bool IDENTIFIER::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;
+}
+//------------------------------------------------------------------------------
+
+void IDENTIFIER::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* IDENTIFIER::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
 }
 //------------------------------------------------------------------------------
 

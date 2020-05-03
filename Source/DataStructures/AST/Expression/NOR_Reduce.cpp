@@ -73,9 +73,16 @@ int NOR_REDUCE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* NOR_REDUCE::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& NOR_REDUCE::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool NOR_REDUCE::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -85,14 +92,15 @@ bool NOR_REDUCE::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* NOR_REDUCE::Simplify(bool GenWire){
-//   assert(Right, return this);
-// 
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
+void NOR_REDUCE::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* NOR_REDUCE::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void NOR_REDUCE::Display(){

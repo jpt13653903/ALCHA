@@ -49,7 +49,7 @@ BASE* SHIFT_LEFT::Copy(){
 bool SHIFT_LEFT::GetVerilog(string& Body){
   Body += "(";
   Left->GetVerilog(Body);
-  Body += ") << (";
+  Body += ") <<< (";
   Right->GetVerilog(Body);
   Body += ")";
 
@@ -75,9 +75,16 @@ int SHIFT_LEFT::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* SHIFT_LEFT::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& SHIFT_LEFT::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool SHIFT_LEFT::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -92,15 +99,20 @@ bool SHIFT_LEFT::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* SHIFT_LEFT::Simplify(bool GenWire){
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
+void SHIFT_LEFT::PopulateUsed(){
+  assert(Left , return);
+  assert(Right, return);
+  
+  Left ->PopulateUsed();
+  Right->PopulateUsed();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* SHIFT_LEFT::RemoveTempNet(int Width, bool Signed){
+  if(Left ) Left  = Left ->RemoveTempNet(0, false);
+  if(Right) Right = Right->RemoveTempNet(0, false);
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void SHIFT_LEFT::Display(){

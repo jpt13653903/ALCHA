@@ -73,9 +73,16 @@ int NAND_REDUCE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* NAND_REDUCE::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& NAND_REDUCE::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool NAND_REDUCE::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -85,14 +92,15 @@ bool NAND_REDUCE::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* NAND_REDUCE::Simplify(bool GenWire){
-//   assert(Right, return this);
-// 
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
+void NAND_REDUCE::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* NAND_REDUCE::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void NAND_REDUCE::Display(){

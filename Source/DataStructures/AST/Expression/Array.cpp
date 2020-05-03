@@ -73,9 +73,16 @@ int ARRAY::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ARRAY::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& ARRAY::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool ARRAY::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -85,9 +92,15 @@ bool ARRAY::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* ARRAY::Simplify(bool GenWire){
-//   return this;
-// }
+void ARRAY::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* ARRAY::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void ARRAY::Display(){

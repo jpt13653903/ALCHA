@@ -70,9 +70,16 @@ int EXPONENTIAL::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* EXPONENTIAL::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& EXPONENTIAL::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool EXPONENTIAL::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -82,15 +89,15 @@ bool EXPONENTIAL::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* EXPONENTIAL::Simplify(bool GenWire){
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
+void EXPONENTIAL::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* EXPONENTIAL::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void EXPONENTIAL::Display(){

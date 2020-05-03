@@ -54,25 +54,23 @@ bool LITERAL::GetVerilog(string& Body){
     return false;
   }
 
-  int  Width  = GetWidth();
-  bool Signed = !Value.IsPositive();
+  int  Width  = GetWidth ();
+  bool Signed = GetSigned();
 
-  NUMBER Result = Value;
-  bool IsPositive = Result.IsPositive();
-  if(!IsPositive){
-    if(!Signed){
-      Error("Cannot store a negative literal to an unsigned target");
-      return false;
-    }
-    Body += "-";
-    Result.Mul(-1);
+  NUMBER Result;
+  if(Signed){
+    Body += to_string(Width+1) + "'sh";
+    Result = GetFullScale();
+    Result.BinScale(1);
+    Result.Add(Value);
+  }else{
+    Body += to_string(Width  ) + "'h";
+    Result = Value;
   }
-  if(Signed) Body += to_string(Width+1) + "'h";
-  else       Body += to_string(Width  ) + "'h";
   Result.Round();
   Body += Result.GetString(16);
   Result.BinScale(-Width);
-  if((IsPositive && Result >= 1) || (!IsPositive && Result > 1)){
+  if((!Signed && Result >= 1) || (Signed && Result > 2)){
     Error("The literal does not fit in its full-scale range");
     return false;
   }
@@ -95,8 +93,12 @@ int LITERAL::GetWidth(){
 
   int Width = 0;
   NUMBER Num = Value;
-  if(!Num.IsPositive()) Num.Mul(-1);
-  while(Num >= 1){
+  if(Num < 0) Num.Mul(-1);
+  while(Num > 1){
+    Num.BinScale(-1);
+    Width++;
+  }
+  if(!GetSigned() && Num == 1){
     Num.BinScale(-1);
     Width++;
   }
@@ -105,20 +107,30 @@ int LITERAL::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LITERAL::FixedPointScale(int Width, NUMBER& FullScale){
-  NUMBER Scale = 1;
-  Scale.BinScale(Width);
-  Scale.Div(FullScale);
+NUMBER& LITERAL::GetFullScale(){
+  static NUMBER Result;
+  Result = 1;
+  Result.BinScale(GetWidth());
+  return Result;
+}
+//------------------------------------------------------------------------------
 
-  Value.Mul(Scale);
-  Value.Round();
-
-  return this;
+bool LITERAL::GetSigned(){
+  return Value < 0;
 }
 //------------------------------------------------------------------------------
 
 bool LITERAL::HasCircularReference(NETLIST::BASE* Object){
   return false;
+}
+//------------------------------------------------------------------------------
+
+void LITERAL::PopulateUsed(){
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* LITERAL::RemoveTempNet(int Width, bool Signed){
+  return this;
 }
 //------------------------------------------------------------------------------
 

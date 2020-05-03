@@ -52,11 +52,28 @@ BASE* MULTIPLY::Copy(){
 //------------------------------------------------------------------------------
 
 bool MULTIPLY::GetVerilog(string& Body){
-  Body += "(";
-  Left->GetVerilog(Body);
-  Body += ") * (";
-  Right->GetVerilog(Body);
-  Body += ")";
+  assert(Left , return false);
+  assert(Right, return false);
+
+  if(!Left->GetSigned() && Right->GetSigned()){
+    Body += "$signed({1'b0, (";
+    Left->GetVerilog(Body);
+    Body += ")})";
+  }else{
+    Body += "(";
+    Left->GetVerilog(Body);
+    Body += ")";
+  }
+  Body += " * ";
+  if(Left->GetSigned() && !Right->GetSigned()){
+    Body += "$signed({1'b0, (";
+    Right->GetVerilog(Body);
+    Body += ")})";
+  }else{
+    Body += "(";
+    Right->GetVerilog(Body);
+    Body += ")";
+  }
 
   return true;
 }
@@ -82,13 +99,6 @@ EXPRESSION* MULTIPLY::Evaluate(){
     return Result;
   }
 
-  // Put the literal on the right (if there is one)
-  if(Left->Type == TYPE::Literal){
-    auto Temp = Left;
-    Left  = Right;
-    Right = Temp;
-  }
-
   // Replace a object * object with a wire
   if(Left->Type == TYPE::Object && Right->Type == TYPE::Object){
     auto left  = ((OBJECT*)Left )->ObjectRef;
@@ -99,39 +109,33 @@ EXPRESSION* MULTIPLY::Evaluate(){
 
     auto Object = new OBJECT      (Source.Line, Source.Filename);
     auto Net    = new NETLIST::NET(Source.Line, Source.Filename, 0);
+    Object->ObjectRef = Net;
 
     NUMBER FullScale = left->FullScale();
     FullScale.Mul(right->FullScale());
-    Net->SetFixedPoint(left->Width() + right->Width(), FullScale);
 
-    Net   ->Value     = this;
-    Object->ObjectRef = Net;
+    if(left->Signed() && right->Signed()){
+      FullScale.BinScale(1); // Make space for the signed bit
+      Net->SetFixedPoint(left->Width() + right->Width() + 1, FullScale, true);
 
+    }else if(left->Signed() || right->Signed()){
+      Net->SetFixedPoint(left->Width() + right->Width(), FullScale, true);
+
+    }else{
+      Net->SetFixedPoint(left->Width() + right->Width(), FullScale, false);
+    }
+    Net->Value = this;
     NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
 
     return Object;
   }
 
-  return this;
-}
-//------------------------------------------------------------------------------
-
-int MULTIPLY::GetWidth(){
-  error("Not yet implemented");
-  return 0;
-}
-//------------------------------------------------------------------------------
-
-EXPRESSION* MULTIPLY::FixedPointScale(int Width, NUMBER& FullScale){
-  auto Result = this->Evaluate();
-
-  if(Result == NULL) return this;
-  if(Result != this) return Result->FixedPointScale(Width, FullScale);
-
-  assert(Left , return this);
-  assert(Right, return this);
-
-  assert(Left->Type != TYPE::Literal); // Ensured by Evaluate();
+  // Put the literal on the right (if there is one)
+  if(Left->Type == TYPE::Literal){
+    auto Temp = Left;
+    Left  = Right;
+    Right = Temp;
+  }
 
   if(Left->Type == TYPE::Object && Right->Type == TYPE::Literal){
     auto left  = ((OBJECT *)Left )->ObjectRef;
@@ -141,19 +145,49 @@ EXPRESSION* MULTIPLY::FixedPointScale(int Width, NUMBER& FullScale){
 
     auto Object = new OBJECT      (Source.Line, Source.Filename);
     auto Net    = new NETLIST::NET(Source.Line, Source.Filename, 0);
-
-    NUMBER ThisFullScale = left->FullScale();
-    ThisFullScale.Mul(right->Value);
-    Net->SetFixedPoint(left->Width(), ThisFullScale);
-
-    Net   ->Value     = Left;
     Object->ObjectRef = Net;
 
-    NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
+    if(right->GetSigned()){
+      error("not yet implemented");
+      delete Object;
+      delete Net;
+      return this;
 
-    return Object->FixedPointScale(Width, FullScale);
+    }else{ // Positive literal
+      NUMBER FullScale = left->FullScale();
+      FullScale.Mul(right->Value);
+
+      Net->SetFixedPoint(left->Width(), FullScale, left->Signed());
+      Net->Value = Left;
+      Left = 0;
+    }
+    NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
+    delete this;
+    return Object;
   }
+
   return this;
+}
+//------------------------------------------------------------------------------
+
+int MULTIPLY::GetWidth(){
+  assert(Left , return 0);
+  assert(Right, return 0);
+
+  return Left->GetWidth() + Right->GetWidth();
+}
+//------------------------------------------------------------------------------
+
+NUMBER& MULTIPLY::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool MULTIPLY::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -168,15 +202,20 @@ bool MULTIPLY::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* MULTIPLY::Simplify(bool GenWire){
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
+void MULTIPLY::PopulateUsed(){
+  assert(Left , return);
+  assert(Right, return);
+  
+  Left ->PopulateUsed();
+  Right->PopulateUsed();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* MULTIPLY::RemoveTempNet(int Width, bool Signed){
+  if(Left ) Left  = Left ->RemoveTempNet(0, false);
+  if(Right) Right = Right->RemoveTempNet(0, false);
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void MULTIPLY::Display(){

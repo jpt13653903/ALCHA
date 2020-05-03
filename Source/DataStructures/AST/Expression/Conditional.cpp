@@ -70,9 +70,16 @@ int CONDITIONAL::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* CONDITIONAL::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& CONDITIONAL::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool CONDITIONAL::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -82,17 +89,15 @@ bool CONDITIONAL::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* CONDITIONAL::Simplify(bool GenWire){
-//   // TODO: There should be a third component...  Left and Right of Right?
-//   //       Or break it down to an if-statement?
-//   assert(Left && Right, return this);
-// 
-//   Left = Left->Simplify(true);
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
+void CONDITIONAL::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* CONDITIONAL::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void CONDITIONAL::Display(){

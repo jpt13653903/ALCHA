@@ -25,6 +25,7 @@
 #include "Utilities.h"
 #include "AST/Definition.h"
 #include "AST/Expression.h"
+#include "Netlist/Synthesisable/PinComponent.h"
 #include "Netlist/Namespace/Module.h"
 #include "Altera/Project.h"
 //------------------------------------------------------------------------------
@@ -39,10 +40,15 @@ class BACK_END{
 
     bool WriteFile(std::string& Filename, const char* Ext, std::string& Body);
 
-    bool DeleteUnused       (NETLIST::NAMESPACE* Module);
-    bool AssignPinDirections(NETLIST::NAMESPACE* Module);
-    bool RoutePorts         (NETLIST::NAMESPACE* Module);
+    void RemoveTempNet(NETLIST::NET* Target);
 
+    void RemoveTempNets     (NETLIST::NAMESPACE* Namespace);
+    void PopulateUsed       (NETLIST::NAMESPACE* Namespace);
+    bool DeleteUnused       (NETLIST::NAMESPACE* Namespace);
+    bool AssignPinDirections(NETLIST::NAMESPACE* Namespace);
+    bool RoutePorts         (NETLIST::NAMESPACE* Namespace);
+
+    void BuildSizeDef    (std::string& Body, int Width, bool Signed);
     bool BuildAssignments(std::string& Body, NETLIST::NAMESPACE* Namespace);
     void BuildPorts      (std::string& Body, NETLIST::NAMESPACE* Namespace, bool& isFirst);
     void BuildNets       (std::string& Body, NETLIST::NAMESPACE* Namespace);

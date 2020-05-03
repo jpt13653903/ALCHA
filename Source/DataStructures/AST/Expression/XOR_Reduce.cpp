@@ -73,9 +73,16 @@ int XOR_REDUCE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* XOR_REDUCE::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& XOR_REDUCE::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool XOR_REDUCE::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -85,14 +92,15 @@ bool XOR_REDUCE::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* XOR_REDUCE::Simplify(bool GenWire){
-//   assert(Right, return this);
-// 
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
+void XOR_REDUCE::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* XOR_REDUCE::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void XOR_REDUCE::Display(){

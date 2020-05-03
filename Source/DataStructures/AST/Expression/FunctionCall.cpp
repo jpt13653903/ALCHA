@@ -83,9 +83,16 @@ int FUNCTIONCALL::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* FUNCTIONCALL::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& FUNCTIONCALL::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool FUNCTIONCALL::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -95,20 +102,15 @@ bool FUNCTIONCALL::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* FUNCTIONCALL::Simplify(bool GenWire){
-//   assert(Left, return this);
-// 
-//   Left = Left->Simplify(true);
-//   if(!Parameters.empty()){
-//     foreach(Parameter, Parameters){
-//       assert((*Parameter)->IsExpression(), return this);
-//       (*Parameter) = ((EXPRESSION*)(*Parameter))->Simplify(true);
-//     }
-//   }
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
+void FUNCTIONCALL::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* FUNCTIONCALL::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void FUNCTIONCALL::Display(){

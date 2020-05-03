@@ -35,18 +35,26 @@
 namespace NETLIST{
   class SYNTHESISABLE: public BASE{
     private:
-      NUM* WidthObj;
-      NUM* FullScaleObj;
+      struct FORMAT{
+        NUM* Width;
+        NUM* FullScale;
+        NUM* Signed;
+      } Format;
 
     protected:
       void DisplayParameters(int Indent);
 
     public:
       bool    Used; // Actually used in an expression somewhere
-      bool    Signed   ();
       int     Width    () override;
       NUMBER& FullScale() override;
-      void    SetFixedPoint(int Width, const NUMBER& FullScale);
+      bool    Signed   () override;
+
+      // If "Signed" is not specified, the signedness is taken from the sign
+      // of Width and / or FullScale, otherwise both Width and FullScale are
+      // expected to be positive.
+      void SetFixedPoint(int Width, const NUMBER& FullScale);
+      void SetFixedPoint(int Width, const NUMBER& FullScale, bool Signed);
 
       AST::DEFINITION::DIRECTION Direction;
 

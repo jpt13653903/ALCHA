@@ -26,6 +26,7 @@
 #include "Netlist/Character.h"
 #include "Netlist/Num.h"
 #include "Netlist/Namespace/Module.h"
+#include "Netlist/Synthesisable/Net.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -66,11 +67,7 @@ bool OBJECT::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* OBJECT::Evaluate(){
-  if(!ObjectRef){
-    error("Null object reference");
-    delete this;
-    return 0;
-  }
+  assert(ObjectRef, delete this; return 0);
 
   switch(ObjectRef->Type){
     case NETLIST::BASE::TYPE::Byte:{
@@ -124,34 +121,57 @@ EXPRESSION* OBJECT::Evaluate(){
 //------------------------------------------------------------------------------
 
 int OBJECT::GetWidth(){
+  assert(ObjectRef, return 0);
   return ObjectRef->Width();
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* OBJECT::FixedPointScale(int Width, NUMBER& FullScale){
-  // Could be an alias, so evaluate it first
-  auto Result = this->Evaluate();
+NUMBER& OBJECT::GetFullScale(){
+  assert(ObjectRef);
+  return ObjectRef->FullScale();
+}
+//------------------------------------------------------------------------------
 
-  if(Result == NULL) return this;
-  if(Result != this) return Result->FixedPointScale(Width, FullScale);
-
-  int    ThisWidth     = ObjectRef->Width    ();
-  NUMBER ThisFullScale = ObjectRef->FullScale();
-
-  assert(ThisWidth, return this);
-
-  NUMBER Scale = 1;
-  Scale.BinScale(Width - ThisWidth);
-  Scale.Mul(ThisFullScale);
-  Scale.Div(FullScale);
-
-  return ScaleWith(Scale, Width, FullScale);
+bool OBJECT::GetSigned(){
+  assert(ObjectRef, return false);
+  return ObjectRef->Signed();
 }
 //------------------------------------------------------------------------------
 
 bool OBJECT::HasCircularReference(NETLIST::BASE* Object){
   if(!ObjectRef) return false;
   return ObjectRef->HasCircularReference(Object);
+}
+//------------------------------------------------------------------------------
+
+void OBJECT::PopulateUsed(){
+  if(ObjectRef) ObjectRef->PopulateUsed(true);
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* OBJECT::RemoveTempNet(int Width, bool Signed){
+  // At this point, everything has been broken down to raw bits, so the
+  // full-scale is not important.
+
+  if(ObjectRef && ObjectRef->Type == NETLIST::BASE::TYPE::Net){
+    auto Net = (NETLIST::NET*)ObjectRef;
+    if(Net->Value && Net->IsTemporary()){
+      if(Width  == Net->Width () &&
+         Signed == Net->Signed() ){
+        delete this;
+        return ((EXPRESSION*)Net->Value->Copy())->RemoveTempNet(Width, Signed);
+      }
+      if(Net->Value->Type == TYPE::Object){
+        auto Object = (OBJECT*)Net->Value;
+        if(GetWidth () == Object->GetWidth () &&
+           GetSigned() == Object->GetSigned() ){
+          delete this;
+          return ((EXPRESSION*)Object->Copy())->RemoveTempNet(Width, Signed);
+        }
+      }
+    }
+  }
+  return this;
 }
 //------------------------------------------------------------------------------
 

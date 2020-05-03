@@ -22,8 +22,7 @@
 #define Netlist_Pin_h
 //------------------------------------------------------------------------------
 
-#include "Net.h"
-#include "../PinComponent.h"
+#include "PinComponent.h"
 #include "AST/Expression.h"
 //------------------------------------------------------------------------------
 
@@ -40,6 +39,7 @@ namespace NETLIST{
     bool RawAssign(AST::EXPRESSION* Expression) override;
 
     bool HasCircularReference(BASE* Object) override;
+    void PopulateUsed(bool SetUsed) override;
 
     BASE* GetMember(const std::string& Name) override;
 

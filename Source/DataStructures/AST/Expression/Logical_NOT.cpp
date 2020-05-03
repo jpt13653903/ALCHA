@@ -73,9 +73,16 @@ int LOGICAL_NOT::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LOGICAL_NOT::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& LOGICAL_NOT::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool LOGICAL_NOT::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -85,14 +92,15 @@ bool LOGICAL_NOT::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* LOGICAL_NOT::Simplify(bool GenWire){
-//   assert(Right, return this);
-// 
-//   Right = Right->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
+void LOGICAL_NOT::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* LOGICAL_NOT::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void LOGICAL_NOT::Display(){

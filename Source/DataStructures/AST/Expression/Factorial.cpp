@@ -70,9 +70,16 @@ int FACTORIAL::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* FACTORIAL::FixedPointScale(int Width, NUMBER& FullScale){
+NUMBER& FACTORIAL::GetFullScale(){
   error("Not yet implemented");
-  return this;
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool FACTORIAL::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 
@@ -82,14 +89,15 @@ bool FACTORIAL::HasCircularReference(NETLIST::BASE* Object){
 }
 //------------------------------------------------------------------------------
 
-// EXPRESSION* FACTORIAL::Simplify(bool GenWire){
-//   assert(Left, return this);
-// 
-//   Left = Left->Simplify(true);
-// 
-//   error("Not yet implemented");
-//   return this;
-// }
+void FACTORIAL::PopulateUsed(){
+  error("Not yet implemented");
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* FACTORIAL::RemoveTempNet(int Width, bool Signed){
+  error("Not yet implemented");
+  return this;
+}
 //------------------------------------------------------------------------------
 
 void FACTORIAL::Display(){
