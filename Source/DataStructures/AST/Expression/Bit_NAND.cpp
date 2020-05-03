@@ -99,6 +99,12 @@ void BIT_NAND::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* BIT_NAND::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void BIT_NAND::Display(){
   DisplayStart();
 

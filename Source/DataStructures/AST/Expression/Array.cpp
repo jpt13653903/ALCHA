@@ -97,6 +97,12 @@ void ARRAY::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* ARRAY::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void ARRAY::Display(){
   Debug.Print("(Array: (");
   bool isFirst = true;

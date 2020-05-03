@@ -136,6 +136,12 @@ void ACCESSATTRIBUTE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* ACCESSATTRIBUTE::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void ACCESSATTRIBUTE::Display(){
   DisplayStart();
 

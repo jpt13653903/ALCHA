@@ -94,6 +94,12 @@ void EXPONENTIAL::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* EXPONENTIAL::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void EXPONENTIAL::Display(){
   DisplayStart();
 

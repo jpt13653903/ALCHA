@@ -94,6 +94,12 @@ void CONDITIONAL::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* CONDITIONAL::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void CONDITIONAL::Display(){
   DisplayStart();
 

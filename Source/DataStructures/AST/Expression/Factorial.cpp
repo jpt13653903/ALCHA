@@ -94,6 +94,12 @@ void FACTORIAL::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* FACTORIAL::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void FACTORIAL::Display(){
   DisplayStart();
 

@@ -47,21 +47,25 @@ void BACK_END::Warning(AST::EXPRESSION* Expression, const char* Message){
 //------------------------------------------------------------------------------
 
 void BACK_END::RemoveTempNet(NETLIST::NET* Target){
-  while(Target->Value && Target->Value->Type == AST::BASE::TYPE::Object){
-    auto Object = (AST::OBJECT*)Target->Value;
-    if(Object->ObjectRef && Object->ObjectRef->Type == BASE::TYPE::Net){
-      auto Net = (NET*)Object->ObjectRef;
-      // At this point, everything has been broken down to raw bits, so the
-      // full-scale is not important.
-      if(Target->Width () == Net->Width () &&
-         Target->Signed() == Net->Signed() ){
-        Target->Value = (AST::EXPRESSION*)Net->Value->Copy();
-        delete Object;
-      }else{
-        break;
+  if(Target->Value){
+    if(Target->Value->Type == AST::BASE::TYPE::Object){
+      auto Object = (AST::OBJECT*)Target->Value;
+      if(Object->ObjectRef && Object->ObjectRef->Type == BASE::TYPE::Net){
+        auto Net = (NET*)Object->ObjectRef;
+        // At this point, everything has been broken down to raw bits, so the
+        // full-scale is not important.
+        if(Target->Width () == Net->Width () &&
+           Target->Signed() == Net->Signed() &&
+           Net->IsTemporary()){
+          Target->Value = (AST::EXPRESSION*)Net->Value->Copy();
+          delete Object;
+          RemoveTempNet(Target);
+        }else{
+          Target->Value = Target->Value->RemoveTempNet();
+        }
       }
     }else{
-      break;
+      Target->Value = Target->Value->RemoveTempNet();
     }
   }
 }
@@ -259,7 +263,7 @@ bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
             string Enabled;
             if(!Pin->Enabled->Value->GetVerilog(Enabled)) return false;
             Body += "assign "+ Pin->EscapedName();
-            Align(Body, 30);
+            Align(Body, 25);
             Body += "= |("+ Enabled + ") ? ("+ Driver + ")"
                     " : " + to_string(Pin->Width()) + "'bZ;";
             Align(Body, 70);
@@ -271,7 +275,7 @@ bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
                           + " (Enabled)\n";
           }else{
             Body += "assign "+ Pin->EscapedName();
-            Align(Body, 30);
+            Align(Body, 25);
             Body += "= "+ Driver + ";";
             Align(Body, 70);
             Body += "// " + Pin->Driver->Value->Source.Filename
@@ -287,7 +291,7 @@ bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
           string Value;
           if(!Net->Value->GetVerilog(Value)) return false;
           Body += "assign "+ Net->EscapedName();
-          Align(Body, 30);
+          Align(Body, 25);
           Body += "= "+ Value +";";
           Align(Body, 70);
           Body += "// " + Net->Value->Source.Filename

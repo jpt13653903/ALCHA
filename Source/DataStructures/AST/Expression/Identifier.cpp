@@ -128,6 +128,12 @@ void IDENTIFIER::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* IDENTIFIER::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void IDENTIFIER::Display(){
   DisplayStart();
 

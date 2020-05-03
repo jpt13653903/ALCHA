@@ -97,6 +97,12 @@ void NAND_REDUCE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* NAND_REDUCE::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void NAND_REDUCE::Display(){
   DisplayStart();
 

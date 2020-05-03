@@ -99,6 +99,12 @@ void LOGICAL_OR::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* LOGICAL_OR::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void LOGICAL_OR::Display(){
   DisplayStart();
 

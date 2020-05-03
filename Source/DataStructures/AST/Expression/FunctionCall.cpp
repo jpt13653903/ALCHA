@@ -107,6 +107,12 @@ void FUNCTIONCALL::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* FUNCTIONCALL::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void FUNCTIONCALL::Display(){
   DisplayStart();
 

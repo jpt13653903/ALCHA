@@ -94,6 +94,12 @@ void SLICE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* SLICE::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void SLICE::Display(){
   DisplayStart();
 

@@ -99,6 +99,12 @@ void BIT_NOR::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* BIT_NOR::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void BIT_NOR::Display(){
   DisplayStart();
 

@@ -94,7 +94,11 @@ int LITERAL::GetWidth(){
   int Width = 0;
   NUMBER Num = Value;
   if(Num < 0) Num.Mul(-1);
-  while(Num >= 1){
+  while(Num > 1){
+    Num.BinScale(-1);
+    Width++;
+  }
+  if(!GetSigned() && Num == 1){
     Num.BinScale(-1);
     Width++;
   }
@@ -122,6 +126,11 @@ bool LITERAL::HasCircularReference(NETLIST::BASE* Object){
 //------------------------------------------------------------------------------
 
 void LITERAL::PopulateUsed(){
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* LITERAL::RemoveTempNet(){
+  return this;
 }
 //------------------------------------------------------------------------------
 

@@ -185,6 +185,12 @@ void CAST::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* CAST::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void CAST::Display(){
   DisplayStart();
 

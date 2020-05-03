@@ -97,6 +97,12 @@ void ARRAYCONCATENATE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* ARRAYCONCATENATE::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void ARRAYCONCATENATE::Display(){
   Debug.Print("(ArrayConcat: (");
   bool isFirst = true;

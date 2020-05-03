@@ -26,6 +26,7 @@
 #include "Netlist/Character.h"
 #include "Netlist/Num.h"
 #include "Netlist/Namespace/Module.h"
+#include "Netlist/Synthesisable/Net.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -66,11 +67,7 @@ bool OBJECT::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* OBJECT::Evaluate(){
-  if(!ObjectRef){
-    error("Null object reference");
-    delete this;
-    return 0;
-  }
+  assert(ObjectRef, delete this; return 0);
 
   switch(ObjectRef->Type){
     case NETLIST::BASE::TYPE::Byte:{
@@ -124,14 +121,14 @@ EXPRESSION* OBJECT::Evaluate(){
 //------------------------------------------------------------------------------
 
 int OBJECT::GetWidth(){
+  assert(ObjectRef, return 0);
   return ObjectRef->Width();
 }
 //------------------------------------------------------------------------------
 
 NUMBER& OBJECT::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+  assert(ObjectRef);
+  return ObjectRef->FullScale();
 }
 //------------------------------------------------------------------------------
 
@@ -149,6 +146,26 @@ bool OBJECT::HasCircularReference(NETLIST::BASE* Object){
 
 void OBJECT::PopulateUsed(){
   if(ObjectRef) ObjectRef->PopulateUsed(true);
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* OBJECT::RemoveTempNet(){
+  if(ObjectRef && ObjectRef->Type == NETLIST::BASE::TYPE::Net){
+    auto Net = (NETLIST::NET*)ObjectRef;
+    if(Net->IsTemporary()){
+      if(Net->Value && Net->Value->Type == TYPE::Object){
+        auto Object = (OBJECT*)Net->Value;
+        // At this point, everything has been broken down to raw bits, so the
+        // full-scale is not important.
+        if(GetWidth () == Object->GetWidth () &&
+           GetSigned() == Object->GetSigned() ){
+          delete this;
+          return ((EXPRESSION*)Object->Copy())->RemoveTempNet();
+        }
+      }
+    }
+  }
+  return this;
 }
 //------------------------------------------------------------------------------
 

@@ -97,6 +97,12 @@ void XNOR_REDUCE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* XNOR_REDUCE::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void XNOR_REDUCE::Display(){
   DisplayStart();
 

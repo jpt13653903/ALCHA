@@ -97,6 +97,12 @@ void NOR_REDUCE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* NOR_REDUCE::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void NOR_REDUCE::Display(){
   DisplayStart();
 

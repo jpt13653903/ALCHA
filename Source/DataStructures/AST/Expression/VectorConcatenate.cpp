@@ -54,13 +54,17 @@ BASE* VECTORCONCATENATE::Copy(){
 bool VECTORCONCATENATE::GetVerilog(string& Body){
   bool isFirst = true;
 
-  foreach(Element, Elements){
-    if(isFirst) Body += "{";
-    else        Body += ", ";
-    (*Element)->GetVerilog(Body);
-    isFirst = false;
+  if(Elements.size() > 1){
+    foreach(Element, Elements){
+      if(isFirst) Body += "{";
+      else        Body += ", ";
+      (*Element)->GetVerilog(Body);
+      isFirst = false;
+    }
+    Body += "}";
+  }else{
+    Elements.front()->GetVerilog(Body);
   }
-  Body += "}";
 
   return true;
 }
@@ -87,14 +91,14 @@ int VECTORCONCATENATE::GetWidth(){
 //------------------------------------------------------------------------------
 
 NUMBER& VECTORCONCATENATE::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+  static NUMBER Result;
+  Result = 1;
+  Result.BinScale(GetWidth());
+  return Result;
 }
 //------------------------------------------------------------------------------
 
 bool VECTORCONCATENATE::GetSigned(){
-  error("Not yet implemented");
   return false;
 }
 //------------------------------------------------------------------------------
@@ -113,6 +117,14 @@ void VECTORCONCATENATE::PopulateUsed(){
     assert(*Element, return);
     (*Element)->PopulateUsed();
   }
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* VECTORCONCATENATE::RemoveTempNet(){
+  foreach(Element, Elements){
+    if(*Element) (*Element)->RemoveTempNet();
+  }
+  return this;
 }
 //------------------------------------------------------------------------------
 

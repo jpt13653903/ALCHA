@@ -72,8 +72,8 @@ EXPRESSION* REPLICATE::Evaluate(){
     Error("Replicate number should evaluate to a literal");
     return this;
   }
-  
-  return this;
+
+  return MakeObject();
 }
 //------------------------------------------------------------------------------
 
@@ -81,7 +81,7 @@ int REPLICATE::GetWidth(){
   assert(Left , return 0);
   assert(Right, return 0);
 
-  Left  = Left->Evaluate();
+  Left  = Left ->Evaluate();
   Right = Right->Evaluate();
 
   assert(Left , return 0);
@@ -97,14 +97,14 @@ int REPLICATE::GetWidth(){
 //------------------------------------------------------------------------------
 
 NUMBER& REPLICATE::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+  static NUMBER Result;
+  Result = 1;
+  Result.BinScale(GetWidth());
+  return Result;
 }
 //------------------------------------------------------------------------------
 
 bool REPLICATE::GetSigned(){
-  error("Not yet implemented");
   return false;
 }
 //------------------------------------------------------------------------------
@@ -126,6 +126,13 @@ void REPLICATE::PopulateUsed(){
   
   Left ->PopulateUsed();
   Right->PopulateUsed();
+}
+//------------------------------------------------------------------------------
+
+EXPRESSION* REPLICATE::RemoveTempNet(){
+  if(Left ) Left  = Left ->RemoveTempNet();
+  if(Right) Right = Right->RemoveTempNet();
+  return this;
 }
 //------------------------------------------------------------------------------
 

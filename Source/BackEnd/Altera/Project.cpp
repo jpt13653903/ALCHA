@@ -287,6 +287,18 @@ bool PROJECT::BuildSettings(){
     "#-------------------------------------------------------------------------------\n"
     "\n";
 
+  auto Standard = Global.GetAttribValue("standard");
+  Body += "set_global_assignment -name STRATIX_DEVICE_IO_STANDARD ";
+  if(Standard){
+    if(Standard->Type != AST::BASE::TYPE::String){
+      Error(Standard, "Standard attribute not a string");
+      return false;
+    }
+    Body += "\""+ ((AST::STRING*)Standard)->Value +"\"\n\n";
+  }else{
+    Body += "\"3.3-V LVCMOS\"\n\n";
+  }
+
   Body += "source \""+ Filename +".pin\"\n";
   Body +=
     "#-------------------------------------------------------------------------------\n"
@@ -329,18 +341,6 @@ bool PROJECT::BuildPins(){
     "# Date created = "+ Time +"\n"
     "#-------------------------------------------------------------------------------\n"
     "\n";
-
-  auto Standard = Global.GetAttribValue("standard");
-  Body += "set_global_assignment -name STRATIX_DEVICE_IO_STANDARD ";
-  if(Standard){
-    if(Standard->Type != AST::BASE::TYPE::String){
-      Error(Standard, "Standard attribute not a string");
-      return false;
-    }
-    Body += "\""+ ((AST::STRING*)Standard)->Value +"\"\n\n";
-  }else{
-    Body += "\"3.3-V LVCMOS\"\n\n";
-  }
 
   if(!BuildPins(Body, &Global)) return false;
   Body +=

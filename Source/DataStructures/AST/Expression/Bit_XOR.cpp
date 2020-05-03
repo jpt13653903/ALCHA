@@ -99,6 +99,12 @@ void BIT_XOR::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* BIT_XOR::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void BIT_XOR::Display(){
   DisplayStart();
 

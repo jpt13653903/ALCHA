@@ -97,6 +97,12 @@ void RANGE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* RANGE::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void RANGE::Display(){
   DisplayStart();
 

@@ -94,6 +94,12 @@ void DIVIDE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* DIVIDE::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void DIVIDE::Display(){
   DisplayStart();
 

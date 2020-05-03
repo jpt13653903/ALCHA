@@ -94,6 +94,12 @@ void RAW::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* RAW::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void RAW::Display(){
   DisplayStart();
 

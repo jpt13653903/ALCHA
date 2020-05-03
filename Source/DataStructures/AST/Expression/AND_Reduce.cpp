@@ -98,6 +98,12 @@ void AND_REDUCE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* AND_REDUCE::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void AND_REDUCE::Display(){
   DisplayStart();
 

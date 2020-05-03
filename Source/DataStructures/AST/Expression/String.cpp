@@ -96,6 +96,12 @@ void STRING::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* STRING::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void STRING::Display(){
   DisplayStart();
 

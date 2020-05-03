@@ -211,6 +211,13 @@ void MULTIPLY::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* MULTIPLY::RemoveTempNet(){
+  if(Left ) Left  = Left ->RemoveTempNet();
+  if(Right) Right = Right->RemoveTempNet();
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void MULTIPLY::Display(){
   DisplayStart();
 

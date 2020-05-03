@@ -36,8 +36,10 @@ BASE::BASE(int Line, const string& Filename, const char* Name, TYPE Type){
 
   static unsigned GenNameCount = 0;
   if(Name){
+    Temporary = false;
     this->Name = Name;
   }else{
+    Temporary = true;
     switch(Type){
       case TYPE::Net   : this->Name = "w.."; break;
       case TYPE::Module: this->Name = "m.."; break;
@@ -78,6 +80,11 @@ bool BASE::IsSynthesisable(){
 
 bool BASE::IsNamespace(){
   return false;
+}
+//------------------------------------------------------------------------------
+
+bool BASE::IsTemporary(){
+  return Temporary;
 }
 //------------------------------------------------------------------------------
 

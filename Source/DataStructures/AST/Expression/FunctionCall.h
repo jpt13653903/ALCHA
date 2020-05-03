@@ -47,6 +47,8 @@ namespace AST{
     bool HasCircularReference(NETLIST::BASE* Object) override;
     void PopulateUsed() override;
 
+    EXPRESSION* RemoveTempNet() override;
+
     void Display() override;
 
     void ValidateMembers() override;

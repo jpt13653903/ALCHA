@@ -97,6 +97,12 @@ void XOR_REDUCE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* XOR_REDUCE::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void XOR_REDUCE::Display(){
   DisplayStart();
 

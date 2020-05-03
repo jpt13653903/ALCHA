@@ -135,6 +135,12 @@ void ACCESSMEMBER::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* ACCESSMEMBER::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void ACCESSMEMBER::Display(){
   DisplayStart();
 

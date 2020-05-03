@@ -94,6 +94,12 @@ void DECREMENT::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* DECREMENT::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void DECREMENT::Display(){
   DisplayStart();
 

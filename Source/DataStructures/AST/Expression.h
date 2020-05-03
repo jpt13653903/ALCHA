@@ -36,6 +36,9 @@ namespace AST{
     protected:
       void DisplayStart();
       void DisplayEnd  ();
+
+      // Turns the current expression into a temporary net object
+      EXPRESSION* MakeObject();
     //--------------------------------------------------------------------------
 
     public:
@@ -68,6 +71,11 @@ namespace AST{
       // Check for circular reference to the netlist object specified
       virtual bool HasCircularReference(NETLIST::BASE* Object) = 0;
       virtual void PopulateUsed() = 0;
+
+      // If the expression references an object, which in turn references 
+      // another object of the same width and signedness, the temporary net in 
+      // the middle is removed.
+      virtual EXPRESSION* RemoveTempNet() = 0;
   };
 }
 //------------------------------------------------------------------------------

@@ -99,6 +99,12 @@ void GREATER::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* GREATER::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void GREATER::Display(){
   DisplayStart();
 

@@ -108,6 +108,13 @@ void SHIFT_RIGHT::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* SHIFT_RIGHT::RemoveTempNet(){
+  if(Left ) Left  = Left ->RemoveTempNet();
+  if(Right) Right = Right->RemoveTempNet();
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void SHIFT_RIGHT::Display(){
   DisplayStart();
 

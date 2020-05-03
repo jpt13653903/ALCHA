@@ -44,6 +44,10 @@ namespace NETLIST{
   class SYNTHESISABLE;
 
   class BASE{ // Base class for the symbol table
+    private:
+      bool Temporary;
+    //--------------------------------------------------------------------------
+
     protected:
       void DisplayAttributes(int Indent);
     //--------------------------------------------------------------------------
@@ -82,6 +86,8 @@ namespace NETLIST{
       std::string Name;
       NAMESPACE*  Namespace;
       std::map<std::string, ATTRIBUTE*> Attributes;
+
+      bool IsTemporary();
     //--------------------------------------------------------------------------
 
     public:

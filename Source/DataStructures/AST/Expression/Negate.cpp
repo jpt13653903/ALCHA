@@ -127,6 +127,12 @@ void NEGATE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* NEGATE::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void NEGATE::Display(){
   DisplayStart();
 

@@ -99,6 +99,12 @@ void LESS::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* LESS::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void LESS::Display(){
   DisplayStart();
 

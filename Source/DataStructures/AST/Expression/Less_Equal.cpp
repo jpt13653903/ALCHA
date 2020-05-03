@@ -99,6 +99,12 @@ void LESS_EQUAL::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* LESS_EQUAL::RemoveTempNet(){
+  error("Not yet implemented");
+  return this;
+}
+//------------------------------------------------------------------------------
+
 void LESS_EQUAL::Display(){
   DisplayStart();
 
