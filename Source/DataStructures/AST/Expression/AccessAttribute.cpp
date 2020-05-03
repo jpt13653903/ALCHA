@@ -125,12 +125,6 @@ bool ACCESSATTRIBUTE::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ACCESSATTRIBUTE::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool ACCESSATTRIBUTE::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

@@ -46,30 +46,13 @@ void BACK_END::Warning(AST::EXPRESSION* Expression, const char* Message){
 }
 //------------------------------------------------------------------------------
 
-void BACK_END::RemoveTempNet(PIN_COMPONENT* Target){
-  while(Target->Value && Target->Value->Type == AST::BASE::TYPE::Object){
-    auto Object = (AST::OBJECT*)Target->Value;
-    if(Object->ObjectRef && Object->ObjectRef->Type == BASE::TYPE::Net){
-      auto Net = (NET*)Object->ObjectRef;
-      if(Target->Width () == Net->Width () &&
-         Target->Signed() == Net->Signed() ){
-        Target->Value = (AST::EXPRESSION*)Net->Value->Copy();
-        delete Object;
-      }else{
-        break;
-      }
-    }else{
-      break;
-    }
-  }
-}
-//------------------------------------------------------------------------------
-
 void BACK_END::RemoveTempNet(NETLIST::NET* Target){
   while(Target->Value && Target->Value->Type == AST::BASE::TYPE::Object){
     auto Object = (AST::OBJECT*)Target->Value;
     if(Object->ObjectRef && Object->ObjectRef->Type == BASE::TYPE::Net){
       auto Net = (NET*)Object->ObjectRef;
+      // At this point, everything has been broken down to raw bits, so the
+      // full-scale is not important.
       if(Target->Width () == Net->Width () &&
          Target->Signed() == Net->Signed() ){
         Target->Value = (AST::EXPRESSION*)Net->Value->Copy();

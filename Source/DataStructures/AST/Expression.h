@@ -36,10 +36,6 @@ namespace AST{
     protected:
       void DisplayStart();
       void DisplayEnd  ();
-
-      // Used for fixed-point scaling...
-      // If the scaling is not a power-of-two, it also synthesises a multiplier.
-      EXPRESSION* ScaleWith(NUMBER& Scale, int Width, NUMBER& FullScale);
     //--------------------------------------------------------------------------
 
     public:
@@ -65,10 +61,9 @@ namespace AST{
       virtual NUMBER& GetFullScale() = 0;
       virtual bool    GetSigned   () = 0;
 
-      // Evaluates using fixed-point scaling.  The parameters indicate the 
-      // target type.  Passing Width = 0 implies that the target is a scripting
-      // variable.  The result can be raw-assigned to the target.
-      virtual EXPRESSION* FixedPointScale(int Width, NUMBER& FullScale) = 0;
+      // Used for fixed-point scaling...
+      // If the scaling is not a power-of-two, it also synthesises a multiplier.
+      EXPRESSION* ScaleWith(NUMBER& Scale, int Width, NUMBER& FullScale);
 
       // Check for circular reference to the netlist object specified
       virtual bool HasCircularReference(NETLIST::BASE* Object) = 0;

@@ -83,12 +83,6 @@ bool MODULUS::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* MODULUS::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool MODULUS::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

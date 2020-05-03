@@ -83,12 +83,6 @@ bool SLICE::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* SLICE::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool SLICE::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

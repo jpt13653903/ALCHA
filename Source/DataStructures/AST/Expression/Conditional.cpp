@@ -83,12 +83,6 @@ bool CONDITIONAL::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* CONDITIONAL::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool CONDITIONAL::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

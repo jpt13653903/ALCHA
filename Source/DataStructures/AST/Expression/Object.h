@@ -48,8 +48,6 @@ namespace AST{
     NUMBER& GetFullScale() override;
     bool    GetSigned   () override;
 
-    EXPRESSION* FixedPointScale(int Width, NUMBER& FullScale) override;
-
     bool HasCircularReference(NETLIST::BASE* Object) override;
     void PopulateUsed() override;
 

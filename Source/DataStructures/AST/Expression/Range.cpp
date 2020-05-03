@@ -86,12 +86,6 @@ bool RANGE::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* RANGE::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool RANGE::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

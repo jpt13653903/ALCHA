@@ -99,15 +99,6 @@ bool VECTORCONCATENATE::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* VECTORCONCATENATE::FixedPointScale(int Width, NUMBER& FullScale){
-  NUMBER Scale = 1;
-  Scale.BinScale(Width);
-  Scale.Div(FullScale);
-
-  return ScaleWith(Scale, Width, FullScale);
-}
-//------------------------------------------------------------------------------
-
 bool VECTORCONCATENATE::HasCircularReference(NETLIST::BASE* Object){
   foreach(Element, Elements){
     assert(*Element, return false);

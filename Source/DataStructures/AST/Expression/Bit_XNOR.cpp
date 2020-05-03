@@ -88,12 +88,6 @@ bool BIT_XNOR::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* BIT_XNOR::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool BIT_XNOR::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

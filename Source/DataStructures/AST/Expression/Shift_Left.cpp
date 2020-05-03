@@ -49,7 +49,7 @@ BASE* SHIFT_LEFT::Copy(){
 bool SHIFT_LEFT::GetVerilog(string& Body){
   Body += "(";
   Left->GetVerilog(Body);
-  Body += ") << (";
+  Body += ") <<< (";
   Right->GetVerilog(Body);
   Body += ")";
 
@@ -85,12 +85,6 @@ NUMBER& SHIFT_LEFT::GetFullScale(){
 bool SHIFT_LEFT::GetSigned(){
   error("Not yet implemented");
   return false;
-}
-//------------------------------------------------------------------------------
-
-EXPRESSION* SHIFT_LEFT::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
 }
 //------------------------------------------------------------------------------
 

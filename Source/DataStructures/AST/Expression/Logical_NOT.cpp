@@ -86,12 +86,6 @@ bool LOGICAL_NOT::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LOGICAL_NOT::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool LOGICAL_NOT::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

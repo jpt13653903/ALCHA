@@ -89,12 +89,6 @@ bool SUBTRACT::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* SUBTRACT::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool SUBTRACT::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

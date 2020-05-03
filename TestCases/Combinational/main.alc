@@ -54,29 +54,29 @@
 // 
 // GPIO := Testing05;
 
-pin( 8) uA, uB, uC, uD, uE, uF;
-pin(-7) sA, sB, sC, sD;
+// pin( 8) uA, uB, uC, uD, uE, uF;
+// pin(-7) sA, sB, sC, sD;
 
 // pin( 16) uA_uB = uA * uB;
 // pin(-15) sA_uB = sA * uB;
 // pin(-15) uA_sB = uA * sB;
 // pin(-15) sA_sB = sA * sB;
 
-uA =    0;
-uB =  127;
-uC =  128;
-uD =  255;
-uE = -127;
-uF = -128;
+// uA =    0;
+// uB =  127;
+// uC =  128;
+// uD =  255;
+// uE = -127;
+// uF = -128;
 
-sA =    0;
-sB =  127;
-sC = -127;
-sD = -128;
+// sA =    0;
+// sB =  127;
+// sC = -127;
+// sD = -128;
 
-// net(14, -3 ) SignedNet = -1.23;
+pin(14, -3 ) SignedNet = -1.23;
 
-// pin(14, -3 ) Signed01 =  0.1 *SignedNet;
+pin(14, -3 ) Signed01 =  0.1 *SignedNet;
 // pin(14, -3 ) Signed02 = 10   *SignedNet;
 // pin(14, -3 ) Signed03 =  4   *SignedNet;
 // pin(14, -3 ) Signed04 =  0.25*SignedNet;

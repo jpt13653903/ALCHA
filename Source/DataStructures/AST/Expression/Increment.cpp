@@ -83,12 +83,6 @@ bool INCREMENT::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* INCREMENT::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool INCREMENT::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

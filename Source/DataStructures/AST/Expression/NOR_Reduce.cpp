@@ -86,12 +86,6 @@ bool NOR_REDUCE::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* NOR_REDUCE::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool NOR_REDUCE::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

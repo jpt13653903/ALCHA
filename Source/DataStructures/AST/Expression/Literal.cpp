@@ -116,20 +116,6 @@ bool LITERAL::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LITERAL::FixedPointScale(int Width, NUMBER& FullScale){
-  NUMBER Scale = 1;
-  Scale.BinScale(Width);
-  Scale.Div(FullScale);
-
-  Value.Mul(Scale);
-  Value.Round();
-
-  SetWidth(Width);
-
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool LITERAL::HasCircularReference(NETLIST::BASE* Object){
   return false;
 }

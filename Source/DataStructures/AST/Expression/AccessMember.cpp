@@ -124,16 +124,6 @@ bool ACCESSMEMBER::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ACCESSMEMBER::FixedPointScale(int Width, NUMBER& FullScale){
-  auto Result = this->Evaluate();
-
-  if(Result == NULL) return this;
-  if(Result == this) return this;
-
-  return Result->FixedPointScale(Width, FullScale);
-}
-//------------------------------------------------------------------------------
-
 bool ACCESSMEMBER::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

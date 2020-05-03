@@ -99,13 +99,6 @@ EXPRESSION* MULTIPLY::Evaluate(){
     return Result;
   }
 
-  // Put the literal on the right (if there is one)
-  if(Left->Type == TYPE::Literal){
-    auto Temp = Left;
-    Left  = Right;
-    Right = Temp;
-  }
-
   // Replace a object * object with a wire
   if(Left->Type == TYPE::Object && Right->Type == TYPE::Object){
     auto left  = ((OBJECT*)Left )->ObjectRef;
@@ -116,6 +109,7 @@ EXPRESSION* MULTIPLY::Evaluate(){
 
     auto Object = new OBJECT      (Source.Line, Source.Filename);
     auto Net    = new NETLIST::NET(Source.Line, Source.Filename, 0);
+    Object->ObjectRef = Net;
 
     NUMBER FullScale = left->FullScale();
     FullScale.Mul(right->FullScale());
@@ -130,12 +124,45 @@ EXPRESSION* MULTIPLY::Evaluate(){
     }else{
       Net->SetFixedPoint(left->Width() + right->Width(), FullScale, false);
     }
-
-    Net   ->Value     = this;
-    Object->ObjectRef = Net;
-
+    Net->Value = this;
     NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
 
+    return Object;
+  }
+
+  // Put the literal on the right (if there is one)
+  if(Left->Type == TYPE::Literal){
+    auto Temp = Left;
+    Left  = Right;
+    Right = Temp;
+  }
+
+  if(Left->Type == TYPE::Object && Right->Type == TYPE::Literal){
+    auto left  = ((OBJECT *)Left )->ObjectRef;
+    auto right =  (LITERAL*)Right;
+
+    assert(left);
+
+    auto Object = new OBJECT      (Source.Line, Source.Filename);
+    auto Net    = new NETLIST::NET(Source.Line, Source.Filename, 0);
+    Object->ObjectRef = Net;
+
+    if(right->GetSigned()){
+      error("not yet implemented");
+      delete Object;
+      delete Net;
+      return this;
+
+    }else{ // Positive literal
+      NUMBER FullScale = left->FullScale();
+      FullScale.Mul(right->Value);
+
+      Net->SetFixedPoint(left->Width(), FullScale, left->Signed());
+      Net->Value = Left;
+      Left = 0;
+    }
+    NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
+    delete this;
     return Object;
   }
 
@@ -161,41 +188,6 @@ NUMBER& MULTIPLY::GetFullScale(){
 bool MULTIPLY::GetSigned(){
   error("Not yet implemented");
   return false;
-}
-//------------------------------------------------------------------------------
-
-EXPRESSION* MULTIPLY::FixedPointScale(int Width, NUMBER& FullScale){
-  auto Result = this->Evaluate();
-
-  if(Result == NULL) return this;
-  if(Result != this) return Result->FixedPointScale(Width, FullScale);
-
-  assert(Left , return this);
-  assert(Right, return this);
-
-  assert(Left->Type != TYPE::Literal); // Ensured by Evaluate();
-
-  if(Left->Type == TYPE::Object && Right->Type == TYPE::Literal){
-    auto left  = ((OBJECT *)Left )->ObjectRef;
-    auto right =  (LITERAL*)Right;
-
-    assert(left);
-
-    auto Object = new OBJECT      (Source.Line, Source.Filename);
-    auto Net    = new NETLIST::NET(Source.Line, Source.Filename, 0);
-
-    NUMBER ThisFullScale = left->FullScale();
-    ThisFullScale.Mul(right->Value);
-    Net->SetFixedPoint(left->Width(), ThisFullScale);
-
-    Net   ->Value     = Left;
-    Object->ObjectRef = Net;
-
-    NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
-
-    return Object->FixedPointScale(Width, FullScale);
-  }
-  return this;
 }
 //------------------------------------------------------------------------------
 

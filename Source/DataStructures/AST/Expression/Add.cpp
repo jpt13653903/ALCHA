@@ -89,12 +89,6 @@ bool ADD::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ADD::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool ADD::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

@@ -93,7 +93,7 @@ EXPRESSION* EXPRESSION::ScaleWith(NUMBER& Scale, int Width, NUMBER& FullScale){
   }
   
   auto Net = new NETLIST::NET(Source.Line, Source.Filename, 0);
-  Net->SetFixedPoint(Width, FullScale);
+  Net->SetFixedPoint(Width, FullScale, GetSigned());
   NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
   
   if(Scale == 1){ // Shift only
@@ -132,7 +132,7 @@ EXPRESSION* EXPRESSION::ScaleWith(NUMBER& Scale, int Width, NUMBER& FullScale){
     auto MulNet = new NETLIST::NET(Source.Line, Source.Filename, 0);
     NUMBER MulFullScale = FullScale;
     MulFullScale.BinScale(Shift);
-    MulNet->SetFixedPoint(Mul->GetWidth(), MulFullScale);
+    MulNet->SetFixedPoint(Mul->GetWidth(), MulFullScale, GetSigned());
     MulNet->Value = Mul;
     NETLIST::NamespaceStack.front()->Symbols[MulNet->Name] = MulNet;
 

@@ -88,12 +88,6 @@ bool LOGICAL_AND::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LOGICAL_AND::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool LOGICAL_AND::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

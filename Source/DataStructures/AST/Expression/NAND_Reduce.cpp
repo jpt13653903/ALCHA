@@ -86,12 +86,6 @@ bool NAND_REDUCE::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* NAND_REDUCE::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool NAND_REDUCE::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

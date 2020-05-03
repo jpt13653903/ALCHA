@@ -174,12 +174,6 @@ bool CAST::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* CAST::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool CAST::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

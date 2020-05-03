@@ -88,12 +88,6 @@ bool BIT_OR::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* BIT_OR::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool BIT_OR::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

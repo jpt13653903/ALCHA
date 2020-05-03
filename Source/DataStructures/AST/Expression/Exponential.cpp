@@ -83,12 +83,6 @@ bool EXPONENTIAL::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* EXPONENTIAL::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool EXPONENTIAL::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

@@ -59,11 +59,11 @@ namespace NETLIST{
         Alias,
         Array, // An array of objects
 
-        PinComponent,
         
         // Synthesisable
           Pin,
           Net,
+            PinComponent,
 
         // Namespace
           Module,

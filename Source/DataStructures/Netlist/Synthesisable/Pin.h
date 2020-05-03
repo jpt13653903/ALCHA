@@ -22,8 +22,7 @@
 #define Netlist_Pin_h
 //------------------------------------------------------------------------------
 
-#include "Net.h"
-#include "../PinComponent.h"
+#include "PinComponent.h"
 #include "AST/Expression.h"
 //------------------------------------------------------------------------------
 

@@ -88,12 +88,6 @@ bool GREATER::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* GREATER::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool GREATER::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

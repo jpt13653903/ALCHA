@@ -83,12 +83,6 @@ bool FACTORIAL::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* FACTORIAL::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool FACTORIAL::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

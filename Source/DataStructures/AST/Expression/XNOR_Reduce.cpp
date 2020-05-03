@@ -86,12 +86,6 @@ bool XNOR_REDUCE::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* XNOR_REDUCE::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool XNOR_REDUCE::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

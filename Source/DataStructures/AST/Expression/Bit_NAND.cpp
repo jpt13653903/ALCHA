@@ -88,12 +88,6 @@ bool BIT_NAND::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* BIT_NAND::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool BIT_NAND::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

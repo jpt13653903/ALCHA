@@ -141,27 +141,6 @@ bool OBJECT::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* OBJECT::FixedPointScale(int Width, NUMBER& FullScale){
-  // Could be an alias, so evaluate it first
-  auto Result = this->Evaluate();
-
-  if(Result == NULL) return this;
-  if(Result != this) return Result->FixedPointScale(Width, FullScale);
-
-  int    ThisWidth     = ObjectRef->Width    ();
-  NUMBER ThisFullScale = ObjectRef->FullScale();
-
-  assert(ThisWidth, return this);
-
-  NUMBER Scale = 1;
-  Scale.BinScale(Width - ThisWidth);
-  Scale.Mul(ThisFullScale);
-  Scale.Div(FullScale);
-
-  return ScaleWith(Scale, Width, FullScale);
-}
-//------------------------------------------------------------------------------
-
 bool OBJECT::HasCircularReference(NETLIST::BASE* Object){
   if(!ObjectRef) return false;
   return ObjectRef->HasCircularReference(Object);

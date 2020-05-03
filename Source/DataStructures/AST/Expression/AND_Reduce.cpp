@@ -87,12 +87,6 @@ bool AND_REDUCE::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* AND_REDUCE::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool AND_REDUCE::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

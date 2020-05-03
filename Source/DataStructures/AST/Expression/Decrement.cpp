@@ -83,12 +83,6 @@ bool DECREMENT::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* DECREMENT::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool DECREMENT::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

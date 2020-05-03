@@ -83,12 +83,6 @@ bool RAW::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* RAW::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool RAW::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

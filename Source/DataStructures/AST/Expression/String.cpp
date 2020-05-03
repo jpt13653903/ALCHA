@@ -85,12 +85,6 @@ bool STRING::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* STRING::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool STRING::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

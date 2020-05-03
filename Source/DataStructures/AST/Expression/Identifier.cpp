@@ -117,16 +117,6 @@ bool IDENTIFIER::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* IDENTIFIER::FixedPointScale(int Width, NUMBER& FullScale){
-  auto Result = this->Evaluate();
-
-  if(Result == NULL) return NULL;
-  if(Result == this) return this;
-
-  return Result->FixedPointScale(Width, FullScale);
-}
-//------------------------------------------------------------------------------
-
 bool IDENTIFIER::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

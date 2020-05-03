@@ -109,15 +109,6 @@ bool REPLICATE::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* REPLICATE::FixedPointScale(int Width, NUMBER& FullScale){
-  NUMBER Scale = 1;
-  Scale.BinScale(Width);
-  Scale.Div(FullScale);
-
-  return ScaleWith(Scale, Width, FullScale);
-}
-//------------------------------------------------------------------------------
-
 bool REPLICATE::HasCircularReference(NETLIST::BASE* Object){
   assert(Left , return false);
   assert(Right, return false);

@@ -83,12 +83,6 @@ bool ACCESSMEMBERSAFE::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ACCESSMEMBERSAFE::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool ACCESSMEMBERSAFE::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;

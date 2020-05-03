@@ -88,12 +88,6 @@ bool LESS::GetSigned(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LESS::FixedPointScale(int Width, NUMBER& FullScale){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
-
 bool LESS::HasCircularReference(NETLIST::BASE* Object){
   error("Not yet implemented");
   return false;
