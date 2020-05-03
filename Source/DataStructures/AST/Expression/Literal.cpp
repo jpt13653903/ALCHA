@@ -54,20 +54,23 @@ bool LITERAL::GetVerilog(string& Body){
     return false;
   }
 
-  int  Width  = GetWidth();
-  bool Signed = (Value < 0);
+  int  Width  = GetWidth ();
+  bool Signed = GetSigned();
 
-  NUMBER Result = Value;
+  NUMBER Result;
   if(Signed){
-    Body += "-";
-    Result.Mul(-1);
+    Body += to_string(Width+1) + "'sh";
+    Result = GetFullScale();
+    Result.BinScale(1);
+    Result.Add(Value);
+  }else{
+    Body += to_string(Width  ) + "'h";
+    Result = Value;
   }
-  if(Signed) Body += to_string(Width+1) + "'h";
-  else       Body += to_string(Width  ) + "'h";
   Result.Round();
   Body += Result.GetString(16);
   Result.BinScale(-Width);
-  if((!Signed && Result >= 1) || (Signed && Result > 1)){
+  if((!Signed && Result >= 1) || (Signed && Result > 2)){
     Error("The literal does not fit in its full-scale range");
     return false;
   }
@@ -101,15 +104,15 @@ int LITERAL::GetWidth(){
 //------------------------------------------------------------------------------
 
 NUMBER& LITERAL::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+  static NUMBER Result;
+  Result = 1;
+  Result.BinScale(GetWidth());
+  return Result;
 }
 //------------------------------------------------------------------------------
 
 bool LITERAL::GetSigned(){
-  error("Not yet implemented");
-  return false;
+  return Value < 0;
 }
 //------------------------------------------------------------------------------
 
