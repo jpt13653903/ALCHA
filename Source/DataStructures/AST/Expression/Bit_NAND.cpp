@@ -75,6 +75,19 @@ int BIT_NAND::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& BIT_NAND::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool BIT_NAND::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* BIT_NAND::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

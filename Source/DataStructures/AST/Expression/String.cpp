@@ -72,6 +72,19 @@ int STRING::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& STRING::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool STRING::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* STRING::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

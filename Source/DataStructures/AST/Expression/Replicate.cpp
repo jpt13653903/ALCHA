@@ -96,6 +96,19 @@ int REPLICATE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& REPLICATE::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool REPLICATE::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* REPLICATE::FixedPointScale(int Width, NUMBER& FullScale){
   NUMBER Scale = 1;
   Scale.BinScale(Width);

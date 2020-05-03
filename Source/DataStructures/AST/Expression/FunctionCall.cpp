@@ -83,6 +83,19 @@ int FUNCTIONCALL::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& FUNCTIONCALL::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool FUNCTIONCALL::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* FUNCTIONCALL::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

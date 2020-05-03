@@ -73,6 +73,19 @@ int ARRAYCONCATENATE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& ARRAYCONCATENATE::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool ARRAYCONCATENATE::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* ARRAYCONCATENATE::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

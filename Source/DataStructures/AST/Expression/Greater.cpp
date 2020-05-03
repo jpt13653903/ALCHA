@@ -75,6 +75,19 @@ int GREATER::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& GREATER::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool GREATER::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* GREATER::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

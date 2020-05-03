@@ -101,6 +101,19 @@ int NEGATE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& NEGATE::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool NEGATE::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* NEGATE::FixedPointScale(int Width, NUMBER& FullScale){
   if(Right) Right = Right->FixedPointScale(Width, FullScale);
   return this;

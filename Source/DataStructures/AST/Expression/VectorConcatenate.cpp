@@ -86,6 +86,19 @@ int VECTORCONCATENATE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& VECTORCONCATENATE::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool VECTORCONCATENATE::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* VECTORCONCATENATE::FixedPointScale(int Width, NUMBER& FullScale){
   NUMBER Scale = 1;
   Scale.BinScale(Width);

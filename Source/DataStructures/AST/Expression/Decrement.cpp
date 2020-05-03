@@ -70,6 +70,19 @@ int DECREMENT::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& DECREMENT::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool DECREMENT::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* DECREMENT::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

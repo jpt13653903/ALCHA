@@ -105,6 +105,11 @@ NUMBER& PIN_COMPONENT::FullScale(){
 }
 //------------------------------------------------------------------------------
 
+bool PIN_COMPONENT::Signed(){
+  return Pin->Signed();
+}
+//------------------------------------------------------------------------------
+
 void PIN_COMPONENT::Display(int Indent){
   Debug.Indent(Indent);
   Debug.Print("Pin Component: %s\n", Name.c_str());

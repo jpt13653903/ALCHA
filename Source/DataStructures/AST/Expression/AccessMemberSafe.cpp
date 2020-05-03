@@ -70,6 +70,19 @@ int ACCESSMEMBERSAFE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& ACCESSMEMBERSAFE::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool ACCESSMEMBERSAFE::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* ACCESSMEMBERSAFE::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

@@ -112,6 +112,19 @@ int BIT_NOT::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& BIT_NOT::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool BIT_NOT::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* BIT_NOT::FixedPointScale(int Width, NUMBER& FullScale){
   NUMBER Scale = 1;
   Scale.BinScale(Width);

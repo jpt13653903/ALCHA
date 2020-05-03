@@ -75,6 +75,19 @@ int LESS::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& LESS::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool LESS::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* LESS::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

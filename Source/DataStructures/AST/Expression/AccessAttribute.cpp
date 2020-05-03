@@ -112,6 +112,19 @@ int ACCESSATTRIBUTE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& ACCESSATTRIBUTE::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool ACCESSATTRIBUTE::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* ACCESSATTRIBUTE::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

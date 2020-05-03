@@ -73,6 +73,19 @@ int XNOR_REDUCE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& XNOR_REDUCE::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool XNOR_REDUCE::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* XNOR_REDUCE::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

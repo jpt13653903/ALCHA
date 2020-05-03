@@ -70,6 +70,19 @@ int INCREMENT::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& INCREMENT::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool INCREMENT::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* INCREMENT::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

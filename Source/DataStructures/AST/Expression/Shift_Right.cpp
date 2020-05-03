@@ -75,6 +75,19 @@ int SHIFT_RIGHT::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& SHIFT_RIGHT::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool SHIFT_RIGHT::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* SHIFT_RIGHT::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

@@ -75,6 +75,19 @@ int BIT_AND::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& BIT_AND::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool BIT_AND::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* BIT_AND::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

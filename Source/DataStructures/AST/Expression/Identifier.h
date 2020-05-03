@@ -41,7 +41,10 @@ namespace AST{
     // Evaluates to an OBJECT
     EXPRESSION* Evaluate() override;
 
-    int GetWidth() override;
+    int     GetWidth    () override;
+    NUMBER& GetFullScale() override;
+    bool    GetSigned   () override;
+
     EXPRESSION* FixedPointScale(int Width, NUMBER& FullScale) override;
 
     bool HasCircularReference(NETLIST::BASE* Object) override;

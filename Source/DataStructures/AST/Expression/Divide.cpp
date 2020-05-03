@@ -70,6 +70,19 @@ int DIVIDE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& DIVIDE::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool DIVIDE::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* DIVIDE::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

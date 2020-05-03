@@ -67,6 +67,16 @@ bool SYNTHESISABLE::Signed(){
 }
 //------------------------------------------------------------------------------
 
+void SYNTHESISABLE::SetFixedPoint(int Width, const NUMBER& FullScale, bool Signed){
+  assert(Width     > 0);
+  assert(FullScale > 0);
+
+  Format.Width    ->Value = Width;
+  Format.FullScale->Value = FullScale;
+  Format.Signed   ->Value = Signed ? 1 : 0;
+}
+//------------------------------------------------------------------------------
+
 void SYNTHESISABLE::SetFixedPoint(int Width, const NUMBER& FullScale){
   Format.Signed->Value = 0;
 
@@ -139,7 +149,8 @@ bool SYNTHESISABLE::ApplyParameters(list<AST::BASE*>& Parameters){
 
   if(!ExplicitFullScale){
     FullScale = 1;
-    FullScale.BinScale(Width);
+    if(Width > 0) FullScale.BinScale( Width);
+    else          FullScale.BinScale(-Width);
   }
   SetFixedPoint(Width, FullScale);
 

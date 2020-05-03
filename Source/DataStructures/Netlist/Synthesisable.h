@@ -48,8 +48,13 @@ namespace NETLIST{
       bool    Used; // Actually used in an expression somewhere
       int     Width    () override;
       NUMBER& FullScale() override;
-      bool    Signed   ();
-      void    SetFixedPoint(int Width, const NUMBER& FullScale);
+      bool    Signed   () override;
+
+      // If "Signed" is not specified, the signedness is taken from the sign
+      // of Width and / or FullScale, otherwise both Width and FullScale are
+      // expected to be positive.
+      void SetFixedPoint(int Width, const NUMBER& FullScale);
+      void SetFixedPoint(int Width, const NUMBER& FullScale, bool Signed);
 
       AST::DEFINITION::DIRECTION Direction;
 

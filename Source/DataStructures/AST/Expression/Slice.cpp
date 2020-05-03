@@ -70,6 +70,19 @@ int SLICE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& SLICE::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool SLICE::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* SLICE::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

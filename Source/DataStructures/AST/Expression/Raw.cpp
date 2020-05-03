@@ -70,6 +70,19 @@ int RAW::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& RAW::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool RAW::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* RAW::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

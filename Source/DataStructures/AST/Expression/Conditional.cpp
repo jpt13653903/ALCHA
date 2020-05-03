@@ -70,6 +70,19 @@ int CONDITIONAL::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& CONDITIONAL::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool CONDITIONAL::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* CONDITIONAL::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

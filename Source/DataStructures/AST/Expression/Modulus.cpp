@@ -70,6 +70,19 @@ int MODULUS::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& MODULUS::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool MODULUS::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* MODULUS::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

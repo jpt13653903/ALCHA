@@ -76,6 +76,19 @@ int ADD::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& ADD::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool ADD::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* ADD::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

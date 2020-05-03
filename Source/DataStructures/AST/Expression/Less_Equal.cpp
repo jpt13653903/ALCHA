@@ -75,6 +75,19 @@ int LESS_EQUAL::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& LESS_EQUAL::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool LESS_EQUAL::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* LESS_EQUAL::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

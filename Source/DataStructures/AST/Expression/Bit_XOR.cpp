@@ -75,6 +75,19 @@ int BIT_XOR::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& BIT_XOR::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool BIT_XOR::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* BIT_XOR::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

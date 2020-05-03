@@ -73,6 +73,19 @@ int RANGE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& RANGE::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool RANGE::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* RANGE::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

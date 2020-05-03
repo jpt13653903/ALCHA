@@ -128,6 +128,19 @@ int OBJECT::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& OBJECT::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool OBJECT::GetSigned(){
+  assert(ObjectRef, return false);
+  return ObjectRef->Signed();
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* OBJECT::FixedPointScale(int Width, NUMBER& FullScale){
   // Could be an alias, so evaluate it first
   auto Result = this->Evaluate();

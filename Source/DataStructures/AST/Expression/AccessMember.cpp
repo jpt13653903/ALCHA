@@ -111,6 +111,19 @@ int ACCESSMEMBER::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& ACCESSMEMBER::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool ACCESSMEMBER::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* ACCESSMEMBER::FixedPointScale(int Width, NUMBER& FullScale){
   auto Result = this->Evaluate();
 

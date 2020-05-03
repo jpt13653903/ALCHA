@@ -52,11 +52,28 @@ BASE* MULTIPLY::Copy(){
 //------------------------------------------------------------------------------
 
 bool MULTIPLY::GetVerilog(string& Body){
-  Body += "(";
-  Left->GetVerilog(Body);
-  Body += ") * (";
-  Right->GetVerilog(Body);
-  Body += ")";
+  assert(Left , return false);
+  assert(Right, return false);
+
+  if(!Left->GetSigned() && Right->GetSigned()){
+    Body += "$signed({1'b0, (";
+    Left->GetVerilog(Body);
+    Body += ")})";
+  }else{
+    Body += "(";
+    Left->GetVerilog(Body);
+    Body += ")";
+  }
+  Body += " * ";
+  if(Left->GetSigned() && !Right->GetSigned()){
+    Body += "$signed({1'b0, (";
+    Right->GetVerilog(Body);
+    Body += ")})";
+  }else{
+    Body += "(";
+    Right->GetVerilog(Body);
+    Body += ")";
+  }
 
   return true;
 }
@@ -102,7 +119,17 @@ EXPRESSION* MULTIPLY::Evaluate(){
 
     NUMBER FullScale = left->FullScale();
     FullScale.Mul(right->FullScale());
-    Net->SetFixedPoint(left->Width() + right->Width(), FullScale);
+
+    if(left->Signed() && right->Signed()){
+      FullScale.BinScale(1); // Make space for the signed bit
+      Net->SetFixedPoint(left->Width() + right->Width() + 1, FullScale, true);
+
+    }else if(left->Signed() || right->Signed()){
+      Net->SetFixedPoint(left->Width() + right->Width(), FullScale, true);
+
+    }else{
+      Net->SetFixedPoint(left->Width() + right->Width(), FullScale, false);
+    }
 
     Net   ->Value     = this;
     Object->ObjectRef = Net;
@@ -121,6 +148,19 @@ int MULTIPLY::GetWidth(){
   assert(Right, return 0);
 
   return Left->GetWidth() + Right->GetWidth();
+}
+//------------------------------------------------------------------------------
+
+NUMBER& MULTIPLY::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool MULTIPLY::GetSigned(){
+  error("Not yet implemented");
+  return false;
 }
 //------------------------------------------------------------------------------
 

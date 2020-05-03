@@ -73,6 +73,19 @@ int OR_REDUCE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& OR_REDUCE::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool OR_REDUCE::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* OR_REDUCE::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

@@ -100,6 +100,19 @@ int LITERAL::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& LITERAL::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool LITERAL::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* LITERAL::FixedPointScale(int Width, NUMBER& FullScale){
   NUMBER Scale = 1;
   Scale.BinScale(Width);

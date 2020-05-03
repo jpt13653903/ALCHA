@@ -70,6 +70,19 @@ int EXPONENTIAL::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& EXPONENTIAL::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool EXPONENTIAL::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* EXPONENTIAL::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

@@ -73,6 +73,19 @@ int ARRAY::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& ARRAY::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool ARRAY::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* ARRAY::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

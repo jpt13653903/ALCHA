@@ -73,6 +73,19 @@ int LOGICAL_NOT::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& LOGICAL_NOT::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool LOGICAL_NOT::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* LOGICAL_NOT::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

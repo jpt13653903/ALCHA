@@ -49,6 +49,7 @@ namespace NETLIST{
 
     int     Width    () override;
     NUMBER& FullScale() override;
+    bool    Signed   () override;
 
     void Display(int Indent = 0) override;
 

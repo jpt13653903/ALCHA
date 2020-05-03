@@ -73,6 +73,19 @@ int NAND_REDUCE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& NAND_REDUCE::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool NAND_REDUCE::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* NAND_REDUCE::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

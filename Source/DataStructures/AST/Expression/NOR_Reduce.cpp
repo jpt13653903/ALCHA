@@ -73,6 +73,19 @@ int NOR_REDUCE::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& NOR_REDUCE::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool NOR_REDUCE::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* NOR_REDUCE::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

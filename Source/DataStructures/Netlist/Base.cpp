@@ -70,6 +70,7 @@ void BASE::Warning(const char* Message){
   ::Warning(Source.Line, Source.Filename.c_str(), Message);
 }
 //------------------------------------------------------------------------------
+
 bool BASE::IsSynthesisable(){
   return false;
 }
@@ -224,14 +225,19 @@ AST::EXPRESSION* BASE::GetBuiltInAttributeValue(const string& Name){
 }
 //------------------------------------------------------------------------------
 
+int BASE::Width(){
+  return 0;
+}
+//------------------------------------------------------------------------------
+
 NUMBER& BASE::FullScale(){
   static NUMBER Zero = 0;
   return Zero;
 }
 //------------------------------------------------------------------------------
 
-int BASE::Width(){
-  return 0;
+bool BASE::Signed(){
+  return false;
 }
 //------------------------------------------------------------------------------
 

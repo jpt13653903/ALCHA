@@ -104,6 +104,19 @@ int IDENTIFIER::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& IDENTIFIER::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool IDENTIFIER::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* IDENTIFIER::FixedPointScale(int Width, NUMBER& FullScale){
   auto Result = this->Evaluate();
 

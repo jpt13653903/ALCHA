@@ -75,6 +75,19 @@ int NOT_EQUAL::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& NOT_EQUAL::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool NOT_EQUAL::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* NOT_EQUAL::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;

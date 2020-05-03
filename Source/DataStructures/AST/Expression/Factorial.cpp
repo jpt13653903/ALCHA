@@ -70,6 +70,19 @@ int FACTORIAL::GetWidth(){
 }
 //------------------------------------------------------------------------------
 
+NUMBER& FACTORIAL::GetFullScale(){
+  error("Not yet implemented");
+  static NUMBER zero = 0;
+  return zero;
+}
+//------------------------------------------------------------------------------
+
+bool FACTORIAL::GetSigned(){
+  error("Not yet implemented");
+  return false;
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* FACTORIAL::FixedPointScale(int Width, NUMBER& FullScale){
   error("Not yet implemented");
   return this;
