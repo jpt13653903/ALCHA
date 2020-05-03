@@ -45,26 +45,6 @@ void PROJECT::Warning(const char* Message){
 }
 //------------------------------------------------------------------------------
 
-void PROJECT::Error(BASE* Netlist, const char* Message){
-  ::Error(Netlist->Source.Line, Netlist->Source.Filename.c_str(), Message);
-}
-//------------------------------------------------------------------------------
-
-void PROJECT::Warning(BASE* Netlist, const char* Message){
-  ::Warning(Netlist->Source.Line, Netlist->Source.Filename.c_str(), Message);
-}
-//------------------------------------------------------------------------------
-
-void PROJECT::Error(AST::EXPRESSION* Expression, const char* Message){
-  ::Error(Expression->Source.Line, Expression->Source.Filename.c_str(), Message);
-}
-//------------------------------------------------------------------------------
-
-void PROJECT::Warning(AST::EXPRESSION* Expression, const char* Message){
-  ::Warning(Expression->Source.Line, Expression->Source.Filename.c_str(), Message);
-}
-//------------------------------------------------------------------------------
-
 bool PROJECT::WriteFile(string& Filename, const char* Ext, string& Body){
   FILE_WRAPPER Files;
   string Fullname = Path + "/" + Filename + "." + Ext;
@@ -125,7 +105,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
         auto Standard = Pin->GetAttribValue("standard");
         if(Standard){
           if(Standard->Type != AST::BASE::TYPE::String){
-            Error(Standard, "Standard attribute not a string");
+            Standard->Error("Standard attribute not a string");
             return false;
           }
           Body += "set_instance_assignment -name "
@@ -137,18 +117,18 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
         if(Location){
           if(Pin->Width() == 1){
             if(Location->Type != AST::BASE::TYPE::String){
-              Error(Location, "Scalar pin location not a string");
+              Location->Error("Scalar pin location not a string");
               return false;
             }
             AssignPin(Body, ((AST::STRING*)Location)->Value, Pin->HDL_Name());
           }else{
             if(Location->Type != AST::BASE::TYPE::Array){
-              Error(Location, "Vector pin location not an array");
+              Location->Error("Vector pin location not an array");
               return false;
             }
             auto LocationArray = (AST::ARRAY*)Location;
             if(LocationArray->Elements.size() != (size_t)Pin->Width()){
-              Error(LocationArray, "Vector pin location array of wrong size");
+              LocationArray->Error("Vector pin location array of wrong size");
               return false;
             }
             for(int n = 0; n < Pin->Width(); n++){
@@ -156,7 +136,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
               assert(Temp && Temp->IsExpression(), return false);
               AST::EXPRESSION* Element = (AST::EXPRESSION*)Temp;
               if(Element->Type != AST::BASE::TYPE::String){
-                Error(Element, "Pin location not a string");
+                Element->Error("Pin location not a string");
                 return false;
               }
               AssignPin(Body, ((AST::STRING*)Element)->Value,
@@ -164,7 +144,8 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
             }
           }
         }else{
-          Warning(Pin, "Pin without location attribute, creating virtual pin");
+          Pin->Warning();
+          printf("Creating virtual pin %s\n", Pin->HDL_Name().c_str());
           Body += "set_instance_assignment "
                   "-name VIRTUAL_PIN ON -to "+ Pin->HDL_Name();
           if(Pin->Width() > 1) Body += "[*]";
@@ -177,7 +158,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
           switch(Current->Type){
             case AST::BASE::TYPE::Literal:{
               if(!((AST::LITERAL*)Current)->Value.IsReal()){
-                Error(Current, "Current attribute not real");
+                Current->Error("Current attribute not real");
                 return false;
               }
               NUMBER mA = ((AST::LITERAL*)Current)->Value;
@@ -190,7 +171,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
               break;
             default:
               // TODO Need to also handle arrays (for vector types) correctly
-              Error(Current, "Unexpected current strength attribute type");
+              Current->Error("Unexpected current strength attribute type");
               break;
           }
           Body += " -to "+ Pin->HDL_Name();
@@ -212,7 +193,7 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace){
               break;
             default:
               // TODO Need to also handle arrays (for vector types) correctly
-              Error(WeakPullup, "Unexpected current strength attribute type");
+              WeakPullup->Error("Unexpected current strength attribute type");
               break;
           }
           Body += " -to "+ Pin->HDL_Name();
@@ -291,7 +272,7 @@ bool PROJECT::BuildSettings(){
   Body += "set_global_assignment -name STRATIX_DEVICE_IO_STANDARD ";
   if(Standard){
     if(Standard->Type != AST::BASE::TYPE::String){
-      Error(Standard, "Standard attribute not a string");
+      Standard->Error("Standard attribute not a string");
       return false;
     }
     Body += "\""+ ((AST::STRING*)Standard)->Value +"\"\n\n";
@@ -396,7 +377,7 @@ bool PROJECT::Build(const char* Path, const char* Filename){
     return false;
   }
   if(Device->Type != AST::BASE::TYPE::String){
-    Error(Device, "Global attribute \"target_device\" not a string");
+    Device->Error("Global attribute \"target_device\" not a string");
     return false;
   }
   this->Device = ((AST::STRING*)Device)->Value;
@@ -407,7 +388,7 @@ bool PROJECT::Build(const char* Path, const char* Filename){
     return false;
   }
   if(Series->Type != AST::BASE::TYPE::String){
-    Error(Series, "Global attribute \"target_series\" not a string");
+    Series->Error("Global attribute \"target_series\" not a string");
     return false;
   }
   this->Series = ((AST::STRING*)Series)->Value;

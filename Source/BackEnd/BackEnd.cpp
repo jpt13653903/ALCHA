@@ -127,8 +127,10 @@ bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
         auto Object = (SYNTHESISABLE*)(SymbolIterator->second);
         SymbolIterator++;
         if(!Object->Used){
-          Object->Warning(0);
-          printf("Deleting unused object %s\n", Object->HDL_Name().c_str());
+          if(!Object->IsTemporary()){
+            Object->Warning();
+            printf("Deleting unused object %s\n", Object->HDL_Name().c_str());
+          }
           Namespace->Symbols.erase(Object->Name);
           delete Object;
         }
@@ -141,7 +143,7 @@ bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
         DeleteUnused(Object);
         SymbolIterator++;
         if(Object->Symbols.empty()){
-          Object->Warning(0);
+          Object->Warning();
           printf("Deleting unused object %s\n", Object->HDL_Name().c_str());
           Namespace->Symbols.erase(Object->Name);
           delete Object;

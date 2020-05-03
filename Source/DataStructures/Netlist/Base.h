@@ -95,8 +95,8 @@ namespace NETLIST{
                BASE(int Line, const std::string& Filename, const char* Name, TYPE Type);
       virtual ~BASE();
 
-      void Error  (const char* Message);
-      void Warning(const char* Message);
+      void Error  (const char* Message = 0);
+      void Warning(const char* Message = 0);
 
       // Called by the definition to assign the attribute list
       bool ApplyAttributes(AST::ASSIGNMENT* AttributeList);
