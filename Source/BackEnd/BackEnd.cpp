@@ -46,6 +46,74 @@ void BACK_END::Warning(AST::EXPRESSION* Expression, const char* Message){
 }
 //------------------------------------------------------------------------------
 
+void BACK_END::RemoveTempNet(PIN_COMPONENT* Target){
+  while(Target->Value && Target->Value->Type == AST::BASE::TYPE::Object){
+    auto Object = (AST::OBJECT*)Target->Value;
+    if(Object->ObjectRef && Object->ObjectRef->Type == BASE::TYPE::Net){
+      auto Net = (NET*)Object->ObjectRef;
+      if(Target->Width () == Net->Width () &&
+         Target->Signed() == Net->Signed() ){
+        Target->Value = (AST::EXPRESSION*)Net->Value->Copy();
+        delete Object;
+      }else{
+        break;
+      }
+    }else{
+      break;
+    }
+  }
+}
+//------------------------------------------------------------------------------
+
+void BACK_END::RemoveTempNet(NETLIST::NET* Target){
+  while(Target->Value && Target->Value->Type == AST::BASE::TYPE::Object){
+    auto Object = (AST::OBJECT*)Target->Value;
+    if(Object->ObjectRef && Object->ObjectRef->Type == BASE::TYPE::Net){
+      auto Net = (NET*)Object->ObjectRef;
+      if(Target->Width () == Net->Width () &&
+         Target->Signed() == Net->Signed() ){
+        Target->Value = (AST::EXPRESSION*)Net->Value->Copy();
+        delete Object;
+      }else{
+        break;
+      }
+    }else{
+      break;
+    }
+  }
+}
+//------------------------------------------------------------------------------
+
+void BACK_END::RemoveTempNets(NAMESPACE* Namespace){
+  if(!Namespace) return;
+
+  Debug.Print("Delete temporary nets...\n");
+
+  foreach(SymbolIterator, Namespace->Symbols){
+    switch(SymbolIterator->second->Type){
+      case BASE::TYPE::Pin:
+        RemoveTempNet(((PIN*)SymbolIterator->second)->Driver );
+        RemoveTempNet(((PIN*)SymbolIterator->second)->Enabled);
+        break;
+
+      case BASE::TYPE::Net:
+        RemoveTempNet((NET*)SymbolIterator->second);
+        break;
+
+      case BASE::TYPE::Module:
+      case BASE::TYPE::Group:{
+        RemoveTempNets((NAMESPACE*)(SymbolIterator->second));
+        break;
+      }
+
+      default:
+        break;
+    }
+  }
+  return;
+}
+//------------------------------------------------------------------------------
+
 void BACK_END::PopulateUsed(NAMESPACE* Namespace){
   Debug.Print("Populate used...\n");
 
@@ -73,7 +141,6 @@ bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
   auto SymbolIterator = Namespace->Symbols.begin();
 
   while(SymbolIterator != Namespace->Symbols.end()){
-
     switch(SymbolIterator->second->Type){
       case BASE::TYPE::Byte:
       case BASE::TYPE::Character:
@@ -394,6 +461,9 @@ bool BACK_END::BuildAltera(const char* Path, const char* Filename){
                   "----------------------------------------\n\n"
     ANSI_RESET
   );
+
+  RemoveTempNets(&Global);
+  Debug.Print("\n");
 
   PopulateUsed(&Global);
   Debug.Print("\n");
