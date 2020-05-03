@@ -98,7 +98,7 @@ void AND_REDUCE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* AND_REDUCE::RemoveTempNet(){
+EXPRESSION* AND_REDUCE::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

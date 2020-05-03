@@ -128,7 +128,7 @@ void IDENTIFIER::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* IDENTIFIER::RemoveTempNet(){
+EXPRESSION* IDENTIFIER::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

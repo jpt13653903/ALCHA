@@ -107,7 +107,7 @@ void FUNCTIONCALL::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* FUNCTIONCALL::RemoveTempNet(){
+EXPRESSION* FUNCTIONCALL::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

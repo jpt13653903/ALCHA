@@ -185,7 +185,7 @@ void CAST::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* CAST::RemoveTempNet(){
+EXPRESSION* CAST::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

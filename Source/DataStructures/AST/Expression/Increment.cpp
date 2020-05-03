@@ -94,7 +94,7 @@ void INCREMENT::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* INCREMENT::RemoveTempNet(){
+EXPRESSION* INCREMENT::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

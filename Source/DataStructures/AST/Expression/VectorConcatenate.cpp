@@ -120,9 +120,9 @@ void VECTORCONCATENATE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* VECTORCONCATENATE::RemoveTempNet(){
+EXPRESSION* VECTORCONCATENATE::RemoveTempNet(int Width, bool Signed){
   foreach(Element, Elements){
-    if(*Element) (*Element)->RemoveTempNet();
+    if(*Element) (*Element)->RemoveTempNet(0, false);
   }
   return this;
 }

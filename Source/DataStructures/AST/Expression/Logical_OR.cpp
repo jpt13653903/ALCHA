@@ -99,7 +99,7 @@ void LOGICAL_OR::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LOGICAL_OR::RemoveTempNet(){
+EXPRESSION* LOGICAL_OR::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

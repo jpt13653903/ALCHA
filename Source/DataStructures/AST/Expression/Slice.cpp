@@ -94,7 +94,7 @@ void SLICE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* SLICE::RemoveTempNet(){
+EXPRESSION* SLICE::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

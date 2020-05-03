@@ -100,7 +100,7 @@ void ADD::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ADD::RemoveTempNet(){
+EXPRESSION* ADD::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

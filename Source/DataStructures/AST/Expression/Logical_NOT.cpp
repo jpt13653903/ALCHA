@@ -97,7 +97,7 @@ void LOGICAL_NOT::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LOGICAL_NOT::RemoveTempNet(){
+EXPRESSION* LOGICAL_NOT::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

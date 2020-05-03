@@ -97,7 +97,7 @@ void ARRAYCONCATENATE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ARRAYCONCATENATE::RemoveTempNet(){
+EXPRESSION* ARRAYCONCATENATE::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

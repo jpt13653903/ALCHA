@@ -48,25 +48,7 @@ void BACK_END::Warning(AST::EXPRESSION* Expression, const char* Message){
 
 void BACK_END::RemoveTempNet(NETLIST::NET* Target){
   if(Target->Value){
-    if(Target->Value->Type == AST::BASE::TYPE::Object){
-      auto Object = (AST::OBJECT*)Target->Value;
-      if(Object->ObjectRef && Object->ObjectRef->Type == BASE::TYPE::Net){
-        auto Net = (NET*)Object->ObjectRef;
-        // At this point, everything has been broken down to raw bits, so the
-        // full-scale is not important.
-        if(Target->Width () == Net->Width () &&
-           Target->Signed() == Net->Signed() &&
-           Net->IsTemporary()){
-          Target->Value = (AST::EXPRESSION*)Net->Value->Copy();
-          delete Object;
-          RemoveTempNet(Target);
-        }else{
-          Target->Value = Target->Value->RemoveTempNet();
-        }
-      }
-    }else{
-      Target->Value = Target->Value->RemoveTempNet();
-    }
+    Target->Value = Target->Value->RemoveTempNet(Target->Width(), Target->Signed());
   }
 }
 //------------------------------------------------------------------------------

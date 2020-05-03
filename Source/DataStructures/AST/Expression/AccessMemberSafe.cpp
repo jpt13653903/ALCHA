@@ -94,7 +94,7 @@ void ACCESSMEMBERSAFE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ACCESSMEMBERSAFE::RemoveTempNet(){
+EXPRESSION* ACCESSMEMBERSAFE::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

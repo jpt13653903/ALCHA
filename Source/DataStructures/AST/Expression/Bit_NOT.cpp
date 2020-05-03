@@ -138,8 +138,8 @@ void BIT_NOT::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* BIT_NOT::RemoveTempNet(){
-  if(Right) Right = Right->RemoveTempNet();
+EXPRESSION* BIT_NOT::RemoveTempNet(int Width, bool Signed){
+  if(Right) Right = Right->RemoveTempNet(0, false);
   return this;
 }
 //------------------------------------------------------------------------------

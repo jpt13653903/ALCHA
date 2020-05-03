@@ -94,7 +94,7 @@ void DIVIDE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* DIVIDE::RemoveTempNet(){
+EXPRESSION* DIVIDE::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

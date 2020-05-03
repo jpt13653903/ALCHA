@@ -99,7 +99,7 @@ void GREATER::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* GREATER::RemoveTempNet(){
+EXPRESSION* GREATER::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

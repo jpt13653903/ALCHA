@@ -99,7 +99,7 @@ void BIT_NOR::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* BIT_NOR::RemoveTempNet(){
+EXPRESSION* BIT_NOR::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

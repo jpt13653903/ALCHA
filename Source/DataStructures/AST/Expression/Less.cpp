@@ -99,7 +99,7 @@ void LESS::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LESS::RemoveTempNet(){
+EXPRESSION* LESS::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

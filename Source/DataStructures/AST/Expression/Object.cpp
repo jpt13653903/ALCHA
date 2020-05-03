@@ -149,18 +149,24 @@ void OBJECT::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* OBJECT::RemoveTempNet(){
+EXPRESSION* OBJECT::RemoveTempNet(int Width, bool Signed){
+  // At this point, everything has been broken down to raw bits, so the
+  // full-scale is not important.
+
   if(ObjectRef && ObjectRef->Type == NETLIST::BASE::TYPE::Net){
     auto Net = (NETLIST::NET*)ObjectRef;
-    if(Net->IsTemporary()){
-      if(Net->Value && Net->Value->Type == TYPE::Object){
+    if(Net->Value && Net->IsTemporary()){
+      if(Width  == Net->Width () &&
+         Signed == Net->Signed() ){
+        delete this;
+        return ((EXPRESSION*)Net->Value->Copy())->RemoveTempNet(Width, Signed);
+      }
+      if(Net->Value->Type == TYPE::Object){
         auto Object = (OBJECT*)Net->Value;
-        // At this point, everything has been broken down to raw bits, so the
-        // full-scale is not important.
         if(GetWidth () == Object->GetWidth () &&
            GetSigned() == Object->GetSigned() ){
           delete this;
-          return ((EXPRESSION*)Object->Copy())->RemoveTempNet();
+          return ((EXPRESSION*)Object->Copy())->RemoveTempNet(Width, Signed);
         }
       }
     }

@@ -129,9 +129,9 @@ void REPLICATE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* REPLICATE::RemoveTempNet(){
-  if(Left ) Left  = Left ->RemoveTempNet();
-  if(Right) Right = Right->RemoveTempNet();
+EXPRESSION* REPLICATE::RemoveTempNet(int Width, bool Signed){
+  if(Left ) Left  = Left ->RemoveTempNet(0, false);
+  if(Right) Right = Right->RemoveTempNet(0, false);
   return this;
 }
 //------------------------------------------------------------------------------

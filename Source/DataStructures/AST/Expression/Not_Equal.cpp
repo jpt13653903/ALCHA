@@ -99,7 +99,7 @@ void NOT_EQUAL::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* NOT_EQUAL::RemoveTempNet(){
+EXPRESSION* NOT_EQUAL::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

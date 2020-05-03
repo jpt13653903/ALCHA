@@ -99,7 +99,7 @@ void GREATER_EQUAL::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* GREATER_EQUAL::RemoveTempNet(){
+EXPRESSION* GREATER_EQUAL::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

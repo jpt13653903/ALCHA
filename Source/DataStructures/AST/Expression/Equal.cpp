@@ -99,7 +99,7 @@ void EQUAL::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* EQUAL::RemoveTempNet(){
+EXPRESSION* EQUAL::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

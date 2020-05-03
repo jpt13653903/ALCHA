@@ -75,7 +75,7 @@ namespace AST{
       // If the expression references an object, which in turn references 
       // another object of the same width and signedness, the temporary net in 
       // the middle is removed.
-      virtual EXPRESSION* RemoveTempNet() = 0;
+      virtual EXPRESSION* RemoveTempNet(int Width, bool Signed) = 0;
   };
 }
 //------------------------------------------------------------------------------

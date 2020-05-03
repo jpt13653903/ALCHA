@@ -100,7 +100,7 @@ void SUBTRACT::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* SUBTRACT::RemoveTempNet(){
+EXPRESSION* SUBTRACT::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

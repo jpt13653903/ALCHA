@@ -94,7 +94,7 @@ void MODULUS::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* MODULUS::RemoveTempNet(){
+EXPRESSION* MODULUS::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

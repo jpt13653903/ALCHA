@@ -97,7 +97,7 @@ void NOR_REDUCE::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* NOR_REDUCE::RemoveTempNet(){
+EXPRESSION* NOR_REDUCE::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

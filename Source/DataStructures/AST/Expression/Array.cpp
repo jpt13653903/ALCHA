@@ -97,7 +97,7 @@ void ARRAY::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ARRAY::RemoveTempNet(){
+EXPRESSION* ARRAY::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

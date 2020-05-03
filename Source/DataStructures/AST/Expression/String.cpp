@@ -96,7 +96,7 @@ void STRING::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* STRING::RemoveTempNet(){
+EXPRESSION* STRING::RemoveTempNet(int Width, bool Signed){
   error("Not yet implemented");
   return this;
 }

@@ -108,9 +108,9 @@ void SHIFT_LEFT::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* SHIFT_LEFT::RemoveTempNet(){
-  if(Left ) Left  = Left ->RemoveTempNet();
-  if(Right) Right = Right->RemoveTempNet();
+EXPRESSION* SHIFT_LEFT::RemoveTempNet(int Width, bool Signed){
+  if(Left ) Left  = Left ->RemoveTempNet(0, false);
+  if(Right) Right = Right->RemoveTempNet(0, false);
   return this;
 }
 //------------------------------------------------------------------------------

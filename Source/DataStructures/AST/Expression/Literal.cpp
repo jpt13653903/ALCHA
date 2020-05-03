@@ -129,7 +129,7 @@ void LITERAL::PopulateUsed(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LITERAL::RemoveTempNet(){
+EXPRESSION* LITERAL::RemoveTempNet(int Width, bool Signed){
   return this;
 }
 //------------------------------------------------------------------------------
