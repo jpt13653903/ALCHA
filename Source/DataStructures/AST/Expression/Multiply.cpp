@@ -20,6 +20,7 @@
 
 #include "Multiply.h"
 #include "Literal.h"
+#include "Negate.h"
 #include "Object.h"
 
 #include "Netlist/Namespace/Module.h"
@@ -101,33 +102,7 @@ EXPRESSION* MULTIPLY::Evaluate(){
 
   // Replace a object * object with a wire
   if(Left->Type == TYPE::Object && Right->Type == TYPE::Object){
-    auto left  = ((OBJECT*)Left )->ObjectRef;
-    auto right = ((OBJECT*)Right)->ObjectRef;
-
-    assert(left );
-    assert(right);
-
-    auto Object = new OBJECT      (Source.Line, Source.Filename);
-    auto Net    = new NETLIST::NET(Source.Line, Source.Filename, 0);
-    Object->ObjectRef = Net;
-
-    NUMBER FullScale = left->FullScale();
-    FullScale.Mul(right->FullScale());
-
-    if(left->Signed() && right->Signed()){
-      FullScale.BinScale(1); // Make space for the signed bit
-      Net->SetFixedPoint(left->Width() + right->Width() + 1, FullScale, true);
-
-    }else if(left->Signed() || right->Signed()){
-      Net->SetFixedPoint(left->Width() + right->Width(), FullScale, true);
-
-    }else{
-      Net->SetFixedPoint(left->Width() + right->Width(), FullScale, false);
-    }
-    Net->Value = this;
-    NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
-
-    return Object;
+    return MakeObject();
   }
 
   // Put the literal on the right (if there is one)
@@ -147,21 +122,24 @@ EXPRESSION* MULTIPLY::Evaluate(){
     auto Net    = new NETLIST::NET(Source.Line, Source.Filename, 0);
     Object->ObjectRef = Net;
 
+    NUMBER FullScale = left->FullScale();
+    FullScale.Mul(right->Value);
+
+    bool Signed = left->Signed();
+
     if(right->GetSigned()){
-      error("not yet implemented");
-      delete Object;
-      delete Net;
-      return this;
+      Signed = true;
+      FullScale.Mul(-1);
 
+      auto Negate = new NEGATE(Source.Line, Source.Filename);
+      Negate->Right = Left;
+      Net   ->Value = Negate;
     }else{ // Positive literal
-      NUMBER FullScale = left->FullScale();
-      FullScale.Mul(right->Value);
-
-      Net->SetFixedPoint(left->Width(), FullScale, left->Signed());
       Net->Value = Left;
-      Left = 0;
     }
+    Net->SetFixedPoint(left->Width(), FullScale, Signed);
     NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
+    Left = 0;
     delete this;
     return Object;
   }
@@ -174,20 +152,31 @@ int MULTIPLY::GetWidth(){
   assert(Left , return 0);
   assert(Right, return 0);
 
+  if(Left->GetSigned() && Right->GetSigned()){
+    return Left->GetWidth() + Right->GetWidth() + 1;
+  }
   return Left->GetWidth() + Right->GetWidth();
 }
 //------------------------------------------------------------------------------
 
 NUMBER& MULTIPLY::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+  static NUMBER Result;
+
+  assert(Left , Result = 0; return Result);
+  assert(Right, Result = 0; return Result);
+
+  Result = Left->GetFullScale();
+  Result.Mul(Right->GetFullScale());
+
+  // Make space for the signed bit
+  if(Left->GetSigned() && Right->GetSigned()) Result.BinScale(1);
+
+  return Result;
 }
 //------------------------------------------------------------------------------
 
 bool MULTIPLY::GetSigned(){
-  error("Not yet implemented");
-  return false;
+  return (Left->GetSigned() || Right->GetSigned());
 }
 //------------------------------------------------------------------------------
 

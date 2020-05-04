@@ -59,7 +59,7 @@ namespace AST{
       virtual EXPRESSION* Evaluate() = 0;
 
       // Returns the width of the result, if known.  Issues an error if the 
-      // width is not defined (like an uncast literal, for instance)
+      // width is not defined
       virtual int     GetWidth    () = 0;
       virtual NUMBER& GetFullScale() = 0;
       virtual bool    GetSigned   () = 0;
@@ -70,6 +70,8 @@ namespace AST{
 
       // Check for circular reference to the netlist object specified
       virtual bool HasCircularReference(NETLIST::BASE* Object) = 0;
+
+      // Populates the "Used" flag so that the back-end can remove unused objects.
       virtual void PopulateUsed() = 0;
 
       // If the expression references an object, which in turn references 
