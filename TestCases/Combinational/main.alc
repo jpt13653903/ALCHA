@@ -86,11 +86,13 @@
 // pin(14, -pi) Signed07 =  4   *SignedNet;
 // pin(14, -pi) Signed08 =  0.25*SignedNet;
 
-pin(  8, 1) A;
-pin(-16, 1) B = A * -10;
+// pin(  8, 1) A;
+// pin(-16, 1) B = A * -10;
+// pin( -8, 1) C = -A;
 
-// pin(9, 2) A;
-// pin(8, 1) B, C;
-// 
-// A = B + C;
+pin(9, 2) A, C;
+pin(8, 1) B;
+
+A = B + 10;
+C = 0.1 + B;
 

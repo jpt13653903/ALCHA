@@ -48,60 +48,146 @@ BASE* ADD::Copy(){
 //------------------------------------------------------------------------------
 
 bool ADD::GetVerilog(string& Body){
-  Body += "(";
-  Left->GetVerilog(Body);
-  Body += ") + (";
-  Right->GetVerilog(Body);
-  Body += ")";
+  assert(Left , return false);
+  assert(Right, return false);
+
+  if(!Left->GetSigned() && Right->GetSigned()){
+    Body += "$signed({1'b0, (";
+    Left->GetVerilog(Body);
+    Body += ")})";
+  }else{
+    Body += "(";
+    Left->GetVerilog(Body);
+    Body += ")";
+  }
+  Body += " + ";
+  if(Left->GetSigned() && !Right->GetSigned()){
+    Body += "$signed({1'b0, (";
+    Right->GetVerilog(Body);
+    Body += ")})";
+  }else{
+    Body += "(";
+    Right->GetVerilog(Body);
+    Body += ")";
+  }
 
   return true;
 }
 //------------------------------------------------------------------------------
 
+EXPRESSION* ADD::AddLiteral(EXPRESSION* Object, EXPRESSION* Literal){
+  ResultWidth     =  Object->GetWidth();
+  ResultFullScale =  Object->GetFullScale();
+  ResultSigned    = (Object->GetSigned() || Literal->GetSigned());
+
+  NUMBER Scale = 1;
+  Scale.BinScale(ResultWidth);
+  Scale.Div(ResultFullScale);
+  ((LITERAL*)Literal)->Value.Mul(Scale);
+
+  int LiteralWidth = Literal->GetWidth();
+
+  if(LiteralWidth > ResultWidth){
+    ResultFullScale.BinScale(LiteralWidth - ResultWidth);
+    ResultWidth = LiteralWidth;
+  }
+  // Make space for the overflow
+  ResultFullScale.BinScale(1);
+  ResultWidth++;
+
+  return MakeObject();
+}
+//------------------------------------------------------------------------------
+
 EXPRESSION* ADD::Evaluate(){
-  error("Not yet implemented");
+  assert(Left , return this);
+  assert(Right, return this);
+
+  Left  = Left ->Evaluate();
+  Right = Right->Evaluate();
+
+  assert(Left , return this);
+  assert(Right, return this);
+
+  if(Left->Type == TYPE::Literal && Right->Type == TYPE::Literal){
+    auto Result = new LITERAL(Source.Line, Source.Filename);
+    auto left  = (LITERAL*)Left;
+    auto right = (LITERAL*)Right;
+    Result->Value =   left ->Value;
+    Result->Value.Add(right->Value);
+    delete this;
+    return Result;
+  }
+
+  if(Left->Type == TYPE::Literal && Right->Type == TYPE::Object){
+    return AddLiteral(Right, Left);
+  }else if(Left->Type == TYPE::Object && Right->Type == TYPE::Literal){
+    return AddLiteral(Left, Right);
+  }
+
+  // int LeftWidth  = Left ->GetWidth();
+  // int RightWidth = Right->GetWidth();
+
+  // NUMBER LeftFullScale  = Left ->GetFullScale();
+  // NUMBER RightFullScale = Right->GetFullScale();
+
+  // // The numerator if choosing to scale the left
+  // NUMBER Scale1 = LeftFullScale;
+  // Scale1.BinScale(RightWidth);
+
+  // // The numerator if choosing to scale the right
+  // NUMBER Scale2 = RightFullScale;
+  // Scale2.BinScale(LeftWidth);
+
+  // if(Scale1 > Scale2){ // Scale the left
+  //   Scale1.Div(Scale2);
+
+  // }else{ // Scale the right
+  //   Scale2.Div(Scale1);
+  // }
+
   return this;
-//   EXPRESSION* Result = 0;
-// 
-//   error("Not yet implemented");
-// 
-//   if(!Result) return 0;
-//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
 int ADD::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+  return ResultWidth;
 }
 //------------------------------------------------------------------------------
 
 NUMBER& ADD::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+  return ResultFullScale;
 }
 //------------------------------------------------------------------------------
 
 bool ADD::GetSigned(){
-  error("Not yet implemented");
-  return false;
+  return ResultSigned;
 }
 //------------------------------------------------------------------------------
 
 bool ADD::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
+  assert(Left , return false);
+  assert(Right, return false);
+  
+  if(Left ->HasCircularReference(Object)) return true;
+  if(Right->HasCircularReference(Object)) return true;
+
   return false;
 }
 //------------------------------------------------------------------------------
 
 void ADD::PopulateUsed(){
-  error("Not yet implemented");
+  assert(Left , return);
+  assert(Right, return);
+  
+  Left ->PopulateUsed();
+  Right->PopulateUsed();
 }
 //------------------------------------------------------------------------------
 
 EXPRESSION* ADD::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
+  if(Left ) Left  = Left ->RemoveTempNet(0, false);
+  if(Right) Right = Right->RemoveTempNet(0, false);
   return this;
 }
 //------------------------------------------------------------------------------
@@ -120,11 +206,9 @@ void ADD::ValidateMembers(){
   
   assert(!Next);
   assert(!Prev);
-  
-  // TODO: assert(Left );
-  // TODO: assert(Right);
 
-  error("Not yet implemented");
+  assert(Left , return); Left ->Validate();
+  assert(Right, return); Right->Validate();
 }
 //------------------------------------------------------------------------------
 

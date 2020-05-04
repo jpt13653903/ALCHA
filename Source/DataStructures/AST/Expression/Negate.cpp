@@ -80,21 +80,7 @@ EXPRESSION* NEGATE::Evaluate(){
       return Result;
     }
     case TYPE::Object:{
-      error("Not yet implemented");
-      return this;
-      // auto Net = new NETLIST::NET(Source.Line, Source.Filename, 0);
-      // Net->Value = this;
-  
-      // auto ObjectRef = ((OBJECT*)Right)->ObjectRef;
-      // if(ObjectRef && ObjectRef->IsSynthesisable()){
-      //   auto Synthesisable = (NETLIST::SYNTHESISABLE*)ObjectRef;
-      //   Net->SetFixedPoint(Synthesisable->Width(), Synthesisable->FullScale());
-      // }
-      // NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
-  
-      // auto Object = new OBJECT(Source.Line, Source.Filename);
-      // Object->ObjectRef = Net;
-      // return Object;
+      return MakeObject();
     }
     default:
       break;

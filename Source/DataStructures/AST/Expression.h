@@ -60,6 +60,7 @@ namespace AST{
 
       // Returns the width of the result, if known.  Issues an error if the 
       // width is not defined
+      // These functions must be called after a call to Evaluate()
       virtual int     GetWidth    () = 0;
       virtual NUMBER& GetFullScale() = 0;
       virtual bool    GetSigned   () = 0;
