@@ -92,8 +92,11 @@ int LITERAL::GetWidth(){
   if(WidthOverride) return WidthOverride;
 
   int Width = 0;
+
   NUMBER Num = Value;
   if(Num < 0) Num.Mul(-1);
+  Num.Round();
+
   while(Num > 1){
     Num.BinScale(-1);
     Width++;

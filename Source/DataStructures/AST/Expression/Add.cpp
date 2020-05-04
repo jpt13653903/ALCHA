@@ -76,9 +76,8 @@ bool ADD::GetVerilog(string& Body){
 //------------------------------------------------------------------------------
 
 EXPRESSION* ADD::AddLiteral(EXPRESSION* Object, EXPRESSION* Literal){
-  ResultWidth     =  Object->GetWidth();
-  ResultFullScale =  Object->GetFullScale();
-  ResultSigned    = (Object->GetSigned() || Literal->GetSigned());
+  ResultWidth     = Object->GetWidth();
+  ResultFullScale = Object->GetFullScale();
 
   NUMBER Scale = 1;
   Scale.BinScale(ResultWidth);
@@ -109,6 +108,8 @@ EXPRESSION* ADD::Evaluate(){
   assert(Left , return this);
   assert(Right, return this);
 
+  ResultSigned = (Left->GetSigned() || Right->GetSigned());
+
   if(Left->Type == TYPE::Literal && Right->Type == TYPE::Literal){
     auto Result = new LITERAL(Source.Line, Source.Filename);
     auto left  = (LITERAL*)Left;
@@ -121,30 +122,58 @@ EXPRESSION* ADD::Evaluate(){
 
   if(Left->Type == TYPE::Literal && Right->Type == TYPE::Object){
     return AddLiteral(Right, Left);
+
   }else if(Left->Type == TYPE::Object && Right->Type == TYPE::Literal){
     return AddLiteral(Left, Right);
+
+  }else if(Left->Type == TYPE::Object && Right->Type == TYPE::Object){
+    int LeftWidth  = Left ->GetWidth();
+    int RightWidth = Right->GetWidth();
+
+    NUMBER LeftFullScale  = Left ->GetFullScale();
+    NUMBER RightFullScale = Right->GetFullScale();
+
+    // The numerator if choosing to scale the left
+    NUMBER Scale1 = LeftFullScale;
+    Scale1.BinScale(RightWidth);
+
+    // The numerator if choosing to scale the right
+    NUMBER Scale2 = RightFullScale;
+    Scale2.BinScale(LeftWidth);
+
+    if(Scale1 > Scale2){ // Scale the left
+      Scale1.Div(Scale2);
+      Left = Left->ScaleWith(Scale1, RightWidth, RightFullScale);
+      LeftWidth = Left->GetWidth();
+
+      ResultWidth     = RightWidth;
+      ResultFullScale = RightFullScale;
+
+      if(LeftWidth > ResultWidth){
+        ResultFullScale.BinScale(LeftWidth - ResultWidth);
+        ResultWidth = LeftWidth;
+      }
+
+    }else{ // Scale the right
+      Scale2.Div(Scale1);
+      Right = Right->ScaleWith(Scale2, LeftWidth, LeftFullScale);
+      RightWidth = Right->GetWidth();
+
+      ResultWidth     = LeftWidth;
+      ResultFullScale = LeftFullScale;
+
+      if(RightWidth > ResultWidth){
+        ResultFullScale.BinScale(RightWidth - ResultWidth);
+        ResultWidth = RightWidth;
+      }
+    }
+
+    // Make space for the overflow
+    ResultFullScale.BinScale(1);
+    ResultWidth++;
+
+    return MakeObject();
   }
-
-  // int LeftWidth  = Left ->GetWidth();
-  // int RightWidth = Right->GetWidth();
-
-  // NUMBER LeftFullScale  = Left ->GetFullScale();
-  // NUMBER RightFullScale = Right->GetFullScale();
-
-  // // The numerator if choosing to scale the left
-  // NUMBER Scale1 = LeftFullScale;
-  // Scale1.BinScale(RightWidth);
-
-  // // The numerator if choosing to scale the right
-  // NUMBER Scale2 = RightFullScale;
-  // Scale2.BinScale(LeftWidth);
-
-  // if(Scale1 > Scale2){ // Scale the left
-  //   Scale1.Div(Scale2);
-
-  // }else{ // Scale the right
-  //   Scale2.Div(Scale1);
-  // }
 
   return this;
 }

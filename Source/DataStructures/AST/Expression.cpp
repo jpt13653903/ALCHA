@@ -53,18 +53,35 @@ bool EXPRESSION::IsExpression(){
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* EXPRESSION::ScaleWith(NUMBER& Scale, int Width, NUMBER& FullScale){
+EXPRESSION* EXPRESSION::ScaleWith(NUMBER Scale, int Width, NUMBER FullScale){
   if(Scale == 1) return this;
 
-  bool Signed = GetSigned();
+  bool Signed    = GetSigned();
+  int  ThisWidth = GetWidth ();
+
+  int ScaleWidth = 0;
+  NUMBER Num = Scale;
+  if(Num < 0) Num.Mul(-1);
+  while(Num < 1){
+    Num.BinScale(1);
+    ScaleWidth--;
+  }
+  while(Num > 1){
+    Num.BinScale(-1);
+    ScaleWidth++;
+  }
+
+  if(ThisWidth + ScaleWidth > Width){
+    FullScale.BinScale(ThisWidth + ScaleWidth - Width);
+    Width = ThisWidth + ScaleWidth;
+  }
 
   // Calculate the limit of the inferred multiplier size.  Most FPGAs have 
   // 18-bit multipliers, so make that the minimum limit, otherwise use the 
   // target width as the limit so that no to little resolution is lost.
   NUMBER Limit(1);
-  if     (!Signed && Width < 18) Limit.BinScale(18);
-  else if( Signed && Width < 17) Limit.BinScale(17);
-  else                           Limit.BinScale(Width);
+  if(Signed) Limit.BinScale(18);
+  else       Limit.BinScale(17);
 
   // Convert the multiplication to a shift, as far as possible
   int Shift = 0;

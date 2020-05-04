@@ -67,7 +67,9 @@ namespace AST{
 
       // Used for fixed-point scaling...
       // If the scaling is not a power-of-two, it also synthesises a multiplier.
-      EXPRESSION* ScaleWith(NUMBER& Scale, int Width, NUMBER& FullScale);
+      // The resulting object might be larger that the Width requested in order
+      // to prevent loss of precision.
+      EXPRESSION* ScaleWith(NUMBER Scale, int Width, NUMBER FullScale);
 
       // Check for circular reference to the netlist object specified
       virtual bool HasCircularReference(NETLIST::BASE* Object) = 0;
