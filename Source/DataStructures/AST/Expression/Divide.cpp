@@ -19,6 +19,12 @@
 //==============================================================================
 
 #include "Divide.h"
+#include "Literal.h"
+#include "Negate.h"
+#include "Object.h"
+
+#include "Netlist/Namespace/Module.h"
+#include "Netlist/Synthesisable/Net.h"
 //------------------------------------------------------------------------------
 
 using namespace std;
@@ -47,20 +53,100 @@ BASE* DIVIDE::Copy(){
 //------------------------------------------------------------------------------
 
 bool DIVIDE::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+  assert(Left , return false);
+  assert(Right, return false);
+
+  if(!Left->GetSigned() && Right->GetSigned()){
+    Body += "$signed({1'b0, (";
+    Left->GetVerilog(Body);
+    Body += ")})";
+  }else{
+    Body += "(";
+    Left->GetVerilog(Body);
+    Body += ")";
+  }
+  Body += " / ";
+  if(Left->GetSigned() && !Right->GetSigned()){
+    Body += "$signed({1'b0, (";
+    Right->GetVerilog(Body);
+    Body += ")})";
+  }else{
+    Body += "(";
+    Right->GetVerilog(Body);
+    Body += ")";
+  }
+
+  return true;
 }
 //------------------------------------------------------------------------------
 
 EXPRESSION* DIVIDE::Evaluate(){
-  error("Not yet implemented");
+  assert(Left , return this);
+  assert(Right, return this);
+
+  Left  = Left ->Evaluate();
+  Right = Right->Evaluate();
+
+  assert(Left , return this);
+  assert(Right, return this);
+
+  if(Left->Type == TYPE::Literal && Right->Type == TYPE::Literal){
+    auto Result = new LITERAL(Source.Line, Source.Filename);
+    auto left  = (LITERAL*)Left;
+    auto right = (LITERAL*)Right;
+    Result->Value =   left ->Value;
+    Result->Value.Div(right->Value);
+    delete this;
+    return Result;
+  }
+
+  if(Left->Type == TYPE::Object && Right->Type == TYPE::Object){
+    error("Not yet implemented");
+    // TODO: Should this be supported at all, or issue an error?
+    delete this;
+    return 0;
+  }
+
+  if(Left->Type == TYPE::Literal && Right->Type == TYPE::Object){
+    error("Not yet implemented");
+    // TODO: Should this be supported at all, or issue an error?
+    delete this;
+    return 0;
+  }
+
+  if(Left->Type == TYPE::Object && Right->Type == TYPE::Literal){
+    auto left  = ((OBJECT *)Left )->ObjectRef;
+    auto right =  (LITERAL*)Right;
+
+    assert(left);
+
+    auto Object = new OBJECT      (Source.Line, Source.Filename);
+    auto Net    = new NETLIST::NET(Source.Line, Source.Filename, 0);
+    Object->ObjectRef = Net;
+
+    NUMBER FullScale = left->FullScale();
+    FullScale.Div(right->Value);
+
+    bool Signed = left->Signed();
+
+    if(right->GetSigned()){
+      Signed = true;
+      FullScale.Mul(-1);
+
+      auto Negate = new NEGATE(Source.Line, Source.Filename);
+      Negate->Right = Left;
+      Net   ->Value = Negate;
+    }else{ // Positive literal
+      Net->Value = Left;
+    }
+    Net->SetFixedPoint(left->Width(), FullScale, Signed);
+    NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
+    Left = 0;
+    delete this;
+    return Object;
+  }
+
   return this;
-//   EXPRESSION* Result = 0;
-// 
-//   error("Not yet implemented");
-// 
-//   if(!Result) return 0;
-//   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
@@ -78,24 +164,33 @@ NUMBER& DIVIDE::GetFullScale(){
 //------------------------------------------------------------------------------
 
 bool DIVIDE::GetSigned(){
-  error("Not yet implemented");
-  return false;
+  return (Left->GetSigned() || Right->GetSigned());
 }
 //------------------------------------------------------------------------------
 
 bool DIVIDE::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
+  assert(Left , return false);
+  assert(Right, return false);
+  
+  if(Left ->HasCircularReference(Object)) return true;
+  if(Right->HasCircularReference(Object)) return true;
+
   return false;
 }
 //------------------------------------------------------------------------------
 
 void DIVIDE::PopulateUsed(){
-  error("Not yet implemented");
+  assert(Left , return);
+  assert(Right, return);
+  
+  Left ->PopulateUsed();
+  Right->PopulateUsed();
 }
 //------------------------------------------------------------------------------
 
 EXPRESSION* DIVIDE::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
+  if(Left ) Left  = Left ->RemoveTempNet(0, false);
+  if(Right) Right = Right->RemoveTempNet(0, false);
   return this;
 }
 //------------------------------------------------------------------------------
@@ -115,10 +210,8 @@ void DIVIDE::ValidateMembers(){
   assert(!Next);
   assert(!Prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
-
-  error("Not yet implemented");
+  assert(Left , return); Left ->Validate();
+  assert(Right, return); Right->Validate();
 }
 //------------------------------------------------------------------------------
 
