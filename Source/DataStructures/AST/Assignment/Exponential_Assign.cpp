@@ -109,11 +109,10 @@ void EXPONENTIAL_ASSIGN::Display(){
 void EXPONENTIAL_ASSIGN::ValidateMembers(){
   assert(Type == TYPE::Exponential_Assign);
 
-  assert(Left , return);
-  assert(Right, return);
+  assert(Left, return);
+  Left->Validate();
 
-  Left ->Validate();
-  Right->Validate();
+  if(Right) Right->Validate();
 }
 //------------------------------------------------------------------------------
 

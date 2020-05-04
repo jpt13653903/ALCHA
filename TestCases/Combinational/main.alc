@@ -90,11 +90,11 @@
 // pin(-16, 1) B = A * -10;
 // pin( -8, 1) C = -A;
 
-pin( 8, 1) uA, uB, uC, uD, uE, uF;
-pin(-7, 1) sA, sB, sC, sD;
+pin( 8) uA, uB, uC, uD, uE, uF;
+pin(-7) sA, sB, sC, sD;
 
-pin( 9, 2) uA_uB = uA + uB;
-pin(-8, 2) sA_uB = sA + uB;
-pin(-8, 2) uA_sB = uA + sB;
-pin(-8, 2) sA_sB = sA + sB;
+pin( 9) uA_uB = uA - uB;
+pin(-8) sA_uB = sA - uB;
+pin(-8) uA_sB = uA - sB;
+pin(-8) sA_sB = sA - sB;
 

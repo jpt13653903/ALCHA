@@ -109,11 +109,10 @@ void SHIFT_LEFT_ASSIGN::Display(){
 void SHIFT_LEFT_ASSIGN::ValidateMembers(){
   assert(Type == TYPE::Shift_Left_Assign);
 
-  assert(Left , return);
-  assert(Right, return);
+  assert(Left, return);
+  Left->Validate();
 
-  Left ->Validate();
-  Right->Validate();
+  if(Right) Right->Validate();
 }
 //------------------------------------------------------------------------------
 

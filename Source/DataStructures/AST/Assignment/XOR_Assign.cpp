@@ -109,11 +109,10 @@ void XOR_ASSIGN::Display(){
 void XOR_ASSIGN::ValidateMembers(){
   assert(Type == TYPE::XOR_Assign);
 
-  assert(Left , return);
-  assert(Right, return);
+  assert(Left, return);
+  Left->Validate();
 
-  Left ->Validate();
-  Right->Validate();
+  if(Right) Right->Validate();
 }
 //------------------------------------------------------------------------------
 
