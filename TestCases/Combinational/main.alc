@@ -1,104 +1,131 @@
-'target_vendor = "Altera";
-'target_series = "MAX 10";
-'target_device = "10M08DAF484C8GES";
-'target_board  = "BeMicro Max 10";
+import "../Target/BeMicro Max 10";
+//------------------------------------------------------------------------------
 
-// import "../Target/BeMicro Max 10";
-// 
-// alias LED    = USER_LED;
-// alias Button = SW;
-// 
-// LED := :(Button, ~Button);
-// 
-// ADT7420.SCL = AD5681R.SCL;
-// 
-// net Data = 0;
-// 
-// ADT7420.SDA'pullup  = true;
-// ADT7420.SDA.driver  = 0;
-// ADT7420.SDA.enabled = ~Data;
-// 
-// num MyNumber = 1.23456;
-// 
-// num LED_Width     = LED'width;
-// num LED_FullScale = LED'fullscale;
-// num LED_Current   = LED'current;
-// 
-// net(14, 3 ) TestNet = LED;
-// 
-// pin(14, 3 ) Testing01 =  0.1 *TestNet;
-// pin(14, 3 ) Testing02 = 10   *TestNet;
-// pin(14, 3 ) Testing03 =  4   *TestNet;
-// pin(14, 3 ) Testing04 =  0.25*TestNet;
-// 
-// pin(14, pi) Testing05 =  0.1 *TestNet;
-// pin(14, pi) Testing06 = 10   *TestNet;
-// pin(14, pi) Testing07 =  4   *TestNet;
-// pin(14, pi) Testing08 =  0.25*TestNet;
-// 
-// net(14)        TestNet2 = 123;
-// pin(14, 1p100) Testing09 = TestNet2;
-// 
-// pin(14, 255.99999999999) Testing10 = TestNet2;
-// 
-// Testing05 *= TestNet;
-// 
-// LVDS_TX = 0xABC;
-// 
-// net(16, 1) a  = 0.123;
-// pin(32, 1) b  = 2*a;
-// pin(32, 1) c := 2*a;
-// 
-// pin( 8) d = 123;
-// pin(40) e = a`5;
-// 
-// GPIO := Testing05;
-// 
-// pin( 8) uA, uB, uC, uD, uE, uF;
-// pin(-7) sA, sB, sC, sD;
-// 
-// pin( 16) uA_uB = uA * uB;
-// pin(-15) sA_uB = sA * uB;
-// pin(-15) uA_sB = uA * sB;
-// pin(-15) sA_sB = sA * sB;
-// 
-// uA =    0;
-// uB =  127;
-// uC =  128;
-// uD =  255;
-// uE = -127;
-// uF = -128;
-// 
-// sA =    0;
-// sB =  127;
-// sC = -127;
-// sD = -128;
-// 
-// net(14, -3 ) SignedNet = -1.23;
-// 
-// pin(14, -3 ) Signed01 =  0.1 *SignedNet;
-// pin(14, -3 ) Signed02 = 10   *SignedNet;
-// pin(14, -3 ) Signed03 =  4   *SignedNet;
-// pin(14, -3 ) Signed04 =  0.25*SignedNet;
-// 
-// pin(14, -pi) Signed05 =  0.1 *SignedNet;
-// pin(14, -pi) Signed06 = 10   *SignedNet;
-// pin(14, -pi) Signed07 =  4   *SignedNet;
-// pin(14, -pi) Signed08 =  0.25*SignedNet;
+// Alias traversal
 
-// pin(  8, 1) A;
-// pin(-16, 1) B = A * -10;
-// pin( -8, 1) C = -A;
+alias LED    = USER_LED;
+alias Button = SW;
 
-// pin( 8) uA, uB, uC, uD, uE, uF;
-// pin(-7) sA, sB, sC, sD;
-// 
-// pin( 9) uA_uB = uA - uB;
-// pin(-8) sA_uB = sA - uB;
-// pin(-8) uA_sB = uA - sB;
-// pin(-8) sA_sB = sA - sB;
+LED := :(Button, ~Button);
+//------------------------------------------------------------------------------
 
-pin(8) A;
-pin(8) C;
-pin(8) B = A / 8;
+// Group member lookup
+
+ADT7420.SCL = AD5681R.SCL;
+//------------------------------------------------------------------------------
+
+// Pin members
+
+net Data = 0;
+
+ADT7420.SDA'pullup  = true;
+ADT7420.SDA.driver  = 0;
+ADT7420.SDA.enabled = ~Data;
+//------------------------------------------------------------------------------
+
+// Attribute lookup
+
+num LED_Width     = LED'width;
+num LED_FullScale = LED'fullscale;
+num LED_Current   = LED'current;
+//------------------------------------------------------------------------------
+
+// Unsigned fixed-point scaling on multiplication operations
+
+num Number = 1.23456;
+
+net(14, 3 ) FP_U_TestNet = LED;
+
+pin(14, 3 ) FP_U_Test01 =  0.1 *FP_U_TestNet;
+pin(14, 3 ) FP_U_Test02 = 10   *FP_U_TestNet;
+pin(14, 3 ) FP_U_Test03 =  4   *FP_U_TestNet;
+pin(14, 3 ) FP_U_Test04 =  0.25*FP_U_TestNet;
+
+pin(14, pi) FP_U_Test05 =  0.1 *FP_U_TestNet;
+pin(14, pi) FP_U_Test06 = 10   *FP_U_TestNet;
+pin(14, pi) FP_U_Test07 =  4   *FP_U_TestNet;
+pin(14, pi) FP_U_Test08 =  0.25*FP_U_TestNet;
+
+net(14)        FP_U_TestNet2 = 123;
+pin(14, 1p100) FP_U_Test09 = FP_U_TestNet2;
+
+pin(14, 255.99999999999) FP_U_Test10 = FP_U_TestNet2;
+
+FP_U_Test05 *= FP_U_TestNet;
+
+LVDS_TX = 0xABC;
+
+net(16, 1) FP_U_Test20  = 0.123;
+pin(32, 1) FP_U_Test21  = 2*FP_U_Test20;
+pin(32, 1) FP_U_Test22 := 2*FP_U_Test20;
+
+pin( 8) FP_U_Test23 = 123;
+pin(40) FP_U_Test24 = FP_U_Test20`5;
+
+GPIO := FP_U_Test05;
+//------------------------------------------------------------------------------
+
+// Correct multiply mixed-singed edge-case handling
+
+pin( 8) Mul_MS_uA, Mul_MS_uB, Mul_MS_uC, Mul_MS_uD, Mul_MS_uE, Mul_MS_uF;
+pin(-7) Mul_MS_sA, Mul_MS_sB, Mul_MS_sC, Mul_MS_sD;
+
+pin( 16) Mul_MS_uA_uB = Mul_MS_uA * Mul_MS_uB;
+pin(-15) Mul_MS_sA_uB = Mul_MS_sA * Mul_MS_uB;
+pin(-15) Mul_MS_uA_sB = Mul_MS_uA * Mul_MS_sB;
+pin(-15) Mul_MS_sA_sB = Mul_MS_sA * Mul_MS_sB;
+
+Mul_MS_uA =    0;
+Mul_MS_uB =  127;
+Mul_MS_uC =  128;
+Mul_MS_uD =  255;
+Mul_MS_uE = -127;
+Mul_MS_uF = -128;
+
+Mul_MS_sA =    0;
+Mul_MS_sB =  127;
+Mul_MS_sC = -127;
+Mul_MS_sD = -128;
+//------------------------------------------------------------------------------
+
+// Signed fixed-point scaling on multiplication operations
+net(14, -3 ) FP_S_TestNet = -1.23;
+
+pin(14, -3 ) FP_S_Test01 =  0.1 *FP_S_TestNet;
+pin(14, -3 ) FP_S_Test02 = 10   *FP_S_TestNet;
+pin(14, -3 ) FP_S_Test03 =  4   *FP_S_TestNet;
+pin(14, -3 ) FP_S_Test04 =  0.25*FP_S_TestNet;
+
+pin(14, -pi) FP_S_Test05 =  0.1 *FP_S_TestNet;
+pin(14, -pi) FP_S_Test06 = 10   *FP_S_TestNet;
+pin(14, -pi) FP_S_Test07 =  4   *FP_S_TestNet;
+pin(14, -pi) FP_S_Test08 =  0.25*FP_S_TestNet;
+
+pin(  8, 1) FP_S_Test10;
+pin(-16, 1) FP_S_Test11 =  FP_S_Test10 * -10;
+pin( -8, 1) FP_S_Test12 = -FP_S_Test10;
+//------------------------------------------------------------------------------
+
+// Add and Subtract mixed-signed
+
+pin( 8, 1) AS_MS_uA, AS_MS_uB, AS_MS_uC, AS_MS_uD, AS_MS_uE, AS_MS_uF;
+pin(-7, 1) AS_MS_sA, AS_MS_sB, AS_MS_sC, AS_MS_sD;
+
+pin( 9, 2) Add_MS_uA_uB = AS_MS_uA + AS_MS_uB;
+pin(-8, 2) Add_MS_sA_uB = AS_MS_sA + AS_MS_uB;
+pin(-8, 2) Add_MS_uA_sB = AS_MS_uA + AS_MS_sB;
+pin(-8, 2) Add_MS_sA_sB = AS_MS_sA + AS_MS_sB;
+
+pin( 9, 2) Sub_MS_uA_uB = AS_MS_uA - AS_MS_uB;
+pin(-8, 2) Sub_MS_sA_uB = AS_MS_sA - AS_MS_uB;
+pin(-8, 2) Sub_MS_uA_sB = AS_MS_uA - AS_MS_sB;
+pin(-8, 2) Sub_MS_sA_sB = AS_MS_sA - AS_MS_sB;
+//------------------------------------------------------------------------------
+
+// Multiply and divide
+
+pin(8, 1) MD_A;
+pin(8, 1) MD_B;
+pin(8, 1) MD_C = MD_A * MD_B / pi;
+//------------------------------------------------------------------------------
 
