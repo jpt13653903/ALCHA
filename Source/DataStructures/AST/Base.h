@@ -191,7 +191,7 @@ namespace AST{
 
       // Runs through the AST:
       // - Builds the namespaces
-      // - Creates object instances
+      // - Creates object instances (including temporary wires)
       // - Evaluates scripting expressions
       // - Runs import statements
       virtual bool RunAST() = 0;

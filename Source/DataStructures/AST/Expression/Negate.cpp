@@ -53,7 +53,13 @@ BASE* NEGATE::Copy(){
 
 bool NEGATE::GetVerilog(string& Body){
   Body += "-(";
-  Right->GetVerilog(Body);
+  if(Right->GetSigned()){
+    Right->GetVerilog(Body);
+  }else{
+    Body += "$signed(";
+    Right->GetVerilog(Body);
+    Body += ")";
+  }
   Body += ")";
 
   return true;
@@ -74,21 +80,7 @@ EXPRESSION* NEGATE::Evaluate(){
       return Result;
     }
     case TYPE::Object:{
-      error("Not yet implemented");
-      return this;
-      // auto Net = new NETLIST::NET(Source.Line, Source.Filename, 0);
-      // Net->Value = this;
-  
-      // auto ObjectRef = ((OBJECT*)Right)->ObjectRef;
-      // if(ObjectRef && ObjectRef->IsSynthesisable()){
-      //   auto Synthesisable = (NETLIST::SYNTHESISABLE*)ObjectRef;
-      //   Net->SetFixedPoint(Synthesisable->Width(), Synthesisable->FullScale());
-      // }
-      // NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
-  
-      // auto Object = new OBJECT(Source.Line, Source.Filename);
-      // Object->ObjectRef = Net;
-      // return Object;
+      return MakeObject();
     }
     default:
       break;
@@ -98,37 +90,37 @@ EXPRESSION* NEGATE::Evaluate(){
 //------------------------------------------------------------------------------
 
 int NEGATE::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+  assert(Right, return false);
+  return Right->GetWidth();
 }
 //------------------------------------------------------------------------------
 
 NUMBER& NEGATE::GetFullScale(){
-  error("Not yet implemented");
   static NUMBER zero = 0;
-  return zero;
+  assert(Right, return zero);
+  return Right->GetFullScale();
 }
 //------------------------------------------------------------------------------
 
 bool NEGATE::GetSigned(){
-  error("Not yet implemented");
-  return false;
+  return true;
 }
 //------------------------------------------------------------------------------
 
 bool NEGATE::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+  assert(Right, return false);
+  return Right->HasCircularReference(Object);
 }
 //------------------------------------------------------------------------------
 
 void NEGATE::PopulateUsed(){
-  error("Not yet implemented");
+  assert(Right, return);
+  Right->PopulateUsed();
 }
 //------------------------------------------------------------------------------
 
 EXPRESSION* NEGATE::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
+  if(Right) Right = Right->RemoveTempNet(0, false);
   return this;
 }
 //------------------------------------------------------------------------------

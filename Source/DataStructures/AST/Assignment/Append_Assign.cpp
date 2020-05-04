@@ -110,11 +110,10 @@ void APPEND_ASSIGN::Display(){
 void APPEND_ASSIGN::ValidateMembers(){
   assert(Type == TYPE::Append_Assign);
 
-  assert(Left , return);
-  assert(Right, return);
+  assert(Left, return);
+  Left->Validate();
 
-  Left ->Validate();
-  Right->Validate();
+  if(Right) Right->Validate();
 }
 //------------------------------------------------------------------------------
 

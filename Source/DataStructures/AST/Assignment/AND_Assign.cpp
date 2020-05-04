@@ -109,11 +109,10 @@ void AND_ASSIGN::Display(){
 void AND_ASSIGN::ValidateMembers(){
   assert(Type == TYPE::AND_Assign);
 
-  assert(Left , return);
-  assert(Right, return);
+  assert(Left, return);
+  Left->Validate();
 
-  Left ->Validate();
-  Right->Validate();
+  if(Right) Right->Validate();
 }
 //------------------------------------------------------------------------------
 

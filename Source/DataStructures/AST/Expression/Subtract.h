@@ -26,28 +26,38 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct SUBTRACT: public EXPRESSION{
-    SUBTRACT(int Line, const std::string& Filename);
-    SUBTRACT(int Line, const char*        Filename);
-   ~SUBTRACT();
+  class SUBTRACT: public EXPRESSION{
+    private:
+      // Result format, calculated in Evaluate()
+      int    ResultWidth = 0;
+      NUMBER ResultFullScale;
+      bool   ResultSigned = false;
 
-    BASE* Copy() override;
+      // Helper function to subtract literals from objects, or vice versa
+      EXPRESSION* SubtractLiteral(EXPRESSION* Object, EXPRESSION* Literal);
 
-    bool GetVerilog(std::string& Body) override;
-    EXPRESSION* Evaluate() override;
+    public: // Public interface
+      SUBTRACT(int Line, const std::string& Filename);
+      SUBTRACT(int Line, const char*        Filename);
+     ~SUBTRACT();
 
-    int     GetWidth    () override;
-    NUMBER& GetFullScale() override;
-    bool    GetSigned   () override;
+      BASE* Copy() override;
 
-    bool HasCircularReference(NETLIST::BASE* Object) override;
-    void PopulateUsed() override;
+      bool GetVerilog(std::string& Body) override;
+      EXPRESSION* Evaluate() override;
 
-    EXPRESSION* RemoveTempNet(int Width, bool Signed) override;
+      int     GetWidth    () override;
+      NUMBER& GetFullScale() override;
+      bool    GetSigned   () override;
 
-    void Display() override;
+      bool HasCircularReference(NETLIST::BASE* Object) override;
+      void PopulateUsed() override;
 
-    void ValidateMembers() override;
+      EXPRESSION* RemoveTempNet(int Width, bool Signed) override;
+
+      void Display() override;
+
+      void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------

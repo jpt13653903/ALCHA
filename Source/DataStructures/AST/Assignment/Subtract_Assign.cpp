@@ -109,11 +109,10 @@ void SUBTRACT_ASSIGN::Display(){
 void SUBTRACT_ASSIGN::ValidateMembers(){
   assert(Type == TYPE::Subtract_Assign);
 
-  assert(Left , return);
-  assert(Right, return);
+  assert(Left, return);
+  Left->Validate();
 
-  Left ->Validate();
-  Right->Validate();
+  if(Right) Right->Validate();
 }
 //------------------------------------------------------------------------------
 

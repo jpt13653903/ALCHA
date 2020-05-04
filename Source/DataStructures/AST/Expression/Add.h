@@ -26,28 +26,38 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct ADD: public EXPRESSION{
-    ADD(int Line, const std::string& Filename);
-    ADD(int Line, const char*        Filename);
-   ~ADD();
+  class ADD: public EXPRESSION{
+    private:
+      // Result format, calculated in Evaluate()
+      int    ResultWidth = 0;
+      NUMBER ResultFullScale;
+      bool   ResultSigned = false;
 
-    BASE* Copy() override;
+      // Helper function to add literals to objects
+      EXPRESSION* AddLiteral(EXPRESSION* Object, EXPRESSION* Literal);
 
-    bool GetVerilog(std::string& Body) override;
-    EXPRESSION* Evaluate() override;
+    public: // Public interface
+      ADD(int Line, const std::string& Filename);
+      ADD(int Line, const char*        Filename);
+     ~ADD();
 
-    int     GetWidth    () override;
-    NUMBER& GetFullScale() override;
-    bool    GetSigned   () override;
+      BASE* Copy() override;
 
-    bool HasCircularReference(NETLIST::BASE* Object) override;
-    void PopulateUsed() override;
+      bool GetVerilog(std::string& Body) override;
+      EXPRESSION* Evaluate() override;
 
-    EXPRESSION* RemoveTempNet(int Width, bool Signed) override;
+      int     GetWidth    () override;
+      NUMBER& GetFullScale() override;
+      bool    GetSigned   () override;
 
-    void Display() override;
+      bool HasCircularReference(NETLIST::BASE* Object) override;
+      void PopulateUsed() override;
 
-    void ValidateMembers() override;
+      EXPRESSION* RemoveTempNet(int Width, bool Signed) override;
+
+      void Display() override;
+
+      void ValidateMembers() override;
   };
 }
 //------------------------------------------------------------------------------

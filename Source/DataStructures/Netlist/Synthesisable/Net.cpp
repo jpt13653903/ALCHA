@@ -49,7 +49,7 @@ bool NET::Assign(AST::EXPRESSION* Expression){
   assert(Expression, return false);
 
   Expression = Expression->Evaluate();
-  assert(Expression, return false);
+  if(!Expression) return false;
 
   switch(Expression->Type){
     case AST::BASE::TYPE::Literal:{
