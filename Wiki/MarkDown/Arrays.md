@@ -1,6 +1,37 @@
-[[include repo=code path=Wiki/MarkDown/Header.md]]
+# ALCHA
 
-[TOC]
+<img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
+The ALCHA project, including the language grammar and, by extension, this 
+wiki, is under development.  This wiki serves as a documentation of the 
+project goals and aspirations, which are inherently unstable and subject to 
+change without notice.
+
+--------------------------------------------------------------------------------
+
+## Table of Contents
+
+- [Introduction](Introduction.md)
+- [Lexical](Lexical.md)
+- [Grammar](Grammar.md)
+- [Modules](Modules.md)
+- [Declarations](Declarations.md)
+- [Expressions](Expressions.md)
+- [Statements](Statements.md)
+- [Arrays](Arrays.md#arrays)
+  - [Defining Arrays](#defining-arrays)
+  - [Slices](#slices)
+  - [Array Literals and Concatenation](#array-literals-and-concatenation)
+  - [Vectorised Statements](#vectorised-statements)
+- [Functions](Functions.md)
+- [Synchronous Circuits](SynchronousCircuits.md)
+- [Classes](Classes.md)
+- [Operator Overloading](OperatorOverloading.md)
+- [Scripting Features](Scripting.md)
+- [Advanced Attributes](AdvancedAttributes.md)
+- [High-level Structures](HighLevelStructures.md)
+- [Simulation and Verification](Simulation.md)
+
+--------------------------------------------------------------------------------
 
 # Arrays
 
@@ -81,5 +112,5 @@ When an array is used as the condition of an `if` statement or `while` loop, the
 
 When a scalar is involved in a vectorised operation, the scalar is repeated for every instance of the operation.  This can be used, for instance, to assign a scalar to every element of an array.
 
-[[include repo=code path=Wiki/MarkDown/Footer.md]]
+--------------------------------------------------------------------------------
 

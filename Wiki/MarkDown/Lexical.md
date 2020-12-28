@@ -1,12 +1,46 @@
-[[include repo=code path=Wiki/MarkDown/Header.md]]
+# ALCHA
 
-[TOC]
+<img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
+The ALCHA project, including the language grammar and, by extension, this 
+wiki, is under development.  This wiki serves as a documentation of the 
+project goals and aspirations, which are inherently unstable and subject to 
+change without notice.
+
+--------------------------------------------------------------------------------
+
+## Table of Contents
+
+- [Introduction](Introduction.md)
+- [Lexical](Lexical.md#lexical)
+  - [Literals](#literals)
+  - [Identifiers](#identifiers)
+  - [Predefined Constants](#predefined-constants)
+  - [Special Keywords](#special-keywords)
+  - [Syntax Highlighting Scripts](#syntax-highlighting-scripts)
+- [Grammar](Grammar.md)
+- [Modules](Modules.md)
+- [Declarations](Declarations.md)
+- [Expressions](Expressions.md)
+- [Statements](Statements.md)
+- [Arrays](Arrays.md)
+- [Functions](Functions.md)
+- [Synchronous Circuits](SynchronousCircuits.md)
+- [Classes](Classes.md)
+- [Operator Overloading](OperatorOverloading.md)
+- [Scripting Features](Scripting.md)
+- [Advanced Attributes](AdvancedAttributes.md)
+- [High-level Structures](HighLevelStructures.md)
+- [Simulation and Verification](Simulation.md)
+
+--------------------------------------------------------------------------------
 
 # Lexical
 
-The scanner reads UTF-8 formatted files.  The UTF-8 formatting is retained, even though the input stream is searched for Unicode space and newline characters.  At this stage, white-space and comments are ignored, adjacent strings are concatenated and escape sequences within strings are evaluated.  The lexical EBNF is presented below:
-
-[[include repo=code path=Wiki/EBNF/Scanner.ebnf]]
+The scanner reads UTF-8 formatted files.  The UTF-8 formatting is retained, 
+even though the input stream is searched for Unicode space and newline 
+characters.  At this stage, white-space and comments are ignored, adjacent 
+strings are concatenated and escape sequences within strings are
+evaluated.  The lexical EBNF is available [here](../EBNF/Scanner.ebnf).
 
 ## Literals
 
@@ -93,5 +127,5 @@ Keyword         | Description
 
 Syntax highlighting scripts are available from [the repository](https://sourceforge.net/p/alcha/code/ci/master/tree/Syntax%20Highlighting).
 
-[[include repo=code path=Wiki/MarkDown/Footer.md]]
+--------------------------------------------------------------------------------
 

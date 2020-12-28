@@ -1,6 +1,35 @@
-[[include repo=code path=Wiki/MarkDown/Header.md]]
+# ALCHA
 
-[TOC]
+<img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
+The ALCHA project, including the language grammar and, by extension, this 
+wiki, is under development.  This wiki serves as a documentation of the 
+project goals and aspirations, which are inherently unstable and subject to 
+change without notice.
+
+--------------------------------------------------------------------------------
+
+## Table of Contents
+
+- [Introduction](Introduction.md)
+- [Lexical](Lexical.md)
+- [Grammar](Grammar.md)
+- [Modules](Modules.md#modules)
+  - [Target Independence](#target-independence)
+  - [Import and Name-space](#import-and-name-space)
+- [Declarations](Declarations.md)
+- [Expressions](Expressions.md)
+- [Statements](Statements.md)
+- [Arrays](Arrays.md)
+- [Functions](Functions.md)
+- [Synchronous Circuits](SynchronousCircuits.md)
+- [Classes](Classes.md)
+- [Operator Overloading](OperatorOverloading.md)
+- [Scripting Features](Scripting.md)
+- [Advanced Attributes](AdvancedAttributes.md)
+- [High-level Structures](HighLevelStructures.md)
+- [Simulation and Verification](Simulation.md)
+
+--------------------------------------------------------------------------------
 
 # Modules
 
@@ -38,7 +67,7 @@ In order to promote portability, the string objects and values should be standar
 
 Conceptually, ALCHA processes the source as a whole. It is convenient, however, to break the source into a hierarchical structure of files, as presented in the figure below.  In the context of ALCHA, a "module" refers to a source file, rather than an HDL module. An ALCHA module might or might not compile to a corresponding HDL module, depending on the source contents.
 
-<center markdown>![Programming Model](https://sourceforge.net/p/alcha/code/ci/master/tree/Wiki/Figures/ProgrammingModel.svg?format=raw)</center>
+![Programming Model](../Figures/ProgrammingModel.svg)
 
 The `import` statement is used to import a child module into a parent module. There are two forms, as shown below.  The first form imports the contents of "UART.alc" into the same name-space as the parent module, as if the file contents appeared in place of the `import` statement.  The second form imports the contents of "Ethernet.alc" into the "Eth" name-space.  It is illegal to import two modules into the same name within the same module.  In both forms, the imported modules have direct access to objects in the parent module name-space.
 
@@ -74,5 +103,5 @@ When referring to a symbol, the search progresses as follows:
 1. The current node of the name-space tree is searched
 1. The name-space tree is traversed from node to parent, following the tree towards the root (which is the global namespace)
 
-[[include repo=code path=Wiki/MarkDown/Footer.md]]
+--------------------------------------------------------------------------------
 

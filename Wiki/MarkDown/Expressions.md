@@ -1,6 +1,36 @@
-[[include repo=code path=Wiki/MarkDown/Header.md]]
+# ALCHA
 
-[TOC]
+<img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
+The ALCHA project, including the language grammar and, by extension, this 
+wiki, is under development.  This wiki serves as a documentation of the 
+project goals and aspirations, which are inherently unstable and subject to 
+change without notice.
+
+--------------------------------------------------------------------------------
+
+## Table of Contents
+
+- [Introduction](Introduction.md)
+- [Lexical](Lexical.md)
+- [Grammar](Grammar.md)
+- [Modules](Modules.md)
+- [Declarations](Declarations.md)
+- [Expressions](Expressions.md#expressions)
+  - [Operators](#operators)
+  - [Global Attribute Definition and Access](#global-attribute-definition-and-access)
+  - [Net use Before Assignment](#net-use-before-assignment)
+- [Statements](Statements.md)
+- [Arrays](Arrays.md)
+- [Functions](Functions.md)
+- [Synchronous Circuits](SynchronousCircuits.md)
+- [Classes](Classes.md)
+- [Operator Overloading](OperatorOverloading.md)
+- [Scripting Features](Scripting.md)
+- [Advanced Attributes](AdvancedAttributes.md)
+- [High-level Structures](HighLevelStructures.md)
+- [Simulation and Verification](Simulation.md)
+
+--------------------------------------------------------------------------------
 
 # Expressions
 
@@ -178,5 +208,5 @@ ALCHA does, however, allow circular assignments.  These are performed by using t
 1. Assign the expression tree to the LHS net
 1. Perform garbage collection on any resulting dangling circuits
 
-[[include repo=code path=Wiki/MarkDown/Footer.md]]
+--------------------------------------------------------------------------------
 

@@ -1,6 +1,39 @@
-[[include repo=code path=Wiki/MarkDown/Header.md]]
+# ALCHA
 
-[TOC]
+<img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
+The ALCHA project, including the language grammar and, by extension, this 
+wiki, is under development.  This wiki serves as a documentation of the 
+project goals and aspirations, which are inherently unstable and subject to 
+change without notice.
+
+--------------------------------------------------------------------------------
+
+## Table of Contents
+
+- [Introduction](Introduction.md)
+- [Lexical](Lexical.md)
+- [Grammar](Grammar.md)
+- [Modules](Modules.md)
+- [Declarations](Declarations.md)
+- [Expressions](Expressions.md)
+- [Statements](Statements.md)
+- [Arrays](Arrays.md)
+- [Functions](Functions.md)
+- [Synchronous Circuits](SynchronousCircuits.md)
+- [Classes](Classes.md)
+- [Operator Overloading](OperatorOverloading.md)
+- [Scripting Features](Scripting.md#scripting-features)
+  - [Algorithmic Code Generation](#algorithmic-code-generation)
+  - [Mathematical Functions](#mathematical-functions)
+  - [I/O Functions](#io-functions)
+  - [Conversion Functions](#conversion-functions)
+  - [Dynamic Arrays](#dynamic-arrays)
+  - [Shell Commands](#shell-commands)
+- [Advanced Attributes](AdvancedAttributes.md)
+- [High-level Structures](HighLevelStructures.md)
+- [Simulation and Verification](Simulation.md)
+
+--------------------------------------------------------------------------------
 
 # Scripting Features
 
@@ -152,5 +185,5 @@ External commands can be called by means of the `shell` function.  It returns th
 
 Another use for this mechanism is to call an external scripting tool to plot data.  This could be useful to visualise the data used to initialise an instance of ROM.
 
-[[include repo=code path=Wiki/MarkDown/Footer.md]]
+--------------------------------------------------------------------------------
 

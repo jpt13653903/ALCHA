@@ -1,6 +1,39 @@
-[[include repo=code path=Wiki/MarkDown/Header.md]]
+# ALCHA
 
-[TOC]
+<img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
+The ALCHA project, including the language grammar and, by extension, this 
+wiki, is under development.  This wiki serves as a documentation of the 
+project goals and aspirations, which are inherently unstable and subject to 
+change without notice.
+
+--------------------------------------------------------------------------------
+
+## Table of Contents
+
+- [Introduction](Introduction.md)
+- [Lexical](Lexical.md)
+- [Grammar](Grammar.md)
+- [Modules](Modules.md)
+- [Declarations](Declarations.md)
+- [Expressions](Expressions.md)
+- [Statements](Statements.md)
+- [Arrays](Arrays.md)
+- [Functions](Functions.md)
+- [Synchronous Circuits](SynchronousCircuits.md#synchronous-circuits)
+  - [Clock Networks](#clock-networks)
+    - [Definition](#definition)
+    - [Global Clock Networks](#global-clock-networks)
+    - [Built-in Properties](#built-in-properties)
+  - [Register Transfer Level](#register-transfer-level)
+  - [Finite State Machines](#finite-state-machines)
+- [Classes](Classes.md)
+- [Operator Overloading](OperatorOverloading.md)
+- [Scripting Features](Scripting.md)
+- [Advanced Attributes](AdvancedAttributes.md)
+- [High-level Structures](HighLevelStructures.md)
+- [Simulation and Verification](Simulation.md)
+
+--------------------------------------------------------------------------------
 
 # Synchronous Circuits
 
@@ -239,5 +272,5 @@ This translates to:
 
 The `loop` loop is used to repeat something.  Without a parameter, a `loop` loop will run forever (or until a `break` statement is encountered).  With a parameter, the `loop(N)` loop will run for `N` iterations.
 
-[[include repo=code path=Wiki/MarkDown/Footer.md]]
+--------------------------------------------------------------------------------
 

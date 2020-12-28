@@ -1,6 +1,51 @@
-[[include repo=code path=Wiki/MarkDown/Header.md]]
+# ALCHA
 
-[TOC]
+<img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
+The ALCHA project, including the language grammar and, by extension, this 
+wiki, is under development.  This wiki serves as a documentation of the 
+project goals and aspirations, which are inherently unstable and subject to 
+change without notice.
+
+--------------------------------------------------------------------------------
+
+## Table of Contents
+
+- [Introduction](Introduction.md)
+- [Lexical](Lexical.md)
+- [Grammar](Grammar.md)
+- [Modules](Modules.md)
+- [Declarations](Declarations.md)
+- [Expressions](Expressions.md)
+- [Statements](Statements.md)
+- [Arrays](Arrays.md)
+- [Functions](Functions.md)
+- [Synchronous Circuits](SynchronousCircuits.md)
+- [Classes](Classes.md)
+- [Operator Overloading](OperatorOverloading.md)
+- [Scripting Features](Scripting.md)
+- [Advanced Attributes](AdvancedAttributes.md)
+- [High-level Structures](HighLevelStructures.md)
+- [Simulation and Verification](Simulation.md#simulation-and-verification)
+  - [Simple Test Benches](#simple-test-benches)
+    - [Stimulus-only Test Benches](#stimulus-only-test-benches)
+    - [Concurrent Processes](#concurrent-processes)
+    - [Simulation Scripting](#simulation-scripting)
+  - [Model Based Verification](#model-based-verification)
+    - [Emulating Modules](#emulating-modules)
+    - [Emulating Imported HDL](#emulating-imported-hdl)
+  - [Assertion Based Verification](#assertion-based-verification)
+    - [Simple Assertions](#simple-assertions)
+    - [Sequence Based Assertions](#sequence-based-assertions)
+    - [Advanced Sequences](#advanced-sequences)
+  - [Formal Verification](#formal-verification)
+  - [Hardware in the Loop Verification](#hardware-in-the-loop-verification)
+  - [Coverage](#coverage)
+    - [Code Coverage](#code-coverage)
+    - [Expression Coverage](#expression-coverage)
+    - [Functional Coverage](#functional-coverage)
+  - [Verification Frameworks](#verification-frameworks)
+
+--------------------------------------------------------------------------------
 
 # Simulation and Verification
 
@@ -234,7 +279,7 @@ Formal verification is related to assertion-based verification.  Assertions make
 
 Hardware-in-the-loop verification entails loading the code onto a physical FPGA and verifying functionality by means of data-injection.  The concept is depicted below.
 
-<center markdown>![Topology of typical hardware-in-the-loop verification](https://sourceforge.net/p/alcha/code/ci/master/tree/Wiki/Figures/HardwareInTheLoop.svg?format=raw)</center>
+![Topology of typical hardware-in-the-loop verification](../Figures/HardwareInTheLoop.svg)
 
 The logic analyser can be a laboratory instrument, embedded logic analyser within the FPGA firmware, or a combination of the two.  Within the ALCHA language, the user can add the `logic_analyser` attribute to any signal, which will cause the compiler to automatically generate an embedded logic analyser project file (ChipScope in Xilinx Vivado or SignalTap in Altera Quartus) that includes that signal in the sample set.
 
@@ -302,5 +347,5 @@ The `covergroup` construct is then used to group multiple `coverbins`&nbsp;const
 
 There are various simulation methodologies and industry standards.  One of the more popular ones is [UVM](https://s3.amazonaws.com/verificationacademy-news/DVCon2015/Papers/dvcon-2015_UVM-Rapid-Adoption-A-Practical-Subset-of-UVM-Paper.pdf) (Universal Verification Methodology).  It is an Accellera standard, implemented by means of a SystemVerilog library of classes.  It would be possible to implement an ALCHA based UVM library that is equivalent to the current SystemVerilog version.
 
-[[include repo=code path=Wiki/MarkDown/Footer.md]]
+--------------------------------------------------------------------------------
 

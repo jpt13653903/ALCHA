@@ -1,12 +1,46 @@
-[[include repo=code path=Wiki/MarkDown/Header.md]]
+# ALCHA
 
-[TOC]
+<img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
+The ALCHA project, including the language grammar and, by extension, this 
+wiki, is under development.  This wiki serves as a documentation of the 
+project goals and aspirations, which are inherently unstable and subject to 
+change without notice.
+
+--------------------------------------------------------------------------------
+
+## Table of Contents
+
+- [Introduction](Introduction.md#introduction)
+  - [Automated Optimisation](#automated-optimisation)
+  - [Source](#source)
+  - [References](#references)
+    - [Similar Projects](#similar-projects)
+    - [Acknowledgements](#acknowledgements)
+    - [Publications](#publications)
+    - [Bibliography](#bibliography)
+- [Lexical](Lexical.md)
+- [Grammar](Grammar.md)
+- [Modules](Modules.md)
+- [Declarations](Declarations.md)
+- [Expressions](Expressions.md)
+- [Statements](Statements.md)
+- [Arrays](Arrays.md)
+- [Functions](Functions.md)
+- [Synchronous Circuits](SynchronousCircuits.md)
+- [Classes](Classes.md)
+- [Operator Overloading](OperatorOverloading.md)
+- [Scripting Features](Scripting.md)
+- [Advanced Attributes](AdvancedAttributes.md)
+- [High-level Structures](HighLevelStructures.md)
+- [Simulation and Verification](Simulation.md)
+
+--------------------------------------------------------------------------------
 
 # Introduction
 
 ALCHA (architectural level computational hardware abstraction) is a command-line tool to generate vendor-specific FPGA projects from largely vendor-neutral text-based source code.  The image below provides a rough overview of the intended tool-chain.
 
-<center markdown>![Concept Block Diagram](https://sourceforge.net/p/alcha/code/ci/master/tree/Wiki/Figures/ConceptBlock.svg?format=raw)</center>
+![Concept Block Diagram](../Figures/ConceptBlock.svg)
 
 ALCHA is aimed at unifying the various aspects of FPGA firmware design (RTL design, finite state machines, timing and design constraints, as well as scripting) into a single language.
 
@@ -40,7 +74,7 @@ Many of the ideas of ALCHA are borrowed from other existing languages.  These in
 
 - [C++](https://isocpp.org/)
 - [D](http://dlang.org/)
-- [[[img src=https://sourceforge.net/p/alcha/code/ci/master/tree/Wiki/Figures/LaTeX.svg?format=raw]]](https://www.latex-project.org/)
+- [![LaTeX](../Figures/LaTeX.svg)](https://www.latex-project.org/)
 - [MATLAB](http://www.mathworks.com/products/matlab/)
 - [Python](https://www.python.org/)
 
@@ -119,5 +153,5 @@ Many of the ideas of ALCHA are borrowed from other existing languages.  These in
   [High-Level Synthesis with Behavioral-Level Multicycle Path Analysis](http://dx.doi.org/10.1109/TCAD.2014.2361661)
   Transactions on Computer-Aided Design of Integrated Circuits and Systems, IEEE, December 2014, Volume 33, Number 12, Pages&nbsp;1832&nbsp;&ndash;&nbsp;1845
 
-[[include repo=code path=Wiki/MarkDown/Footer.md]]
+--------------------------------------------------------------------------------
 
