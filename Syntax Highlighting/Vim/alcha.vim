@@ -109,6 +109,7 @@ syn keyword AlchaKeyword      return break continue goto
 syn keyword AlchaKeyword      func inline
 syn keyword AlchaKeyword      rtl fsm hdl
 syn keyword AlchaKeyword      stimulus emulate sequence assert wait
+syn keyword AlchaKeyword      this result
 
 " Strings
 syn match  AlchaEscape contained "\\\(n\|t\|v\|b\|r\|f\|a\|\\\|?\|'\|\"\|x\x\{2}\|u\x\{4}\|U\x\{8}\|\o\{1,11}\|&\(\d\|\a\)\{-};\)"
