@@ -97,7 +97,7 @@ syn match AlchaConstant "\<0x\(\x\|_\)\+\(\.\(\x\|_\)\+\)\?\([pPeE]_*\([+-]\?\(\
 " Keywords
 syn keyword AlchaSpecial      __FILE__ __LINE__ __DATE__ __TIME__ __CLASS__ __FUNCTION__ __NAMESPACE__
 syn keyword AlchaKeyword      true false
-syn keyword AlchaType         void auto pin net byte char num
+syn keyword AlchaType         void auto pin net byte char num string
 syn keyword AlchaStructure    class enum struct group alias
 syn keyword AlchaStorageClass input output
 syn keyword AlchaStorageClass public private protected
