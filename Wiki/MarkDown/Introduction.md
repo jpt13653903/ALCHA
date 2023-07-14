@@ -80,6 +80,10 @@ Many of the ideas of ALCHA are borrowed from other existing languages.  These in
 
 ### Publications
 
+- J Taylor
+  [ALCHA - Architectural Level Computational Hardware Abstraction: A New Programming Language for FPGA Projects](http://hdl.handle.net/11427/37117)
+  University of Cape Town, Faculty of Engineering and the Built Environment, Department of Electrical Engineering, August 2022
+
 - J Taylor and S Winberg
   [ALCHA: An Alternative Programming Model for FPGA Firmware](http://www.radarconf19.org/)
   Proceedings of International Radar Conference, Boston, IEEE, April 2019
