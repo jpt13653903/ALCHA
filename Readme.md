@@ -48,5 +48,7 @@ The functional test-cases at the moment are:
 
 ## More Information
 
+Alcha was the subject of [a PhD thesis](http://hdl.handle.net/11427/37117).
+
 See the [Wiki](https://sourceforge.net/p/alcha/wiki) for more information.
 
