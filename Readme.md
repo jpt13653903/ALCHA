@@ -1,6 +1,6 @@
 # ALCHA
 
-A New Programming Language for FPGA Projects &ndash; currently in pre-alpha.
+A New Programming Language for FPGA Projects &ndash; **currently in pre-alpha**.
 
 ALCHA aims to reduce FPGA project develop time by means of automation and abstraction,
 but without loosing the low-level control that HDLs, such as Verilog, provide.
