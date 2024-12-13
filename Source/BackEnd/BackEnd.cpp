@@ -24,7 +24,8 @@
 #include "Netlist/Synthesisable/Net.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
+using std::to_string;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 

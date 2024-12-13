@@ -22,7 +22,8 @@
 #include "CharacterNames.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
+using std::map;
 //------------------------------------------------------------------------------
 
 static bool Initialised = false;
@@ -562,17 +563,20 @@ bool SCANNER::GetNumber(TOKEN* Token, unsigned Base){
   }
 
   mpz_t num, den, exp;
-  mpz_init_set_ui(num, 0);
-  mpz_init_set_ui(den, 1);
-  mpz_init_set_ui(exp, 1);
+  // mpz_init_set_ui(num, 0);
+  // mpz_init_set_ui(den, 1);
+  // mpz_init_set_ui(exp, 1);
+  num = 0;
+  den = 1;
+  exp = 1;
 
   while(Buffer[Index]){
     while(Buffer[Index] == '_') Token->Data += Buffer[Index++];
 
     if(!GetDigit(&Digit, Base)) break;
 
-    mpz_mul_ui(num, num, Base);
-    mpz_add_ui(num, num, Digit);
+    num *= Base;  // mpz_mul_ui(num, num, Base);
+    num += Digit; // mpz_add_ui(num, num, Digit);
     Token->Data += Buffer[Index++];
   }
 
@@ -583,9 +587,9 @@ bool SCANNER::GetNumber(TOKEN* Token, unsigned Base){
 
       if(!GetDigit(&Digit, Base)) break;
 
-      mpz_mul_ui(num, num, Base);
-      mpz_mul_ui(den, den, Base);
-      mpz_add_ui(num, num, Digit);
+      num *= Base;  // mpz_mul_ui(num, num, Base);
+      den *= Base;  // mpz_mul_ui(den, den, Base);
+      num += Digit; // mpz_add_ui(num, num, Digit);
       Token->Data += Buffer[Index++];
     }
   }
@@ -595,15 +599,15 @@ bool SCANNER::GetNumber(TOKEN* Token, unsigned Base){
 
   if(Base == 10 && (Buffer[Index] == 'e' || Buffer[Index] == 'E')){
     Exponent = GetExponent(&Sign, Token);
-    mpz_ui_pow_ui(exp, 10, Exponent);
+    exp = pow(10, Exponent); // mpz_ui_pow_ui(exp, 10, Exponent);
 
   }else if(Buffer[Index] == 'p' || Buffer[Index] == 'P'){
     Exponent = GetExponent(&Sign, Token);
-    mpz_ui_pow_ui(exp, 2, Exponent);
+    exp = pow(2, Exponent); // mpz_ui_pow_ui(exp, 2, Exponent);
   }
 
-  if(Sign) mpz_mul(den, den, exp);
-  else     mpz_mul(num, num, exp);
+  if(Sign) den *= exp; // mpz_mul(den, den, exp);
+  else     num *= exp; // mpz_mul(num, num, exp);
 
   Token->Value.Set(num, den);
 
@@ -613,9 +617,9 @@ bool SCANNER::GetNumber(TOKEN* Token, unsigned Base){
     Token->Value.Mul(0, 1);
   }
 
-  mpz_clear(num);
-  mpz_clear(den);
-  mpz_clear(exp);
+  // mpz_clear(num);
+  // mpz_clear(den);
+  // mpz_clear(exp);
 
   return true;
 }

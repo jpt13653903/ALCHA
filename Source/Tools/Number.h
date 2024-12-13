@@ -32,7 +32,9 @@
 #include <string>
 //------------------------------------------------------------------------------
 
-#include "gmp.h"
+// #include "gmp.h"
+typedef double mpq_t;
+typedef double mpz_t;
 //------------------------------------------------------------------------------
 
 class NUMBER{
@@ -75,7 +77,7 @@ class NUMBER{
 
     // Relational comparisons for complex numbers follow the rules presented in
     // https://www.cut-the-knot.org/do_you_know/complex_compare.shtml
-    // i.e. (a + ib) < (c + id), provided either a < c or a = c and b < d. 
+    // i.e. (a + ib) < (c + id), provided either a < c or a = c and b < d.
     bool operator<  (int           i) const;
     bool operator<  (unsigned      u) const;
     bool operator<  (double        d) const;

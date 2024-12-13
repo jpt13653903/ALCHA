@@ -22,7 +22,8 @@
 #include "Netlist/Synthesisable/Pin.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
+using std::to_string;
 using namespace ALTERA;
 using namespace NETLIST;
 //------------------------------------------------------------------------------

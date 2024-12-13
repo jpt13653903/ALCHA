@@ -1,13 +1,12 @@
 ifeq ($(OS), Windows_NT)
-  # libgmp and libmpfr for Windows only works under 32-bit compilation
-  CXX      = mingw32-g++
+  CXX      = x86_64-w64-mingw32-g++.exe
   Options += -fdiagnostics-color=always
-  windres  = C:/TDM-GCC-32/bin/windres.exe
+  windres  = windres
 else
   CXX = g++
 endif
 
-Options += -std=c++11
+Options += -std=c++20
 Options += -Wall
 Options += -O2
 Options += -DDEBUG
@@ -16,21 +15,21 @@ Options += -DDEBUG
 Toolbox = ../Toolbox/Cpp
 #-------------------------------------------------------------------------------
 
-Version  = -DMAJOR_VERSION=0 -DMINOR_VERSION=1
+Version  = -DMAJOR_VERSION=0 -DMINOR_VERSION=2
 #-------------------------------------------------------------------------------
 
-Libraries  = -lgmp
+# Libraries  = -lgmp
 # Libraries += -lmpfr
 # Libraries += -lfftw3
 
 ifeq ($(OS), Windows_NT)
   Includes    = -ILibraries/include
-  Headers    += Libraries/include/gmp.h
+  # Headers    += Libraries/include/gmp.h
   # Headers    += Libraries/include/mpfr.h
   # Headers    += Libraries/include/fftw3.h
 
   LibInclude  = -LLibraries/lib
-  Objects    += Libraries/lib/libgmp.a
+  # Objects    += Libraries/lib/libgmp.a
   # Objects    += Libraries/lib/libmpfr.a
   # Objects    += Libraries/lib/libfftw3.a
 else
