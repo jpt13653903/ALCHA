@@ -5,47 +5,635 @@
 /**
 This list is used in the scanner to evaluate escape sequences of the form
 "\&nnnn;", where nnnn is any of the HTML-5 character names defined in
-https://github.com/w3c/html/blob/master/entities.json                         */
+https://html.spec.whatwg.org/entities.json                                    */
 //------------------------------------------------------------------------------
 
 static const char* CharacterNames[] = {
+  "AElig"                          , "\xC3\x86"                  , /* Æ */
+  "AMP"                            , "\x26"                      , /* & */
   "Aacute"                         , "\xC3\x81"                  , /* Á */
-  "aacute"                         , "\xC3\xA1"                  , /* á */
   "Abreve"                         , "\xC4\x82"                  , /* Ă */
+  "Acirc"                          , "\xC3\x82"                  , /* Â */
+  "Acy"                            , "\xD0\x90"                  , /* А */
+  "Afr"                            , "\xF0\x9D\x94\x84"          , /* 𝔄 */
+  "Agrave"                         , "\xC3\x80"                  , /* À */
+  "Alpha"                          , "\xCE\x91"                  , /* Α */
+  "Amacr"                          , "\xC4\x80"                  , /* Ā */
+  "And"                            , "\xE2\xA9\x93"              , /* ⩓ */
+  "Aogon"                          , "\xC4\x84"                  , /* Ą */
+  "Aopf"                           , "\xF0\x9D\x94\xB8"          , /* 𝔸 */
+  "ApplyFunction"                  , "\xE2\x81\xA1"              , /* ⁡ */
+  "Aring"                          , "\xC3\x85"                  , /* Å */
+  "Ascr"                           , "\xF0\x9D\x92\x9C"          , /* 𝒜 */
+  "Assign"                         , "\xE2\x89\x94"              , /* ≔ */
+  "Atilde"                         , "\xC3\x83"                  , /* Ã */
+  "Auml"                           , "\xC3\x84"                  , /* Ä */
+  "Backslash"                      , "\xE2\x88\x96"              , /* ∖ */
+  "Barv"                           , "\xE2\xAB\xA7"              , /* ⫧ */
+  "Barwed"                         , "\xE2\x8C\x86"              , /* ⌆ */
+  "Bcy"                            , "\xD0\x91"                  , /* Б */
+  "Because"                        , "\xE2\x88\xB5"              , /* ∵ */
+  "Bernoullis"                     , "\xE2\x84\xAC"              , /* ℬ */
+  "Beta"                           , "\xCE\x92"                  , /* Β */
+  "Bfr"                            , "\xF0\x9D\x94\x85"          , /* 𝔅 */
+  "Bopf"                           , "\xF0\x9D\x94\xB9"          , /* 𝔹 */
+  "Breve"                          , "\xCB\x98"                  , /* ˘ */
+  "Bscr"                           , "\xE2\x84\xAC"              , /* ℬ */
+  "Bumpeq"                         , "\xE2\x89\x8E"              , /* ≎ */
+  "CHcy"                           , "\xD0\xA7"                  , /* Ч */
+  "COPY"                           , "\xC2\xA9"                  , /* © */
+  "Cacute"                         , "\xC4\x86"                  , /* Ć */
+  "Cap"                            , "\xE2\x8B\x92"              , /* ⋒ */
+  "CapitalDifferentialD"           , "\xE2\x85\x85"              , /* ⅅ */
+  "Cayleys"                        , "\xE2\x84\xAD"              , /* ℭ */
+  "Ccaron"                         , "\xC4\x8C"                  , /* Č */
+  "Ccedil"                         , "\xC3\x87"                  , /* Ç */
+  "Ccirc"                          , "\xC4\x88"                  , /* Ĉ */
+  "Cconint"                        , "\xE2\x88\xB0"              , /* ∰ */
+  "Cdot"                           , "\xC4\x8A"                  , /* Ċ */
+  "Cedilla"                        , "\xC2\xB8"                  , /* ¸ */
+  "CenterDot"                      , "\xC2\xB7"                  , /* · */
+  "Cfr"                            , "\xE2\x84\xAD"              , /* ℭ */
+  "Chi"                            , "\xCE\xA7"                  , /* Χ */
+  "CircleDot"                      , "\xE2\x8A\x99"              , /* ⊙ */
+  "CircleMinus"                    , "\xE2\x8A\x96"              , /* ⊖ */
+  "CirclePlus"                     , "\xE2\x8A\x95"              , /* ⊕ */
+  "CircleTimes"                    , "\xE2\x8A\x97"              , /* ⊗ */
+  "ClockwiseContourIntegral"       , "\xE2\x88\xB2"              , /* ∲ */
+  "CloseCurlyDoubleQuote"          , "\xE2\x80\x9D"              , /* ” */
+  "CloseCurlyQuote"                , "\xE2\x80\x99"              , /* ’ */
+  "Colon"                          , "\xE2\x88\xB7"              , /* ∷ */
+  "Colone"                         , "\xE2\xA9\xB4"              , /* ⩴ */
+  "Congruent"                      , "\xE2\x89\xA1"              , /* ≡ */
+  "Conint"                         , "\xE2\x88\xAF"              , /* ∯ */
+  "ContourIntegral"                , "\xE2\x88\xAE"              , /* ∮ */
+  "Copf"                           , "\xE2\x84\x82"              , /* ℂ */
+  "Coproduct"                      , "\xE2\x88\x90"              , /* ∐ */
+  "CounterClockwiseContourIntegral", "\xE2\x88\xB3"              , /* ∳ */
+  "Cross"                          , "\xE2\xA8\xAF"              , /* ⨯ */
+  "Cscr"                           , "\xF0\x9D\x92\x9E"          , /* 𝒞 */
+  "Cup"                            , "\xE2\x8B\x93"              , /* ⋓ */
+  "CupCap"                         , "\xE2\x89\x8D"              , /* ≍ */
+  "DD"                             , "\xE2\x85\x85"              , /* ⅅ */
+  "DDotrahd"                       , "\xE2\xA4\x91"              , /* ⤑ */
+  "DJcy"                           , "\xD0\x82"                  , /* Ђ */
+  "DScy"                           , "\xD0\x85"                  , /* Ѕ */
+  "DZcy"                           , "\xD0\x8F"                  , /* Џ */
+  "Dagger"                         , "\xE2\x80\xA1"              , /* ‡ */
+  "Darr"                           , "\xE2\x86\xA1"              , /* ↡ */
+  "Dashv"                          , "\xE2\xAB\xA4"              , /* ⫤ */
+  "Dcaron"                         , "\xC4\x8E"                  , /* Ď */
+  "Dcy"                            , "\xD0\x94"                  , /* Д */
+  "Del"                            , "\xE2\x88\x87"              , /* ∇ */
+  "Delta"                          , "\xCE\x94"                  , /* Δ */
+  "Dfr"                            , "\xF0\x9D\x94\x87"          , /* 𝔇 */
+  "DiacriticalAcute"               , "\xC2\xB4"                  , /* ´ */
+  "DiacriticalDot"                 , "\xCB\x99"                  , /* ˙ */
+  "DiacriticalDoubleAcute"         , "\xCB\x9D"                  , /* ˝ */
+  "DiacriticalGrave"               , "\x60"                      , /* ` */
+  "DiacriticalTilde"               , "\xCB\x9C"                  , /* ˜ */
+  "Diamond"                        , "\xE2\x8B\x84"              , /* ⋄ */
+  "DifferentialD"                  , "\xE2\x85\x86"              , /* ⅆ */
+  "Dopf"                           , "\xF0\x9D\x94\xBB"          , /* 𝔻 */
+  "Dot"                            , "\xC2\xA8"                  , /* ¨ */
+  "DotDot"                         , "\xE2\x83\x9C"              , /* ⃜ */
+  "DotEqual"                       , "\xE2\x89\x90"              , /* ≐ */
+  "DoubleContourIntegral"          , "\xE2\x88\xAF"              , /* ∯ */
+  "DoubleDot"                      , "\xC2\xA8"                  , /* ¨ */
+  "DoubleDownArrow"                , "\xE2\x87\x93"              , /* ⇓ */
+  "DoubleLeftArrow"                , "\xE2\x87\x90"              , /* ⇐ */
+  "DoubleLeftRightArrow"           , "\xE2\x87\x94"              , /* ⇔ */
+  "DoubleLeftTee"                  , "\xE2\xAB\xA4"              , /* ⫤ */
+  "DoubleLongLeftArrow"            , "\xE2\x9F\xB8"              , /* ⟸ */
+  "DoubleLongLeftRightArrow"       , "\xE2\x9F\xBA"              , /* ⟺ */
+  "DoubleLongRightArrow"           , "\xE2\x9F\xB9"              , /* ⟹ */
+  "DoubleRightArrow"               , "\xE2\x87\x92"              , /* ⇒ */
+  "DoubleRightTee"                 , "\xE2\x8A\xA8"              , /* ⊨ */
+  "DoubleUpArrow"                  , "\xE2\x87\x91"              , /* ⇑ */
+  "DoubleUpDownArrow"              , "\xE2\x87\x95"              , /* ⇕ */
+  "DoubleVerticalBar"              , "\xE2\x88\xA5"              , /* ∥ */
+  "DownArrow"                      , "\xE2\x86\x93"              , /* ↓ */
+  "DownArrowBar"                   , "\xE2\xA4\x93"              , /* ⤓ */
+  "DownArrowUpArrow"               , "\xE2\x87\xB5"              , /* ⇵ */
+  "DownBreve"                      , "\xCC\x91"                  , /* ̑ */
+  "DownLeftRightVector"            , "\xE2\xA5\x90"              , /* ⥐ */
+  "DownLeftTeeVector"              , "\xE2\xA5\x9E"              , /* ⥞ */
+  "DownLeftVector"                 , "\xE2\x86\xBD"              , /* ↽ */
+  "DownLeftVectorBar"              , "\xE2\xA5\x96"              , /* ⥖ */
+  "DownRightTeeVector"             , "\xE2\xA5\x9F"              , /* ⥟ */
+  "DownRightVector"                , "\xE2\x87\x81"              , /* ⇁ */
+  "DownRightVectorBar"             , "\xE2\xA5\x97"              , /* ⥗ */
+  "DownTee"                        , "\xE2\x8A\xA4"              , /* ⊤ */
+  "DownTeeArrow"                   , "\xE2\x86\xA7"              , /* ↧ */
+  "Downarrow"                      , "\xE2\x87\x93"              , /* ⇓ */
+  "Dscr"                           , "\xF0\x9D\x92\x9F"          , /* 𝒟 */
+  "Dstrok"                         , "\xC4\x90"                  , /* Đ */
+  "ENG"                            , "\xC5\x8A"                  , /* Ŋ */
+  "ETH"                            , "\xC3\x90"                  , /* Ð */
+  "Eacute"                         , "\xC3\x89"                  , /* É */
+  "Ecaron"                         , "\xC4\x9A"                  , /* Ě */
+  "Ecirc"                          , "\xC3\x8A"                  , /* Ê */
+  "Ecy"                            , "\xD0\xAD"                  , /* Э */
+  "Edot"                           , "\xC4\x96"                  , /* Ė */
+  "Efr"                            , "\xF0\x9D\x94\x88"          , /* 𝔈 */
+  "Egrave"                         , "\xC3\x88"                  , /* È */
+  "Element"                        , "\xE2\x88\x88"              , /* ∈ */
+  "Emacr"                          , "\xC4\x92"                  , /* Ē */
+  "EmptySmallSquare"               , "\xE2\x97\xBB"              , /* ◻ */
+  "EmptyVerySmallSquare"           , "\xE2\x96\xAB"              , /* ▫ */
+  "Eogon"                          , "\xC4\x98"                  , /* Ę */
+  "Eopf"                           , "\xF0\x9D\x94\xBC"          , /* 𝔼 */
+  "Epsilon"                        , "\xCE\x95"                  , /* Ε */
+  "Equal"                          , "\xE2\xA9\xB5"              , /* ⩵ */
+  "EqualTilde"                     , "\xE2\x89\x82"              , /* ≂ */
+  "Equilibrium"                    , "\xE2\x87\x8C"              , /* ⇌ */
+  "Escr"                           , "\xE2\x84\xB0"              , /* ℰ */
+  "Esim"                           , "\xE2\xA9\xB3"              , /* ⩳ */
+  "Eta"                            , "\xCE\x97"                  , /* Η */
+  "Euml"                           , "\xC3\x8B"                  , /* Ë */
+  "Exists"                         , "\xE2\x88\x83"              , /* ∃ */
+  "ExponentialE"                   , "\xE2\x85\x87"              , /* ⅇ */
+  "Fcy"                            , "\xD0\xA4"                  , /* Ф */
+  "Ffr"                            , "\xF0\x9D\x94\x89"          , /* 𝔉 */
+  "FilledSmallSquare"              , "\xE2\x97\xBC"              , /* ◼ */
+  "FilledVerySmallSquare"          , "\xE2\x96\xAA"              , /* ▪ */
+  "Fopf"                           , "\xF0\x9D\x94\xBD"          , /* 𝔽 */
+  "ForAll"                         , "\xE2\x88\x80"              , /* ∀ */
+  "Fouriertrf"                     , "\xE2\x84\xB1"              , /* ℱ */
+  "Fscr"                           , "\xE2\x84\xB1"              , /* ℱ */
+  "GJcy"                           , "\xD0\x83"                  , /* Ѓ */
+  "GT"                             , "\x3E"                      , /* > */
+  "Gamma"                          , "\xCE\x93"                  , /* Γ */
+  "Gammad"                         , "\xCF\x9C"                  , /* Ϝ */
+  "Gbreve"                         , "\xC4\x9E"                  , /* Ğ */
+  "Gcedil"                         , "\xC4\xA2"                  , /* Ģ */
+  "Gcirc"                          , "\xC4\x9C"                  , /* Ĝ */
+  "Gcy"                            , "\xD0\x93"                  , /* Г */
+  "Gdot"                           , "\xC4\xA0"                  , /* Ġ */
+  "Gfr"                            , "\xF0\x9D\x94\x8A"          , /* 𝔊 */
+  "Gg"                             , "\xE2\x8B\x99"              , /* ⋙ */
+  "Gopf"                           , "\xF0\x9D\x94\xBE"          , /* 𝔾 */
+  "GreaterEqual"                   , "\xE2\x89\xA5"              , /* ≥ */
+  "GreaterEqualLess"               , "\xE2\x8B\x9B"              , /* ⋛ */
+  "GreaterFullEqual"               , "\xE2\x89\xA7"              , /* ≧ */
+  "GreaterGreater"                 , "\xE2\xAA\xA2"              , /* ⪢ */
+  "GreaterLess"                    , "\xE2\x89\xB7"              , /* ≷ */
+  "GreaterSlantEqual"              , "\xE2\xA9\xBE"              , /* ⩾ */
+  "GreaterTilde"                   , "\xE2\x89\xB3"              , /* ≳ */
+  "Gscr"                           , "\xF0\x9D\x92\xA2"          , /* 𝒢 */
+  "Gt"                             , "\xE2\x89\xAB"              , /* ≫ */
+  "HARDcy"                         , "\xD0\xAA"                  , /* Ъ */
+  "Hacek"                          , "\xCB\x87"                  , /* ˇ */
+  "Hat"                            , "\x5E"                      , /* ^ */
+  "Hcirc"                          , "\xC4\xA4"                  , /* Ĥ */
+  "Hfr"                            , "\xE2\x84\x8C"              , /* ℌ */
+  "HilbertSpace"                   , "\xE2\x84\x8B"              , /* ℋ */
+  "Hopf"                           , "\xE2\x84\x8D"              , /* ℍ */
+  "HorizontalLine"                 , "\xE2\x94\x80"              , /* ─ */
+  "Hscr"                           , "\xE2\x84\x8B"              , /* ℋ */
+  "Hstrok"                         , "\xC4\xA6"                  , /* Ħ */
+  "HumpDownHump"                   , "\xE2\x89\x8E"              , /* ≎ */
+  "HumpEqual"                      , "\xE2\x89\x8F"              , /* ≏ */
+  "IEcy"                           , "\xD0\x95"                  , /* Е */
+  "IJlig"                          , "\xC4\xB2"                  , /* Ĳ */
+  "IOcy"                           , "\xD0\x81"                  , /* Ё */
+  "Iacute"                         , "\xC3\x8D"                  , /* Í */
+  "Icirc"                          , "\xC3\x8E"                  , /* Î */
+  "Icy"                            , "\xD0\x98"                  , /* И */
+  "Idot"                           , "\xC4\xB0"                  , /* İ */
+  "Ifr"                            , "\xE2\x84\x91"              , /* ℑ */
+  "Igrave"                         , "\xC3\x8C"                  , /* Ì */
+  "Im"                             , "\xE2\x84\x91"              , /* ℑ */
+  "Imacr"                          , "\xC4\xAA"                  , /* Ī */
+  "ImaginaryI"                     , "\xE2\x85\x88"              , /* ⅈ */
+  "Implies"                        , "\xE2\x87\x92"              , /* ⇒ */
+  "Int"                            , "\xE2\x88\xAC"              , /* ∬ */
+  "Integral"                       , "\xE2\x88\xAB"              , /* ∫ */
+  "Intersection"                   , "\xE2\x8B\x82"              , /* ⋂ */
+  "InvisibleComma"                 , "\xE2\x81\xA3"              , /* ⁣ */
+  "InvisibleTimes"                 , "\xE2\x81\xA2"              , /* ⁢ */
+  "Iogon"                          , "\xC4\xAE"                  , /* Į */
+  "Iopf"                           , "\xF0\x9D\x95\x80"          , /* 𝕀 */
+  "Iota"                           , "\xCE\x99"                  , /* Ι */
+  "Iscr"                           , "\xE2\x84\x90"              , /* ℐ */
+  "Itilde"                         , "\xC4\xA8"                  , /* Ĩ */
+  "Iukcy"                          , "\xD0\x86"                  , /* І */
+  "Iuml"                           , "\xC3\x8F"                  , /* Ï */
+  "Jcirc"                          , "\xC4\xB4"                  , /* Ĵ */
+  "Jcy"                            , "\xD0\x99"                  , /* Й */
+  "Jfr"                            , "\xF0\x9D\x94\x8D"          , /* 𝔍 */
+  "Jopf"                           , "\xF0\x9D\x95\x81"          , /* 𝕁 */
+  "Jscr"                           , "\xF0\x9D\x92\xA5"          , /* 𝒥 */
+  "Jsercy"                         , "\xD0\x88"                  , /* Ј */
+  "Jukcy"                          , "\xD0\x84"                  , /* Є */
+  "KHcy"                           , "\xD0\xA5"                  , /* Х */
+  "KJcy"                           , "\xD0\x8C"                  , /* Ќ */
+  "Kappa"                          , "\xCE\x9A"                  , /* Κ */
+  "Kcedil"                         , "\xC4\xB6"                  , /* Ķ */
+  "Kcy"                            , "\xD0\x9A"                  , /* К */
+  "Kfr"                            , "\xF0\x9D\x94\x8E"          , /* 𝔎 */
+  "Kopf"                           , "\xF0\x9D\x95\x82"          , /* 𝕂 */
+  "Kscr"                           , "\xF0\x9D\x92\xA6"          , /* 𝒦 */
+  "LJcy"                           , "\xD0\x89"                  , /* Љ */
+  "LT"                             , "\x3C"                      , /* < */
+  "Lacute"                         , "\xC4\xB9"                  , /* Ĺ */
+  "Lambda"                         , "\xCE\x9B"                  , /* Λ */
+  "Lang"                           , "\xE2\x9F\xAA"              , /* ⟪ */
+  "Laplacetrf"                     , "\xE2\x84\x92"              , /* ℒ */
+  "Larr"                           , "\xE2\x86\x9E"              , /* ↞ */
+  "Lcaron"                         , "\xC4\xBD"                  , /* Ľ */
+  "Lcedil"                         , "\xC4\xBB"                  , /* Ļ */
+  "Lcy"                            , "\xD0\x9B"                  , /* Л */
+  "LeftAngleBracket"               , "\xE2\x9F\xA8"              , /* ⟨ */
+  "LeftArrow"                      , "\xE2\x86\x90"              , /* ← */
+  "LeftArrowBar"                   , "\xE2\x87\xA4"              , /* ⇤ */
+  "LeftArrowRightArrow"            , "\xE2\x87\x86"              , /* ⇆ */
+  "LeftCeiling"                    , "\xE2\x8C\x88"              , /* ⌈ */
+  "LeftDoubleBracket"              , "\xE2\x9F\xA6"              , /* ⟦ */
+  "LeftDownTeeVector"              , "\xE2\xA5\xA1"              , /* ⥡ */
+  "LeftDownVector"                 , "\xE2\x87\x83"              , /* ⇃ */
+  "LeftDownVectorBar"              , "\xE2\xA5\x99"              , /* ⥙ */
+  "LeftFloor"                      , "\xE2\x8C\x8A"              , /* ⌊ */
+  "LeftRightArrow"                 , "\xE2\x86\x94"              , /* ↔ */
+  "LeftRightVector"                , "\xE2\xA5\x8E"              , /* ⥎ */
+  "LeftTee"                        , "\xE2\x8A\xA3"              , /* ⊣ */
+  "LeftTeeArrow"                   , "\xE2\x86\xA4"              , /* ↤ */
+  "LeftTeeVector"                  , "\xE2\xA5\x9A"              , /* ⥚ */
+  "LeftTriangle"                   , "\xE2\x8A\xB2"              , /* ⊲ */
+  "LeftTriangleBar"                , "\xE2\xA7\x8F"              , /* ⧏ */
+  "LeftTriangleEqual"              , "\xE2\x8A\xB4"              , /* ⊴ */
+  "LeftUpDownVector"               , "\xE2\xA5\x91"              , /* ⥑ */
+  "LeftUpTeeVector"                , "\xE2\xA5\xA0"              , /* ⥠ */
+  "LeftUpVector"                   , "\xE2\x86\xBF"              , /* ↿ */
+  "LeftUpVectorBar"                , "\xE2\xA5\x98"              , /* ⥘ */
+  "LeftVector"                     , "\xE2\x86\xBC"              , /* ↼ */
+  "LeftVectorBar"                  , "\xE2\xA5\x92"              , /* ⥒ */
+  "Leftarrow"                      , "\xE2\x87\x90"              , /* ⇐ */
+  "Leftrightarrow"                 , "\xE2\x87\x94"              , /* ⇔ */
+  "LessEqualGreater"               , "\xE2\x8B\x9A"              , /* ⋚ */
+  "LessFullEqual"                  , "\xE2\x89\xA6"              , /* ≦ */
+  "LessGreater"                    , "\xE2\x89\xB6"              , /* ≶ */
+  "LessLess"                       , "\xE2\xAA\xA1"              , /* ⪡ */
+  "LessSlantEqual"                 , "\xE2\xA9\xBD"              , /* ⩽ */
+  "LessTilde"                      , "\xE2\x89\xB2"              , /* ≲ */
+  "Lfr"                            , "\xF0\x9D\x94\x8F"          , /* 𝔏 */
+  "Ll"                             , "\xE2\x8B\x98"              , /* ⋘ */
+  "Lleftarrow"                     , "\xE2\x87\x9A"              , /* ⇚ */
+  "Lmidot"                         , "\xC4\xBF"                  , /* Ŀ */
+  "LongLeftArrow"                  , "\xE2\x9F\xB5"              , /* ⟵ */
+  "LongLeftRightArrow"             , "\xE2\x9F\xB7"              , /* ⟷ */
+  "LongRightArrow"                 , "\xE2\x9F\xB6"              , /* ⟶ */
+  "Longleftarrow"                  , "\xE2\x9F\xB8"              , /* ⟸ */
+  "Longleftrightarrow"             , "\xE2\x9F\xBA"              , /* ⟺ */
+  "Longrightarrow"                 , "\xE2\x9F\xB9"              , /* ⟹ */
+  "Lopf"                           , "\xF0\x9D\x95\x83"          , /* 𝕃 */
+  "LowerLeftArrow"                 , "\xE2\x86\x99"              , /* ↙ */
+  "LowerRightArrow"                , "\xE2\x86\x98"              , /* ↘ */
+  "Lscr"                           , "\xE2\x84\x92"              , /* ℒ */
+  "Lsh"                            , "\xE2\x86\xB0"              , /* ↰ */
+  "Lstrok"                         , "\xC5\x81"                  , /* Ł */
+  "Lt"                             , "\xE2\x89\xAA"              , /* ≪ */
+  "Map"                            , "\xE2\xA4\x85"              , /* ⤅ */
+  "Mcy"                            , "\xD0\x9C"                  , /* М */
+  "MediumSpace"                    , "\xE2\x81\x9F"              , /*   */
+  "Mellintrf"                      , "\xE2\x84\xB3"              , /* ℳ */
+  "Mfr"                            , "\xF0\x9D\x94\x90"          , /* 𝔐 */
+  "MinusPlus"                      , "\xE2\x88\x93"              , /* ∓ */
+  "Mopf"                           , "\xF0\x9D\x95\x84"          , /* 𝕄 */
+  "Mscr"                           , "\xE2\x84\xB3"              , /* ℳ */
+  "Mu"                             , "\xCE\x9C"                  , /* Μ */
+  "NJcy"                           , "\xD0\x8A"                  , /* Њ */
+  "Nacute"                         , "\xC5\x83"                  , /* Ń */
+  "Ncaron"                         , "\xC5\x87"                  , /* Ň */
+  "Ncedil"                         , "\xC5\x85"                  , /* Ņ */
+  "Ncy"                            , "\xD0\x9D"                  , /* Н */
+  "NegativeMediumSpace"            , "\xE2\x80\x8B"              , /* ​ */
+  "NegativeThickSpace"             , "\xE2\x80\x8B"              , /* ​ */
+  "NegativeThinSpace"              , "\xE2\x80\x8B"              , /* ​ */
+  "NegativeVeryThinSpace"          , "\xE2\x80\x8B"              , /* ​ */
+  "NestedGreaterGreater"           , "\xE2\x89\xAB"              , /* ≫ */
+  "NestedLessLess"                 , "\xE2\x89\xAA"              , /* ≪ */
+  "NewLine"                        , "\x0A"                      , /*   */
+  "Nfr"                            , "\xF0\x9D\x94\x91"          , /* 𝔑 */
+  "NoBreak"                        , "\xE2\x81\xA0"              , /* ⁠ */
+  "NonBreakingSpace"               , "\xC2\xA0"                  , /*   */
+  "Nopf"                           , "\xE2\x84\x95"              , /* ℕ */
+  "Not"                            , "\xE2\xAB\xAC"              , /* ⫬ */
+  "NotCongruent"                   , "\xE2\x89\xA2"              , /* ≢ */
+  "NotCupCap"                      , "\xE2\x89\xAD"              , /* ≭ */
+  "NotDoubleVerticalBar"           , "\xE2\x88\xA6"              , /* ∦ */
+  "NotElement"                     , "\xE2\x88\x89"              , /* ∉ */
+  "NotEqual"                       , "\xE2\x89\xA0"              , /* ≠ */
+  "NotEqualTilde"                  , "\xE2\x89\x82\xCC\xB8"      , /* ≂̸ */
+  "NotExists"                      , "\xE2\x88\x84"              , /* ∄ */
+  "NotGreater"                     , "\xE2\x89\xAF"              , /* ≯ */
+  "NotGreaterEqual"                , "\xE2\x89\xB1"              , /* ≱ */
+  "NotGreaterFullEqual"            , "\xE2\x89\xA7\xCC\xB8"      , /* ≧̸ */
+  "NotGreaterGreater"              , "\xE2\x89\xAB\xCC\xB8"      , /* ≫̸ */
+  "NotGreaterLess"                 , "\xE2\x89\xB9"              , /* ≹ */
+  "NotGreaterSlantEqual"           , "\xE2\xA9\xBE\xCC\xB8"      , /* ⩾̸ */
+  "NotGreaterTilde"                , "\xE2\x89\xB5"              , /* ≵ */
+  "NotHumpDownHump"                , "\xE2\x89\x8E\xCC\xB8"      , /* ≎̸ */
+  "NotHumpEqual"                   , "\xE2\x89\x8F\xCC\xB8"      , /* ≏̸ */
+  "NotLeftTriangle"                , "\xE2\x8B\xAA"              , /* ⋪ */
+  "NotLeftTriangleBar"             , "\xE2\xA7\x8F\xCC\xB8"      , /* ⧏̸ */
+  "NotLeftTriangleEqual"           , "\xE2\x8B\xAC"              , /* ⋬ */
+  "NotLess"                        , "\xE2\x89\xAE"              , /* ≮ */
+  "NotLessEqual"                   , "\xE2\x89\xB0"              , /* ≰ */
+  "NotLessGreater"                 , "\xE2\x89\xB8"              , /* ≸ */
+  "NotLessLess"                    , "\xE2\x89\xAA\xCC\xB8"      , /* ≪̸ */
+  "NotLessSlantEqual"              , "\xE2\xA9\xBD\xCC\xB8"      , /* ⩽̸ */
+  "NotLessTilde"                   , "\xE2\x89\xB4"              , /* ≴ */
+  "NotNestedGreaterGreater"        , "\xE2\xAA\xA2\xCC\xB8"      , /* ⪢̸ */
+  "NotNestedLessLess"              , "\xE2\xAA\xA1\xCC\xB8"      , /* ⪡̸ */
+  "NotPrecedes"                    , "\xE2\x8A\x80"              , /* ⊀ */
+  "NotPrecedesEqual"               , "\xE2\xAA\xAF\xCC\xB8"      , /* ⪯̸ */
+  "NotPrecedesSlantEqual"          , "\xE2\x8B\xA0"              , /* ⋠ */
+  "NotReverseElement"              , "\xE2\x88\x8C"              , /* ∌ */
+  "NotRightTriangle"               , "\xE2\x8B\xAB"              , /* ⋫ */
+  "NotRightTriangleBar"            , "\xE2\xA7\x90\xCC\xB8"      , /* ⧐̸ */
+  "NotRightTriangleEqual"          , "\xE2\x8B\xAD"              , /* ⋭ */
+  "NotSquareSubset"                , "\xE2\x8A\x8F\xCC\xB8"      , /* ⊏̸ */
+  "NotSquareSubsetEqual"           , "\xE2\x8B\xA2"              , /* ⋢ */
+  "NotSquareSuperset"              , "\xE2\x8A\x90\xCC\xB8"      , /* ⊐̸ */
+  "NotSquareSupersetEqual"         , "\xE2\x8B\xA3"              , /* ⋣ */
+  "NotSubset"                      , "\xE2\x8A\x82\xE2\x83\x92"  , /* ⊂⃒ */
+  "NotSubsetEqual"                 , "\xE2\x8A\x88"              , /* ⊈ */
+  "NotSucceeds"                    , "\xE2\x8A\x81"              , /* ⊁ */
+  "NotSucceedsEqual"               , "\xE2\xAA\xB0\xCC\xB8"      , /* ⪰̸ */
+  "NotSucceedsSlantEqual"          , "\xE2\x8B\xA1"              , /* ⋡ */
+  "NotSucceedsTilde"               , "\xE2\x89\xBF\xCC\xB8"      , /* ≿̸ */
+  "NotSuperset"                    , "\xE2\x8A\x83\xE2\x83\x92"  , /* ⊃⃒ */
+  "NotSupersetEqual"               , "\xE2\x8A\x89"              , /* ⊉ */
+  "NotTilde"                       , "\xE2\x89\x81"              , /* ≁ */
+  "NotTildeEqual"                  , "\xE2\x89\x84"              , /* ≄ */
+  "NotTildeFullEqual"              , "\xE2\x89\x87"              , /* ≇ */
+  "NotTildeTilde"                  , "\xE2\x89\x89"              , /* ≉ */
+  "NotVerticalBar"                 , "\xE2\x88\xA4"              , /* ∤ */
+  "Nscr"                           , "\xF0\x9D\x92\xA9"          , /* 𝒩 */
+  "Ntilde"                         , "\xC3\x91"                  , /* Ñ */
+  "Nu"                             , "\xCE\x9D"                  , /* Ν */
+  "OElig"                          , "\xC5\x92"                  , /* Œ */
+  "Oacute"                         , "\xC3\x93"                  , /* Ó */
+  "Ocirc"                          , "\xC3\x94"                  , /* Ô */
+  "Ocy"                            , "\xD0\x9E"                  , /* О */
+  "Odblac"                         , "\xC5\x90"                  , /* Ő */
+  "Ofr"                            , "\xF0\x9D\x94\x92"          , /* 𝔒 */
+  "Ograve"                         , "\xC3\x92"                  , /* Ò */
+  "Omacr"                          , "\xC5\x8C"                  , /* Ō */
+  "Omega"                          , "\xCE\xA9"                  , /* Ω */
+  "Omicron"                        , "\xCE\x9F"                  , /* Ο */
+  "Oopf"                           , "\xF0\x9D\x95\x86"          , /* 𝕆 */
+  "OpenCurlyDoubleQuote"           , "\xE2\x80\x9C"              , /* “ */
+  "OpenCurlyQuote"                 , "\xE2\x80\x98"              , /* ‘ */
+  "Or"                             , "\xE2\xA9\x94"              , /* ⩔ */
+  "Oscr"                           , "\xF0\x9D\x92\xAA"          , /* 𝒪 */
+  "Oslash"                         , "\xC3\x98"                  , /* Ø */
+  "Otilde"                         , "\xC3\x95"                  , /* Õ */
+  "Otimes"                         , "\xE2\xA8\xB7"              , /* ⨷ */
+  "Ouml"                           , "\xC3\x96"                  , /* Ö */
+  "OverBar"                        , "\xE2\x80\xBE"              , /* ‾ */
+  "OverBrace"                      , "\xE2\x8F\x9E"              , /* ⏞ */
+  "OverBracket"                    , "\xE2\x8E\xB4"              , /* ⎴ */
+  "OverParenthesis"                , "\xE2\x8F\x9C"              , /* ⏜ */
+  "PartialD"                       , "\xE2\x88\x82"              , /* ∂ */
+  "Pcy"                            , "\xD0\x9F"                  , /* П */
+  "Pfr"                            , "\xF0\x9D\x94\x93"          , /* 𝔓 */
+  "Phi"                            , "\xCE\xA6"                  , /* Φ */
+  "Pi"                             , "\xCE\xA0"                  , /* Π */
+  "PlusMinus"                      , "\xC2\xB1"                  , /* ± */
+  "Poincareplane"                  , "\xE2\x84\x8C"              , /* ℌ */
+  "Popf"                           , "\xE2\x84\x99"              , /* ℙ */
+  "Pr"                             , "\xE2\xAA\xBB"              , /* ⪻ */
+  "Precedes"                       , "\xE2\x89\xBA"              , /* ≺ */
+  "PrecedesEqual"                  , "\xE2\xAA\xAF"              , /* ⪯ */
+  "PrecedesSlantEqual"             , "\xE2\x89\xBC"              , /* ≼ */
+  "PrecedesTilde"                  , "\xE2\x89\xBE"              , /* ≾ */
+  "Prime"                          , "\xE2\x80\xB3"              , /* ″ */
+  "Product"                        , "\xE2\x88\x8F"              , /* ∏ */
+  "Proportion"                     , "\xE2\x88\xB7"              , /* ∷ */
+  "Proportional"                   , "\xE2\x88\x9D"              , /* ∝ */
+  "Pscr"                           , "\xF0\x9D\x92\xAB"          , /* 𝒫 */
+  "Psi"                            , "\xCE\xA8"                  , /* Ψ */
+  "QUOT"                           , "\x22"                      , /* " */
+  "Qfr"                            , "\xF0\x9D\x94\x94"          , /* 𝔔 */
+  "Qopf"                           , "\xE2\x84\x9A"              , /* ℚ */
+  "Qscr"                           , "\xF0\x9D\x92\xAC"          , /* 𝒬 */
+  "RBarr"                          , "\xE2\xA4\x90"              , /* ⤐ */
+  "REG"                            , "\xC2\xAE"                  , /* ® */
+  "Racute"                         , "\xC5\x94"                  , /* Ŕ */
+  "Rang"                           , "\xE2\x9F\xAB"              , /* ⟫ */
+  "Rarr"                           , "\xE2\x86\xA0"              , /* ↠ */
+  "Rarrtl"                         , "\xE2\xA4\x96"              , /* ⤖ */
+  "Rcaron"                         , "\xC5\x98"                  , /* Ř */
+  "Rcedil"                         , "\xC5\x96"                  , /* Ŗ */
+  "Rcy"                            , "\xD0\xA0"                  , /* Р */
+  "Re"                             , "\xE2\x84\x9C"              , /* ℜ */
+  "ReverseElement"                 , "\xE2\x88\x8B"              , /* ∋ */
+  "ReverseEquilibrium"             , "\xE2\x87\x8B"              , /* ⇋ */
+  "ReverseUpEquilibrium"           , "\xE2\xA5\xAF"              , /* ⥯ */
+  "Rfr"                            , "\xE2\x84\x9C"              , /* ℜ */
+  "Rho"                            , "\xCE\xA1"                  , /* Ρ */
+  "RightAngleBracket"              , "\xE2\x9F\xA9"              , /* ⟩ */
+  "RightArrow"                     , "\xE2\x86\x92"              , /* → */
+  "RightArrowBar"                  , "\xE2\x87\xA5"              , /* ⇥ */
+  "RightArrowLeftArrow"            , "\xE2\x87\x84"              , /* ⇄ */
+  "RightCeiling"                   , "\xE2\x8C\x89"              , /* ⌉ */
+  "RightDoubleBracket"             , "\xE2\x9F\xA7"              , /* ⟧ */
+  "RightDownTeeVector"             , "\xE2\xA5\x9D"              , /* ⥝ */
+  "RightDownVector"                , "\xE2\x87\x82"              , /* ⇂ */
+  "RightDownVectorBar"             , "\xE2\xA5\x95"              , /* ⥕ */
+  "RightFloor"                     , "\xE2\x8C\x8B"              , /* ⌋ */
+  "RightTee"                       , "\xE2\x8A\xA2"              , /* ⊢ */
+  "RightTeeArrow"                  , "\xE2\x86\xA6"              , /* ↦ */
+  "RightTeeVector"                 , "\xE2\xA5\x9B"              , /* ⥛ */
+  "RightTriangle"                  , "\xE2\x8A\xB3"              , /* ⊳ */
+  "RightTriangleBar"               , "\xE2\xA7\x90"              , /* ⧐ */
+  "RightTriangleEqual"             , "\xE2\x8A\xB5"              , /* ⊵ */
+  "RightUpDownVector"              , "\xE2\xA5\x8F"              , /* ⥏ */
+  "RightUpTeeVector"               , "\xE2\xA5\x9C"              , /* ⥜ */
+  "RightUpVector"                  , "\xE2\x86\xBE"              , /* ↾ */
+  "RightUpVectorBar"               , "\xE2\xA5\x94"              , /* ⥔ */
+  "RightVector"                    , "\xE2\x87\x80"              , /* ⇀ */
+  "RightVectorBar"                 , "\xE2\xA5\x93"              , /* ⥓ */
+  "Rightarrow"                     , "\xE2\x87\x92"              , /* ⇒ */
+  "Ropf"                           , "\xE2\x84\x9D"              , /* ℝ */
+  "RoundImplies"                   , "\xE2\xA5\xB0"              , /* ⥰ */
+  "Rrightarrow"                    , "\xE2\x87\x9B"              , /* ⇛ */
+  "Rscr"                           , "\xE2\x84\x9B"              , /* ℛ */
+  "Rsh"                            , "\xE2\x86\xB1"              , /* ↱ */
+  "RuleDelayed"                    , "\xE2\xA7\xB4"              , /* ⧴ */
+  "SHCHcy"                         , "\xD0\xA9"                  , /* Щ */
+  "SHcy"                           , "\xD0\xA8"                  , /* Ш */
+  "SOFTcy"                         , "\xD0\xAC"                  , /* Ь */
+  "Sacute"                         , "\xC5\x9A"                  , /* Ś */
+  "Sc"                             , "\xE2\xAA\xBC"              , /* ⪼ */
+  "Scaron"                         , "\xC5\xA0"                  , /* Š */
+  "Scedil"                         , "\xC5\x9E"                  , /* Ş */
+  "Scirc"                          , "\xC5\x9C"                  , /* Ŝ */
+  "Scy"                            , "\xD0\xA1"                  , /* С */
+  "Sfr"                            , "\xF0\x9D\x94\x96"          , /* 𝔖 */
+  "ShortDownArrow"                 , "\xE2\x86\x93"              , /* ↓ */
+  "ShortLeftArrow"                 , "\xE2\x86\x90"              , /* ← */
+  "ShortRightArrow"                , "\xE2\x86\x92"              , /* → */
+  "ShortUpArrow"                   , "\xE2\x86\x91"              , /* ↑ */
+  "Sigma"                          , "\xCE\xA3"                  , /* Σ */
+  "SmallCircle"                    , "\xE2\x88\x98"              , /* ∘ */
+  "Sopf"                           , "\xF0\x9D\x95\x8A"          , /* 𝕊 */
+  "Sqrt"                           , "\xE2\x88\x9A"              , /* √ */
+  "Square"                         , "\xE2\x96\xA1"              , /* □ */
+  "SquareIntersection"             , "\xE2\x8A\x93"              , /* ⊓ */
+  "SquareSubset"                   , "\xE2\x8A\x8F"              , /* ⊏ */
+  "SquareSubsetEqual"              , "\xE2\x8A\x91"              , /* ⊑ */
+  "SquareSuperset"                 , "\xE2\x8A\x90"              , /* ⊐ */
+  "SquareSupersetEqual"            , "\xE2\x8A\x92"              , /* ⊒ */
+  "SquareUnion"                    , "\xE2\x8A\x94"              , /* ⊔ */
+  "Sscr"                           , "\xF0\x9D\x92\xAE"          , /* 𝒮 */
+  "Star"                           , "\xE2\x8B\x86"              , /* ⋆ */
+  "Sub"                            , "\xE2\x8B\x90"              , /* ⋐ */
+  "Subset"                         , "\xE2\x8B\x90"              , /* ⋐ */
+  "SubsetEqual"                    , "\xE2\x8A\x86"              , /* ⊆ */
+  "Succeeds"                       , "\xE2\x89\xBB"              , /* ≻ */
+  "SucceedsEqual"                  , "\xE2\xAA\xB0"              , /* ⪰ */
+  "SucceedsSlantEqual"             , "\xE2\x89\xBD"              , /* ≽ */
+  "SucceedsTilde"                  , "\xE2\x89\xBF"              , /* ≿ */
+  "SuchThat"                       , "\xE2\x88\x8B"              , /* ∋ */
+  "Sum"                            , "\xE2\x88\x91"              , /* ∑ */
+  "Sup"                            , "\xE2\x8B\x91"              , /* ⋑ */
+  "Superset"                       , "\xE2\x8A\x83"              , /* ⊃ */
+  "SupersetEqual"                  , "\xE2\x8A\x87"              , /* ⊇ */
+  "Supset"                         , "\xE2\x8B\x91"              , /* ⋑ */
+  "THORN"                          , "\xC3\x9E"                  , /* Þ */
+  "TRADE"                          , "\xE2\x84\xA2"              , /* ™ */
+  "TSHcy"                          , "\xD0\x8B"                  , /* Ћ */
+  "TScy"                           , "\xD0\xA6"                  , /* Ц */
+  "Tab"                            , "\x09"                      , /*   */
+  "Tau"                            , "\xCE\xA4"                  , /* Τ */
+  "Tcaron"                         , "\xC5\xA4"                  , /* Ť */
+  "Tcedil"                         , "\xC5\xA2"                  , /* Ţ */
+  "Tcy"                            , "\xD0\xA2"                  , /* Т */
+  "Tfr"                            , "\xF0\x9D\x94\x97"          , /* 𝔗 */
+  "Therefore"                      , "\xE2\x88\xB4"              , /* ∴ */
+  "Theta"                          , "\xCE\x98"                  , /* Θ */
+  "ThickSpace"                     , "\xE2\x81\x9F\xE2\x80\x8A"  , /*    */
+  "ThinSpace"                      , "\xE2\x80\x89"              , /*   */
+  "Tilde"                          , "\xE2\x88\xBC"              , /* ∼ */
+  "TildeEqual"                     , "\xE2\x89\x83"              , /* ≃ */
+  "TildeFullEqual"                 , "\xE2\x89\x85"              , /* ≅ */
+  "TildeTilde"                     , "\xE2\x89\x88"              , /* ≈ */
+  "Topf"                           , "\xF0\x9D\x95\x8B"          , /* 𝕋 */
+  "TripleDot"                      , "\xE2\x83\x9B"              , /* ⃛ */
+  "Tscr"                           , "\xF0\x9D\x92\xAF"          , /* 𝒯 */
+  "Tstrok"                         , "\xC5\xA6"                  , /* Ŧ */
+  "Uacute"                         , "\xC3\x9A"                  , /* Ú */
+  "Uarr"                           , "\xE2\x86\x9F"              , /* ↟ */
+  "Uarrocir"                       , "\xE2\xA5\x89"              , /* ⥉ */
+  "Ubrcy"                          , "\xD0\x8E"                  , /* Ў */
+  "Ubreve"                         , "\xC5\xAC"                  , /* Ŭ */
+  "Ucirc"                          , "\xC3\x9B"                  , /* Û */
+  "Ucy"                            , "\xD0\xA3"                  , /* У */
+  "Udblac"                         , "\xC5\xB0"                  , /* Ű */
+  "Ufr"                            , "\xF0\x9D\x94\x98"          , /* 𝔘 */
+  "Ugrave"                         , "\xC3\x99"                  , /* Ù */
+  "Umacr"                          , "\xC5\xAA"                  , /* Ū */
+  "UnderBar"                       , "\x5F"                      , /* _ */
+  "UnderBrace"                     , "\xE2\x8F\x9F"              , /* ⏟ */
+  "UnderBracket"                   , "\xE2\x8E\xB5"              , /* ⎵ */
+  "UnderParenthesis"               , "\xE2\x8F\x9D"              , /* ⏝ */
+  "Union"                          , "\xE2\x8B\x83"              , /* ⋃ */
+  "UnionPlus"                      , "\xE2\x8A\x8E"              , /* ⊎ */
+  "Uogon"                          , "\xC5\xB2"                  , /* Ų */
+  "Uopf"                           , "\xF0\x9D\x95\x8C"          , /* 𝕌 */
+  "UpArrow"                        , "\xE2\x86\x91"              , /* ↑ */
+  "UpArrowBar"                     , "\xE2\xA4\x92"              , /* ⤒ */
+  "UpArrowDownArrow"               , "\xE2\x87\x85"              , /* ⇅ */
+  "UpDownArrow"                    , "\xE2\x86\x95"              , /* ↕ */
+  "UpEquilibrium"                  , "\xE2\xA5\xAE"              , /* ⥮ */
+  "UpTee"                          , "\xE2\x8A\xA5"              , /* ⊥ */
+  "UpTeeArrow"                     , "\xE2\x86\xA5"              , /* ↥ */
+  "Uparrow"                        , "\xE2\x87\x91"              , /* ⇑ */
+  "Updownarrow"                    , "\xE2\x87\x95"              , /* ⇕ */
+  "UpperLeftArrow"                 , "\xE2\x86\x96"              , /* ↖ */
+  "UpperRightArrow"                , "\xE2\x86\x97"              , /* ↗ */
+  "Upsi"                           , "\xCF\x92"                  , /* ϒ */
+  "Upsilon"                        , "\xCE\xA5"                  , /* Υ */
+  "Uring"                          , "\xC5\xAE"                  , /* Ů */
+  "Uscr"                           , "\xF0\x9D\x92\xB0"          , /* 𝒰 */
+  "Utilde"                         , "\xC5\xA8"                  , /* Ũ */
+  "Uuml"                           , "\xC3\x9C"                  , /* Ü */
+  "VDash"                          , "\xE2\x8A\xAB"              , /* ⊫ */
+  "Vbar"                           , "\xE2\xAB\xAB"              , /* ⫫ */
+  "Vcy"                            , "\xD0\x92"                  , /* В */
+  "Vdash"                          , "\xE2\x8A\xA9"              , /* ⊩ */
+  "Vdashl"                         , "\xE2\xAB\xA6"              , /* ⫦ */
+  "Vee"                            , "\xE2\x8B\x81"              , /* ⋁ */
+  "Verbar"                         , "\xE2\x80\x96"              , /* ‖ */
+  "Vert"                           , "\xE2\x80\x96"              , /* ‖ */
+  "VerticalBar"                    , "\xE2\x88\xA3"              , /* ∣ */
+  "VerticalLine"                   , "\x7C"                      , /* | */
+  "VerticalSeparator"              , "\xE2\x9D\x98"              , /* ❘ */
+  "VerticalTilde"                  , "\xE2\x89\x80"              , /* ≀ */
+  "VeryThinSpace"                  , "\xE2\x80\x8A"              , /*   */
+  "Vfr"                            , "\xF0\x9D\x94\x99"          , /* 𝔙 */
+  "Vopf"                           , "\xF0\x9D\x95\x8D"          , /* 𝕍 */
+  "Vscr"                           , "\xF0\x9D\x92\xB1"          , /* 𝒱 */
+  "Vvdash"                         , "\xE2\x8A\xAA"              , /* ⊪ */
+  "Wcirc"                          , "\xC5\xB4"                  , /* Ŵ */
+  "Wedge"                          , "\xE2\x8B\x80"              , /* ⋀ */
+  "Wfr"                            , "\xF0\x9D\x94\x9A"          , /* 𝔚 */
+  "Wopf"                           , "\xF0\x9D\x95\x8E"          , /* 𝕎 */
+  "Wscr"                           , "\xF0\x9D\x92\xB2"          , /* 𝒲 */
+  "Xfr"                            , "\xF0\x9D\x94\x9B"          , /* 𝔛 */
+  "Xi"                             , "\xCE\x9E"                  , /* Ξ */
+  "Xopf"                           , "\xF0\x9D\x95\x8F"          , /* 𝕏 */
+  "Xscr"                           , "\xF0\x9D\x92\xB3"          , /* 𝒳 */
+  "YAcy"                           , "\xD0\xAF"                  , /* Я */
+  "YIcy"                           , "\xD0\x87"                  , /* Ї */
+  "YUcy"                           , "\xD0\xAE"                  , /* Ю */
+  "Yacute"                         , "\xC3\x9D"                  , /* Ý */
+  "Ycirc"                          , "\xC5\xB6"                  , /* Ŷ */
+  "Ycy"                            , "\xD0\xAB"                  , /* Ы */
+  "Yfr"                            , "\xF0\x9D\x94\x9C"          , /* 𝔜 */
+  "Yopf"                           , "\xF0\x9D\x95\x90"          , /* 𝕐 */
+  "Yscr"                           , "\xF0\x9D\x92\xB4"          , /* 𝒴 */
+  "Yuml"                           , "\xC5\xB8"                  , /* Ÿ */
+  "ZHcy"                           , "\xD0\x96"                  , /* Ж */
+  "Zacute"                         , "\xC5\xB9"                  , /* Ź */
+  "Zcaron"                         , "\xC5\xBD"                  , /* Ž */
+  "Zcy"                            , "\xD0\x97"                  , /* З */
+  "Zdot"                           , "\xC5\xBB"                  , /* Ż */
+  "ZeroWidthSpace"                 , "\xE2\x80\x8B"              , /* ​ */
+  "Zeta"                           , "\xCE\x96"                  , /* Ζ */
+  "Zfr"                            , "\xE2\x84\xA8"              , /* ℨ */
+  "Zopf"                           , "\xE2\x84\xA4"              , /* ℤ */
+  "Zscr"                           , "\xF0\x9D\x92\xB5"          , /* 𝒵 */
+  "aacute"                         , "\xC3\xA1"                  , /* á */
   "abreve"                         , "\xC4\x83"                  , /* ă */
   "ac"                             , "\xE2\x88\xBE"              , /* ∾ */
-  "acd"                            , "\xE2\x88\xBF"              , /* ∿ */
   "acE"                            , "\xE2\x88\xBE\xCC\xB3"      , /* ∾̳ */
-  "Acirc"                          , "\xC3\x82"                  , /* Â */
+  "acd"                            , "\xE2\x88\xBF"              , /* ∿ */
   "acirc"                          , "\xC3\xA2"                  , /* â */
   "acute"                          , "\xC2\xB4"                  , /* ´ */
-  "Acy"                            , "\xD0\x90"                  , /* А */
   "acy"                            , "\xD0\xB0"                  , /* а */
-  "AElig"                          , "\xC3\x86"                  , /* Æ */
   "aelig"                          , "\xC3\xA6"                  , /* æ */
   "af"                             , "\xE2\x81\xA1"              , /* ⁡ */
-  "Afr"                            , "\xF0\x9D\x94\x84"          , /* 𝔄 */
   "afr"                            , "\xF0\x9D\x94\x9E"          , /* 𝔞 */
-  "Agrave"                         , "\xC3\x80"                  , /* À */
   "agrave"                         , "\xC3\xA0"                  , /* à */
   "alefsym"                        , "\xE2\x84\xB5"              , /* ℵ */
   "aleph"                          , "\xE2\x84\xB5"              , /* ℵ */
-  "Alpha"                          , "\xCE\x91"                  , /* Α */
   "alpha"                          , "\xCE\xB1"                  , /* α */
-  "Amacr"                          , "\xC4\x80"                  , /* Ā */
   "amacr"                          , "\xC4\x81"                  , /* ā */
   "amalg"                          , "\xE2\xA8\xBF"              , /* ⨿ */
   "amp"                            , "\x26"                      , /* & */
-  "AMP"                            , "\x26"                      , /* & */
-  "andand"                         , "\xE2\xA9\x95"              , /* ⩕ */
-  "And"                            , "\xE2\xA9\x93"              , /* ⩓ */
   "and"                            , "\xE2\x88\xA7"              , /* ∧ */
+  "andand"                         , "\xE2\xA9\x95"              , /* ⩕ */
   "andd"                           , "\xE2\xA9\x9C"              , /* ⩜ */
   "andslope"                       , "\xE2\xA9\x98"              , /* ⩘ */
   "andv"                           , "\xE2\xA9\x9A"              , /* ⩚ */
   "ang"                            , "\xE2\x88\xA0"              , /* ∠ */
   "ange"                           , "\xE2\xA6\xA4"              , /* ⦤ */
   "angle"                          , "\xE2\x88\xA0"              , /* ∠ */
+  "angmsd"                         , "\xE2\x88\xA1"              , /* ∡ */
   "angmsdaa"                       , "\xE2\xA6\xA8"              , /* ⦨ */
   "angmsdab"                       , "\xE2\xA6\xA9"              , /* ⦩ */
   "angmsdac"                       , "\xE2\xA6\xAA"              , /* ⦪ */
@@ -54,69 +642,53 @@ static const char* CharacterNames[] = {
   "angmsdaf"                       , "\xE2\xA6\xAD"              , /* ⦭ */
   "angmsdag"                       , "\xE2\xA6\xAE"              , /* ⦮ */
   "angmsdah"                       , "\xE2\xA6\xAF"              , /* ⦯ */
-  "angmsd"                         , "\xE2\x88\xA1"              , /* ∡ */
   "angrt"                          , "\xE2\x88\x9F"              , /* ∟ */
   "angrtvb"                        , "\xE2\x8A\xBE"              , /* ⊾ */
   "angrtvbd"                       , "\xE2\xA6\x9D"              , /* ⦝ */
   "angsph"                         , "\xE2\x88\xA2"              , /* ∢ */
   "angst"                          , "\xC3\x85"                  , /* Å */
   "angzarr"                        , "\xE2\x8D\xBC"              , /* ⍼ */
-  "Aogon"                          , "\xC4\x84"                  , /* Ą */
   "aogon"                          , "\xC4\x85"                  , /* ą */
-  "Aopf"                           , "\xF0\x9D\x94\xB8"          , /* 𝔸 */
   "aopf"                           , "\xF0\x9D\x95\x92"          , /* 𝕒 */
-  "apacir"                         , "\xE2\xA9\xAF"              , /* ⩯ */
   "ap"                             , "\xE2\x89\x88"              , /* ≈ */
   "apE"                            , "\xE2\xA9\xB0"              , /* ⩰ */
+  "apacir"                         , "\xE2\xA9\xAF"              , /* ⩯ */
   "ape"                            , "\xE2\x89\x8A"              , /* ≊ */
   "apid"                           , "\xE2\x89\x8B"              , /* ≋ */
   "apos"                           , "\x27"                      , /* ' */
-  "ApplyFunction"                  , "\xE2\x81\xA1"              , /* ⁡ */
   "approx"                         , "\xE2\x89\x88"              , /* ≈ */
   "approxeq"                       , "\xE2\x89\x8A"              , /* ≊ */
-  "Aring"                          , "\xC3\x85"                  , /* Å */
   "aring"                          , "\xC3\xA5"                  , /* å */
-  "Ascr"                           , "\xF0\x9D\x92\x9C"          , /* 𝒜 */
   "ascr"                           , "\xF0\x9D\x92\xB6"          , /* 𝒶 */
-  "Assign"                         , "\xE2\x89\x94"              , /* ≔ */
   "ast"                            , "\x2A"                      , /* * */
   "asymp"                          , "\xE2\x89\x88"              , /* ≈ */
   "asympeq"                        , "\xE2\x89\x8D"              , /* ≍ */
-  "Atilde"                         , "\xC3\x83"                  , /* Ã */
   "atilde"                         , "\xC3\xA3"                  , /* ã */
-  "Auml"                           , "\xC3\x84"                  , /* Ä */
   "auml"                           , "\xC3\xA4"                  , /* ä */
   "awconint"                       , "\xE2\x88\xB3"              , /* ∳ */
   "awint"                          , "\xE2\xA8\x91"              , /* ⨑ */
+  "bNot"                           , "\xE2\xAB\xAD"              , /* ⫭ */
   "backcong"                       , "\xE2\x89\x8C"              , /* ≌ */
   "backepsilon"                    , "\xCF\xB6"                  , /* ϶ */
   "backprime"                      , "\xE2\x80\xB5"              , /* ‵ */
   "backsim"                        , "\xE2\x88\xBD"              , /* ∽ */
   "backsimeq"                      , "\xE2\x8B\x8D"              , /* ⋍ */
-  "Backslash"                      , "\xE2\x88\x96"              , /* ∖ */
-  "Barv"                           , "\xE2\xAB\xA7"              , /* ⫧ */
   "barvee"                         , "\xE2\x8A\xBD"              , /* ⊽ */
   "barwed"                         , "\xE2\x8C\x85"              , /* ⌅ */
-  "Barwed"                         , "\xE2\x8C\x86"              , /* ⌆ */
   "barwedge"                       , "\xE2\x8C\x85"              , /* ⌅ */
   "bbrk"                           , "\xE2\x8E\xB5"              , /* ⎵ */
   "bbrktbrk"                       , "\xE2\x8E\xB6"              , /* ⎶ */
   "bcong"                          , "\xE2\x89\x8C"              , /* ≌ */
-  "Bcy"                            , "\xD0\x91"                  , /* Б */
   "bcy"                            , "\xD0\xB1"                  , /* б */
   "bdquo"                          , "\xE2\x80\x9E"              , /* „ */
   "becaus"                         , "\xE2\x88\xB5"              , /* ∵ */
   "because"                        , "\xE2\x88\xB5"              , /* ∵ */
-  "Because"                        , "\xE2\x88\xB5"              , /* ∵ */
   "bemptyv"                        , "\xE2\xA6\xB0"              , /* ⦰ */
   "bepsi"                          , "\xCF\xB6"                  , /* ϶ */
   "bernou"                         , "\xE2\x84\xAC"              , /* ℬ */
-  "Bernoullis"                     , "\xE2\x84\xAC"              , /* ℬ */
-  "Beta"                           , "\xCE\x92"                  , /* Β */
   "beta"                           , "\xCE\xB2"                  , /* β */
   "beth"                           , "\xE2\x84\xB6"              , /* ℶ */
   "between"                        , "\xE2\x89\xAC"              , /* ≬ */
-  "Bfr"                            , "\xF0\x9D\x94\x85"          , /* 𝔅 */
   "bfr"                            , "\xF0\x9D\x94\x9F"          , /* 𝔟 */
   "bigcap"                         , "\xE2\x8B\x82"              , /* ⋂ */
   "bigcirc"                        , "\xE2\x97\xAF"              , /* ◯ */
@@ -145,143 +717,115 @@ static const char* CharacterNames[] = {
   "block"                          , "\xE2\x96\x88"              , /* █ */
   "bne"                            , "\x3D\xE2\x83\xA5"          , /* =⃥ */
   "bnequiv"                        , "\xE2\x89\xA1\xE2\x83\xA5"  , /* ≡⃥ */
-  "bNot"                           , "\xE2\xAB\xAD"              , /* ⫭ */
   "bnot"                           , "\xE2\x8C\x90"              , /* ⌐ */
-  "Bopf"                           , "\xF0\x9D\x94\xB9"          , /* 𝔹 */
   "bopf"                           , "\xF0\x9D\x95\x93"          , /* 𝕓 */
   "bot"                            , "\xE2\x8A\xA5"              , /* ⊥ */
   "bottom"                         , "\xE2\x8A\xA5"              , /* ⊥ */
   "bowtie"                         , "\xE2\x8B\x88"              , /* ⋈ */
-  "boxbox"                         , "\xE2\xA7\x89"              , /* ⧉ */
-  "boxdl"                          , "\xE2\x94\x90"              , /* ┐ */
-  "boxdL"                          , "\xE2\x95\x95"              , /* ╕ */
-  "boxDl"                          , "\xE2\x95\x96"              , /* ╖ */
   "boxDL"                          , "\xE2\x95\x97"              , /* ╗ */
-  "boxdr"                          , "\xE2\x94\x8C"              , /* ┌ */
-  "boxdR"                          , "\xE2\x95\x92"              , /* ╒ */
-  "boxDr"                          , "\xE2\x95\x93"              , /* ╓ */
   "boxDR"                          , "\xE2\x95\x94"              , /* ╔ */
-  "boxh"                           , "\xE2\x94\x80"              , /* ─ */
+  "boxDl"                          , "\xE2\x95\x96"              , /* ╖ */
+  "boxDr"                          , "\xE2\x95\x93"              , /* ╓ */
   "boxH"                           , "\xE2\x95\x90"              , /* ═ */
-  "boxhd"                          , "\xE2\x94\xAC"              , /* ┬ */
-  "boxHd"                          , "\xE2\x95\xA4"              , /* ╤ */
-  "boxhD"                          , "\xE2\x95\xA5"              , /* ╥ */
   "boxHD"                          , "\xE2\x95\xA6"              , /* ╦ */
-  "boxhu"                          , "\xE2\x94\xB4"              , /* ┴ */
-  "boxHu"                          , "\xE2\x95\xA7"              , /* ╧ */
-  "boxhU"                          , "\xE2\x95\xA8"              , /* ╨ */
   "boxHU"                          , "\xE2\x95\xA9"              , /* ╩ */
+  "boxHd"                          , "\xE2\x95\xA4"              , /* ╤ */
+  "boxHu"                          , "\xE2\x95\xA7"              , /* ╧ */
+  "boxUL"                          , "\xE2\x95\x9D"              , /* ╝ */
+  "boxUR"                          , "\xE2\x95\x9A"              , /* ╚ */
+  "boxUl"                          , "\xE2\x95\x9C"              , /* ╜ */
+  "boxUr"                          , "\xE2\x95\x99"              , /* ╙ */
+  "boxV"                           , "\xE2\x95\x91"              , /* ║ */
+  "boxVH"                          , "\xE2\x95\xAC"              , /* ╬ */
+  "boxVL"                          , "\xE2\x95\xA3"              , /* ╣ */
+  "boxVR"                          , "\xE2\x95\xA0"              , /* ╠ */
+  "boxVh"                          , "\xE2\x95\xAB"              , /* ╫ */
+  "boxVl"                          , "\xE2\x95\xA2"              , /* ╢ */
+  "boxVr"                          , "\xE2\x95\x9F"              , /* ╟ */
+  "boxbox"                         , "\xE2\xA7\x89"              , /* ⧉ */
+  "boxdL"                          , "\xE2\x95\x95"              , /* ╕ */
+  "boxdR"                          , "\xE2\x95\x92"              , /* ╒ */
+  "boxdl"                          , "\xE2\x94\x90"              , /* ┐ */
+  "boxdr"                          , "\xE2\x94\x8C"              , /* ┌ */
+  "boxh"                           , "\xE2\x94\x80"              , /* ─ */
+  "boxhD"                          , "\xE2\x95\xA5"              , /* ╥ */
+  "boxhU"                          , "\xE2\x95\xA8"              , /* ╨ */
+  "boxhd"                          , "\xE2\x94\xAC"              , /* ┬ */
+  "boxhu"                          , "\xE2\x94\xB4"              , /* ┴ */
   "boxminus"                       , "\xE2\x8A\x9F"              , /* ⊟ */
   "boxplus"                        , "\xE2\x8A\x9E"              , /* ⊞ */
   "boxtimes"                       , "\xE2\x8A\xA0"              , /* ⊠ */
-  "boxul"                          , "\xE2\x94\x98"              , /* ┘ */
   "boxuL"                          , "\xE2\x95\x9B"              , /* ╛ */
-  "boxUl"                          , "\xE2\x95\x9C"              , /* ╜ */
-  "boxUL"                          , "\xE2\x95\x9D"              , /* ╝ */
-  "boxur"                          , "\xE2\x94\x94"              , /* └ */
   "boxuR"                          , "\xE2\x95\x98"              , /* ╘ */
-  "boxUr"                          , "\xE2\x95\x99"              , /* ╙ */
-  "boxUR"                          , "\xE2\x95\x9A"              , /* ╚ */
+  "boxul"                          , "\xE2\x94\x98"              , /* ┘ */
+  "boxur"                          , "\xE2\x94\x94"              , /* └ */
   "boxv"                           , "\xE2\x94\x82"              , /* │ */
-  "boxV"                           , "\xE2\x95\x91"              , /* ║ */
-  "boxvh"                          , "\xE2\x94\xBC"              , /* ┼ */
   "boxvH"                          , "\xE2\x95\xAA"              , /* ╪ */
-  "boxVh"                          , "\xE2\x95\xAB"              , /* ╫ */
-  "boxVH"                          , "\xE2\x95\xAC"              , /* ╬ */
-  "boxvl"                          , "\xE2\x94\xA4"              , /* ┤ */
   "boxvL"                          , "\xE2\x95\xA1"              , /* ╡ */
-  "boxVl"                          , "\xE2\x95\xA2"              , /* ╢ */
-  "boxVL"                          , "\xE2\x95\xA3"              , /* ╣ */
-  "boxvr"                          , "\xE2\x94\x9C"              , /* ├ */
   "boxvR"                          , "\xE2\x95\x9E"              , /* ╞ */
-  "boxVr"                          , "\xE2\x95\x9F"              , /* ╟ */
-  "boxVR"                          , "\xE2\x95\xA0"              , /* ╠ */
+  "boxvh"                          , "\xE2\x94\xBC"              , /* ┼ */
+  "boxvl"                          , "\xE2\x94\xA4"              , /* ┤ */
+  "boxvr"                          , "\xE2\x94\x9C"              , /* ├ */
   "bprime"                         , "\xE2\x80\xB5"              , /* ‵ */
   "breve"                          , "\xCB\x98"                  , /* ˘ */
-  "Breve"                          , "\xCB\x98"                  , /* ˘ */
   "brvbar"                         , "\xC2\xA6"                  , /* ¦ */
   "bscr"                           , "\xF0\x9D\x92\xB7"          , /* 𝒷 */
-  "Bscr"                           , "\xE2\x84\xAC"              , /* ℬ */
   "bsemi"                          , "\xE2\x81\x8F"              , /* ⁏ */
   "bsim"                           , "\xE2\x88\xBD"              , /* ∽ */
   "bsime"                          , "\xE2\x8B\x8D"              , /* ⋍ */
-  "bsolb"                          , "\xE2\xA7\x85"              , /* ⧅ */
   "bsol"                           , "\x5C"                      , /* \ */
+  "bsolb"                          , "\xE2\xA7\x85"              , /* ⧅ */
   "bsolhsub"                       , "\xE2\x9F\x88"              , /* ⟈ */
   "bull"                           , "\xE2\x80\xA2"              , /* • */
   "bullet"                         , "\xE2\x80\xA2"              , /* • */
   "bump"                           , "\xE2\x89\x8E"              , /* ≎ */
   "bumpE"                          , "\xE2\xAA\xAE"              , /* ⪮ */
   "bumpe"                          , "\xE2\x89\x8F"              , /* ≏ */
-  "Bumpeq"                         , "\xE2\x89\x8E"              , /* ≎ */
   "bumpeq"                         , "\xE2\x89\x8F"              , /* ≏ */
-  "Cacute"                         , "\xC4\x86"                  , /* Ć */
   "cacute"                         , "\xC4\x87"                  , /* ć */
+  "cap"                            , "\xE2\x88\xA9"              , /* ∩ */
   "capand"                         , "\xE2\xA9\x84"              , /* ⩄ */
   "capbrcup"                       , "\xE2\xA9\x89"              , /* ⩉ */
   "capcap"                         , "\xE2\xA9\x8B"              , /* ⩋ */
-  "cap"                            , "\xE2\x88\xA9"              , /* ∩ */
-  "Cap"                            , "\xE2\x8B\x92"              , /* ⋒ */
   "capcup"                         , "\xE2\xA9\x87"              , /* ⩇ */
   "capdot"                         , "\xE2\xA9\x80"              , /* ⩀ */
-  "CapitalDifferentialD"           , "\xE2\x85\x85"              , /* ⅅ */
   "caps"                           , "\xE2\x88\xA9\xEF\xB8\x80"  , /* ∩︀ */
   "caret"                          , "\xE2\x81\x81"              , /* ⁁ */
   "caron"                          , "\xCB\x87"                  , /* ˇ */
-  "Cayleys"                        , "\xE2\x84\xAD"              , /* ℭ */
   "ccaps"                          , "\xE2\xA9\x8D"              , /* ⩍ */
-  "Ccaron"                         , "\xC4\x8C"                  , /* Č */
   "ccaron"                         , "\xC4\x8D"                  , /* č */
-  "Ccedil"                         , "\xC3\x87"                  , /* Ç */
   "ccedil"                         , "\xC3\xA7"                  , /* ç */
-  "Ccirc"                          , "\xC4\x88"                  , /* Ĉ */
   "ccirc"                          , "\xC4\x89"                  , /* ĉ */
-  "Cconint"                        , "\xE2\x88\xB0"              , /* ∰ */
   "ccups"                          , "\xE2\xA9\x8C"              , /* ⩌ */
   "ccupssm"                        , "\xE2\xA9\x90"              , /* ⩐ */
-  "Cdot"                           , "\xC4\x8A"                  , /* Ċ */
   "cdot"                           , "\xC4\x8B"                  , /* ċ */
   "cedil"                          , "\xC2\xB8"                  , /* ¸ */
-  "Cedilla"                        , "\xC2\xB8"                  , /* ¸ */
   "cemptyv"                        , "\xE2\xA6\xB2"              , /* ⦲ */
   "cent"                           , "\xC2\xA2"                  , /* ¢ */
   "centerdot"                      , "\xC2\xB7"                  , /* · */
-  "CenterDot"                      , "\xC2\xB7"                  , /* · */
   "cfr"                            , "\xF0\x9D\x94\xA0"          , /* 𝔠 */
-  "Cfr"                            , "\xE2\x84\xAD"              , /* ℭ */
-  "CHcy"                           , "\xD0\xA7"                  , /* Ч */
   "chcy"                           , "\xD1\x87"                  , /* ч */
   "check"                          , "\xE2\x9C\x93"              , /* ✓ */
   "checkmark"                      , "\xE2\x9C\x93"              , /* ✓ */
-  "Chi"                            , "\xCE\xA7"                  , /* Χ */
   "chi"                            , "\xCF\x87"                  , /* χ */
+  "cir"                            , "\xE2\x97\x8B"              , /* ○ */
+  "cirE"                           , "\xE2\xA7\x83"              , /* ⧃ */
   "circ"                           , "\xCB\x86"                  , /* ˆ */
   "circeq"                         , "\xE2\x89\x97"              , /* ≗ */
   "circlearrowleft"                , "\xE2\x86\xBA"              , /* ↺ */
   "circlearrowright"               , "\xE2\x86\xBB"              , /* ↻ */
+  "circledR"                       , "\xC2\xAE"                  , /* ® */
+  "circledS"                       , "\xE2\x93\x88"              , /* Ⓢ */
   "circledast"                     , "\xE2\x8A\x9B"              , /* ⊛ */
   "circledcirc"                    , "\xE2\x8A\x9A"              , /* ⊚ */
   "circleddash"                    , "\xE2\x8A\x9D"              , /* ⊝ */
-  "CircleDot"                      , "\xE2\x8A\x99"              , /* ⊙ */
-  "circledR"                       , "\xC2\xAE"                  , /* ® */
-  "circledS"                       , "\xE2\x93\x88"              , /* Ⓢ */
-  "CircleMinus"                    , "\xE2\x8A\x96"              , /* ⊖ */
-  "CirclePlus"                     , "\xE2\x8A\x95"              , /* ⊕ */
-  "CircleTimes"                    , "\xE2\x8A\x97"              , /* ⊗ */
-  "cir"                            , "\xE2\x97\x8B"              , /* ○ */
-  "cirE"                           , "\xE2\xA7\x83"              , /* ⧃ */
   "cire"                           , "\xE2\x89\x97"              , /* ≗ */
   "cirfnint"                       , "\xE2\xA8\x90"              , /* ⨐ */
   "cirmid"                         , "\xE2\xAB\xAF"              , /* ⫯ */
   "cirscir"                        , "\xE2\xA7\x82"              , /* ⧂ */
-  "ClockwiseContourIntegral"       , "\xE2\x88\xB2"              , /* ∲ */
-  "CloseCurlyDoubleQuote"          , "\xE2\x80\x9D"              , /* ” */
-  "CloseCurlyQuote"                , "\xE2\x80\x99"              , /* ’ */
   "clubs"                          , "\xE2\x99\xA3"              , /* ♣ */
   "clubsuit"                       , "\xE2\x99\xA3"              , /* ♣ */
   "colon"                          , "\x3A"                      , /* : */
-  "Colon"                          , "\xE2\x88\xB7"              , /* ∷ */
-  "Colone"                         , "\xE2\xA9\xB4"              , /* ⩴ */
   "colone"                         , "\xE2\x89\x94"              , /* ≔ */
   "coloneq"                        , "\xE2\x89\x94"              , /* ≔ */
   "comma"                          , "\x2C"                      , /* , */
@@ -292,22 +836,13 @@ static const char* CharacterNames[] = {
   "complexes"                      , "\xE2\x84\x82"              , /* ℂ */
   "cong"                           , "\xE2\x89\x85"              , /* ≅ */
   "congdot"                        , "\xE2\xA9\xAD"              , /* ⩭ */
-  "Congruent"                      , "\xE2\x89\xA1"              , /* ≡ */
   "conint"                         , "\xE2\x88\xAE"              , /* ∮ */
-  "Conint"                         , "\xE2\x88\xAF"              , /* ∯ */
-  "ContourIntegral"                , "\xE2\x88\xAE"              , /* ∮ */
   "copf"                           , "\xF0\x9D\x95\x94"          , /* 𝕔 */
-  "Copf"                           , "\xE2\x84\x82"              , /* ℂ */
   "coprod"                         , "\xE2\x88\x90"              , /* ∐ */
-  "Coproduct"                      , "\xE2\x88\x90"              , /* ∐ */
   "copy"                           , "\xC2\xA9"                  , /* © */
-  "COPY"                           , "\xC2\xA9"                  , /* © */
   "copysr"                         , "\xE2\x84\x97"              , /* ℗ */
-  "CounterClockwiseContourIntegral", "\xE2\x88\xB3"              , /* ∳ */
   "crarr"                          , "\xE2\x86\xB5"              , /* ↵ */
   "cross"                          , "\xE2\x9C\x97"              , /* ✗ */
-  "Cross"                          , "\xE2\xA8\xAF"              , /* ⨯ */
-  "Cscr"                           , "\xF0\x9D\x92\x9E"          , /* 𝒞 */
   "cscr"                           , "\xF0\x9D\x92\xB8"          , /* 𝒸 */
   "csub"                           , "\xE2\xAB\x8F"              , /* ⫏ */
   "csube"                          , "\xE2\xAB\x91"              , /* ⫑ */
@@ -320,11 +855,9 @@ static const char* CharacterNames[] = {
   "cuesc"                          , "\xE2\x8B\x9F"              , /* ⋟ */
   "cularr"                         , "\xE2\x86\xB6"              , /* ↶ */
   "cularrp"                        , "\xE2\xA4\xBD"              , /* ⤽ */
+  "cup"                            , "\xE2\x88\xAA"              , /* ∪ */
   "cupbrcap"                       , "\xE2\xA9\x88"              , /* ⩈ */
   "cupcap"                         , "\xE2\xA9\x86"              , /* ⩆ */
-  "CupCap"                         , "\xE2\x89\x8D"              , /* ≍ */
-  "cup"                            , "\xE2\x88\xAA"              , /* ∪ */
-  "Cup"                            , "\xE2\x8B\x93"              , /* ⋓ */
   "cupcup"                         , "\xE2\xA9\x8A"              , /* ⩊ */
   "cupdot"                         , "\xE2\x8A\x8D"              , /* ⊍ */
   "cupor"                          , "\xE2\xA9\x85"              , /* ⩅ */
@@ -343,114 +876,61 @@ static const char* CharacterNames[] = {
   "cwconint"                       , "\xE2\x88\xB2"              , /* ∲ */
   "cwint"                          , "\xE2\x88\xB1"              , /* ∱ */
   "cylcty"                         , "\xE2\x8C\xAD"              , /* ⌭ */
+  "dArr"                           , "\xE2\x87\x93"              , /* ⇓ */
+  "dHar"                           , "\xE2\xA5\xA5"              , /* ⥥ */
   "dagger"                         , "\xE2\x80\xA0"              , /* † */
-  "Dagger"                         , "\xE2\x80\xA1"              , /* ‡ */
   "daleth"                         , "\xE2\x84\xB8"              , /* ℸ */
   "darr"                           , "\xE2\x86\x93"              , /* ↓ */
-  "Darr"                           , "\xE2\x86\xA1"              , /* ↡ */
-  "dArr"                           , "\xE2\x87\x93"              , /* ⇓ */
   "dash"                           , "\xE2\x80\x90"              , /* ‐ */
-  "Dashv"                          , "\xE2\xAB\xA4"              , /* ⫤ */
   "dashv"                          , "\xE2\x8A\xA3"              , /* ⊣ */
   "dbkarow"                        , "\xE2\xA4\x8F"              , /* ⤏ */
   "dblac"                          , "\xCB\x9D"                  , /* ˝ */
-  "Dcaron"                         , "\xC4\x8E"                  , /* Ď */
   "dcaron"                         , "\xC4\x8F"                  , /* ď */
-  "Dcy"                            , "\xD0\x94"                  , /* Д */
   "dcy"                            , "\xD0\xB4"                  , /* д */
+  "dd"                             , "\xE2\x85\x86"              , /* ⅆ */
   "ddagger"                        , "\xE2\x80\xA1"              , /* ‡ */
   "ddarr"                          , "\xE2\x87\x8A"              , /* ⇊ */
-  "DD"                             , "\xE2\x85\x85"              , /* ⅅ */
-  "dd"                             , "\xE2\x85\x86"              , /* ⅆ */
-  "DDotrahd"                       , "\xE2\xA4\x91"              , /* ⤑ */
   "ddotseq"                        , "\xE2\xA9\xB7"              , /* ⩷ */
   "deg"                            , "\xC2\xB0"                  , /* ° */
-  "Del"                            , "\xE2\x88\x87"              , /* ∇ */
-  "Delta"                          , "\xCE\x94"                  , /* Δ */
   "delta"                          , "\xCE\xB4"                  , /* δ */
   "demptyv"                        , "\xE2\xA6\xB1"              , /* ⦱ */
   "dfisht"                         , "\xE2\xA5\xBF"              , /* ⥿ */
-  "Dfr"                            , "\xF0\x9D\x94\x87"          , /* 𝔇 */
   "dfr"                            , "\xF0\x9D\x94\xA1"          , /* 𝔡 */
-  "dHar"                           , "\xE2\xA5\xA5"              , /* ⥥ */
   "dharl"                          , "\xE2\x87\x83"              , /* ⇃ */
   "dharr"                          , "\xE2\x87\x82"              , /* ⇂ */
-  "DiacriticalAcute"               , "\xC2\xB4"                  , /* ´ */
-  "DiacriticalDot"                 , "\xCB\x99"                  , /* ˙ */
-  "DiacriticalDoubleAcute"         , "\xCB\x9D"                  , /* ˝ */
-  "DiacriticalGrave"               , "\x60"                      , /* ` */
-  "DiacriticalTilde"               , "\xCB\x9C"                  , /* ˜ */
   "diam"                           , "\xE2\x8B\x84"              , /* ⋄ */
   "diamond"                        , "\xE2\x8B\x84"              , /* ⋄ */
-  "Diamond"                        , "\xE2\x8B\x84"              , /* ⋄ */
   "diamondsuit"                    , "\xE2\x99\xA6"              , /* ♦ */
   "diams"                          , "\xE2\x99\xA6"              , /* ♦ */
   "die"                            , "\xC2\xA8"                  , /* ¨ */
-  "DifferentialD"                  , "\xE2\x85\x86"              , /* ⅆ */
   "digamma"                        , "\xCF\x9D"                  , /* ϝ */
   "disin"                          , "\xE2\x8B\xB2"              , /* ⋲ */
   "div"                            , "\xC3\xB7"                  , /* ÷ */
   "divide"                         , "\xC3\xB7"                  , /* ÷ */
   "divideontimes"                  , "\xE2\x8B\x87"              , /* ⋇ */
   "divonx"                         , "\xE2\x8B\x87"              , /* ⋇ */
-  "DJcy"                           , "\xD0\x82"                  , /* Ђ */
   "djcy"                           , "\xD1\x92"                  , /* ђ */
   "dlcorn"                         , "\xE2\x8C\x9E"              , /* ⌞ */
   "dlcrop"                         , "\xE2\x8C\x8D"              , /* ⌍ */
   "dollar"                         , "\x24"                      , /* $ */
-  "Dopf"                           , "\xF0\x9D\x94\xBB"          , /* 𝔻 */
   "dopf"                           , "\xF0\x9D\x95\x95"          , /* 𝕕 */
-  "Dot"                            , "\xC2\xA8"                  , /* ¨ */
   "dot"                            , "\xCB\x99"                  , /* ˙ */
-  "DotDot"                         , "\xE2\x83\x9C"              , /* ⃜ */
   "doteq"                          , "\xE2\x89\x90"              , /* ≐ */
   "doteqdot"                       , "\xE2\x89\x91"              , /* ≑ */
-  "DotEqual"                       , "\xE2\x89\x90"              , /* ≐ */
   "dotminus"                       , "\xE2\x88\xB8"              , /* ∸ */
   "dotplus"                        , "\xE2\x88\x94"              , /* ∔ */
   "dotsquare"                      , "\xE2\x8A\xA1"              , /* ⊡ */
   "doublebarwedge"                 , "\xE2\x8C\x86"              , /* ⌆ */
-  "DoubleContourIntegral"          , "\xE2\x88\xAF"              , /* ∯ */
-  "DoubleDot"                      , "\xC2\xA8"                  , /* ¨ */
-  "DoubleDownArrow"                , "\xE2\x87\x93"              , /* ⇓ */
-  "DoubleLeftArrow"                , "\xE2\x87\x90"              , /* ⇐ */
-  "DoubleLeftRightArrow"           , "\xE2\x87\x94"              , /* ⇔ */
-  "DoubleLeftTee"                  , "\xE2\xAB\xA4"              , /* ⫤ */
-  "DoubleLongLeftArrow"            , "\xE2\x9F\xB8"              , /* ⟸ */
-  "DoubleLongLeftRightArrow"       , "\xE2\x9F\xBA"              , /* ⟺ */
-  "DoubleLongRightArrow"           , "\xE2\x9F\xB9"              , /* ⟹ */
-  "DoubleRightArrow"               , "\xE2\x87\x92"              , /* ⇒ */
-  "DoubleRightTee"                 , "\xE2\x8A\xA8"              , /* ⊨ */
-  "DoubleUpArrow"                  , "\xE2\x87\x91"              , /* ⇑ */
-  "DoubleUpDownArrow"              , "\xE2\x87\x95"              , /* ⇕ */
-  "DoubleVerticalBar"              , "\xE2\x88\xA5"              , /* ∥ */
-  "DownArrowBar"                   , "\xE2\xA4\x93"              , /* ⤓ */
   "downarrow"                      , "\xE2\x86\x93"              , /* ↓ */
-  "DownArrow"                      , "\xE2\x86\x93"              , /* ↓ */
-  "Downarrow"                      , "\xE2\x87\x93"              , /* ⇓ */
-  "DownArrowUpArrow"               , "\xE2\x87\xB5"              , /* ⇵ */
-  "DownBreve"                      , "\xCC\x91"                  , /* ̑ */
   "downdownarrows"                 , "\xE2\x87\x8A"              , /* ⇊ */
   "downharpoonleft"                , "\xE2\x87\x83"              , /* ⇃ */
   "downharpoonright"               , "\xE2\x87\x82"              , /* ⇂ */
-  "DownLeftRightVector"            , "\xE2\xA5\x90"              , /* ⥐ */
-  "DownLeftTeeVector"              , "\xE2\xA5\x9E"              , /* ⥞ */
-  "DownLeftVectorBar"              , "\xE2\xA5\x96"              , /* ⥖ */
-  "DownLeftVector"                 , "\xE2\x86\xBD"              , /* ↽ */
-  "DownRightTeeVector"             , "\xE2\xA5\x9F"              , /* ⥟ */
-  "DownRightVectorBar"             , "\xE2\xA5\x97"              , /* ⥗ */
-  "DownRightVector"                , "\xE2\x87\x81"              , /* ⇁ */
-  "DownTeeArrow"                   , "\xE2\x86\xA7"              , /* ↧ */
-  "DownTee"                        , "\xE2\x8A\xA4"              , /* ⊤ */
   "drbkarow"                       , "\xE2\xA4\x90"              , /* ⤐ */
   "drcorn"                         , "\xE2\x8C\x9F"              , /* ⌟ */
   "drcrop"                         , "\xE2\x8C\x8C"              , /* ⌌ */
-  "Dscr"                           , "\xF0\x9D\x92\x9F"          , /* 𝒟 */
   "dscr"                           , "\xF0\x9D\x92\xB9"          , /* 𝒹 */
-  "DScy"                           , "\xD0\x85"                  , /* Ѕ */
   "dscy"                           , "\xD1\x95"                  , /* ѕ */
   "dsol"                           , "\xE2\xA7\xB6"              , /* ⧶ */
-  "Dstrok"                         , "\xC4\x90"                  , /* Đ */
   "dstrok"                         , "\xC4\x91"                  , /* đ */
   "dtdot"                          , "\xE2\x8B\xB1"              , /* ⋱ */
   "dtri"                           , "\xE2\x96\xBF"              , /* ▿ */
@@ -458,61 +938,45 @@ static const char* CharacterNames[] = {
   "duarr"                          , "\xE2\x87\xB5"              , /* ⇵ */
   "duhar"                          , "\xE2\xA5\xAF"              , /* ⥯ */
   "dwangle"                        , "\xE2\xA6\xA6"              , /* ⦦ */
-  "DZcy"                           , "\xD0\x8F"                  , /* Џ */
   "dzcy"                           , "\xD1\x9F"                  , /* џ */
   "dzigrarr"                       , "\xE2\x9F\xBF"              , /* ⟿ */
-  "Eacute"                         , "\xC3\x89"                  , /* É */
+  "eDDot"                          , "\xE2\xA9\xB7"              , /* ⩷ */
+  "eDot"                           , "\xE2\x89\x91"              , /* ≑ */
   "eacute"                         , "\xC3\xA9"                  , /* é */
   "easter"                         , "\xE2\xA9\xAE"              , /* ⩮ */
-  "Ecaron"                         , "\xC4\x9A"                  , /* Ě */
   "ecaron"                         , "\xC4\x9B"                  , /* ě */
-  "Ecirc"                          , "\xC3\x8A"                  , /* Ê */
-  "ecirc"                          , "\xC3\xAA"                  , /* ê */
   "ecir"                           , "\xE2\x89\x96"              , /* ≖ */
+  "ecirc"                          , "\xC3\xAA"                  , /* ê */
   "ecolon"                         , "\xE2\x89\x95"              , /* ≕ */
-  "Ecy"                            , "\xD0\xAD"                  , /* Э */
   "ecy"                            , "\xD1\x8D"                  , /* э */
-  "eDDot"                          , "\xE2\xA9\xB7"              , /* ⩷ */
-  "Edot"                           , "\xC4\x96"                  , /* Ė */
   "edot"                           , "\xC4\x97"                  , /* ė */
-  "eDot"                           , "\xE2\x89\x91"              , /* ≑ */
   "ee"                             , "\xE2\x85\x87"              , /* ⅇ */
   "efDot"                          , "\xE2\x89\x92"              , /* ≒ */
-  "Efr"                            , "\xF0\x9D\x94\x88"          , /* 𝔈 */
   "efr"                            , "\xF0\x9D\x94\xA2"          , /* 𝔢 */
   "eg"                             , "\xE2\xAA\x9A"              , /* ⪚ */
-  "Egrave"                         , "\xC3\x88"                  , /* È */
   "egrave"                         , "\xC3\xA8"                  , /* è */
   "egs"                            , "\xE2\xAA\x96"              , /* ⪖ */
   "egsdot"                         , "\xE2\xAA\x98"              , /* ⪘ */
   "el"                             , "\xE2\xAA\x99"              , /* ⪙ */
-  "Element"                        , "\xE2\x88\x88"              , /* ∈ */
   "elinters"                       , "\xE2\x8F\xA7"              , /* ⏧ */
   "ell"                            , "\xE2\x84\x93"              , /* ℓ */
   "els"                            , "\xE2\xAA\x95"              , /* ⪕ */
   "elsdot"                         , "\xE2\xAA\x97"              , /* ⪗ */
-  "Emacr"                          , "\xC4\x92"                  , /* Ē */
   "emacr"                          , "\xC4\x93"                  , /* ē */
   "empty"                          , "\xE2\x88\x85"              , /* ∅ */
   "emptyset"                       , "\xE2\x88\x85"              , /* ∅ */
-  "EmptySmallSquare"               , "\xE2\x97\xBB"              , /* ◻ */
   "emptyv"                         , "\xE2\x88\x85"              , /* ∅ */
-  "EmptyVerySmallSquare"           , "\xE2\x96\xAB"              , /* ▫ */
   "emsp13"                         , "\xE2\x80\x84"              , /*   */
   "emsp14"                         , "\xE2\x80\x85"              , /*   */
   "emsp"                           , "\xE2\x80\x83"              , /*   */
-  "ENG"                            , "\xC5\x8A"                  , /* Ŋ */
   "eng"                            , "\xC5\x8B"                  , /* ŋ */
   "ensp"                           , "\xE2\x80\x82"              , /*   */
-  "Eogon"                          , "\xC4\x98"                  , /* Ę */
   "eogon"                          , "\xC4\x99"                  , /* ę */
-  "Eopf"                           , "\xF0\x9D\x94\xBC"          , /* 𝔼 */
   "eopf"                           , "\xF0\x9D\x95\x96"          , /* 𝕖 */
   "epar"                           , "\xE2\x8B\x95"              , /* ⋕ */
   "eparsl"                         , "\xE2\xA7\xA3"              , /* ⧣ */
   "eplus"                          , "\xE2\xA9\xB1"              , /* ⩱ */
   "epsi"                           , "\xCE\xB5"                  , /* ε */
-  "Epsilon"                        , "\xCE\x95"                  , /* Ε */
   "epsilon"                        , "\xCE\xB5"                  , /* ε */
   "epsiv"                          , "\xCF\xB5"                  , /* ϵ */
   "eqcirc"                         , "\xE2\x89\x96"              , /* ≖ */
@@ -520,58 +984,41 @@ static const char* CharacterNames[] = {
   "eqsim"                          , "\xE2\x89\x82"              , /* ≂ */
   "eqslantgtr"                     , "\xE2\xAA\x96"              , /* ⪖ */
   "eqslantless"                    , "\xE2\xAA\x95"              , /* ⪕ */
-  "Equal"                          , "\xE2\xA9\xB5"              , /* ⩵ */
   "equals"                         , "\x3D"                      , /* = */
-  "EqualTilde"                     , "\xE2\x89\x82"              , /* ≂ */
   "equest"                         , "\xE2\x89\x9F"              , /* ≟ */
-  "Equilibrium"                    , "\xE2\x87\x8C"              , /* ⇌ */
   "equiv"                          , "\xE2\x89\xA1"              , /* ≡ */
   "equivDD"                        , "\xE2\xA9\xB8"              , /* ⩸ */
   "eqvparsl"                       , "\xE2\xA7\xA5"              , /* ⧥ */
-  "erarr"                          , "\xE2\xA5\xB1"              , /* ⥱ */
   "erDot"                          , "\xE2\x89\x93"              , /* ≓ */
+  "erarr"                          , "\xE2\xA5\xB1"              , /* ⥱ */
   "escr"                           , "\xE2\x84\xAF"              , /* ℯ */
-  "Escr"                           , "\xE2\x84\xB0"              , /* ℰ */
   "esdot"                          , "\xE2\x89\x90"              , /* ≐ */
-  "Esim"                           , "\xE2\xA9\xB3"              , /* ⩳ */
   "esim"                           , "\xE2\x89\x82"              , /* ≂ */
-  "Eta"                            , "\xCE\x97"                  , /* Η */
   "eta"                            , "\xCE\xB7"                  , /* η */
-  "ETH"                            , "\xC3\x90"                  , /* Ð */
   "eth"                            , "\xC3\xB0"                  , /* ð */
-  "Euml"                           , "\xC3\x8B"                  , /* Ë */
   "euml"                           , "\xC3\xAB"                  , /* ë */
   "euro"                           , "\xE2\x82\xAC"              , /* € */
   "excl"                           , "\x21"                      , /* ! */
   "exist"                          , "\xE2\x88\x83"              , /* ∃ */
-  "Exists"                         , "\xE2\x88\x83"              , /* ∃ */
   "expectation"                    , "\xE2\x84\xB0"              , /* ℰ */
   "exponentiale"                   , "\xE2\x85\x87"              , /* ⅇ */
-  "ExponentialE"                   , "\xE2\x85\x87"              , /* ⅇ */
   "fallingdotseq"                  , "\xE2\x89\x92"              , /* ≒ */
-  "Fcy"                            , "\xD0\xA4"                  , /* Ф */
   "fcy"                            , "\xD1\x84"                  , /* ф */
   "female"                         , "\xE2\x99\x80"              , /* ♀ */
   "ffilig"                         , "\xEF\xAC\x83"              , /* ﬃ */
   "fflig"                          , "\xEF\xAC\x80"              , /* ﬀ */
   "ffllig"                         , "\xEF\xAC\x84"              , /* ﬄ */
-  "Ffr"                            , "\xF0\x9D\x94\x89"          , /* 𝔉 */
   "ffr"                            , "\xF0\x9D\x94\xA3"          , /* 𝔣 */
   "filig"                          , "\xEF\xAC\x81"              , /* ﬁ */
-  "FilledSmallSquare"              , "\xE2\x97\xBC"              , /* ◼ */
-  "FilledVerySmallSquare"          , "\xE2\x96\xAA"              , /* ▪ */
   "fjlig"                          , "\x66\x6A"                  , /* fj */
   "flat"                           , "\xE2\x99\xAD"              , /* ♭ */
   "fllig"                          , "\xEF\xAC\x82"              , /* ﬂ */
   "fltns"                          , "\xE2\x96\xB1"              , /* ▱ */
   "fnof"                           , "\xC6\x92"                  , /* ƒ */
-  "Fopf"                           , "\xF0\x9D\x94\xBD"          , /* 𝔽 */
   "fopf"                           , "\xF0\x9D\x95\x97"          , /* 𝕗 */
   "forall"                         , "\xE2\x88\x80"              , /* ∀ */
-  "ForAll"                         , "\xE2\x88\x80"              , /* ∀ */
   "fork"                           , "\xE2\x8B\x94"              , /* ⋔ */
   "forkv"                          , "\xE2\xAB\x99"              , /* ⫙ */
-  "Fouriertrf"                     , "\xE2\x84\xB1"              , /* ℱ */
   "fpartint"                       , "\xE2\xA8\x8D"              , /* ⨍ */
   "frac12"                         , "\xC2\xBD"                  , /* ½ */
   "frac13"                         , "\xE2\x85\x93"              , /* ⅓ */
@@ -591,75 +1038,53 @@ static const char* CharacterNames[] = {
   "frasl"                          , "\xE2\x81\x84"              , /* ⁄ */
   "frown"                          , "\xE2\x8C\xA2"              , /* ⌢ */
   "fscr"                           , "\xF0\x9D\x92\xBB"          , /* 𝒻 */
-  "Fscr"                           , "\xE2\x84\xB1"              , /* ℱ */
-  "gacute"                         , "\xC7\xB5"                  , /* ǵ */
-  "Gamma"                          , "\xCE\x93"                  , /* Γ */
-  "gamma"                          , "\xCE\xB3"                  , /* γ */
-  "Gammad"                         , "\xCF\x9C"                  , /* Ϝ */
-  "gammad"                         , "\xCF\x9D"                  , /* ϝ */
-  "gap"                            , "\xE2\xAA\x86"              , /* ⪆ */
-  "Gbreve"                         , "\xC4\x9E"                  , /* Ğ */
-  "gbreve"                         , "\xC4\x9F"                  , /* ğ */
-  "Gcedil"                         , "\xC4\xA2"                  , /* Ģ */
-  "Gcirc"                          , "\xC4\x9C"                  , /* Ĝ */
-  "gcirc"                          , "\xC4\x9D"                  , /* ĝ */
-  "Gcy"                            , "\xD0\x93"                  , /* Г */
-  "gcy"                            , "\xD0\xB3"                  , /* г */
-  "Gdot"                           , "\xC4\xA0"                  , /* Ġ */
-  "gdot"                           , "\xC4\xA1"                  , /* ġ */
-  "ge"                             , "\xE2\x89\xA5"              , /* ≥ */
   "gE"                             , "\xE2\x89\xA7"              , /* ≧ */
   "gEl"                            , "\xE2\xAA\x8C"              , /* ⪌ */
+  "gacute"                         , "\xC7\xB5"                  , /* ǵ */
+  "gamma"                          , "\xCE\xB3"                  , /* γ */
+  "gammad"                         , "\xCF\x9D"                  , /* ϝ */
+  "gap"                            , "\xE2\xAA\x86"              , /* ⪆ */
+  "gbreve"                         , "\xC4\x9F"                  , /* ğ */
+  "gcirc"                          , "\xC4\x9D"                  , /* ĝ */
+  "gcy"                            , "\xD0\xB3"                  , /* г */
+  "gdot"                           , "\xC4\xA1"                  , /* ġ */
+  "ge"                             , "\xE2\x89\xA5"              , /* ≥ */
   "gel"                            , "\xE2\x8B\x9B"              , /* ⋛ */
   "geq"                            , "\xE2\x89\xA5"              , /* ≥ */
   "geqq"                           , "\xE2\x89\xA7"              , /* ≧ */
   "geqslant"                       , "\xE2\xA9\xBE"              , /* ⩾ */
-  "gescc"                          , "\xE2\xAA\xA9"              , /* ⪩ */
   "ges"                            , "\xE2\xA9\xBE"              , /* ⩾ */
+  "gescc"                          , "\xE2\xAA\xA9"              , /* ⪩ */
   "gesdot"                         , "\xE2\xAA\x80"              , /* ⪀ */
   "gesdoto"                        , "\xE2\xAA\x82"              , /* ⪂ */
   "gesdotol"                       , "\xE2\xAA\x84"              , /* ⪄ */
   "gesl"                           , "\xE2\x8B\x9B\xEF\xB8\x80"  , /* ⋛︀ */
   "gesles"                         , "\xE2\xAA\x94"              , /* ⪔ */
-  "Gfr"                            , "\xF0\x9D\x94\x8A"          , /* 𝔊 */
   "gfr"                            , "\xF0\x9D\x94\xA4"          , /* 𝔤 */
   "gg"                             , "\xE2\x89\xAB"              , /* ≫ */
-  "Gg"                             , "\xE2\x8B\x99"              , /* ⋙ */
   "ggg"                            , "\xE2\x8B\x99"              , /* ⋙ */
   "gimel"                          , "\xE2\x84\xB7"              , /* ℷ */
-  "GJcy"                           , "\xD0\x83"                  , /* Ѓ */
   "gjcy"                           , "\xD1\x93"                  , /* ѓ */
-  "gla"                            , "\xE2\xAA\xA5"              , /* ⪥ */
   "gl"                             , "\xE2\x89\xB7"              , /* ≷ */
   "glE"                            , "\xE2\xAA\x92"              , /* ⪒ */
+  "gla"                            , "\xE2\xAA\xA5"              , /* ⪥ */
   "glj"                            , "\xE2\xAA\xA4"              , /* ⪤ */
+  "gnE"                            , "\xE2\x89\xA9"              , /* ≩ */
   "gnap"                           , "\xE2\xAA\x8A"              , /* ⪊ */
   "gnapprox"                       , "\xE2\xAA\x8A"              , /* ⪊ */
   "gne"                            , "\xE2\xAA\x88"              , /* ⪈ */
-  "gnE"                            , "\xE2\x89\xA9"              , /* ≩ */
   "gneq"                           , "\xE2\xAA\x88"              , /* ⪈ */
   "gneqq"                          , "\xE2\x89\xA9"              , /* ≩ */
   "gnsim"                          , "\xE2\x8B\xA7"              , /* ⋧ */
-  "Gopf"                           , "\xF0\x9D\x94\xBE"          , /* 𝔾 */
   "gopf"                           , "\xF0\x9D\x95\x98"          , /* 𝕘 */
   "grave"                          , "\x60"                      , /* ` */
-  "GreaterEqual"                   , "\xE2\x89\xA5"              , /* ≥ */
-  "GreaterEqualLess"               , "\xE2\x8B\x9B"              , /* ⋛ */
-  "GreaterFullEqual"               , "\xE2\x89\xA7"              , /* ≧ */
-  "GreaterGreater"                 , "\xE2\xAA\xA2"              , /* ⪢ */
-  "GreaterLess"                    , "\xE2\x89\xB7"              , /* ≷ */
-  "GreaterSlantEqual"              , "\xE2\xA9\xBE"              , /* ⩾ */
-  "GreaterTilde"                   , "\xE2\x89\xB3"              , /* ≳ */
-  "Gscr"                           , "\xF0\x9D\x92\xA2"          , /* 𝒢 */
   "gscr"                           , "\xE2\x84\x8A"              , /* ℊ */
   "gsim"                           , "\xE2\x89\xB3"              , /* ≳ */
   "gsime"                          , "\xE2\xAA\x8E"              , /* ⪎ */
   "gsiml"                          , "\xE2\xAA\x90"              , /* ⪐ */
+  "gt"                             , "\x3E"                      , /* > */
   "gtcc"                           , "\xE2\xAA\xA7"              , /* ⪧ */
   "gtcir"                          , "\xE2\xA9\xBA"              , /* ⩺ */
-  "gt"                             , "\x3E"                      , /* > */
-  "GT"                             , "\x3E"                      , /* > */
-  "Gt"                             , "\xE2\x89\xAB"              , /* ≫ */
   "gtdot"                          , "\xE2\x8B\x97"              , /* ⋗ */
   "gtlPar"                         , "\xE2\xA6\x95"              , /* ⦕ */
   "gtquest"                        , "\xE2\xA9\xBC"              , /* ⩼ */
@@ -672,27 +1097,21 @@ static const char* CharacterNames[] = {
   "gtrsim"                         , "\xE2\x89\xB3"              , /* ≳ */
   "gvertneqq"                      , "\xE2\x89\xA9\xEF\xB8\x80"  , /* ≩︀ */
   "gvnE"                           , "\xE2\x89\xA9\xEF\xB8\x80"  , /* ≩︀ */
-  "Hacek"                          , "\xCB\x87"                  , /* ˇ */
+  "hArr"                           , "\xE2\x87\x94"              , /* ⇔ */
   "hairsp"                         , "\xE2\x80\x8A"              , /*   */
   "half"                           , "\xC2\xBD"                  , /* ½ */
   "hamilt"                         , "\xE2\x84\x8B"              , /* ℋ */
-  "HARDcy"                         , "\xD0\xAA"                  , /* Ъ */
   "hardcy"                         , "\xD1\x8A"                  , /* ъ */
-  "harrcir"                        , "\xE2\xA5\x88"              , /* ⥈ */
   "harr"                           , "\xE2\x86\x94"              , /* ↔ */
-  "hArr"                           , "\xE2\x87\x94"              , /* ⇔ */
+  "harrcir"                        , "\xE2\xA5\x88"              , /* ⥈ */
   "harrw"                          , "\xE2\x86\xAD"              , /* ↭ */
-  "Hat"                            , "\x5E"                      , /* ^ */
   "hbar"                           , "\xE2\x84\x8F"              , /* ℏ */
-  "Hcirc"                          , "\xC4\xA4"                  , /* Ĥ */
   "hcirc"                          , "\xC4\xA5"                  , /* ĥ */
   "hearts"                         , "\xE2\x99\xA5"              , /* ♥ */
   "heartsuit"                      , "\xE2\x99\xA5"              , /* ♥ */
   "hellip"                         , "\xE2\x80\xA6"              , /* … */
   "hercon"                         , "\xE2\x8A\xB9"              , /* ⊹ */
   "hfr"                            , "\xF0\x9D\x94\xA5"          , /* 𝔥 */
-  "Hfr"                            , "\xE2\x84\x8C"              , /* ℌ */
-  "HilbertSpace"                   , "\xE2\x84\x8B"              , /* ℋ */
   "hksearow"                       , "\xE2\xA4\xA5"              , /* ⤥ */
   "hkswarow"                       , "\xE2\xA4\xA6"              , /* ⤦ */
   "hoarr"                          , "\xE2\x87\xBF"              , /* ⇿ */
@@ -700,171 +1119,120 @@ static const char* CharacterNames[] = {
   "hookleftarrow"                  , "\xE2\x86\xA9"              , /* ↩ */
   "hookrightarrow"                 , "\xE2\x86\xAA"              , /* ↪ */
   "hopf"                           , "\xF0\x9D\x95\x99"          , /* 𝕙 */
-  "Hopf"                           , "\xE2\x84\x8D"              , /* ℍ */
   "horbar"                         , "\xE2\x80\x95"              , /* ― */
-  "HorizontalLine"                 , "\xE2\x94\x80"              , /* ─ */
   "hscr"                           , "\xF0\x9D\x92\xBD"          , /* 𝒽 */
-  "Hscr"                           , "\xE2\x84\x8B"              , /* ℋ */
   "hslash"                         , "\xE2\x84\x8F"              , /* ℏ */
-  "Hstrok"                         , "\xC4\xA6"                  , /* Ħ */
   "hstrok"                         , "\xC4\xA7"                  , /* ħ */
-  "HumpDownHump"                   , "\xE2\x89\x8E"              , /* ≎ */
-  "HumpEqual"                      , "\xE2\x89\x8F"              , /* ≏ */
   "hybull"                         , "\xE2\x81\x83"              , /* ⁃ */
   "hyphen"                         , "\xE2\x80\x90"              , /* ‐ */
-  "Iacute"                         , "\xC3\x8D"                  , /* Í */
   "iacute"                         , "\xC3\xAD"                  , /* í */
   "ic"                             , "\xE2\x81\xA3"              , /* ⁣ */
-  "Icirc"                          , "\xC3\x8E"                  , /* Î */
   "icirc"                          , "\xC3\xAE"                  , /* î */
-  "Icy"                            , "\xD0\x98"                  , /* И */
   "icy"                            , "\xD0\xB8"                  , /* и */
-  "Idot"                           , "\xC4\xB0"                  , /* İ */
-  "IEcy"                           , "\xD0\x95"                  , /* Е */
   "iecy"                           , "\xD0\xB5"                  , /* е */
   "iexcl"                          , "\xC2\xA1"                  , /* ¡ */
   "iff"                            , "\xE2\x87\x94"              , /* ⇔ */
   "ifr"                            , "\xF0\x9D\x94\xA6"          , /* 𝔦 */
-  "Ifr"                            , "\xE2\x84\x91"              , /* ℑ */
-  "Igrave"                         , "\xC3\x8C"                  , /* Ì */
   "igrave"                         , "\xC3\xAC"                  , /* ì */
   "ii"                             , "\xE2\x85\x88"              , /* ⅈ */
   "iiiint"                         , "\xE2\xA8\x8C"              , /* ⨌ */
   "iiint"                          , "\xE2\x88\xAD"              , /* ∭ */
   "iinfin"                         , "\xE2\xA7\x9C"              , /* ⧜ */
   "iiota"                          , "\xE2\x84\xA9"              , /* ℩ */
-  "IJlig"                          , "\xC4\xB2"                  , /* Ĳ */
   "ijlig"                          , "\xC4\xB3"                  , /* ĳ */
-  "Imacr"                          , "\xC4\xAA"                  , /* Ī */
   "imacr"                          , "\xC4\xAB"                  , /* ī */
   "image"                          , "\xE2\x84\x91"              , /* ℑ */
-  "ImaginaryI"                     , "\xE2\x85\x88"              , /* ⅈ */
   "imagline"                       , "\xE2\x84\x90"              , /* ℐ */
   "imagpart"                       , "\xE2\x84\x91"              , /* ℑ */
   "imath"                          , "\xC4\xB1"                  , /* ı */
-  "Im"                             , "\xE2\x84\x91"              , /* ℑ */
   "imof"                           , "\xE2\x8A\xB7"              , /* ⊷ */
   "imped"                          , "\xC6\xB5"                  , /* Ƶ */
-  "Implies"                        , "\xE2\x87\x92"              , /* ⇒ */
-  "incare"                         , "\xE2\x84\x85"              , /* ℅ */
   "in"                             , "\xE2\x88\x88"              , /* ∈ */
+  "incare"                         , "\xE2\x84\x85"              , /* ℅ */
   "infin"                          , "\xE2\x88\x9E"              , /* ∞ */
   "infintie"                       , "\xE2\xA7\x9D"              , /* ⧝ */
   "inodot"                         , "\xC4\xB1"                  , /* ı */
-  "intcal"                         , "\xE2\x8A\xBA"              , /* ⊺ */
   "int"                            , "\xE2\x88\xAB"              , /* ∫ */
-  "Int"                            , "\xE2\x88\xAC"              , /* ∬ */
+  "intcal"                         , "\xE2\x8A\xBA"              , /* ⊺ */
   "integers"                       , "\xE2\x84\xA4"              , /* ℤ */
-  "Integral"                       , "\xE2\x88\xAB"              , /* ∫ */
   "intercal"                       , "\xE2\x8A\xBA"              , /* ⊺ */
-  "Intersection"                   , "\xE2\x8B\x82"              , /* ⋂ */
   "intlarhk"                       , "\xE2\xA8\x97"              , /* ⨗ */
   "intprod"                        , "\xE2\xA8\xBC"              , /* ⨼ */
-  "InvisibleComma"                 , "\xE2\x81\xA3"              , /* ⁣ */
-  "InvisibleTimes"                 , "\xE2\x81\xA2"              , /* ⁢ */
-  "IOcy"                           , "\xD0\x81"                  , /* Ё */
   "iocy"                           , "\xD1\x91"                  , /* ё */
-  "Iogon"                          , "\xC4\xAE"                  , /* Į */
   "iogon"                          , "\xC4\xAF"                  , /* į */
-  "Iopf"                           , "\xF0\x9D\x95\x80"          , /* 𝕀 */
   "iopf"                           , "\xF0\x9D\x95\x9A"          , /* 𝕚 */
-  "Iota"                           , "\xCE\x99"                  , /* Ι */
   "iota"                           , "\xCE\xB9"                  , /* ι */
   "iprod"                          , "\xE2\xA8\xBC"              , /* ⨼ */
   "iquest"                         , "\xC2\xBF"                  , /* ¿ */
   "iscr"                           , "\xF0\x9D\x92\xBE"          , /* 𝒾 */
-  "Iscr"                           , "\xE2\x84\x90"              , /* ℐ */
   "isin"                           , "\xE2\x88\x88"              , /* ∈ */
-  "isindot"                        , "\xE2\x8B\xB5"              , /* ⋵ */
   "isinE"                          , "\xE2\x8B\xB9"              , /* ⋹ */
+  "isindot"                        , "\xE2\x8B\xB5"              , /* ⋵ */
   "isins"                          , "\xE2\x8B\xB4"              , /* ⋴ */
   "isinsv"                         , "\xE2\x8B\xB3"              , /* ⋳ */
   "isinv"                          , "\xE2\x88\x88"              , /* ∈ */
   "it"                             , "\xE2\x81\xA2"              , /* ⁢ */
-  "Itilde"                         , "\xC4\xA8"                  , /* Ĩ */
   "itilde"                         , "\xC4\xA9"                  , /* ĩ */
-  "Iukcy"                          , "\xD0\x86"                  , /* І */
   "iukcy"                          , "\xD1\x96"                  , /* і */
-  "Iuml"                           , "\xC3\x8F"                  , /* Ï */
   "iuml"                           , "\xC3\xAF"                  , /* ï */
-  "Jcirc"                          , "\xC4\xB4"                  , /* Ĵ */
   "jcirc"                          , "\xC4\xB5"                  , /* ĵ */
-  "Jcy"                            , "\xD0\x99"                  , /* Й */
   "jcy"                            , "\xD0\xB9"                  , /* й */
-  "Jfr"                            , "\xF0\x9D\x94\x8D"          , /* 𝔍 */
   "jfr"                            , "\xF0\x9D\x94\xA7"          , /* 𝔧 */
   "jmath"                          , "\xC8\xB7"                  , /* ȷ */
-  "Jopf"                           , "\xF0\x9D\x95\x81"          , /* 𝕁 */
   "jopf"                           , "\xF0\x9D\x95\x9B"          , /* 𝕛 */
-  "Jscr"                           , "\xF0\x9D\x92\xA5"          , /* 𝒥 */
   "jscr"                           , "\xF0\x9D\x92\xBF"          , /* 𝒿 */
-  "Jsercy"                         , "\xD0\x88"                  , /* Ј */
   "jsercy"                         , "\xD1\x98"                  , /* ј */
-  "Jukcy"                          , "\xD0\x84"                  , /* Є */
   "jukcy"                          , "\xD1\x94"                  , /* є */
-  "Kappa"                          , "\xCE\x9A"                  , /* Κ */
   "kappa"                          , "\xCE\xBA"                  , /* κ */
   "kappav"                         , "\xCF\xB0"                  , /* ϰ */
-  "Kcedil"                         , "\xC4\xB6"                  , /* Ķ */
   "kcedil"                         , "\xC4\xB7"                  , /* ķ */
-  "Kcy"                            , "\xD0\x9A"                  , /* К */
   "kcy"                            , "\xD0\xBA"                  , /* к */
-  "Kfr"                            , "\xF0\x9D\x94\x8E"          , /* 𝔎 */
   "kfr"                            , "\xF0\x9D\x94\xA8"          , /* 𝔨 */
   "kgreen"                         , "\xC4\xB8"                  , /* ĸ */
-  "KHcy"                           , "\xD0\xA5"                  , /* Х */
   "khcy"                           , "\xD1\x85"                  , /* х */
-  "KJcy"                           , "\xD0\x8C"                  , /* Ќ */
   "kjcy"                           , "\xD1\x9C"                  , /* ќ */
-  "Kopf"                           , "\xF0\x9D\x95\x82"          , /* 𝕂 */
   "kopf"                           , "\xF0\x9D\x95\x9C"          , /* 𝕜 */
-  "Kscr"                           , "\xF0\x9D\x92\xA6"          , /* 𝒦 */
   "kscr"                           , "\xF0\x9D\x93\x80"          , /* 𝓀 */
   "lAarr"                          , "\xE2\x87\x9A"              , /* ⇚ */
-  "Lacute"                         , "\xC4\xB9"                  , /* Ĺ */
+  "lArr"                           , "\xE2\x87\x90"              , /* ⇐ */
+  "lAtail"                         , "\xE2\xA4\x9B"              , /* ⤛ */
+  "lBarr"                          , "\xE2\xA4\x8E"              , /* ⤎ */
+  "lE"                             , "\xE2\x89\xA6"              , /* ≦ */
+  "lEg"                            , "\xE2\xAA\x8B"              , /* ⪋ */
+  "lHar"                           , "\xE2\xA5\xA2"              , /* ⥢ */
   "lacute"                         , "\xC4\xBA"                  , /* ĺ */
   "laemptyv"                       , "\xE2\xA6\xB4"              , /* ⦴ */
   "lagran"                         , "\xE2\x84\x92"              , /* ℒ */
-  "Lambda"                         , "\xCE\x9B"                  , /* Λ */
   "lambda"                         , "\xCE\xBB"                  , /* λ */
   "lang"                           , "\xE2\x9F\xA8"              , /* ⟨ */
-  "Lang"                           , "\xE2\x9F\xAA"              , /* ⟪ */
   "langd"                          , "\xE2\xA6\x91"              , /* ⦑ */
   "langle"                         , "\xE2\x9F\xA8"              , /* ⟨ */
   "lap"                            , "\xE2\xAA\x85"              , /* ⪅ */
-  "Laplacetrf"                     , "\xE2\x84\x92"              , /* ℒ */
   "laquo"                          , "\xC2\xAB"                  , /* « */
+  "larr"                           , "\xE2\x86\x90"              , /* ← */
   "larrb"                          , "\xE2\x87\xA4"              , /* ⇤ */
   "larrbfs"                        , "\xE2\xA4\x9F"              , /* ⤟ */
-  "larr"                           , "\xE2\x86\x90"              , /* ← */
-  "Larr"                           , "\xE2\x86\x9E"              , /* ↞ */
-  "lArr"                           , "\xE2\x87\x90"              , /* ⇐ */
   "larrfs"                         , "\xE2\xA4\x9D"              , /* ⤝ */
   "larrhk"                         , "\xE2\x86\xA9"              , /* ↩ */
   "larrlp"                         , "\xE2\x86\xAB"              , /* ↫ */
   "larrpl"                         , "\xE2\xA4\xB9"              , /* ⤹ */
   "larrsim"                        , "\xE2\xA5\xB3"              , /* ⥳ */
   "larrtl"                         , "\xE2\x86\xA2"              , /* ↢ */
-  "latail"                         , "\xE2\xA4\x99"              , /* ⤙ */
-  "lAtail"                         , "\xE2\xA4\x9B"              , /* ⤛ */
   "lat"                            , "\xE2\xAA\xAB"              , /* ⪫ */
+  "latail"                         , "\xE2\xA4\x99"              , /* ⤙ */
   "late"                           , "\xE2\xAA\xAD"              , /* ⪭ */
   "lates"                          , "\xE2\xAA\xAD\xEF\xB8\x80"  , /* ⪭︀ */
   "lbarr"                          , "\xE2\xA4\x8C"              , /* ⤌ */
-  "lBarr"                          , "\xE2\xA4\x8E"              , /* ⤎ */
   "lbbrk"                          , "\xE2\x9D\xB2"              , /* ❲ */
   "lbrace"                         , "\x7B"                      , /* { */
   "lbrack"                         , "\x5B"                      , /* [ */
   "lbrke"                          , "\xE2\xA6\x8B"              , /* ⦋ */
   "lbrksld"                        , "\xE2\xA6\x8F"              , /* ⦏ */
   "lbrkslu"                        , "\xE2\xA6\x8D"              , /* ⦍ */
-  "Lcaron"                         , "\xC4\xBD"                  , /* Ľ */
   "lcaron"                         , "\xC4\xBE"                  , /* ľ */
-  "Lcedil"                         , "\xC4\xBB"                  , /* Ļ */
   "lcedil"                         , "\xC4\xBC"                  , /* ļ */
   "lceil"                          , "\xE2\x8C\x88"              , /* ⌈ */
   "lcub"                           , "\x7B"                      , /* { */
-  "Lcy"                            , "\xD0\x9B"                  , /* Л */
   "lcy"                            , "\xD0\xBB"                  , /* л */
   "ldca"                           , "\xE2\xA4\xB6"              , /* ⤶ */
   "ldquo"                          , "\xE2\x80\x9C"              , /* “ */
@@ -873,50 +1241,22 @@ static const char* CharacterNames[] = {
   "ldrushar"                       , "\xE2\xA5\x8B"              , /* ⥋ */
   "ldsh"                           , "\xE2\x86\xB2"              , /* ↲ */
   "le"                             , "\xE2\x89\xA4"              , /* ≤ */
-  "lE"                             , "\xE2\x89\xA6"              , /* ≦ */
-  "LeftAngleBracket"               , "\xE2\x9F\xA8"              , /* ⟨ */
-  "LeftArrowBar"                   , "\xE2\x87\xA4"              , /* ⇤ */
   "leftarrow"                      , "\xE2\x86\x90"              , /* ← */
-  "LeftArrow"                      , "\xE2\x86\x90"              , /* ← */
-  "Leftarrow"                      , "\xE2\x87\x90"              , /* ⇐ */
-  "LeftArrowRightArrow"            , "\xE2\x87\x86"              , /* ⇆ */
   "leftarrowtail"                  , "\xE2\x86\xA2"              , /* ↢ */
-  "LeftCeiling"                    , "\xE2\x8C\x88"              , /* ⌈ */
-  "LeftDoubleBracket"              , "\xE2\x9F\xA6"              , /* ⟦ */
-  "LeftDownTeeVector"              , "\xE2\xA5\xA1"              , /* ⥡ */
-  "LeftDownVectorBar"              , "\xE2\xA5\x99"              , /* ⥙ */
-  "LeftDownVector"                 , "\xE2\x87\x83"              , /* ⇃ */
-  "LeftFloor"                      , "\xE2\x8C\x8A"              , /* ⌊ */
   "leftharpoondown"                , "\xE2\x86\xBD"              , /* ↽ */
   "leftharpoonup"                  , "\xE2\x86\xBC"              , /* ↼ */
   "leftleftarrows"                 , "\xE2\x87\x87"              , /* ⇇ */
   "leftrightarrow"                 , "\xE2\x86\x94"              , /* ↔ */
-  "LeftRightArrow"                 , "\xE2\x86\x94"              , /* ↔ */
-  "Leftrightarrow"                 , "\xE2\x87\x94"              , /* ⇔ */
   "leftrightarrows"                , "\xE2\x87\x86"              , /* ⇆ */
   "leftrightharpoons"              , "\xE2\x87\x8B"              , /* ⇋ */
   "leftrightsquigarrow"            , "\xE2\x86\xAD"              , /* ↭ */
-  "LeftRightVector"                , "\xE2\xA5\x8E"              , /* ⥎ */
-  "LeftTeeArrow"                   , "\xE2\x86\xA4"              , /* ↤ */
-  "LeftTee"                        , "\xE2\x8A\xA3"              , /* ⊣ */
-  "LeftTeeVector"                  , "\xE2\xA5\x9A"              , /* ⥚ */
   "leftthreetimes"                 , "\xE2\x8B\x8B"              , /* ⋋ */
-  "LeftTriangleBar"                , "\xE2\xA7\x8F"              , /* ⧏ */
-  "LeftTriangle"                   , "\xE2\x8A\xB2"              , /* ⊲ */
-  "LeftTriangleEqual"              , "\xE2\x8A\xB4"              , /* ⊴ */
-  "LeftUpDownVector"               , "\xE2\xA5\x91"              , /* ⥑ */
-  "LeftUpTeeVector"                , "\xE2\xA5\xA0"              , /* ⥠ */
-  "LeftUpVectorBar"                , "\xE2\xA5\x98"              , /* ⥘ */
-  "LeftUpVector"                   , "\xE2\x86\xBF"              , /* ↿ */
-  "LeftVectorBar"                  , "\xE2\xA5\x92"              , /* ⥒ */
-  "LeftVector"                     , "\xE2\x86\xBC"              , /* ↼ */
-  "lEg"                            , "\xE2\xAA\x8B"              , /* ⪋ */
   "leg"                            , "\xE2\x8B\x9A"              , /* ⋚ */
   "leq"                            , "\xE2\x89\xA4"              , /* ≤ */
   "leqq"                           , "\xE2\x89\xA6"              , /* ≦ */
   "leqslant"                       , "\xE2\xA9\xBD"              , /* ⩽ */
-  "lescc"                          , "\xE2\xAA\xA8"              , /* ⪨ */
   "les"                            , "\xE2\xA9\xBD"              , /* ⩽ */
+  "lescc"                          , "\xE2\xAA\xA8"              , /* ⪨ */
   "lesdot"                         , "\xE2\xA9\xBF"              , /* ⩿ */
   "lesdoto"                        , "\xE2\xAA\x81"              , /* ⪁ */
   "lesdotor"                       , "\xE2\xAA\x83"              , /* ⪃ */
@@ -926,42 +1266,30 @@ static const char* CharacterNames[] = {
   "lessdot"                        , "\xE2\x8B\x96"              , /* ⋖ */
   "lesseqgtr"                      , "\xE2\x8B\x9A"              , /* ⋚ */
   "lesseqqgtr"                     , "\xE2\xAA\x8B"              , /* ⪋ */
-  "LessEqualGreater"               , "\xE2\x8B\x9A"              , /* ⋚ */
-  "LessFullEqual"                  , "\xE2\x89\xA6"              , /* ≦ */
-  "LessGreater"                    , "\xE2\x89\xB6"              , /* ≶ */
   "lessgtr"                        , "\xE2\x89\xB6"              , /* ≶ */
-  "LessLess"                       , "\xE2\xAA\xA1"              , /* ⪡ */
   "lesssim"                        , "\xE2\x89\xB2"              , /* ≲ */
-  "LessSlantEqual"                 , "\xE2\xA9\xBD"              , /* ⩽ */
-  "LessTilde"                      , "\xE2\x89\xB2"              , /* ≲ */
   "lfisht"                         , "\xE2\xA5\xBC"              , /* ⥼ */
   "lfloor"                         , "\xE2\x8C\x8A"              , /* ⌊ */
-  "Lfr"                            , "\xF0\x9D\x94\x8F"          , /* 𝔏 */
   "lfr"                            , "\xF0\x9D\x94\xA9"          , /* 𝔩 */
   "lg"                             , "\xE2\x89\xB6"              , /* ≶ */
   "lgE"                            , "\xE2\xAA\x91"              , /* ⪑ */
-  "lHar"                           , "\xE2\xA5\xA2"              , /* ⥢ */
   "lhard"                          , "\xE2\x86\xBD"              , /* ↽ */
   "lharu"                          , "\xE2\x86\xBC"              , /* ↼ */
   "lharul"                         , "\xE2\xA5\xAA"              , /* ⥪ */
   "lhblk"                          , "\xE2\x96\x84"              , /* ▄ */
-  "LJcy"                           , "\xD0\x89"                  , /* Љ */
   "ljcy"                           , "\xD1\x99"                  , /* љ */
-  "llarr"                          , "\xE2\x87\x87"              , /* ⇇ */
   "ll"                             , "\xE2\x89\xAA"              , /* ≪ */
-  "Ll"                             , "\xE2\x8B\x98"              , /* ⋘ */
+  "llarr"                          , "\xE2\x87\x87"              , /* ⇇ */
   "llcorner"                       , "\xE2\x8C\x9E"              , /* ⌞ */
-  "Lleftarrow"                     , "\xE2\x87\x9A"              , /* ⇚ */
   "llhard"                         , "\xE2\xA5\xAB"              , /* ⥫ */
   "lltri"                          , "\xE2\x97\xBA"              , /* ◺ */
-  "Lmidot"                         , "\xC4\xBF"                  , /* Ŀ */
   "lmidot"                         , "\xC5\x80"                  , /* ŀ */
-  "lmoustache"                     , "\xE2\x8E\xB0"              , /* ⎰ */
   "lmoust"                         , "\xE2\x8E\xB0"              , /* ⎰ */
+  "lmoustache"                     , "\xE2\x8E\xB0"              , /* ⎰ */
+  "lnE"                            , "\xE2\x89\xA8"              , /* ≨ */
   "lnap"                           , "\xE2\xAA\x89"              , /* ⪉ */
   "lnapprox"                       , "\xE2\xAA\x89"              , /* ⪉ */
   "lne"                            , "\xE2\xAA\x87"              , /* ⪇ */
-  "lnE"                            , "\xE2\x89\xA8"              , /* ≨ */
   "lneq"                           , "\xE2\xAA\x87"              , /* ⪇ */
   "lneqq"                          , "\xE2\x89\xA8"              , /* ≨ */
   "lnsim"                          , "\xE2\x8B\xA6"              , /* ⋦ */
@@ -969,26 +1297,17 @@ static const char* CharacterNames[] = {
   "loarr"                          , "\xE2\x87\xBD"              , /* ⇽ */
   "lobrk"                          , "\xE2\x9F\xA6"              , /* ⟦ */
   "longleftarrow"                  , "\xE2\x9F\xB5"              , /* ⟵ */
-  "LongLeftArrow"                  , "\xE2\x9F\xB5"              , /* ⟵ */
-  "Longleftarrow"                  , "\xE2\x9F\xB8"              , /* ⟸ */
   "longleftrightarrow"             , "\xE2\x9F\xB7"              , /* ⟷ */
-  "LongLeftRightArrow"             , "\xE2\x9F\xB7"              , /* ⟷ */
-  "Longleftrightarrow"             , "\xE2\x9F\xBA"              , /* ⟺ */
   "longmapsto"                     , "\xE2\x9F\xBC"              , /* ⟼ */
   "longrightarrow"                 , "\xE2\x9F\xB6"              , /* ⟶ */
-  "LongRightArrow"                 , "\xE2\x9F\xB6"              , /* ⟶ */
-  "Longrightarrow"                 , "\xE2\x9F\xB9"              , /* ⟹ */
   "looparrowleft"                  , "\xE2\x86\xAB"              , /* ↫ */
   "looparrowright"                 , "\xE2\x86\xAC"              , /* ↬ */
   "lopar"                          , "\xE2\xA6\x85"              , /* ⦅ */
-  "Lopf"                           , "\xF0\x9D\x95\x83"          , /* 𝕃 */
   "lopf"                           , "\xF0\x9D\x95\x9D"          , /* 𝕝 */
   "loplus"                         , "\xE2\xA8\xAD"              , /* ⨭ */
   "lotimes"                        , "\xE2\xA8\xB4"              , /* ⨴ */
   "lowast"                         , "\xE2\x88\x97"              , /* ∗ */
   "lowbar"                         , "\x5F"                      , /* _ */
-  "LowerLeftArrow"                 , "\xE2\x86\x99"              , /* ↙ */
-  "LowerRightArrow"                , "\xE2\x86\x98"              , /* ↘ */
   "loz"                            , "\xE2\x97\x8A"              , /* ◊ */
   "lozenge"                        , "\xE2\x97\x8A"              , /* ◊ */
   "lozf"                           , "\xE2\xA7\xAB"              , /* ⧫ */
@@ -1002,40 +1321,35 @@ static const char* CharacterNames[] = {
   "lrtri"                          , "\xE2\x8A\xBF"              , /* ⊿ */
   "lsaquo"                         , "\xE2\x80\xB9"              , /* ‹ */
   "lscr"                           , "\xF0\x9D\x93\x81"          , /* 𝓁 */
-  "Lscr"                           , "\xE2\x84\x92"              , /* ℒ */
   "lsh"                            , "\xE2\x86\xB0"              , /* ↰ */
-  "Lsh"                            , "\xE2\x86\xB0"              , /* ↰ */
   "lsim"                           , "\xE2\x89\xB2"              , /* ≲ */
   "lsime"                          , "\xE2\xAA\x8D"              , /* ⪍ */
   "lsimg"                          , "\xE2\xAA\x8F"              , /* ⪏ */
   "lsqb"                           , "\x5B"                      , /* [ */
   "lsquo"                          , "\xE2\x80\x98"              , /* ‘ */
   "lsquor"                         , "\xE2\x80\x9A"              , /* ‚ */
-  "Lstrok"                         , "\xC5\x81"                  , /* Ł */
   "lstrok"                         , "\xC5\x82"                  , /* ł */
+  "lt"                             , "\x3C"                      , /* < */
   "ltcc"                           , "\xE2\xAA\xA6"              , /* ⪦ */
   "ltcir"                          , "\xE2\xA9\xB9"              , /* ⩹ */
-  "lt"                             , "\x3C"                      , /* < */
-  "LT"                             , "\x3C"                      , /* < */
-  "Lt"                             , "\xE2\x89\xAA"              , /* ≪ */
   "ltdot"                          , "\xE2\x8B\x96"              , /* ⋖ */
   "lthree"                         , "\xE2\x8B\x8B"              , /* ⋋ */
   "ltimes"                         , "\xE2\x8B\x89"              , /* ⋉ */
   "ltlarr"                         , "\xE2\xA5\xB6"              , /* ⥶ */
   "ltquest"                        , "\xE2\xA9\xBB"              , /* ⩻ */
+  "ltrPar"                         , "\xE2\xA6\x96"              , /* ⦖ */
   "ltri"                           , "\xE2\x97\x83"              , /* ◃ */
   "ltrie"                          , "\xE2\x8A\xB4"              , /* ⊴ */
   "ltrif"                          , "\xE2\x97\x82"              , /* ◂ */
-  "ltrPar"                         , "\xE2\xA6\x96"              , /* ⦖ */
   "lurdshar"                       , "\xE2\xA5\x8A"              , /* ⥊ */
   "luruhar"                        , "\xE2\xA5\xA6"              , /* ⥦ */
   "lvertneqq"                      , "\xE2\x89\xA8\xEF\xB8\x80"  , /* ≨︀ */
   "lvnE"                           , "\xE2\x89\xA8\xEF\xB8\x80"  , /* ≨︀ */
+  "mDDot"                          , "\xE2\x88\xBA"              , /* ∺ */
   "macr"                           , "\xC2\xAF"                  , /* ¯ */
   "male"                           , "\xE2\x99\x82"              , /* ♂ */
   "malt"                           , "\xE2\x9C\xA0"              , /* ✠ */
   "maltese"                        , "\xE2\x9C\xA0"              , /* ✠ */
-  "Map"                            , "\xE2\xA4\x85"              , /* ⤅ */
   "map"                            , "\xE2\x86\xA6"              , /* ↦ */
   "mapsto"                         , "\xE2\x86\xA6"              , /* ↦ */
   "mapstodown"                     , "\xE2\x86\xA7"              , /* ↧ */
@@ -1043,42 +1357,43 @@ static const char* CharacterNames[] = {
   "mapstoup"                       , "\xE2\x86\xA5"              , /* ↥ */
   "marker"                         , "\xE2\x96\xAE"              , /* ▮ */
   "mcomma"                         , "\xE2\xA8\xA9"              , /* ⨩ */
-  "Mcy"                            , "\xD0\x9C"                  , /* М */
   "mcy"                            , "\xD0\xBC"                  , /* м */
   "mdash"                          , "\xE2\x80\x94"              , /* — */
-  "mDDot"                          , "\xE2\x88\xBA"              , /* ∺ */
   "measuredangle"                  , "\xE2\x88\xA1"              , /* ∡ */
-  "MediumSpace"                    , "\xE2\x81\x9F"              , /*   */
-  "Mellintrf"                      , "\xE2\x84\xB3"              , /* ℳ */
-  "Mfr"                            , "\xF0\x9D\x94\x90"          , /* 𝔐 */
   "mfr"                            , "\xF0\x9D\x94\xAA"          , /* 𝔪 */
   "mho"                            , "\xE2\x84\xA7"              , /* ℧ */
   "micro"                          , "\xC2\xB5"                  , /* µ */
+  "mid"                            , "\xE2\x88\xA3"              , /* ∣ */
   "midast"                         , "\x2A"                      , /* * */
   "midcir"                         , "\xE2\xAB\xB0"              , /* ⫰ */
-  "mid"                            , "\xE2\x88\xA3"              , /* ∣ */
   "middot"                         , "\xC2\xB7"                  , /* · */
-  "minusb"                         , "\xE2\x8A\x9F"              , /* ⊟ */
   "minus"                          , "\xE2\x88\x92"              , /* − */
+  "minusb"                         , "\xE2\x8A\x9F"              , /* ⊟ */
   "minusd"                         , "\xE2\x88\xB8"              , /* ∸ */
   "minusdu"                        , "\xE2\xA8\xAA"              , /* ⨪ */
-  "MinusPlus"                      , "\xE2\x88\x93"              , /* ∓ */
   "mlcp"                           , "\xE2\xAB\x9B"              , /* ⫛ */
   "mldr"                           , "\xE2\x80\xA6"              , /* … */
   "mnplus"                         , "\xE2\x88\x93"              , /* ∓ */
   "models"                         , "\xE2\x8A\xA7"              , /* ⊧ */
-  "Mopf"                           , "\xF0\x9D\x95\x84"          , /* 𝕄 */
   "mopf"                           , "\xF0\x9D\x95\x9E"          , /* 𝕞 */
   "mp"                             , "\xE2\x88\x93"              , /* ∓ */
   "mscr"                           , "\xF0\x9D\x93\x82"          , /* 𝓂 */
-  "Mscr"                           , "\xE2\x84\xB3"              , /* ℳ */
   "mstpos"                         , "\xE2\x88\xBE"              , /* ∾ */
-  "Mu"                             , "\xCE\x9C"                  , /* Μ */
   "mu"                             , "\xCE\xBC"                  , /* μ */
   "multimap"                       , "\xE2\x8A\xB8"              , /* ⊸ */
   "mumap"                          , "\xE2\x8A\xB8"              , /* ⊸ */
+  "nGg"                            , "\xE2\x8B\x99\xCC\xB8"      , /* ⋙̸ */
+  "nGt"                            , "\xE2\x89\xAB\xE2\x83\x92"  , /* ≫⃒ */
+  "nGtv"                           , "\xE2\x89\xAB\xCC\xB8"      , /* ≫̸ */
+  "nLeftarrow"                     , "\xE2\x87\x8D"              , /* ⇍ */
+  "nLeftrightarrow"                , "\xE2\x87\x8E"              , /* ⇎ */
+  "nLl"                            , "\xE2\x8B\x98\xCC\xB8"      , /* ⋘̸ */
+  "nLt"                            , "\xE2\x89\xAA\xE2\x83\x92"  , /* ≪⃒ */
+  "nLtv"                           , "\xE2\x89\xAA\xCC\xB8"      , /* ≪̸ */
+  "nRightarrow"                    , "\xE2\x87\x8F"              , /* ⇏ */
+  "nVDash"                         , "\xE2\x8A\xAF"              , /* ⊯ */
+  "nVdash"                         , "\xE2\x8A\xAE"              , /* ⊮ */
   "nabla"                          , "\xE2\x88\x87"              , /* ∇ */
-  "Nacute"                         , "\xC5\x83"                  , /* Ń */
   "nacute"                         , "\xC5\x84"                  , /* ń */
   "nang"                           , "\xE2\x88\xA0\xE2\x83\x92"  , /* ∠⃒ */
   "nap"                            , "\xE2\x89\x89"              , /* ≉ */
@@ -1086,42 +1401,31 @@ static const char* CharacterNames[] = {
   "napid"                          , "\xE2\x89\x8B\xCC\xB8"      , /* ≋̸ */
   "napos"                          , "\xC5\x89"                  , /* ŉ */
   "napprox"                        , "\xE2\x89\x89"              , /* ≉ */
+  "natur"                          , "\xE2\x99\xAE"              , /* ♮ */
   "natural"                        , "\xE2\x99\xAE"              , /* ♮ */
   "naturals"                       , "\xE2\x84\x95"              , /* ℕ */
-  "natur"                          , "\xE2\x99\xAE"              , /* ♮ */
   "nbsp"                           , "\xC2\xA0"                  , /*   */
   "nbump"                          , "\xE2\x89\x8E\xCC\xB8"      , /* ≎̸ */
   "nbumpe"                         , "\xE2\x89\x8F\xCC\xB8"      , /* ≏̸ */
   "ncap"                           , "\xE2\xA9\x83"              , /* ⩃ */
-  "Ncaron"                         , "\xC5\x87"                  , /* Ň */
   "ncaron"                         , "\xC5\x88"                  , /* ň */
-  "Ncedil"                         , "\xC5\x85"                  , /* Ņ */
   "ncedil"                         , "\xC5\x86"                  , /* ņ */
   "ncong"                          , "\xE2\x89\x87"              , /* ≇ */
   "ncongdot"                       , "\xE2\xA9\xAD\xCC\xB8"      , /* ⩭̸ */
   "ncup"                           , "\xE2\xA9\x82"              , /* ⩂ */
-  "Ncy"                            , "\xD0\x9D"                  , /* Н */
   "ncy"                            , "\xD0\xBD"                  , /* н */
   "ndash"                          , "\xE2\x80\x93"              , /* – */
+  "ne"                             , "\xE2\x89\xA0"              , /* ≠ */
+  "neArr"                          , "\xE2\x87\x97"              , /* ⇗ */
   "nearhk"                         , "\xE2\xA4\xA4"              , /* ⤤ */
   "nearr"                          , "\xE2\x86\x97"              , /* ↗ */
-  "neArr"                          , "\xE2\x87\x97"              , /* ⇗ */
   "nearrow"                        , "\xE2\x86\x97"              , /* ↗ */
-  "ne"                             , "\xE2\x89\xA0"              , /* ≠ */
   "nedot"                          , "\xE2\x89\x90\xCC\xB8"      , /* ≐̸ */
-  "NegativeMediumSpace"            , "\xE2\x80\x8B"              , /* ​ */
-  "NegativeThickSpace"             , "\xE2\x80\x8B"              , /* ​ */
-  "NegativeThinSpace"              , "\xE2\x80\x8B"              , /* ​ */
-  "NegativeVeryThinSpace"          , "\xE2\x80\x8B"              , /* ​ */
   "nequiv"                         , "\xE2\x89\xA2"              , /* ≢ */
   "nesear"                         , "\xE2\xA4\xA8"              , /* ⤨ */
   "nesim"                          , "\xE2\x89\x82\xCC\xB8"      , /* ≂̸ */
-  "NestedGreaterGreater"           , "\xE2\x89\xAB"              , /* ≫ */
-  "NestedLessLess"                 , "\xE2\x89\xAA"              , /* ≪ */
-  "NewLine"                        , "\x0A"                      , /*   */
   "nexist"                         , "\xE2\x88\x84"              , /* ∄ */
   "nexists"                        , "\xE2\x88\x84"              , /* ∄ */
-  "Nfr"                            , "\xF0\x9D\x94\x91"          , /* 𝔑 */
   "nfr"                            , "\xF0\x9D\x94\xAB"          , /* 𝔫 */
   "ngE"                            , "\xE2\x89\xA7\xCC\xB8"      , /* ≧̸ */
   "nge"                            , "\xE2\x89\xB1"              , /* ≱ */
@@ -1129,132 +1433,66 @@ static const char* CharacterNames[] = {
   "ngeqq"                          , "\xE2\x89\xA7\xCC\xB8"      , /* ≧̸ */
   "ngeqslant"                      , "\xE2\xA9\xBE\xCC\xB8"      , /* ⩾̸ */
   "nges"                           , "\xE2\xA9\xBE\xCC\xB8"      , /* ⩾̸ */
-  "nGg"                            , "\xE2\x8B\x99\xCC\xB8"      , /* ⋙̸ */
   "ngsim"                          , "\xE2\x89\xB5"              , /* ≵ */
-  "nGt"                            , "\xE2\x89\xAB\xE2\x83\x92"  , /* ≫⃒ */
   "ngt"                            , "\xE2\x89\xAF"              , /* ≯ */
   "ngtr"                           , "\xE2\x89\xAF"              , /* ≯ */
-  "nGtv"                           , "\xE2\x89\xAB\xCC\xB8"      , /* ≫̸ */
-  "nharr"                          , "\xE2\x86\xAE"              , /* ↮ */
   "nhArr"                          , "\xE2\x87\x8E"              , /* ⇎ */
+  "nharr"                          , "\xE2\x86\xAE"              , /* ↮ */
   "nhpar"                          , "\xE2\xAB\xB2"              , /* ⫲ */
   "ni"                             , "\xE2\x88\x8B"              , /* ∋ */
   "nis"                            , "\xE2\x8B\xBC"              , /* ⋼ */
   "nisd"                           , "\xE2\x8B\xBA"              , /* ⋺ */
   "niv"                            , "\xE2\x88\x8B"              , /* ∋ */
-  "NJcy"                           , "\xD0\x8A"                  , /* Њ */
   "njcy"                           , "\xD1\x9A"                  , /* њ */
-  "nlarr"                          , "\xE2\x86\x9A"              , /* ↚ */
   "nlArr"                          , "\xE2\x87\x8D"              , /* ⇍ */
-  "nldr"                           , "\xE2\x80\xA5"              , /* ‥ */
   "nlE"                            , "\xE2\x89\xA6\xCC\xB8"      , /* ≦̸ */
+  "nlarr"                          , "\xE2\x86\x9A"              , /* ↚ */
+  "nldr"                           , "\xE2\x80\xA5"              , /* ‥ */
   "nle"                            , "\xE2\x89\xB0"              , /* ≰ */
   "nleftarrow"                     , "\xE2\x86\x9A"              , /* ↚ */
-  "nLeftarrow"                     , "\xE2\x87\x8D"              , /* ⇍ */
   "nleftrightarrow"                , "\xE2\x86\xAE"              , /* ↮ */
-  "nLeftrightarrow"                , "\xE2\x87\x8E"              , /* ⇎ */
   "nleq"                           , "\xE2\x89\xB0"              , /* ≰ */
   "nleqq"                          , "\xE2\x89\xA6\xCC\xB8"      , /* ≦̸ */
   "nleqslant"                      , "\xE2\xA9\xBD\xCC\xB8"      , /* ⩽̸ */
   "nles"                           , "\xE2\xA9\xBD\xCC\xB8"      , /* ⩽̸ */
   "nless"                          , "\xE2\x89\xAE"              , /* ≮ */
-  "nLl"                            , "\xE2\x8B\x98\xCC\xB8"      , /* ⋘̸ */
   "nlsim"                          , "\xE2\x89\xB4"              , /* ≴ */
-  "nLt"                            , "\xE2\x89\xAA\xE2\x83\x92"  , /* ≪⃒ */
   "nlt"                            , "\xE2\x89\xAE"              , /* ≮ */
   "nltri"                          , "\xE2\x8B\xAA"              , /* ⋪ */
   "nltrie"                         , "\xE2\x8B\xAC"              , /* ⋬ */
-  "nLtv"                           , "\xE2\x89\xAA\xCC\xB8"      , /* ≪̸ */
   "nmid"                           , "\xE2\x88\xA4"              , /* ∤ */
-  "NoBreak"                        , "\xE2\x81\xA0"              , /* ⁠ */
-  "NonBreakingSpace"               , "\xC2\xA0"                  , /*   */
   "nopf"                           , "\xF0\x9D\x95\x9F"          , /* 𝕟 */
-  "Nopf"                           , "\xE2\x84\x95"              , /* ℕ */
-  "Not"                            , "\xE2\xAB\xAC"              , /* ⫬ */
   "not"                            , "\xC2\xAC"                  , /* ¬ */
-  "NotCongruent"                   , "\xE2\x89\xA2"              , /* ≢ */
-  "NotCupCap"                      , "\xE2\x89\xAD"              , /* ≭ */
-  "NotDoubleVerticalBar"           , "\xE2\x88\xA6"              , /* ∦ */
-  "NotElement"                     , "\xE2\x88\x89"              , /* ∉ */
-  "NotEqual"                       , "\xE2\x89\xA0"              , /* ≠ */
-  "NotEqualTilde"                  , "\xE2\x89\x82\xCC\xB8"      , /* ≂̸ */
-  "NotExists"                      , "\xE2\x88\x84"              , /* ∄ */
-  "NotGreater"                     , "\xE2\x89\xAF"              , /* ≯ */
-  "NotGreaterEqual"                , "\xE2\x89\xB1"              , /* ≱ */
-  "NotGreaterFullEqual"            , "\xE2\x89\xA7\xCC\xB8"      , /* ≧̸ */
-  "NotGreaterGreater"              , "\xE2\x89\xAB\xCC\xB8"      , /* ≫̸ */
-  "NotGreaterLess"                 , "\xE2\x89\xB9"              , /* ≹ */
-  "NotGreaterSlantEqual"           , "\xE2\xA9\xBE\xCC\xB8"      , /* ⩾̸ */
-  "NotGreaterTilde"                , "\xE2\x89\xB5"              , /* ≵ */
-  "NotHumpDownHump"                , "\xE2\x89\x8E\xCC\xB8"      , /* ≎̸ */
-  "NotHumpEqual"                   , "\xE2\x89\x8F\xCC\xB8"      , /* ≏̸ */
   "notin"                          , "\xE2\x88\x89"              , /* ∉ */
-  "notindot"                       , "\xE2\x8B\xB5\xCC\xB8"      , /* ⋵̸ */
   "notinE"                         , "\xE2\x8B\xB9\xCC\xB8"      , /* ⋹̸ */
+  "notindot"                       , "\xE2\x8B\xB5\xCC\xB8"      , /* ⋵̸ */
   "notinva"                        , "\xE2\x88\x89"              , /* ∉ */
   "notinvb"                        , "\xE2\x8B\xB7"              , /* ⋷ */
   "notinvc"                        , "\xE2\x8B\xB6"              , /* ⋶ */
-  "NotLeftTriangleBar"             , "\xE2\xA7\x8F\xCC\xB8"      , /* ⧏̸ */
-  "NotLeftTriangle"                , "\xE2\x8B\xAA"              , /* ⋪ */
-  "NotLeftTriangleEqual"           , "\xE2\x8B\xAC"              , /* ⋬ */
-  "NotLess"                        , "\xE2\x89\xAE"              , /* ≮ */
-  "NotLessEqual"                   , "\xE2\x89\xB0"              , /* ≰ */
-  "NotLessGreater"                 , "\xE2\x89\xB8"              , /* ≸ */
-  "NotLessLess"                    , "\xE2\x89\xAA\xCC\xB8"      , /* ≪̸ */
-  "NotLessSlantEqual"              , "\xE2\xA9\xBD\xCC\xB8"      , /* ⩽̸ */
-  "NotLessTilde"                   , "\xE2\x89\xB4"              , /* ≴ */
-  "NotNestedGreaterGreater"        , "\xE2\xAA\xA2\xCC\xB8"      , /* ⪢̸ */
-  "NotNestedLessLess"              , "\xE2\xAA\xA1\xCC\xB8"      , /* ⪡̸ */
   "notni"                          , "\xE2\x88\x8C"              , /* ∌ */
   "notniva"                        , "\xE2\x88\x8C"              , /* ∌ */
   "notnivb"                        , "\xE2\x8B\xBE"              , /* ⋾ */
   "notnivc"                        , "\xE2\x8B\xBD"              , /* ⋽ */
-  "NotPrecedes"                    , "\xE2\x8A\x80"              , /* ⊀ */
-  "NotPrecedesEqual"               , "\xE2\xAA\xAF\xCC\xB8"      , /* ⪯̸ */
-  "NotPrecedesSlantEqual"          , "\xE2\x8B\xA0"              , /* ⋠ */
-  "NotReverseElement"              , "\xE2\x88\x8C"              , /* ∌ */
-  "NotRightTriangleBar"            , "\xE2\xA7\x90\xCC\xB8"      , /* ⧐̸ */
-  "NotRightTriangle"               , "\xE2\x8B\xAB"              , /* ⋫ */
-  "NotRightTriangleEqual"          , "\xE2\x8B\xAD"              , /* ⋭ */
-  "NotSquareSubset"                , "\xE2\x8A\x8F\xCC\xB8"      , /* ⊏̸ */
-  "NotSquareSubsetEqual"           , "\xE2\x8B\xA2"              , /* ⋢ */
-  "NotSquareSuperset"              , "\xE2\x8A\x90\xCC\xB8"      , /* ⊐̸ */
-  "NotSquareSupersetEqual"         , "\xE2\x8B\xA3"              , /* ⋣ */
-  "NotSubset"                      , "\xE2\x8A\x82\xE2\x83\x92"  , /* ⊂⃒ */
-  "NotSubsetEqual"                 , "\xE2\x8A\x88"              , /* ⊈ */
-  "NotSucceeds"                    , "\xE2\x8A\x81"              , /* ⊁ */
-  "NotSucceedsEqual"               , "\xE2\xAA\xB0\xCC\xB8"      , /* ⪰̸ */
-  "NotSucceedsSlantEqual"          , "\xE2\x8B\xA1"              , /* ⋡ */
-  "NotSucceedsTilde"               , "\xE2\x89\xBF\xCC\xB8"      , /* ≿̸ */
-  "NotSuperset"                    , "\xE2\x8A\x83\xE2\x83\x92"  , /* ⊃⃒ */
-  "NotSupersetEqual"               , "\xE2\x8A\x89"              , /* ⊉ */
-  "NotTilde"                       , "\xE2\x89\x81"              , /* ≁ */
-  "NotTildeEqual"                  , "\xE2\x89\x84"              , /* ≄ */
-  "NotTildeFullEqual"              , "\xE2\x89\x87"              , /* ≇ */
-  "NotTildeTilde"                  , "\xE2\x89\x89"              , /* ≉ */
-  "NotVerticalBar"                 , "\xE2\x88\xA4"              , /* ∤ */
-  "nparallel"                      , "\xE2\x88\xA6"              , /* ∦ */
   "npar"                           , "\xE2\x88\xA6"              , /* ∦ */
+  "nparallel"                      , "\xE2\x88\xA6"              , /* ∦ */
   "nparsl"                         , "\xE2\xAB\xBD\xE2\x83\xA5"  , /* ⫽⃥ */
   "npart"                          , "\xE2\x88\x82\xCC\xB8"      , /* ∂̸ */
   "npolint"                        , "\xE2\xA8\x94"              , /* ⨔ */
   "npr"                            , "\xE2\x8A\x80"              , /* ⊀ */
   "nprcue"                         , "\xE2\x8B\xA0"              , /* ⋠ */
+  "npre"                           , "\xE2\xAA\xAF\xCC\xB8"      , /* ⪯̸ */
   "nprec"                          , "\xE2\x8A\x80"              , /* ⊀ */
   "npreceq"                        , "\xE2\xAA\xAF\xCC\xB8"      , /* ⪯̸ */
-  "npre"                           , "\xE2\xAA\xAF\xCC\xB8"      , /* ⪯̸ */
-  "nrarrc"                         , "\xE2\xA4\xB3\xCC\xB8"      , /* ⤳̸ */
-  "nrarr"                          , "\xE2\x86\x9B"              , /* ↛ */
   "nrArr"                          , "\xE2\x87\x8F"              , /* ⇏ */
+  "nrarr"                          , "\xE2\x86\x9B"              , /* ↛ */
+  "nrarrc"                         , "\xE2\xA4\xB3\xCC\xB8"      , /* ⤳̸ */
   "nrarrw"                         , "\xE2\x86\x9D\xCC\xB8"      , /* ↝̸ */
   "nrightarrow"                    , "\xE2\x86\x9B"              , /* ↛ */
-  "nRightarrow"                    , "\xE2\x87\x8F"              , /* ⇏ */
   "nrtri"                          , "\xE2\x8B\xAB"              , /* ⋫ */
   "nrtrie"                         , "\xE2\x8B\xAD"              , /* ⋭ */
   "nsc"                            , "\xE2\x8A\x81"              , /* ⊁ */
   "nsccue"                         , "\xE2\x8B\xA1"              , /* ⋡ */
   "nsce"                           , "\xE2\xAA\xB0\xCC\xB8"      , /* ⪰̸ */
-  "Nscr"                           , "\xF0\x9D\x92\xA9"          , /* 𝒩 */
   "nscr"                           , "\xF0\x9D\x93\x83"          , /* 𝓃 */
   "nshortmid"                      , "\xE2\x88\xA4"              , /* ∤ */
   "nshortparallel"                 , "\xE2\x88\xA6"              , /* ∦ */
@@ -1280,26 +1518,22 @@ static const char* CharacterNames[] = {
   "nsupseteq"                      , "\xE2\x8A\x89"              , /* ⊉ */
   "nsupseteqq"                     , "\xE2\xAB\x86\xCC\xB8"      , /* ⫆̸ */
   "ntgl"                           , "\xE2\x89\xB9"              , /* ≹ */
-  "Ntilde"                         , "\xC3\x91"                  , /* Ñ */
   "ntilde"                         , "\xC3\xB1"                  , /* ñ */
   "ntlg"                           , "\xE2\x89\xB8"              , /* ≸ */
   "ntriangleleft"                  , "\xE2\x8B\xAA"              , /* ⋪ */
   "ntrianglelefteq"                , "\xE2\x8B\xAC"              , /* ⋬ */
   "ntriangleright"                 , "\xE2\x8B\xAB"              , /* ⋫ */
   "ntrianglerighteq"               , "\xE2\x8B\xAD"              , /* ⋭ */
-  "Nu"                             , "\xCE\x9D"                  , /* Ν */
   "nu"                             , "\xCE\xBD"                  , /* ν */
   "num"                            , "\x23"                      , /* # */
   "numero"                         , "\xE2\x84\x96"              , /* № */
   "numsp"                          , "\xE2\x80\x87"              , /*   */
+  "nvDash"                         , "\xE2\x8A\xAD"              , /* ⊭ */
+  "nvHarr"                         , "\xE2\xA4\x84"              , /* ⤄ */
   "nvap"                           , "\xE2\x89\x8D\xE2\x83\x92"  , /* ≍⃒ */
   "nvdash"                         , "\xE2\x8A\xAC"              , /* ⊬ */
-  "nvDash"                         , "\xE2\x8A\xAD"              , /* ⊭ */
-  "nVdash"                         , "\xE2\x8A\xAE"              , /* ⊮ */
-  "nVDash"                         , "\xE2\x8A\xAF"              , /* ⊯ */
   "nvge"                           , "\xE2\x89\xA5\xE2\x83\x92"  , /* ≥⃒ */
   "nvgt"                           , "\x3E\xE2\x83\x92"          , /* >⃒ */
-  "nvHarr"                         , "\xE2\xA4\x84"              , /* ⤄ */
   "nvinfin"                        , "\xE2\xA7\x9E"              , /* ⧞ */
   "nvlArr"                         , "\xE2\xA4\x82"              , /* ⤂ */
   "nvle"                           , "\xE2\x89\xA4\xE2\x83\x92"  , /* ≤⃒ */
@@ -1308,32 +1542,26 @@ static const char* CharacterNames[] = {
   "nvrArr"                         , "\xE2\xA4\x83"              , /* ⤃ */
   "nvrtrie"                        , "\xE2\x8A\xB5\xE2\x83\x92"  , /* ⊵⃒ */
   "nvsim"                          , "\xE2\x88\xBC\xE2\x83\x92"  , /* ∼⃒ */
+  "nwArr"                          , "\xE2\x87\x96"              , /* ⇖ */
   "nwarhk"                         , "\xE2\xA4\xA3"              , /* ⤣ */
   "nwarr"                          , "\xE2\x86\x96"              , /* ↖ */
-  "nwArr"                          , "\xE2\x87\x96"              , /* ⇖ */
   "nwarrow"                        , "\xE2\x86\x96"              , /* ↖ */
   "nwnear"                         , "\xE2\xA4\xA7"              , /* ⤧ */
-  "Oacute"                         , "\xC3\x93"                  , /* Ó */
+  "oS"                             , "\xE2\x93\x88"              , /* Ⓢ */
   "oacute"                         , "\xC3\xB3"                  , /* ó */
   "oast"                           , "\xE2\x8A\x9B"              , /* ⊛ */
-  "Ocirc"                          , "\xC3\x94"                  , /* Ô */
-  "ocirc"                          , "\xC3\xB4"                  , /* ô */
   "ocir"                           , "\xE2\x8A\x9A"              , /* ⊚ */
-  "Ocy"                            , "\xD0\x9E"                  , /* О */
+  "ocirc"                          , "\xC3\xB4"                  , /* ô */
   "ocy"                            , "\xD0\xBE"                  , /* о */
   "odash"                          , "\xE2\x8A\x9D"              , /* ⊝ */
-  "Odblac"                         , "\xC5\x90"                  , /* Ő */
   "odblac"                         , "\xC5\x91"                  , /* ő */
   "odiv"                           , "\xE2\xA8\xB8"              , /* ⨸ */
   "odot"                           , "\xE2\x8A\x99"              , /* ⊙ */
   "odsold"                         , "\xE2\xA6\xBC"              , /* ⦼ */
-  "OElig"                          , "\xC5\x92"                  , /* Œ */
   "oelig"                          , "\xC5\x93"                  , /* œ */
   "ofcir"                          , "\xE2\xA6\xBF"              , /* ⦿ */
-  "Ofr"                            , "\xF0\x9D\x94\x92"          , /* 𝔒 */
   "ofr"                            , "\xF0\x9D\x94\xAC"          , /* 𝔬 */
   "ogon"                           , "\xCB\x9B"                  , /* ˛ */
-  "Ograve"                         , "\xC3\x92"                  , /* Ò */
   "ograve"                         , "\xC3\xB2"                  , /* ò */
   "ogt"                            , "\xE2\xA7\x81"              , /* ⧁ */
   "ohbar"                          , "\xE2\xA6\xB5"              , /* ⦵ */
@@ -1344,24 +1572,17 @@ static const char* CharacterNames[] = {
   "olcross"                        , "\xE2\xA6\xBB"              , /* ⦻ */
   "oline"                          , "\xE2\x80\xBE"              , /* ‾ */
   "olt"                            , "\xE2\xA7\x80"              , /* ⧀ */
-  "Omacr"                          , "\xC5\x8C"                  , /* Ō */
   "omacr"                          , "\xC5\x8D"                  , /* ō */
-  "Omega"                          , "\xCE\xA9"                  , /* Ω */
   "omega"                          , "\xCF\x89"                  , /* ω */
-  "Omicron"                        , "\xCE\x9F"                  , /* Ο */
   "omicron"                        , "\xCE\xBF"                  , /* ο */
   "omid"                           , "\xE2\xA6\xB6"              , /* ⦶ */
   "ominus"                         , "\xE2\x8A\x96"              , /* ⊖ */
-  "Oopf"                           , "\xF0\x9D\x95\x86"          , /* 𝕆 */
   "oopf"                           , "\xF0\x9D\x95\xA0"          , /* 𝕠 */
   "opar"                           , "\xE2\xA6\xB7"              , /* ⦷ */
-  "OpenCurlyDoubleQuote"           , "\xE2\x80\x9C"              , /* “ */
-  "OpenCurlyQuote"                 , "\xE2\x80\x98"              , /* ‘ */
   "operp"                          , "\xE2\xA6\xB9"              , /* ⦹ */
   "oplus"                          , "\xE2\x8A\x95"              , /* ⊕ */
-  "orarr"                          , "\xE2\x86\xBB"              , /* ↻ */
-  "Or"                             , "\xE2\xA9\x94"              , /* ⩔ */
   "or"                             , "\xE2\x88\xA8"              , /* ∨ */
+  "orarr"                          , "\xE2\x86\xBB"              , /* ↻ */
   "ord"                            , "\xE2\xA9\x9D"              , /* ⩝ */
   "order"                          , "\xE2\x84\xB4"              , /* ℴ */
   "orderof"                        , "\xE2\x84\xB4"              , /* ℴ */
@@ -1371,170 +1592,130 @@ static const char* CharacterNames[] = {
   "oror"                           , "\xE2\xA9\x96"              , /* ⩖ */
   "orslope"                        , "\xE2\xA9\x97"              , /* ⩗ */
   "orv"                            , "\xE2\xA9\x9B"              , /* ⩛ */
-  "oS"                             , "\xE2\x93\x88"              , /* Ⓢ */
-  "Oscr"                           , "\xF0\x9D\x92\xAA"          , /* 𝒪 */
   "oscr"                           , "\xE2\x84\xB4"              , /* ℴ */
-  "Oslash"                         , "\xC3\x98"                  , /* Ø */
   "oslash"                         , "\xC3\xB8"                  , /* ø */
   "osol"                           , "\xE2\x8A\x98"              , /* ⊘ */
-  "Otilde"                         , "\xC3\x95"                  , /* Õ */
   "otilde"                         , "\xC3\xB5"                  , /* õ */
-  "otimesas"                       , "\xE2\xA8\xB6"              , /* ⨶ */
-  "Otimes"                         , "\xE2\xA8\xB7"              , /* ⨷ */
   "otimes"                         , "\xE2\x8A\x97"              , /* ⊗ */
-  "Ouml"                           , "\xC3\x96"                  , /* Ö */
+  "otimesas"                       , "\xE2\xA8\xB6"              , /* ⨶ */
   "ouml"                           , "\xC3\xB6"                  , /* ö */
   "ovbar"                          , "\xE2\x8C\xBD"              , /* ⌽ */
-  "OverBar"                        , "\xE2\x80\xBE"              , /* ‾ */
-  "OverBrace"                      , "\xE2\x8F\x9E"              , /* ⏞ */
-  "OverBracket"                    , "\xE2\x8E\xB4"              , /* ⎴ */
-  "OverParenthesis"                , "\xE2\x8F\x9C"              , /* ⏜ */
+  "par"                            , "\xE2\x88\xA5"              , /* ∥ */
   "para"                           , "\xC2\xB6"                  , /* ¶ */
   "parallel"                       , "\xE2\x88\xA5"              , /* ∥ */
-  "par"                            , "\xE2\x88\xA5"              , /* ∥ */
   "parsim"                         , "\xE2\xAB\xB3"              , /* ⫳ */
   "parsl"                          , "\xE2\xAB\xBD"              , /* ⫽ */
   "part"                           , "\xE2\x88\x82"              , /* ∂ */
-  "PartialD"                       , "\xE2\x88\x82"              , /* ∂ */
-  "Pcy"                            , "\xD0\x9F"                  , /* П */
   "pcy"                            , "\xD0\xBF"                  , /* п */
   "percnt"                         , "\x25"                      , /* % */
   "period"                         , "\x2E"                      , /* . */
   "permil"                         , "\xE2\x80\xB0"              , /* ‰ */
   "perp"                           , "\xE2\x8A\xA5"              , /* ⊥ */
   "pertenk"                        , "\xE2\x80\xB1"              , /* ‱ */
-  "Pfr"                            , "\xF0\x9D\x94\x93"          , /* 𝔓 */
   "pfr"                            , "\xF0\x9D\x94\xAD"          , /* 𝔭 */
-  "Phi"                            , "\xCE\xA6"                  , /* Φ */
   "phi"                            , "\xCF\x86"                  , /* φ */
   "phiv"                           , "\xCF\x95"                  , /* ϕ */
   "phmmat"                         , "\xE2\x84\xB3"              , /* ℳ */
   "phone"                          , "\xE2\x98\x8E"              , /* ☎ */
-  "Pi"                             , "\xCE\xA0"                  , /* Π */
   "pi"                             , "\xCF\x80"                  , /* π */
   "pitchfork"                      , "\xE2\x8B\x94"              , /* ⋔ */
   "piv"                            , "\xCF\x96"                  , /* ϖ */
   "planck"                         , "\xE2\x84\x8F"              , /* ℏ */
   "planckh"                        , "\xE2\x84\x8E"              , /* ℎ */
   "plankv"                         , "\xE2\x84\x8F"              , /* ℏ */
+  "plus"                           , "\x2B"                      , /* + */
   "plusacir"                       , "\xE2\xA8\xA3"              , /* ⨣ */
   "plusb"                          , "\xE2\x8A\x9E"              , /* ⊞ */
   "pluscir"                        , "\xE2\xA8\xA2"              , /* ⨢ */
-  "plus"                           , "\x2B"                      , /* + */
   "plusdo"                         , "\xE2\x88\x94"              , /* ∔ */
   "plusdu"                         , "\xE2\xA8\xA5"              , /* ⨥ */
   "pluse"                          , "\xE2\xA9\xB2"              , /* ⩲ */
-  "PlusMinus"                      , "\xC2\xB1"                  , /* ± */
   "plusmn"                         , "\xC2\xB1"                  , /* ± */
   "plussim"                        , "\xE2\xA8\xA6"              , /* ⨦ */
   "plustwo"                        , "\xE2\xA8\xA7"              , /* ⨧ */
   "pm"                             , "\xC2\xB1"                  , /* ± */
-  "Poincareplane"                  , "\xE2\x84\x8C"              , /* ℌ */
   "pointint"                       , "\xE2\xA8\x95"              , /* ⨕ */
   "popf"                           , "\xF0\x9D\x95\xA1"          , /* 𝕡 */
-  "Popf"                           , "\xE2\x84\x99"              , /* ℙ */
   "pound"                          , "\xC2\xA3"                  , /* £ */
-  "prap"                           , "\xE2\xAA\xB7"              , /* ⪷ */
-  "Pr"                             , "\xE2\xAA\xBB"              , /* ⪻ */
   "pr"                             , "\xE2\x89\xBA"              , /* ≺ */
+  "prE"                            , "\xE2\xAA\xB3"              , /* ⪳ */
+  "prap"                           , "\xE2\xAA\xB7"              , /* ⪷ */
   "prcue"                          , "\xE2\x89\xBC"              , /* ≼ */
-  "precapprox"                     , "\xE2\xAA\xB7"              , /* ⪷ */
+  "pre"                            , "\xE2\xAA\xAF"              , /* ⪯ */
   "prec"                           , "\xE2\x89\xBA"              , /* ≺ */
+  "precapprox"                     , "\xE2\xAA\xB7"              , /* ⪷ */
   "preccurlyeq"                    , "\xE2\x89\xBC"              , /* ≼ */
-  "Precedes"                       , "\xE2\x89\xBA"              , /* ≺ */
-  "PrecedesEqual"                  , "\xE2\xAA\xAF"              , /* ⪯ */
-  "PrecedesSlantEqual"             , "\xE2\x89\xBC"              , /* ≼ */
-  "PrecedesTilde"                  , "\xE2\x89\xBE"              , /* ≾ */
   "preceq"                         , "\xE2\xAA\xAF"              , /* ⪯ */
   "precnapprox"                    , "\xE2\xAA\xB9"              , /* ⪹ */
   "precneqq"                       , "\xE2\xAA\xB5"              , /* ⪵ */
   "precnsim"                       , "\xE2\x8B\xA8"              , /* ⋨ */
-  "pre"                            , "\xE2\xAA\xAF"              , /* ⪯ */
-  "prE"                            , "\xE2\xAA\xB3"              , /* ⪳ */
   "precsim"                        , "\xE2\x89\xBE"              , /* ≾ */
   "prime"                          , "\xE2\x80\xB2"              , /* ′ */
-  "Prime"                          , "\xE2\x80\xB3"              , /* ″ */
   "primes"                         , "\xE2\x84\x99"              , /* ℙ */
-  "prnap"                          , "\xE2\xAA\xB9"              , /* ⪹ */
   "prnE"                           , "\xE2\xAA\xB5"              , /* ⪵ */
+  "prnap"                          , "\xE2\xAA\xB9"              , /* ⪹ */
   "prnsim"                         , "\xE2\x8B\xA8"              , /* ⋨ */
   "prod"                           , "\xE2\x88\x8F"              , /* ∏ */
-  "Product"                        , "\xE2\x88\x8F"              , /* ∏ */
   "profalar"                       , "\xE2\x8C\xAE"              , /* ⌮ */
   "profline"                       , "\xE2\x8C\x92"              , /* ⌒ */
   "profsurf"                       , "\xE2\x8C\x93"              , /* ⌓ */
   "prop"                           , "\xE2\x88\x9D"              , /* ∝ */
-  "Proportional"                   , "\xE2\x88\x9D"              , /* ∝ */
-  "Proportion"                     , "\xE2\x88\xB7"              , /* ∷ */
   "propto"                         , "\xE2\x88\x9D"              , /* ∝ */
   "prsim"                          , "\xE2\x89\xBE"              , /* ≾ */
   "prurel"                         , "\xE2\x8A\xB0"              , /* ⊰ */
-  "Pscr"                           , "\xF0\x9D\x92\xAB"          , /* 𝒫 */
   "pscr"                           , "\xF0\x9D\x93\x85"          , /* 𝓅 */
-  "Psi"                            , "\xCE\xA8"                  , /* Ψ */
   "psi"                            , "\xCF\x88"                  , /* ψ */
   "puncsp"                         , "\xE2\x80\x88"              , /*   */
-  "Qfr"                            , "\xF0\x9D\x94\x94"          , /* 𝔔 */
   "qfr"                            , "\xF0\x9D\x94\xAE"          , /* 𝔮 */
   "qint"                           , "\xE2\xA8\x8C"              , /* ⨌ */
   "qopf"                           , "\xF0\x9D\x95\xA2"          , /* 𝕢 */
-  "Qopf"                           , "\xE2\x84\x9A"              , /* ℚ */
   "qprime"                         , "\xE2\x81\x97"              , /* ⁗ */
-  "Qscr"                           , "\xF0\x9D\x92\xAC"          , /* 𝒬 */
   "qscr"                           , "\xF0\x9D\x93\x86"          , /* 𝓆 */
   "quaternions"                    , "\xE2\x84\x8D"              , /* ℍ */
   "quatint"                        , "\xE2\xA8\x96"              , /* ⨖ */
   "quest"                          , "\x3F"                      , /* ? */
   "questeq"                        , "\xE2\x89\x9F"              , /* ≟ */
   "quot"                           , "\x22"                      , /* " */
-  "QUOT"                           , "\x22"                      , /* " */
   "rAarr"                          , "\xE2\x87\x9B"              , /* ⇛ */
+  "rArr"                           , "\xE2\x87\x92"              , /* ⇒ */
+  "rAtail"                         , "\xE2\xA4\x9C"              , /* ⤜ */
+  "rBarr"                          , "\xE2\xA4\x8F"              , /* ⤏ */
+  "rHar"                           , "\xE2\xA5\xA4"              , /* ⥤ */
   "race"                           , "\xE2\x88\xBD\xCC\xB1"      , /* ∽̱ */
-  "Racute"                         , "\xC5\x94"                  , /* Ŕ */
   "racute"                         , "\xC5\x95"                  , /* ŕ */
   "radic"                          , "\xE2\x88\x9A"              , /* √ */
   "raemptyv"                       , "\xE2\xA6\xB3"              , /* ⦳ */
   "rang"                           , "\xE2\x9F\xA9"              , /* ⟩ */
-  "Rang"                           , "\xE2\x9F\xAB"              , /* ⟫ */
   "rangd"                          , "\xE2\xA6\x92"              , /* ⦒ */
   "range"                          , "\xE2\xA6\xA5"              , /* ⦥ */
   "rangle"                         , "\xE2\x9F\xA9"              , /* ⟩ */
   "raquo"                          , "\xC2\xBB"                  , /* » */
+  "rarr"                           , "\xE2\x86\x92"              , /* → */
   "rarrap"                         , "\xE2\xA5\xB5"              , /* ⥵ */
   "rarrb"                          , "\xE2\x87\xA5"              , /* ⇥ */
   "rarrbfs"                        , "\xE2\xA4\xA0"              , /* ⤠ */
   "rarrc"                          , "\xE2\xA4\xB3"              , /* ⤳ */
-  "rarr"                           , "\xE2\x86\x92"              , /* → */
-  "Rarr"                           , "\xE2\x86\xA0"              , /* ↠ */
-  "rArr"                           , "\xE2\x87\x92"              , /* ⇒ */
   "rarrfs"                         , "\xE2\xA4\x9E"              , /* ⤞ */
   "rarrhk"                         , "\xE2\x86\xAA"              , /* ↪ */
   "rarrlp"                         , "\xE2\x86\xAC"              , /* ↬ */
   "rarrpl"                         , "\xE2\xA5\x85"              , /* ⥅ */
   "rarrsim"                        , "\xE2\xA5\xB4"              , /* ⥴ */
-  "Rarrtl"                         , "\xE2\xA4\x96"              , /* ⤖ */
   "rarrtl"                         , "\xE2\x86\xA3"              , /* ↣ */
   "rarrw"                          , "\xE2\x86\x9D"              , /* ↝ */
   "ratail"                         , "\xE2\xA4\x9A"              , /* ⤚ */
-  "rAtail"                         , "\xE2\xA4\x9C"              , /* ⤜ */
   "ratio"                          , "\xE2\x88\xB6"              , /* ∶ */
   "rationals"                      , "\xE2\x84\x9A"              , /* ℚ */
   "rbarr"                          , "\xE2\xA4\x8D"              , /* ⤍ */
-  "rBarr"                          , "\xE2\xA4\x8F"              , /* ⤏ */
-  "RBarr"                          , "\xE2\xA4\x90"              , /* ⤐ */
   "rbbrk"                          , "\xE2\x9D\xB3"              , /* ❳ */
   "rbrace"                         , "\x7D"                      , /* } */
   "rbrack"                         , "\x5D"                      , /* ] */
   "rbrke"                          , "\xE2\xA6\x8C"              , /* ⦌ */
   "rbrksld"                        , "\xE2\xA6\x8E"              , /* ⦎ */
   "rbrkslu"                        , "\xE2\xA6\x90"              , /* ⦐ */
-  "Rcaron"                         , "\xC5\x98"                  , /* Ř */
   "rcaron"                         , "\xC5\x99"                  , /* ř */
-  "Rcedil"                         , "\xC5\x96"                  , /* Ŗ */
   "rcedil"                         , "\xC5\x97"                  , /* ŗ */
   "rceil"                          , "\xE2\x8C\x89"              , /* ⌉ */
   "rcub"                           , "\x7D"                      , /* } */
-  "Rcy"                            , "\xD0\xA0"                  , /* Р */
   "rcy"                            , "\xD1\x80"                  , /* р */
   "rdca"                           , "\xE2\xA4\xB7"              , /* ⤷ */
   "rdldhar"                        , "\xE2\xA5\xA9"              , /* ⥩ */
@@ -1545,83 +1726,47 @@ static const char* CharacterNames[] = {
   "realine"                        , "\xE2\x84\x9B"              , /* ℛ */
   "realpart"                       , "\xE2\x84\x9C"              , /* ℜ */
   "reals"                          , "\xE2\x84\x9D"              , /* ℝ */
-  "Re"                             , "\xE2\x84\x9C"              , /* ℜ */
   "rect"                           , "\xE2\x96\xAD"              , /* ▭ */
   "reg"                            , "\xC2\xAE"                  , /* ® */
-  "REG"                            , "\xC2\xAE"                  , /* ® */
-  "ReverseElement"                 , "\xE2\x88\x8B"              , /* ∋ */
-  "ReverseEquilibrium"             , "\xE2\x87\x8B"              , /* ⇋ */
-  "ReverseUpEquilibrium"           , "\xE2\xA5\xAF"              , /* ⥯ */
   "rfisht"                         , "\xE2\xA5\xBD"              , /* ⥽ */
   "rfloor"                         , "\xE2\x8C\x8B"              , /* ⌋ */
   "rfr"                            , "\xF0\x9D\x94\xAF"          , /* 𝔯 */
-  "Rfr"                            , "\xE2\x84\x9C"              , /* ℜ */
-  "rHar"                           , "\xE2\xA5\xA4"              , /* ⥤ */
   "rhard"                          , "\xE2\x87\x81"              , /* ⇁ */
   "rharu"                          , "\xE2\x87\x80"              , /* ⇀ */
   "rharul"                         , "\xE2\xA5\xAC"              , /* ⥬ */
-  "Rho"                            , "\xCE\xA1"                  , /* Ρ */
   "rho"                            , "\xCF\x81"                  , /* ρ */
   "rhov"                           , "\xCF\xB1"                  , /* ϱ */
-  "RightAngleBracket"              , "\xE2\x9F\xA9"              , /* ⟩ */
-  "RightArrowBar"                  , "\xE2\x87\xA5"              , /* ⇥ */
   "rightarrow"                     , "\xE2\x86\x92"              , /* → */
-  "RightArrow"                     , "\xE2\x86\x92"              , /* → */
-  "Rightarrow"                     , "\xE2\x87\x92"              , /* ⇒ */
-  "RightArrowLeftArrow"            , "\xE2\x87\x84"              , /* ⇄ */
   "rightarrowtail"                 , "\xE2\x86\xA3"              , /* ↣ */
-  "RightCeiling"                   , "\xE2\x8C\x89"              , /* ⌉ */
-  "RightDoubleBracket"             , "\xE2\x9F\xA7"              , /* ⟧ */
-  "RightDownTeeVector"             , "\xE2\xA5\x9D"              , /* ⥝ */
-  "RightDownVectorBar"             , "\xE2\xA5\x95"              , /* ⥕ */
-  "RightDownVector"                , "\xE2\x87\x82"              , /* ⇂ */
-  "RightFloor"                     , "\xE2\x8C\x8B"              , /* ⌋ */
   "rightharpoondown"               , "\xE2\x87\x81"              , /* ⇁ */
   "rightharpoonup"                 , "\xE2\x87\x80"              , /* ⇀ */
   "rightleftarrows"                , "\xE2\x87\x84"              , /* ⇄ */
   "rightleftharpoons"              , "\xE2\x87\x8C"              , /* ⇌ */
   "rightrightarrows"               , "\xE2\x87\x89"              , /* ⇉ */
   "rightsquigarrow"                , "\xE2\x86\x9D"              , /* ↝ */
-  "RightTeeArrow"                  , "\xE2\x86\xA6"              , /* ↦ */
-  "RightTee"                       , "\xE2\x8A\xA2"              , /* ⊢ */
-  "RightTeeVector"                 , "\xE2\xA5\x9B"              , /* ⥛ */
   "rightthreetimes"                , "\xE2\x8B\x8C"              , /* ⋌ */
-  "RightTriangleBar"               , "\xE2\xA7\x90"              , /* ⧐ */
-  "RightTriangle"                  , "\xE2\x8A\xB3"              , /* ⊳ */
-  "RightTriangleEqual"             , "\xE2\x8A\xB5"              , /* ⊵ */
-  "RightUpDownVector"              , "\xE2\xA5\x8F"              , /* ⥏ */
-  "RightUpTeeVector"               , "\xE2\xA5\x9C"              , /* ⥜ */
-  "RightUpVectorBar"               , "\xE2\xA5\x94"              , /* ⥔ */
-  "RightUpVector"                  , "\xE2\x86\xBE"              , /* ↾ */
-  "RightVectorBar"                 , "\xE2\xA5\x93"              , /* ⥓ */
-  "RightVector"                    , "\xE2\x87\x80"              , /* ⇀ */
   "ring"                           , "\xCB\x9A"                  , /* ˚ */
   "risingdotseq"                   , "\xE2\x89\x93"              , /* ≓ */
   "rlarr"                          , "\xE2\x87\x84"              , /* ⇄ */
   "rlhar"                          , "\xE2\x87\x8C"              , /* ⇌ */
   "rlm"                            , "\xE2\x80\x8F"              , /* ‏ */
-  "rmoustache"                     , "\xE2\x8E\xB1"              , /* ⎱ */
   "rmoust"                         , "\xE2\x8E\xB1"              , /* ⎱ */
+  "rmoustache"                     , "\xE2\x8E\xB1"              , /* ⎱ */
   "rnmid"                          , "\xE2\xAB\xAE"              , /* ⫮ */
   "roang"                          , "\xE2\x9F\xAD"              , /* ⟭ */
   "roarr"                          , "\xE2\x87\xBE"              , /* ⇾ */
   "robrk"                          , "\xE2\x9F\xA7"              , /* ⟧ */
   "ropar"                          , "\xE2\xA6\x86"              , /* ⦆ */
   "ropf"                           , "\xF0\x9D\x95\xA3"          , /* 𝕣 */
-  "Ropf"                           , "\xE2\x84\x9D"              , /* ℝ */
   "roplus"                         , "\xE2\xA8\xAE"              , /* ⨮ */
   "rotimes"                        , "\xE2\xA8\xB5"              , /* ⨵ */
-  "RoundImplies"                   , "\xE2\xA5\xB0"              , /* ⥰ */
   "rpar"                           , "\x29"                      , /* ) */
   "rpargt"                         , "\xE2\xA6\x94"              , /* ⦔ */
   "rppolint"                       , "\xE2\xA8\x92"              , /* ⨒ */
   "rrarr"                          , "\xE2\x87\x89"              , /* ⇉ */
-  "Rrightarrow"                    , "\xE2\x87\x9B"              , /* ⇛ */
   "rsaquo"                         , "\xE2\x80\xBA"              , /* › */
   "rscr"                           , "\xF0\x9D\x93\x87"          , /* 𝓇 */
-  "Rscr"                           , "\xE2\x84\x9B"              , /* ℛ */
   "rsh"                            , "\xE2\x86\xB1"              , /* ↱ */
-  "Rsh"                            , "\xE2\x86\xB1"              , /* ↱ */
   "rsqb"                           , "\x5D"                      , /* ] */
   "rsquo"                          , "\xE2\x80\x99"              , /* ’ */
   "rsquor"                         , "\xE2\x80\x99"              , /* ’ */
@@ -1631,37 +1776,30 @@ static const char* CharacterNames[] = {
   "rtrie"                          , "\xE2\x8A\xB5"              , /* ⊵ */
   "rtrif"                          , "\xE2\x96\xB8"              , /* ▸ */
   "rtriltri"                       , "\xE2\xA7\x8E"              , /* ⧎ */
-  "RuleDelayed"                    , "\xE2\xA7\xB4"              , /* ⧴ */
   "ruluhar"                        , "\xE2\xA5\xA8"              , /* ⥨ */
   "rx"                             , "\xE2\x84\x9E"              , /* ℞ */
-  "Sacute"                         , "\xC5\x9A"                  , /* Ś */
   "sacute"                         , "\xC5\x9B"                  , /* ś */
   "sbquo"                          , "\xE2\x80\x9A"              , /* ‚ */
-  "scap"                           , "\xE2\xAA\xB8"              , /* ⪸ */
-  "Scaron"                         , "\xC5\xA0"                  , /* Š */
-  "scaron"                         , "\xC5\xA1"                  , /* š */
-  "Sc"                             , "\xE2\xAA\xBC"              , /* ⪼ */
   "sc"                             , "\xE2\x89\xBB"              , /* ≻ */
+  "scE"                            , "\xE2\xAA\xB4"              , /* ⪴ */
+  "scap"                           , "\xE2\xAA\xB8"              , /* ⪸ */
+  "scaron"                         , "\xC5\xA1"                  , /* š */
   "sccue"                          , "\xE2\x89\xBD"              , /* ≽ */
   "sce"                            , "\xE2\xAA\xB0"              , /* ⪰ */
-  "scE"                            , "\xE2\xAA\xB4"              , /* ⪴ */
-  "Scedil"                         , "\xC5\x9E"                  , /* Ş */
   "scedil"                         , "\xC5\x9F"                  , /* ş */
-  "Scirc"                          , "\xC5\x9C"                  , /* Ŝ */
   "scirc"                          , "\xC5\x9D"                  , /* ŝ */
-  "scnap"                          , "\xE2\xAA\xBA"              , /* ⪺ */
   "scnE"                           , "\xE2\xAA\xB6"              , /* ⪶ */
+  "scnap"                          , "\xE2\xAA\xBA"              , /* ⪺ */
   "scnsim"                         , "\xE2\x8B\xA9"              , /* ⋩ */
   "scpolint"                       , "\xE2\xA8\x93"              , /* ⨓ */
   "scsim"                          , "\xE2\x89\xBF"              , /* ≿ */
-  "Scy"                            , "\xD0\xA1"                  , /* С */
   "scy"                            , "\xD1\x81"                  , /* с */
-  "sdotb"                          , "\xE2\x8A\xA1"              , /* ⊡ */
   "sdot"                           , "\xE2\x8B\x85"              , /* ⋅ */
+  "sdotb"                          , "\xE2\x8A\xA1"              , /* ⊡ */
   "sdote"                          , "\xE2\xA9\xA6"              , /* ⩦ */
+  "seArr"                          , "\xE2\x87\x98"              , /* ⇘ */
   "searhk"                         , "\xE2\xA4\xA5"              , /* ⤥ */
   "searr"                          , "\xE2\x86\x98"              , /* ↘ */
-  "seArr"                          , "\xE2\x87\x98"              , /* ⇘ */
   "searrow"                        , "\xE2\x86\x98"              , /* ↘ */
   "sect"                           , "\xC2\xA7"                  , /* § */
   "semi"                           , "\x3B"                      , /* ; */
@@ -1669,22 +1807,14 @@ static const char* CharacterNames[] = {
   "setminus"                       , "\xE2\x88\x96"              , /* ∖ */
   "setmn"                          , "\xE2\x88\x96"              , /* ∖ */
   "sext"                           , "\xE2\x9C\xB6"              , /* ✶ */
-  "Sfr"                            , "\xF0\x9D\x94\x96"          , /* 𝔖 */
   "sfr"                            , "\xF0\x9D\x94\xB0"          , /* 𝔰 */
   "sfrown"                         , "\xE2\x8C\xA2"              , /* ⌢ */
   "sharp"                          , "\xE2\x99\xAF"              , /* ♯ */
-  "SHCHcy"                         , "\xD0\xA9"                  , /* Щ */
   "shchcy"                         , "\xD1\x89"                  , /* щ */
-  "SHcy"                           , "\xD0\xA8"                  , /* Ш */
   "shcy"                           , "\xD1\x88"                  , /* ш */
-  "ShortDownArrow"                 , "\xE2\x86\x93"              , /* ↓ */
-  "ShortLeftArrow"                 , "\xE2\x86\x90"              , /* ← */
   "shortmid"                       , "\xE2\x88\xA3"              , /* ∣ */
   "shortparallel"                  , "\xE2\x88\xA5"              , /* ∥ */
-  "ShortRightArrow"                , "\xE2\x86\x92"              , /* → */
-  "ShortUpArrow"                   , "\xE2\x86\x91"              , /* ↑ */
   "shy"                            , "\xC2\xAD"                  , /* ­ */
-  "Sigma"                          , "\xCE\xA3"                  , /* Σ */
   "sigma"                          , "\xCF\x83"                  , /* σ */
   "sigmaf"                         , "\xCF\x82"                  , /* ς */
   "sigmav"                         , "\xCF\x82"                  , /* ς */
@@ -1700,7 +1830,6 @@ static const char* CharacterNames[] = {
   "simplus"                        , "\xE2\xA8\xA4"              , /* ⨤ */
   "simrarr"                        , "\xE2\xA5\xB2"              , /* ⥲ */
   "slarr"                          , "\xE2\x86\x90"              , /* ← */
-  "SmallCircle"                    , "\xE2\x88\x98"              , /* ∘ */
   "smallsetminus"                  , "\xE2\x88\x96"              , /* ∖ */
   "smashp"                         , "\xE2\xA8\xB3"              , /* ⨳ */
   "smeparsl"                       , "\xE2\xA7\xA4"              , /* ⧤ */
@@ -1709,12 +1838,10 @@ static const char* CharacterNames[] = {
   "smt"                            , "\xE2\xAA\xAA"              , /* ⪪ */
   "smte"                           , "\xE2\xAA\xAC"              , /* ⪬ */
   "smtes"                          , "\xE2\xAA\xAC\xEF\xB8\x80"  , /* ⪬︀ */
-  "SOFTcy"                         , "\xD0\xAC"                  , /* Ь */
   "softcy"                         , "\xD1\x8C"                  , /* ь */
-  "solbar"                         , "\xE2\x8C\xBF"              , /* ⌿ */
-  "solb"                           , "\xE2\xA7\x84"              , /* ⧄ */
   "sol"                            , "\x2F"                      , /* / */
-  "Sopf"                           , "\xF0\x9D\x95\x8A"          , /* 𝕊 */
+  "solb"                           , "\xE2\xA7\x84"              , /* ⧄ */
+  "solbar"                         , "\xE2\x8C\xBF"              , /* ⌿ */
   "sopf"                           , "\xF0\x9D\x95\xA4"          , /* 𝕤 */
   "spades"                         , "\xE2\x99\xA0"              , /* ♠ */
   "spadesuit"                      , "\xE2\x99\xA0"              , /* ♠ */
@@ -1723,7 +1850,6 @@ static const char* CharacterNames[] = {
   "sqcaps"                         , "\xE2\x8A\x93\xEF\xB8\x80"  , /* ⊓︀ */
   "sqcup"                          , "\xE2\x8A\x94"              , /* ⊔ */
   "sqcups"                         , "\xE2\x8A\x94\xEF\xB8\x80"  , /* ⊔︀ */
-  "Sqrt"                           , "\xE2\x88\x9A"              , /* √ */
   "sqsub"                          , "\xE2\x8A\x8F"              , /* ⊏ */
   "sqsube"                         , "\xE2\x8A\x91"              , /* ⊑ */
   "sqsubset"                       , "\xE2\x8A\x8F"              , /* ⊏ */
@@ -1732,33 +1858,23 @@ static const char* CharacterNames[] = {
   "sqsupe"                         , "\xE2\x8A\x92"              , /* ⊒ */
   "sqsupset"                       , "\xE2\x8A\x90"              , /* ⊐ */
   "sqsupseteq"                     , "\xE2\x8A\x92"              , /* ⊒ */
-  "square"                         , "\xE2\x96\xA1"              , /* □ */
-  "Square"                         , "\xE2\x96\xA1"              , /* □ */
-  "SquareIntersection"             , "\xE2\x8A\x93"              , /* ⊓ */
-  "SquareSubset"                   , "\xE2\x8A\x8F"              , /* ⊏ */
-  "SquareSubsetEqual"              , "\xE2\x8A\x91"              , /* ⊑ */
-  "SquareSuperset"                 , "\xE2\x8A\x90"              , /* ⊐ */
-  "SquareSupersetEqual"            , "\xE2\x8A\x92"              , /* ⊒ */
-  "SquareUnion"                    , "\xE2\x8A\x94"              , /* ⊔ */
-  "squarf"                         , "\xE2\x96\xAA"              , /* ▪ */
   "squ"                            , "\xE2\x96\xA1"              , /* □ */
+  "square"                         , "\xE2\x96\xA1"              , /* □ */
+  "squarf"                         , "\xE2\x96\xAA"              , /* ▪ */
   "squf"                           , "\xE2\x96\xAA"              , /* ▪ */
   "srarr"                          , "\xE2\x86\x92"              , /* → */
-  "Sscr"                           , "\xF0\x9D\x92\xAE"          , /* 𝒮 */
   "sscr"                           , "\xF0\x9D\x93\x88"          , /* 𝓈 */
   "ssetmn"                         , "\xE2\x88\x96"              , /* ∖ */
   "ssmile"                         , "\xE2\x8C\xA3"              , /* ⌣ */
   "sstarf"                         , "\xE2\x8B\x86"              , /* ⋆ */
-  "Star"                           , "\xE2\x8B\x86"              , /* ⋆ */
   "star"                           , "\xE2\x98\x86"              , /* ☆ */
   "starf"                          , "\xE2\x98\x85"              , /* ★ */
   "straightepsilon"                , "\xCF\xB5"                  , /* ϵ */
   "straightphi"                    , "\xCF\x95"                  , /* ϕ */
   "strns"                          , "\xC2\xAF"                  , /* ¯ */
   "sub"                            , "\xE2\x8A\x82"              , /* ⊂ */
-  "Sub"                            , "\xE2\x8B\x90"              , /* ⋐ */
-  "subdot"                         , "\xE2\xAA\xBD"              , /* ⪽ */
   "subE"                           , "\xE2\xAB\x85"              , /* ⫅ */
+  "subdot"                         , "\xE2\xAA\xBD"              , /* ⪽ */
   "sube"                           , "\xE2\x8A\x86"              , /* ⊆ */
   "subedot"                        , "\xE2\xAB\x83"              , /* ⫃ */
   "submult"                        , "\xE2\xAB\x81"              , /* ⫁ */
@@ -1767,43 +1883,32 @@ static const char* CharacterNames[] = {
   "subplus"                        , "\xE2\xAA\xBF"              , /* ⪿ */
   "subrarr"                        , "\xE2\xA5\xB9"              , /* ⥹ */
   "subset"                         , "\xE2\x8A\x82"              , /* ⊂ */
-  "Subset"                         , "\xE2\x8B\x90"              , /* ⋐ */
   "subseteq"                       , "\xE2\x8A\x86"              , /* ⊆ */
   "subseteqq"                      , "\xE2\xAB\x85"              , /* ⫅ */
-  "SubsetEqual"                    , "\xE2\x8A\x86"              , /* ⊆ */
   "subsetneq"                      , "\xE2\x8A\x8A"              , /* ⊊ */
   "subsetneqq"                     , "\xE2\xAB\x8B"              , /* ⫋ */
   "subsim"                         , "\xE2\xAB\x87"              , /* ⫇ */
   "subsub"                         , "\xE2\xAB\x95"              , /* ⫕ */
   "subsup"                         , "\xE2\xAB\x93"              , /* ⫓ */
-  "succapprox"                     , "\xE2\xAA\xB8"              , /* ⪸ */
   "succ"                           , "\xE2\x89\xBB"              , /* ≻ */
+  "succapprox"                     , "\xE2\xAA\xB8"              , /* ⪸ */
   "succcurlyeq"                    , "\xE2\x89\xBD"              , /* ≽ */
-  "Succeeds"                       , "\xE2\x89\xBB"              , /* ≻ */
-  "SucceedsEqual"                  , "\xE2\xAA\xB0"              , /* ⪰ */
-  "SucceedsSlantEqual"             , "\xE2\x89\xBD"              , /* ≽ */
-  "SucceedsTilde"                  , "\xE2\x89\xBF"              , /* ≿ */
   "succeq"                         , "\xE2\xAA\xB0"              , /* ⪰ */
   "succnapprox"                    , "\xE2\xAA\xBA"              , /* ⪺ */
   "succneqq"                       , "\xE2\xAA\xB6"              , /* ⪶ */
   "succnsim"                       , "\xE2\x8B\xA9"              , /* ⋩ */
   "succsim"                        , "\xE2\x89\xBF"              , /* ≿ */
-  "SuchThat"                       , "\xE2\x88\x8B"              , /* ∋ */
   "sum"                            , "\xE2\x88\x91"              , /* ∑ */
-  "Sum"                            , "\xE2\x88\x91"              , /* ∑ */
   "sung"                           , "\xE2\x99\xAA"              , /* ♪ */
   "sup1"                           , "\xC2\xB9"                  , /* ¹ */
   "sup2"                           , "\xC2\xB2"                  , /* ² */
   "sup3"                           , "\xC2\xB3"                  , /* ³ */
   "sup"                            , "\xE2\x8A\x83"              , /* ⊃ */
-  "Sup"                            , "\xE2\x8B\x91"              , /* ⋑ */
+  "supE"                           , "\xE2\xAB\x86"              , /* ⫆ */
   "supdot"                         , "\xE2\xAA\xBE"              , /* ⪾ */
   "supdsub"                        , "\xE2\xAB\x98"              , /* ⫘ */
-  "supE"                           , "\xE2\xAB\x86"              , /* ⫆ */
   "supe"                           , "\xE2\x8A\x87"              , /* ⊇ */
   "supedot"                        , "\xE2\xAB\x84"              , /* ⫄ */
-  "Superset"                       , "\xE2\x8A\x83"              , /* ⊃ */
-  "SupersetEqual"                  , "\xE2\x8A\x87"              , /* ⊇ */
   "suphsol"                        , "\xE2\x9F\x89"              , /* ⟉ */
   "suphsub"                        , "\xE2\xAB\x97"              , /* ⫗ */
   "suplarr"                        , "\xE2\xA5\xBB"              , /* ⥻ */
@@ -1812,7 +1917,6 @@ static const char* CharacterNames[] = {
   "supne"                          , "\xE2\x8A\x8B"              , /* ⊋ */
   "supplus"                        , "\xE2\xAB\x80"              , /* ⫀ */
   "supset"                         , "\xE2\x8A\x83"              , /* ⊃ */
-  "Supset"                         , "\xE2\x8B\x91"              , /* ⋑ */
   "supseteq"                       , "\xE2\x8A\x87"              , /* ⊇ */
   "supseteqq"                      , "\xE2\xAB\x86"              , /* ⫆ */
   "supsetneq"                      , "\xE2\x8A\x8B"              , /* ⊋ */
@@ -1820,64 +1924,47 @@ static const char* CharacterNames[] = {
   "supsim"                         , "\xE2\xAB\x88"              , /* ⫈ */
   "supsub"                         , "\xE2\xAB\x94"              , /* ⫔ */
   "supsup"                         , "\xE2\xAB\x96"              , /* ⫖ */
+  "swArr"                          , "\xE2\x87\x99"              , /* ⇙ */
   "swarhk"                         , "\xE2\xA4\xA6"              , /* ⤦ */
   "swarr"                          , "\xE2\x86\x99"              , /* ↙ */
-  "swArr"                          , "\xE2\x87\x99"              , /* ⇙ */
   "swarrow"                        , "\xE2\x86\x99"              , /* ↙ */
   "swnwar"                         , "\xE2\xA4\xAA"              , /* ⤪ */
   "szlig"                          , "\xC3\x9F"                  , /* ß */
-  "Tab"                            , "\x09"                      , /*   */
   "target"                         , "\xE2\x8C\x96"              , /* ⌖ */
-  "Tau"                            , "\xCE\xA4"                  , /* Τ */
   "tau"                            , "\xCF\x84"                  , /* τ */
   "tbrk"                           , "\xE2\x8E\xB4"              , /* ⎴ */
-  "Tcaron"                         , "\xC5\xA4"                  , /* Ť */
   "tcaron"                         , "\xC5\xA5"                  , /* ť */
-  "Tcedil"                         , "\xC5\xA2"                  , /* Ţ */
   "tcedil"                         , "\xC5\xA3"                  , /* ţ */
-  "Tcy"                            , "\xD0\xA2"                  , /* Т */
   "tcy"                            , "\xD1\x82"                  , /* т */
   "tdot"                           , "\xE2\x83\x9B"              , /* ⃛ */
   "telrec"                         , "\xE2\x8C\x95"              , /* ⌕ */
-  "Tfr"                            , "\xF0\x9D\x94\x97"          , /* 𝔗 */
   "tfr"                            , "\xF0\x9D\x94\xB1"          , /* 𝔱 */
   "there4"                         , "\xE2\x88\xB4"              , /* ∴ */
   "therefore"                      , "\xE2\x88\xB4"              , /* ∴ */
-  "Therefore"                      , "\xE2\x88\xB4"              , /* ∴ */
-  "Theta"                          , "\xCE\x98"                  , /* Θ */
   "theta"                          , "\xCE\xB8"                  , /* θ */
   "thetasym"                       , "\xCF\x91"                  , /* ϑ */
   "thetav"                         , "\xCF\x91"                  , /* ϑ */
   "thickapprox"                    , "\xE2\x89\x88"              , /* ≈ */
   "thicksim"                       , "\xE2\x88\xBC"              , /* ∼ */
-  "ThickSpace"                     , "\xE2\x81\x9F\xE2\x80\x8A"  , /*    */
-  "ThinSpace"                      , "\xE2\x80\x89"              , /*   */
   "thinsp"                         , "\xE2\x80\x89"              , /*   */
   "thkap"                          , "\xE2\x89\x88"              , /* ≈ */
   "thksim"                         , "\xE2\x88\xBC"              , /* ∼ */
-  "THORN"                          , "\xC3\x9E"                  , /* Þ */
   "thorn"                          , "\xC3\xBE"                  , /* þ */
   "tilde"                          , "\xCB\x9C"                  , /* ˜ */
-  "Tilde"                          , "\xE2\x88\xBC"              , /* ∼ */
-  "TildeEqual"                     , "\xE2\x89\x83"              , /* ≃ */
-  "TildeFullEqual"                 , "\xE2\x89\x85"              , /* ≅ */
-  "TildeTilde"                     , "\xE2\x89\x88"              , /* ≈ */
-  "timesbar"                       , "\xE2\xA8\xB1"              , /* ⨱ */
-  "timesb"                         , "\xE2\x8A\xA0"              , /* ⊠ */
   "times"                          , "\xC3\x97"                  , /* × */
+  "timesb"                         , "\xE2\x8A\xA0"              , /* ⊠ */
+  "timesbar"                       , "\xE2\xA8\xB1"              , /* ⨱ */
   "timesd"                         , "\xE2\xA8\xB0"              , /* ⨰ */
   "tint"                           , "\xE2\x88\xAD"              , /* ∭ */
   "toea"                           , "\xE2\xA4\xA8"              , /* ⤨ */
+  "top"                            , "\xE2\x8A\xA4"              , /* ⊤ */
   "topbot"                         , "\xE2\x8C\xB6"              , /* ⌶ */
   "topcir"                         , "\xE2\xAB\xB1"              , /* ⫱ */
-  "top"                            , "\xE2\x8A\xA4"              , /* ⊤ */
-  "Topf"                           , "\xF0\x9D\x95\x8B"          , /* 𝕋 */
   "topf"                           , "\xF0\x9D\x95\xA5"          , /* 𝕥 */
   "topfork"                        , "\xE2\xAB\x9A"              , /* ⫚ */
   "tosa"                           , "\xE2\xA4\xA9"              , /* ⤩ */
   "tprime"                         , "\xE2\x80\xB4"              , /* ‴ */
   "trade"                          , "\xE2\x84\xA2"              , /* ™ */
-  "TRADE"                          , "\xE2\x84\xA2"              , /* ™ */
   "triangle"                       , "\xE2\x96\xB5"              , /* ▵ */
   "triangledown"                   , "\xE2\x96\xBF"              , /* ▿ */
   "triangleleft"                   , "\xE2\x97\x83"              , /* ◃ */
@@ -1888,46 +1975,31 @@ static const char* CharacterNames[] = {
   "tridot"                         , "\xE2\x97\xAC"              , /* ◬ */
   "trie"                           , "\xE2\x89\x9C"              , /* ≜ */
   "triminus"                       , "\xE2\xA8\xBA"              , /* ⨺ */
-  "TripleDot"                      , "\xE2\x83\x9B"              , /* ⃛ */
   "triplus"                        , "\xE2\xA8\xB9"              , /* ⨹ */
   "trisb"                          , "\xE2\xA7\x8D"              , /* ⧍ */
   "tritime"                        , "\xE2\xA8\xBB"              , /* ⨻ */
   "trpezium"                       , "\xE2\x8F\xA2"              , /* ⏢ */
-  "Tscr"                           , "\xF0\x9D\x92\xAF"          , /* 𝒯 */
   "tscr"                           , "\xF0\x9D\x93\x89"          , /* 𝓉 */
-  "TScy"                           , "\xD0\xA6"                  , /* Ц */
   "tscy"                           , "\xD1\x86"                  , /* ц */
-  "TSHcy"                          , "\xD0\x8B"                  , /* Ћ */
   "tshcy"                          , "\xD1\x9B"                  , /* ћ */
-  "Tstrok"                         , "\xC5\xA6"                  , /* Ŧ */
   "tstrok"                         , "\xC5\xA7"                  , /* ŧ */
   "twixt"                          , "\xE2\x89\xAC"              , /* ≬ */
   "twoheadleftarrow"               , "\xE2\x86\x9E"              , /* ↞ */
   "twoheadrightarrow"              , "\xE2\x86\xA0"              , /* ↠ */
-  "Uacute"                         , "\xC3\x9A"                  , /* Ú */
+  "uArr"                           , "\xE2\x87\x91"              , /* ⇑ */
+  "uHar"                           , "\xE2\xA5\xA3"              , /* ⥣ */
   "uacute"                         , "\xC3\xBA"                  , /* ú */
   "uarr"                           , "\xE2\x86\x91"              , /* ↑ */
-  "Uarr"                           , "\xE2\x86\x9F"              , /* ↟ */
-  "uArr"                           , "\xE2\x87\x91"              , /* ⇑ */
-  "Uarrocir"                       , "\xE2\xA5\x89"              , /* ⥉ */
-  "Ubrcy"                          , "\xD0\x8E"                  , /* Ў */
   "ubrcy"                          , "\xD1\x9E"                  , /* ў */
-  "Ubreve"                         , "\xC5\xAC"                  , /* Ŭ */
   "ubreve"                         , "\xC5\xAD"                  , /* ŭ */
-  "Ucirc"                          , "\xC3\x9B"                  , /* Û */
   "ucirc"                          , "\xC3\xBB"                  , /* û */
-  "Ucy"                            , "\xD0\xA3"                  , /* У */
   "ucy"                            , "\xD1\x83"                  , /* у */
   "udarr"                          , "\xE2\x87\x85"              , /* ⇅ */
-  "Udblac"                         , "\xC5\xB0"                  , /* Ű */
   "udblac"                         , "\xC5\xB1"                  , /* ű */
   "udhar"                          , "\xE2\xA5\xAE"              , /* ⥮ */
   "ufisht"                         , "\xE2\xA5\xBE"              , /* ⥾ */
-  "Ufr"                            , "\xF0\x9D\x94\x98"          , /* 𝔘 */
   "ufr"                            , "\xF0\x9D\x94\xB2"          , /* 𝔲 */
-  "Ugrave"                         , "\xC3\x99"                  , /* Ù */
   "ugrave"                         , "\xC3\xB9"                  , /* ù */
-  "uHar"                           , "\xE2\xA5\xA3"              , /* ⥣ */
   "uharl"                          , "\xE2\x86\xBF"              , /* ↿ */
   "uharr"                          , "\xE2\x86\xBE"              , /* ↾ */
   "uhblk"                          , "\xE2\x96\x80"              , /* ▀ */
@@ -1935,58 +2007,36 @@ static const char* CharacterNames[] = {
   "ulcorner"                       , "\xE2\x8C\x9C"              , /* ⌜ */
   "ulcrop"                         , "\xE2\x8C\x8F"              , /* ⌏ */
   "ultri"                          , "\xE2\x97\xB8"              , /* ◸ */
-  "Umacr"                          , "\xC5\xAA"                  , /* Ū */
   "umacr"                          , "\xC5\xAB"                  , /* ū */
   "uml"                            , "\xC2\xA8"                  , /* ¨ */
-  "UnderBar"                       , "\x5F"                      , /* _ */
-  "UnderBrace"                     , "\xE2\x8F\x9F"              , /* ⏟ */
-  "UnderBracket"                   , "\xE2\x8E\xB5"              , /* ⎵ */
-  "UnderParenthesis"               , "\xE2\x8F\x9D"              , /* ⏝ */
-  "Union"                          , "\xE2\x8B\x83"              , /* ⋃ */
-  "UnionPlus"                      , "\xE2\x8A\x8E"              , /* ⊎ */
-  "Uogon"                          , "\xC5\xB2"                  , /* Ų */
   "uogon"                          , "\xC5\xB3"                  , /* ų */
-  "Uopf"                           , "\xF0\x9D\x95\x8C"          , /* 𝕌 */
   "uopf"                           , "\xF0\x9D\x95\xA6"          , /* 𝕦 */
-  "UpArrowBar"                     , "\xE2\xA4\x92"              , /* ⤒ */
   "uparrow"                        , "\xE2\x86\x91"              , /* ↑ */
-  "UpArrow"                        , "\xE2\x86\x91"              , /* ↑ */
-  "Uparrow"                        , "\xE2\x87\x91"              , /* ⇑ */
-  "UpArrowDownArrow"               , "\xE2\x87\x85"              , /* ⇅ */
   "updownarrow"                    , "\xE2\x86\x95"              , /* ↕ */
-  "UpDownArrow"                    , "\xE2\x86\x95"              , /* ↕ */
-  "Updownarrow"                    , "\xE2\x87\x95"              , /* ⇕ */
-  "UpEquilibrium"                  , "\xE2\xA5\xAE"              , /* ⥮ */
   "upharpoonleft"                  , "\xE2\x86\xBF"              , /* ↿ */
   "upharpoonright"                 , "\xE2\x86\xBE"              , /* ↾ */
   "uplus"                          , "\xE2\x8A\x8E"              , /* ⊎ */
-  "UpperLeftArrow"                 , "\xE2\x86\x96"              , /* ↖ */
-  "UpperRightArrow"                , "\xE2\x86\x97"              , /* ↗ */
   "upsi"                           , "\xCF\x85"                  , /* υ */
-  "Upsi"                           , "\xCF\x92"                  , /* ϒ */
   "upsih"                          , "\xCF\x92"                  , /* ϒ */
-  "Upsilon"                        , "\xCE\xA5"                  , /* Υ */
   "upsilon"                        , "\xCF\x85"                  , /* υ */
-  "UpTeeArrow"                     , "\xE2\x86\xA5"              , /* ↥ */
-  "UpTee"                          , "\xE2\x8A\xA5"              , /* ⊥ */
   "upuparrows"                     , "\xE2\x87\x88"              , /* ⇈ */
   "urcorn"                         , "\xE2\x8C\x9D"              , /* ⌝ */
   "urcorner"                       , "\xE2\x8C\x9D"              , /* ⌝ */
   "urcrop"                         , "\xE2\x8C\x8E"              , /* ⌎ */
-  "Uring"                          , "\xC5\xAE"                  , /* Ů */
   "uring"                          , "\xC5\xAF"                  , /* ů */
   "urtri"                          , "\xE2\x97\xB9"              , /* ◹ */
-  "Uscr"                           , "\xF0\x9D\x92\xB0"          , /* 𝒰 */
   "uscr"                           , "\xF0\x9D\x93\x8A"          , /* 𝓊 */
   "utdot"                          , "\xE2\x8B\xB0"              , /* ⋰ */
-  "Utilde"                         , "\xC5\xA8"                  , /* Ũ */
   "utilde"                         , "\xC5\xA9"                  , /* ũ */
   "utri"                           , "\xE2\x96\xB5"              , /* ▵ */
   "utrif"                          , "\xE2\x96\xB4"              , /* ▴ */
   "uuarr"                          , "\xE2\x87\x88"              , /* ⇈ */
-  "Uuml"                           , "\xC3\x9C"                  , /* Ü */
   "uuml"                           , "\xC3\xBC"                  , /* ü */
   "uwangle"                        , "\xE2\xA6\xA7"              , /* ⦧ */
+  "vArr"                           , "\xE2\x87\x95"              , /* ⇕ */
+  "vBar"                           , "\xE2\xAB\xA8"              , /* ⫨ */
+  "vBarv"                          , "\xE2\xAB\xA9"              , /* ⫩ */
+  "vDash"                          , "\xE2\x8A\xA8"              , /* ⊨ */
   "vangrt"                         , "\xE2\xA6\x9C"              , /* ⦜ */
   "varepsilon"                     , "\xCF\xB5"                  , /* ϵ */
   "varkappa"                       , "\xCF\xB0"                  , /* ϰ */
@@ -1995,7 +2045,6 @@ static const char* CharacterNames[] = {
   "varpi"                          , "\xCF\x96"                  , /* ϖ */
   "varpropto"                      , "\xE2\x88\x9D"              , /* ∝ */
   "varr"                           , "\xE2\x86\x95"              , /* ↕ */
-  "vArr"                           , "\xE2\x87\x95"              , /* ⇕ */
   "varrho"                         , "\xCF\xB1"                  , /* ϱ */
   "varsigma"                       , "\xCF\x82"                  , /* ς */
   "varsubsetneq"                   , "\xE2\x8A\x8A\xEF\xB8\x80"  , /* ⊊︀ */
@@ -2005,132 +2054,83 @@ static const char* CharacterNames[] = {
   "vartheta"                       , "\xCF\x91"                  , /* ϑ */
   "vartriangleleft"                , "\xE2\x8A\xB2"              , /* ⊲ */
   "vartriangleright"               , "\xE2\x8A\xB3"              , /* ⊳ */
-  "vBar"                           , "\xE2\xAB\xA8"              , /* ⫨ */
-  "Vbar"                           , "\xE2\xAB\xAB"              , /* ⫫ */
-  "vBarv"                          , "\xE2\xAB\xA9"              , /* ⫩ */
-  "Vcy"                            , "\xD0\x92"                  , /* В */
   "vcy"                            , "\xD0\xB2"                  , /* в */
   "vdash"                          , "\xE2\x8A\xA2"              , /* ⊢ */
-  "vDash"                          , "\xE2\x8A\xA8"              , /* ⊨ */
-  "Vdash"                          , "\xE2\x8A\xA9"              , /* ⊩ */
-  "VDash"                          , "\xE2\x8A\xAB"              , /* ⊫ */
-  "Vdashl"                         , "\xE2\xAB\xA6"              , /* ⫦ */
-  "veebar"                         , "\xE2\x8A\xBB"              , /* ⊻ */
   "vee"                            , "\xE2\x88\xA8"              , /* ∨ */
-  "Vee"                            , "\xE2\x8B\x81"              , /* ⋁ */
+  "veebar"                         , "\xE2\x8A\xBB"              , /* ⊻ */
   "veeeq"                          , "\xE2\x89\x9A"              , /* ≚ */
   "vellip"                         , "\xE2\x8B\xAE"              , /* ⋮ */
   "verbar"                         , "\x7C"                      , /* | */
-  "Verbar"                         , "\xE2\x80\x96"              , /* ‖ */
   "vert"                           , "\x7C"                      , /* | */
-  "Vert"                           , "\xE2\x80\x96"              , /* ‖ */
-  "VerticalBar"                    , "\xE2\x88\xA3"              , /* ∣ */
-  "VerticalLine"                   , "\x7C"                      , /* | */
-  "VerticalSeparator"              , "\xE2\x9D\x98"              , /* ❘ */
-  "VerticalTilde"                  , "\xE2\x89\x80"              , /* ≀ */
-  "VeryThinSpace"                  , "\xE2\x80\x8A"              , /*   */
-  "Vfr"                            , "\xF0\x9D\x94\x99"          , /* 𝔙 */
   "vfr"                            , "\xF0\x9D\x94\xB3"          , /* 𝔳 */
   "vltri"                          , "\xE2\x8A\xB2"              , /* ⊲ */
   "vnsub"                          , "\xE2\x8A\x82\xE2\x83\x92"  , /* ⊂⃒ */
   "vnsup"                          , "\xE2\x8A\x83\xE2\x83\x92"  , /* ⊃⃒ */
-  "Vopf"                           , "\xF0\x9D\x95\x8D"          , /* 𝕍 */
   "vopf"                           , "\xF0\x9D\x95\xA7"          , /* 𝕧 */
   "vprop"                          , "\xE2\x88\x9D"              , /* ∝ */
   "vrtri"                          , "\xE2\x8A\xB3"              , /* ⊳ */
-  "Vscr"                           , "\xF0\x9D\x92\xB1"          , /* 𝒱 */
   "vscr"                           , "\xF0\x9D\x93\x8B"          , /* 𝓋 */
   "vsubnE"                         , "\xE2\xAB\x8B\xEF\xB8\x80"  , /* ⫋︀ */
   "vsubne"                         , "\xE2\x8A\x8A\xEF\xB8\x80"  , /* ⊊︀ */
   "vsupnE"                         , "\xE2\xAB\x8C\xEF\xB8\x80"  , /* ⫌︀ */
   "vsupne"                         , "\xE2\x8A\x8B\xEF\xB8\x80"  , /* ⊋︀ */
-  "Vvdash"                         , "\xE2\x8A\xAA"              , /* ⊪ */
   "vzigzag"                        , "\xE2\xA6\x9A"              , /* ⦚ */
-  "Wcirc"                          , "\xC5\xB4"                  , /* Ŵ */
   "wcirc"                          , "\xC5\xB5"                  , /* ŵ */
   "wedbar"                         , "\xE2\xA9\x9F"              , /* ⩟ */
   "wedge"                          , "\xE2\x88\xA7"              , /* ∧ */
-  "Wedge"                          , "\xE2\x8B\x80"              , /* ⋀ */
   "wedgeq"                         , "\xE2\x89\x99"              , /* ≙ */
   "weierp"                         , "\xE2\x84\x98"              , /* ℘ */
-  "Wfr"                            , "\xF0\x9D\x94\x9A"          , /* 𝔚 */
   "wfr"                            , "\xF0\x9D\x94\xB4"          , /* 𝔴 */
-  "Wopf"                           , "\xF0\x9D\x95\x8E"          , /* 𝕎 */
   "wopf"                           , "\xF0\x9D\x95\xA8"          , /* 𝕨 */
   "wp"                             , "\xE2\x84\x98"              , /* ℘ */
   "wr"                             , "\xE2\x89\x80"              , /* ≀ */
   "wreath"                         , "\xE2\x89\x80"              , /* ≀ */
-  "Wscr"                           , "\xF0\x9D\x92\xB2"          , /* 𝒲 */
   "wscr"                           , "\xF0\x9D\x93\x8C"          , /* 𝓌 */
   "xcap"                           , "\xE2\x8B\x82"              , /* ⋂ */
   "xcirc"                          , "\xE2\x97\xAF"              , /* ◯ */
   "xcup"                           , "\xE2\x8B\x83"              , /* ⋃ */
   "xdtri"                          , "\xE2\x96\xBD"              , /* ▽ */
-  "Xfr"                            , "\xF0\x9D\x94\x9B"          , /* 𝔛 */
   "xfr"                            , "\xF0\x9D\x94\xB5"          , /* 𝔵 */
-  "xharr"                          , "\xE2\x9F\xB7"              , /* ⟷ */
   "xhArr"                          , "\xE2\x9F\xBA"              , /* ⟺ */
-  "Xi"                             , "\xCE\x9E"                  , /* Ξ */
+  "xharr"                          , "\xE2\x9F\xB7"              , /* ⟷ */
   "xi"                             , "\xCE\xBE"                  , /* ξ */
-  "xlarr"                          , "\xE2\x9F\xB5"              , /* ⟵ */
   "xlArr"                          , "\xE2\x9F\xB8"              , /* ⟸ */
+  "xlarr"                          , "\xE2\x9F\xB5"              , /* ⟵ */
   "xmap"                           , "\xE2\x9F\xBC"              , /* ⟼ */
   "xnis"                           , "\xE2\x8B\xBB"              , /* ⋻ */
   "xodot"                          , "\xE2\xA8\x80"              , /* ⨀ */
-  "Xopf"                           , "\xF0\x9D\x95\x8F"          , /* 𝕏 */
   "xopf"                           , "\xF0\x9D\x95\xA9"          , /* 𝕩 */
   "xoplus"                         , "\xE2\xA8\x81"              , /* ⨁ */
   "xotime"                         , "\xE2\xA8\x82"              , /* ⨂ */
-  "xrarr"                          , "\xE2\x9F\xB6"              , /* ⟶ */
   "xrArr"                          , "\xE2\x9F\xB9"              , /* ⟹ */
-  "Xscr"                           , "\xF0\x9D\x92\xB3"          , /* 𝒳 */
+  "xrarr"                          , "\xE2\x9F\xB6"              , /* ⟶ */
   "xscr"                           , "\xF0\x9D\x93\x8D"          , /* 𝓍 */
   "xsqcup"                         , "\xE2\xA8\x86"              , /* ⨆ */
   "xuplus"                         , "\xE2\xA8\x84"              , /* ⨄ */
   "xutri"                          , "\xE2\x96\xB3"              , /* △ */
   "xvee"                           , "\xE2\x8B\x81"              , /* ⋁ */
   "xwedge"                         , "\xE2\x8B\x80"              , /* ⋀ */
-  "Yacute"                         , "\xC3\x9D"                  , /* Ý */
   "yacute"                         , "\xC3\xBD"                  , /* ý */
-  "YAcy"                           , "\xD0\xAF"                  , /* Я */
   "yacy"                           , "\xD1\x8F"                  , /* я */
-  "Ycirc"                          , "\xC5\xB6"                  , /* Ŷ */
   "ycirc"                          , "\xC5\xB7"                  , /* ŷ */
-  "Ycy"                            , "\xD0\xAB"                  , /* Ы */
   "ycy"                            , "\xD1\x8B"                  , /* ы */
   "yen"                            , "\xC2\xA5"                  , /* ¥ */
-  "Yfr"                            , "\xF0\x9D\x94\x9C"          , /* 𝔜 */
   "yfr"                            , "\xF0\x9D\x94\xB6"          , /* 𝔶 */
-  "YIcy"                           , "\xD0\x87"                  , /* Ї */
   "yicy"                           , "\xD1\x97"                  , /* ї */
-  "Yopf"                           , "\xF0\x9D\x95\x90"          , /* 𝕐 */
   "yopf"                           , "\xF0\x9D\x95\xAA"          , /* 𝕪 */
-  "Yscr"                           , "\xF0\x9D\x92\xB4"          , /* 𝒴 */
   "yscr"                           , "\xF0\x9D\x93\x8E"          , /* 𝓎 */
-  "YUcy"                           , "\xD0\xAE"                  , /* Ю */
   "yucy"                           , "\xD1\x8E"                  , /* ю */
   "yuml"                           , "\xC3\xBF"                  , /* ÿ */
-  "Yuml"                           , "\xC5\xB8"                  , /* Ÿ */
-  "Zacute"                         , "\xC5\xB9"                  , /* Ź */
   "zacute"                         , "\xC5\xBA"                  , /* ź */
-  "Zcaron"                         , "\xC5\xBD"                  , /* Ž */
   "zcaron"                         , "\xC5\xBE"                  , /* ž */
-  "Zcy"                            , "\xD0\x97"                  , /* З */
   "zcy"                            , "\xD0\xB7"                  , /* з */
-  "Zdot"                           , "\xC5\xBB"                  , /* Ż */
   "zdot"                           , "\xC5\xBC"                  , /* ż */
   "zeetrf"                         , "\xE2\x84\xA8"              , /* ℨ */
-  "ZeroWidthSpace"                 , "\xE2\x80\x8B"              , /* ​ */
-  "Zeta"                           , "\xCE\x96"                  , /* Ζ */
   "zeta"                           , "\xCE\xB6"                  , /* ζ */
   "zfr"                            , "\xF0\x9D\x94\xB7"          , /* 𝔷 */
-  "Zfr"                            , "\xE2\x84\xA8"              , /* ℨ */
-  "ZHcy"                           , "\xD0\x96"                  , /* Ж */
   "zhcy"                           , "\xD0\xB6"                  , /* ж */
   "zigrarr"                        , "\xE2\x87\x9D"              , /* ⇝ */
   "zopf"                           , "\xF0\x9D\x95\xAB"          , /* 𝕫 */
-  "Zopf"                           , "\xE2\x84\xA4"              , /* ℤ */
-  "Zscr"                           , "\xF0\x9D\x92\xB5"          , /* 𝒵 */
   "zscr"                           , "\xF0\x9D\x93\x8F"          , /* 𝓏 */
   "zwj"                            , "\xE2\x80\x8D"              , /* ‍ */
   "zwnj"                           , "\xE2\x80\x8C"              , /* ‌ */
