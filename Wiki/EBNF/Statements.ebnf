@@ -12,7 +12,7 @@ Group  = "group"  [AttributeList] [Identifier] "{" [Statements] "}";
 FunctionCall  = Postfix ("," | ";");
 NamespacePush = Postfix ".{" [Statements] "}";
 Assignment    = (Postfix AssignmentOperator Expression ("," | ";"))
-              | (PostFix ("++" | "--") ("," | ";'));
+              | (PostFix ("++" | "--") ("," | ";"));
 
 AssignmentOperator = "="  | ":=" | "~=" | "+="  | "-="  | "*="  | "/="  | "**="
                    | "%=" | "&=" | "|=" | "^=" | "<<=" | ">>=" ;
@@ -51,7 +51,7 @@ FSM = "fsm" [AttributeList] [ParameterList] StatementBlock;
    Assignments form a list of HDL parameter assignments and the Definitions
    are port definitions. *)
 (* The "Assignment" is obtained through "Other" *)
-HDL = "hdl" [AttributeList] "(" String {"," String} ")" Identifier
+HDL = "hdl" [AttributeList] "(" [String {"," String}] ")" Identifier
             ["(" {Assignment           } ")"]
              "{" {Definition | Stimulus} "}";
 (*----------------------------------------------------------------------------*)

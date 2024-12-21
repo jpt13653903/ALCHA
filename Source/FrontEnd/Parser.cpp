@@ -2162,20 +2162,17 @@ AST::HDL* PARSER::HDL(){
   GetToken();
 
   AST::EXPRESSION* File = Node->Files = String();
-  if(!File){
-    Error("File name string expected");
-    delete Node;
-    return 0;
-  }
-  while(Token.Type == TOKEN::TYPE::Comma){
-    GetToken();
-    File->Next = String();
-    if(File->Next) File->Next->Prev = File;
-    File = (AST::EXPRESSION*)File->Next;
-    if(!File){
-      Error("File name string expected");
-      delete Node;
-      return 0;
+  if(File){
+    while(Token.Type == TOKEN::TYPE::Comma){
+      GetToken();
+      File->Next = String();
+      if(File->Next) File->Next->Prev = File;
+      File = (AST::EXPRESSION*)File->Next;
+      if(!File){
+        Error("File name string expected");
+        delete Node;
+        return 0;
+      }
     }
   }
   if(Token.Type != TOKEN::TYPE::CloseRound){
