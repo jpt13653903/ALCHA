@@ -45,8 +45,8 @@ ArrayDefinition  = "[" [Expression] "]";
 Initialiser      = ("=" | ":=") Expression;
 
 DefParameterList = DefParameter {"," DefParameter};
-DefParameter     = [BaseType | TypeIdentifier] Identifier {"[" "]"}
-                   [Initialiser];
+DefParameter     = [(BaseType | TypeIdentifier) [ParameterList]]
+                   Identifier {"[" "]"} [Initialiser];
 
 AttributeList       = "<" AttributeAssignment {"," AttributeAssignment} ">";
 AttributeAssignment = Identifier "=" Primary;

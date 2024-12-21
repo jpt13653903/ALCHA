@@ -36,7 +36,8 @@ CastEpr = "@" ( Identifier | Literal
 
 (* The "'" prefix chooses the global scope *)
 Primary = (["'"] Identifier) | Literal | "true" | "false"
-        | VectorConcat | ArrayConcat | Array | String | ("(" Expression ")");
+        | VectorConcat | ArrayConcat | AttributeList | Array | String
+        | ("(" Expression ")");
 
 (* These perform vector or array concatenation *)
 VectorConcat = ":(" ExpressionList ")";
