@@ -3,7 +3,7 @@ StatementBlock = Statement | ("{" [Statements] "}");
 Alias  = "alias" Identifier "=" Expression ";";
 Import = "import" String ["as" Identifier] ";";
 Struct = "struct" [AttributeList] [Identifier] "{"
-          { (Definition | Struct) ";" }
+          { Definition | Struct }
          "}";
 Group  = "group"  [AttributeList] [Identifier] "{" [Statements] "}";
 
@@ -11,7 +11,8 @@ Group  = "group"  [AttributeList] [Identifier] "{" [Statements] "}";
    validity before use as a name-space, class name or assignment target. *)
 FunctionCall  = Postfix ("," | ";");
 NamespacePush = Postfix ".{" [Statements] "}";
-Assignment    = Postfix AssignmentOperator Expression ("," | ";");
+Assignment    = (Postfix AssignmentOperator Expression ("," | ";"))
+              | (PostFix ("++" | "--") ("," | ";'));
 
 AssignmentOperator = "="  | ":=" | "~=" | "+="  | "-="  | "*="  | "/="  | "**="
                    | "%=" | "&=" | "|=" | "^=" | "<<=" | ">>=" ;

@@ -57,6 +57,7 @@ struct TOKEN{
     Func    , Inline ,
     RTL     , FSM    , HDL,
     Stimulus, Emulate, Sequence , Assert, Wait ,
+    PosEdge , NegEdge,
 
     // Operators ...............................................................
     TernaryIf,

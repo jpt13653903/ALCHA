@@ -135,6 +135,9 @@ SCANNER::SCANNER(){
     Keywords.Insert("assert"       , TOKEN::TYPE::Assert  );
     Keywords.Insert("wait"         , TOKEN::TYPE::Wait    );
 
+    Keywords.Insert("posedge"      , TOKEN::TYPE::PosEdge);
+    Keywords.Insert("negedge"      , TOKEN::TYPE::NegEdge);
+
     // Conditional Expression
     Operators.Insert("?"  , TOKEN::TYPE::TernaryIf  );
     Operators.Insert(":"  , TOKEN::TYPE::TernaryElse);

@@ -44,7 +44,8 @@ Keyword    = "void"     | "auto"
            | "return"   | "break"   | "continue" | "goto"
            | "func"     | "inline"
            | "rtl"      | "fsm"     | "hdl"
-           | "stimulus" | "emulate" | "sequence" | "assert" | "wait" ;
+           | "stimulus" | "emulate" | "sequence" | "assert" | "wait"
+           | "posedge"  | "negedge" ;
 
 Operator   = "++" | "--" | "'"  | ".."  | ":"   | "."   | ".{"
            | "&"  | "~&" | "|"  | "~|"  | "^"   | "~^"  | "~"   | "!"

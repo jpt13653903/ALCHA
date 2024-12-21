@@ -1,12 +1,14 @@
 Module = [Statements];
 
+(* Wait statements only valid within Stimulus and Emulate blocks *)
 Statements = Statement {Statement};
-Statement  = Label | Definition | ClassDefinition | EnumDefinition
+Statement  = [Wait]
+             (Label | Definition | ClassDefinition | EnumDefinition
            | Alias | Import | Struct | Group | AccessDirectionGroup
            | IfStatement | For | While  | Loop | Switch | Jump | GoTo
            | FunctionCall | NamespacePush | Assignment
            | RTL | FSM | HDL
-           | Stimulus | Emulate | ForkJoin | Assert | Sequence | ";";
+           | Stimulus | Emulate | ForkJoin | Assert | Sequence | ";");
 
 Label  = Identifier ":"; (* Only useful within an fsm construct *)
 
@@ -46,7 +48,7 @@ DefParameterList = DefParameter {"," DefParameter};
 DefParameter     = [BaseType | TypeIdentifier] Identifier {"[" "]"}
                    [Initialiser];
 
-AttributeList       = "<" AttributeAssignment {, AttributeAssignment} ">";
+AttributeList       = "<" AttributeAssignment {"," AttributeAssignment} ">";
 AttributeAssignment = Identifier "=" Primary;
 
 EnumDefinition = "enum" Identifier "{" Identifier {"," Identifier} "}";
