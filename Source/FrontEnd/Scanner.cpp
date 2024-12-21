@@ -124,6 +124,7 @@ SCANNER::SCANNER(){
 
     Keywords.Insert("func"         , TOKEN::TYPE::Func  );
     Keywords.Insert("inline"       , TOKEN::TYPE::Inline);
+    Keywords.Insert("operator"     , TOKEN::TYPE::Operator);
 
     Keywords.Insert("rtl"          , TOKEN::TYPE::RTL);
     Keywords.Insert("fsm"          , TOKEN::TYPE::FSM);
@@ -131,7 +132,6 @@ SCANNER::SCANNER(){
 
     Keywords.Insert("stimulus"     , TOKEN::TYPE::Stimulus);
     Keywords.Insert("emulate"      , TOKEN::TYPE::Emulate );
-    Keywords.Insert("sequence"     , TOKEN::TYPE::Sequence);
     Keywords.Insert("assert"       , TOKEN::TYPE::Assert  );
     Keywords.Insert("wait"         , TOKEN::TYPE::Wait    );
 

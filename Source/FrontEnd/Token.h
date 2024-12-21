@@ -54,9 +54,9 @@ struct TOKEN{
     Switch  , Case   , Default  ,
     Import  , As     ,
     Return  , Break  , Continue , Goto  ,
-    Func    , Inline ,
+    Func    , Inline , Operator ,
     RTL     , FSM    , HDL,
-    Stimulus, Emulate, Sequence , Assert, Wait ,
+    Stimulus, Emulate, Assert, Wait ,
     PosEdge , NegEdge,
 
     // Operators ...............................................................

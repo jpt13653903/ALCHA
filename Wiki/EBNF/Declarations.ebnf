@@ -8,7 +8,7 @@ Statement  = [Wait]
            | IfStatement | For | While  | Loop | Switch | Jump | GoTo
            | FunctionCall | NamespacePush | Assignment
            | RTL | FSM | HDL
-           | Stimulus | Emulate | ForkJoin | Assert | Sequence | ";");
+           | Stimulus | Emulate | ForkJoin | Assert | ";");
 
 Label  = Identifier ":"; (* Only useful within an fsm construct *)
 
@@ -37,7 +37,7 @@ BaseType = "pin"  | "net"          (* Synthesisable types *)
 IdentifierList = FunctionDef | (VariableDef {"," VariableDef} ";");
 
 VariableDef    = Identifier {ArrayDefinition} [Initialiser];
-FunctionDef    = ["inline"] Identifier {ArrayDefinition}
+FunctionDef    = ["inline"] ((Identifier {ArrayDefinition}) | ("operator" Operator))
                  "(" [DefParameterList] ")"
                  "{" [Statements] "}" ;
 
