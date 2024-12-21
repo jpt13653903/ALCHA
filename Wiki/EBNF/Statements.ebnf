@@ -53,6 +53,6 @@ FSM = "fsm" [AttributeList] [ParameterList] StatementBlock;
 (* The "Assignment" is obtained through "Other" *)
 HDL = "hdl" [AttributeList] "(" [String {"," String}] ")" Identifier
             ["(" {Assignment           } ")"]
-             "{" {Definition | Stimulus} "}";
+             "{" {([DirectionSpecifier] Definition) | Stimulus} "}";
 (*----------------------------------------------------------------------------*)
 
