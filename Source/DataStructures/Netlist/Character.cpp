@@ -75,7 +75,7 @@ void CHARACTER::Display(int Indent)
     Debug.Print("Character: %s\n", Name.c_str());
 
     Debug.Indent(Indent+2);
-    Debug.Print("Value = '%s' ", UTF_Converter.UTF8(Value));
+    Debug.Print("Value = '%s' ", utfConverter.toUtf8(Value));
     Debug.Print("(%d)\n", Value);
 }
 //------------------------------------------------------------------------------

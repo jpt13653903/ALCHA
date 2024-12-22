@@ -742,7 +742,7 @@ bool SCANNER::String(TOKEN* Token)
                         UTF_32 = UTF_32*0x10 + Digit;
                         Index++;
                     }
-                    Token->Data.append(UTF_Converter.UTF8((char32_t)UTF_32));
+                    Token->Data.append(utfConverter.toUtf8((char32_t)UTF_32));
                     break;
 
                 case 'u' : // 16-bit Unicode
@@ -756,7 +756,7 @@ bool SCANNER::String(TOKEN* Token)
                         UTF_32 = UTF_32*0x10 + Digit;
                         Index++;
                     }
-                    Token->Data.append(UTF_Converter.UTF8((char32_t)UTF_32));
+                    Token->Data.append(utfConverter.toUtf8((char32_t)UTF_32));
                     break;
 
                 case 'U' : // 32-bit Unicode
@@ -770,7 +770,7 @@ bool SCANNER::String(TOKEN* Token)
                         UTF_32 = UTF_32*0x10 + Digit;
                         Index++;
                     }
-                    Token->Data.append(UTF_Converter.UTF8((char32_t)UTF_32));
+                    Token->Data.append(utfConverter.toUtf8((char32_t)UTF_32));
                     break;
 
                 default: // Could be an octal number...
@@ -783,7 +783,7 @@ bool SCANNER::String(TOKEN* Token)
                         }
                         UTF_32 = UTF_32*8 + Buffer[Index++] - '0';
                     }
-                    Token->Data.append(UTF_Converter.UTF8((char32_t)UTF_32));
+                    Token->Data.append(utfConverter.toUtf8((char32_t)UTF_32));
                     break;
             }
         }else{
@@ -805,7 +805,7 @@ bool SCANNER::String(TOKEN* Token)
 
 bool SCANNER::Open(const char* Filename)
 {
-    FILE_WRAPPER fs;
+    FileWrapper fs;
 
     Line  = 1;
     Index = 0;
@@ -815,7 +815,7 @@ bool SCANNER::Open(const char* Filename)
 
     this->Filename = Filename;
 
-    Buffer = (byte*)fs.ReadAll(Filename);
+    Buffer = (byte*)fs.readAll(Filename);
     if(!Buffer){
         error("Cannot read file: %s\n", Filename);
         return false;

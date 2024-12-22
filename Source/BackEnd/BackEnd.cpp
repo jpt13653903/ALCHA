@@ -240,9 +240,9 @@ bool BACK_END::RoutePorts(NAMESPACE* Namespace)
 
 bool BACK_END::WriteFile(string& Filename, const char* Ext, string& Body)
 {
-    FILE_WRAPPER Files;
+    FileWrapper Files;
     string Fullname = Path + "/" + Filename + "." + Ext;
-    return Files.WriteAll(Fullname.c_str(), (const byte*)Body.c_str());
+    return Files.writeAll(Fullname.c_str(), (const byte*)Body.c_str());
 }
 //------------------------------------------------------------------------------
 

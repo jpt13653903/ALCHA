@@ -65,7 +65,7 @@ void PrintUsage()
 
 int main(int argc, char** argv)
 {
-    SetupTerminal();
+    setupTerminal();
 
     if(argc < 3){
         PrintUsage();
