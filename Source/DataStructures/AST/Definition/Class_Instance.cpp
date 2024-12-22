@@ -28,84 +28,92 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 CLASS_INSTANCE::CLASS_INSTANCE(
-  int     Line,
-  string& Filename
-): CLASS_INSTANCE(Line, Filename.c_str()){}
+    int     Line,
+    string& Filename
+): CLASS_INSTANCE(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
 CLASS_INSTANCE::CLASS_INSTANCE(
-  int             Line,
-  const char*     Filename
-): DEFINITION(Line, Filename, TYPE::Class_Instance){
-  ClassName = 0;
+    int             Line,
+    const char*     Filename
+): DEFINITION(Line, Filename, TYPE::Class_Instance)
+{
+    ClassName = 0;
 }
 //------------------------------------------------------------------------------
 
-CLASS_INSTANCE::~CLASS_INSTANCE(){
-  if(ClassName) delete ClassName;
+CLASS_INSTANCE::~CLASS_INSTANCE()
+{
+    if(ClassName) delete ClassName;
 }
 //------------------------------------------------------------------------------
 
-BASE* CLASS_INSTANCE::Copy(){
-  CLASS_INSTANCE* Copy = new CLASS_INSTANCE(Source.Line, Source.Filename.c_str());
+BASE* CLASS_INSTANCE::Copy()
+{
+    CLASS_INSTANCE* Copy = new CLASS_INSTANCE(Source.Line, Source.Filename.c_str());
 
-  CopyMembers(Copy);
+    CopyMembers(Copy);
 
-  if(ClassName) Copy->ClassName = (decltype(ClassName))ClassName->Copy();
+    if(ClassName) Copy->ClassName = (decltype(ClassName))ClassName->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool CLASS_INSTANCE::RunAST(){
-  auto Identifier = Identifiers;
+bool CLASS_INSTANCE::RunAST()
+{
+    auto Identifier = Identifiers;
 
-  while(Identifier){
-    if(!VerifyNotDefined(Identifier)) return false;
+    while(Identifier){
+        if(!VerifyNotDefined(Identifier)) return false;
 
-    if(Identifier->Function){
-      error("Not yet implemented");
-      Identifier = Identifier->Next;
-      continue;
+        if(Identifier->Function){
+            error("Not yet implemented");
+            Identifier = Identifier->Next;
+            continue;
+        }
+
+        error("Not yet implemented");
+
+        Identifier = Identifier->Next;
     }
+    return true;
+}
+//------------------------------------------------------------------------------
 
+bool CLASS_INSTANCE::GetVerilog(string& Body)
+{
     error("Not yet implemented");
-
-    Identifier = Identifier->Next;
-  }
-  return true;
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool CLASS_INSTANCE::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+void CLASS_INSTANCE::Display()
+{
+    DisplayInfo();
+    Debug.Print("Definition (");
+
+    Debug.Print("Class instance definition (");
+    if(ClassName) ClassName->Display();
+    else          Debug.Print("Class instance with no class name");
+    Debug.Print("):\n");
+
+    DisplayParameters ();
+    DisplayAttributes ();
+    DisplayIdentifiers();
+
+    if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
 
-void CLASS_INSTANCE::Display(){
-  DisplayInfo();
-  Debug.Print("Definition (");
+void CLASS_INSTANCE::ValidateMembers()
+{
+    assert(Type == TYPE::Class_Instance);
 
-  Debug.Print("Class instance definition (");
-  if(ClassName) ClassName->Display();
-  else          Debug.Print("Class instance with no class name");
-  Debug.Print("):\n");
+    if(ClassName) ClassName->Validate();
 
-  DisplayParameters ();
-  DisplayAttributes ();
-  DisplayIdentifiers();
-
-  if(Next) Next->Display();
-}
-//------------------------------------------------------------------------------
-
-void CLASS_INSTANCE::ValidateMembers(){
-  assert(Type == TYPE::Class_Instance);
-
-  if(ClassName) ClassName->Validate();
-
-  DEFINITION::ValidateMembers();
+    DEFINITION::ValidateMembers();
 }
 //------------------------------------------------------------------------------
 

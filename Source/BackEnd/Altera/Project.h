@@ -39,36 +39,36 @@
 //------------------------------------------------------------------------------
 
 namespace ALTERA{
-  class PROJECT{
-    private:
-      std::string Path;
-      std::string Filename;
+    class PROJECT{
+        private:
+            std::string Path;
+            std::string Filename;
 
-      std::string Time;
-      std::string Device;
-      std::string Series;
+            std::string Time;
+            std::string Device;
+            std::string Series;
 
-      void Error  (const char* Message = 0);
-      void Warning(const char* Message = 0);
+            void Error  (const char* Message = 0);
+            void Warning(const char* Message = 0);
 
-      bool WriteFile(std::string& Filename, const char* Ext, std::string& Body);
+            bool WriteFile(std::string& Filename, const char* Ext, std::string& Body);
 
-      void BuildFileList(std::string& Body, NETLIST::MODULE   * Module, std::string Path);
-      void AssignPin    (std::string& Body, const std::string& Location, const std::string& Name);
-      bool BuildPins    (std::string& Body, NETLIST::NAMESPACE* Namespace);
+            void BuildFileList(std::string& Body, NETLIST::MODULE   * Module, std::string Path);
+            void AssignPin    (std::string& Body, const std::string& Location, const std::string& Name);
+            bool BuildPins    (std::string& Body, NETLIST::NAMESPACE* Namespace);
 
-      bool BuildProject          ();
-      bool BuildSettings         ();
-      bool BuildPins             ();
-      bool BuildDesignConstraints();
-      bool BuildConfigChain      ();
+            bool BuildProject          ();
+            bool BuildSettings         ();
+            bool BuildPins             ();
+            bool BuildDesignConstraints();
+            bool BuildConfigChain      ();
 
-    public:
-      PROJECT();
-     ~PROJECT();
+        public:
+            PROJECT();
+          ~PROJECT();
 
-      bool Build(const char* Path, const char* Filename);
-  };
+            bool Build(const char* Path, const char* Filename);
+    };
 }
 //------------------------------------------------------------------------------
 

@@ -27,26 +27,26 @@
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
-  struct PIN: public SYNTHESISABLE{
-    PIN_COMPONENT* Driver;
-    PIN_COMPONENT* Enabled;
+    struct PIN: public SYNTHESISABLE{
+        PIN_COMPONENT* Driver;
+        PIN_COMPONENT* Enabled;
 
-    PIN(int Line, const std::string& Filename, const char* Name);
-   ~PIN();
+        PIN(int Line, const std::string& Filename, const char* Name);
+      ~PIN();
 
-    AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
-    bool Assign   (AST::EXPRESSION* Expression) override;
-    bool RawAssign(AST::EXPRESSION* Expression) override;
+        AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
+        bool Assign   (AST::EXPRESSION* Expression) override;
+        bool RawAssign(AST::EXPRESSION* Expression) override;
 
-    bool HasCircularReference(BASE* Object) override;
-    void PopulateUsed(bool SetUsed) override;
+        bool HasCircularReference(BASE* Object) override;
+        void PopulateUsed(bool SetUsed) override;
 
-    BASE* GetMember(const std::string& Name) override;
+        BASE* GetMember(const std::string& Name) override;
 
-    void Display(int Indent = 0) override;
+        void Display(int Indent = 0) override;
 
-    void Validate() override;
-  };
+        void Validate() override;
+    };
 }
 //------------------------------------------------------------------------------
 

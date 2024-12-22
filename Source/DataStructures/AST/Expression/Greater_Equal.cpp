@@ -25,105 +25,119 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-GREATER_EQUAL::GREATER_EQUAL(int Line, const string& Filename): GREATER_EQUAL(Line, Filename.c_str()){}
+GREATER_EQUAL::GREATER_EQUAL(int Line, const string& Filename): GREATER_EQUAL(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-GREATER_EQUAL::GREATER_EQUAL(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Greater_Equal){
+GREATER_EQUAL::GREATER_EQUAL(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Greater_Equal)
+{
 }
 //------------------------------------------------------------------------------
 
-GREATER_EQUAL::~GREATER_EQUAL(){
+GREATER_EQUAL::~GREATER_EQUAL()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* GREATER_EQUAL::Copy(){
-  GREATER_EQUAL* Copy = new GREATER_EQUAL(Source.Line, Source.Filename.c_str());
+BASE* GREATER_EQUAL::Copy()
+{
+    GREATER_EQUAL* Copy = new GREATER_EQUAL(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool GREATER_EQUAL::GetVerilog(string& Body){
-  Body += "(";
-  Left->GetVerilog(Body);
-  Body += ") >= (";
-  Right->GetVerilog(Body);
-  Body += ")";
+bool GREATER_EQUAL::GetVerilog(string& Body)
+{
+    Body += "(";
+    Left->GetVerilog(Body);
+    Body += ") >= (";
+    Right->GetVerilog(Body);
+    Body += ")";
 
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* GREATER_EQUAL::Evaluate(){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* GREATER_EQUAL::Evaluate()
+{
+    error("Not yet implemented");
+    return this;
 //   EXPRESSION* Result = 0;
-// 
+//
 //   error("Not yet implemented");
-// 
+//
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int GREATER_EQUAL::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int GREATER_EQUAL::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& GREATER_EQUAL::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& GREATER_EQUAL::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool GREATER_EQUAL::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool GREATER_EQUAL::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool GREATER_EQUAL::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool GREATER_EQUAL::HasCircularReference(NETLIST::BASE* Object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void GREATER_EQUAL::PopulateUsed(){
-  error("Not yet implemented");
+void GREATER_EQUAL::PopulateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* GREATER_EQUAL::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* GREATER_EQUAL::RemoveTempNet(int Width, bool Signed)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void GREATER_EQUAL::Display(){
-  DisplayStart();
+void GREATER_EQUAL::Display()
+{
+    DisplayStart();
 
-  Debug.Print(" >= ");
+    Debug.Print(" >= ");
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void GREATER_EQUAL::ValidateMembers(){
-  assert(Type == TYPE::Greater_Equal);
+void GREATER_EQUAL::ValidateMembers()
+{
+    assert(Type == TYPE::Greater_Equal);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!Next);
+    assert(!Prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!Left );
+    // TODO: assert(!Right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

@@ -25,113 +25,127 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-SHIFT_LEFT::SHIFT_LEFT(int Line, const string& Filename): SHIFT_LEFT(Line, Filename.c_str()){}
+SHIFT_LEFT::SHIFT_LEFT(int Line, const string& Filename): SHIFT_LEFT(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-SHIFT_LEFT::SHIFT_LEFT(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Shift_Left){
+SHIFT_LEFT::SHIFT_LEFT(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Shift_Left)
+{
 }
 //------------------------------------------------------------------------------
 
-SHIFT_LEFT::~SHIFT_LEFT(){
+SHIFT_LEFT::~SHIFT_LEFT()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* SHIFT_LEFT::Copy(){
-  SHIFT_LEFT* Copy = new SHIFT_LEFT(Source.Line, Source.Filename.c_str());
+BASE* SHIFT_LEFT::Copy()
+{
+    SHIFT_LEFT* Copy = new SHIFT_LEFT(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool SHIFT_LEFT::GetVerilog(string& Body){
-  Body += "(";
-  Left->GetVerilog(Body);
-  Body += ") <<< (";
-  Right->GetVerilog(Body);
-  Body += ")";
+bool SHIFT_LEFT::GetVerilog(string& Body)
+{
+    Body += "(";
+    Left->GetVerilog(Body);
+    Body += ") <<< (";
+    Right->GetVerilog(Body);
+    Body += ")";
 
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* SHIFT_LEFT::Evaluate(){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* SHIFT_LEFT::Evaluate()
+{
+    error("Not yet implemented");
+    return this;
 //   EXPRESSION* Result = 0;
-// 
+//
 //   error("Not yet implemented");
-// 
+//
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int SHIFT_LEFT::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int SHIFT_LEFT::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& SHIFT_LEFT::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& SHIFT_LEFT::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool SHIFT_LEFT::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool SHIFT_LEFT::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool SHIFT_LEFT::HasCircularReference(NETLIST::BASE* Object){
-  assert(Left , return false);
-  assert(Right, return false);
-  
-  if(Left ->HasCircularReference(Object)) return true;
-  if(Right->HasCircularReference(Object)) return true;
+bool SHIFT_LEFT::HasCircularReference(NETLIST::BASE* Object)
+{
+    assert(Left , return false);
+    assert(Right, return false);
 
-  return false;
+    if(Left ->HasCircularReference(Object)) return true;
+    if(Right->HasCircularReference(Object)) return true;
+
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void SHIFT_LEFT::PopulateUsed(){
-  assert(Left , return);
-  assert(Right, return);
-  
-  Left ->PopulateUsed();
-  Right->PopulateUsed();
+void SHIFT_LEFT::PopulateUsed()
+{
+    assert(Left , return);
+    assert(Right, return);
+
+    Left ->PopulateUsed();
+    Right->PopulateUsed();
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* SHIFT_LEFT::RemoveTempNet(int Width, bool Signed){
-  if(Left ) Left  = Left ->RemoveTempNet(0, false);
-  if(Right) Right = Right->RemoveTempNet(0, false);
-  return this;
+EXPRESSION* SHIFT_LEFT::RemoveTempNet(int Width, bool Signed)
+{
+    if(Left ) Left  = Left ->RemoveTempNet(0, false);
+    if(Right) Right = Right->RemoveTempNet(0, false);
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void SHIFT_LEFT::Display(){
-  DisplayStart();
+void SHIFT_LEFT::Display()
+{
+    DisplayStart();
 
-  Debug.Print(" << ");
+    Debug.Print(" << ");
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void SHIFT_LEFT::ValidateMembers(){
-  assert(Type == TYPE::Shift_Left);
+void SHIFT_LEFT::ValidateMembers()
+{
+    assert(Type == TYPE::Shift_Left);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!Next);
+    assert(!Prev);
 
-  assert(Left , return); Left ->Validate();
-  assert(Right, return); Right->Validate();
+    assert(Left , return); Left ->Validate();
+    assert(Right, return); Right->Validate();
 }
 //------------------------------------------------------------------------------
 

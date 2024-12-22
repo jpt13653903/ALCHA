@@ -27,34 +27,34 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct SWITCH: public BASE{
-    struct CASE{
-      std::vector<EXPRESSION*> Expressions;
-      BASE* Statements;
+    struct SWITCH: public BASE{
+        struct CASE{
+            std::vector<EXPRESSION*> Expressions;
+            BASE* Statements;
 
-      CASE* Next; // The next case (this can be turned into a BST later...)
+            CASE* Next; // The next case (this can be turned into a BST later...)
 
-      CASE();
-      CASE(const CASE& Case);
-     ~CASE();
+            CASE();
+            CASE(const CASE& Case);
+          ~CASE();
+        };
+        CASE      * Cases;
+        BASE      * Default;
+        EXPRESSION* Expression;
+
+        SWITCH(int Line, std::string& Filename);
+        SWITCH(int Line, const char*  Filename);
+      ~SWITCH();
+
+        BASE* Copy() override;
+
+        bool RunAST() override;
+        bool GetVerilog(std::string& Body) override;
+
+        void Display() override;
+
+        void ValidateMembers() override;
     };
-    CASE      * Cases;
-    BASE      * Default;
-    EXPRESSION* Expression;
-
-    SWITCH(int Line, std::string& Filename);
-    SWITCH(int Line, const char*  Filename);
-   ~SWITCH();
-
-    BASE* Copy() override;
-
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
-
-    void Display() override;
-
-    void ValidateMembers() override;
-  };
 }
 //------------------------------------------------------------------------------
 

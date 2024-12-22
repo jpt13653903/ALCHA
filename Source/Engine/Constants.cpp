@@ -27,42 +27,45 @@ CONSTANTS Constants;
 using namespace std;
 //------------------------------------------------------------------------------
 
-CONSTANTS::CONSTANTS(){
-  Constants["e" ].Set_e ();
-  Constants["π" ].Set_pi();
-  Constants["pi"].Set_pi();
-  Constants["i" ].Set_i ();
-  Constants["j" ].Set_i ();
+CONSTANTS::CONSTANTS()
+{
+    Constants["e" ].Set_e ();
+    Constants["π" ].Set_pi();
+    Constants["pi"].Set_pi();
+    Constants["i" ].Set_i ();
+    Constants["j" ].Set_i ();
 
-  time_t RawTime;
-  struct tm* Time;
+    time_t RawTime;
+    struct tm* Time;
 
-  time(&RawTime);
-  Time = localtime(&RawTime);
+    time(&RawTime);
+    Time = localtime(&RawTime);
 
-  Constants["__YEAR__"   ] = Time->tm_year+1900;
-  Constants["__MONTH__"  ] = Time->tm_mon+1;
-  Constants["__DAY__"    ] = Time->tm_mday;
-  Constants["__HOUR__"   ] = Time->tm_hour;
-  Constants["__MINUTE__" ] = Time->tm_min;
-  Constants["__SECOND__" ] = Time->tm_sec;
+    Constants["__YEAR__"   ] = Time->tm_year+1900;
+    Constants["__MONTH__"  ] = Time->tm_mon+1;
+    Constants["__DAY__"    ] = Time->tm_mday;
+    Constants["__HOUR__"   ] = Time->tm_hour;
+    Constants["__MINUTE__" ] = Time->tm_min;
+    Constants["__SECOND__" ] = Time->tm_sec;
 
-  Constants["__WEEKDAY__"] = ((Time->tm_wday+6)%7)+1;
-  Constants["__YEARDAY__"] = Time->tm_yday+1;
+    Constants["__WEEKDAY__"] = ((Time->tm_wday+6)%7)+1;
+    Constants["__YEARDAY__"] = Time->tm_yday+1;
 }
 //------------------------------------------------------------------------------
 
-CONSTANTS::~CONSTANTS(){
+CONSTANTS::~CONSTANTS()
+{
 }
 //------------------------------------------------------------------------------
 
-bool CONSTANTS::GetConstant(const string& Name, NUMBER* Constant){
-  auto Result = Constants.find(Name);
-  if(Result == Constants.end()) return false;
+bool CONSTANTS::GetConstant(const string& Name, NUMBER* Constant)
+{
+    auto Result = Constants.find(Name);
+    if(Result == Constants.end()) return false;
 
-  *Constant = Result->second;
+    *Constant = Result->second;
 
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 

@@ -30,15 +30,15 @@
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
-  class GROUP: public NAMESPACE{
-    public:
-               GROUP(int Line, const std::string& Filename, const char* Name = "");
-      virtual ~GROUP(); // Also cleans up the children
+    class GROUP: public NAMESPACE{
+        public:
+                              GROUP(int Line, const std::string& Filename, const char* Name = "");
+            virtual ~GROUP(); // Also cleans up the children
 
-      void Display(int Indent = 0) override;
+            void Display(int Indent = 0) override;
 
-      void Validate() override;
-  };
+            void Validate() override;
+    };
 }
 //------------------------------------------------------------------------------
 

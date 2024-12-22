@@ -29,75 +29,83 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 PIN_DEFINITION::PIN_DEFINITION(
-  int     Line,
-  string& Filename
-): PIN_DEFINITION(Line, Filename.c_str()){}
+    int     Line,
+    string& Filename
+): PIN_DEFINITION(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
 PIN_DEFINITION::PIN_DEFINITION(
-  int             Line,
-  const char*     Filename
-): DEFINITION(Line, Filename, TYPE::Pin_Definition){
+    int             Line,
+    const char*     Filename
+): DEFINITION(Line, Filename, TYPE::Pin_Definition)
+{
 }
 //------------------------------------------------------------------------------
 
-PIN_DEFINITION::~PIN_DEFINITION(){
+PIN_DEFINITION::~PIN_DEFINITION()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* PIN_DEFINITION::Copy(){
-  PIN_DEFINITION* Copy = new PIN_DEFINITION(Source.Line, Source.Filename.c_str());
+BASE* PIN_DEFINITION::Copy()
+{
+    PIN_DEFINITION* Copy = new PIN_DEFINITION(Source.Line, Source.Filename.c_str());
 
-  CopyMembers(Copy);
+    CopyMembers(Copy);
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool PIN_DEFINITION::RunAST(){
-  auto Identifier = Identifiers;
+bool PIN_DEFINITION::RunAST()
+{
+    auto Identifier = Identifiers;
 
-  while(Identifier){
-    if(!VerifyNotDefined(Identifier)) return false;
+    while(Identifier){
+        if(!VerifyNotDefined(Identifier)) return false;
 
-    if(Identifier->Function){
-      error("Not yet implemented");
-      Identifier = Identifier->Next;
-      continue;
+        if(Identifier->Function){
+            error("Not yet implemented");
+            Identifier = Identifier->Next;
+            continue;
+        }
+
+        auto Pin = new NETLIST::PIN(Source.Line, Source.Filename, Identifier->Identifier.c_str());
+        Pin->Direction = Direction;
+
+        if(!Pin->ApplyParameters(Parameters)) Error("Invalid parameters");
+        if(!Pin->ApplyAttributes(Attributes)) Error("Invalid attributes");
+
+        NETLIST::NamespaceStack.front()->Symbols[Pin->Name] = Pin;
+        if(Identifier->Initialiser){
+            if(!Identifier->Initialiser->RunAST()) return false;
+        }
+
+        Identifier = Identifier->Next;
     }
-
-    auto Pin = new NETLIST::PIN(Source.Line, Source.Filename, Identifier->Identifier.c_str());
-    Pin->Direction = Direction;
-
-    if(!Pin->ApplyParameters(Parameters)) Error("Invalid parameters");
-    if(!Pin->ApplyAttributes(Attributes)) Error("Invalid attributes");
-
-    NETLIST::NamespaceStack.front()->Symbols[Pin->Name] = Pin;
-    if(Identifier->Initialiser){
-      if(!Identifier->Initialiser->RunAST()) return false;
-    }
-
-    Identifier = Identifier->Next;
-  }
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-bool PIN_DEFINITION::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool PIN_DEFINITION::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void PIN_DEFINITION::Display(){
-  DisplayDefinition("Pin");
+void PIN_DEFINITION::Display()
+{
+    DisplayDefinition("Pin");
 }
 //------------------------------------------------------------------------------
 
-void PIN_DEFINITION::ValidateMembers(){
-  assert(Type == TYPE::Pin_Definition);
+void PIN_DEFINITION::ValidateMembers()
+{
+    assert(Type == TYPE::Pin_Definition);
 
-  DEFINITION::ValidateMembers();
+    DEFINITION::ValidateMembers();
 }
 //------------------------------------------------------------------------------
 

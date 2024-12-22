@@ -25,105 +25,119 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-BIT_XOR::BIT_XOR(int Line, const string& Filename): BIT_XOR(Line, Filename.c_str()){}
+BIT_XOR::BIT_XOR(int Line, const string& Filename): BIT_XOR(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-BIT_XOR::BIT_XOR(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Bit_XOR){
+BIT_XOR::BIT_XOR(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Bit_XOR)
+{
 }
 //------------------------------------------------------------------------------
 
-BIT_XOR::~BIT_XOR(){
+BIT_XOR::~BIT_XOR()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* BIT_XOR::Copy(){
-  BIT_XOR* Copy = new BIT_XOR(Source.Line, Source.Filename.c_str());
+BASE* BIT_XOR::Copy()
+{
+    BIT_XOR* Copy = new BIT_XOR(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool BIT_XOR::GetVerilog(string& Body){
-  Body += "(";
-  Left->GetVerilog(Body);
-  Body += ") ^ (";
-  Right->GetVerilog(Body);
-  Body += ")";
+bool BIT_XOR::GetVerilog(string& Body)
+{
+    Body += "(";
+    Left->GetVerilog(Body);
+    Body += ") ^ (";
+    Right->GetVerilog(Body);
+    Body += ")";
 
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* BIT_XOR::Evaluate(){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* BIT_XOR::Evaluate()
+{
+    error("Not yet implemented");
+    return this;
 //   EXPRESSION* Result = 0;
-// 
+//
 //   error("Not yet implemented");
-// 
+//
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int BIT_XOR::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int BIT_XOR::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& BIT_XOR::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& BIT_XOR::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool BIT_XOR::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool BIT_XOR::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool BIT_XOR::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool BIT_XOR::HasCircularReference(NETLIST::BASE* Object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void BIT_XOR::PopulateUsed(){
-  error("Not yet implemented");
+void BIT_XOR::PopulateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* BIT_XOR::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* BIT_XOR::RemoveTempNet(int Width, bool Signed)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void BIT_XOR::Display(){
-  DisplayStart();
+void BIT_XOR::Display()
+{
+    DisplayStart();
 
-  Debug.Print( " # ");
+    Debug.Print( " # ");
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void BIT_XOR::ValidateMembers(){
-  assert(Type == TYPE::Bit_XOR);
+void BIT_XOR::ValidateMembers()
+{
+    assert(Type == TYPE::Bit_XOR);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!Next);
+    assert(!Prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!Left );
+    // TODO: assert(!Right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

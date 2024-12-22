@@ -28,116 +28,125 @@ using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-NET::NET(int Line, const string& Filename, const char* Name) : SYNTHESISABLE(Line, Filename, Name, TYPE::Net){
-  Value = 0;
+NET::NET(int Line, const string& Filename, const char* Name) : SYNTHESISABLE(Line, Filename, Name, TYPE::Net)
+{
+    Value = 0;
 }
 //------------------------------------------------------------------------------
 
-NET::~NET(){
-  if(Value) delete Value;
+NET::~NET()
+{
+    if(Value) delete Value;
 }
 //------------------------------------------------------------------------------
 
-AST::EXPRESSION* NET::GetExpression(int Line, const string& Filename){
-  if(Value) return (AST::EXPRESSION*)Value->Copy();
-  ::Error(Line, Filename, "Operate-assign on empty object");
-  return 0;
+AST::EXPRESSION* NET::GetExpression(int Line, const string& Filename)
+{
+    if(Value) return (AST::EXPRESSION*)Value->Copy();
+    ::Error(Line, Filename, "Operate-assign on empty object");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-bool NET::Assign(AST::EXPRESSION* Expression){
-  assert(Expression, return false);
+bool NET::Assign(AST::EXPRESSION* Expression)
+{
+    assert(Expression, return false);
 
-  Expression = Expression->Evaluate();
-  if(!Expression) return false;
+    Expression = Expression->Evaluate();
+    if(!Expression) return false;
 
-  switch(Expression->Type){
-    case AST::BASE::TYPE::Literal:{
-      NUMBER Scale = 1;
-      Scale.BinScale(Width());
-      Scale.Div(FullScale());
-      ((AST::LITERAL*)Expression)->Value.Mul(Scale);
-      break;
+    switch(Expression->Type){
+        case AST::BASE::TYPE::Literal:{
+            NUMBER Scale = 1;
+            Scale.BinScale(Width());
+            Scale.Div(FullScale());
+            ((AST::LITERAL*)Expression)->Value.Mul(Scale);
+            break;
+        }
+
+        case AST::BASE::TYPE::Object:{
+            auto Object = ((AST::OBJECT*)Expression)->ObjectRef;
+            assert(Object, return false);
+
+            int    ExprWidth     = Object->Width    ();
+            NUMBER ExprFullScale = Object->FullScale();
+
+            NUMBER Scale = 1;
+            Scale.BinScale(Width() - ExprWidth);
+            Scale.Mul(ExprFullScale);
+            Scale.Div(FullScale());
+
+            Expression = Expression->ScaleWith(Scale, Width(), FullScale());
+            break;
+        }
+
+        default:
+            Error("Cannot assign this type to a net");
+            delete Expression;
+            return false;
     }
+    return RawAssign(Expression);
+}
+//------------------------------------------------------------------------------
 
-    case AST::BASE::TYPE::Object:{
-      auto Object = ((AST::OBJECT*)Expression)->ObjectRef;
-      assert(Object, return false);
+bool NET::RawAssign(AST::EXPRESSION* Expression)
+{
+    if(!Expression) return false;
 
-      int    ExprWidth     = Object->Width    ();
-      NUMBER ExprFullScale = Object->FullScale();
-
-      NUMBER Scale = 1;
-      Scale.BinScale(Width() - ExprWidth);
-      Scale.Mul(ExprFullScale);
-      Scale.Div(FullScale());
-
-      Expression = Expression->ScaleWith(Scale, Width(), FullScale());
-      break;
+    if(Value){
+        Expression->Warning();
+        printf("Overwriting net value %s\n", Name.c_str());
+        delete Value;
     }
-
-    default:
-      Error("Cannot assign this type to a net");
-      delete Expression;
-      return false;
-  }
-  return RawAssign(Expression);
+    Value = Expression->Evaluate();
+    if(Value && Value->HasCircularReference(this)){
+        Value->Error("Circular combinational circuit");
+    }
+    return Value;
 }
 //------------------------------------------------------------------------------
 
-bool NET::RawAssign(AST::EXPRESSION* Expression){
-  if(!Expression) return false;
-
-  if(Value){
-    Expression->Warning();
-    printf("Overwriting net value %s\n", Name.c_str());
-    delete Value;
-  }
-  Value = Expression->Evaluate();
-  if(Value && Value->HasCircularReference(this)){
-    Value->Error("Circular combinational circuit");
-  }
-  return Value;
+bool NET::HasCircularReference(BASE* Object)
+{
+    if(this == Object) return true;
+    if(!Value) return false;
+    return Value->HasCircularReference(Object);
 }
 //------------------------------------------------------------------------------
 
-bool NET::HasCircularReference(BASE* Object){
-  if(this == Object) return true;
-  if(!Value) return false;
-  return Value->HasCircularReference(Object);
+void NET::PopulateUsed(bool SetUsed)
+{
+    if(Used) return; // Prevents circular loops
+    Used = SetUsed;
+    if(Value) Value->PopulateUsed();
 }
 //------------------------------------------------------------------------------
 
-void NET::PopulateUsed(bool SetUsed){
-  if(Used) return; // Prevents circular loops
-  Used = SetUsed;
-  if(Value) Value->PopulateUsed();
+void NET::Display(int Indent)
+{
+    Debug.Indent(Indent);
+    Debug.Print("Net: ");
+
+    Indent++;
+    DisplayParameters(Indent);
+
+    Debug.Indent(Indent);
+    Debug.Print("Value      = ");
+    if(Value) Value->Display();
+    else      Debug.Print("{open}");
+    Debug.Print("\n");
+
+    DisplayAttributes(Indent);
 }
 //------------------------------------------------------------------------------
 
-void NET::Display(int Indent){
-  Debug.Indent(Indent);
-  Debug.Print("Net: ");
+void NET::Validate()
+{
+    assert(Type == TYPE::Net);
 
-  Indent++;
-  DisplayParameters(Indent);
+    SYNTHESISABLE::Validate();
 
-  Debug.Indent(Indent);
-  Debug.Print("Value      = ");
-  if(Value) Value->Display();
-  else      Debug.Print("{open}");
-  Debug.Print("\n");
-
-  DisplayAttributes(Indent);
-}
-//------------------------------------------------------------------------------
-
-void NET::Validate(){
-  assert(Type == TYPE::Net);
-
-  SYNTHESISABLE::Validate();
-
-  if(Value) Value->Validate();
+    if(Value) Value->Validate();
 }
 //------------------------------------------------------------------------------
 

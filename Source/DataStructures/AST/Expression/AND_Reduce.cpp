@@ -25,104 +25,118 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-AND_REDUCE::AND_REDUCE(int Line, const string& Filename): AND_REDUCE(Line, Filename.c_str()){}
+AND_REDUCE::AND_REDUCE(int Line, const string& Filename): AND_REDUCE(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-AND_REDUCE::AND_REDUCE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::AND_Reduce){
+AND_REDUCE::AND_REDUCE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::AND_Reduce)
+{
 }
 //------------------------------------------------------------------------------
 
-AND_REDUCE::~AND_REDUCE(){
+AND_REDUCE::~AND_REDUCE()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* AND_REDUCE::Copy(){
-  AND_REDUCE* Copy = new AND_REDUCE(Source.Line, Source.Filename.c_str());
+BASE* AND_REDUCE::Copy()
+{
+    AND_REDUCE* Copy = new AND_REDUCE(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool AND_REDUCE::GetVerilog(string& Body){
-  Body += "&(";
-  Right->GetVerilog(Body);
-  Body += ")";
+bool AND_REDUCE::GetVerilog(string& Body)
+{
+    Body += "&(";
+    Right->GetVerilog(Body);
+    Body += ")";
 
-  return true;
+    return true;
 
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* AND_REDUCE::Evaluate(){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* AND_REDUCE::Evaluate()
+{
+    error("Not yet implemented");
+    return this;
 //   EXPRESSION* Result = 0;
-// 
+//
 //   error("Not yet implemented");
-// 
+//
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int AND_REDUCE::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int AND_REDUCE::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& AND_REDUCE::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& AND_REDUCE::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool AND_REDUCE::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool AND_REDUCE::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool AND_REDUCE::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool AND_REDUCE::HasCircularReference(NETLIST::BASE* Object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void AND_REDUCE::PopulateUsed(){
-  error("Not yet implemented");
+void AND_REDUCE::PopulateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* AND_REDUCE::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* AND_REDUCE::RemoveTempNet(int Width, bool Signed)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void AND_REDUCE::Display(){
-  DisplayStart();
+void AND_REDUCE::Display()
+{
+    DisplayStart();
 
-  Debug.Print( " &");
+    Debug.Print( " &");
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void AND_REDUCE::ValidateMembers(){
-  assert(Type == TYPE::AND_Reduce);
-  
-  assert(!Next);
-  assert(!Prev);
-  
-  // TODO: assert(Left );
-  // TODO: assert(Right);
+void AND_REDUCE::ValidateMembers()
+{
+    assert(Type == TYPE::AND_Reduce);
 
-  error("Not yet implemented");
+    assert(!Next);
+    assert(!Prev);
+
+    // TODO: assert(Left );
+    // TODO: assert(Right);
+
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

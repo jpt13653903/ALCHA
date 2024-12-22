@@ -124,88 +124,88 @@
 //------------------------------------------------------------------------------
 
 class PARSER{
-  private:
-    bool error;
-    void Error(const char* Message);
+    private:
+        bool error;
+        void Error(const char* Message);
 
-    TOKEN   Token; // The current token
-    SCANNER Scanner;
+        TOKEN   Token; // The current token
+        SCANNER Scanner;
 
-    void GetToken();
+        void GetToken();
 
-    AST::ASSIGNMENT* AttributeAssignment();
-    AST::ASSIGNMENT* AttributeList      ();
+        AST::ASSIGNMENT* AttributeAssignment();
+        AST::ASSIGNMENT* AttributeList      ();
 
-    AST::EXPRESSION* String    ();
-    AST::EXPRESSION* Literal   ();
-    AST::EXPRESSION* Identifier();
+        AST::EXPRESSION* String    ();
+        AST::EXPRESSION* Literal   ();
+        AST::EXPRESSION* Identifier();
 
-    bool             ExpressionList (std::vector<AST::EXPRESSION*>& List);
-    AST::BASE*       Parameter      ();
-    bool             ParameterList  (std::list<AST::BASE*>& Parameters);
-    AST::EXPRESSION* Array          ();
-    AST::EXPRESSION* ArrayConcat    ();
-    AST::EXPRESSION* VectorConcat   ();
+        bool             ExpressionList (std::vector<AST::EXPRESSION*>& List);
+        AST::BASE*       Parameter      ();
+        bool             ParameterList  (std::list<AST::BASE*>& Parameters);
+        AST::EXPRESSION* Array          ();
+        AST::EXPRESSION* ArrayConcat    ();
+        AST::EXPRESSION* VectorConcat   ();
 
-    AST::EXPRESSION* Primary        ();
-    AST::EXPRESSION* CastEpr        (AST::EXPRESSION* Node);
-    AST::EXPRESSION* Cast           ();
-    AST::EXPRESSION* Postfix        ();
-    AST::EXPRESSION* Unary          ();
-    AST::EXPRESSION* Range          ();
-    AST::EXPRESSION* Reduction      ();
-    AST::EXPRESSION* Stringification();
-    AST::EXPRESSION* Replication    ();
-    AST::EXPRESSION* Exponential    ();
-    AST::EXPRESSION* Multiplicative ();
-    AST::EXPRESSION* Additive       ();
-    AST::EXPRESSION* Shift          ();
-    AST::EXPRESSION* Relational     ();
-    AST::EXPRESSION* Equality       ();
-    AST::EXPRESSION* BitwiseAND     ();
-    AST::EXPRESSION* BitwiseXOR     ();
-    AST::EXPRESSION* BitwiseOR      ();
-    AST::EXPRESSION* Expression     (); // AKA Conditional
-    AST::EXPRESSION* TypeIdentifier ();
+        AST::EXPRESSION* Primary        ();
+        AST::EXPRESSION* CastEpr        (AST::EXPRESSION* Node);
+        AST::EXPRESSION* Cast           ();
+        AST::EXPRESSION* Postfix        ();
+        AST::EXPRESSION* Unary          ();
+        AST::EXPRESSION* Range          ();
+        AST::EXPRESSION* Reduction      ();
+        AST::EXPRESSION* Stringification();
+        AST::EXPRESSION* Replication    ();
+        AST::EXPRESSION* Exponential    ();
+        AST::EXPRESSION* Multiplicative ();
+        AST::EXPRESSION* Additive       ();
+        AST::EXPRESSION* Shift          ();
+        AST::EXPRESSION* Relational     ();
+        AST::EXPRESSION* Equality       ();
+        AST::EXPRESSION* BitwiseAND     ();
+        AST::EXPRESSION* BitwiseXOR     ();
+        AST::EXPRESSION* BitwiseOR      ();
+        AST::EXPRESSION* Expression     (); // AKA Conditional
+        AST::EXPRESSION* TypeIdentifier ();
 
-    AST::ASSIGNMENT            * Initialiser    (std::string& Identifier);
-    AST::DEFINITION::ARRAY     * ArrayDefinition();
-    AST::DEFINITION::IDENTIFIER* IdentifierList ();
+        AST::ASSIGNMENT            * Initialiser    (std::string& Identifier);
+        AST::DEFINITION::ARRAY     * ArrayDefinition();
+        AST::DEFINITION::IDENTIFIER* IdentifierList ();
 
-    // Define function parameters
-    AST::DEFINITION* DefParameter    ();
-    AST::DEFINITION* DefParameterList();
+        // Define function parameters
+        AST::DEFINITION* DefParameter    ();
+        AST::DEFINITION* DefParameterList();
 
-    bool ValidNamespaceSpecifier(AST::EXPRESSION* Node); // Used by Other()
-    bool ValidTypeSpecifier     (AST::EXPRESSION* Node); // Used by Other()
-    bool ValidLHS               (AST::EXPRESSION* Node); // Used by Other()
+        bool ValidNamespaceSpecifier(AST::EXPRESSION* Node); // Used by Other()
+        bool ValidTypeSpecifier     (AST::EXPRESSION* Node); // Used by Other()
+        bool ValidLHS               (AST::EXPRESSION* Node); // Used by Other()
 
-    AST::CLASS_DEFINITION * ClassDefinition();
-    AST::ENUM_DEFINITION  * EnumDefinition();
-    AST::IF_STATEMENT     * IfStatement();
-    AST::DEFINITION       * Definition();
-    AST::WHILE_LOOP       * WhileLoop();
-    AST::LOOP_LOOP        * LoopLoop();
-    AST::FOR_LOOP         * ForLoop();
-    AST::IMPORT           * Import();
-    AST::SWITCH           * Switch();
-    AST::ALIAS            * Alias();
-    AST::GROUP            * Group();
-    AST::BASE             * Other();
-    AST::JUMP             * Jump();
-    AST::RTL              * RTL();
-    AST::FSM              * FSM();
-    AST::HDL              * HDL();
+        AST::CLASS_DEFINITION * ClassDefinition();
+        AST::ENUM_DEFINITION  * EnumDefinition();
+        AST::IF_STATEMENT     * IfStatement();
+        AST::DEFINITION       * Definition();
+        AST::WHILE_LOOP       * WhileLoop();
+        AST::LOOP_LOOP        * LoopLoop();
+        AST::FOR_LOOP         * ForLoop();
+        AST::IMPORT           * Import();
+        AST::SWITCH           * Switch();
+        AST::ALIAS            * Alias();
+        AST::GROUP            * Group();
+        AST::BASE             * Other();
+        AST::JUMP             * Jump();
+        AST::RTL              * RTL();
+        AST::FSM              * FSM();
+        AST::HDL              * HDL();
 
-    AST::BASE* Statement     ();
-    AST::BASE* Statements    ();
-    AST::BASE* StatementBlock();
+        AST::BASE* Statement     ();
+        AST::BASE* Statements    ();
+        AST::BASE* StatementBlock();
 
-  public:
-    PARSER();
-   ~PARSER();
+    public:
+        PARSER();
+      ~PARSER();
 
-    AST::BASE* Run(const char* Filename);
+        AST::BASE* Run(const char* Filename);
 };
 //------------------------------------------------------------------------------
 

@@ -19,8 +19,8 @@
 //==============================================================================
 
 /* This class is used as a base for PIN and NET
- *
- */
+  *
+  */
 //------------------------------------------------------------------------------
 
 #ifndef Netlist_Synthesisable_h
@@ -33,43 +33,43 @@
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
-  class SYNTHESISABLE: public BASE{
-    private:
-      struct FORMAT{
-        NUM* Width;
-        NUM* FullScale;
-        NUM* Signed;
-      } Format;
+    class SYNTHESISABLE: public BASE{
+        private:
+            struct FORMAT{
+                NUM* Width;
+                NUM* FullScale;
+                NUM* Signed;
+            } Format;
 
-    protected:
-      void DisplayParameters(int Indent);
+        protected:
+            void DisplayParameters(int Indent);
 
-    public:
-      bool    Used; // Actually used in an expression somewhere
-      int     Width    () override;
-      NUMBER& FullScale() override;
-      bool    Signed   () override;
+        public:
+            bool    Used; // Actually used in an expression somewhere
+            int     Width    () override;
+            NUMBER& FullScale() override;
+            bool    Signed   () override;
 
-      // If "Signed" is not specified, the signedness is taken from the sign
-      // of Width and / or FullScale, otherwise both Width and FullScale are
-      // expected to be positive.
-      void SetFixedPoint(int Width, const NUMBER& FullScale);
-      void SetFixedPoint(int Width, const NUMBER& FullScale, bool Signed);
+            // If "Signed" is not specified, the signedness is taken from the sign
+            // of Width and / or FullScale, otherwise both Width and FullScale are
+            // expected to be positive.
+            void SetFixedPoint(int Width, const NUMBER& FullScale);
+            void SetFixedPoint(int Width, const NUMBER& FullScale, bool Signed);
 
-      AST::DEFINITION::DIRECTION Direction;
+            AST::DEFINITION::DIRECTION Direction;
 
-               SYNTHESISABLE(int Line, const std::string& Filename, const char* Name, TYPE Type);
-      virtual ~SYNTHESISABLE();
+                              SYNTHESISABLE(int Line, const std::string& Filename, const char* Name, TYPE Type);
+            virtual ~SYNTHESISABLE();
 
-      bool IsSynthesisable() override;
+            bool IsSynthesisable() override;
 
-      bool ApplyParameters(std::list<AST::BASE*>& Parameters);
+            bool ApplyParameters(std::list<AST::BASE*>& Parameters);
 
-      BASE*            GetAttribute            (const std::string& Name) override;
-      AST::EXPRESSION* GetBuiltInAttributeValue(const std::string& Name) override;
+            BASE*            GetAttribute            (const std::string& Name) override;
+            AST::EXPRESSION* GetBuiltInAttributeValue(const std::string& Name) override;
 
-      void Validate() override;
-  };
+            void Validate() override;
+    };
 }
 //------------------------------------------------------------------------------
 

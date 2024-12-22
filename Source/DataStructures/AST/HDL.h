@@ -26,26 +26,27 @@
 #include "Definition.h"
 //------------------------------------------------------------------------------
 
-namespace AST{
-  struct HDL: public BASE{
-    std::string Identifier;
-    EXPRESSION* Files; // Only string constants are allowed
-    ASSIGNMENT* Parameters;
-    DEFINITION* Ports;
+namespace AST
+{
+    struct HDL: public BASE{
+        std::string Identifier;
+        EXPRESSION* Files; // Only string constants are allowed
+        ASSIGNMENT* Parameters;
+        DEFINITION* Ports;
 
-    HDL(int Line, std::string& Filename);
-    HDL(int Line, const char*  Filename);
-   ~HDL();
+        HDL(int Line, std::string& Filename);
+        HDL(int Line, const char*  Filename);
+      ~HDL();
 
-    BASE* Copy() override;
+        BASE* Copy() override;
 
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
+        bool RunAST() override;
+        bool GetVerilog(std::string& Body) override;
 
-    void Display() override;
+        void Display() override;
 
-    void ValidateMembers() override;
-  };
+        void ValidateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

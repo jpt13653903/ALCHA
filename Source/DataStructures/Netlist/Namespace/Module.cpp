@@ -22,8 +22,8 @@
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
-  std::list<NAMESPACE*> NamespaceStack; // Initialised in Engine::Run()
-  MODULE                Global(0, "");
+    std::list<NAMESPACE*> NamespaceStack; // Initialised in Engine::Run()
+    MODULE                Global(0, "");
 }
 //------------------------------------------------------------------------------
 
@@ -32,50 +32,54 @@ using namespace NETLIST;
 //------------------------------------------------------------------------------
 
 MODULE::MODULE(int Line, const std::string& Filename, const char* Name):
-NAMESPACE(Line, Filename, Name, TYPE::Module){
+NAMESPACE(Line, Filename, Name, TYPE::Module)
+{
 }
 //------------------------------------------------------------------------------
 
-MODULE::~MODULE(){
+MODULE::~MODULE()
+{
 }
 //------------------------------------------------------------------------------
 
-void MODULE::Display(int Indent){
-  Debug.Indent(Indent);
-  Debug.Print("Module: ");
+void MODULE::Display(int Indent)
+{
+    Debug.Indent(Indent);
+    Debug.Print("Module: ");
 
-  if(this == &Global) Debug.Print("{Global}");
-  else                DisplayLongName();
-  Debug.Print("\n");
-  Indent++;
+    if(this == &Global) Debug.Print("{Global}");
+    else                DisplayLongName();
+    Debug.Print("\n");
+    Indent++;
 
-  DisplayAttributes(Indent);
-  Debug.Print("\n");
+    DisplayAttributes(Indent);
+    Debug.Print("\n");
 
-  list<BASE*> Modules;
+    list<BASE*> Modules;
 
-  foreach(s, Symbols){
-    if(s->second){
-      if(s->second->Type == TYPE::Module) Modules.push_back(s->second);
-      else s->second->Display(Indent);
-    }else{
-      Debug.Indent(Indent);
-      Debug.Print("- %s: {null}\n", s->first.c_str());
+    foreach(s, Symbols){
+        if(s->second){
+            if(s->second->Type == TYPE::Module) Modules.push_back(s->second);
+            else s->second->Display(Indent);
+        }else{
+            Debug.Indent(Indent);
+            Debug.Print("- %s: {null}\n", s->first.c_str());
+        }
+        Debug.Print("\n");
     }
-    Debug.Print("\n");
-  }
 
-  foreach(s, Modules){
-    (*s)->Display(Indent);
-    Debug.Print("\n");
-  }
+    foreach(s, Modules){
+        (*s)->Display(Indent);
+        Debug.Print("\n");
+    }
 }
 //------------------------------------------------------------------------------
 
-void MODULE::Validate(){
-  assert(Type == TYPE::Module);
+void MODULE::Validate()
+{
+    assert(Type == TYPE::Module);
 
-  NAMESPACE::Validate();
+    NAMESPACE::Validate();
 }
 //------------------------------------------------------------------------------
 

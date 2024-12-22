@@ -26,29 +26,29 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct OR_REDUCE: public EXPRESSION{
-    OR_REDUCE(int Line, const std::string& Filename);
-    OR_REDUCE(int Line, const char*        Filename);
-   ~OR_REDUCE();
+    struct OR_REDUCE: public EXPRESSION{
+        OR_REDUCE(int Line, const std::string& Filename);
+        OR_REDUCE(int Line, const char*        Filename);
+      ~OR_REDUCE();
 
-    BASE* Copy() override;
+        BASE* Copy() override;
 
-    bool GetVerilog(std::string& Body) override;
-    EXPRESSION* Evaluate() override;
+        bool GetVerilog(std::string& Body) override;
+        EXPRESSION* Evaluate() override;
 
-    int     GetWidth    () override;
-    NUMBER& GetFullScale() override;
-    bool    GetSigned   () override;
+        int     GetWidth    () override;
+        NUMBER& GetFullScale() override;
+        bool    GetSigned   () override;
 
-    bool HasCircularReference(NETLIST::BASE* Object) override;
-    void PopulateUsed() override;
+        bool HasCircularReference(NETLIST::BASE* Object) override;
+        void PopulateUsed() override;
 
-    EXPRESSION* RemoveTempNet(int Width, bool Signed) override;
+        EXPRESSION* RemoveTempNet(int Width, bool Signed) override;
 
-    void Display() override;
+        void Display() override;
 
-    void ValidateMembers() override;
-  };
+        void ValidateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

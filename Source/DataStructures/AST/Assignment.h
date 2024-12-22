@@ -29,33 +29,33 @@
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
-  class BASE;
+    class BASE;
 }
 //------------------------------------------------------------------------------
 
 namespace AST{
-  class ASSIGNMENT: public BASE{
-    public:
-      // Left and Right operands
-      EXPRESSION* Left;
-      EXPRESSION* Right;
+    class ASSIGNMENT: public BASE{
+        public:
+            // Left and Right operands
+            EXPRESSION* Left;
+            EXPRESSION* Right;
 
-    protected:
-      // Populates a list of existing expressions, except when the target is an
-      // undefined attribute, in which case the attribute is created first.
-      typedef std::list<NETLIST::BASE*> target_list;
-      bool AddLHS_Object(NETLIST::BASE* Object, target_list& List);
-      bool GetLHS(EXPRESSION* Node, target_list& List);
+        protected:
+            // Populates a list of existing expressions, except when the target is an
+            // undefined attribute, in which case the attribute is created first.
+            typedef std::list<NETLIST::BASE*> target_list;
+            bool AddLHS_Object(NETLIST::BASE* Object, target_list& List);
+            bool GetLHS(EXPRESSION* Node, target_list& List);
 
-    protected:
-      void DisplayAssignment(const char* Operator);
+        protected:
+            void DisplayAssignment(const char* Operator);
 
-    public:
-               ASSIGNMENT(int Line, const char* Filename, TYPE AssignmentType);
-      virtual ~ASSIGNMENT();
+        public:
+                              ASSIGNMENT(int Line, const char* Filename, TYPE AssignmentType);
+            virtual ~ASSIGNMENT();
 
-      bool IsAssignment() override;
-  };
+            bool IsAssignment() override;
+    };
 }
 //------------------------------------------------------------------------------
 

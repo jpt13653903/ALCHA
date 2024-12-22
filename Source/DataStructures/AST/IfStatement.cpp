@@ -25,65 +25,73 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-IF_STATEMENT::IF_STATEMENT(int Line, std::string& Filename): IF_STATEMENT(Line, Filename.c_str()){}
+IF_STATEMENT::IF_STATEMENT(int Line, std::string& Filename): IF_STATEMENT(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-IF_STATEMENT::IF_STATEMENT(int Line, const char* Filename): BASE(Line, Filename, TYPE::IfStatement){
-  Condition       = 0;
-  TrueStatements  = 0;
-  FalseStatements = 0;
+IF_STATEMENT::IF_STATEMENT(int Line, const char* Filename): BASE(Line, Filename, TYPE::IfStatement)
+{
+    Condition       = 0;
+    TrueStatements  = 0;
+    FalseStatements = 0;
 }
 //------------------------------------------------------------------------------
 
-IF_STATEMENT::~IF_STATEMENT(){
-  if(Condition      ) delete Condition;
-  if(TrueStatements ) delete TrueStatements;
-  if(FalseStatements) delete FalseStatements;
+IF_STATEMENT::~IF_STATEMENT()
+{
+    if(Condition      ) delete Condition;
+    if(TrueStatements ) delete TrueStatements;
+    if(FalseStatements) delete FalseStatements;
 }
 //------------------------------------------------------------------------------
 
-BASE* IF_STATEMENT::Copy(){
-  IF_STATEMENT* Copy = new IF_STATEMENT(Source.Line, Source.Filename.c_str());
+BASE* IF_STATEMENT::Copy()
+{
+    IF_STATEMENT* Copy = new IF_STATEMENT(Source.Line, Source.Filename.c_str());
 
-  if(Condition) Copy->Condition = (decltype(Condition))Condition->Copy();
+    if(Condition) Copy->Condition = (decltype(Condition))Condition->Copy();
 
-  Copy->TrueStatements  = CopyList(TrueStatements );
-  Copy->FalseStatements = CopyList(FalseStatements);
+    Copy->TrueStatements  = CopyList(TrueStatements );
+    Copy->FalseStatements = CopyList(FalseStatements);
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool IF_STATEMENT::RunAST(){
-  error("Not yet implemented");
-  return false;
+bool IF_STATEMENT::RunAST()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool IF_STATEMENT::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool IF_STATEMENT::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void IF_STATEMENT::Display(){
-  DisplayInfo();
-  Debug.Print("if(");
-    if(Condition) Condition->Display();
-  Debug.Print("){\n");
-    if(TrueStatements) TrueStatements->Display();
-  Debug.Print("}else{\n");
-    if(FalseStatements) FalseStatements->Display();
-  Debug.Print("}\n");
+void IF_STATEMENT::Display()
+{
+    DisplayInfo();
+    Debug.Print("if(");
+        if(Condition) Condition->Display();
+    Debug.Print("){\n");
+        if(TrueStatements) TrueStatements->Display();
+    Debug.Print("}else{\n");
+        if(FalseStatements) FalseStatements->Display();
+    Debug.Print("}\n");
 
-  if(Next) Next->Display();
+    if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
 
-void IF_STATEMENT::ValidateMembers(){
-  assert(Type == TYPE::IfStatement);
+void IF_STATEMENT::ValidateMembers()
+{
+    assert(Type == TYPE::IfStatement);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

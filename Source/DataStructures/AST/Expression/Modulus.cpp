@@ -25,100 +25,114 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-MODULUS::MODULUS(int Line, const string& Filename): MODULUS(Line, Filename.c_str()){}
+MODULUS::MODULUS(int Line, const string& Filename): MODULUS(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-MODULUS::MODULUS(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Modulus){
+MODULUS::MODULUS(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Modulus)
+{
 }
 //------------------------------------------------------------------------------
 
-MODULUS::~MODULUS(){
+MODULUS::~MODULUS()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* MODULUS::Copy(){
-  MODULUS* Copy = new MODULUS(Source.Line, Source.Filename.c_str());
+BASE* MODULUS::Copy()
+{
+    MODULUS* Copy = new MODULUS(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool MODULUS::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool MODULUS::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* MODULUS::Evaluate(){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* MODULUS::Evaluate()
+{
+    error("Not yet implemented");
+    return this;
 //   EXPRESSION* Result = 0;
-// 
+//
 //   error("Not yet implemented");
-// 
+//
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int MODULUS::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int MODULUS::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& MODULUS::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& MODULUS::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool MODULUS::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool MODULUS::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool MODULUS::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool MODULUS::HasCircularReference(NETLIST::BASE* Object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void MODULUS::PopulateUsed(){
-  error("Not yet implemented");
+void MODULUS::PopulateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* MODULUS::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* MODULUS::RemoveTempNet(int Width, bool Signed)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void MODULUS::Display(){
-  DisplayStart();
+void MODULUS::Display()
+{
+    DisplayStart();
 
-  Debug.Print(" %% ");
+    Debug.Print(" %% ");
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void MODULUS::ValidateMembers(){
-  assert(Type == TYPE::Modulus);
+void MODULUS::ValidateMembers()
+{
+    assert(Type == TYPE::Modulus);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!Next);
+    assert(!Prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!Left );
+    // TODO: assert(!Right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

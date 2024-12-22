@@ -36,83 +36,91 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 EXPONENTIAL_ASSIGN::EXPONENTIAL_ASSIGN(int Line, std::string Filename):
-EXPONENTIAL_ASSIGN(Line, Filename.c_str()){}
+EXPONENTIAL_ASSIGN(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
 EXPONENTIAL_ASSIGN::EXPONENTIAL_ASSIGN(int Line, const char* Filename):
-ASSIGNMENT(Line, Filename, TYPE::Exponential_Assign){}
+ASSIGNMENT(Line, Filename, TYPE::Exponential_Assign)
+{}
 //------------------------------------------------------------------------------
 
-EXPONENTIAL_ASSIGN::~EXPONENTIAL_ASSIGN(){
+EXPONENTIAL_ASSIGN::~EXPONENTIAL_ASSIGN()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* EXPONENTIAL_ASSIGN::Copy(){
-  EXPONENTIAL_ASSIGN* Copy = new EXPONENTIAL_ASSIGN(Source.Line, Source.Filename.c_str());
+BASE* EXPONENTIAL_ASSIGN::Copy()
+{
+    EXPONENTIAL_ASSIGN* Copy = new EXPONENTIAL_ASSIGN(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool EXPONENTIAL_ASSIGN::RunAST(){
-  target_list TargetList;
+bool EXPONENTIAL_ASSIGN::RunAST()
+{
+    target_list TargetList;
 
-  assert(Left , return false);
-  assert(Right, return false);
+    assert(Left , return false);
+    assert(Right, return false);
 
-  if(!GetLHS(Left, TargetList)) return false;
-  if(TargetList.empty()){
-    Error("Target object list is empty");
+    if(!GetLHS(Left, TargetList)) return false;
+    if(TargetList.empty()){
+        Error("Target object list is empty");
+        return false;
+    }
+
+    if(TargetList.size() > 1){
+        error("Multiple assignment targets not supported yet");
+        return false;
+    }
+
+    NETLIST::BASE* Target = TargetList.front();
+    assert(Target, return false);
+
+    // Move the expression
+    EXPRESSION* Expression = new EXPONENTIAL(Right->Source.Line, Right->Source.Filename);
+    Expression->Left = Target->GetExpression(Right->Source.Line, Right->Source.Filename);
+
+    if(!Expression->Left){
+        delete Expression;
+        return false;
+    }
+
+    Expression->Right = Right;
+    Right = 0;
+
+    bool Result = Target->Assign(Expression);
+
+    return Result;
+}
+//------------------------------------------------------------------------------
+
+bool EXPONENTIAL_ASSIGN::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
     return false;
-  }
-
-  if(TargetList.size() > 1){
-    error("Multiple assignment targets not supported yet");
-    return false;
-  }
-
-  NETLIST::BASE* Target = TargetList.front();
-  assert(Target, return false);
-
-  // Move the expression
-  EXPRESSION* Expression = new EXPONENTIAL(Right->Source.Line, Right->Source.Filename);
-  Expression->Left = Target->GetExpression(Right->Source.Line, Right->Source.Filename);
-
-  if(!Expression->Left){
-    delete Expression;
-    return false;
-  }
-
-  Expression->Right = Right;
-  Right = 0;
-
-  bool Result = Target->Assign(Expression);
-
-  return Result;
 }
 //------------------------------------------------------------------------------
 
-bool EXPONENTIAL_ASSIGN::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+void EXPONENTIAL_ASSIGN::Display()
+{
+    DisplayAssignment("**=");
 }
 //------------------------------------------------------------------------------
 
-void EXPONENTIAL_ASSIGN::Display(){
-  DisplayAssignment("**=");
-}
-//------------------------------------------------------------------------------
+void EXPONENTIAL_ASSIGN::ValidateMembers()
+{
+    assert(Type == TYPE::Exponential_Assign);
 
-void EXPONENTIAL_ASSIGN::ValidateMembers(){
-  assert(Type == TYPE::Exponential_Assign);
+    assert(Left, return);
+    Left->Validate();
 
-  assert(Left, return);
-  Left->Validate();
-
-  if(Right) Right->Validate();
+    if(Right) Right->Validate();
 }
 //------------------------------------------------------------------------------
 

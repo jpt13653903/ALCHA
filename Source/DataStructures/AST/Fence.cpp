@@ -25,47 +25,55 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-FENCE::FENCE(int Line, std::string& Filename): FENCE(Line, Filename.c_str()){}
+FENCE::FENCE(int Line, std::string& Filename): FENCE(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-FENCE::FENCE(int Line, const char* Filename): BASE(Line, Filename, TYPE::Fence){
+FENCE::FENCE(int Line, const char* Filename): BASE(Line, Filename, TYPE::Fence)
+{
 }
 //------------------------------------------------------------------------------
 
-FENCE::~FENCE(){
+FENCE::~FENCE()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* FENCE::Copy(){
-  FENCE* Copy = new FENCE(Source.Line, Source.Filename.c_str());
+BASE* FENCE::Copy()
+{
+    FENCE* Copy = new FENCE(Source.Line, Source.Filename.c_str());
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool FENCE::RunAST(){
-  // Fences are ignored during this stage.
-  // They only have significance within FSM constructs
-  return true;
+bool FENCE::RunAST()
+{
+    // Fences are ignored during this stage.
+    // They only have significance within FSM constructs
+    return true;
 }
 //------------------------------------------------------------------------------
 
-bool FENCE::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool FENCE::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void FENCE::Display(){
-  DisplayInfo();
-  Debug.Print("Fence\n");
+void FENCE::Display()
+{
+    DisplayInfo();
+    Debug.Print("Fence\n");
 
-  if(Next) Next->Display();
+    if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
 
-void FENCE::ValidateMembers(){
-  assert(Type == TYPE::Fence);
+void FENCE::ValidateMembers()
+{
+    assert(Type == TYPE::Fence);
 }
 //------------------------------------------------------------------------------
 

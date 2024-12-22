@@ -27,24 +27,24 @@
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
-  struct NET: public SYNTHESISABLE{
-    AST::EXPRESSION* Value;
+    struct NET: public SYNTHESISABLE{
+        AST::EXPRESSION* Value;
 
-             NET(int Line, const std::string& Filename, const char* Name);
-    virtual ~NET();
+                          NET(int Line, const std::string& Filename, const char* Name);
+        virtual ~NET();
 
-    AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
+        AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
 
-    bool Assign   (AST::EXPRESSION* Expression) override;
-    bool RawAssign(AST::EXPRESSION* Expression) override;
+        bool Assign   (AST::EXPRESSION* Expression) override;
+        bool RawAssign(AST::EXPRESSION* Expression) override;
 
-    bool HasCircularReference(BASE* Object) override;
-    void PopulateUsed(bool SetUsed) override;
+        bool HasCircularReference(BASE* Object) override;
+        void PopulateUsed(bool SetUsed) override;
 
-    void Display(int Indent = 0) override;
+        void Display(int Indent = 0) override;
 
-    void Validate() override;
-  };
+        void Validate() override;
+    };
 }
 //------------------------------------------------------------------------------
 

@@ -36,83 +36,91 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 AND_ASSIGN::AND_ASSIGN(int Line, std::string Filename):
-AND_ASSIGN(Line, Filename.c_str()){}
+AND_ASSIGN(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
 AND_ASSIGN::AND_ASSIGN(int Line, const char* Filename):
-ASSIGNMENT(Line, Filename, TYPE::AND_Assign){}
+ASSIGNMENT(Line, Filename, TYPE::AND_Assign)
+{}
 //------------------------------------------------------------------------------
 
-AND_ASSIGN::~AND_ASSIGN(){
+AND_ASSIGN::~AND_ASSIGN()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* AND_ASSIGN::Copy(){
-  AND_ASSIGN* Copy = new AND_ASSIGN(Source.Line, Source.Filename.c_str());
+BASE* AND_ASSIGN::Copy()
+{
+    AND_ASSIGN* Copy = new AND_ASSIGN(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool AND_ASSIGN::RunAST(){
-  target_list TargetList;
+bool AND_ASSIGN::RunAST()
+{
+    target_list TargetList;
 
-  assert(Left , return false);
-  assert(Right, return false);
+    assert(Left , return false);
+    assert(Right, return false);
 
-  if(!GetLHS(Left, TargetList)) return false;
-  if(TargetList.empty()){
-    Error("Target object list is empty");
+    if(!GetLHS(Left, TargetList)) return false;
+    if(TargetList.empty()){
+        Error("Target object list is empty");
+        return false;
+    }
+
+    if(TargetList.size() > 1){
+        error("Multiple assignment targets not supported yet");
+        return false;
+    }
+
+    NETLIST::BASE* Target = TargetList.front();
+    assert(Target, return false);
+
+    // Move the expression
+    EXPRESSION* Expression = new BIT_AND(Right->Source.Line, Right->Source.Filename);
+    Expression->Left = Target->GetExpression(Right->Source.Line, Right->Source.Filename);
+
+    if(!Expression->Left){
+        delete Expression;
+        return false;
+    }
+
+    Expression->Right = Right;
+    Right = 0;
+
+    bool Result = Target->Assign(Expression);
+
+    return Result;
+}
+//------------------------------------------------------------------------------
+
+bool AND_ASSIGN::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
     return false;
-  }
-
-  if(TargetList.size() > 1){
-    error("Multiple assignment targets not supported yet");
-    return false;
-  }
-
-  NETLIST::BASE* Target = TargetList.front();
-  assert(Target, return false);
-
-  // Move the expression
-  EXPRESSION* Expression = new BIT_AND(Right->Source.Line, Right->Source.Filename);
-  Expression->Left = Target->GetExpression(Right->Source.Line, Right->Source.Filename);
-
-  if(!Expression->Left){
-    delete Expression;
-    return false;
-  }
-
-  Expression->Right = Right;
-  Right = 0;
-
-  bool Result = Target->Assign(Expression);
-
-  return Result;
 }
 //------------------------------------------------------------------------------
 
-bool AND_ASSIGN::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+void AND_ASSIGN::Display()
+{
+    DisplayAssignment("&=");
 }
 //------------------------------------------------------------------------------
 
-void AND_ASSIGN::Display(){
-  DisplayAssignment("&=");
-}
-//------------------------------------------------------------------------------
+void AND_ASSIGN::ValidateMembers()
+{
+    assert(Type == TYPE::AND_Assign);
 
-void AND_ASSIGN::ValidateMembers(){
-  assert(Type == TYPE::AND_Assign);
+    assert(Left, return);
+    Left->Validate();
 
-  assert(Left, return);
-  Left->Validate();
-
-  if(Right) Right->Validate();
+    if(Right) Right->Validate();
 }
 //------------------------------------------------------------------------------
 

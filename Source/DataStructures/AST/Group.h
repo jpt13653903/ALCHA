@@ -25,26 +25,27 @@
 #include "Assignment.h"
 //------------------------------------------------------------------------------
 
-namespace AST{
-  struct GROUP: public BASE{
-    ASSIGNMENT* Attributes;
+namespace AST
+{
+    struct GROUP: public BASE{
+        ASSIGNMENT* Attributes;
 
-    std::string Identifier;
-    BASE*       Body;
+        std::string Identifier;
+        BASE*       Body;
 
-    GROUP(int Line, std::string& Filename);
-    GROUP(int Line, const char*  Filename);
-   ~GROUP();
+        GROUP(int Line, std::string& Filename);
+        GROUP(int Line, const char*  Filename);
+      ~GROUP();
 
-    BASE* Copy() override;
+        BASE* Copy() override;
 
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
+        bool RunAST() override;
+        bool GetVerilog(std::string& Body) override;
 
-    void Display() override;
+        void Display() override;
 
-    void ValidateMembers() override;
-  };
+        void ValidateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

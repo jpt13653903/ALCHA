@@ -25,21 +25,22 @@
 #include "../Assignment.h"
 //------------------------------------------------------------------------------
 
-namespace AST{
-  struct ADD_ASSIGN: public ASSIGNMENT{
-    ADD_ASSIGN(int Line, std::string Filename);
-    ADD_ASSIGN(int Line, const char* Filename);
-   ~ADD_ASSIGN();
+namespace AST
+{
+    struct ADD_ASSIGN: public ASSIGNMENT{
+        ADD_ASSIGN(int Line, std::string Filename);
+        ADD_ASSIGN(int Line, const char* Filename);
+      ~ADD_ASSIGN();
 
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
+        bool RunAST() override;
+        bool GetVerilog(std::string& Body) override;
 
-    void Display() override;
+        void Display() override;
 
-    void ValidateMembers() override;
+        void ValidateMembers() override;
 
-    BASE* Copy() override;
-  };
+        BASE* Copy() override;
+    };
 }
 //------------------------------------------------------------------------------
 

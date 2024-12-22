@@ -26,20 +26,20 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct MODULUS_ASSIGN: public ASSIGNMENT{
-    MODULUS_ASSIGN(int Line, std::string Filename);
-    MODULUS_ASSIGN(int Line, const char* Filename);
-   ~MODULUS_ASSIGN();
+    struct MODULUS_ASSIGN: public ASSIGNMENT{
+        MODULUS_ASSIGN(int Line, std::string Filename);
+        MODULUS_ASSIGN(int Line, const char* Filename);
+      ~MODULUS_ASSIGN();
 
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
+        bool RunAST() override;
+        bool GetVerilog(std::string& Body) override;
 
-    void Display() override;
+        void Display() override;
 
-    void ValidateMembers() override;
+        void ValidateMembers() override;
 
-    BASE* Copy() override;
-  };
+        BASE* Copy() override;
+    };
 }
 //------------------------------------------------------------------------------
 

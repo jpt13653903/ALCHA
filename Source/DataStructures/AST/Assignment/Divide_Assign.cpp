@@ -36,83 +36,91 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 DIVIDE_ASSIGN::DIVIDE_ASSIGN(int Line, std::string Filename):
-DIVIDE_ASSIGN(Line, Filename.c_str()){}
+DIVIDE_ASSIGN(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
 DIVIDE_ASSIGN::DIVIDE_ASSIGN(int Line, const char* Filename):
-ASSIGNMENT(Line, Filename, TYPE::Divide_Assign){}
+ASSIGNMENT(Line, Filename, TYPE::Divide_Assign)
+{}
 //------------------------------------------------------------------------------
 
-DIVIDE_ASSIGN::~DIVIDE_ASSIGN(){
+DIVIDE_ASSIGN::~DIVIDE_ASSIGN()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* DIVIDE_ASSIGN::Copy(){
-  DIVIDE_ASSIGN* Copy = new DIVIDE_ASSIGN(Source.Line, Source.Filename.c_str());
+BASE* DIVIDE_ASSIGN::Copy()
+{
+    DIVIDE_ASSIGN* Copy = new DIVIDE_ASSIGN(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool DIVIDE_ASSIGN::RunAST(){
-  target_list TargetList;
+bool DIVIDE_ASSIGN::RunAST()
+{
+    target_list TargetList;
 
-  assert(Left , return false);
-  assert(Right, return false);
+    assert(Left , return false);
+    assert(Right, return false);
 
-  if(!GetLHS(Left, TargetList)) return false;
-  if(TargetList.empty()){
-    Error("Target object list is empty");
+    if(!GetLHS(Left, TargetList)) return false;
+    if(TargetList.empty()){
+        Error("Target object list is empty");
+        return false;
+    }
+
+    if(TargetList.size() > 1){
+        error("Multiple assignment targets not supported yet");
+        return false;
+    }
+
+    NETLIST::BASE* Target = TargetList.front();
+    assert(Target, return false);
+
+    // Move the expression
+    EXPRESSION* Expression = new DIVIDE(Right->Source.Line, Right->Source.Filename);
+    Expression->Left = Target->GetExpression(Right->Source.Line, Right->Source.Filename);
+
+    if(!Expression->Left){
+        delete Expression;
+        return false;
+    }
+
+    Expression->Right = Right;
+    Right = 0;
+
+    bool Result = Target->Assign(Expression);
+
+    return Result;
+}
+//------------------------------------------------------------------------------
+
+bool DIVIDE_ASSIGN::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
     return false;
-  }
-
-  if(TargetList.size() > 1){
-    error("Multiple assignment targets not supported yet");
-    return false;
-  }
-
-  NETLIST::BASE* Target = TargetList.front();
-  assert(Target, return false);
-
-  // Move the expression
-  EXPRESSION* Expression = new DIVIDE(Right->Source.Line, Right->Source.Filename);
-  Expression->Left = Target->GetExpression(Right->Source.Line, Right->Source.Filename);
-
-  if(!Expression->Left){
-    delete Expression;
-    return false;
-  }
-
-  Expression->Right = Right;
-  Right = 0;
-
-  bool Result = Target->Assign(Expression);
-
-  return Result;
 }
 //------------------------------------------------------------------------------
 
-bool DIVIDE_ASSIGN::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+void DIVIDE_ASSIGN::Display()
+{
+    DisplayAssignment("/=");
 }
 //------------------------------------------------------------------------------
 
-void DIVIDE_ASSIGN::Display(){
-  DisplayAssignment("/=");
-}
-//------------------------------------------------------------------------------
+void DIVIDE_ASSIGN::ValidateMembers()
+{
+    assert(Type == TYPE::Divide_Assign);
 
-void DIVIDE_ASSIGN::ValidateMembers(){
-  assert(Type == TYPE::Divide_Assign);
+    assert(Left, return);
+    Left->Validate();
 
-  assert(Left, return);
-  Left->Validate();
-
-  if(Right) Right->Validate();
+    if(Right) Right->Validate();
 }
 //------------------------------------------------------------------------------
 

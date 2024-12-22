@@ -25,65 +25,73 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-NAMESPACE_PUSH::NAMESPACE_PUSH(int Line, std::string& Filename): NAMESPACE_PUSH(Line, Filename.c_str()){}
+NAMESPACE_PUSH::NAMESPACE_PUSH(int Line, std::string& Filename): NAMESPACE_PUSH(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-NAMESPACE_PUSH::NAMESPACE_PUSH(int Line, const char* Filename): BASE(Line, Filename, TYPE::NamespacePush){
-  Namespace  = 0;
-  Statements = 0;
+NAMESPACE_PUSH::NAMESPACE_PUSH(int Line, const char* Filename): BASE(Line, Filename, TYPE::NamespacePush)
+{
+    Namespace  = 0;
+    Statements = 0;
 }
 //------------------------------------------------------------------------------
 
-NAMESPACE_PUSH::~NAMESPACE_PUSH(){
-  if(Namespace ) delete Namespace;
-  if(Statements) delete Statements;
+NAMESPACE_PUSH::~NAMESPACE_PUSH()
+{
+    if(Namespace ) delete Namespace;
+    if(Statements) delete Statements;
 }
 //------------------------------------------------------------------------------
 
-BASE* NAMESPACE_PUSH::Copy(){
-  NAMESPACE_PUSH* Copy = new NAMESPACE_PUSH(Source.Line, Source.Filename.c_str());
+BASE* NAMESPACE_PUSH::Copy()
+{
+    NAMESPACE_PUSH* Copy = new NAMESPACE_PUSH(Source.Line, Source.Filename.c_str());
 
-  if(Namespace ) Copy->Namespace  = (decltype(Namespace ))Namespace ->Copy();
-  if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy();
+    if(Namespace ) Copy->Namespace  = (decltype(Namespace ))Namespace ->Copy();
+    if(Statements) Copy->Statements = (decltype(Statements))Statements->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool NAMESPACE_PUSH::RunAST(){
-  error("Not yet implemented");
-  return false;
+bool NAMESPACE_PUSH::RunAST()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool NAMESPACE_PUSH::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool NAMESPACE_PUSH::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void NAMESPACE_PUSH::Display(){
-  DisplayInfo();
-  Debug.Print("NamespacePush:\n ");
+void NAMESPACE_PUSH::Display()
+{
+    DisplayInfo();
+    Debug.Print("NamespacePush:\n ");
 
-  if(Namespace){
-    if(Namespace->Left || Namespace->Right) Debug.Print("(");
-    Namespace->Display();
-    if(Namespace->Left || Namespace->Right) Debug.Print(")");
-  }
+    if(Namespace){
+        if(Namespace->Left || Namespace->Right) Debug.Print("(");
+        Namespace->Display();
+        if(Namespace->Left || Namespace->Right) Debug.Print(")");
+    }
 
-  Debug.Print(".{\n");
-    if(Statements) Statements->Display();
-  Debug.Print("}\n");
+    Debug.Print(".{\n");
+        if(Statements) Statements->Display();
+    Debug.Print("}\n");
 
-  if(Next) Next->Display();
+    if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
 
-void NAMESPACE_PUSH::ValidateMembers(){
-  assert(Type == TYPE::NamespacePush);
+void NAMESPACE_PUSH::ValidateMembers()
+{
+    assert(Type == TYPE::NamespacePush);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

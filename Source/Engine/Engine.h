@@ -30,24 +30,24 @@
 //------------------------------------------------------------------------------
 
 class ENGINE{
-  private: // Massages
-    PARSER Parser;
-  //----------------------------------------------------------------------------
+    private: // Massages
+        PARSER Parser;
+    //----------------------------------------------------------------------------
 
-  public: // Engine functions
-    // Parses the file and runs through the resulting AST:
-    // - Builds the namespaces
-    // - Creates object instances
-    // - Evaluates scripting expressions
-    // - Runs import statements
-    AST::BASE* RunAST(const char* Filename);
-  //----------------------------------------------------------------------------
+    public: // Engine functions
+        // Parses the file and runs through the resulting AST:
+        // - Builds the namespaces
+        // - Creates object instances
+        // - Evaluates scripting expressions
+        // - Runs import statements
+        AST::BASE* RunAST(const char* Filename);
+    //----------------------------------------------------------------------------
 
-  public:
-    ENGINE();
-   ~ENGINE();
+    public:
+        ENGINE();
+      ~ENGINE();
 
-    bool Run(const char* Filename);
+        bool Run(const char* Filename);
 };
 //------------------------------------------------------------------------------
 

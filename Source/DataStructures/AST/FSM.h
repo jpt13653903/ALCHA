@@ -26,24 +26,25 @@
 #include "Base.h"
 //------------------------------------------------------------------------------
 
-namespace AST{
-  struct FSM: public BASE{
-    std::list<BASE*> Parameters;
-    BASE* Statements;
+namespace AST
+{
+    struct FSM: public BASE{
+        std::list<BASE*> Parameters;
+        BASE* Statements;
 
-    FSM(int Line, std::string& Filename);
-    FSM(int Line, const char*  Filename);
-   ~FSM();
+        FSM(int Line, std::string& Filename);
+        FSM(int Line, const char*  Filename);
+      ~FSM();
 
-    BASE* Copy() override;
+        BASE* Copy() override;
 
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
+        bool RunAST() override;
+        bool GetVerilog(std::string& Body) override;
 
-    void Display() override;
+        void Display() override;
 
-    void ValidateMembers() override;
-  };
+        void ValidateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

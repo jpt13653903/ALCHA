@@ -25,60 +25,68 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-WHILE_LOOP::WHILE_LOOP(int Line, std::string& Filename): WHILE_LOOP(Line, Filename.c_str()){}
+WHILE_LOOP::WHILE_LOOP(int Line, std::string& Filename): WHILE_LOOP(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-WHILE_LOOP::WHILE_LOOP(int Line, const char* Filename): BASE(Line, Filename, TYPE::WhileLoop){
-  Condition  = 0;
-  Statements = 0;
+WHILE_LOOP::WHILE_LOOP(int Line, const char* Filename): BASE(Line, Filename, TYPE::WhileLoop)
+{
+    Condition  = 0;
+    Statements = 0;
 }
 //------------------------------------------------------------------------------
 
-WHILE_LOOP::~WHILE_LOOP(){
-  if(Condition ) delete Condition;
-  if(Statements) delete Statements;
+WHILE_LOOP::~WHILE_LOOP()
+{
+    if(Condition ) delete Condition;
+    if(Statements) delete Statements;
 }
 //------------------------------------------------------------------------------
 
-BASE* WHILE_LOOP::Copy(){
-  WHILE_LOOP* Copy = new WHILE_LOOP(Source.Line, Source.Filename.c_str());
+BASE* WHILE_LOOP::Copy()
+{
+    WHILE_LOOP* Copy = new WHILE_LOOP(Source.Line, Source.Filename.c_str());
 
-  if(Condition) Copy->Condition = (decltype(Condition))Condition->Copy();
+    if(Condition) Copy->Condition = (decltype(Condition))Condition->Copy();
 
-  Copy->Statements = CopyList(Statements);
+    Copy->Statements = CopyList(Statements);
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool WHILE_LOOP::RunAST(){
-  error("Not yet implemented");
-  return false;
+bool WHILE_LOOP::RunAST()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool WHILE_LOOP::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool WHILE_LOOP::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void WHILE_LOOP::Display(){
-  DisplayInfo();
-  Debug.Print("while(");
-    if(Condition) Condition->Display();
-  Debug.Print("){\n");
-    if(Statements) Statements->Display();
-  Debug.Print("}\n");
+void WHILE_LOOP::Display()
+{
+    DisplayInfo();
+    Debug.Print("while(");
+        if(Condition) Condition->Display();
+    Debug.Print("){\n");
+        if(Statements) Statements->Display();
+    Debug.Print("}\n");
 
-  if(Next) Next->Display();
+    if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
 
-void WHILE_LOOP::ValidateMembers(){
-  assert(Type == TYPE::WhileLoop);
+void WHILE_LOOP::ValidateMembers()
+{
+    assert(Type == TYPE::WhileLoop);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

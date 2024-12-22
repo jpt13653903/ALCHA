@@ -30,27 +30,27 @@
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
-  class NAMESPACE: public BASE{
-    public:
-      AST::BASE* Ast;
-      std::map<std::string, BASE*> Symbols;
+    class NAMESPACE: public BASE{
+        public:
+            AST::BASE* Ast;
+            std::map<std::string, BASE*> Symbols;
 
-               NAMESPACE(int Line, const std::string& Filename,
-                         const char* Name, TYPE NamespaceType);
-      virtual ~NAMESPACE(); // Also cleans up the children
+                              NAMESPACE(int Line, const std::string& Filename,
+                                                  const char* Name, TYPE NamespaceType);
+            virtual ~NAMESPACE(); // Also cleans up the children
 
-      AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
-      bool Assign   (AST::EXPRESSION* Expression) override;
-      bool RawAssign(AST::EXPRESSION* Expression) override;
+            AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
+            bool Assign   (AST::EXPRESSION* Expression) override;
+            bool RawAssign(AST::EXPRESSION* Expression) override;
 
-      bool HasCircularReference(BASE* Object) override;
+            bool HasCircularReference(BASE* Object) override;
 
-      bool IsNamespace() override;
+            bool IsNamespace() override;
 
-      BASE* GetMember(const std::string& Name) override;
+            BASE* GetMember(const std::string& Name) override;
 
-      void Validate() override;
-  };
+            void Validate() override;
+    };
 }
 //------------------------------------------------------------------------------
 

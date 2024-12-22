@@ -25,105 +25,119 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-EQUAL::EQUAL(int Line, const string& Filename): EQUAL(Line, Filename.c_str()){}
+EQUAL::EQUAL(int Line, const string& Filename): EQUAL(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-EQUAL::EQUAL(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Equal){
+EQUAL::EQUAL(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Equal)
+{
 }
 //------------------------------------------------------------------------------
 
-EQUAL::~EQUAL(){
+EQUAL::~EQUAL()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* EQUAL::Copy(){
-  EQUAL* Copy = new EQUAL(Source.Line, Source.Filename.c_str());
+BASE* EQUAL::Copy()
+{
+    EQUAL* Copy = new EQUAL(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool EQUAL::GetVerilog(string& Body){
-  Body += "(";
-  Left->GetVerilog(Body);
-  Body += ") == (";
-  Right->GetVerilog(Body);
-  Body += ")";
+bool EQUAL::GetVerilog(string& Body)
+{
+    Body += "(";
+    Left->GetVerilog(Body);
+    Body += ") == (";
+    Right->GetVerilog(Body);
+    Body += ")";
 
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* EQUAL::Evaluate(){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* EQUAL::Evaluate()
+{
+    error("Not yet implemented");
+    return this;
 //   EXPRESSION* Result = 0;
-// 
+//
 //   error("Not yet implemented");
-// 
+//
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int EQUAL::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int EQUAL::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& EQUAL::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& EQUAL::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool EQUAL::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool EQUAL::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool EQUAL::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool EQUAL::HasCircularReference(NETLIST::BASE* Object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void EQUAL::PopulateUsed(){
-  error("Not yet implemented");
+void EQUAL::PopulateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* EQUAL::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* EQUAL::RemoveTempNet(int Width, bool Signed)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void EQUAL::Display(){
-  DisplayStart();
+void EQUAL::Display()
+{
+    DisplayStart();
 
-  Debug.Print(" == ");
+    Debug.Print(" == ");
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void EQUAL::ValidateMembers(){
-  assert(Type == TYPE::Equal);
+void EQUAL::ValidateMembers()
+{
+    assert(Type == TYPE::Equal);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!Next);
+    assert(!Prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!Left );
+    // TODO: assert(!Right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

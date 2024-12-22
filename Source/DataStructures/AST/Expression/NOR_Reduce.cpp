@@ -25,103 +25,117 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-NOR_REDUCE::NOR_REDUCE(int Line, const string& Filename): NOR_REDUCE(Line, Filename.c_str()){}
+NOR_REDUCE::NOR_REDUCE(int Line, const string& Filename): NOR_REDUCE(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-NOR_REDUCE::NOR_REDUCE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::NOR_Reduce){
+NOR_REDUCE::NOR_REDUCE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::NOR_Reduce)
+{
 }
 //------------------------------------------------------------------------------
 
-NOR_REDUCE::~NOR_REDUCE(){
+NOR_REDUCE::~NOR_REDUCE()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* NOR_REDUCE::Copy(){
-  NOR_REDUCE* Copy = new NOR_REDUCE(Source.Line, Source.Filename.c_str());
+BASE* NOR_REDUCE::Copy()
+{
+    NOR_REDUCE* Copy = new NOR_REDUCE(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool NOR_REDUCE::GetVerilog(string& Body){
-  Body += "~|(";
-  Right->GetVerilog(Body);
-  Body += ")";
+bool NOR_REDUCE::GetVerilog(string& Body)
+{
+    Body += "~|(";
+    Right->GetVerilog(Body);
+    Body += ")";
 
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* NOR_REDUCE::Evaluate(){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* NOR_REDUCE::Evaluate()
+{
+    error("Not yet implemented");
+    return this;
 //   EXPRESSION* Result = 0;
-// 
+//
 //   error("Not yet implemented");
-// 
+//
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int NOR_REDUCE::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int NOR_REDUCE::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& NOR_REDUCE::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& NOR_REDUCE::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool NOR_REDUCE::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool NOR_REDUCE::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool NOR_REDUCE::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool NOR_REDUCE::HasCircularReference(NETLIST::BASE* Object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void NOR_REDUCE::PopulateUsed(){
-  error("Not yet implemented");
+void NOR_REDUCE::PopulateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* NOR_REDUCE::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* NOR_REDUCE::RemoveTempNet(int Width, bool Signed)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void NOR_REDUCE::Display(){
-  DisplayStart();
+void NOR_REDUCE::Display()
+{
+    DisplayStart();
 
-  Debug.Print(" ~|");
+    Debug.Print(" ~|");
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void NOR_REDUCE::ValidateMembers(){
-  assert(Type == TYPE::NOR_Reduce);
+void NOR_REDUCE::ValidateMembers()
+{
+    assert(Type == TYPE::NOR_Reduce);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!Next);
+    assert(!Prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!Left );
+    // TODO: assert(!Right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

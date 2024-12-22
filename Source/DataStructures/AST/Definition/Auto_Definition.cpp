@@ -28,68 +28,76 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 AUTO_DEFINITION::AUTO_DEFINITION(
-  int     Line,
-  string& Filename
-): AUTO_DEFINITION(Line, Filename.c_str()){}
+    int     Line,
+    string& Filename
+): AUTO_DEFINITION(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
 AUTO_DEFINITION::AUTO_DEFINITION(
-  int             Line,
-  const char*     Filename
-): DEFINITION(Line, Filename, TYPE::Auto_Definition){
+    int             Line,
+    const char*     Filename
+): DEFINITION(Line, Filename, TYPE::Auto_Definition)
+{
 }
 //------------------------------------------------------------------------------
 
-AUTO_DEFINITION::~AUTO_DEFINITION(){
+AUTO_DEFINITION::~AUTO_DEFINITION()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* AUTO_DEFINITION::Copy(){
-  AUTO_DEFINITION* Copy = new AUTO_DEFINITION(Source.Line, Source.Filename.c_str());
+BASE* AUTO_DEFINITION::Copy()
+{
+    AUTO_DEFINITION* Copy = new AUTO_DEFINITION(Source.Line, Source.Filename.c_str());
 
-  CopyMembers(Copy);
+    CopyMembers(Copy);
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool AUTO_DEFINITION::RunAST(){
-  auto Identifier = Identifiers;
+bool AUTO_DEFINITION::RunAST()
+{
+    auto Identifier = Identifiers;
 
-  while(Identifier){
-    if(!VerifyNotDefined(Identifier)) return false;
+    while(Identifier){
+        if(!VerifyNotDefined(Identifier)) return false;
 
-    if(Identifier->Function){
-      error("Not yet implemented");
-      Identifier = Identifier->Next;
-      continue;
+        if(Identifier->Function){
+            error("Not yet implemented");
+            Identifier = Identifier->Next;
+            continue;
+        }
+
+        error("Not yet implemented");
+
+        Identifier = Identifier->Next;
     }
+    return true;
+}
+//------------------------------------------------------------------------------
 
+bool AUTO_DEFINITION::GetVerilog(string& Body)
+{
     error("Not yet implemented");
-
-    Identifier = Identifier->Next;
-  }
-  return true;
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool AUTO_DEFINITION::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+void AUTO_DEFINITION::Display()
+{
+    DisplayDefinition("Auto");
 }
 //------------------------------------------------------------------------------
 
-void AUTO_DEFINITION::Display(){
-  DisplayDefinition("Auto");
-}
-//------------------------------------------------------------------------------
+void AUTO_DEFINITION::ValidateMembers()
+{
+    assert(Type == TYPE::Auto_Definition);
 
-void AUTO_DEFINITION::ValidateMembers(){
-  assert(Type == TYPE::Auto_Definition);
+    assert(Parameters.empty());
 
-  assert(Parameters.empty());
-
-  DEFINITION::ValidateMembers();
+    DEFINITION::ValidateMembers();
 }
 //------------------------------------------------------------------------------
 

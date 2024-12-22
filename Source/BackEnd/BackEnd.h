@@ -31,35 +31,35 @@
 //------------------------------------------------------------------------------
 
 class BACK_END{
-  private:
-    std::string Path;
-    std::string Filename;
+    private:
+        std::string Path;
+        std::string Filename;
 
-    void Error  (AST::EXPRESSION* Expression, const char* Message = 0);
-    void Warning(AST::EXPRESSION* Expression, const char* Message = 0);
+        void Error  (AST::EXPRESSION* Expression, const char* Message = 0);
+        void Warning(AST::EXPRESSION* Expression, const char* Message = 0);
 
-    bool WriteFile(std::string& Filename, const char* Ext, std::string& Body);
+        bool WriteFile(std::string& Filename, const char* Ext, std::string& Body);
 
-    void RemoveTempNet(NETLIST::NET* Target);
+        void RemoveTempNet(NETLIST::NET* Target);
 
-    void RemoveTempNets     (NETLIST::NAMESPACE* Namespace);
-    void PopulateUsed       (NETLIST::NAMESPACE* Namespace);
-    bool DeleteUnused       (NETLIST::NAMESPACE* Namespace);
-    bool AssignPinDirections(NETLIST::NAMESPACE* Namespace);
-    bool RoutePorts         (NETLIST::NAMESPACE* Namespace);
+        void RemoveTempNets     (NETLIST::NAMESPACE* Namespace);
+        void PopulateUsed       (NETLIST::NAMESPACE* Namespace);
+        bool DeleteUnused       (NETLIST::NAMESPACE* Namespace);
+        bool AssignPinDirections(NETLIST::NAMESPACE* Namespace);
+        bool RoutePorts         (NETLIST::NAMESPACE* Namespace);
 
-    void BuildSizeDef    (std::string& Body, int Width, bool Signed);
-    bool BuildAssignments(std::string& Body, NETLIST::NAMESPACE* Namespace);
-    void BuildPorts      (std::string& Body, NETLIST::NAMESPACE* Namespace, bool& isFirst);
-    void BuildNets       (std::string& Body, NETLIST::NAMESPACE* Namespace);
+        void BuildSizeDef    (std::string& Body, int Width, bool Signed);
+        bool BuildAssignments(std::string& Body, NETLIST::NAMESPACE* Namespace);
+        void BuildPorts      (std::string& Body, NETLIST::NAMESPACE* Namespace, bool& isFirst);
+        void BuildNets       (std::string& Body, NETLIST::NAMESPACE* Namespace);
 
-    bool BuildHDL(NETLIST::MODULE* Module, std::string Path);
+        bool BuildHDL(NETLIST::MODULE* Module, std::string Path);
 
-  public:
-    BACK_END();
-   ~BACK_END();
+    public:
+        BACK_END();
+       ~BACK_END();
 
-    bool BuildAltera(const char* Path, const char* Filename);
+        bool BuildAltera(const char* Path, const char* Filename);
 };
 //------------------------------------------------------------------------------
 

@@ -25,100 +25,114 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-CONDITIONAL::CONDITIONAL(int Line, const string& Filename): CONDITIONAL(Line, Filename.c_str()){}
+CONDITIONAL::CONDITIONAL(int Line, const string& Filename): CONDITIONAL(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-CONDITIONAL::CONDITIONAL(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Conditional){
+CONDITIONAL::CONDITIONAL(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Conditional)
+{
 }
 //------------------------------------------------------------------------------
 
-CONDITIONAL::~CONDITIONAL(){
+CONDITIONAL::~CONDITIONAL()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* CONDITIONAL::Copy(){
-  CONDITIONAL* Copy = new CONDITIONAL(Source.Line, Source.Filename.c_str());
+BASE* CONDITIONAL::Copy()
+{
+    CONDITIONAL* Copy = new CONDITIONAL(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool CONDITIONAL::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool CONDITIONAL::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* CONDITIONAL::Evaluate(){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* CONDITIONAL::Evaluate()
+{
+    error("Not yet implemented");
+    return this;
 //   EXPRESSION* Result = 0;
-// 
+//
 //   error("Not yet implemented");
-// 
+//
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int CONDITIONAL::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int CONDITIONAL::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& CONDITIONAL::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& CONDITIONAL::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool CONDITIONAL::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool CONDITIONAL::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool CONDITIONAL::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool CONDITIONAL::HasCircularReference(NETLIST::BASE* Object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void CONDITIONAL::PopulateUsed(){
-  error("Not yet implemented");
+void CONDITIONAL::PopulateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* CONDITIONAL::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* CONDITIONAL::RemoveTempNet(int Width, bool Signed)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void CONDITIONAL::Display(){
-  DisplayStart();
+void CONDITIONAL::Display()
+{
+    DisplayStart();
 
-  Debug.Print(" ? ");
+    Debug.Print(" ? ");
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void CONDITIONAL::ValidateMembers(){
-  assert(Type == TYPE::Conditional);
+void CONDITIONAL::ValidateMembers()
+{
+    assert(Type == TYPE::Conditional);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!Next);
+    assert(!Prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!Left );
+    // TODO: assert(!Right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

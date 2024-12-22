@@ -36,83 +36,91 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 ADD_ASSIGN::ADD_ASSIGN(int Line, std::string Filename):
-ADD_ASSIGN(Line, Filename.c_str()){}
+ADD_ASSIGN(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
 ADD_ASSIGN::ADD_ASSIGN(int Line, const char* Filename):
-ASSIGNMENT(Line, Filename, TYPE::Add_Assign){}
+ASSIGNMENT(Line, Filename, TYPE::Add_Assign)
+{}
 //------------------------------------------------------------------------------
 
-ADD_ASSIGN::~ADD_ASSIGN(){
+ADD_ASSIGN::~ADD_ASSIGN()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* ADD_ASSIGN::Copy(){
-  ADD_ASSIGN* Copy = new ADD_ASSIGN(Source.Line, Source.Filename.c_str());
+BASE* ADD_ASSIGN::Copy()
+{
+    ADD_ASSIGN* Copy = new ADD_ASSIGN(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool ADD_ASSIGN::RunAST(){
-  target_list TargetList;
+bool ADD_ASSIGN::RunAST()
+{
+    target_list TargetList;
 
-  assert(Left , return false);
-  assert(Right, return false);
+    assert(Left , return false);
+    assert(Right, return false);
 
-  if(!GetLHS(Left, TargetList)) return false;
-  if(TargetList.empty()){
-    Error("Target object list is empty");
+    if(!GetLHS(Left, TargetList)) return false;
+    if(TargetList.empty()){
+        Error("Target object list is empty");
+        return false;
+    }
+
+    if(TargetList.size() > 1){
+        error("Multiple assignment targets not supported yet");
+        return false;
+    }
+
+    NETLIST::BASE* Target = TargetList.front();
+    assert(Target, return false);
+
+    // Move the expression
+    EXPRESSION* Expression = new ADD(Right->Source.Line, Right->Source.Filename);
+    Expression->Left = Target->GetExpression(Right->Source.Line, Right->Source.Filename);
+
+    if(!Expression->Left){
+        delete Expression;
+        return false;
+    }
+
+    Expression->Right = Right;
+    Right = 0;
+
+    bool Result = Target->Assign(Expression);
+
+    return Result;
+}
+//------------------------------------------------------------------------------
+
+bool ADD_ASSIGN::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
     return false;
-  }
-
-  if(TargetList.size() > 1){
-    error("Multiple assignment targets not supported yet");
-    return false;
-  }
-
-  NETLIST::BASE* Target = TargetList.front();
-  assert(Target, return false);
-
-  // Move the expression
-  EXPRESSION* Expression = new ADD(Right->Source.Line, Right->Source.Filename);
-  Expression->Left = Target->GetExpression(Right->Source.Line, Right->Source.Filename);
-
-  if(!Expression->Left){
-    delete Expression;
-    return false;
-  }
-
-  Expression->Right = Right;
-  Right = 0;
-
-  bool Result = Target->Assign(Expression);
-
-  return Result;
 }
 //------------------------------------------------------------------------------
 
-bool ADD_ASSIGN::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+void ADD_ASSIGN::Display()
+{
+    DisplayAssignment("+=");
 }
 //------------------------------------------------------------------------------
 
-void ADD_ASSIGN::Display(){
-  DisplayAssignment("+=");
-}
-//------------------------------------------------------------------------------
+void ADD_ASSIGN::ValidateMembers()
+{
+    assert(Type == TYPE::Add_Assign);
 
-void ADD_ASSIGN::ValidateMembers(){
-  assert(Type == TYPE::Add_Assign);
+    assert(Left, return);
+    Left->Validate();
 
-  assert(Left, return);
-  Left->Validate();
-
-  if(Right) Right->Validate();
+    if(Right) Right->Validate();
 }
 //------------------------------------------------------------------------------
 

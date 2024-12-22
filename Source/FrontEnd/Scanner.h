@@ -51,40 +51,40 @@ Tokens:
 //------------------------------------------------------------------------------
 
 class SCANNER{
-  private:
-    bool error;
-    void Error(const char* Message);
+    private:
+        bool error;
+        void Error(const char* Message);
 
-    int      Line;
-    unsigned Index;
-    byte*    Buffer;
+        int      Line;
+        unsigned Index;
+        byte*    Buffer;
 
-    bool LineComment  ();
-    bool TodoComment  ();
-    bool BlockComment ();
-    bool NestedComment();
-    void WhiteSpace   (); // Ignores spaces, new-lines and comments
+        bool LineComment  ();
+        bool TodoComment  ();
+        bool BlockComment ();
+        bool NestedComment();
+        void WhiteSpace   (); // Ignores spaces, new-lines and comments
 
-    bool Digit   (); // Returns true on decimal digit
-    bool NonDigit();
+        bool Digit   (); // Returns true on decimal digit
+        bool NonDigit();
 
-    bool     GetDigit   (unsigned* Digit, unsigned Base);
-    unsigned GetExponent(bool    * Sign , TOKEN* Token);
-    bool     GetNumber  (TOKEN   * Token, unsigned Base);
+        bool     GetDigit   (unsigned* Digit, unsigned Base);
+        unsigned GetExponent(bool    * Sign , TOKEN* Token);
+        bool     GetNumber  (TOKEN   * Token, unsigned Base);
 
-    bool Identifier(TOKEN* Token);
-    bool Operator  (TOKEN* Token);
-    bool Literal   (TOKEN* Token);
-    bool String    (TOKEN* Token);
+        bool Identifier(TOKEN* Token);
+        bool Operator  (TOKEN* Token);
+        bool Literal   (TOKEN* Token);
+        bool String    (TOKEN* Token);
 
-  public: // Public interface
-    SCANNER();
-   ~SCANNER();
+    public: // Public interface
+        SCANNER();
+      ~SCANNER();
 
-    std::string Filename; // Read-only
-    bool Open(const char* Filename);
+        std::string Filename; // Read-only
+        bool Open(const char* Filename);
 
-    bool GetToken(TOKEN* Token);
+        bool GetToken(TOKEN* Token);
 };
 //------------------------------------------------------------------------------
 

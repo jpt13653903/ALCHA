@@ -22,22 +22,23 @@
 #include "Scanner.h"
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv){
-  SetupTerminal();
+int main(int argc, const char** argv)
+{
+    SetupTerminal();
 
-  const char*  InputFile = "../TestCases/FrontEnd/Scanner.alc";
-  if(argc > 1) InputFile = argv[1];
+    const char*  InputFile = "../TestCases/FrontEnd/Scanner.alc";
+    if(argc > 1) InputFile = argv[1];
 
-  info("InputFile = %s", InputFile);
+    info("InputFile = %s", InputFile);
 
-  SCANNER Scanner;
-  if(!Scanner.Open(InputFile)){
-    error("Cannot open \"%s\"", InputFile);
-    return -1;
-  }
-  TOKEN Token;
-  while(Scanner.GetToken(&Token)) Token.Display();
+    SCANNER Scanner;
+    if(!Scanner.Open(InputFile)){
+        error("Cannot open \"%s\"", InputFile);
+        return -1;
+    }
+    TOKEN Token;
+    while(Scanner.GetToken(&Token)) Token.Display();
 
-  return 0;
+    return 0;
 }
 //------------------------------------------------------------------------------

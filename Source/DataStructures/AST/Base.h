@@ -23,12 +23,12 @@
 //------------------------------------------------------------------------------
 
 /* Description:
- *
- * This is the base class of the abstract syntax tree.  It is used in two 
- * major data structures: the output of the parser and output of the engine.
- *
- * These two structures are essentially independent, but have a significant 
- * commonality, as is therefore based on the same C++ class hierarchy.
+  *
+  * This is the base class of the abstract syntax tree.  It is used in two
+  * major data structures: the output of the parser and output of the engine.
+  *
+  * These two structures are essentially independent, but have a significant
+  * commonality, as is therefore based on the same C++ class hierarchy.
 ------------------------------------------------------------------------------*/
 
 #include <string>
@@ -40,173 +40,173 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  class BASE{ // The base type for AST nodes
-    public:
-      void Error  (const char* Message = 0);
-      void Warning(const char* Message = 0);
-    //--------------------------------------------------------------------------
+    class BASE{ // The base type for AST nodes
+        public:
+            void Error  (const char* Message = 0);
+            void Warning(const char* Message = 0);
+        //--------------------------------------------------------------------------
 
-    public:
-      enum class TYPE{
-        Fence, // Empty statement, but also "next-cycle" specifier in FSMs
-        Import,
-        Group,
-        Alias,
+        public:
+            enum class TYPE{
+                Fence, // Empty statement, but also "next-cycle" specifier in FSMs
+                Import,
+                Group,
+                Alias,
 
-        Parameter,  // Parameter definition, not function call
+                Parameter,  // Parameter definition, not function call
 
-        NamespacePush,
-        IfStatement,
-        ForLoop,
-        LoopLoop,
-        WhileLoop,
-        Switch,
-        Jump,
-        RTL,
-        FSM,
-        HDL,
+                NamespacePush,
+                IfStatement,
+                ForLoop,
+                LoopLoop,
+                WhileLoop,
+                Switch,
+                Jump,
+                RTL,
+                FSM,
+                HDL,
 
-        // Definition
-          Void_Definition,
-          Auto_Definition,
-          Pin_Definition,
-          Net_Definition,
-          Byte_Definition,
-          Char_Definition,
-          Num_Definition,
-          FuncPtr_Definition,
-          Enum_Definition,
-          Class_Definition,
-          Class_Instance,
+                // Definition
+                    Void_Definition,
+                    Auto_Definition,
+                    Pin_Definition,
+                    Net_Definition,
+                    Byte_Definition,
+                    Char_Definition,
+                    Num_Definition,
+                    FuncPtr_Definition,
+                    Enum_Definition,
+                    Class_Definition,
+                    Class_Instance,
 
-        // Assignment
-          Assign,             //   =
-          Raw_Assign,         //  :=
-          Append_Assign,      //  ~=
-          Add_Assign,         //  +=
-          Subtract_Assign,    //  -=
-          Multiply_Assign,    //  *=
-          Divide_Assign,      //  /=
-          Modulus_Assign,     //  %=
-          Exponential_Assign, // **=
-          AND_Assign,         //  &=
-          OR_Assign,          //  |=
-          XOR_Assign,         //  ^=
-          Shift_Left_Assign,  // <<=
-          Shift_Right_Assign, // >>=
+                // Assignment
+                    Assign,             //   =
+                    Raw_Assign,         //  :=
+                    Append_Assign,      //  ~=
+                    Add_Assign,         //  +=
+                    Subtract_Assign,    //  -=
+                    Multiply_Assign,    //  *=
+                    Divide_Assign,      //  /=
+                    Modulus_Assign,     //  %=
+                    Exponential_Assign, // **=
+                    AND_Assign,         //  &=
+                    OR_Assign,          //  |=
+                    XOR_Assign,         //  ^=
+                    Shift_Left_Assign,  // <<=
+                    Shift_Right_Assign, // >>=
 
-        // Expression
-          String,
-          Literal,
-          Array,
-          Identifier,
-          Object,
+                // Expression
+                    String,
+                    Literal,
+                    Array,
+                    Identifier,
+                    Object,
 
-          VectorConcatenate,
-          ArrayConcatenate,
+                    VectorConcatenate,
+                    ArrayConcatenate,
 
-          FunctionCall, // Left is the function name; right is the parameter list
-          Slice,
-          AccessMember,
-          AccessMemberSafe,
-          AccessAttribute,
-          Range,
+                    FunctionCall, // Left is the function name; right is the parameter list
+                    Slice,
+                    AccessMember,
+                    AccessMemberSafe,
+                    AccessAttribute,
+                    Range,
 
-          Increment, // If child is on the left, post-increment
-          Decrement, // If child is on the left, post-decrement
-          Factorial,
+                    Increment, // If child is on the left, post-increment
+                    Decrement, // If child is on the left, post-decrement
+                    Factorial,
 
-          Negate,
-          Bit_NOT,
-          Raw,     // Unary operator to cast to "raw bits", or "unsigned int"
+                    Negate,
+                    Bit_NOT,
+                    Raw,     // Unary operator to cast to "raw bits", or "unsigned int"
 
-          AND_Reduce,
-          NAND_Reduce,
-          OR_Reduce,
-          NOR_Reduce,
-          XOR_Reduce,
-          XNOR_Reduce,
-          Logical_NOT,
+                    AND_Reduce,
+                    NAND_Reduce,
+                    OR_Reduce,
+                    NOR_Reduce,
+                    XOR_Reduce,
+                    XNOR_Reduce,
+                    Logical_NOT,
 
-          Cast,
+                    Cast,
 
-          Replicate,
+                    Replicate,
 
-          Multiply,
-          Divide,
-          Modulus,
-          Exponential,
+                    Multiply,
+                    Divide,
+                    Modulus,
+                    Exponential,
 
-          Add,
-          Subtract,
+                    Add,
+                    Subtract,
 
-          Shift_Left,
-          Shift_Right,
+                    Shift_Left,
+                    Shift_Right,
 
-          Less,
-          Greater,
-          Less_Equal,
-          Greater_Equal,
+                    Less,
+                    Greater,
+                    Less_Equal,
+                    Greater_Equal,
 
-          Equal,
-          Not_Equal,
+                    Equal,
+                    Not_Equal,
 
-          Bit_AND,
-          Bit_NAND,
-          Bit_OR,
-          Bit_NOR,
-          Bit_XOR,
-          Bit_XNOR,
+                    Bit_AND,
+                    Bit_NAND,
+                    Bit_OR,
+                    Bit_NOR,
+                    Bit_XOR,
+                    Bit_XNOR,
 
-          Logical_AND,
-          Logical_OR,
+                    Logical_AND,
+                    Logical_OR,
 
-          Conditional
-      } Type;
+                    Conditional
+            } Type;
 
-      virtual bool IsAssignment();
-      virtual bool IsDefinition();
-      virtual bool IsExpression();
-    //--------------------------------------------------------------------------
+            virtual bool IsAssignment();
+            virtual bool IsDefinition();
+            virtual bool IsExpression();
+        //--------------------------------------------------------------------------
 
-    public:
-      struct{
-        int         Line;
-        std::string Filename;
-      } Source;
-      BASE* Next; // Next instruction
-      BASE* Prev; // Previous instruction
-    //--------------------------------------------------------------------------
+        public:
+            struct{
+                int         Line;
+                std::string Filename;
+            } Source;
+            BASE* Next; // Next instruction
+            BASE* Prev; // Previous instruction
+        //--------------------------------------------------------------------------
 
-    protected:
-      static BASE* CopyList(BASE* Source);
-    //--------------------------------------------------------------------------
+        protected:
+            static BASE* CopyList(BASE* Source);
+        //--------------------------------------------------------------------------
 
-    public:
-               BASE(int Line, const char* Filename, TYPE Type);
-      virtual ~BASE(); // Also deletes the rest of the linked list
+        public:
+                              BASE(int Line, const char* Filename, TYPE Type);
+            virtual ~BASE(); // Also deletes the rest of the linked list
 
-      // Returns a copy of this instance
-      virtual BASE* Copy() = 0;
+            // Returns a copy of this instance
+            virtual BASE* Copy() = 0;
 
-      // Runs through the AST:
-      // - Builds the namespaces
-      // - Creates object instances (including temporary wires)
-      // - Evaluates scripting expressions
-      // - Runs import statements
-      virtual bool RunAST() = 0;
+            // Runs through the AST:
+            // - Builds the namespaces
+            // - Creates object instances (including temporary wires)
+            // - Evaluates scripting expressions
+            // - Runs import statements
+            virtual bool RunAST() = 0;
 
-      // Appends the Verilog code of this node to Body
-      virtual bool GetVerilog(std::string& Body) = 0;
+            // Appends the Verilog code of this node to Body
+            virtual bool GetVerilog(std::string& Body) = 0;
 
-              void DisplayInfo();
-      virtual void Display() = 0;
+                            void DisplayInfo();
+            virtual void Display() = 0;
 
-      // Runs assertions on the Next and Prev pointers, and then validates the
-      // members.  Run this function on the head of the list.
-      void         Validate();
-      virtual void ValidateMembers() = 0;
-  };
+            // Runs assertions on the Next and Prev pointers, and then validates the
+            // members.  Run this function on the head of the list.
+            void         Validate();
+            virtual void ValidateMembers() = 0;
+    };
 }
 //------------------------------------------------------------------------------
 

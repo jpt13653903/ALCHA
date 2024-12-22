@@ -28,68 +28,76 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 FUNCPTR_DEFINITION::FUNCPTR_DEFINITION(
-  int     Line,
-  string& Filename
-): FUNCPTR_DEFINITION(Line, Filename.c_str()){}
+    int     Line,
+    string& Filename
+): FUNCPTR_DEFINITION(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
 FUNCPTR_DEFINITION::FUNCPTR_DEFINITION(
-  int             Line,
-  const char*     Filename
-): DEFINITION(Line, Filename, TYPE::FuncPtr_Definition){
+    int             Line,
+    const char*     Filename
+): DEFINITION(Line, Filename, TYPE::FuncPtr_Definition)
+{
 }
 //------------------------------------------------------------------------------
 
-FUNCPTR_DEFINITION::~FUNCPTR_DEFINITION(){
+FUNCPTR_DEFINITION::~FUNCPTR_DEFINITION()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* FUNCPTR_DEFINITION::Copy(){
-  FUNCPTR_DEFINITION* Copy = new FUNCPTR_DEFINITION(Source.Line, Source.Filename.c_str());
+BASE* FUNCPTR_DEFINITION::Copy()
+{
+    FUNCPTR_DEFINITION* Copy = new FUNCPTR_DEFINITION(Source.Line, Source.Filename.c_str());
 
-  CopyMembers(Copy);
+    CopyMembers(Copy);
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool FUNCPTR_DEFINITION::RunAST(){
-  auto Identifier = Identifiers;
+bool FUNCPTR_DEFINITION::RunAST()
+{
+    auto Identifier = Identifiers;
 
-  while(Identifier){
-    if(!VerifyNotDefined(Identifier)) return false;
+    while(Identifier){
+        if(!VerifyNotDefined(Identifier)) return false;
 
-    if(Identifier->Function){
-      error("Not yet implemented");
-      Identifier = Identifier->Next;
-      continue;
+        if(Identifier->Function){
+            error("Not yet implemented");
+            Identifier = Identifier->Next;
+            continue;
+        }
+
+        error("Not yet implemented");
+
+        Identifier = Identifier->Next;
     }
+    return true;
+}
+//------------------------------------------------------------------------------
 
+bool FUNCPTR_DEFINITION::GetVerilog(string& Body)
+{
     error("Not yet implemented");
-
-    Identifier = Identifier->Next;
-  }
-  return true;
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool FUNCPTR_DEFINITION::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+void FUNCPTR_DEFINITION::Display()
+{
+    DisplayDefinition("Function");
 }
 //------------------------------------------------------------------------------
 
-void FUNCPTR_DEFINITION::Display(){
-  DisplayDefinition("Function");
-}
-//------------------------------------------------------------------------------
+void FUNCPTR_DEFINITION::ValidateMembers()
+{
+    assert(Type == TYPE::FuncPtr_Definition);
 
-void FUNCPTR_DEFINITION::ValidateMembers(){
-  assert(Type == TYPE::FuncPtr_Definition);
+    assert(Parameters.empty());
 
-  assert(Parameters.empty());
-
-  DEFINITION::ValidateMembers();
+    DEFINITION::ValidateMembers();
 }
 //------------------------------------------------------------------------------
 

@@ -26,21 +26,21 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  class BYTE_DEFINITION: public DEFINITION{
-    public:
-      BYTE_DEFINITION(int Line, std::string& Filename);
-      BYTE_DEFINITION(int Line, const char*  Filename);
-     ~BYTE_DEFINITION();
+    class BYTE_DEFINITION: public DEFINITION{
+        public:
+            BYTE_DEFINITION(int Line, std::string& Filename);
+            BYTE_DEFINITION(int Line, const char*  Filename);
+          ~BYTE_DEFINITION();
 
-      BASE* Copy() override;
+            BASE* Copy() override;
 
-      bool RunAST() override;
-      bool GetVerilog(std::string& Body) override;
+            bool RunAST() override;
+            bool GetVerilog(std::string& Body) override;
 
-      void Display() override;
+            void Display() override;
 
-      void ValidateMembers() override;
-  };
+            void ValidateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

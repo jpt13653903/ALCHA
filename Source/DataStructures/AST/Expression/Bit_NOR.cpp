@@ -25,105 +25,119 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-BIT_NOR::BIT_NOR(int Line, const string& Filename): BIT_NOR(Line, Filename.c_str()){}
+BIT_NOR::BIT_NOR(int Line, const string& Filename): BIT_NOR(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-BIT_NOR::BIT_NOR(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Bit_NOR){
+BIT_NOR::BIT_NOR(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Bit_NOR)
+{
 }
 //------------------------------------------------------------------------------
 
-BIT_NOR::~BIT_NOR(){
+BIT_NOR::~BIT_NOR()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* BIT_NOR::Copy(){
-  BIT_NOR* Copy = new BIT_NOR(Source.Line, Source.Filename.c_str());
+BASE* BIT_NOR::Copy()
+{
+    BIT_NOR* Copy = new BIT_NOR(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool BIT_NOR::GetVerilog(string& Body){
-  Body += "(";
-  Left->GetVerilog(Body);
-  Body += ") ~| (";
-  Right->GetVerilog(Body);
-  Body += ")";
+bool BIT_NOR::GetVerilog(string& Body)
+{
+    Body += "(";
+    Left->GetVerilog(Body);
+    Body += ") ~| (";
+    Right->GetVerilog(Body);
+    Body += ")";
 
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* BIT_NOR::Evaluate(){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* BIT_NOR::Evaluate()
+{
+    error("Not yet implemented");
+    return this;
 //   EXPRESSION* Result = 0;
-// 
+//
 //   error("Not yet implemented");
-// 
+//
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int BIT_NOR::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int BIT_NOR::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& BIT_NOR::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& BIT_NOR::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool BIT_NOR::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool BIT_NOR::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool BIT_NOR::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool BIT_NOR::HasCircularReference(NETLIST::BASE* Object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void BIT_NOR::PopulateUsed(){
-  error("Not yet implemented");
+void BIT_NOR::PopulateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* BIT_NOR::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* BIT_NOR::RemoveTempNet(int Width, bool Signed)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void BIT_NOR::Display(){
-  DisplayStart();
+void BIT_NOR::Display()
+{
+    DisplayStart();
 
-  Debug.Print(" ~| ");
+    Debug.Print(" ~| ");
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void BIT_NOR::ValidateMembers(){
-  assert(Type == TYPE::Bit_NOR);
+void BIT_NOR::ValidateMembers()
+{
+    assert(Type == TYPE::Bit_NOR);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!Next);
+    assert(!Prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!Left );
+    // TODO: assert(!Right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

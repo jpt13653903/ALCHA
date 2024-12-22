@@ -25,121 +25,136 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-FUNCTIONCALL::FUNCTIONCALL(int Line, const string& Filename): FUNCTIONCALL(Line, Filename.c_str()){}
+FUNCTIONCALL::FUNCTIONCALL(int Line, const string& Filename): FUNCTIONCALL(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-FUNCTIONCALL::FUNCTIONCALL(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::FunctionCall){
+FUNCTIONCALL::FUNCTIONCALL(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::FunctionCall)
+{
 }
 //------------------------------------------------------------------------------
 
-FUNCTIONCALL::~FUNCTIONCALL(){
-  foreach(Parameter, Parameters){
-    if(*Parameter) delete *Parameter;
-  }
+FUNCTIONCALL::~FUNCTIONCALL()
+{
+    foreach(Parameter, Parameters){
+        if(*Parameter) delete *Parameter;
+    }
 }
 //------------------------------------------------------------------------------
 
-BASE* FUNCTIONCALL::Copy(){
-  FUNCTIONCALL* Copy = new FUNCTIONCALL(Source.Line, Source.Filename.c_str());
+BASE* FUNCTIONCALL::Copy()
+{
+    FUNCTIONCALL* Copy = new FUNCTIONCALL(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  foreach(Parameter, Parameters){
-    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy());
-  }
+    foreach(Parameter, Parameters){
+        if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy());
+    }
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool FUNCTIONCALL::RunAST(){
-  error("Not yet implemented");
-  return false;
+bool FUNCTIONCALL::RunAST()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool FUNCTIONCALL::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool FUNCTIONCALL::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* FUNCTIONCALL::Evaluate(){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* FUNCTIONCALL::Evaluate()
+{
+    error("Not yet implemented");
+    return this;
 //   EXPRESSION* Result = 0;
-// 
+//
 //   error("Not yet implemented");
-// 
+//
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int FUNCTIONCALL::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int FUNCTIONCALL::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& FUNCTIONCALL::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& FUNCTIONCALL::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool FUNCTIONCALL::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool FUNCTIONCALL::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool FUNCTIONCALL::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool FUNCTIONCALL::HasCircularReference(NETLIST::BASE* Object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void FUNCTIONCALL::PopulateUsed(){
-  error("Not yet implemented");
+void FUNCTIONCALL::PopulateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* FUNCTIONCALL::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* FUNCTIONCALL::RemoveTempNet(int Width, bool Signed)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void FUNCTIONCALL::Display(){
-  DisplayStart();
+void FUNCTIONCALL::Display()
+{
+    DisplayStart();
 
-  Debug.Print("{call}(");
+    Debug.Print("{call}(");
 
-  bool isFirst = true;
-  foreach(Parameter, Parameters){
-    if(!isFirst) Debug.Print(", ");
-    isFirst = false;
-    (*Parameter)->Display();
-  }
-  Debug.Print(")");
+    bool isFirst = true;
+    foreach(Parameter, Parameters){
+        if(!isFirst) Debug.Print(", ");
+        isFirst = false;
+        (*Parameter)->Display();
+    }
+    Debug.Print(")");
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void FUNCTIONCALL::ValidateMembers(){
-  assert(Type == TYPE::FunctionCall);
+void FUNCTIONCALL::ValidateMembers()
+{
+    assert(Type == TYPE::FunctionCall);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!Next);
+    assert(!Prev);
 
-  assert(!Left );
-  assert(!Right);
+    assert(!Left );
+    assert(!Right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

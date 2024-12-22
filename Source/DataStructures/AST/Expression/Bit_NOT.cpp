@@ -30,137 +30,151 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-BIT_NOT::BIT_NOT(int Line, const string& Filename): BIT_NOT(Line, Filename.c_str()){}
+BIT_NOT::BIT_NOT(int Line, const string& Filename): BIT_NOT(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-BIT_NOT::BIT_NOT(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Bit_NOT){
+BIT_NOT::BIT_NOT(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Bit_NOT)
+{
 }
 //------------------------------------------------------------------------------
 
-BIT_NOT::~BIT_NOT(){
+BIT_NOT::~BIT_NOT()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* BIT_NOT::Copy(){
-  BIT_NOT* Copy = new BIT_NOT(Source.Line, Source.Filename.c_str());
+BASE* BIT_NOT::Copy()
+{
+    BIT_NOT* Copy = new BIT_NOT(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool BIT_NOT::GetVerilog(string& Body){
-  Body += "~(";
-  Right->GetVerilog(Body);
-  Body += ")";
+bool BIT_NOT::GetVerilog(string& Body)
+{
+    Body += "~(";
+    Right->GetVerilog(Body);
+    Body += ")";
 
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* BIT_NOT::Evaluate(){
-  assert(Right, delete this; return 0);
-  Right = Right->Evaluate();
-  assert(Right, delete this; return 0);
+EXPRESSION* BIT_NOT::Evaluate()
+{
+    assert(Right, delete this; return 0);
+    Right = Right->Evaluate();
+    assert(Right, delete this; return 0);
 
-  switch(Right->Type){
-    case TYPE::Literal:{
-      auto Result = (LITERAL*)Right;
-      Right = 0;
-      int ResultWidth = Result->GetWidth();
-      if(Result->GetWidth()){
-        NUMBER n(1);
-        n.BinScale(ResultWidth);
-        n.Sub(Result->Value);
-        n.Sub(1);
-        Result->Value = n;
-      }else{
-        Error("Taking bitwise NOT of literal with unknown width");
-        delete Result;
-        Result = 0;
-      }
-      delete this;
-      return Result;
+    switch(Right->Type){
+        case TYPE::Literal:{
+            auto Result = (LITERAL*)Right;
+            Right = 0;
+            int ResultWidth = Result->GetWidth();
+            if(Result->GetWidth()){
+                NUMBER n(1);
+                n.BinScale(ResultWidth);
+                n.Sub(Result->Value);
+                n.Sub(1);
+                Result->Value = n;
+            }else{
+                Error("Taking bitwise NOT of literal with unknown width");
+                delete Result;
+                Result = 0;
+            }
+            delete this;
+            return Result;
+        }
+        case TYPE::Object:{
+            auto Net = new NETLIST::NET(Source.Line, Source.Filename, 0);
+            Net->Value = this;
+
+            auto ObjectRef = ((OBJECT*)Right)->ObjectRef;
+            if(ObjectRef && ObjectRef->IsSynthesisable()){
+                auto Synthesisable = (NETLIST::SYNTHESISABLE*)ObjectRef;
+                Net->SetFixedPoint(Synthesisable->Width(), Synthesisable->FullScale());
+            }
+            NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
+
+            auto Object = new OBJECT(Source.Line, Source.Filename);
+            Object->ObjectRef = Net;
+            return Object;
+        }
+        default:
+            error("Unexpected default");
+            break;
     }
-    case TYPE::Object:{
-      auto Net = new NETLIST::NET(Source.Line, Source.Filename, 0);
-      Net->Value = this;
-  
-      auto ObjectRef = ((OBJECT*)Right)->ObjectRef;
-      if(ObjectRef && ObjectRef->IsSynthesisable()){
-        auto Synthesisable = (NETLIST::SYNTHESISABLE*)ObjectRef;
-        Net->SetFixedPoint(Synthesisable->Width(), Synthesisable->FullScale());
-      }
-      NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
-  
-      auto Object = new OBJECT(Source.Line, Source.Filename);
-      Object->ObjectRef = Net;
-      return Object;
-    }
-    default:
-      error("Unexpected default");
-      break;
-  }
-  return this;
+    return this;
 }
 //------------------------------------------------------------------------------
 
-int BIT_NOT::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int BIT_NOT::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& BIT_NOT::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& BIT_NOT::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool BIT_NOT::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool BIT_NOT::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool BIT_NOT::HasCircularReference(NETLIST::BASE* Object){
-  assert(Right, return false);
-  return Right->HasCircularReference(Object);
+bool BIT_NOT::HasCircularReference(NETLIST::BASE* Object)
+{
+    assert(Right, return false);
+    return Right->HasCircularReference(Object);
 }
 //------------------------------------------------------------------------------
 
-void BIT_NOT::PopulateUsed(){
-  assert(Right, return);
-  Right->PopulateUsed();
+void BIT_NOT::PopulateUsed()
+{
+    assert(Right, return);
+    Right->PopulateUsed();
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* BIT_NOT::RemoveTempNet(int Width, bool Signed){
-  if(Right) Right = Right->RemoveTempNet(0, false);
-  return this;
+EXPRESSION* BIT_NOT::RemoveTempNet(int Width, bool Signed)
+{
+    if(Right) Right = Right->RemoveTempNet(0, false);
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void BIT_NOT::Display(){
-  DisplayStart();
+void BIT_NOT::Display()
+{
+    DisplayStart();
 
-  Debug.Print(" ~");
+    Debug.Print(" ~");
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void BIT_NOT::ValidateMembers(){
-  assert(Type == TYPE::Bit_NOT);
+void BIT_NOT::ValidateMembers()
+{
+    assert(Type == TYPE::Bit_NOT);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!Next);
+    assert(!Prev);
 
-  assert(!Left);
-  assert(Right, return); Right->Validate();
+    assert(!Left);
+    assert(Right, return); Right->Validate();
 }
 //------------------------------------------------------------------------------
 

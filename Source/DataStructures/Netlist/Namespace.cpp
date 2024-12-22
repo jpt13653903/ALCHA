@@ -26,61 +26,70 @@ using namespace NETLIST;
 //------------------------------------------------------------------------------
 
 NAMESPACE::NAMESPACE(int Line, const string& Filename,
-                     const char* Name, TYPE NamespaceType):
-BASE(Line, Filename, Name, NamespaceType){
-  Ast = 0;
+                                          const char* Name, TYPE NamespaceType):
+BASE(Line, Filename, Name, NamespaceType)
+{
+    Ast = 0;
 }
 //------------------------------------------------------------------------------
 
-NAMESPACE::~NAMESPACE(){
-  if(Ast) delete Ast;
-  foreach(s, Symbols) delete s->second;
+NAMESPACE::~NAMESPACE()
+{
+    if(Ast) delete Ast;
+    foreach(s, Symbols) delete s->second;
 }
 //------------------------------------------------------------------------------
 
-AST::EXPRESSION* NAMESPACE::GetExpression(int Line, const string& Filename){
-  ::Error(Line, Filename, "Cannot obtain an expression from a namespace");
-  return 0;
+AST::EXPRESSION* NAMESPACE::GetExpression(int Line, const string& Filename)
+{
+    ::Error(Line, Filename, "Cannot obtain an expression from a namespace");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-bool NAMESPACE::Assign(AST::EXPRESSION* Expression){
-  return RawAssign(Expression);
+bool NAMESPACE::Assign(AST::EXPRESSION* Expression)
+{
+    return RawAssign(Expression);
 }
 //------------------------------------------------------------------------------
 
-bool NAMESPACE::RawAssign(AST::EXPRESSION* Expression){
-  Expression->Error("Cannot assign to a namespace");
-  return false;
+bool NAMESPACE::RawAssign(AST::EXPRESSION* Expression)
+{
+    Expression->Error("Cannot assign to a namespace");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool NAMESPACE::HasCircularReference(BASE* Object){
-  if(this == Object) return true;
-  return false;
+bool NAMESPACE::HasCircularReference(BASE* Object)
+{
+    if(this == Object) return true;
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool NAMESPACE::IsNamespace(){
-  return true;
+bool NAMESPACE::IsNamespace()
+{
+    return true;
 }
 //------------------------------------------------------------------------------
 
-BASE* NAMESPACE::GetMember(const std::string& Name){
-  auto Member = Symbols.find(Name);
-  if(Member != Symbols.end()) return Member->second;
-  return 0;
+BASE* NAMESPACE::GetMember(const std::string& Name)
+{
+    auto Member = Symbols.find(Name);
+    if(Member != Symbols.end()) return Member->second;
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-void NAMESPACE::Validate(){
-  BASE::Validate();
+void NAMESPACE::Validate()
+{
+    BASE::Validate();
 
-  if(Ast) Ast->Validate();
-  foreach(Symbol, Symbols){
-    assert(Symbol->second, return);
-    Symbol->second->Validate();
-  }
+    if(Ast) Ast->Validate();
+    foreach(Symbol, Symbols){
+        assert(Symbol->second, return);
+        Symbol->second->Validate();
+    }
 }
 //------------------------------------------------------------------------------
 

@@ -27,61 +27,61 @@
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
-  class BASE;
+    class BASE;
 }
 //------------------------------------------------------------------------------
 
 namespace AST{
-  class EXPRESSION: public BASE{
-    protected:
-      void DisplayStart();
-      void DisplayEnd  ();
+    class EXPRESSION: public BASE{
+        protected:
+            void DisplayStart();
+            void DisplayEnd  ();
 
-      // Turns the current expression into a temporary net object
-      EXPRESSION* MakeObject();
-    //--------------------------------------------------------------------------
+            // Turns the current expression into a temporary net object
+            EXPRESSION* MakeObject();
+        //--------------------------------------------------------------------------
 
-    public:
-      // Left and Right operands
-      EXPRESSION* Left;
-      EXPRESSION* Right;
+        public:
+            // Left and Right operands
+            EXPRESSION* Left;
+            EXPRESSION* Right;
 
-               EXPRESSION(int Line, const char* Filename, TYPE ExpressionType);
-      virtual ~EXPRESSION();
+                              EXPRESSION(int Line, const char* Filename, TYPE ExpressionType);
+            virtual ~EXPRESSION();
 
-      bool IsExpression() override;
+            bool IsExpression() override;
 
-      bool RunAST() override;
+            bool RunAST() override;
 
-      // Evaluates the expression as far as possible, creating new wires if required
-      // Returns the instance of the node to use as replacement
-      // For example: Node = Node->Evaluate() might change the value of Node
-      virtual EXPRESSION* Evaluate() = 0;
+            // Evaluates the expression as far as possible, creating new wires if required
+            // Returns the instance of the node to use as replacement
+            // For example: Node = Node->Evaluate() might change the value of Node
+            virtual EXPRESSION* Evaluate() = 0;
 
-      // Returns the width of the result, if known.  Issues an error if the 
-      // width is not defined
-      // These functions must be called after a call to Evaluate()
-      virtual int     GetWidth    () = 0;
-      virtual NUMBER& GetFullScale() = 0;
-      virtual bool    GetSigned   () = 0;
+            // Returns the width of the result, if known.  Issues an error if the
+            // width is not defined
+            // These functions must be called after a call to Evaluate()
+            virtual int     GetWidth    () = 0;
+            virtual NUMBER& GetFullScale() = 0;
+            virtual bool    GetSigned   () = 0;
 
-      // Used for fixed-point scaling...
-      // If the scaling is not a power-of-two, it also synthesises a multiplier.
-      // The resulting object might be larger that the Width requested in order
-      // to prevent loss of precision.
-      EXPRESSION* ScaleWith(NUMBER Scale, int Width, NUMBER FullScale);
+            // Used for fixed-point scaling...
+            // If the scaling is not a power-of-two, it also synthesises a multiplier.
+            // The resulting object might be larger that the Width requested in order
+            // to prevent loss of precision.
+            EXPRESSION* ScaleWith(NUMBER Scale, int Width, NUMBER FullScale);
 
-      // Check for circular reference to the netlist object specified
-      virtual bool HasCircularReference(NETLIST::BASE* Object) = 0;
+            // Check for circular reference to the netlist object specified
+            virtual bool HasCircularReference(NETLIST::BASE* Object) = 0;
 
-      // Populates the "Used" flag so that the back-end can remove unused objects.
-      virtual void PopulateUsed() = 0;
+            // Populates the "Used" flag so that the back-end can remove unused objects.
+            virtual void PopulateUsed() = 0;
 
-      // If the expression references an object, which in turn references 
-      // another object of the same width and signedness, the temporary net in 
-      // the middle is removed.
-      virtual EXPRESSION* RemoveTempNet(int Width, bool Signed) = 0;
-  };
+            // If the expression references an object, which in turn references
+            // another object of the same width and signedness, the temporary net in
+            // the middle is removed.
+            virtual EXPRESSION* RemoveTempNet(int Width, bool Signed) = 0;
+    };
 }
 //------------------------------------------------------------------------------
 

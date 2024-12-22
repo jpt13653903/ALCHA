@@ -25,100 +25,114 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-STRING::STRING(int Line, const string& Filename): STRING(Line, Filename.c_str()){}
+STRING::STRING(int Line, const string& Filename): STRING(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-STRING::STRING(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::String){
+STRING::STRING(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::String)
+{
 }
 //------------------------------------------------------------------------------
 
-STRING::~STRING(){
+STRING::~STRING()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* STRING::Copy(){
-  STRING* Copy = new STRING(Source.Line, Source.Filename.c_str());
+BASE* STRING::Copy()
+{
+    STRING* Copy = new STRING(Source.Line, Source.Filename.c_str());
 
-  Copy->Value = Value;
+    Copy->Value = Value;
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool STRING::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool STRING::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* STRING::Evaluate(){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* STRING::Evaluate()
+{
+    error("Not yet implemented");
+    return this;
 //   EXPRESSION* Result = 0;
-// 
+//
 //   Result = (EXPRESSION*)Copy();
-// 
+//
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int STRING::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int STRING::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& STRING::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& STRING::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool STRING::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool STRING::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool STRING::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool STRING::HasCircularReference(NETLIST::BASE* Object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void STRING::PopulateUsed(){
-  error("Not yet implemented");
+void STRING::PopulateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* STRING::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* STRING::RemoveTempNet(int Width, bool Signed)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void STRING::Display(){
-  DisplayStart();
+void STRING::Display()
+{
+    DisplayStart();
 
-  Debug.Print("\"%s\"", Value.c_str());
+    Debug.Print("\"%s\"", Value.c_str());
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void STRING::ValidateMembers(){
-  assert(Type == TYPE::String);
+void STRING::ValidateMembers()
+{
+    assert(Type == TYPE::String);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!Next);
+    assert(!Prev);
 
-  assert(!Left );
-  assert(!Right);
+    assert(!Left );
+    assert(!Right);
 }
 //------------------------------------------------------------------------------
 

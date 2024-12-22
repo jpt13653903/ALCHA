@@ -36,84 +36,92 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 APPEND_ASSIGN::APPEND_ASSIGN(int Line, std::string Filename):
-APPEND_ASSIGN(Line, Filename.c_str()){}
+APPEND_ASSIGN(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
 APPEND_ASSIGN::APPEND_ASSIGN(int Line, const char* Filename):
-ASSIGNMENT(Line, Filename, TYPE::Append_Assign){}
+ASSIGNMENT(Line, Filename, TYPE::Append_Assign)
+{}
 //------------------------------------------------------------------------------
 
-APPEND_ASSIGN::~APPEND_ASSIGN(){
+APPEND_ASSIGN::~APPEND_ASSIGN()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* APPEND_ASSIGN::Copy(){
-  APPEND_ASSIGN* Copy = new APPEND_ASSIGN(Source.Line, Source.Filename.c_str());
+BASE* APPEND_ASSIGN::Copy()
+{
+    APPEND_ASSIGN* Copy = new APPEND_ASSIGN(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool APPEND_ASSIGN::RunAST(){
-  target_list TargetList;
+bool APPEND_ASSIGN::RunAST()
+{
+    target_list TargetList;
 
-  assert(Left , return false);
-  assert(Right, return false);
+    assert(Left , return false);
+    assert(Right, return false);
 
-  if(!GetLHS(Left, TargetList)) return false;
-  if(TargetList.empty()){
-    Error("Target object list is empty");
+    if(!GetLHS(Left, TargetList)) return false;
+    if(TargetList.empty()){
+        Error("Target object list is empty");
+        return false;
+    }
+
+    if(TargetList.size() > 1){
+        error("Multiple assignment targets not supported yet");
+        return false;
+    }
+
+    NETLIST::BASE* Target = TargetList.front();
+    assert(Target, return false);
+
+    // Move the expression
+    ARRAYCONCATENATE* Expression = new ARRAYCONCATENATE(Right->Source.Line, Right->Source.Filename);
+    error("Not yet implemented"); // TODO: Should append in-place if left is an array, otherwise create a new array
+    Expression->Elements.push_back(Target->GetExpression(Right->Source.Line, Right->Source.Filename));
+
+    if(!Expression->Elements.back()){
+        delete Expression;
+        return false;
+    }
+
+    Expression->Elements.push_back(Right);
+    Right = 0;
+
+    bool Result = Target->Assign(Expression);
+
+    return Result;
+}
+//------------------------------------------------------------------------------
+
+bool APPEND_ASSIGN::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
     return false;
-  }
-
-  if(TargetList.size() > 1){
-    error("Multiple assignment targets not supported yet");
-    return false;
-  }
-
-  NETLIST::BASE* Target = TargetList.front();
-  assert(Target, return false);
-
-  // Move the expression
-  ARRAYCONCATENATE* Expression = new ARRAYCONCATENATE(Right->Source.Line, Right->Source.Filename);
-  error("Not yet implemented"); // TODO: Should append in-place if left is an array, otherwise create a new array
-  Expression->Elements.push_back(Target->GetExpression(Right->Source.Line, Right->Source.Filename));
-
-  if(!Expression->Elements.back()){
-    delete Expression;
-    return false;
-  }
-
-  Expression->Elements.push_back(Right);
-  Right = 0;
-
-  bool Result = Target->Assign(Expression);
-
-  return Result;
 }
 //------------------------------------------------------------------------------
 
-bool APPEND_ASSIGN::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+void APPEND_ASSIGN::Display()
+{
+    DisplayAssignment("~=");
 }
 //------------------------------------------------------------------------------
 
-void APPEND_ASSIGN::Display(){
-  DisplayAssignment("~=");
-}
-//------------------------------------------------------------------------------
+void APPEND_ASSIGN::ValidateMembers()
+{
+    assert(Type == TYPE::Append_Assign);
 
-void APPEND_ASSIGN::ValidateMembers(){
-  assert(Type == TYPE::Append_Assign);
+    assert(Left, return);
+    Left->Validate();
 
-  assert(Left, return);
-  Left->Validate();
-
-  if(Right) Right->Validate();
+    if(Right) Right->Validate();
 }
 //------------------------------------------------------------------------------
 

@@ -27,94 +27,102 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-IMPORT::IMPORT(int Line, string& Filename): IMPORT(Line, Filename.c_str()){}
+IMPORT::IMPORT(int Line, string& Filename): IMPORT(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-IMPORT::IMPORT(int Line, const char* Filename): BASE(Line, Filename, TYPE::Import){
-  Ast = 0;
+IMPORT::IMPORT(int Line, const char* Filename): BASE(Line, Filename, TYPE::Import)
+{
+    Ast = 0;
 }
 //------------------------------------------------------------------------------
 
-IMPORT::~IMPORT(){
-  if(Ast) delete Ast;
+IMPORT::~IMPORT()
+{
+    if(Ast) delete Ast;
 }
 //------------------------------------------------------------------------------
 
-BASE* IMPORT::Copy(){
-  IMPORT* Copy = new IMPORT(Source.Line, Source.Filename.c_str());
-  
-  Copy->File      = File;
-  Copy->Namespace = Namespace;
+BASE* IMPORT::Copy()
+{
+    IMPORT* Copy = new IMPORT(Source.Line, Source.Filename.c_str());
 
-  return Copy;
+    Copy->File      = File;
+    Copy->Namespace = Namespace;
+
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool IMPORT::RunAST(){
-  string ImportFilename;
-  bool   OwnNamespace = !Namespace.empty();
+bool IMPORT::RunAST()
+{
+    string ImportFilename;
+    bool   OwnNamespace = !Namespace.empty();
 
-  NETLIST::MODULE* Module = 0;
+    NETLIST::MODULE* Module = 0;
 
-  if(OwnNamespace){
-    auto Found = NETLIST::NamespaceStack.front()->Symbols.find(Namespace);
-    if(Found != NETLIST::NamespaceStack.front()->Symbols.end()){
-      Error();
-      printf("Symbol \"%s\" already exists in the current namespace\n",
-             Namespace.c_str());
-      return false;
+    if(OwnNamespace){
+        auto Found = NETLIST::NamespaceStack.front()->Symbols.find(Namespace);
+        if(Found != NETLIST::NamespaceStack.front()->Symbols.end()){
+            Error();
+            printf("Symbol \"%s\" already exists in the current namespace\n",
+                          Namespace.c_str());
+            return false;
+        }
+        Module = new NETLIST::MODULE(Source.Line, Source.Filename, Namespace.c_str());
+        NETLIST::NamespaceStack.front()->Symbols[Namespace] = Module;
+        NETLIST::NamespaceStack.push_front(Module);
     }
-    Module = new NETLIST::MODULE(Source.Line, Source.Filename, Namespace.c_str());
-    NETLIST::NamespaceStack.front()->Symbols[Namespace] = Module;
-    NETLIST::NamespaceStack.push_front(Module);
-  }
 
-  string& Path = Source.Filename;
-  int n;
-  for(n = Path.length()-1; n >= 0; n--){
-    if(Path[n] == '/') break;
-  }
-  if(n >= 0) ImportFilename = Path.substr(0, n+1);
-  ImportFilename += File;
-  ImportFilename += ".alc";
-  SimplifyFilename(ImportFilename);
-  Debug.Print("\nFilename = %s\n", ImportFilename);
+    string& Path = Source.Filename;
+    int n;
+    for(n = Path.length()-1; n >= 0; n--){
+        if(Path[n] == '/') break;
+    }
+    if(n >= 0) ImportFilename = Path.substr(0, n+1);
+    ImportFilename += File;
+    ImportFilename += ".alc";
+    SimplifyFilename(ImportFilename);
+    Debug.Print("\nFilename = %s\n", ImportFilename);
 
-  auto Ast = Engine->RunAST(ImportFilename.c_str());
-  if(!Ast) return false;
+    auto Ast = Engine->RunAST(ImportFilename.c_str());
+    if(!Ast) return false;
 
-  if(OwnNamespace){
-    Module->Ast = Ast;
-    NETLIST::NamespaceStack.pop_front();
+    if(OwnNamespace){
+        Module->Ast = Ast;
+        NETLIST::NamespaceStack.pop_front();
 
-  }else{
-    this->Ast = Ast;
-  }
-  return true;
+    }else{
+        this->Ast = Ast;
+    }
+    return true;
 }
 //------------------------------------------------------------------------------
 
-bool IMPORT::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool IMPORT::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void IMPORT::Display(){
-  DisplayInfo();
-  Debug.Print("import \"%s\"", File.c_str());
-  if(Namespace.empty()) Debug.Print("\n");
-  else                  Debug.Print(" as %s\n", Namespace.c_str());
+void IMPORT::Display()
+{
+    DisplayInfo();
+    Debug.Print("import \"%s\"", File.c_str());
+    if(Namespace.empty()) Debug.Print("\n");
+    else                  Debug.Print(" as %s\n", Namespace.c_str());
 
-  if(Ast ) Ast ->Display();
-  if(Next) Next->Display();
+    if(Ast ) Ast ->Display();
+    if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
 
-void IMPORT::ValidateMembers(){
-  assert(Type == TYPE::Import);
+void IMPORT::ValidateMembers()
+{
+    assert(Type == TYPE::Import);
 
-  if(Ast) Ast->Validate();
+    if(Ast) Ast->Validate();
 }
 //------------------------------------------------------------------------------
 

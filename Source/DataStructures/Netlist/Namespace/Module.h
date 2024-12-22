@@ -30,19 +30,19 @@
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
-  class MODULE: public NAMESPACE{
-    public:
-               MODULE(int Line, const std::string& Filename, const char* Name = "");
-      virtual ~MODULE(); // Also cleans up the children
+    class MODULE: public NAMESPACE{
+        public:
+                              MODULE(int Line, const std::string& Filename, const char* Name = "");
+            virtual ~MODULE(); // Also cleans up the children
 
-      void Display(int Indent = 0) override;
+            void Display(int Indent = 0) override;
 
-      void Validate() override;
-  };
-  //----------------------------------------------------------------------------
+            void Validate() override;
+    };
+    //----------------------------------------------------------------------------
 
-  extern std::list<NAMESPACE*> NamespaceStack; // Used for namespace searches
-  extern MODULE                Global;         // The root of the module tree
+    extern std::list<NAMESPACE*> NamespaceStack; // Used for namespace searches
+    extern MODULE                Global;         // The root of the module tree
 }
 //------------------------------------------------------------------------------
 

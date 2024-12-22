@@ -27,68 +27,68 @@
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
-  class BASE;
-  class SYNTHESISABLE;
+    class BASE;
+    class SYNTHESISABLE;
 }
 //------------------------------------------------------------------------------
 
 namespace AST{
-  class DEFINITION: public BASE{
-    public:
-      struct ARRAY{
-        EXPRESSION* Size;
-        ARRAY     * Next; // Next dimension of the array
+    class DEFINITION: public BASE{
+        public:
+            struct ARRAY{
+                EXPRESSION* Size;
+                ARRAY     * Next; // Next dimension of the array
 
-        ARRAY();
-        ARRAY(const ARRAY& Array);
-       ~ARRAY();
-      };
+                ARRAY();
+                ARRAY(const ARRAY& Array);
+              ~ARRAY();
+            };
 
-      struct IDENTIFIER{
-        std::string Identifier;
-        ARRAY*      Array;      // Null when this is a scalar
+            struct IDENTIFIER{
+                std::string Identifier;
+                ARRAY*      Array;      // Null when this is a scalar
 
-        ASSIGNMENT* Initialiser;
+                ASSIGNMENT* Initialiser;
 
-        // These are used for function definitions.
-        bool        Function; // True when this is a function definition
-        DEFINITION* Parameters; // List of identifiers (calls are duck-typed)
-        BASE*       FunctionBody;
+                // These are used for function definitions.
+                bool        Function; // True when this is a function definition
+                DEFINITION* Parameters; // List of identifiers (calls are duck-typed)
+                BASE*       FunctionBody;
 
-        IDENTIFIER* Next;
+                IDENTIFIER* Next;
 
-        IDENTIFIER();
-        IDENTIFIER(const IDENTIFIER& Identifier);
-       ~IDENTIFIER();
-      };
-    //--------------------------------------------------------------------------
+                IDENTIFIER();
+                IDENTIFIER(const IDENTIFIER& Identifier);
+              ~IDENTIFIER();
+            };
+        //--------------------------------------------------------------------------
 
-    public:
-      enum class DIRECTION{Inferred = 0, Input, Output, Bidirectional} Direction;
+        public:
+            enum class DIRECTION{Inferred = 0, Input, Output, Bidirectional} Direction;
 
-      std::list<BASE*> Parameters; // Expression or Assignment
-      ASSIGNMENT* Attributes;
-      IDENTIFIER* Identifiers;
-    //--------------------------------------------------------------------------
+            std::list<BASE*> Parameters; // Expression or Assignment
+            ASSIGNMENT* Attributes;
+            IDENTIFIER* Identifiers;
+        //--------------------------------------------------------------------------
 
-    protected:
-      void CopyMembers(DEFINITION* Copy);
-      bool VerifyNotDefined(IDENTIFIER* Identifier);
+        protected:
+            void CopyMembers(DEFINITION* Copy);
+            bool VerifyNotDefined(IDENTIFIER* Identifier);
 
-      void DisplayParameters ();
-      void DisplayAttributes ();
-      void DisplayIdentifiers();
-      void DisplayDefinition (const char* Type);
-    //--------------------------------------------------------------------------
+            void DisplayParameters ();
+            void DisplayAttributes ();
+            void DisplayIdentifiers();
+            void DisplayDefinition (const char* Type);
+        //--------------------------------------------------------------------------
 
-    public:
-               DEFINITION(int Line, const char* Filename, TYPE DefinitionType);
-      virtual ~DEFINITION();
+        public:
+                              DEFINITION(int Line, const char* Filename, TYPE DefinitionType);
+            virtual ~DEFINITION();
 
-      bool IsDefinition() override;
+            bool IsDefinition() override;
 
-      void ValidateMembers() override;
-  };
+            void ValidateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

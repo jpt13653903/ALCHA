@@ -29,71 +29,79 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 CHAR_DEFINITION::CHAR_DEFINITION(
-  int     Line,
-  string& Filename
-): CHAR_DEFINITION(Line, Filename.c_str()){}
+    int     Line,
+    string& Filename
+): CHAR_DEFINITION(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
 CHAR_DEFINITION::CHAR_DEFINITION(
-  int             Line,
-  const char*     Filename
-): DEFINITION(Line, Filename, TYPE::Char_Definition){
+    int             Line,
+    const char*     Filename
+): DEFINITION(Line, Filename, TYPE::Char_Definition)
+{
 }
 //------------------------------------------------------------------------------
 
-CHAR_DEFINITION::~CHAR_DEFINITION(){
+CHAR_DEFINITION::~CHAR_DEFINITION()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* CHAR_DEFINITION::Copy(){
-  CHAR_DEFINITION* Copy = new CHAR_DEFINITION(Source.Line, Source.Filename.c_str());
+BASE* CHAR_DEFINITION::Copy()
+{
+    CHAR_DEFINITION* Copy = new CHAR_DEFINITION(Source.Line, Source.Filename.c_str());
 
-  CopyMembers(Copy);
+    CopyMembers(Copy);
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool CHAR_DEFINITION::RunAST(){
-  auto Identifier = Identifiers;
+bool CHAR_DEFINITION::RunAST()
+{
+    auto Identifier = Identifiers;
 
-  while(Identifier){
-    if(!VerifyNotDefined(Identifier)) return false;
+    while(Identifier){
+        if(!VerifyNotDefined(Identifier)) return false;
 
-    if(Identifier->Function){
-      error("Not yet implemented");
-      Identifier = Identifier->Next;
-      continue;
+        if(Identifier->Function){
+            error("Not yet implemented");
+            Identifier = Identifier->Next;
+            continue;
+        }
+
+        auto Char = new NETLIST::CHARACTER(Source.Line, Source.Filename, Identifier->Identifier.c_str());
+        if(!Char->ApplyAttributes(Attributes)) Error("Invalid attributes");
+        NETLIST::NamespaceStack.front()->Symbols[Char->Name] = Char;
+        if(Identifier->Initialiser){
+            if(!Identifier->Initialiser->RunAST()) return false;
+        }
+
+        Identifier = Identifier->Next;
     }
-
-    auto Char = new NETLIST::CHARACTER(Source.Line, Source.Filename, Identifier->Identifier.c_str());
-    if(!Char->ApplyAttributes(Attributes)) Error("Invalid attributes");
-    NETLIST::NamespaceStack.front()->Symbols[Char->Name] = Char;
-    if(Identifier->Initialiser){
-      if(!Identifier->Initialiser->RunAST()) return false;
-    }
-
-    Identifier = Identifier->Next;
-  }
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-bool CHAR_DEFINITION::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool CHAR_DEFINITION::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void CHAR_DEFINITION::Display(){
-  DisplayDefinition("Character");
+void CHAR_DEFINITION::Display()
+{
+    DisplayDefinition("Character");
 }
 //------------------------------------------------------------------------------
 
-void CHAR_DEFINITION::ValidateMembers(){
-  assert(Type == TYPE::Char_Definition);
+void CHAR_DEFINITION::ValidateMembers()
+{
+    assert(Type == TYPE::Char_Definition);
 
-  DEFINITION::ValidateMembers();
+    DEFINITION::ValidateMembers();
 }
 //------------------------------------------------------------------------------
 

@@ -28,68 +28,76 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 VOID_DEFINITION::VOID_DEFINITION(
-  int     Line,
-  string& Filename
-): VOID_DEFINITION(Line, Filename.c_str()){}
+    int     Line,
+    string& Filename
+): VOID_DEFINITION(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
 VOID_DEFINITION::VOID_DEFINITION(
-  int             Line,
-  const char*     Filename
-): DEFINITION(Line, Filename, TYPE::Void_Definition){
+    int             Line,
+    const char*     Filename
+): DEFINITION(Line, Filename, TYPE::Void_Definition)
+{
 }
 //------------------------------------------------------------------------------
 
-VOID_DEFINITION::~VOID_DEFINITION(){
+VOID_DEFINITION::~VOID_DEFINITION()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* VOID_DEFINITION::Copy(){
-  VOID_DEFINITION* Copy = new VOID_DEFINITION(Source.Line, Source.Filename.c_str());
+BASE* VOID_DEFINITION::Copy()
+{
+    VOID_DEFINITION* Copy = new VOID_DEFINITION(Source.Line, Source.Filename.c_str());
 
-  CopyMembers(Copy);
+    CopyMembers(Copy);
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool VOID_DEFINITION::RunAST(){
-  auto Identifier = Identifiers;
+bool VOID_DEFINITION::RunAST()
+{
+    auto Identifier = Identifiers;
 
-  while(Identifier){
-    if(!VerifyNotDefined(Identifier)) return false;
+    while(Identifier){
+        if(!VerifyNotDefined(Identifier)) return false;
 
-    if(Identifier->Function){
-      error("Not yet implemented");
-      Identifier = Identifier->Next;
-      continue;
+        if(Identifier->Function){
+            error("Not yet implemented");
+            Identifier = Identifier->Next;
+            continue;
+        }
+
+        error("Not yet implemented");
+
+        Identifier = Identifier->Next;
     }
+    return true;
+}
+//------------------------------------------------------------------------------
 
+bool VOID_DEFINITION::GetVerilog(string& Body)
+{
     error("Not yet implemented");
-
-    Identifier = Identifier->Next;
-  }
-  return true;
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool VOID_DEFINITION::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+void VOID_DEFINITION::Display()
+{
+    DisplayDefinition("Void");
 }
 //------------------------------------------------------------------------------
 
-void VOID_DEFINITION::Display(){
-  DisplayDefinition("Void");
-}
-//------------------------------------------------------------------------------
+void VOID_DEFINITION::ValidateMembers()
+{
+    assert(Type == TYPE::Void_Definition);
 
-void VOID_DEFINITION::ValidateMembers(){
-  assert(Type == TYPE::Void_Definition);
+    assert(Parameters.empty());
 
-  assert(Parameters.empty());
-
-  DEFINITION::ValidateMembers();
+    DEFINITION::ValidateMembers();
 }
 //------------------------------------------------------------------------------
 

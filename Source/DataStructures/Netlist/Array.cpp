@@ -25,52 +25,60 @@ using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-ARRAY::ARRAY(int Line, const string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Array){
-  error("Not yet implemented");
+ARRAY::ARRAY(int Line, const string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Array)
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-ARRAY::~ARRAY(){
+ARRAY::~ARRAY()
+{
 }
 //------------------------------------------------------------------------------
 
-AST::EXPRESSION* ARRAY::GetExpression(int Line, const string& Filename){
-  error("Not yet implemented");
-  // TODO: Generate an AST::ARRAY expression and fill with elements
-  return 0;
+AST::EXPRESSION* ARRAY::GetExpression(int Line, const string& Filename)
+{
+    error("Not yet implemented");
+    // TODO: Generate an AST::ARRAY expression and fill with elements
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-bool ARRAY::Assign(AST::EXPRESSION* Expression){
-  error("Not yet implemented");
-  return RawAssign(Expression);
+bool ARRAY::Assign(AST::EXPRESSION* Expression)
+{
+    error("Not yet implemented");
+    return RawAssign(Expression);
 }
 //------------------------------------------------------------------------------
 
-bool ARRAY::RawAssign(AST::EXPRESSION* Expression){
-  error("Not yet implemented");
-  return false;
+bool ARRAY::RawAssign(AST::EXPRESSION* Expression)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool ARRAY::HasCircularReference(BASE* Object){
-  if(this == Object) return true;
-  error("Not yet implemented");
-  return false;
+bool ARRAY::HasCircularReference(BASE* Object)
+{
+    if(this == Object) return true;
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void ARRAY::Display(int Indent){
-  error("Not implemented yet");
+void ARRAY::Display(int Indent)
+{
+    error("Not implemented yet");
 }
 //------------------------------------------------------------------------------
 
-void ARRAY::Validate(){
-  assert(Type == TYPE::Array);
+void ARRAY::Validate()
+{
+    assert(Type == TYPE::Array);
 
-  BASE::Validate();
+    BASE::Validate();
 
-  error("Not implemented yet");
+    error("Not implemented yet");
 }
 //------------------------------------------------------------------------------
 

@@ -26,42 +26,46 @@ using namespace NETLIST;
 //------------------------------------------------------------------------------
 
 NETLIST::GROUP::GROUP(int Line, const std::string& Filename, const char* Name):
-NAMESPACE(Line, Filename, Name, TYPE::Group){
+NAMESPACE(Line, Filename, Name, TYPE::Group)
+{
 }
 //------------------------------------------------------------------------------
 
-NETLIST::GROUP::~GROUP(){
+NETLIST::GROUP::~GROUP()
+{
 }
 //------------------------------------------------------------------------------
 
-void NETLIST::GROUP::Display(int Indent){
-  Debug.Indent(Indent);
-  Debug.Print("Group: ");
+void NETLIST::GROUP::Display(int Indent)
+{
+    Debug.Indent(Indent);
+    Debug.Print("Group: ");
 
-  if(Name.empty()) Debug.Print("{Anonymous}");
-  else             DisplayLongName();
-  Debug.Print("\n");
-
-  Indent++;
-  DisplayAttributes(Indent);
-  Debug.Print("\n");
-
-  foreach(s, Symbols){
-    if(s->second){
-      s->second->Display(Indent);
-    }else{
-      Debug.Indent(Indent);
-      Debug.Print("- %s: {null}\n", s->first.c_str());
-    }
+    if(Name.empty()) Debug.Print("{Anonymous}");
+    else             DisplayLongName();
     Debug.Print("\n");
-  }
+
+    Indent++;
+    DisplayAttributes(Indent);
+    Debug.Print("\n");
+
+    foreach(s, Symbols){
+        if(s->second){
+            s->second->Display(Indent);
+        }else{
+            Debug.Indent(Indent);
+            Debug.Print("- %s: {null}\n", s->first.c_str());
+        }
+        Debug.Print("\n");
+    }
 }
 //------------------------------------------------------------------------------
 
-void NETLIST::GROUP::Validate(){
-  assert(Type == TYPE::Group);
+void NETLIST::GROUP::Validate()
+{
+    assert(Type == TYPE::Group);
 
-  NAMESPACE::Validate();
+    NAMESPACE::Validate();
 }
 //------------------------------------------------------------------------------
 

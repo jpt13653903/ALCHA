@@ -26,23 +26,23 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct ALIAS: public BASE{
-    std::string Identifier;
-    EXPRESSION* Expression;
+    struct ALIAS: public BASE{
+        std::string Identifier;
+        EXPRESSION* Expression;
 
-    ALIAS(int Line, std::string& Filename);
-    ALIAS(int Line, const char*  Filename);
-   ~ALIAS();
+        ALIAS(int Line, std::string& Filename);
+        ALIAS(int Line, const char*  Filename);
+      ~ALIAS();
 
-    BASE* Copy() override;
+        BASE* Copy() override;
 
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
+        bool RunAST() override;
+        bool GetVerilog(std::string& Body) override;
 
-    void Display() override;
+        void Display() override;
 
-    void ValidateMembers() override;
-  };
+        void ValidateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

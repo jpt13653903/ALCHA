@@ -25,103 +25,117 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-NAND_REDUCE::NAND_REDUCE(int Line, const string& Filename): NAND_REDUCE(Line, Filename.c_str()){}
+NAND_REDUCE::NAND_REDUCE(int Line, const string& Filename): NAND_REDUCE(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-NAND_REDUCE::NAND_REDUCE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::NAND_Reduce){
+NAND_REDUCE::NAND_REDUCE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::NAND_Reduce)
+{
 }
 //------------------------------------------------------------------------------
 
-NAND_REDUCE::~NAND_REDUCE(){
+NAND_REDUCE::~NAND_REDUCE()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* NAND_REDUCE::Copy(){
-  NAND_REDUCE* Copy = new NAND_REDUCE(Source.Line, Source.Filename.c_str());
+BASE* NAND_REDUCE::Copy()
+{
+    NAND_REDUCE* Copy = new NAND_REDUCE(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool NAND_REDUCE::GetVerilog(string& Body){
-  Body += "~&(";
-  Right->GetVerilog(Body);
-  Body += ")";
+bool NAND_REDUCE::GetVerilog(string& Body)
+{
+    Body += "~&(";
+    Right->GetVerilog(Body);
+    Body += ")";
 
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* NAND_REDUCE::Evaluate(){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* NAND_REDUCE::Evaluate()
+{
+    error("Not yet implemented");
+    return this;
 //   EXPRESSION* Result = 0;
-// 
+//
 //   error("Not yet implemented");
-// 
+//
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int NAND_REDUCE::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int NAND_REDUCE::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& NAND_REDUCE::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& NAND_REDUCE::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool NAND_REDUCE::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool NAND_REDUCE::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool NAND_REDUCE::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool NAND_REDUCE::HasCircularReference(NETLIST::BASE* Object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void NAND_REDUCE::PopulateUsed(){
-  error("Not yet implemented");
+void NAND_REDUCE::PopulateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* NAND_REDUCE::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* NAND_REDUCE::RemoveTempNet(int Width, bool Signed)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void NAND_REDUCE::Display(){
-  DisplayStart();
+void NAND_REDUCE::Display()
+{
+    DisplayStart();
 
-  Debug.Print(" ~&");
+    Debug.Print(" ~&");
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void NAND_REDUCE::ValidateMembers(){
-  assert(Type == TYPE::NAND_Reduce);
+void NAND_REDUCE::ValidateMembers()
+{
+    assert(Type == TYPE::NAND_Reduce);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!Next);
+    assert(!Prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!Left );
+    // TODO: assert(!Right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

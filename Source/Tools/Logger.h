@@ -19,7 +19,7 @@
 //==============================================================================
 
 /**
-  Class wrapper for GNU MP rational numbers
+    Class wrapper for GNU MP rational numbers
 */
 //------------------------------------------------------------------------------
 
@@ -32,22 +32,22 @@
 //------------------------------------------------------------------------------
 
 class LOGGER{
-  private:
-    FILE* File;
+    private:
+        FILE* File;
 
-  public:
-    LOGGER(const char* Filename);
-   ~LOGGER();
+    public:
+        LOGGER(const char* Filename);
+      ~LOGGER();
 
-    void Indent(int Level);
+        void Indent(int Level);
 
-    void Print(const char*        String);
-    void Print(const std::string& String);
-    void Print(const char* Format, int i);
-    void Print(const char* Format, double d);
-    void Print(const char* Format, unsigned u);
-    void Print(const char* Format, const char* s);
-    void Print(const char* Format, const std::string& s);
+        void Print(const char*        String);
+        void Print(const std::string& String);
+        void Print(const char* Format, int i);
+        void Print(const char* Format, double d);
+        void Print(const char* Format, unsigned u);
+        void Print(const char* Format, const char* s);
+        void Print(const char* Format, const std::string& s);
 };
 //------------------------------------------------------------------------------
 

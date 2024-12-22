@@ -35,73 +35,81 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 ASSIGN::ASSIGN(int Line, std::string Filename):
-ASSIGN(Line, Filename.c_str()){}
+ASSIGN(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
 ASSIGN::ASSIGN(int Line, const char* Filename):
-ASSIGNMENT(Line, Filename, TYPE::Assign){}
+ASSIGNMENT(Line, Filename, TYPE::Assign)
+{}
 //------------------------------------------------------------------------------
 
-ASSIGN::~ASSIGN(){
+ASSIGN::~ASSIGN()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* ASSIGN::Copy(){
-  ASSIGN* Copy = new ASSIGN(Source.Line, Source.Filename.c_str());
+BASE* ASSIGN::Copy()
+{
+    ASSIGN* Copy = new ASSIGN(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool ASSIGN::RunAST(){
-  target_list TargetList;
+bool ASSIGN::RunAST()
+{
+    target_list TargetList;
 
-  assert(Left , return false);
-  assert(Right, return false);
+    assert(Left , return false);
+    assert(Right, return false);
 
-  if(!GetLHS(Left, TargetList)) return false;
-  if(TargetList.empty()){
-    Error("Target object list is empty");
+    if(!GetLHS(Left, TargetList)) return false;
+    if(TargetList.empty()){
+        Error("Target object list is empty");
+        return false;
+    }
+
+    if(TargetList.size() > 1){
+        error("Multiple assignment targets not supported yet");
+        return false;
+    }
+
+    NETLIST::BASE* Target = TargetList.front();
+    assert(Target, return false);
+
+    // Move the expression
+    bool Result = Target->Assign(Right);
+    Right  = 0;
+
+    return Result;
+}
+//------------------------------------------------------------------------------
+
+bool ASSIGN::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
     return false;
-  }
-
-  if(TargetList.size() > 1){
-    error("Multiple assignment targets not supported yet");
-    return false;
-  }
-
-  NETLIST::BASE* Target = TargetList.front();
-  assert(Target, return false);
-
-  // Move the expression
-  bool Result = Target->Assign(Right);
-  Right  = 0;
-
-  return Result;
 }
 //------------------------------------------------------------------------------
 
-bool ASSIGN::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+void ASSIGN::Display()
+{
+    DisplayAssignment("=");
 }
 //------------------------------------------------------------------------------
 
-void ASSIGN::Display(){
-  DisplayAssignment("=");
-}
-//------------------------------------------------------------------------------
+void ASSIGN::ValidateMembers()
+{
+    assert(Type == TYPE::Assign);
 
-void ASSIGN::ValidateMembers(){
-  assert(Type == TYPE::Assign);
+    assert(Left, return);
+    Left->Validate();
 
-  assert(Left, return);
-  Left->Validate();
-
-  if(Right) Right->Validate();
+    if(Right) Right->Validate();
 }
 //------------------------------------------------------------------------------
 

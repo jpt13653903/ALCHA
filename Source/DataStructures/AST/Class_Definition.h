@@ -27,40 +27,40 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct CLASS_DEFINITION: public BASE{
-    struct PARENT{ // Link-list node for parent classes
-      EXPRESSION* ClassName;  // This class inherits from Parent
-      std::list<BASE*> Parameters; // Parent constructor call
+    struct CLASS_DEFINITION: public BASE{
+        struct PARENT{ // Link-list node for parent classes
+            EXPRESSION* ClassName;  // This class inherits from Parent
+            std::list<BASE*> Parameters; // Parent constructor call
 
-      PARENT* Next;
+            PARENT* Next;
 
-      PARENT();
-      PARENT(const PARENT& Parent);
-     ~PARENT(); // Also deletes the rest of the list
+            PARENT();
+            PARENT(const PARENT& Parent);
+          ~PARENT(); // Also deletes the rest of the list
+        };
+
+        ASSIGNMENT* Attributes;
+
+        std::string Identifier;
+        DEFINITION* Parameters; // Constructor parameters
+
+        PARENT* Parents;
+
+        BASE* Body;
+
+        CLASS_DEFINITION(int Line, std::string& Filename);
+        CLASS_DEFINITION(int Line, const char*  Filename);
+      ~CLASS_DEFINITION();
+
+        BASE* Copy() override;
+
+        bool RunAST() override;
+        bool GetVerilog(std::string& Body) override;
+
+        void Display() override;
+
+        void ValidateMembers() override;
     };
-
-    ASSIGNMENT* Attributes;
-
-    std::string Identifier;
-    DEFINITION* Parameters; // Constructor parameters
-
-    PARENT* Parents;
-
-    BASE* Body;
-
-    CLASS_DEFINITION(int Line, std::string& Filename);
-    CLASS_DEFINITION(int Line, const char*  Filename);
-   ~CLASS_DEFINITION();
-
-    BASE* Copy() override;
-
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
-
-    void Display() override;
-
-    void ValidateMembers() override;
-  };
 }
 //------------------------------------------------------------------------------
 

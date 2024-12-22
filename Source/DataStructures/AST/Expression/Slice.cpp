@@ -25,100 +25,114 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-SLICE::SLICE(int Line, const string& Filename): SLICE(Line, Filename.c_str()){}
+SLICE::SLICE(int Line, const string& Filename): SLICE(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-SLICE::SLICE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Slice){
+SLICE::SLICE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Slice)
+{
 }
 //------------------------------------------------------------------------------
 
-SLICE::~SLICE(){
+SLICE::~SLICE()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* SLICE::Copy(){
-  SLICE* Copy = new SLICE(Source.Line, Source.Filename.c_str());
+BASE* SLICE::Copy()
+{
+    SLICE* Copy = new SLICE(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool SLICE::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool SLICE::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* SLICE::Evaluate(){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* SLICE::Evaluate()
+{
+    error("Not yet implemented");
+    return this;
 //   EXPRESSION* Result = 0;
-// 
+//
 //   error("Not yet implemented");
-// 
+//
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int SLICE::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int SLICE::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& SLICE::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& SLICE::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool SLICE::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool SLICE::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool SLICE::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool SLICE::HasCircularReference(NETLIST::BASE* Object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void SLICE::PopulateUsed(){
-  error("Not yet implemented");
+void SLICE::PopulateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* SLICE::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* SLICE::RemoveTempNet(int Width, bool Signed)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void SLICE::Display(){
-  DisplayStart();
+void SLICE::Display()
+{
+    DisplayStart();
 
-  Debug.Print("{slice}");
+    Debug.Print("{slice}");
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void SLICE::ValidateMembers(){
-  assert(Type == TYPE::Slice);
+void SLICE::ValidateMembers()
+{
+    assert(Type == TYPE::Slice);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!Next);
+    assert(!Prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!Left );
+    // TODO: assert(!Right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

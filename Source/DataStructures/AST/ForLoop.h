@@ -25,25 +25,26 @@
 #include "Expression.h"
 //------------------------------------------------------------------------------
 
-namespace AST{
-  struct FOR_LOOP: public BASE{
-    std::string Identifier;
-    EXPRESSION* Range;
-    BASE      * Statements;
+namespace AST
+{
+    struct FOR_LOOP: public BASE{
+        std::string Identifier;
+        EXPRESSION* Range;
+        BASE      * Statements;
 
-    FOR_LOOP(int Line, std::string& Filename);
-    FOR_LOOP(int Line, const char*  Filename);
-   ~FOR_LOOP();
+        FOR_LOOP(int Line, std::string& Filename);
+        FOR_LOOP(int Line, const char*  Filename);
+      ~FOR_LOOP();
 
-    BASE* Copy() override;
+        BASE* Copy() override;
 
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
+        bool RunAST() override;
+        bool GetVerilog(std::string& Body) override;
 
-    void Display() override;
+        void Display() override;
 
-    void ValidateMembers() override;
-  };
+        void ValidateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

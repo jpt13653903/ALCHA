@@ -25,103 +25,117 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-XNOR_REDUCE::XNOR_REDUCE(int Line, const string& Filename): XNOR_REDUCE(Line, Filename.c_str()){}
+XNOR_REDUCE::XNOR_REDUCE(int Line, const string& Filename): XNOR_REDUCE(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-XNOR_REDUCE::XNOR_REDUCE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::XNOR_Reduce){
+XNOR_REDUCE::XNOR_REDUCE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::XNOR_Reduce)
+{
 }
 //------------------------------------------------------------------------------
 
-XNOR_REDUCE::~XNOR_REDUCE(){
+XNOR_REDUCE::~XNOR_REDUCE()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* XNOR_REDUCE::Copy(){
-  XNOR_REDUCE* Copy = new XNOR_REDUCE(Source.Line, Source.Filename.c_str());
+BASE* XNOR_REDUCE::Copy()
+{
+    XNOR_REDUCE* Copy = new XNOR_REDUCE(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool XNOR_REDUCE::GetVerilog(string& Body){
-  Body += "~^(";
-  Right->GetVerilog(Body);
-  Body += ")";
+bool XNOR_REDUCE::GetVerilog(string& Body)
+{
+    Body += "~^(";
+    Right->GetVerilog(Body);
+    Body += ")";
 
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* XNOR_REDUCE::Evaluate(){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* XNOR_REDUCE::Evaluate()
+{
+    error("Not yet implemented");
+    return this;
 //   EXPRESSION* Result = 0;
-// 
+//
 //   error("Not yet implemented");
-// 
+//
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int XNOR_REDUCE::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int XNOR_REDUCE::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& XNOR_REDUCE::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& XNOR_REDUCE::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool XNOR_REDUCE::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool XNOR_REDUCE::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool XNOR_REDUCE::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool XNOR_REDUCE::HasCircularReference(NETLIST::BASE* Object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void XNOR_REDUCE::PopulateUsed(){
-  error("Not yet implemented");
+void XNOR_REDUCE::PopulateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* XNOR_REDUCE::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* XNOR_REDUCE::RemoveTempNet(int Width, bool Signed)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void XNOR_REDUCE::Display(){
-  DisplayStart();
+void XNOR_REDUCE::Display()
+{
+    DisplayStart();
 
-  Debug.Print(" ~#");
+    Debug.Print(" ~#");
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void XNOR_REDUCE::ValidateMembers(){
-  assert(Type == TYPE::XNOR_Reduce);
+void XNOR_REDUCE::ValidateMembers()
+{
+    assert(Type == TYPE::XNOR_Reduce);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!Next);
+    assert(!Prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!Left );
+    // TODO: assert(!Right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

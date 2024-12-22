@@ -26,21 +26,21 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  class FUNCPTR_DEFINITION: public DEFINITION{
-    public:
-      FUNCPTR_DEFINITION(int Line, std::string& Filename);
-      FUNCPTR_DEFINITION(int Line, const char*  Filename);
-     ~FUNCPTR_DEFINITION();
+    class FUNCPTR_DEFINITION: public DEFINITION{
+        public:
+            FUNCPTR_DEFINITION(int Line, std::string& Filename);
+            FUNCPTR_DEFINITION(int Line, const char*  Filename);
+          ~FUNCPTR_DEFINITION();
 
-      BASE* Copy() override;
+            BASE* Copy() override;
 
-      bool RunAST() override;
-      bool GetVerilog(std::string& Body) override;
+            bool RunAST() override;
+            bool GetVerilog(std::string& Body) override;
 
-      void Display() override;
+            void Display() override;
 
-      void ValidateMembers() override;
-  };
+            void ValidateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

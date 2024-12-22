@@ -25,103 +25,117 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-LOGICAL_NOT::LOGICAL_NOT(int Line, const string& Filename): LOGICAL_NOT(Line, Filename.c_str()){}
+LOGICAL_NOT::LOGICAL_NOT(int Line, const string& Filename): LOGICAL_NOT(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-LOGICAL_NOT::LOGICAL_NOT(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Logical_NOT){
+LOGICAL_NOT::LOGICAL_NOT(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Logical_NOT)
+{
 }
 //------------------------------------------------------------------------------
 
-LOGICAL_NOT::~LOGICAL_NOT(){
+LOGICAL_NOT::~LOGICAL_NOT()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* LOGICAL_NOT::Copy(){
-  LOGICAL_NOT* Copy = new LOGICAL_NOT(Source.Line, Source.Filename.c_str());
+BASE* LOGICAL_NOT::Copy()
+{
+    LOGICAL_NOT* Copy = new LOGICAL_NOT(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool LOGICAL_NOT::GetVerilog(string& Body){
-  Body += "!(";
-  Right->GetVerilog(Body);
-  Body += ")";
+bool LOGICAL_NOT::GetVerilog(string& Body)
+{
+    Body += "!(";
+    Right->GetVerilog(Body);
+    Body += ")";
 
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LOGICAL_NOT::Evaluate(){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* LOGICAL_NOT::Evaluate()
+{
+    error("Not yet implemented");
+    return this;
 //   EXPRESSION* Result = 0;
-// 
+//
 //   error("Not yet implemented");
-// 
+//
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int LOGICAL_NOT::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int LOGICAL_NOT::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& LOGICAL_NOT::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& LOGICAL_NOT::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool LOGICAL_NOT::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool LOGICAL_NOT::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool LOGICAL_NOT::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool LOGICAL_NOT::HasCircularReference(NETLIST::BASE* Object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void LOGICAL_NOT::PopulateUsed(){
-  error("Not yet implemented");
+void LOGICAL_NOT::PopulateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LOGICAL_NOT::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* LOGICAL_NOT::RemoveTempNet(int Width, bool Signed)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void LOGICAL_NOT::Display(){
-  DisplayStart();
+void LOGICAL_NOT::Display()
+{
+    DisplayStart();
 
-  Debug.Print( " !");
+    Debug.Print( " !");
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void LOGICAL_NOT::ValidateMembers(){
-  assert(Type == TYPE::Logical_NOT);
+void LOGICAL_NOT::ValidateMembers()
+{
+    assert(Type == TYPE::Logical_NOT);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!Next);
+    assert(!Prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!Left );
+    // TODO: assert(!Right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

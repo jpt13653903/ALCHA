@@ -26,20 +26,20 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct SUBTRACT_ASSIGN: public ASSIGNMENT{
-    SUBTRACT_ASSIGN(int Line, std::string Filename);
-    SUBTRACT_ASSIGN(int Line, const char* Filename);
-   ~SUBTRACT_ASSIGN();
+    struct SUBTRACT_ASSIGN: public ASSIGNMENT{
+        SUBTRACT_ASSIGN(int Line, std::string Filename);
+        SUBTRACT_ASSIGN(int Line, const char* Filename);
+      ~SUBTRACT_ASSIGN();
 
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
+        bool RunAST() override;
+        bool GetVerilog(std::string& Body) override;
 
-    void Display() override;
+        void Display() override;
 
-    void ValidateMembers() override;
+        void ValidateMembers() override;
 
-    BASE* Copy() override;
-  };
+        BASE* Copy() override;
+    };
 }
 //------------------------------------------------------------------------------
 

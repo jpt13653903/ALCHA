@@ -25,82 +25,93 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-ENUM_DEFINITION::VALUE::VALUE(){
-  Next = 0;
+ENUM_DEFINITION::VALUE::VALUE()
+{
+    Next = 0;
 }
 //------------------------------------------------------------------------------
 
-ENUM_DEFINITION::VALUE::VALUE(const VALUE& Value){
-  Next = 0;
+ENUM_DEFINITION::VALUE::VALUE(const VALUE& Value)
+{
+    Next = 0;
 
-  if(Value.Next) Next = new VALUE(*Value.Next);
+    if(Value.Next) Next = new VALUE(*Value.Next);
 }
 //------------------------------------------------------------------------------
 
-ENUM_DEFINITION::VALUE::~VALUE(){
-  if(Next) delete Next;
+ENUM_DEFINITION::VALUE::~VALUE()
+{
+    if(Next) delete Next;
 }
 //------------------------------------------------------------------------------
 
 ENUM_DEFINITION::ENUM_DEFINITION(int Line, std::string& Filename):
-ENUM_DEFINITION(Line, Filename.c_str()){}
+ENUM_DEFINITION(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
 ENUM_DEFINITION::ENUM_DEFINITION(int Line, const char* Filename):
-BASE(Line, Filename, TYPE::Enum_Definition){
-  Values = 0;
+BASE(Line, Filename, TYPE::Enum_Definition)
+{
+    Values = 0;
 }
 //------------------------------------------------------------------------------
 
-ENUM_DEFINITION::~ENUM_DEFINITION(){
-  if(Values) delete Values;
+ENUM_DEFINITION::~ENUM_DEFINITION()
+{
+    if(Values) delete Values;
 }
 //------------------------------------------------------------------------------
 
-BASE* ENUM_DEFINITION::Copy(){
-  ENUM_DEFINITION* Copy = new ENUM_DEFINITION(Source.Line, Source.Filename.c_str());
+BASE* ENUM_DEFINITION::Copy()
+{
+    ENUM_DEFINITION* Copy = new ENUM_DEFINITION(Source.Line, Source.Filename.c_str());
 
-  Copy->Identifier = Identifier;
+    Copy->Identifier = Identifier;
 
-  if(Values) Copy->Values = new VALUE(*Values);
+    if(Values) Copy->Values = new VALUE(*Values);
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool ENUM_DEFINITION::RunAST(){
-  error("Not yet implemented");
-  return false;
+bool ENUM_DEFINITION::RunAST()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool ENUM_DEFINITION::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool ENUM_DEFINITION::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void ENUM_DEFINITION::Display(){
-  DisplayInfo();
-  Debug.Print("Enum Definition (%s):\n", Identifier.c_str());
+void ENUM_DEFINITION::Display()
+{
+    DisplayInfo();
+    Debug.Print("Enum Definition (%s):\n", Identifier.c_str());
 
-  Debug.Print(" Values: ");
-  VALUE* Value = Values;
-  while(Value){
-    Debug.Print("%s", Value->Identifier.c_str());
-    Value = Value->Next;
-    if(Value) Debug.Print(", ");
-    else      Debug.Print("\n");
-  }
+    Debug.Print(" Values: ");
+    VALUE* Value = Values;
+    while(Value){
+        Debug.Print("%s", Value->Identifier.c_str());
+        Value = Value->Next;
+        if(Value) Debug.Print(", ");
+        else      Debug.Print("\n");
+    }
 
-  if(Next) Next->Display();
+    if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
 
-void ENUM_DEFINITION::ValidateMembers(){
-  assert(Type == TYPE::Enum_Definition);
+void ENUM_DEFINITION::ValidateMembers()
+{
+    assert(Type == TYPE::Enum_Definition);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

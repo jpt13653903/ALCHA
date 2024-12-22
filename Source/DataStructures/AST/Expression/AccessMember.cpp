@@ -31,134 +31,148 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-ACCESSMEMBER::ACCESSMEMBER(int Line, const string& Filename): ACCESSMEMBER(Line, Filename.c_str()){}
+ACCESSMEMBER::ACCESSMEMBER(int Line, const string& Filename): ACCESSMEMBER(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-ACCESSMEMBER::ACCESSMEMBER(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::AccessMember){
+ACCESSMEMBER::ACCESSMEMBER(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::AccessMember)
+{
 }
 //------------------------------------------------------------------------------
 
-ACCESSMEMBER::~ACCESSMEMBER(){
+ACCESSMEMBER::~ACCESSMEMBER()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* ACCESSMEMBER::Copy(){
-  ACCESSMEMBER* Copy = new ACCESSMEMBER(Source.Line, Source.Filename.c_str());
+BASE* ACCESSMEMBER::Copy()
+{
+    ACCESSMEMBER* Copy = new ACCESSMEMBER(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool ACCESSMEMBER::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool ACCESSMEMBER::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ACCESSMEMBER::Evaluate(){
-  assert(Left , delete this; return 0);
-  assert(Right, delete this; return 0);
+EXPRESSION* ACCESSMEMBER::Evaluate()
+{
+    assert(Left , delete this; return 0);
+    assert(Right, delete this; return 0);
 
-  Left = Left->Evaluate();
+    Left = Left->Evaluate();
 
-  assert(Left, delete this; return 0);
+    assert(Left, delete this; return 0);
 
-  if(Left->Type != TYPE::Object){
-    Error("Invalid member access expression");
+    if(Left->Type != TYPE::Object){
+        Error("Invalid member access expression");
+        delete this;
+        return 0;
+    }
+    switch(Right->Type){
+        case TYPE::Identifier:
+            break;
+
+        case TYPE::Slice:
+            error("Not yet implemented");
+            delete this;
+            return 0;
+
+        default:
+            Error("Invalid member access expression");
+            delete this;
+            return 0;
+    }
+
+    auto Object = ((OBJECT    *)Left )->ObjectRef;
+    auto Name   = ((IDENTIFIER*)Right)->Name;
+
+    auto Member = Object->GetMember(Name);
+    if(!Member){
+        Error();
+        printf("Member %s not found in object %s\n",
+                      Name.c_str(), Object->Name.c_str());
+        delete this;
+        return 0;
+    }
+
+    auto Result = new OBJECT(Source.Line, Source.Filename);
+    Result->ObjectRef = Member;
     delete this;
+    return Result->Evaluate();
+}
+//------------------------------------------------------------------------------
+
+int ACCESSMEMBER::GetWidth()
+{
+    error("Not yet implemented");
     return 0;
-  }
-  switch(Right->Type){
-    case TYPE::Identifier:
-      break;
-
-    case TYPE::Slice:
-      error("Not yet implemented");
-      delete this;
-      return 0;
-      
-    default:
-      Error("Invalid member access expression");
-      delete this;
-      return 0;
-  }
-  
-  auto Object = ((OBJECT    *)Left )->ObjectRef;
-  auto Name   = ((IDENTIFIER*)Right)->Name;
-
-  auto Member = Object->GetMember(Name);
-  if(!Member){
-    Error();
-    printf("Member %s not found in object %s\n",
-           Name.c_str(), Object->Name.c_str());
-    delete this;
-    return 0;
-  }
-
-  auto Result = new OBJECT(Source.Line, Source.Filename);
-  Result->ObjectRef = Member;
-  delete this;
-  return Result->Evaluate();
 }
 //------------------------------------------------------------------------------
 
-int ACCESSMEMBER::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+NUMBER& ACCESSMEMBER::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& ACCESSMEMBER::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+bool ACCESSMEMBER::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool ACCESSMEMBER::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool ACCESSMEMBER::HasCircularReference(NETLIST::BASE* Object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool ACCESSMEMBER::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+void ACCESSMEMBER::PopulateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-void ACCESSMEMBER::PopulateUsed(){
-  error("Not yet implemented");
+EXPRESSION* ACCESSMEMBER::RemoveTempNet(int Width, bool Signed)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ACCESSMEMBER::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+void ACCESSMEMBER::Display()
+{
+    DisplayStart();
+
+    Debug.Print("." );
+
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void ACCESSMEMBER::Display(){
-  DisplayStart();
+void ACCESSMEMBER::ValidateMembers()
+{
+    assert(Type == TYPE::AccessMember);
 
-  Debug.Print("." );
+    assert(!Next);
+    assert(!Prev);
 
-  DisplayEnd();
-}
-//------------------------------------------------------------------------------
-
-void ACCESSMEMBER::ValidateMembers(){
-  assert(Type == TYPE::AccessMember);
-  
-  assert(!Next);
-  assert(!Prev);
-
-  // TODO: The "Left" assertion fails when the member cannot be found
-  assert(Left , return); Left ->Validate();
-  assert(Right, return); Right->Validate();
+    // TODO: The "Left" assertion fails when the member cannot be found
+    assert(Left , return); Left ->Validate();
+    assert(Right, return); Right->Validate();
 }
 //------------------------------------------------------------------------------
 

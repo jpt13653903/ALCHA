@@ -26,22 +26,22 @@
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
-  struct ATTRIBUTE: public BASE{
-    AST::EXPRESSION* Value;
+    struct ATTRIBUTE: public BASE{
+        AST::EXPRESSION* Value;
 
-             ATTRIBUTE(int Line, const std::string& Filename, const char* Name);
-    virtual ~ATTRIBUTE();
+                          ATTRIBUTE(int Line, const std::string& Filename, const char* Name);
+        virtual ~ATTRIBUTE();
 
-    AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
-    bool Assign   (AST::EXPRESSION* Expression) override;
-    bool RawAssign(AST::EXPRESSION* Expression) override;
+        AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
+        bool Assign   (AST::EXPRESSION* Expression) override;
+        bool RawAssign(AST::EXPRESSION* Expression) override;
 
-    bool HasCircularReference(BASE* Object) override;
+        bool HasCircularReference(BASE* Object) override;
 
-    void Display(int Indent = 0) override;
+        void Display(int Indent = 0) override;
 
-    void Validate() override;
-  };
+        void Validate() override;
+    };
 }
 //------------------------------------------------------------------------------
 

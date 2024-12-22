@@ -29,73 +29,81 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 NET_DEFINITION::NET_DEFINITION(
-  int     Line,
-  string& Filename
-): NET_DEFINITION(Line, Filename.c_str()){}
+    int     Line,
+    string& Filename
+): NET_DEFINITION(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
 NET_DEFINITION::NET_DEFINITION(
-  int             Line,
-  const char*     Filename
-): DEFINITION(Line, Filename, TYPE::Net_Definition){
+    int             Line,
+    const char*     Filename
+): DEFINITION(Line, Filename, TYPE::Net_Definition)
+{
 }
 //------------------------------------------------------------------------------
 
-NET_DEFINITION::~NET_DEFINITION(){
+NET_DEFINITION::~NET_DEFINITION()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* NET_DEFINITION::Copy(){
-  NET_DEFINITION* Copy = new NET_DEFINITION(Source.Line, Source.Filename.c_str());
+BASE* NET_DEFINITION::Copy()
+{
+    NET_DEFINITION* Copy = new NET_DEFINITION(Source.Line, Source.Filename.c_str());
 
-  CopyMembers(Copy);
+    CopyMembers(Copy);
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool NET_DEFINITION::RunAST(){
-  auto Identifier = Identifiers;
+bool NET_DEFINITION::RunAST()
+{
+    auto Identifier = Identifiers;
 
-  while(Identifier){
-    if(!VerifyNotDefined(Identifier)) return false;
+    while(Identifier){
+        if(!VerifyNotDefined(Identifier)) return false;
 
-    if(Identifier->Function){
-      error("Not yet implemented");
-      Identifier = Identifier->Next;
-      continue;
+        if(Identifier->Function){
+            error("Not yet implemented");
+            Identifier = Identifier->Next;
+            continue;
+        }
+
+        auto Net = new NETLIST::NET(Source.Line, Source.Filename, Identifier->Identifier.c_str());
+        Net->Direction = Direction;
+        if(!Net->ApplyParameters(Parameters)) Error("Invalid parameters");
+        if(!Net->ApplyAttributes(Attributes)) Error("Invalid attributes");
+        NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
+        if(Identifier->Initialiser){
+            if(!Identifier->Initialiser->RunAST()) return false;
+        }
+
+        Identifier = Identifier->Next;
     }
-
-    auto Net = new NETLIST::NET(Source.Line, Source.Filename, Identifier->Identifier.c_str());
-    Net->Direction = Direction;
-    if(!Net->ApplyParameters(Parameters)) Error("Invalid parameters");
-    if(!Net->ApplyAttributes(Attributes)) Error("Invalid attributes");
-    NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
-    if(Identifier->Initialiser){
-      if(!Identifier->Initialiser->RunAST()) return false;
-    }
-
-    Identifier = Identifier->Next;
-  }
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-bool NET_DEFINITION::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool NET_DEFINITION::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void NET_DEFINITION::Display(){
-  DisplayDefinition("Net");
+void NET_DEFINITION::Display()
+{
+    DisplayDefinition("Net");
 }
 //------------------------------------------------------------------------------
 
-void NET_DEFINITION::ValidateMembers(){
-  assert(Type == TYPE::Net_Definition);
+void NET_DEFINITION::ValidateMembers()
+{
+    assert(Type == TYPE::Net_Definition);
 
-  DEFINITION::ValidateMembers();
+    DEFINITION::ValidateMembers();
 }
 //------------------------------------------------------------------------------
 

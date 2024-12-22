@@ -25,103 +25,117 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-XOR_REDUCE::XOR_REDUCE(int Line, const string& Filename): XOR_REDUCE(Line, Filename.c_str()){}
+XOR_REDUCE::XOR_REDUCE(int Line, const string& Filename): XOR_REDUCE(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-XOR_REDUCE::XOR_REDUCE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::XOR_Reduce){
+XOR_REDUCE::XOR_REDUCE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::XOR_Reduce)
+{
 }
 //------------------------------------------------------------------------------
 
-XOR_REDUCE::~XOR_REDUCE(){
+XOR_REDUCE::~XOR_REDUCE()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* XOR_REDUCE::Copy(){
-  XOR_REDUCE* Copy = new XOR_REDUCE(Source.Line, Source.Filename.c_str());
+BASE* XOR_REDUCE::Copy()
+{
+    XOR_REDUCE* Copy = new XOR_REDUCE(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool XOR_REDUCE::GetVerilog(string& Body){
-  Body += "^(";
-  Right->GetVerilog(Body);
-  Body += ")";
+bool XOR_REDUCE::GetVerilog(string& Body)
+{
+    Body += "^(";
+    Right->GetVerilog(Body);
+    Body += ")";
 
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* XOR_REDUCE::Evaluate(){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* XOR_REDUCE::Evaluate()
+{
+    error("Not yet implemented");
+    return this;
 //   EXPRESSION* Result = 0;
-// 
+//
 //   error("Not yet implemented");
-// 
+//
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int XOR_REDUCE::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int XOR_REDUCE::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& XOR_REDUCE::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& XOR_REDUCE::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool XOR_REDUCE::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool XOR_REDUCE::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool XOR_REDUCE::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool XOR_REDUCE::HasCircularReference(NETLIST::BASE* Object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void XOR_REDUCE::PopulateUsed(){
-  error("Not yet implemented");
+void XOR_REDUCE::PopulateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* XOR_REDUCE::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* XOR_REDUCE::RemoveTempNet(int Width, bool Signed)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void XOR_REDUCE::Display(){
-  DisplayStart();
+void XOR_REDUCE::Display()
+{
+    DisplayStart();
 
-  Debug.Print(" #");
+    Debug.Print(" #");
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void XOR_REDUCE::ValidateMembers(){
-  assert(Type == TYPE::XOR_Reduce);
+void XOR_REDUCE::ValidateMembers()
+{
+    assert(Type == TYPE::XOR_Reduce);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!Next);
+    assert(!Prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!Left );
+    // TODO: assert(!Right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

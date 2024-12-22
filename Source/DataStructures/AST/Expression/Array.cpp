@@ -25,106 +25,120 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-ARRAY::ARRAY(int Line, const string& Filename): ARRAY(Line, Filename.c_str()){}
+ARRAY::ARRAY(int Line, const string& Filename): ARRAY(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-ARRAY::ARRAY(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Array){
+ARRAY::ARRAY(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Array)
+{
 }
 //------------------------------------------------------------------------------
 
-ARRAY::~ARRAY(){
-  foreach(Element, Elements) delete *Element;
+ARRAY::~ARRAY()
+{
+    foreach(Element, Elements) delete *Element;
 }
 //------------------------------------------------------------------------------
 
-BASE* ARRAY::Copy(){
-  ARRAY* Copy = new ARRAY(Source.Line, Source.Filename.c_str());
+BASE* ARRAY::Copy()
+{
+    ARRAY* Copy = new ARRAY(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  foreach(Element, Elements){
-    Copy->Elements.push_back((EXPRESSION*)(*Element)->Copy());
-  }
+    foreach(Element, Elements){
+        Copy->Elements.push_back((EXPRESSION*)(*Element)->Copy());
+    }
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool ARRAY::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool ARRAY::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ARRAY::Evaluate(){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* ARRAY::Evaluate()
+{
+    error("Not yet implemented");
+    return this;
 //   ARRAY* Array = (ARRAY*)Copy(true);
 //   foreach(Element, Array->Elements) (*Element) = (*Element)->Evaluate();
-// 
+//
 //   return Array->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int ARRAY::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int ARRAY::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& ARRAY::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& ARRAY::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool ARRAY::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool ARRAY::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool ARRAY::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool ARRAY::HasCircularReference(NETLIST::BASE* Object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void ARRAY::PopulateUsed(){
-  error("Not yet implemented");
+void ARRAY::PopulateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ARRAY::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* ARRAY::RemoveTempNet(int Width, bool Signed)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void ARRAY::Display(){
-  Debug.Print("(Array: (");
-  bool isFirst = true;
-  foreach(Element, Elements){
-    if(!isFirst) Debug.Print(", ");
-    (*Element)->Display();
-    isFirst = false;
-  }
-  Debug.Print("))");
+void ARRAY::Display()
+{
+    Debug.Print("(Array: (");
+    bool isFirst = true;
+    foreach(Element, Elements){
+        if(!isFirst) Debug.Print(", ");
+        (*Element)->Display();
+        isFirst = false;
+    }
+    Debug.Print("))");
 }
 //------------------------------------------------------------------------------
 
-void ARRAY::ValidateMembers(){
-  assert(Type == TYPE::Array);
-  
-  assert(!Next);
-  assert(!Prev);
+void ARRAY::ValidateMembers()
+{
+    assert(Type == TYPE::Array);
 
-  assert(!Left);
-  assert(!Right);
+    assert(!Next);
+    assert(!Prev);
 
-  foreach(Element, Elements) (*Element)->Validate();
+    assert(!Left);
+    assert(!Right);
+
+    foreach(Element, Elements) (*Element)->Validate();
 }
 //------------------------------------------------------------------------------
 

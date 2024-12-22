@@ -27,32 +27,32 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct FUNCTIONCALL: public EXPRESSION{
-    std::list<BASE*> Parameters;
+    struct FUNCTIONCALL: public EXPRESSION{
+        std::list<BASE*> Parameters;
 
-    FUNCTIONCALL(int Line, const std::string& Filename);
-    FUNCTIONCALL(int Line, const char*        Filename);
-   ~FUNCTIONCALL();
+        FUNCTIONCALL(int Line, const std::string& Filename);
+        FUNCTIONCALL(int Line, const char*        Filename);
+      ~FUNCTIONCALL();
 
-    BASE* Copy() override;
+        BASE* Copy() override;
 
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
-    EXPRESSION* Evaluate() override;
+        bool RunAST() override;
+        bool GetVerilog(std::string& Body) override;
+        EXPRESSION* Evaluate() override;
 
-    int     GetWidth    () override;
-    NUMBER& GetFullScale() override;
-    bool    GetSigned   () override;
+        int     GetWidth    () override;
+        NUMBER& GetFullScale() override;
+        bool    GetSigned   () override;
 
-    bool HasCircularReference(NETLIST::BASE* Object) override;
-    void PopulateUsed() override;
+        bool HasCircularReference(NETLIST::BASE* Object) override;
+        void PopulateUsed() override;
 
-    EXPRESSION* RemoveTempNet(int Width, bool Signed) override;
+        EXPRESSION* RemoveTempNet(int Width, bool Signed) override;
 
-    void Display() override;
+        void Display() override;
 
-    void ValidateMembers() override;
-  };
+        void ValidateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

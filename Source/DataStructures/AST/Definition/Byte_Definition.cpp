@@ -29,71 +29,79 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 BYTE_DEFINITION::BYTE_DEFINITION(
-  int     Line,
-  string& Filename
-): BYTE_DEFINITION(Line, Filename.c_str()){}
+    int     Line,
+    string& Filename
+): BYTE_DEFINITION(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
 BYTE_DEFINITION::BYTE_DEFINITION(
-  int             Line,
-  const char*     Filename
-): DEFINITION(Line, Filename, TYPE::Byte_Definition){
+    int             Line,
+    const char*     Filename
+): DEFINITION(Line, Filename, TYPE::Byte_Definition)
+{
 }
 //------------------------------------------------------------------------------
 
-BYTE_DEFINITION::~BYTE_DEFINITION(){
+BYTE_DEFINITION::~BYTE_DEFINITION()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* BYTE_DEFINITION::Copy(){
-  BYTE_DEFINITION* Copy = new BYTE_DEFINITION(Source.Line, Source.Filename.c_str());
+BASE* BYTE_DEFINITION::Copy()
+{
+    BYTE_DEFINITION* Copy = new BYTE_DEFINITION(Source.Line, Source.Filename.c_str());
 
-  CopyMembers(Copy);
+    CopyMembers(Copy);
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool BYTE_DEFINITION::RunAST(){
-  auto Identifier = Identifiers;
+bool BYTE_DEFINITION::RunAST()
+{
+    auto Identifier = Identifiers;
 
-  while(Identifier){
-    if(!VerifyNotDefined(Identifier)) return false;
+    while(Identifier){
+        if(!VerifyNotDefined(Identifier)) return false;
 
-    if(Identifier->Function){
-      error("Not yet implemented");
-      Identifier = Identifier->Next;
-      continue;
+        if(Identifier->Function){
+            error("Not yet implemented");
+            Identifier = Identifier->Next;
+            continue;
+        }
+
+        auto Byte = new NETLIST::BYTE(Source.Line, Source.Filename, Identifier->Identifier.c_str());
+        if(!Byte->ApplyAttributes(Attributes)) Error("Invalid attributes");
+        NETLIST::NamespaceStack.front()->Symbols[Byte->Name] = Byte;
+        if(Identifier->Initialiser){
+            if(!Identifier->Initialiser->RunAST()) return false;
+        }
+
+        Identifier = Identifier->Next;
     }
-
-    auto Byte = new NETLIST::BYTE(Source.Line, Source.Filename, Identifier->Identifier.c_str());
-    if(!Byte->ApplyAttributes(Attributes)) Error("Invalid attributes");
-    NETLIST::NamespaceStack.front()->Symbols[Byte->Name] = Byte;
-    if(Identifier->Initialiser){
-      if(!Identifier->Initialiser->RunAST()) return false;
-    }
-
-    Identifier = Identifier->Next;
-  }
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-bool BYTE_DEFINITION::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool BYTE_DEFINITION::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void BYTE_DEFINITION::Display(){
-  DisplayDefinition("Byte");
+void BYTE_DEFINITION::Display()
+{
+    DisplayDefinition("Byte");
 }
 //------------------------------------------------------------------------------
 
-void BYTE_DEFINITION::ValidateMembers(){
-  assert(Type == TYPE::Byte_Definition);
+void BYTE_DEFINITION::ValidateMembers()
+{
+    assert(Type == TYPE::Byte_Definition);
 
-  DEFINITION::ValidateMembers();
+    DEFINITION::ValidateMembers();
 }
 //------------------------------------------------------------------------------
 

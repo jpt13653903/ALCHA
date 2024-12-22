@@ -25,105 +25,119 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-LESS_EQUAL::LESS_EQUAL(int Line, const string& Filename): LESS_EQUAL(Line, Filename.c_str()){}
+LESS_EQUAL::LESS_EQUAL(int Line, const string& Filename): LESS_EQUAL(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-LESS_EQUAL::LESS_EQUAL(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Less_Equal){
+LESS_EQUAL::LESS_EQUAL(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Less_Equal)
+{
 }
 //------------------------------------------------------------------------------
 
-LESS_EQUAL::~LESS_EQUAL(){
+LESS_EQUAL::~LESS_EQUAL()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* LESS_EQUAL::Copy(){
-  LESS_EQUAL* Copy = new LESS_EQUAL(Source.Line, Source.Filename.c_str());
+BASE* LESS_EQUAL::Copy()
+{
+    LESS_EQUAL* Copy = new LESS_EQUAL(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool LESS_EQUAL::GetVerilog(string& Body){
-  Body += "(";
-  Left->GetVerilog(Body);
-  Body += ") <= (";
-  Right->GetVerilog(Body);
-  Body += ")";
+bool LESS_EQUAL::GetVerilog(string& Body)
+{
+    Body += "(";
+    Left->GetVerilog(Body);
+    Body += ") <= (";
+    Right->GetVerilog(Body);
+    Body += ")";
 
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LESS_EQUAL::Evaluate(){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* LESS_EQUAL::Evaluate()
+{
+    error("Not yet implemented");
+    return this;
 //   EXPRESSION* Result = 0;
-// 
+//
 //   error("Not yet implemented");
-// 
+//
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int LESS_EQUAL::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int LESS_EQUAL::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& LESS_EQUAL::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& LESS_EQUAL::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool LESS_EQUAL::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool LESS_EQUAL::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool LESS_EQUAL::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool LESS_EQUAL::HasCircularReference(NETLIST::BASE* Object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void LESS_EQUAL::PopulateUsed(){
-  error("Not yet implemented");
+void LESS_EQUAL::PopulateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LESS_EQUAL::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* LESS_EQUAL::RemoveTempNet(int Width, bool Signed)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void LESS_EQUAL::Display(){
-  DisplayStart();
+void LESS_EQUAL::Display()
+{
+    DisplayStart();
 
-  Debug.Print(" <= ");
+    Debug.Print(" <= ");
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void LESS_EQUAL::ValidateMembers(){
-  assert(Type == TYPE::Less_Equal);
+void LESS_EQUAL::ValidateMembers()
+{
+    assert(Type == TYPE::Less_Equal);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!Next);
+    assert(!Prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!Left );
+    // TODO: assert(!Right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

@@ -29,71 +29,79 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 NUM_DEFINITION::NUM_DEFINITION(
-  int     Line,
-  string& Filename
-): NUM_DEFINITION(Line, Filename.c_str()){}
+    int     Line,
+    string& Filename
+): NUM_DEFINITION(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
 NUM_DEFINITION::NUM_DEFINITION(
-  int             Line,
-  const char*     Filename
-): DEFINITION(Line, Filename, TYPE::Num_Definition){
+    int             Line,
+    const char*     Filename
+): DEFINITION(Line, Filename, TYPE::Num_Definition)
+{
 }
 //------------------------------------------------------------------------------
 
-NUM_DEFINITION::~NUM_DEFINITION(){
+NUM_DEFINITION::~NUM_DEFINITION()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* NUM_DEFINITION::Copy(){
-  NUM_DEFINITION* Copy = new NUM_DEFINITION(Source.Line, Source.Filename.c_str());
+BASE* NUM_DEFINITION::Copy()
+{
+    NUM_DEFINITION* Copy = new NUM_DEFINITION(Source.Line, Source.Filename.c_str());
 
-  CopyMembers(Copy);
+    CopyMembers(Copy);
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool NUM_DEFINITION::RunAST(){
-  auto Identifier = Identifiers;
+bool NUM_DEFINITION::RunAST()
+{
+    auto Identifier = Identifiers;
 
-  while(Identifier){
-    if(!VerifyNotDefined(Identifier)) return false;
+    while(Identifier){
+        if(!VerifyNotDefined(Identifier)) return false;
 
-    if(Identifier->Function){
-      error("Not yet implemented");
-      Identifier = Identifier->Next;
-      continue;
+        if(Identifier->Function){
+            error("Not yet implemented");
+            Identifier = Identifier->Next;
+            continue;
+        }
+
+        auto Number = new NETLIST::NUM(Source.Line, Source.Filename, Identifier->Identifier.c_str());
+        if(!Number->ApplyAttributes(Attributes)) Error("Invalid attributes");
+        NETLIST::NamespaceStack.front()->Symbols[Number->Name] = Number;
+        if(Identifier->Initialiser){
+            if(!Identifier->Initialiser->RunAST()) return false;
+        }
+
+        Identifier = Identifier->Next;
     }
-
-    auto Number = new NETLIST::NUM(Source.Line, Source.Filename, Identifier->Identifier.c_str());
-    if(!Number->ApplyAttributes(Attributes)) Error("Invalid attributes");
-    NETLIST::NamespaceStack.front()->Symbols[Number->Name] = Number;
-    if(Identifier->Initialiser){
-      if(!Identifier->Initialiser->RunAST()) return false;
-    }
-
-    Identifier = Identifier->Next;
-  }
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-bool NUM_DEFINITION::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool NUM_DEFINITION::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void NUM_DEFINITION::Display(){
-  DisplayDefinition("Number");
+void NUM_DEFINITION::Display()
+{
+    DisplayDefinition("Number");
 }
 //------------------------------------------------------------------------------
 
-void NUM_DEFINITION::ValidateMembers(){
-  assert(Type == TYPE::Num_Definition);
+void NUM_DEFINITION::ValidateMembers()
+{
+    assert(Type == TYPE::Num_Definition);
 
-  DEFINITION::ValidateMembers();
+    DEFINITION::ValidateMembers();
 }
 //------------------------------------------------------------------------------
 

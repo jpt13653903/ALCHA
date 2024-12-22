@@ -25,105 +25,119 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-LOGICAL_AND::LOGICAL_AND(int Line, const string& Filename): LOGICAL_AND(Line, Filename.c_str()){}
+LOGICAL_AND::LOGICAL_AND(int Line, const string& Filename): LOGICAL_AND(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-LOGICAL_AND::LOGICAL_AND(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Logical_AND){
+LOGICAL_AND::LOGICAL_AND(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Logical_AND)
+{
 }
 //------------------------------------------------------------------------------
 
-LOGICAL_AND::~LOGICAL_AND(){
+LOGICAL_AND::~LOGICAL_AND()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* LOGICAL_AND::Copy(){
-  LOGICAL_AND* Copy = new LOGICAL_AND(Source.Line, Source.Filename.c_str());
+BASE* LOGICAL_AND::Copy()
+{
+    LOGICAL_AND* Copy = new LOGICAL_AND(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool LOGICAL_AND::GetVerilog(string& Body){
-  Body += "(";
-  Left->GetVerilog(Body);
-  Body += ") && (";
-  Right->GetVerilog(Body);
-  Body += ")";
+bool LOGICAL_AND::GetVerilog(string& Body)
+{
+    Body += "(";
+    Left->GetVerilog(Body);
+    Body += ") && (";
+    Right->GetVerilog(Body);
+    Body += ")";
 
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LOGICAL_AND::Evaluate(){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* LOGICAL_AND::Evaluate()
+{
+    error("Not yet implemented");
+    return this;
 //   EXPRESSION* Result = 0;
-// 
+//
 //   error("Not yet implemented");
-// 
+//
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int LOGICAL_AND::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int LOGICAL_AND::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& LOGICAL_AND::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& LOGICAL_AND::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool LOGICAL_AND::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool LOGICAL_AND::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool LOGICAL_AND::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool LOGICAL_AND::HasCircularReference(NETLIST::BASE* Object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void LOGICAL_AND::PopulateUsed(){
-  error("Not yet implemented");
+void LOGICAL_AND::PopulateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LOGICAL_AND::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* LOGICAL_AND::RemoveTempNet(int Width, bool Signed)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void LOGICAL_AND::Display(){
-  DisplayStart();
+void LOGICAL_AND::Display()
+{
+    DisplayStart();
 
-  Debug.Print(" && ");
+    Debug.Print(" && ");
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void LOGICAL_AND::ValidateMembers(){
-  assert(Type == TYPE::Logical_AND);
+void LOGICAL_AND::ValidateMembers()
+{
+    assert(Type == TYPE::Logical_AND);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!Next);
+    assert(!Prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!Left );
+    // TODO: assert(!Right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

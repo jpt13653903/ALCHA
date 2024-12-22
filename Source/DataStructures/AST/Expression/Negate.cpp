@@ -30,118 +30,132 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-NEGATE::NEGATE(int Line, const string& Filename): NEGATE(Line, Filename.c_str()){}
+NEGATE::NEGATE(int Line, const string& Filename): NEGATE(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-NEGATE::NEGATE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Negate){
+NEGATE::NEGATE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Negate)
+{
 }
 //------------------------------------------------------------------------------
 
-NEGATE::~NEGATE(){
+NEGATE::~NEGATE()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* NEGATE::Copy(){
-  NEGATE* Copy = new NEGATE(Source.Line, Source.Filename.c_str());
+BASE* NEGATE::Copy()
+{
+    NEGATE* Copy = new NEGATE(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool NEGATE::GetVerilog(string& Body){
-  Body += "-(";
-  if(Right->GetSigned()){
-    Right->GetVerilog(Body);
-  }else{
-    Body += "$signed(";
-    Right->GetVerilog(Body);
+bool NEGATE::GetVerilog(string& Body)
+{
+    Body += "-(";
+    if(Right->GetSigned()){
+        Right->GetVerilog(Body);
+    }else{
+        Body += "$signed(";
+        Right->GetVerilog(Body);
+        Body += ")";
+    }
     Body += ")";
-  }
-  Body += ")";
 
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* NEGATE::Evaluate(){
-  assert(Right, delete this; return 0);
-  Right = Right->Evaluate();
-  assert(Right, delete this; return 0);
+EXPRESSION* NEGATE::Evaluate()
+{
+    assert(Right, delete this; return 0);
+    Right = Right->Evaluate();
+    assert(Right, delete this; return 0);
 
-  switch(Right->Type){
-    case TYPE::Literal:{
-      auto Result = (LITERAL*)Right;
-      Right = 0;
-      Result->Value.Mul(-1);
-      delete this;
-      return Result;
+    switch(Right->Type){
+        case TYPE::Literal:{
+            auto Result = (LITERAL*)Right;
+            Right = 0;
+            Result->Value.Mul(-1);
+            delete this;
+            return Result;
+        }
+        case TYPE::Object:{
+            return MakeObject();
+        }
+        default:
+            break;
     }
-    case TYPE::Object:{
-      return MakeObject();
-    }
-    default:
-      break;
-  }
-  return this;
+    return this;
 }
 //------------------------------------------------------------------------------
 
-int NEGATE::GetWidth(){
-  assert(Right, return false);
-  return Right->GetWidth();
+int NEGATE::GetWidth()
+{
+    assert(Right, return false);
+    return Right->GetWidth();
 }
 //------------------------------------------------------------------------------
 
-NUMBER& NEGATE::GetFullScale(){
-  static NUMBER zero = 0;
-  assert(Right, return zero);
-  return Right->GetFullScale();
+NUMBER& NEGATE::GetFullScale()
+{
+    static NUMBER zero = 0;
+    assert(Right, return zero);
+    return Right->GetFullScale();
 }
 //------------------------------------------------------------------------------
 
-bool NEGATE::GetSigned(){
-  return true;
+bool NEGATE::GetSigned()
+{
+    return true;
 }
 //------------------------------------------------------------------------------
 
-bool NEGATE::HasCircularReference(NETLIST::BASE* Object){
-  assert(Right, return false);
-  return Right->HasCircularReference(Object);
+bool NEGATE::HasCircularReference(NETLIST::BASE* Object)
+{
+    assert(Right, return false);
+    return Right->HasCircularReference(Object);
 }
 //------------------------------------------------------------------------------
 
-void NEGATE::PopulateUsed(){
-  assert(Right, return);
-  Right->PopulateUsed();
+void NEGATE::PopulateUsed()
+{
+    assert(Right, return);
+    Right->PopulateUsed();
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* NEGATE::RemoveTempNet(int Width, bool Signed){
-  if(Right) Right = Right->RemoveTempNet(0, false);
-  return this;
+EXPRESSION* NEGATE::RemoveTempNet(int Width, bool Signed)
+{
+    if(Right) Right = Right->RemoveTempNet(0, false);
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void NEGATE::Display(){
-  DisplayStart();
+void NEGATE::Display()
+{
+    DisplayStart();
 
-  Debug.Print(" -");
+    Debug.Print(" -");
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void NEGATE::ValidateMembers(){
-  assert(Type == TYPE::Negate);
+void NEGATE::ValidateMembers()
+{
+    assert(Type == TYPE::Negate);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!Next);
+    assert(!Prev);
 
-  assert(!Left);
-  assert(Right, return); Right->Validate();
+    assert(!Left);
+    assert(Right, return); Right->Validate();
 }
 //------------------------------------------------------------------------------
 

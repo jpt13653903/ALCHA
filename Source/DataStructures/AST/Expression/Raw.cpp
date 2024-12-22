@@ -25,100 +25,114 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-RAW::RAW(int Line, const string& Filename): RAW(Line, Filename.c_str()){}
+RAW::RAW(int Line, const string& Filename): RAW(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-RAW::RAW(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Raw){
+RAW::RAW(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Raw)
+{
 }
 //------------------------------------------------------------------------------
 
-RAW::~RAW(){
+RAW::~RAW()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* RAW::Copy(){
-  RAW* Copy = new RAW(Source.Line, Source.Filename.c_str());
+BASE* RAW::Copy()
+{
+    RAW* Copy = new RAW(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool RAW::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool RAW::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* RAW::Evaluate(){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* RAW::Evaluate()
+{
+    error("Not yet implemented");
+    return this;
 //   EXPRESSION* Result = 0;
-// 
+//
 //   error("Not yet implemented");
-// 
+//
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int RAW::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int RAW::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& RAW::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& RAW::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool RAW::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool RAW::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool RAW::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool RAW::HasCircularReference(NETLIST::BASE* Object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void RAW::PopulateUsed(){
-  error("Not yet implemented");
+void RAW::PopulateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* RAW::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* RAW::RemoveTempNet(int Width, bool Signed)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void RAW::Display(){
-  DisplayStart();
+void RAW::Display()
+{
+    DisplayStart();
 
-  Debug.Print(" :");
+    Debug.Print(" :");
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void RAW::ValidateMembers(){
-  assert(Type == TYPE::Raw);
+void RAW::ValidateMembers()
+{
+    assert(Type == TYPE::Raw);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!Next);
+    assert(!Prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!Left );
+    // TODO: assert(!Right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

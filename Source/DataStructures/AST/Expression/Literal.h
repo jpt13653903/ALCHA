@@ -26,36 +26,36 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  class LITERAL: public EXPRESSION{
-    private:
-      int WidthOverride = 0;
+    class LITERAL: public EXPRESSION{
+        private:
+            int WidthOverride = 0;
 
-    public:
-      NUMBER Value;
+        public:
+            NUMBER Value;
 
-      LITERAL(int Line, const std::string& Filename);
-      LITERAL(int Line, const char*        Filename);
-     ~LITERAL();
+            LITERAL(int Line, const std::string& Filename);
+            LITERAL(int Line, const char*        Filename);
+          ~LITERAL();
 
-      BASE* Copy() override;
+            BASE* Copy() override;
 
-      bool GetVerilog(std::string& Body) override;
-      EXPRESSION* Evaluate() override;
+            bool GetVerilog(std::string& Body) override;
+            EXPRESSION* Evaluate() override;
 
-      void    SetWidth(int Width);
-      int     GetWidth    () override;
-      NUMBER& GetFullScale() override;
-      bool    GetSigned   () override;
+            void    SetWidth(int Width);
+            int     GetWidth    () override;
+            NUMBER& GetFullScale() override;
+            bool    GetSigned   () override;
 
-      bool HasCircularReference(NETLIST::BASE* Object) override;
-      void PopulateUsed() override;
+            bool HasCircularReference(NETLIST::BASE* Object) override;
+            void PopulateUsed() override;
 
-      EXPRESSION* RemoveTempNet(int Width, bool Signed) override;
+            EXPRESSION* RemoveTempNet(int Width, bool Signed) override;
 
-      void Display() override;
+            void Display() override;
 
-      void ValidateMembers() override;
-  };
+            void ValidateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

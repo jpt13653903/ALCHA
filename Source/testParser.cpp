@@ -22,22 +22,23 @@
 #include "Parser.h"
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv){
-  SetupTerminal();
+int main(int argc, const char** argv)
+{
+    SetupTerminal();
 
-  const char*  InputFile = "../TestCases/FrontEnd/Parser.alc";
-  if(argc > 1) InputFile = argv[1];
+    const char*  InputFile = "../TestCases/FrontEnd/Parser.alc";
+    if(argc > 1) InputFile = argv[1];
 
-  info("InputFile = %s", InputFile);
+    info("InputFile = %s", InputFile);
 
-  PARSER Parser;
-  AST::BASE* Root = Parser.Run(InputFile);
-  if(!Root){
-    error("Error while parsing \"%s\"", InputFile);
-    return -1;
-  }
-  if(Root) delete Root;
+    PARSER Parser;
+    AST::BASE* Root = Parser.Run(InputFile);
+    if(!Root){
+        error("Error while parsing \"%s\"", InputFile);
+        return -1;
+    }
+    if(Root) delete Root;
 
-  return 0;
+    return 0;
 }
 //------------------------------------------------------------------------------

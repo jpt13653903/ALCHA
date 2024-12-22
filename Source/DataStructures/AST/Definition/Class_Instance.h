@@ -26,24 +26,24 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  class CLASS_INSTANCE: public DEFINITION{
-    public:
-      EXPRESSION* ClassName;
+    class CLASS_INSTANCE: public DEFINITION{
+        public:
+            EXPRESSION* ClassName;
 
-    public:
-      CLASS_INSTANCE(int Line, std::string& Filename);
-      CLASS_INSTANCE(int Line, const char*  Filename);
-     ~CLASS_INSTANCE();
+        public:
+            CLASS_INSTANCE(int Line, std::string& Filename);
+            CLASS_INSTANCE(int Line, const char*  Filename);
+          ~CLASS_INSTANCE();
 
-      BASE* Copy() override;
+            BASE* Copy() override;
 
-      bool RunAST() override;
-      bool GetVerilog(std::string& Body) override;
+            bool RunAST() override;
+            bool GetVerilog(std::string& Body) override;
 
-      void Display() override;
+            void Display() override;
 
-      void ValidateMembers() override;
-  };
+            void ValidateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

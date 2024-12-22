@@ -26,20 +26,20 @@
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
-  struct ARRAY: public BASE{
-             ARRAY(int Line, const std::string& Filename, const char* Name);
-    virtual ~ARRAY();
+    struct ARRAY: public BASE{
+                          ARRAY(int Line, const std::string& Filename, const char* Name);
+        virtual ~ARRAY();
 
-    AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
-    bool Assign   (AST::EXPRESSION* Expression) override;
-    bool RawAssign(AST::EXPRESSION* Expression) override;
+        AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
+        bool Assign   (AST::EXPRESSION* Expression) override;
+        bool RawAssign(AST::EXPRESSION* Expression) override;
 
-    bool HasCircularReference(BASE* Object) override;
+        bool HasCircularReference(BASE* Object) override;
 
-    void Display(int Indent = 0) override;
+        void Display(int Indent = 0) override;
 
-    void Validate() override;
-  };
+        void Validate() override;
+    };
 }
 //------------------------------------------------------------------------------
 

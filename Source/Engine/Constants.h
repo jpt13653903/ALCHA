@@ -31,14 +31,14 @@
 //------------------------------------------------------------------------------
 
 class CONSTANTS{
-  private:
-    std::map<std::string, NUMBER> Constants;
+    private:
+        std::map<std::string, NUMBER> Constants;
 
-  public:
-    CONSTANTS();
-   ~CONSTANTS();
+    public:
+        CONSTANTS();
+      ~CONSTANTS();
 
-    bool GetConstant(const std::string& Name, NUMBER* Constant);
+        bool GetConstant(const std::string& Name, NUMBER* Constant);
 };
 //------------------------------------------------------------------------------
 

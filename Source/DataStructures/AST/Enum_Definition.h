@@ -26,33 +26,33 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct ENUM_DEFINITION: public BASE{
-    struct VALUE{ // Link-list node for enumeration values
-      std::string Identifier;
+    struct ENUM_DEFINITION: public BASE{
+        struct VALUE{ // Link-list node for enumeration values
+            std::string Identifier;
 
-      VALUE* Next;
+            VALUE* Next;
 
-      VALUE();
-      VALUE(const VALUE& Value);
-     ~VALUE(); // Also deletes the rest of the list
+            VALUE();
+            VALUE(const VALUE& Value);
+          ~VALUE(); // Also deletes the rest of the list
+        };
+
+        std::string Identifier;
+        VALUE*      Values;
+
+        ENUM_DEFINITION(int Line, std::string& Filename);
+        ENUM_DEFINITION(int Line, const char*  Filename);
+      ~ENUM_DEFINITION();
+
+        BASE* Copy() override;
+
+        bool RunAST() override;
+        bool GetVerilog(std::string& Body) override;
+
+        void Display() override;
+
+        void ValidateMembers() override;
     };
-
-    std::string Identifier;
-    VALUE*      Values;
-
-    ENUM_DEFINITION(int Line, std::string& Filename);
-    ENUM_DEFINITION(int Line, const char*  Filename);
-   ~ENUM_DEFINITION();
-
-    BASE* Copy() override;
-
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
-
-    void Display() override;
-
-    void ValidateMembers() override;
-  };
 }
 //------------------------------------------------------------------------------
 

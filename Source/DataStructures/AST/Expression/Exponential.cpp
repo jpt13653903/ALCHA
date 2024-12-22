@@ -25,100 +25,114 @@ using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-EXPONENTIAL::EXPONENTIAL(int Line, const string& Filename): EXPONENTIAL(Line, Filename.c_str()){}
+EXPONENTIAL::EXPONENTIAL(int Line, const string& Filename): EXPONENTIAL(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
-EXPONENTIAL::EXPONENTIAL(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Exponential){
+EXPONENTIAL::EXPONENTIAL(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Exponential)
+{
 }
 //------------------------------------------------------------------------------
 
-EXPONENTIAL::~EXPONENTIAL(){
+EXPONENTIAL::~EXPONENTIAL()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* EXPONENTIAL::Copy(){
-  EXPONENTIAL* Copy = new EXPONENTIAL(Source.Line, Source.Filename.c_str());
+BASE* EXPONENTIAL::Copy()
+{
+    EXPONENTIAL* Copy = new EXPONENTIAL(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool EXPONENTIAL::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool EXPONENTIAL::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* EXPONENTIAL::Evaluate(){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* EXPONENTIAL::Evaluate()
+{
+    error("Not yet implemented");
+    return this;
 //   EXPRESSION* Result = 0;
-// 
+//
 //   error("Not yet implemented");
-// 
+//
 //   if(!Result) return 0;
 //   return Result->Simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int EXPONENTIAL::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int EXPONENTIAL::GetWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& EXPONENTIAL::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+NUMBER& EXPONENTIAL::GetFullScale()
+{
+    error("Not yet implemented");
+    static NUMBER zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool EXPONENTIAL::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool EXPONENTIAL::GetSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool EXPONENTIAL::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool EXPONENTIAL::HasCircularReference(NETLIST::BASE* Object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void EXPONENTIAL::PopulateUsed(){
-  error("Not yet implemented");
+void EXPONENTIAL::PopulateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* EXPONENTIAL::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+EXPRESSION* EXPONENTIAL::RemoveTempNet(int Width, bool Signed)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void EXPONENTIAL::Display(){
-  DisplayStart();
+void EXPONENTIAL::Display()
+{
+    DisplayStart();
 
-  Debug.Print(" ^ " );
+    Debug.Print(" ^ " );
 
-  DisplayEnd();
+    DisplayEnd();
 }
 //------------------------------------------------------------------------------
 
-void EXPONENTIAL::ValidateMembers(){
-  assert(Type == TYPE::Exponential);
+void EXPONENTIAL::ValidateMembers()
+{
+    assert(Type == TYPE::Exponential);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!Next);
+    assert(!Prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!Left );
+    // TODO: assert(!Right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

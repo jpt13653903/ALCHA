@@ -26,20 +26,20 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct XOR_ASSIGN: public ASSIGNMENT{
-    XOR_ASSIGN(int Line, std::string Filename);
-    XOR_ASSIGN(int Line, const char* Filename);
-   ~XOR_ASSIGN();
+    struct XOR_ASSIGN: public ASSIGNMENT{
+        XOR_ASSIGN(int Line, std::string Filename);
+        XOR_ASSIGN(int Line, const char* Filename);
+      ~XOR_ASSIGN();
 
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
+        bool RunAST() override;
+        bool GetVerilog(std::string& Body) override;
 
-    void Display() override;
+        void Display() override;
 
-    void ValidateMembers() override;
+        void ValidateMembers() override;
 
-    BASE* Copy() override;
-  };
+        BASE* Copy() override;
+    };
 }
 //------------------------------------------------------------------------------
 

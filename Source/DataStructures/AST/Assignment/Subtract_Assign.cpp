@@ -36,83 +36,91 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 SUBTRACT_ASSIGN::SUBTRACT_ASSIGN(int Line, std::string Filename):
-SUBTRACT_ASSIGN(Line, Filename.c_str()){}
+SUBTRACT_ASSIGN(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
 SUBTRACT_ASSIGN::SUBTRACT_ASSIGN(int Line, const char* Filename):
-ASSIGNMENT(Line, Filename, TYPE::Subtract_Assign){}
+ASSIGNMENT(Line, Filename, TYPE::Subtract_Assign)
+{}
 //------------------------------------------------------------------------------
 
-SUBTRACT_ASSIGN::~SUBTRACT_ASSIGN(){
+SUBTRACT_ASSIGN::~SUBTRACT_ASSIGN()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* SUBTRACT_ASSIGN::Copy(){
-  SUBTRACT_ASSIGN* Copy = new SUBTRACT_ASSIGN(Source.Line, Source.Filename.c_str());
+BASE* SUBTRACT_ASSIGN::Copy()
+{
+    SUBTRACT_ASSIGN* Copy = new SUBTRACT_ASSIGN(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool SUBTRACT_ASSIGN::RunAST(){
-  target_list TargetList;
+bool SUBTRACT_ASSIGN::RunAST()
+{
+    target_list TargetList;
 
-  assert(Left , return false);
-  assert(Right, return false);
+    assert(Left , return false);
+    assert(Right, return false);
 
-  if(!GetLHS(Left, TargetList)) return false;
-  if(TargetList.empty()){
-    Error("Target object list is empty");
+    if(!GetLHS(Left, TargetList)) return false;
+    if(TargetList.empty()){
+        Error("Target object list is empty");
+        return false;
+    }
+
+    if(TargetList.size() > 1){
+        error("Multiple assignment targets not supported yet");
+        return false;
+    }
+
+    NETLIST::BASE* Target = TargetList.front();
+    assert(Target, return false);
+
+    // Move the expression
+    EXPRESSION* Expression = new SUBTRACT(Right->Source.Line, Right->Source.Filename);
+    Expression->Left = Target->GetExpression(Right->Source.Line, Right->Source.Filename);
+
+    if(!Expression->Left){
+        delete Expression;
+        return false;
+    }
+
+    Expression->Right = Right;
+    Right = 0;
+
+    bool Result = Target->Assign(Expression);
+
+    return Result;
+}
+//------------------------------------------------------------------------------
+
+bool SUBTRACT_ASSIGN::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
     return false;
-  }
-
-  if(TargetList.size() > 1){
-    error("Multiple assignment targets not supported yet");
-    return false;
-  }
-
-  NETLIST::BASE* Target = TargetList.front();
-  assert(Target, return false);
-
-  // Move the expression
-  EXPRESSION* Expression = new SUBTRACT(Right->Source.Line, Right->Source.Filename);
-  Expression->Left = Target->GetExpression(Right->Source.Line, Right->Source.Filename);
-
-  if(!Expression->Left){
-    delete Expression;
-    return false;
-  }
-
-  Expression->Right = Right;
-  Right = 0;
-
-  bool Result = Target->Assign(Expression);
-
-  return Result;
 }
 //------------------------------------------------------------------------------
 
-bool SUBTRACT_ASSIGN::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+void SUBTRACT_ASSIGN::Display()
+{
+    DisplayAssignment("-=");
 }
 //------------------------------------------------------------------------------
 
-void SUBTRACT_ASSIGN::Display(){
-  DisplayAssignment("-=");
-}
-//------------------------------------------------------------------------------
+void SUBTRACT_ASSIGN::ValidateMembers()
+{
+    assert(Type == TYPE::Subtract_Assign);
 
-void SUBTRACT_ASSIGN::ValidateMembers(){
-  assert(Type == TYPE::Subtract_Assign);
+    assert(Left, return);
+    Left->Validate();
 
-  assert(Left, return);
-  Left->Validate();
-
-  if(Right) Right->Validate();
+    if(Right) Right->Validate();
 }
 //------------------------------------------------------------------------------
 

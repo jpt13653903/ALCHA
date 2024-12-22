@@ -27,30 +27,30 @@
 //------------------------------------------------------------------------------
 
 namespace NETLIST{
-  struct PIN;
+    struct PIN;
 
-  struct PIN_COMPONENT: public NET{
-    PIN* Pin;
+    struct PIN_COMPONENT: public NET{
+        PIN* Pin;
 
-    PIN_COMPONENT(int Line, const std::string& Filename, const char* Name, PIN* Pin);
-    virtual ~PIN_COMPONENT();
+        PIN_COMPONENT(int Line, const std::string& Filename, const char* Name, PIN* Pin);
+        virtual ~PIN_COMPONENT();
 
-    bool RawAssign(AST::EXPRESSION* Expression) override;
+        bool RawAssign(AST::EXPRESSION* Expression) override;
 
-    void PopulateUsed(bool SetUsed) override;
+        void PopulateUsed(bool SetUsed) override;
 
-    BASE*            GetAttribute            (const std::string& Name) override;
-    AST::EXPRESSION* GetAttribValue          (const std::string& Name) override;
-    AST::EXPRESSION* GetBuiltInAttributeValue(const std::string& Name) override;
+        BASE*            GetAttribute            (const std::string& Name) override;
+        AST::EXPRESSION* GetAttribValue          (const std::string& Name) override;
+        AST::EXPRESSION* GetBuiltInAttributeValue(const std::string& Name) override;
 
-    int     Width    () override;
-    NUMBER& FullScale() override;
-    bool    Signed   () override;
+        int     Width    () override;
+        NUMBER& FullScale() override;
+        bool    Signed   () override;
 
-    void Display(int Indent = 0) override;
+        void Display(int Indent = 0) override;
 
-    void Validate() override;
-  };
+        void Validate() override;
+    };
 }
 //------------------------------------------------------------------------------
 

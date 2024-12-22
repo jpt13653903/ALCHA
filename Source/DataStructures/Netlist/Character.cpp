@@ -27,58 +27,66 @@ using namespace std;
 using namespace NETLIST;
 //------------------------------------------------------------------------------
 
-CHARACTER::CHARACTER(int Line, const string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Character){
-  Value = 0;
+CHARACTER::CHARACTER(int Line, const string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Character)
+{
+    Value = 0;
 }
 //------------------------------------------------------------------------------
 
-CHARACTER::~CHARACTER(){
+CHARACTER::~CHARACTER()
+{
 }
 //------------------------------------------------------------------------------
 
-AST::EXPRESSION* CHARACTER::GetExpression(int Line, const string& Filename){
-  AST::LITERAL* Result = new AST::LITERAL(Line, Filename);
-  Result->Value = Value;
-  Result->SetWidth(32);
-  return Result;
+AST::EXPRESSION* CHARACTER::GetExpression(int Line, const string& Filename)
+{
+    AST::LITERAL* Result = new AST::LITERAL(Line, Filename);
+    Result->Value = Value;
+    Result->SetWidth(32);
+    return Result;
 }
 //------------------------------------------------------------------------------
 
-bool CHARACTER::Assign(AST::EXPRESSION* Expression){
-  error("Not yet implemented");
-  return RawAssign(Expression);
+bool CHARACTER::Assign(AST::EXPRESSION* Expression)
+{
+    error("Not yet implemented");
+    return RawAssign(Expression);
 }
 //------------------------------------------------------------------------------
 
-bool CHARACTER::RawAssign(AST::EXPRESSION* Expression){
-  error("Not yet implemented");
-  return false;
+bool CHARACTER::RawAssign(AST::EXPRESSION* Expression)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool CHARACTER::HasCircularReference(BASE* Object){
-  if(this == Object) return true;
-  error("Not yet implemented");
-  return false;
+bool CHARACTER::HasCircularReference(BASE* Object)
+{
+    if(this == Object) return true;
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void CHARACTER::Display(int Indent){
-  Debug.Indent(Indent+1);
-  Debug.Print("Character: %s\n", Name.c_str());
+void CHARACTER::Display(int Indent)
+{
+    Debug.Indent(Indent+1);
+    Debug.Print("Character: %s\n", Name.c_str());
 
-  Debug.Indent(Indent+2);
-  Debug.Print("Value = '%s' ", UTF_Converter.UTF8(Value));
-  Debug.Print("(%d)\n", Value);
+    Debug.Indent(Indent+2);
+    Debug.Print("Value = '%s' ", UTF_Converter.UTF8(Value));
+    Debug.Print("(%d)\n", Value);
 }
 //------------------------------------------------------------------------------
 
-void CHARACTER::Validate(){
-  assert(Type == TYPE::Character);
+void CHARACTER::Validate()
+{
+    assert(Type == TYPE::Character);
 
-  BASE::Validate();
+    BASE::Validate();
 
-  error("Not implemented yet");
+    error("Not implemented yet");
 }
 //------------------------------------------------------------------------------
 

@@ -28,58 +28,62 @@ ENGINE* Engine;
 using namespace std;
 //------------------------------------------------------------------------------
 
-ENGINE::ENGINE(){
-  Engine = this; // There is only one instance, created in ALCHA.cpp::main()
+ENGINE::ENGINE()
+{
+    Engine = this; // There is only one instance, created in ALCHA.cpp::main()
 }
 //------------------------------------------------------------------------------
 
-ENGINE::~ENGINE(){
+ENGINE::~ENGINE()
+{
 }
 //------------------------------------------------------------------------------
 
-AST::BASE* ENGINE::RunAST(const char* Filename){
-  AST::BASE* Ast = Parser.Run(Filename);
-  if(!Ast) return 0;
+AST::BASE* ENGINE::RunAST(const char* Filename)
+{
+    AST::BASE* Ast = Parser.Run(Filename);
+    if(!Ast) return 0;
 
-  auto Node = Ast;
-  while(Node){
-    if(!Node->RunAST()){
-      delete Ast;
-      return 0;
+    auto Node = Ast;
+    while(Node){
+        if(!Node->RunAST()){
+            delete Ast;
+            return 0;
+        }
+        Node = Node->Next;
     }
-    Node = Node->Next;
-  }
-  return Ast;
+    return Ast;
 }
 //------------------------------------------------------------------------------
 
-bool ENGINE::Run(const char* Filename){
-  assert(NETLIST::NamespaceStack.empty());
+bool ENGINE::Run(const char* Filename)
+{
+    assert(NETLIST::NamespaceStack.empty());
 
-  NETLIST::NamespaceStack.push_front(&NETLIST::Global);
+    NETLIST::NamespaceStack.push_front(&NETLIST::Global);
 
-  NETLIST::Global.Ast = RunAST(Filename);
-  if(!NETLIST::Global.Ast) return 0;
+    NETLIST::Global.Ast = RunAST(Filename);
+    if(!NETLIST::Global.Ast) return 0;
 
-  #ifdef DEBUG
-    Debug.Print(ANSI_FG_GREEN "\nDisplaying Global AST ");
-    Debug.Print(Filename);
-    Debug.Print(" -------------------------------------\n\n" ANSI_RESET);
-    if(NETLIST::Global.Ast) NETLIST::Global.Ast->Display();
-    else                    Debug.Print("AST is empty\n");
+    #ifdef DEBUG
+        Debug.Print(ANSI_FG_GREEN "\nDisplaying Global AST ");
+        Debug.Print(Filename);
+        Debug.Print(" -------------------------------------\n\n" ANSI_RESET);
+        if(NETLIST::Global.Ast) NETLIST::Global.Ast->Display();
+        else                    Debug.Print("AST is empty\n");
 
-    Debug.Print(ANSI_FG_GREEN "\nDisplaying Global Symbols ");
-    Debug.Print(Filename);
-    Debug.Print(" -------------------------------------\n\n" ANSI_RESET);
-    NETLIST::Global.Display();
+        Debug.Print(ANSI_FG_GREEN "\nDisplaying Global Symbols ");
+        Debug.Print(Filename);
+        Debug.Print(" -------------------------------------\n\n" ANSI_RESET);
+        NETLIST::Global.Display();
 
-    foreach(Namespace, NETLIST::NamespaceStack){
-      if((*Namespace)->Ast) (*Namespace)->Ast->Validate();
-    }
-    NETLIST::Global.Validate();
-  #endif
+        foreach(Namespace, NETLIST::NamespaceStack){
+            if((*Namespace)->Ast) (*Namespace)->Ast->Validate();
+        }
+        NETLIST::Global.Validate();
+    #endif
 
-  return NETLIST::Global.Ast;
+    return NETLIST::Global.Ast;
 }
 //------------------------------------------------------------------------------
 

@@ -35,73 +35,81 @@ using namespace AST;
 //------------------------------------------------------------------------------
 
 RAW_ASSIGN::RAW_ASSIGN(int Line, std::string Filename):
-RAW_ASSIGN(Line, Filename.c_str()){}
+RAW_ASSIGN(Line, Filename.c_str())
+{}
 //------------------------------------------------------------------------------
 
 RAW_ASSIGN::RAW_ASSIGN(int Line, const char* Filename):
-ASSIGNMENT(Line, Filename, TYPE::Raw_Assign){}
+ASSIGNMENT(Line, Filename, TYPE::Raw_Assign)
+{}
 //------------------------------------------------------------------------------
 
-RAW_ASSIGN::~RAW_ASSIGN(){
+RAW_ASSIGN::~RAW_ASSIGN()
+{
 }
 //------------------------------------------------------------------------------
 
-BASE* RAW_ASSIGN::Copy(){
-  RAW_ASSIGN* Copy = new RAW_ASSIGN(Source.Line, Source.Filename.c_str());
+BASE* RAW_ASSIGN::Copy()
+{
+    RAW_ASSIGN* Copy = new RAW_ASSIGN(Source.Line, Source.Filename.c_str());
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
+    if(Right) Copy->Right = (decltype(Right))Right->Copy();
 
-  return Copy;
+    return Copy;
 }
 //------------------------------------------------------------------------------
 
-bool RAW_ASSIGN::RunAST(){
-  target_list TargetList;
+bool RAW_ASSIGN::RunAST()
+{
+    target_list TargetList;
 
-  assert(Left , return false);
-  assert(Right, return false);
+    assert(Left , return false);
+    assert(Right, return false);
 
-  if(!GetLHS(Left, TargetList)) return false;
-  if(TargetList.empty()){
-    Error("Target object list is empty");
+    if(!GetLHS(Left, TargetList)) return false;
+    if(TargetList.empty()){
+        Error("Target object list is empty");
+        return false;
+    }
+
+    if(TargetList.size() > 1){
+        error("Multiple assignment targets not supported yet");
+        return false;
+    }
+
+    NETLIST::BASE* Target = TargetList.front();
+    assert(Target, return false);
+
+    // Move the expression
+    bool Result = Target->RawAssign(Right);
+    Right  = 0;
+
+    return Result;
+}
+//------------------------------------------------------------------------------
+
+bool RAW_ASSIGN::GetVerilog(string& Body)
+{
+    error("Not yet implemented");
     return false;
-  }
-
-  if(TargetList.size() > 1){
-    error("Multiple assignment targets not supported yet");
-    return false;
-  }
-
-  NETLIST::BASE* Target = TargetList.front();
-  assert(Target, return false);
-
-  // Move the expression
-  bool Result = Target->RawAssign(Right);
-  Right  = 0;
-
-  return Result;
 }
 //------------------------------------------------------------------------------
 
-bool RAW_ASSIGN::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+void RAW_ASSIGN::Display()
+{
+    DisplayAssignment(":=");
 }
 //------------------------------------------------------------------------------
 
-void RAW_ASSIGN::Display(){
-  DisplayAssignment(":=");
-}
-//------------------------------------------------------------------------------
+void RAW_ASSIGN::ValidateMembers()
+{
+    assert(Type == TYPE::Raw_Assign);
 
-void RAW_ASSIGN::ValidateMembers(){
-  assert(Type == TYPE::Raw_Assign);
+    assert(Left, return);
+    Left->Validate();
 
-  assert(Left, return);
-  Left->Validate();
-
-  if(Right) Right->Validate();
+    if(Right) Right->Validate();
 }
 //------------------------------------------------------------------------------
 

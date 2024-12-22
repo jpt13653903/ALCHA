@@ -26,21 +26,21 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  class PIN_DEFINITION: public DEFINITION{
-    public:
-      PIN_DEFINITION(int Line, std::string& Filename);
-      PIN_DEFINITION(int Line, const char*  Filename);
-     ~PIN_DEFINITION();
+    class PIN_DEFINITION: public DEFINITION{
+        public:
+            PIN_DEFINITION(int Line, std::string& Filename);
+            PIN_DEFINITION(int Line, const char*  Filename);
+          ~PIN_DEFINITION();
 
-      BASE* Copy() override;
+            BASE* Copy() override;
 
-      bool RunAST() override;
-      bool GetVerilog(std::string& Body) override;
+            bool RunAST() override;
+            bool GetVerilog(std::string& Body) override;
 
-      void Display() override;
+            void Display() override;
 
-      void ValidateMembers() override;
-  };
+            void ValidateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 
