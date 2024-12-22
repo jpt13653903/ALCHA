@@ -21,18 +21,16 @@ Range = Unary [".." Unary [":" Unary]];
 
 Unary   = {"-" | "~" | ":" | "++" | "--"} Postfix;
 
-Postfix = Cast { Array                   | (* Slice *)
-                 ParameterList           | (* Function call *)
-                 "."  Identifier         | (* Member reference *)
-                 "?." Identifier         | (* Safe member reference *)
-                 "'"  Identifier         | (* Attribute reference *)
-                 "++"                    | (* Increment *)
-                 "--"                    | (* Decrement *)
-                 "!"                    }; (* Factorial *)
+Postfix = Accessor { "++" | "--" | "!" };
 
-Cast    = Primary [CastEpr];
-CastEpr = "@" ( Identifier | Literal
-              | ("(" ExpressionList ")") );
+Accessor = Cast { Array           | (* Slice *)
+                  ParameterList   | (* Function call *)
+                  "."  Identifier | (* Member reference *)
+                  "?." Identifier | (* Safe member reference *)
+                  "'"  Identifier}; (* Factorial *)
+
+Cast     = Primary [CastExpr];
+CastExpr = "@" ( Identifier | Literal | ("(" ExpressionList ")") );
 
 (* The "'" prefix chooses the global scope *)
 Primary = (["'"] Identifier) | Literal | "true" | "false"
@@ -44,7 +42,7 @@ VectorConcat = ":(" ExpressionList ")";
 ArrayConcat  = ":[" ExpressionList "]";
 
 (* This builds an array (an array of arrays when nested) *)
-Array = "[" ExpressionList "]";
+Array = "[" [ExpressionList] "]";
 
 ExpressionList = Expression {"," Expression };
 ParameterList  = "(" [Parameter {"," Parameter } ] ")";

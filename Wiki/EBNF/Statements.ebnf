@@ -9,10 +9,10 @@ Group  = "group"  [AttributeList] [Identifier] "{" [Statements] "}";
 
 (* The result from "Postfix" or "Concatenation" is checked for syntactic
    validity before use as a name-space, class name or assignment target. *)
-FunctionCall  = Postfix ("," | ";");
-NamespacePush = Postfix ".{" [Statements] "}";
-Assignment    = (Postfix AssignmentOperator Expression ("," | ";"))
-              | (PostFix ("++" | "--") ("," | ";"));
+FunctionCallStatement = FunctionCall ("," | ";");
+NamespacePush         = Accessor ".{" [Statements] "}";
+Assignment            = (Accessor AssignmentOperator Expression ("," | ";"))
+                      | (Accessor ("++" | "--") ("," | ";"));
 
 AssignmentOperator = "="  | ":=" | "~=" | "+="  | "-="  | "*="  | "/="  | "**="
                    | "%=" | "&=" | "|=" | "^=" | "<<=" | ">>=" ;
@@ -28,10 +28,10 @@ While = "while" "(" Expression ")" StatementBlock);
 Loop = "loop" ["(" Expression ")"] StatementBlock);
 
 (* For case statements, Expression must evaluate to a constant *)
-Switch = "switch" "(" Expression ")" "{"
-          {"case" "(" ExpressionList ")" StatementBlock}
-          ["default"                     StatementBlock]
-         "}";
+(* The case is a normal statement so that autogen style code works *)
+Switch = "switch" "(" Expression ")"  StatementBlock;
+Case = ("case" "(" ExpressionList ")" StatementBlock)
+     | ("default"                     StatementBlock);
 
 (* For "break" and "continue", the expression indicates the number of levels,
    which is 1 by default. *)

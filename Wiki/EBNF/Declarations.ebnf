@@ -5,8 +5,8 @@ Statements = Statement {Statement};
 Statement  = [Wait]
              (Label | Definition | ClassDefinition | EnumDefinition
            | Alias | Import | Struct | Group | AccessDirectionGroup
-           | IfStatement | For | While  | Loop | Switch | Jump | GoTo
-           | FunctionCall | NamespacePush | Assignment
+           | IfStatement | For | While  | Loop | Switch | Case | Jump | GoTo
+           | FunctionCallStatement | NamespacePush | Assignment
            | RTL | FSM | HDL
            | Stimulus | Emulate | ForkJoin | Assert | ";");
 
