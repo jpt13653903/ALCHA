@@ -265,8 +265,8 @@ Scanner::Scanner()
         keywords .balance();
         operators.balance();
 
-        for(int j = 0; characterNames[j]; j += 2){
-            characters[characterNames[j]] = (const byte*)characterNames[j+1];
+        for(int n = 0; characterNames[n]; n += 2){
+            characters[characterNames[n]] = (const byte*)characterNames[n+1];
         }
 
         initialised = true;
@@ -464,7 +464,7 @@ bool Scanner::getIdentifier(Token* token)
 
         case Token::Type::File:
             token->type = Token::Type::String;
-            token->data = filename.c_str();
+            token->data = filename;
             break;
 
         case Token::Type::Line:
@@ -559,7 +559,7 @@ unsigned Scanner::getExponent(bool* sign, Token* token)
 
     while(buffer[index] == '_') token->data += buffer[index++];
     if(buffer[index] < '0' || buffer[index] > '9'){
-        printError("exponent digit expected");
+        printError("Exponent digit expected");
         return 0;
     }
 
@@ -680,7 +680,7 @@ bool Scanner::getLiteral(Token* token)
 
 bool Scanner::getString(Token* token)
 {
-    int      j;
+    int      n;
     unsigned digit, utf32;
 
     if(buffer[index] != '"') return false;
@@ -717,18 +717,18 @@ bool Scanner::getString(Token* token)
 
                 case '&':{ // HTML character name
                     index++;
-                    for(j = index; buffer[j] && buffer[j] != ';'; j++);
-                    if(!buffer[j]){
+                    for(n = index; buffer[n] && buffer[n] != ';'; n++);
+                    if(!buffer[n]){
                         printError("Invalid \\& code");
                         return false;
                     }
-                    buffer[j] = 0;
+                    buffer[n] = 0;
                     auto s = characters.find((const char*)(buffer+index));
                     if(s == characters.end()){
                         printError("Invalid \\& code");
                         return false;
                     }
-                    index = j+1;
+                    index = n+1;
                     token->data += (const char*)s->second;
                     break;
                 }
@@ -736,7 +736,7 @@ bool Scanner::getString(Token* token)
                 case 'x' : // Hexadecimal number
                     index++;
                     utf32 = 0;
-                    for(j = 0; j < 2; j++){
+                    for(n = 0; n < 2; n++){
                         if(!getDigit(&digit, 16)){
                             printError("Invalid \\x code");
                             return false;
@@ -750,7 +750,7 @@ bool Scanner::getString(Token* token)
                 case 'u' : // 16-bit Unicode
                     index++;
                     utf32 = 0;
-                    for(j = 0; j < 4; j++){
+                    for(n = 0; n < 4; n++){
                         if(!getDigit(&digit, 16)){
                             printError("Invalid \\u code");
                             return false;
@@ -764,7 +764,7 @@ bool Scanner::getString(Token* token)
                 case 'U' : // 32-bit Unicode
                     index++;
                     utf32 = 0;
-                    for(j = 0; j < 8; j++){
+                    for(n = 0; n < 8; n++){
                         if(!getDigit(&digit, 16)){
                             printError("Invalid \\U code");
                             return false;
@@ -777,9 +777,9 @@ bool Scanner::getString(Token* token)
 
                 default: // Could be an octal number...
                     utf32 = 0;
-                    for(j = 0; j < 11; j++){
+                    for(n = 0; n < 11; n++){
                         if(buffer[index] < '0' || buffer[index] > '7'){
-                            if(j) break;
+                            if(n) break;
                             printError("Invalid escape sequence");
                             return false;
                         }
@@ -789,11 +789,11 @@ bool Scanner::getString(Token* token)
                     break;
             }
         }else{
-            if(spaces.match(buffer+index, &j) == Token::Type::Newline){
+            if(spaces.match(buffer+index, &n) == Token::Type::Newline){
                 line++;
-                while(j){
+                while(n){
                     token->data += buffer[index++];
-                    j--;
+                    n--;
                 }
             }else{
                 token->data += buffer[index++];
@@ -849,14 +849,15 @@ bool Scanner::getToken(Token* token)
 
     token->line = line;
 
-    if(getString    (token)) return true; // This is the least expensive match
-    if(getLiteral   (token)) return true;
-    if(getIdentifier(token)) return true;
-    if(getOperator  (token)) return true; // This is the most expensive match
+    // In order of least to most expensive match
+    if(getString    (token)) return true; if(error) return false;
+    if(getLiteral   (token)) return true; if(error) return false;
+    if(getIdentifier(token)) return true; if(error) return false;
+    if(getOperator  (token)) return true; if(error) return false;
 
     if(buffer[index]){
         char s[0x100];
-        sprintf(s, "Unknown token near \"%.5s\"", buffer+index);
+        sprintf(s, "Unknown token near \"%.10s\"", buffer+index);
         printError(s);
     }
     token->type = Token::Type::Unknown;

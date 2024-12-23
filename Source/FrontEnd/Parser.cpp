@@ -84,7 +84,7 @@ AST::Assignment* Parser::attributeAssignment()
     node = new AST::Assign(token.line, scanner.getFilename());
     node->left = identifier();
     if(!node->left){
-        printError("identifier expected");
+        printError("Identifier expected");
         delete node;
         return 0;
     }
@@ -159,7 +159,7 @@ AST::ClassDefinition* Parser::classDefinition()
     node->attributes = attributeList();
 
     if(token.type != Token::Type::Identifier){
-        printError("identifier expected");
+        printError("Identifier expected");
         delete node;
         return 0;
     }
@@ -192,7 +192,7 @@ AST::ClassDefinition* Parser::classDefinition()
 
             parent->className = typeIdentifier();
             if(!parent->className){
-                printError("type identifier expected");
+                printError("Type identifier expected");
                 delete node;
                 return 0;
             }
@@ -229,7 +229,7 @@ AST::EnumDefinition* Parser::enumDefinition()
     getToken();
 
     if(token.type != Token::Type::Identifier){
-        printError("identifier expected");
+        printError("Identifier expected");
         delete node;
         return 0;
     }
@@ -254,7 +254,7 @@ AST::EnumDefinition* Parser::enumDefinition()
         lastValue = value;
 
         if(token.type != Token::Type::Identifier){
-            printError("identifier expected");
+            printError("Identifier expected");
             delete node;
             return 0;
         }
@@ -328,7 +328,7 @@ bool Parser::expressionList(std::vector<AST::Expression*>& list)
         getToken();
         node = expression();
         if(!node){
-            printError("expression expected");
+            printError("Expression expected");
             for(auto element: list) delete element;
             list.clear();
             return false;
@@ -364,7 +364,7 @@ AST::Base* Parser::parameter()
         node->right = expression();
 
         if(!node->right){
-            printError("expression expected");
+            printError("Expression expected");
             delete node;
             return 0;
         }
@@ -388,7 +388,7 @@ bool Parser::parameterList(list<AST::Base*>& parameters)
     while(token.type != Token::Type::Unknown){
         node = parameter();
         if(!node){
-            printError("parameter assignment or expression expected");
+            printError("Parameter assignment or expression expected");
             return false;
         }
         parameters.push_back(node);
@@ -494,7 +494,7 @@ AST::Expression* Parser::primary()
         return node;
     }
     if(globalAttribute){
-        printError("identifier expected");
+        printError("Identifier expected");
         return 0;
     }
 
@@ -509,7 +509,7 @@ AST::Expression* Parser::primary()
 
         node = expression();
         if(!node){
-            printError("expression expected");
+            printError("Expression expected");
             return 0;
         }
 
@@ -539,7 +539,7 @@ AST::Expression* Parser::castEpr(AST::Expression* node)
         node->right = literal   (); if(node->right) return node;
 
         if(token.type != Token::Type::OpenRound){
-            printError("cast expression specifier expected");
+            printError("Cast expression specifier expected");
             delete node;
             return 0;
         }
@@ -547,7 +547,7 @@ AST::Expression* Parser::castEpr(AST::Expression* node)
 
         node->right = expression();
         if(!node->right){
-            printError("expression expected");
+            printError("Expression expected");
             delete node;
             return 0;
         }
@@ -555,7 +555,7 @@ AST::Expression* Parser::castEpr(AST::Expression* node)
             getToken();
             node->right->next = expression();
             if(!node->right->next){
-                printError("expression expected");
+                printError("Expression expected");
                 delete node;
                 return 0;
             }
@@ -619,7 +619,7 @@ AST::Expression* Parser::postfix()
             node = temp;
 
             if(!node->right){
-                printError("identifier expected");
+                printError("Identifier expected");
                 delete node;
                 return 0;
             }
@@ -633,7 +633,7 @@ AST::Expression* Parser::postfix()
             node = temp;
 
             if(!node->right){
-                printError("identifier expected");
+                printError("Identifier expected");
                 delete node;
                 return 0;
             }
@@ -647,7 +647,7 @@ AST::Expression* Parser::postfix()
             node = temp;
 
             if(!node->right){
-                printError("identifier expected");
+                printError("Identifier expected");
                 delete node;
                 return 0;
             }
@@ -718,7 +718,7 @@ AST::Expression* Parser::unary()
 
     if(!node){
         if(head){
-            printError("postfix expected");
+            printError("Postfix expected");
             delete head;
         }
         return 0;
@@ -742,7 +742,7 @@ AST::Expression* Parser::range()
         temp->left  = node;
         temp->right = unary();
         if(!temp->right){
-            printError("range end expected");
+            printError("Range end expected");
             delete temp;
             return 0;
         }
@@ -750,7 +750,7 @@ AST::Expression* Parser::range()
             getToken();
             temp->step = unary();
             if(!temp->step){
-                printError("range step expected");
+                printError("Range step expected");
                 delete temp;
                 return 0;
             }
@@ -806,7 +806,7 @@ AST::Expression* Parser::reduction()
     if(node){
         node->right = range();
         if(!node->right){
-            printError("range expected");
+            printError("Range expected");
             delete node;
             return 0;
         }
@@ -841,7 +841,7 @@ AST::Expression* Parser::replication()
 
         node->right = primary();
         if(!node->right){
-            printError("primary expected");
+            printError("Primary expected");
             delete node;
             return 0;
         }
@@ -873,7 +873,7 @@ AST::Expression* Parser::exponential()
 
         node->right = replication();
         if(!node->right){
-            printError("replication expected");
+            printError("Replication expected");
             delete node;
             return 0;
         }
@@ -911,7 +911,7 @@ AST::Expression* Parser::multiplicative()
 
         node->right = exponential();
         if(!node->right){
-            printError("exponential expected");
+            printError("Exponential expected");
             delete node;
             return 0;
         }
@@ -946,7 +946,7 @@ AST::Expression* Parser::additive()
 
         node->right = multiplicative();
         if(!node->right){
-            printError("multiplicative expected");
+            printError("Multiplicative expected");
             delete node;
             return 0;
         }
@@ -981,7 +981,7 @@ AST::Expression* Parser::shift()
 
         node->right = additive();
         if(!node->right){
-            printError("additive expected");
+            printError("Additive expected");
             delete node;
             return 0;
         }
@@ -1022,7 +1022,7 @@ AST::Expression* Parser::relational()
 
         node->right = shift();
         if(!node->right){
-            printError("shift expected");
+            printError("Shift expected");
             delete node;
             return 0;
         }
@@ -1057,7 +1057,7 @@ AST::Expression* Parser::equality()
 
         node->right = relational();
         if(!node->right){
-            printError("relational expected");
+            printError("Relational expected");
             delete node;
             return 0;
         }
@@ -1092,7 +1092,7 @@ AST::Expression* Parser::bitwiseAnd()
 
         node->right = equality();
         if(!node->right){
-            printError("equality expected");
+            printError("Equality expected");
             delete node;
             return 0;
         }
@@ -1127,7 +1127,7 @@ AST::Expression* Parser::bitwiseXor()
 
         node->right = bitwiseAnd();
         if(!node->right){
-            printError("bitwiseAnd expected");
+            printError("BitwiseAnd expected");
             delete node;
             return 0;
         }
@@ -1162,7 +1162,7 @@ AST::Expression* Parser::bitwiseOr()
 
         node->right = bitwiseXor();
         if(!node->right){
-            printError("bitwiseXor expected");
+            printError("BitwiseXor expected");
             delete node;
             return 0;
         }
@@ -1188,7 +1188,7 @@ AST::Expression* Parser::expression()
 
         node->right = cast();
         if(!node->right){
-            printError("cast expected");
+            printError("Cast expected");
             delete node;
             return 0;
         }
@@ -1202,7 +1202,7 @@ AST::Expression* Parser::expression()
 
         node->right->next = cast();
         if(!node->right->next){
-            printError("cast expected");
+            printError("Cast expected");
             delete node;
             return 0;
         }
@@ -1229,7 +1229,7 @@ AST::Expression* Parser::typeIdentifier()
             node = temp;
 
             if(!node->right){
-                printError("identifier expected");
+                printError("Identifier expected");
                 delete node;
                 return 0;
             }
@@ -1259,7 +1259,7 @@ AST::Assignment* Parser::initialiser(std::string& identifier)
 
     node->right = expression();
     if(!node->right){
-        printError("expression expected");
+        printError("Expression expected");
         delete node;
         return 0;
     }
@@ -1352,12 +1352,12 @@ AST::Definition* Parser::defParameter()
             delete temp;
 
         }else{
-            printError("identifier expected");
+            printError("Identifier expected");
             delete node;
             return 0;
         }
     }else{
-        printError("identifier expected");
+        printError("Identifier expected");
         delete node;
         return 0;
     }
@@ -1392,7 +1392,7 @@ AST::Definition* Parser::defParameterList()
         if(node->next) node->next->prev = node;
         node = (AST::Definition*)node->next;
         if(!node){
-            printError("defParameter expected");
+            printError("DefParameter expected");
             delete head;
             return 0;
         }
@@ -1456,7 +1456,7 @@ AST::Definition::Identifier* Parser::identifierList()
         getToken();
 
         if(token.type != Token::Type::Identifier){
-            printError("identifier expected");
+            printError("Identifier expected");
             delete head;
             return 0;
         }
@@ -1516,7 +1516,7 @@ AST::Definition* Parser::definition()
         case Token::Type::Func:
             node = new AST::FuncPtrDefinition(token.line, scanner.getFilename()); break;
         default:
-            if(direction != AST::Definition::Direction::Inferred) printError("type name expected");
+            if(direction != AST::Definition::Direction::Inferred) printError("Type name expected");
             return 0;
     }
     node->direction = direction;
@@ -1550,7 +1550,7 @@ AST::Definition* Parser::definition()
 
     node->identifiers = identifierList();
     if(!node->identifiers){
-        printError("identifierList expected");
+        printError("IdentifierList expected");
         delete node;
         return 0;
     }
@@ -1720,7 +1720,7 @@ AST::Base* Parser::other()
         def->attributes  = attributeList ();
         def->identifiers = identifierList();
         if(!def->identifiers){
-            printError("identifier list expected");
+            printError("Identifier list expected");
             delete def;
             return 0;
         }
@@ -1788,7 +1788,7 @@ AST::Base* Parser::other()
     assign->right = expression();
 
     if(!assign->right){
-        printError("expression expected");
+        printError("Expression expected");
         delete assign;
         return 0;
     }
@@ -1821,7 +1821,7 @@ AST::IfStatement* Parser::ifStatement()
 
     node->condition = expression();
     if(!node->condition){
-        printError("expression expected");
+        printError("Expression expected");
         delete node;
         return 0;
     }
@@ -1859,7 +1859,7 @@ AST::WhileLoop* Parser::whileLoop()
 
     node->condition = expression();
     if(!node->condition){
-        printError("expression expected");
+        printError("Expression expected");
         delete node;
         return 0;
     }
@@ -1887,7 +1887,7 @@ AST::LoopLoop* Parser::loopLoop()
 
         node->count = expression();
         if(!node->count){
-            printError("expression expected");
+            printError("Expression expected");
             delete node;
             return 0;
         }
@@ -1919,7 +1919,7 @@ AST::ForLoop* Parser::forLoop()
     getToken();
 
     if(token.type != Token::Type::Identifier){
-        printError("identifier expected");
+        printError("Identifier expected");
         delete node;
         return 0;
     }
@@ -1935,7 +1935,7 @@ AST::ForLoop* Parser::forLoop()
 
     node->range = range();
     if(!node->range){
-        printError("range expected");
+        printError("Range expected");
         delete node;
         return 0;
     }
@@ -1959,7 +1959,7 @@ AST::Import* Parser::import()
     getToken();
 
     if(token.type != Token::Type::String){
-        printError("file name expected");
+        printError("File name expected");
         delete node;
         return 0;
     }
@@ -1970,7 +1970,7 @@ AST::Import* Parser::import()
         getToken();
 
         if(token.type != Token::Type::Identifier){
-            printError("identifier expected");
+            printError("Identifier expected");
             delete node;
             return 0;
         }
@@ -2004,7 +2004,7 @@ AST::Switch* Parser::switchStatement()
 
     node->expression = expression();
     if(!node->expression){
-        printError("expression expected");
+        printError("Expression expected");
         delete node;
         return 0;
     }
@@ -2039,7 +2039,7 @@ AST::Switch* Parser::switchStatement()
         getToken();
 
         if(!expressionList(theCase->expressions)){
-            printError("expression list expected");
+            printError("Expression list expected");
             delete node;
             return 0;
         }
@@ -2076,7 +2076,7 @@ AST::Alias* Parser::alias()
     AST::Alias* node = new AST::Alias(token.line, scanner.getFilename());
 
     if(token.type != Token::Type::Identifier){
-        printError("identifier expected");
+        printError("Identifier expected");
         delete node;
         return 0;
     }
@@ -2092,7 +2092,7 @@ AST::Alias* Parser::alias()
 
     node->expression = expression();
     if(!node->expression){
-        printError("identifier expected");
+        printError("Identifier expected");
         delete node;
         return 0;
     }
@@ -2226,7 +2226,7 @@ AST::Hdl* Parser::hdl()
             if(file->next) file->next->prev = file;
             file = (AST::Expression*)file->next;
             if(!file){
-                printError("file name string expected");
+                printError("File name string expected");
                 delete node;
                 return 0;
             }
@@ -2240,7 +2240,7 @@ AST::Hdl* Parser::hdl()
     getToken();
 
     if(token.type != Token::Type::Identifier){
-        printError("identifier expected");
+        printError("Identifier expected");
         delete node;
         return 0;
     }
@@ -2379,7 +2379,7 @@ AST::Base* Parser::statementBlock()
         getToken();
     }else{
         node = statement();
-        if(!node) printError("statement expected");
+        if(!node) printError("Statement expected");
     }
     return node;
 }

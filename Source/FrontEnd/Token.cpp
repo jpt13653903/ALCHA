@@ -192,7 +192,7 @@ const char* Token::decodeType()
             case Type::String:                 return "String";
 
         // Invalid .............................................................
-            default:                     return "Invalid Type Index";
+            default:                           return "Invalid Type Index";
     }
 }
 //------------------------------------------------------------------------------

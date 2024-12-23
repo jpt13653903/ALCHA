@@ -186,7 +186,7 @@ void TokenTree::subBalance(Node* node)
 
 Token::Type TokenTree::match(const byte* pattern, int* count)
 {
-    int         N    = 0;
+    int         n    = 0;
     Token::Type type = Token::Type::Unknown;
 
     *count = 0;
@@ -201,9 +201,9 @@ Token::Type TokenTree::match(const byte* pattern, int* count)
             node = node->right;
 
         }else{
-            N++;
+            n++;
             if(node->type != Token::Type::Unknown){ // Keep track of the best option
-                *count = N;
+                *count = n;
                 type   = node->type;
             }
             if(pattern[1]){
