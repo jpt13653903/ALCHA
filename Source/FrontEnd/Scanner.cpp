@@ -581,20 +581,17 @@ bool Scanner::getNumber(Token* token, unsigned base)
     }
 
     mpz_t num, den, exp;
-    // mpz_init_set_ui(num, 0);
-    // mpz_init_set_ui(den, 1);
-    // mpz_init_set_ui(exp, 1);
-    num = 0;
-    den = 1;
-    exp = 1;
+    mpz_init_set_ui(num, 0);
+    mpz_init_set_ui(den, 1);
+    mpz_init_set_ui(exp, 1);
 
     while(buffer[index]){
         while(buffer[index] == '_') token->data += buffer[index++];
 
         if(!getDigit(&digit, base)) break;
 
-        num *= base;  // mpz_mul_ui(num, num, base);
-        num += digit; // mpz_add_ui(num, num, digit);
+        mpz_mul_ui(num, num, base);
+        mpz_add_ui(num, num, digit);
         token->data += buffer[index++];
     }
 
@@ -605,9 +602,9 @@ bool Scanner::getNumber(Token* token, unsigned base)
 
             if(!getDigit(&digit, base)) break;
 
-            num *= base;  // mpz_mul_ui(num, num, base);
-            den *= base;  // mpz_mul_ui(den, den, base);
-            num += digit; // mpz_add_ui(num, num, digit);
+            mpz_mul_ui(num, num, base);
+            mpz_mul_ui(den, den, base);
+            mpz_add_ui(num, num, digit);
             token->data += buffer[index++];
         }
     }
@@ -617,15 +614,15 @@ bool Scanner::getNumber(Token* token, unsigned base)
 
     if(base == 10 && (buffer[index] == 'e' || buffer[index] == 'E')){
         exponent = getExponent(&sign, token);
-        exp = pow(10, exponent); // mpz_ui_pow_ui(exp, 10, exponent);
+        mpz_ui_pow_ui(exp, 10, exponent);
 
     }else if(buffer[index] == 'p' || buffer[index] == 'P'){
         exponent = getExponent(&sign, token);
-        exp = pow(2, exponent); // mpz_ui_pow_ui(exp, 2, exponent);
+        mpz_ui_pow_ui(exp, 2, exponent);
     }
 
-    if(sign) den *= exp; // mpz_mul(den, den, exp);
-    else     num *= exp; // mpz_mul(num, num, exp);
+    if(sign) mpz_mul(den, den, exp);
+    else     mpz_mul(num, num, exp);
 
     token->value.set(num, den);
 
@@ -635,9 +632,9 @@ bool Scanner::getNumber(Token* token, unsigned base)
         token->value.mul(0, 1);
     }
 
-    // mpz_clear(num);
-    // mpz_clear(den);
-    // mpz_clear(exp);
+    mpz_clear(num);
+    mpz_clear(den);
+    mpz_clear(exp);
 
     return true;
 }

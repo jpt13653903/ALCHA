@@ -18,18 +18,18 @@ Toolbox = ../Toolbox/Cpp
 Version  = -DMAJOR_VERSION=0 -DMINOR_VERSION=2
 #-------------------------------------------------------------------------------
 
-# Libraries  = -lgmp
+Libraries  = -lgmp
 # Libraries += -lmpfr
 # Libraries += -lfftw3
 
 ifeq ($(OS), Windows_NT)
   Includes    = -ILibraries/include
-  # Headers    += Libraries/include/gmp.h
+  Headers    += Libraries/include/gmp.h
   # Headers    += Libraries/include/mpfr.h
   # Headers    += Libraries/include/fftw3.h
 
   LibInclude  = -LLibraries/lib
-  # Objects    += Libraries/lib/libgmp.a
+  Objects    += Libraries/lib/libgmp.a
   # Objects    += Libraries/lib/libmpfr.a
   # Objects    += Libraries/lib/libfftw3.a
 else

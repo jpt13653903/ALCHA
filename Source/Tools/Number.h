@@ -32,9 +32,7 @@
 #include <string>
 //------------------------------------------------------------------------------
 
-// #include "gmp.h"
-typedef double mpq_t;
-typedef double mpz_t;
+#include "gmp.h"
 //------------------------------------------------------------------------------
 
 class Number{
@@ -49,7 +47,7 @@ class Number{
         Number(double        d);
         Number(bool          b);
         Number(const Number& n);
-      ~Number();
+       ~Number();
 
         void set(mpz_t numerator, mpz_t denominator);
         void set_e (); // First 43 terms of the series e = sum(1/n!)
