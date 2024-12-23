@@ -35,10 +35,6 @@ using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-SubtractAssign::SubtractAssign(int line, std::string filename):
-    SubtractAssign(line, filename.c_str()){}
-//------------------------------------------------------------------------------
-
 SubtractAssign::SubtractAssign(int line, const char* filename):
     Assignment(line, filename, Type::SubtractAssign){}
 //------------------------------------------------------------------------------

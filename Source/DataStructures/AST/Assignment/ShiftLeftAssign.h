@@ -27,7 +27,6 @@
 
 namespace AST{
     struct ShiftLeftAssign: public Assignment{
-        ShiftLeftAssign(int line, std::string filename);
         ShiftLeftAssign(int line, const char* filename);
        ~ShiftLeftAssign();
 

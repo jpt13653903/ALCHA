@@ -28,147 +28,148 @@
 
 struct Token{
     enum class Type{
-        Unknown = 0, // also used to designate errors, etc.
+            Unknown = 0, // also used to designate errors, etc.
+            EndOfFile,
 
         // White-space .........................................................
-        Space, // Spaces are only used in the scanner
-        Newline,
+            Space, // Spaces are only used in the scanner
+            Newline,
 
         // Special keywords ....................................................
-        File, Line, Date, Time,
-        // __CLASS__, __FUNCTION__, etc. are implemented as special variables
+            File, Line, Date, Time,
+            // __CLASS__, __FUNCTION__, etc. are implemented as special variables
 
         // Keywords ............................................................
-        Void    , Auto   ,
-        Pin     , Net    ,
-        Byte    , Char   , Num,
-        True    , False  ,
-        Class   , Enum   , Struct   , Group , Alias,
-        Input   , Output ,
-        Public  , Private, Protected,
-        If      , Else   , For, In  , While , Loop ,
-        Switch  , Case   , Default  ,
-        Import  , As     ,
-        Return  , Break  , Continue , Goto  ,
-        Func    , Inline , Operator ,
-        RTL     , FSM    , HDL,
-        Stimulus, Emulate, Assert, Wait ,
-        PosEdge , NegEdge,
+            Void    , Auto   ,
+            Pin     , Net    ,
+            Byte    , Char   , Num,
+            True    , False  ,
+            Class   , Enum   , Struct   , Group , Alias,
+            Input   , Output ,
+            Public  , Private, Protected,
+            If      , Else   , For, In  , While , Loop ,
+            Switch  , Case   , Default  ,
+            Import  , As     ,
+            Return  , Break  , Continue , Goto  ,
+            Func    , Inline , Operator ,
+            RTL     , FSM    , HDL,
+            Stimulus, Emulate, Assert, Wait ,
+            PosEdge , NegEdge,
 
         // Operators ...........................................................
-        TernaryIf,
-        Elvis,
+            TernaryIf,
+            Elvis,
 
-        BitOr,
-        BitNor,
-        BitXor,
-        BitXnor,
-        BitAnd,
-        BitNand,
+            BitOr,
+            BitNor,
+            BitXor,
+            BitXnor,
+            BitAnd,
+            BitNand,
 
-        Equal,
-        NotEqual,
-        Less,
-        Greater,
-        LessEqual,
-        GreaterEqual,
+            Equal,
+            NotEqual,
+            Less,
+            Greater,
+            LessEqual,
+            GreaterEqual,
 
-        ShiftLeft,
-        ShiftRight,
+            ShiftLeft,
+            ShiftRight,
 
-        Add,
-        Subtract,
-        Multiply,
-        Divide,
-        Modulus,
-        Exponential,
-        Factorial,
+            Add,
+            Subtract,
+            Multiply,
+            Divide,
+            Modulus,
+            Exponential,
+            Factorial,
 
-        Replicate,
-        Concatenate,
-        ArrayConcatenate,
+            Replicate,
+            Concatenate,
+            ArrayConcatenate,
 
-        Stringify,
-        StringifyExpression,
+            Stringify,
+            StringifyExpression,
 
-        To,
+            To,
 
-        BitNot,
-        Increment,
-        Decrement,
+            BitNot,
+            Increment,
+            Decrement,
 
-        AccessMember,
-        AccessMemberSafe,
-        AccessMemberPush,
-        AccessAttribute,
+            AccessMember,
+            AccessMemberSafe,
+            AccessMemberPush,
+            AccessAttribute,
 
-        CastOp,
+            CastOp,
 
-        Assign,
-        RawAssign,
-        AppendAssign,
-        AddAssign,
-        SubtractAssign,
-        MultiplyAssign,
-        DivideAssign,
-        ModulusAssign,
-        XorAssign,
-        AndAssign,
-        OrAssign,
-        ExponentialAssign,
-        ShiftLeftAssign,
-        ShiftRightAssign,
+            Assign,
+            RawAssign,
+            AppendAssign,
+            AddAssign,
+            SubtractAssign,
+            MultiplyAssign,
+            DivideAssign,
+            ModulusAssign,
+            XorAssign,
+            AndAssign,
+            OrAssign,
+            ExponentialAssign,
+            ShiftLeftAssign,
+            ShiftRightAssign,
 
-        OpenRound,
-        CloseRound,
-        OpenSquare,
-        CloseSquare,
-        OpenCurly,
-        CloseCurly,
-        Comma,
-        Colon,
-        Semicolon,
+            OpenRound,
+            CloseRound,
+            OpenSquare,
+            CloseSquare,
+            OpenCurly,
+            CloseCurly,
+            Comma,
+            Colon,
+            Semicolon,
 
-        WaitFor,
-        WaitCycles,
-        SequenceConsecutive,
-        SequenceGoto,
-        SequenceNonConsecutive,
-        AssertImplies,
-        AssertImpliesNext,
-        Or,
-        And,
-        Intersect,
+            WaitFor,
+            WaitCycles,
+            SequenceConsecutive,
+            SequenceGoto,
+            SequenceNonConsecutive,
+            AssertImplies,
+            AssertImpliesNext,
+            Or,
+            And,
+            Intersect,
 
         // Other types .........................................................
-        Identifier,
-        Literal,
-        String,
+            Identifier,
+            Literal,
+            String,
 
         // Aliases .............................................................
-        AndReduce   = BitAnd,
-        NandReduce  = BitNand,
-        OrReduce    = BitOr,
-        NorReduce   = BitNor,
-        XorReduce   = BitXor,
-        XnorReduce  = BitXnor,
-        LogicalNot  = Factorial,
-        TernaryElse = Colon,
-        Step        = Colon,
-        RawBits     = Colon,
-        Negate      = Subtract,
-        OpenAngle   = Less,
-        CloseAngle  = Greater,
+            AndReduce   = BitAnd,
+            NandReduce  = BitNand,
+            OrReduce    = BitOr,
+            NorReduce   = BitNor,
+            XorReduce   = BitXor,
+            XnorReduce  = BitXnor,
+            LogicalNot  = Factorial,
+            TernaryElse = Colon,
+            Step        = Colon,
+            RawBits     = Colon,
+            Negate      = Subtract,
+            OpenAngle   = Less,
+            CloseAngle  = Greater,
 
-        WaitUntil   = CastOp
-    } type;
+            WaitUntil   = CastOp
+    } type = Type::Unknown;
 
-    int         line;  // The line number
-    std::string data;  // The string contents; otherwise the original token characters
-    Number      value; // Literal value
+    int         line  = 0;
+    std::string data; // The string contents; otherwise the original token characters
+    Number      value;
 
-    Token();
-    void display(); // Used for debugging
+    const char* decodeType();
+    void        display(); // Used for debugging
 };
 //------------------------------------------------------------------------------
 

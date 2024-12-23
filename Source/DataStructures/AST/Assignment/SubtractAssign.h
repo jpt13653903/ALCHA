@@ -27,7 +27,6 @@
 
 namespace AST{
     struct SubtractAssign: public Assignment{
-        SubtractAssign(int line, std::string filename);
         SubtractAssign(int line, const char* filename);
        ~SubtractAssign();
 

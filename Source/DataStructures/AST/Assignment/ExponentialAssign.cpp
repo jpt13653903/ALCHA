@@ -35,10 +35,6 @@ using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-ExponentialAssign::ExponentialAssign(int line, std::string filename):
-    ExponentialAssign(line, filename.c_str()){}
-//------------------------------------------------------------------------------
-
 ExponentialAssign::ExponentialAssign(int line, const char* filename):
     Assignment(line, filename, Type::ExponentialAssign){}
 //------------------------------------------------------------------------------

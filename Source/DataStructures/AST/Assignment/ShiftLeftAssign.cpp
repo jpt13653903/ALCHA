@@ -35,10 +35,6 @@ using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-ShiftLeftAssign::ShiftLeftAssign(int line, std::string filename):
-    ShiftLeftAssign(line, filename.c_str()){}
-//------------------------------------------------------------------------------
-
 ShiftLeftAssign::ShiftLeftAssign(int line, const char* filename):
     Assignment(line, filename, Type::ShiftLeftAssign){}
 //------------------------------------------------------------------------------

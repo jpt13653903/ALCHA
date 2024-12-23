@@ -27,7 +27,6 @@
 
 namespace AST{
     struct RawAssign: public Assignment{
-        RawAssign(int line, std::string filename);
         RawAssign(int line, const char* filename);
        ~RawAssign();
 

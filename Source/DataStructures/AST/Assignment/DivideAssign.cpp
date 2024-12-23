@@ -35,10 +35,6 @@ using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-DivideAssign::DivideAssign(int line, std::string filename):
-    DivideAssign(line, filename.c_str()){}
-//------------------------------------------------------------------------------
-
 DivideAssign::DivideAssign(int line, const char* filename):
     Assignment(line, filename, Type::DivideAssign){}
 //------------------------------------------------------------------------------

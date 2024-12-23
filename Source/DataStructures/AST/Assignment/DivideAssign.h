@@ -27,7 +27,6 @@
 
 namespace AST{
     struct DivideAssign: public Assignment{
-        DivideAssign(int line, std::string filename);
         DivideAssign(int line, const char* filename);
        ~DivideAssign();
 

@@ -27,7 +27,6 @@
 
 namespace AST{
     struct AddAssign: public Assignment{
-        AddAssign(int line, std::string filename);
         AddAssign(int line, const char* filename);
        ~AddAssign();
 

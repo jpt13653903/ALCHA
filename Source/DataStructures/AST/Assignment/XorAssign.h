@@ -27,7 +27,6 @@
 
 namespace AST{
     struct XorAssign: public Assignment{
-        XorAssign(int line, std::string filename);
         XorAssign(int line, const char* filename);
        ~XorAssign();
 

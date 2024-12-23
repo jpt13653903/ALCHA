@@ -27,7 +27,6 @@
 
 namespace AST{
     struct ExponentialAssign: public Assignment{
-        ExponentialAssign(int line, std::string filename);
         ExponentialAssign(int line, const char* filename);
        ~ExponentialAssign();
 

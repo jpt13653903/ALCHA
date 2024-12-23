@@ -36,7 +36,7 @@ Parser::~Parser(){}
 void Parser::printError(const char* message)
 {
     error = true;
-    ::printError(token.line, scanner.filename, message);
+    ::printError(token.line, scanner.getFilename(), message);
     if(token.type != Token::Type::Unknown) printf(
         ANSI_FG_CYAN "  token: "
         ANSI_RESET "%s\n", token.data.c_str()
@@ -52,7 +52,7 @@ void Parser::getToken()
 
     #ifdef DEBUG
         logger.print(ANSI_FG_BRIGHT_BLACK);
-        logger.print(scanner.filename);
+        logger.print(scanner.getFilename());
         logger.print(":" ANSI_FG_CYAN "");
         logger.print("%05d", token.line);
         logger.print("  \t" ANSI_RESET);
@@ -81,7 +81,7 @@ AST::Assignment* Parser::attributeAssignment()
         printError("Attribute expected");
         return 0;
     }
-    node = new AST::Assign(token.line, scanner.filename);
+    node = new AST::Assign(token.line, scanner.getFilename());
     node->left = identifier();
     if(!node->left){
         printError("identifier expected");
@@ -152,7 +152,7 @@ AST::ClassDefinition* Parser::classDefinition()
 {
     if(token.type != Token::Type::Class) return 0;
     AST::ClassDefinition* node = new AST::ClassDefinition(
-        token.line, scanner.filename
+        token.line, scanner.getFilename()
     );
     getToken();
 
@@ -224,7 +224,7 @@ AST::EnumDefinition* Parser::enumDefinition()
 {
     if(token.type != Token::Type::Enum) return 0;
     AST::EnumDefinition* node = new AST::EnumDefinition(
-        token.line, scanner.filename
+        token.line, scanner.getFilename()
     );
     getToken();
 
@@ -277,7 +277,7 @@ AST::Expression* Parser::string()
 {
     if(token.type != Token::Type::String) return 0;
 
-    AST::String* node = new AST::String(token.line, scanner.filename);
+    AST::String* node = new AST::String(token.line, scanner.getFilename());
 
     node->value = token.data;
 
@@ -295,7 +295,7 @@ AST::Expression* Parser::literal()
         default: return 0;
     }
 
-    AST::Literal* node = new AST::Literal(token.line, scanner.filename);
+    AST::Literal* node = new AST::Literal(token.line, scanner.getFilename());
 
     node->value = token.value;
 
@@ -308,7 +308,7 @@ AST::Expression* Parser::identifier()
 {
     if(token.type != Token::Type::Identifier) return 0;
 
-    AST::Identifier* node = new AST::Identifier(token.line, scanner.filename);
+    AST::Identifier* node = new AST::Identifier(token.line, scanner.getFilename());
     node->name = token.data;
 
     getToken();
@@ -348,11 +348,11 @@ AST::Base* Parser::parameter()
     if(expr->type == AST::Base::Type::Identifier){
         switch(token.type){
             case Token::Type::Assign:
-                node = new AST::Assign(token.line, scanner.filename);
+                node = new AST::Assign(token.line, scanner.getFilename());
                 break;
 
             case Token::Type::RawAssign:
-                node = new AST::RawAssign(token.line, scanner.filename);
+                node = new AST::RawAssign(token.line, scanner.getFilename());
                 break;
 
             default:
@@ -415,7 +415,7 @@ AST::Expression* Parser::array()
     if(token.type == Token::Type::OpenSquare){
         getToken();
 
-        node = new AST::Array(token.line, scanner.filename);
+        node = new AST::Array(token.line, scanner.getFilename());
         expressionList(node->elements);
 
         if(token.type != Token::Type::CloseSquare){
@@ -437,7 +437,7 @@ AST::Expression* Parser::arrayConcat()
     if(token.type == Token::Type::ArrayConcatenate){
         getToken();
 
-        node = new AST::ArrayConcatenate(token.line, scanner.filename);
+        node = new AST::ArrayConcatenate(token.line, scanner.getFilename());
         expressionList(node->elements);
 
         if(token.type != Token::Type::CloseSquare){
@@ -459,7 +459,7 @@ AST::Expression* Parser::vectorConcat()
     if(token.type == Token::Type::Concatenate){
         getToken();
 
-        node = new AST::VectorConcatenate(token.line, scanner.filename);
+        node = new AST::VectorConcatenate(token.line, scanner.getFilename());
         expressionList(node->elements);
 
         if(token.type != Token::Type::CloseRound){
@@ -487,7 +487,7 @@ AST::Expression* Parser::primary()
     node = identifier();
     if(node){
         if(globalAttribute){
-            AST::Expression* temp = new AST::AccessAttribute(token.line, scanner.filename);
+            AST::Expression* temp = new AST::AccessAttribute(token.line, scanner.getFilename());
             temp->right = node;
             node = temp;
         }
@@ -530,7 +530,7 @@ AST::Expression* Parser::castEpr(AST::Expression* node)
     AST::Expression* temp;
 
     if(token.type == Token::Type::CastOp){
-        temp = new AST::Cast(token.line, scanner.filename);
+        temp = new AST::Cast(token.line, scanner.getFilename());
         getToken();
         temp->left = node;
         node = temp;
@@ -591,7 +591,7 @@ AST::Expression* Parser::postfix()
 
     while(token.type != Token::Type::Unknown){
         if(token.type == Token::Type::OpenSquare){ // array slice
-            temp = new AST::Slice(token.line, scanner.filename);
+            temp = new AST::Slice(token.line, scanner.getFilename());
 
             temp->left  = node;
             temp->right = array();
@@ -604,14 +604,14 @@ AST::Expression* Parser::postfix()
             }
 
         }else if(token.type == Token::Type::OpenRound){ // function call
-            temp = new AST::FunctionCall(token.line, scanner.filename);
+            temp = new AST::FunctionCall(token.line, scanner.getFilename());
 
             temp->left  = node;
             parameterList(((AST::FunctionCall*)temp)->parameters);
             node = temp;
 
         }else if(token.type == Token::Type::AccessMember){
-            temp = new AST::AccessMember(token.line, scanner.filename);
+            temp = new AST::AccessMember(token.line, scanner.getFilename());
             getToken();
 
             temp->left  = node;
@@ -625,7 +625,7 @@ AST::Expression* Parser::postfix()
             }
 
         }else if(token.type == Token::Type::AccessMemberSafe){
-            temp = new AST::AccessMemberSafe(token.line, scanner.filename);
+            temp = new AST::AccessMemberSafe(token.line, scanner.getFilename());
             getToken();
 
             temp->left  = node;
@@ -639,7 +639,7 @@ AST::Expression* Parser::postfix()
             }
 
         }else if(token.type == Token::Type::AccessAttribute){
-            temp = new AST::AccessAttribute(token.line, scanner.filename);
+            temp = new AST::AccessAttribute(token.line, scanner.getFilename());
             getToken();
 
             temp->left  = node;
@@ -653,21 +653,21 @@ AST::Expression* Parser::postfix()
             }
 
         }else if(token.type == Token::Type::Increment){
-            temp = new AST::Increment(token.line, scanner.filename);
+            temp = new AST::Increment(token.line, scanner.getFilename());
             getToken();
 
             temp->left = node;
             node = temp;
 
         }else if(token.type == Token::Type::Decrement){
-            temp = new AST::Decrement(token.line, scanner.filename);
+            temp = new AST::Decrement(token.line, scanner.getFilename());
             getToken();
 
             temp->left = node;
             node = temp;
 
         }else if(token.type == Token::Type::Factorial){
-            temp = new AST::Factorial(token.line, scanner.filename);
+            temp = new AST::Factorial(token.line, scanner.getFilename());
             getToken();
 
             temp->left = node;
@@ -689,19 +689,19 @@ AST::Expression* Parser::unary()
 
     while(token.type != Token::Type::Unknown){
         if(token.type == Token::Type::Negate){
-            node = new AST::Negate(token.line, scanner.filename);
+            node = new AST::Negate(token.line, scanner.getFilename());
 
         }else if(token.type == Token::Type::BitNot){
-            node = new AST::BitNot(token.line, scanner.filename);
+            node = new AST::BitNot(token.line, scanner.getFilename());
 
         }else if(token.type == Token::Type::Colon){
-            node = new AST::Raw(token.line, scanner.filename);
+            node = new AST::Raw(token.line, scanner.getFilename());
 
         }else if(token.type == Token::Type::Increment){
-            node = new AST::Increment(token.line, scanner.filename);
+            node = new AST::Increment(token.line, scanner.getFilename());
 
         }else if(token.type == Token::Type::Decrement){
-            node = new AST::Decrement(token.line, scanner.filename);
+            node = new AST::Decrement(token.line, scanner.getFilename());
 
         }else{
             break;
@@ -736,7 +736,7 @@ AST::Expression* Parser::range()
     if(!node) return 0;
 
     if(token.type == Token::Type::To){
-        temp = new AST::Range(token.line, scanner.filename);
+        temp = new AST::Range(token.line, scanner.getFilename());
         getToken();
 
         temp->left  = node;
@@ -766,37 +766,37 @@ AST::Expression* Parser::reduction()
     AST::Expression* node = 0;
     switch(token.type){
         case Token::Type::BitAnd:
-            node = new AST::AndReduce(token.line, scanner.filename);
+            node = new AST::AndReduce(token.line, scanner.getFilename());
             getToken();
             break;
 
         case Token::Type::BitNand:
-            node = new AST::NandReduce(token.line, scanner.filename);
+            node = new AST::NandReduce(token.line, scanner.getFilename());
             getToken();
             break;
 
         case Token::Type::BitOr:
-            node = new AST::OrReduce(token.line, scanner.filename);
+            node = new AST::OrReduce(token.line, scanner.getFilename());
             getToken();
             break;
 
         case Token::Type::BitNor:
-            node = new AST::NorReduce(token.line, scanner.filename);
+            node = new AST::NorReduce(token.line, scanner.getFilename());
             getToken();
             break;
 
         case Token::Type::BitXor:
-            node = new AST::XorReduce(token.line, scanner.filename);
+            node = new AST::XorReduce(token.line, scanner.getFilename());
             getToken();
             break;
 
         case Token::Type::BitXnor:
-            node = new AST::XnorReduce(token.line, scanner.filename);
+            node = new AST::XnorReduce(token.line, scanner.getFilename());
             getToken();
             break;
 
         case Token::Type::LogicalNot:
-            node = new AST::LogicalNot(token.line, scanner.filename);
+            node = new AST::LogicalNot(token.line, scanner.getFilename());
             getToken();
             break;
 
@@ -833,7 +833,7 @@ AST::Expression* Parser::replication()
     if(!node) return 0;
 
     if(token.type == Token::Type::Replicate){
-        temp = new AST::Replicate(token.line, scanner.filename);
+        temp = new AST::Replicate(token.line, scanner.getFilename());
         getToken();
 
         temp->left = node;
@@ -861,7 +861,7 @@ AST::Expression* Parser::exponential()
     while(token.type != Token::Type::Unknown){
         switch(token.type){
             case Token::Type::Exponential:
-                temp = new AST::Exponential(token.line, scanner.filename);
+                temp = new AST::Exponential(token.line, scanner.getFilename());
                 break;
             default:
                 return node;
@@ -893,13 +893,13 @@ AST::Expression* Parser::multiplicative()
     while(token.type != Token::Type::Unknown){
         switch(token.type){
             case Token::Type::Multiply:
-                temp = new AST::Multiply(token.line, scanner.filename);
+                temp = new AST::Multiply(token.line, scanner.getFilename());
                 break;
             case Token::Type::Divide:
-                temp = new AST::Divide(token.line, scanner.filename);
+                temp = new AST::Divide(token.line, scanner.getFilename());
                 break;
             case Token::Type::Modulus:
-                temp = new AST::Modulus(token.line, scanner.filename);
+                temp = new AST::Modulus(token.line, scanner.getFilename());
                 break;
             default:
                 return node;
@@ -931,10 +931,10 @@ AST::Expression* Parser::additive()
     while(token.type != Token::Type::Unknown){
         switch(token.type){
             case Token::Type::Add:
-                temp = new AST::Add(token.line, scanner.filename);
+                temp = new AST::Add(token.line, scanner.getFilename());
                 break;
             case Token::Type::Subtract:
-                temp = new AST::Subtract(token.line, scanner.filename);
+                temp = new AST::Subtract(token.line, scanner.getFilename());
                 break;
             default:
                 return node;
@@ -966,10 +966,10 @@ AST::Expression* Parser::shift()
     while(token.type != Token::Type::Unknown){
         switch(token.type){
             case Token::Type::ShiftLeft:
-                temp = new AST::ShiftLeft(token.line, scanner.filename);
+                temp = new AST::ShiftLeft(token.line, scanner.getFilename());
                 break;
             case Token::Type::ShiftRight:
-                temp = new AST::ShiftRight(token.line, scanner.filename);
+                temp = new AST::ShiftRight(token.line, scanner.getFilename());
                 break;
             default:
                 return node;
@@ -1001,16 +1001,16 @@ AST::Expression* Parser::relational()
     while(token.type != Token::Type::Unknown){
         switch(token.type){
             case Token::Type::Less:
-                temp = new AST::Less(token.line, scanner.filename);
+                temp = new AST::Less(token.line, scanner.getFilename());
                 break;
             case Token::Type::Greater:
-                temp = new AST::Greater(token.line, scanner.filename);
+                temp = new AST::Greater(token.line, scanner.getFilename());
                 break;
             case Token::Type::LessEqual:
-                temp = new AST::LessEqual(token.line, scanner.filename);
+                temp = new AST::LessEqual(token.line, scanner.getFilename());
                 break;
             case Token::Type::GreaterEqual:
-                temp = new AST::GreaterEqual(token.line, scanner.filename);
+                temp = new AST::GreaterEqual(token.line, scanner.getFilename());
                 break;
             default:
                 return node;
@@ -1042,10 +1042,10 @@ AST::Expression* Parser::equality()
     while(token.type != Token::Type::Unknown){
         switch(token.type){
             case Token::Type::Equal:
-                temp = new AST::Equal(token.line, scanner.filename);
+                temp = new AST::Equal(token.line, scanner.getFilename());
                 break;
             case Token::Type::NotEqual:
-                temp = new AST::NotEqual(token.line, scanner.filename);
+                temp = new AST::NotEqual(token.line, scanner.getFilename());
                 break;
             default:
                 return node;
@@ -1066,7 +1066,7 @@ AST::Expression* Parser::equality()
 }
 //------------------------------------------------------------------------------
 
-AST::Expression* Parser::bitwiseAND()
+AST::Expression* Parser::bitwiseAnd()
 {
     AST::Expression* temp;
     AST::Expression* node;
@@ -1077,10 +1077,10 @@ AST::Expression* Parser::bitwiseAND()
     while(token.type != Token::Type::Unknown){
         switch(token.type){
             case Token::Type::BitAnd:
-                temp = new AST::BitAnd(token.line, scanner.filename);
+                temp = new AST::BitAnd(token.line, scanner.getFilename());
                 break;
             case Token::Type::BitNand:
-                temp = new AST::BitNand(token.line, scanner.filename);
+                temp = new AST::BitNand(token.line, scanner.getFilename());
                 break;
             default:
                 return node;
@@ -1101,21 +1101,21 @@ AST::Expression* Parser::bitwiseAND()
 }
 //------------------------------------------------------------------------------
 
-AST::Expression* Parser::bitwiseXOR()
+AST::Expression* Parser::bitwiseXor()
 {
     AST::Expression* temp;
     AST::Expression* node;
 
-    node = bitwiseAND();
+    node = bitwiseAnd();
     if(!node) return 0;
 
     while(token.type != Token::Type::Unknown){
         switch(token.type){
             case Token::Type::BitXor:
-                temp = new AST::BitXor(token.line, scanner.filename);
+                temp = new AST::BitXor(token.line, scanner.getFilename());
                 break;
             case Token::Type::BitXnor:
-                temp = new AST::BitXnor(token.line, scanner.filename);
+                temp = new AST::BitXnor(token.line, scanner.getFilename());
                 break;
             default:
                 return node;
@@ -1125,9 +1125,9 @@ AST::Expression* Parser::bitwiseXOR()
         temp->left = node;
         node = temp;
 
-        node->right = bitwiseAND();
+        node->right = bitwiseAnd();
         if(!node->right){
-            printError("bitwiseAND expected");
+            printError("bitwiseAnd expected");
             delete node;
             return 0;
         }
@@ -1136,21 +1136,21 @@ AST::Expression* Parser::bitwiseXOR()
 }
 //------------------------------------------------------------------------------
 
-AST::Expression* Parser::bitwiseOR()
+AST::Expression* Parser::bitwiseOr()
 {
     AST::Expression* temp;
     AST::Expression* node;
 
-    node = bitwiseXOR();
+    node = bitwiseXor();
     if(!node) return 0;
 
     while(token.type != Token::Type::Unknown){
         switch(token.type){
             case Token::Type::BitOr:
-                temp = new AST::BitOr(token.line, scanner.filename);
+                temp = new AST::BitOr(token.line, scanner.getFilename());
                 break;
             case Token::Type::BitNor:
-                temp = new AST::BitNor(token.line, scanner.filename);
+                temp = new AST::BitNor(token.line, scanner.getFilename());
                 break;
             default:
                 return node;
@@ -1160,9 +1160,9 @@ AST::Expression* Parser::bitwiseOR()
         temp->left = node;
         node = temp;
 
-        node->right = bitwiseXOR();
+        node->right = bitwiseXor();
         if(!node->right){
-            printError("bitwiseXOR expected");
+            printError("bitwiseXor expected");
             delete node;
             return 0;
         }
@@ -1176,11 +1176,11 @@ AST::Expression* Parser::expression()
     AST::Expression* temp;
     AST::Expression* node;
 
-    node = bitwiseOR();
+    node = bitwiseOr();
     if(!node) return 0;
 
     if(token.type == Token::Type::TernaryIf){
-        temp = new AST::Conditional(token.line, scanner.filename);
+        temp = new AST::Conditional(token.line, scanner.getFilename());
         getToken();
 
         temp->left = node;
@@ -1221,7 +1221,7 @@ AST::Expression* Parser::typeIdentifier()
 
     while(token.type != Token::Type::Unknown){
         if(token.type == Token::Type::AccessMember){
-            temp = new AST::AccessMember(token.line, scanner.filename);
+            temp = new AST::AccessMember(token.line, scanner.getFilename());
             getToken();
 
             temp->left  = node;
@@ -1247,10 +1247,10 @@ AST::Assignment* Parser::initialiser(std::string& identifier)
 
     switch(token.type){
         case Token::Type::Assign:
-            node = new AST::Assign(token.line, scanner.filename);
+            node = new AST::Assign(token.line, scanner.getFilename());
             break;
         case Token::Type::RawAssign:
-            node = new AST::RawAssign(token.line, scanner.filename);
+            node = new AST::RawAssign(token.line, scanner.getFilename());
             break;
         default:
             return 0;
@@ -1263,7 +1263,7 @@ AST::Assignment* Parser::initialiser(std::string& identifier)
         delete node;
         return 0;
     }
-    node->left       = new AST::Identifier(node->source.line, scanner.filename);
+    node->left       = new AST::Identifier(node->source.line, scanner.getFilename());
     ((AST::Identifier*)node->left)->name = identifier;
     return node;
 }
@@ -1296,31 +1296,31 @@ AST::Definition* Parser::defParameter()
 
     switch(token.type){
         case Token::Type::Pin:
-            node = new AST::PinDefinition(token.line, scanner.filename);
+            node = new AST::PinDefinition(token.line, scanner.getFilename());
             getToken();
             break;
         case Token::Type::Net:
-            node = new AST::NetDefinition(token.line, scanner.filename);
+            node = new AST::NetDefinition(token.line, scanner.getFilename());
             getToken();
             break;
         case Token::Type::Byte:
-            node = new AST::ByteDefinition(token.line, scanner.filename);
+            node = new AST::ByteDefinition(token.line, scanner.getFilename());
             getToken();
             break;
         case Token::Type::Char:
-            node = new AST::CharDefinition(token.line, scanner.filename);
+            node = new AST::CharDefinition(token.line, scanner.getFilename());
             getToken();
             break;
         case Token::Type::Num:
-            node = new AST::NumDefinition(token.line, scanner.filename);
+            node = new AST::NumDefinition(token.line, scanner.getFilename());
             getToken();
             break;
         case Token::Type::Func:
-            node = new AST::FuncPtrDefinition(token.line, scanner.filename);
+            node = new AST::FuncPtrDefinition(token.line, scanner.getFilename());
             getToken();
             break;
         case Token::Type::Identifier:{
-            auto temp = new AST::ClassInstance(token.line, scanner.filename);
+            auto temp = new AST::ClassInstance(token.line, scanner.getFilename());
             temp->className = typeIdentifier();
             node = temp;
             if(!temp->className){
@@ -1500,21 +1500,21 @@ AST::Definition* Parser::definition()
     AST::Definition* node = 0;
     switch(token.type){
         case Token::Type::Pin:
-            node = new AST::PinDefinition    (token.line, scanner.filename); break;
+            node = new AST::PinDefinition    (token.line, scanner.getFilename()); break;
         case Token::Type::Net:
-            node = new AST::NetDefinition    (token.line, scanner.filename); break;
+            node = new AST::NetDefinition    (token.line, scanner.getFilename()); break;
         case Token::Type::Void:
-            node = new AST::VoidDefinition   (token.line, scanner.filename); break;
+            node = new AST::VoidDefinition   (token.line, scanner.getFilename()); break;
         case Token::Type::Auto:
-            node = new AST::AutoDefinition   (token.line, scanner.filename); break;
+            node = new AST::AutoDefinition   (token.line, scanner.getFilename()); break;
         case Token::Type::Byte:
-            node = new AST::ByteDefinition   (token.line, scanner.filename); break;
+            node = new AST::ByteDefinition   (token.line, scanner.getFilename()); break;
         case Token::Type::Char:
-            node = new AST::CharDefinition   (token.line, scanner.filename); break;
+            node = new AST::CharDefinition   (token.line, scanner.getFilename()); break;
         case Token::Type::Num:
-            node = new AST::NumDefinition    (token.line, scanner.filename); break;
+            node = new AST::NumDefinition    (token.line, scanner.getFilename()); break;
         case Token::Type::Func:
-            node = new AST::FuncPtrDefinition(token.line, scanner.filename); break;
+            node = new AST::FuncPtrDefinition(token.line, scanner.getFilename()); break;
         default:
             if(direction != AST::Definition::Direction::Inferred) printError("type name expected");
             return 0;
@@ -1669,7 +1669,7 @@ AST::Base* Parser::other()
         }
         if(token.type == Token::Type::Semicolon){
             expr->next = new AST::Fence(
-                token.line, scanner.filename
+                token.line, scanner.getFilename()
             );
             if(expr->next) expr->next->prev = expr;
         }
@@ -1684,7 +1684,7 @@ AST::Base* Parser::other()
             return 0;
         }
         AST::NameSpacePush* nameSpace = new AST::NameSpacePush(
-            token.line, scanner.filename
+            token.line, scanner.getFilename()
         );
         getToken();
 
@@ -1707,7 +1707,7 @@ AST::Base* Parser::other()
             return 0;
         }
 
-        AST::ClassInstance* def = new AST::ClassInstance(token.line, scanner.filename);
+        AST::ClassInstance* def = new AST::ClassInstance(token.line, scanner.getFilename());
         if(expr->type == AST::Base::Type::FunctionCall){
             def->className  = expr->left;
             def->parameters = ((AST::FunctionCall*)expr)->parameters;
@@ -1735,46 +1735,46 @@ AST::Base* Parser::other()
     AST::Assignment* assign;
     switch(token.type){
         case Token::Type::Assign:
-            assign = new AST::Assign(token.line, scanner.filename);
+            assign = new AST::Assign(token.line, scanner.getFilename());
             break;
         case Token::Type::RawAssign:
-            assign = new AST::RawAssign(token.line, scanner.filename);
+            assign = new AST::RawAssign(token.line, scanner.getFilename());
             break;
         case Token::Type::AppendAssign:
-            assign = new AST::AppendAssign(token.line, scanner.filename);
+            assign = new AST::AppendAssign(token.line, scanner.getFilename());
             break;
         case Token::Type::AddAssign:
-            assign = new AST::AddAssign(token.line, scanner.filename);
+            assign = new AST::AddAssign(token.line, scanner.getFilename());
             break;
         case Token::Type::SubtractAssign:
-            assign = new AST::SubtractAssign(token.line, scanner.filename);
+            assign = new AST::SubtractAssign(token.line, scanner.getFilename());
             break;
         case Token::Type::MultiplyAssign:
-            assign = new AST::MultiplyAssign(token.line, scanner.filename);
+            assign = new AST::MultiplyAssign(token.line, scanner.getFilename());
             break;
         case Token::Type::DivideAssign:
-            assign = new AST::DivideAssign(token.line, scanner.filename);
+            assign = new AST::DivideAssign(token.line, scanner.getFilename());
             break;
         case Token::Type::ModulusAssign:
-            assign = new AST::ModulusAssign(token.line, scanner.filename);
+            assign = new AST::ModulusAssign(token.line, scanner.getFilename());
             break;
         case Token::Type::ExponentialAssign:
-            assign = new AST::ExponentialAssign(token.line, scanner.filename);
+            assign = new AST::ExponentialAssign(token.line, scanner.getFilename());
             break;
         case Token::Type::AndAssign:
-            assign = new AST::AndAssign(token.line, scanner.filename);
+            assign = new AST::AndAssign(token.line, scanner.getFilename());
             break;
         case Token::Type::OrAssign:
-            assign = new AST::OrAssign(token.line, scanner.filename);
+            assign = new AST::OrAssign(token.line, scanner.getFilename());
             break;
         case Token::Type::XorAssign:
-            assign = new AST::XorAssign(token.line, scanner.filename);
+            assign = new AST::XorAssign(token.line, scanner.getFilename());
             break;
         case Token::Type::ShiftLeftAssign:
-            assign = new AST::ShiftLeftAssign(token.line, scanner.filename);
+            assign = new AST::ShiftLeftAssign(token.line, scanner.getFilename());
             break;
         case Token::Type::ShiftRightAssign:
-            assign = new AST::ShiftRightAssign(token.line, scanner.filename);
+            assign = new AST::ShiftRightAssign(token.line, scanner.getFilename());
             break;
 
         default:
@@ -1808,7 +1808,7 @@ AST::IfStatement* Parser::ifStatement()
 {
     if(token.type != Token::Type::If) return 0;
     AST::IfStatement* node = new AST::IfStatement(
-        token.line, scanner.filename
+        token.line, scanner.getFilename()
     );
     getToken();
 
@@ -1847,7 +1847,7 @@ AST::IfStatement* Parser::ifStatement()
 AST::WhileLoop* Parser::whileLoop()
 {
     if(token.type != Token::Type::While) return 0;
-    AST::WhileLoop* node = new AST::WhileLoop(token.line, scanner.filename);
+    AST::WhileLoop* node = new AST::WhileLoop(token.line, scanner.getFilename());
     getToken();
 
     if(token.type != Token::Type::OpenRound){
@@ -1879,7 +1879,7 @@ AST::WhileLoop* Parser::whileLoop()
 AST::LoopLoop* Parser::loopLoop()
 {
     if(token.type != Token::Type::Loop) return 0;
-    AST::LoopLoop* node = new AST::LoopLoop(token.line, scanner.filename);
+    AST::LoopLoop* node = new AST::LoopLoop(token.line, scanner.getFilename());
     getToken();
 
     if(token.type == Token::Type::OpenRound){
@@ -1908,7 +1908,7 @@ AST::LoopLoop* Parser::loopLoop()
 AST::ForLoop* Parser::forLoop()
 {
     if(token.type != Token::Type::For) return 0;
-    AST::ForLoop* node = new AST::ForLoop(token.line, scanner.filename);
+    AST::ForLoop* node = new AST::ForLoop(token.line, scanner.getFilename());
     getToken();
 
     if(token.type != Token::Type::OpenRound){
@@ -1955,7 +1955,7 @@ AST::ForLoop* Parser::forLoop()
 AST::Import* Parser::import()
 {
     if(token.type != Token::Type::Import) return 0;
-    AST::Import* node = new AST::Import(token.line, scanner.filename);
+    AST::Import* node = new AST::Import(token.line, scanner.getFilename());
     getToken();
 
     if(token.type != Token::Type::String){
@@ -1992,7 +1992,7 @@ AST::Import* Parser::import()
 AST::Switch* Parser::switchStatement()
 {
     if(token.type != Token::Type::Switch) return 0;
-    AST::Switch* node = new AST::Switch(token.line, scanner.filename);
+    AST::Switch* node = new AST::Switch(token.line, scanner.getFilename());
     getToken();
 
     if(token.type != Token::Type::OpenRound){
@@ -2073,7 +2073,7 @@ AST::Alias* Parser::alias()
     if(token.type != Token::Type::Alias) return 0;
     getToken();
 
-    AST::Alias* node = new AST::Alias(token.line, scanner.filename);
+    AST::Alias* node = new AST::Alias(token.line, scanner.getFilename());
 
     if(token.type != Token::Type::Identifier){
         printError("identifier expected");
@@ -2113,7 +2113,7 @@ AST::Group* Parser::group()
     if(token.type != Token::Type::Group) return 0;
     getToken();
 
-    AST::Group* node = new AST::Group(token.line, scanner.filename);
+    AST::Group* node = new AST::Group(token.line, scanner.getFilename());
     if(token.type == Token::Type::OpenAngle){
         node->attributes = attributeList();
     }
@@ -2150,17 +2150,17 @@ AST::Jump* Parser::jump()
     switch(token.type){
         case Token::Type::Return:
             node = new AST::Jump(
-                token.line, scanner.filename, AST::Jump::JumpType::Return
+                token.line, scanner.getFilename(), AST::Jump::JumpType::Return
             );
             break;
         case Token::Type::Break:
             node = new AST::Jump(
-                token.line, scanner.filename, AST::Jump::JumpType::Break
+                token.line, scanner.getFilename(), AST::Jump::JumpType::Break
             );
             break;
         case Token::Type::Continue:
             node = new AST::Jump(
-                token.line, scanner.filename, AST::Jump::JumpType::Continue
+                token.line, scanner.getFilename(), AST::Jump::JumpType::Continue
             );
             break;
         default:
@@ -2184,7 +2184,7 @@ AST::Jump* Parser::jump()
 AST::Rtl* Parser::rtl()
 {
     if(token.type != Token::Type::RTL) return 0;
-    AST::Rtl* node = new AST::Rtl(token.line, scanner.filename);
+    AST::Rtl* node = new AST::Rtl(token.line, scanner.getFilename());
     getToken();
 
     parameterList(node->parameters);
@@ -2196,7 +2196,7 @@ AST::Rtl* Parser::rtl()
 AST::Fsm* Parser::fsm()
 {
     if(token.type != Token::Type::FSM) return 0;
-    AST::Fsm* node = new AST::Fsm(token.line, scanner.filename);
+    AST::Fsm* node = new AST::Fsm(token.line, scanner.getFilename());
     getToken();
 
     parameterList(node->parameters);
@@ -2208,7 +2208,7 @@ AST::Fsm* Parser::fsm()
 AST::Hdl* Parser::hdl()
 {
     if(token.type != Token::Type::HDL) return 0;
-    AST::Hdl* node = new AST::Hdl(token.line, scanner.filename);
+    AST::Hdl* node = new AST::Hdl(token.line, scanner.getFilename());
     getToken();
 
     if(token.type != Token::Type::OpenRound){
@@ -2328,7 +2328,7 @@ AST::Base* Parser::statement()
     node = other           (); if(node) return node;
 
     if(token.type == Token::Type::Semicolon){
-        node = new AST::Fence(token.line, scanner.filename);
+        node = new AST::Fence(token.line, scanner.getFilename());
         getToken();
         return node;
     }

@@ -34,10 +34,6 @@ using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-RawAssign::RawAssign(int line, std::string filename):
-    RawAssign(line, filename.c_str()){}
-//------------------------------------------------------------------------------
-
 RawAssign::RawAssign(int line, const char* filename):
     Assignment(line, filename, Type::RawAssign){}
 //------------------------------------------------------------------------------

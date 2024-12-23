@@ -27,7 +27,6 @@
 
 namespace AST{
     struct ModulusAssign: public Assignment{
-        ModulusAssign(int line, std::string filename);
         ModulusAssign(int line, const char* filename);
        ~ModulusAssign();
 

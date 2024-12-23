@@ -162,9 +162,9 @@ class Parser{
         AST::Expression* shift          ();
         AST::Expression* relational     ();
         AST::Expression* equality       ();
-        AST::Expression* bitwiseAND     ();
-        AST::Expression* bitwiseXOR     ();
-        AST::Expression* bitwiseOR      ();
+        AST::Expression* bitwiseAnd     ();
+        AST::Expression* bitwiseXor     ();
+        AST::Expression* bitwiseOr      ();
         AST::Expression* expression     (); // AKA conditional
         AST::Expression* typeIdentifier ();
 

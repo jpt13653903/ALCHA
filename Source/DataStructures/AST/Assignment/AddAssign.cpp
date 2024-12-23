@@ -35,10 +35,6 @@ using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-AddAssign::AddAssign(int line, std::string filename):
-    AddAssign(line, filename.c_str()){}
-//------------------------------------------------------------------------------
-
 AddAssign::AddAssign(int line, const char* filename):
     Assignment(line, filename, Type::AddAssign){}
 //------------------------------------------------------------------------------

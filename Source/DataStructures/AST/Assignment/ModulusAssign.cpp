@@ -35,10 +35,6 @@ using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-ModulusAssign::ModulusAssign(int line, std::string filename):
-    ModulusAssign(line, filename.c_str()){}
-//------------------------------------------------------------------------------
-
 ModulusAssign::ModulusAssign(int line, const char* filename):
     Assignment(line, filename, Type::ModulusAssign){}
 //------------------------------------------------------------------------------

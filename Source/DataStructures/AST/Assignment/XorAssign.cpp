@@ -35,10 +35,6 @@ using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-XorAssign::XorAssign(int line, std::string filename):
-    XorAssign(line, filename.c_str()){}
-//------------------------------------------------------------------------------
-
 XorAssign::XorAssign(int line, const char* filename):
     Assignment(line, filename, Type::XorAssign){}
 //------------------------------------------------------------------------------

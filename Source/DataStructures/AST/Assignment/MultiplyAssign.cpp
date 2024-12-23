@@ -35,10 +35,6 @@ using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-MultiplyAssign::MultiplyAssign(int line, std::string filename):
-    MultiplyAssign(line, filename.c_str()){}
-//------------------------------------------------------------------------------
-
 MultiplyAssign::MultiplyAssign(int line, const char* filename):
     Assignment(line, filename, Type::MultiplyAssign){}
 //------------------------------------------------------------------------------

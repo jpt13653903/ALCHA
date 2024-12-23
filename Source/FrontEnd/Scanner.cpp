@@ -46,219 +46,220 @@ static Characters characters;
 Scanner::Scanner()
 {
     if(!initialised){
-        initialised = true;
+        // Spaces
+            spaces.insert("\x20"        , Token::Type::Space); // U+0020: Space
+            spaces.insert("\x09"        , Token::Type::Space); // U+0009: Character Tabulation
+            spaces.insert("\xC2\xA0"    , Token::Type::Space); // U+00A0: No-break Space
+            spaces.insert("\xE1\x9A\x80", Token::Type::Space); // U+1680: Ogham Space Mark
+            spaces.insert("\xE2\x80\x80", Token::Type::Space); // U+2000: En Quad
+            spaces.insert("\xE2\x80\x81", Token::Type::Space); // U+2001: Em Quad
+            spaces.insert("\xE2\x80\x82", Token::Type::Space); // U+2002: En Space
+            spaces.insert("\xE2\x80\x83", Token::Type::Space); // U+2003: Em Space
+            spaces.insert("\xE2\x80\x84", Token::Type::Space); // U+2004: Three-per-em Space
+            spaces.insert("\xE2\x80\x85", Token::Type::Space); // U+2005: Four-per-em Space
+            spaces.insert("\xE2\x80\x86", Token::Type::Space); // U+2006: Six-per-em Space
+            spaces.insert("\xE2\x80\x87", Token::Type::Space); // U+2007: Figure Space
+            spaces.insert("\xE2\x80\x88", Token::Type::Space); // U+2008: Punctuation Space
+            spaces.insert("\xE2\x80\x89", Token::Type::Space); // U+2009: Thin Space
+            spaces.insert("\xE2\x80\x8A", Token::Type::Space); // U+200A: Hair Space
+            spaces.insert("\xE2\x80\xAF", Token::Type::Space); // U+202F: Narrow No-break Space
+            spaces.insert("\xE2\x80\x8B", Token::Type::Space); // U+200B: Zero Width Space
+            spaces.insert("\xE2\x81\x9F", Token::Type::Space); // U+205F: Medium Mathematical Space
+            spaces.insert("\xE3\x80\x80", Token::Type::Space); // U+3000: Ideographic Space
+            spaces.insert("\xEF\xBB\xBF", Token::Type::Space); // U+FEFF: Zero Width Non-breaking Space
 
-        spaces.insert("\x20"        , Token::Type::Space); // U+0020: Space
-        spaces.insert("\x09"        , Token::Type::Space); // U+0009: Character Tabulation
-        spaces.insert("\xC2\xA0"    , Token::Type::Space); // U+00A0: No-break Space
-        spaces.insert("\xE1\x9A\x80", Token::Type::Space); // U+1680: Ogham Space Mark
-        spaces.insert("\xE2\x80\x80", Token::Type::Space); // U+2000: En Quad
-        spaces.insert("\xE2\x80\x81", Token::Type::Space); // U+2001: Em Quad
-        spaces.insert("\xE2\x80\x82", Token::Type::Space); // U+2002: En Space
-        spaces.insert("\xE2\x80\x83", Token::Type::Space); // U+2003: Em Space
-        spaces.insert("\xE2\x80\x84", Token::Type::Space); // U+2004: Three-per-em Space
-        spaces.insert("\xE2\x80\x85", Token::Type::Space); // U+2005: Four-per-em Space
-        spaces.insert("\xE2\x80\x86", Token::Type::Space); // U+2006: Six-per-em Space
-        spaces.insert("\xE2\x80\x87", Token::Type::Space); // U+2007: Figure Space
-        spaces.insert("\xE2\x80\x88", Token::Type::Space); // U+2008: Punctuation Space
-        spaces.insert("\xE2\x80\x89", Token::Type::Space); // U+2009: Thin Space
-        spaces.insert("\xE2\x80\x8A", Token::Type::Space); // U+200A: Hair Space
-        spaces.insert("\xE2\x80\xAF", Token::Type::Space); // U+202F: Narrow No-break Space
-        spaces.insert("\xE2\x80\x8B", Token::Type::Space); // U+200B: Zero Width Space
-        spaces.insert("\xE2\x81\x9F", Token::Type::Space); // U+205F: Medium Mathematical Space
-        spaces.insert("\xE3\x80\x80", Token::Type::Space); // U+3000: Ideographic Space
-        spaces.insert("\xEF\xBB\xBF", Token::Type::Space); // U+FEFF: Zero Width Non-breaking Space
+        // Newlines
+            spaces.insert("\n"          , Token::Type::Newline);
+            spaces.insert("\r"          , Token::Type::Newline);
+            spaces.insert("\r\n"        , Token::Type::Newline);
+            spaces.insert("\n\r"        , Token::Type::Newline);
+            spaces.insert("\x0B"        , Token::Type::Newline); // Vertical Tab
+            spaces.insert("\x0C"        , Token::Type::Newline); // Form Feed
+            spaces.insert("\xC2\x85"    , Token::Type::Newline); // U+0085: NEL
+            spaces.insert("\xE2\x80\xA8", Token::Type::Newline); // U+2028: line Separator
+            spaces.insert("\xE2\x80\xA9", Token::Type::Newline); // U+2029: Paragraph Separator
 
-        spaces.insert("\n"          , Token::Type::Newline);
-        spaces.insert("\r"          , Token::Type::Newline);
-        spaces.insert("\r\n"        , Token::Type::Newline);
-        spaces.insert("\n\r"        , Token::Type::Newline);
-        spaces.insert("\x0B"        , Token::Type::Newline); // Vertical Tab
-        spaces.insert("\x0C"        , Token::Type::Newline); // Form Feed
-        spaces.insert("\xC2\x85"    , Token::Type::Newline); // U+0085: NEL
-        spaces.insert("\xE2\x80\xA8", Token::Type::Newline); // U+2028: line Separator
-        spaces.insert("\xE2\x80\xA9", Token::Type::Newline); // U+2029: Paragraph Separator
+        // Keywords
+            keywords.insert("__FILE__"     , Token::Type::File);
+            keywords.insert("__LINE__"     , Token::Type::Line);
+            keywords.insert("__DATE__"     , Token::Type::Date);
+            keywords.insert("__TIME__"     , Token::Type::Time);
+            // __CLASS__, __FUNCTION__, etc. are implemented as special variables
 
-        keywords.insert("__FILE__"     , Token::Type::File);
-        keywords.insert("__LINE__"     , Token::Type::Line);
-        keywords.insert("__DATE__"     , Token::Type::Date);
-        keywords.insert("__TIME__"     , Token::Type::Time);
-        // __CLASS__, __FUNCTION__, etc. are implemented as special variables
+            keywords.insert("void"         , Token::Type::Void);
+            keywords.insert("auto"         , Token::Type::Auto);
 
-        keywords.insert("void"         , Token::Type::Void);
-        keywords.insert("auto"         , Token::Type::Auto);
+            keywords.insert("pin"          , Token::Type::Pin);
+            keywords.insert("net"          , Token::Type::Net);
 
-        keywords.insert("pin"          , Token::Type::Pin);
-        keywords.insert("net"          , Token::Type::Net);
+            keywords.insert("byte"         , Token::Type::Byte);
+            keywords.insert("char"         , Token::Type::Char);
+            keywords.insert("num"          , Token::Type::Num );
 
-        keywords.insert("byte"         , Token::Type::Byte);
-        keywords.insert("char"         , Token::Type::Char);
-        keywords.insert("num"          , Token::Type::Num );
+            keywords.insert("true"         , Token::Type::True );
+            keywords.insert("false"        , Token::Type::False);
 
-        keywords.insert("true"         , Token::Type::True );
-        keywords.insert("false"        , Token::Type::False);
+            keywords.insert("class"        , Token::Type::Class );
+            keywords.insert("enum"         , Token::Type::Enum  );
+            keywords.insert("struct"       , Token::Type::Struct);
+            keywords.insert("group"        , Token::Type::Group );
+            keywords.insert("alias"        , Token::Type::Alias );
 
-        keywords.insert("class"        , Token::Type::Class );
-        keywords.insert("enum"         , Token::Type::Enum  );
-        keywords.insert("struct"       , Token::Type::Struct);
-        keywords.insert("group"        , Token::Type::Group );
-        keywords.insert("alias"        , Token::Type::Alias );
+            keywords.insert("input"        , Token::Type::Input );
+            keywords.insert("output"       , Token::Type::Output);
 
-        keywords.insert("input"        , Token::Type::Input );
-        keywords.insert("output"       , Token::Type::Output);
+            keywords.insert("public"       , Token::Type::Public   );
+            keywords.insert("private"      , Token::Type::Private  );
+            keywords.insert("protected"    , Token::Type::Protected);
 
-        keywords.insert("public"       , Token::Type::Public   );
-        keywords.insert("private"      , Token::Type::Private  );
-        keywords.insert("protected"    , Token::Type::Protected);
+            keywords.insert("if"           , Token::Type::If   );
+            keywords.insert("else"         , Token::Type::Else );
+            keywords.insert("for"          , Token::Type::For  );
+            keywords.insert("in"           , Token::Type::In   );
+            keywords.insert("while"        , Token::Type::While);
+            keywords.insert("loop"         , Token::Type::Loop );
 
-        keywords.insert("if"           , Token::Type::If   );
-        keywords.insert("else"         , Token::Type::Else );
-        keywords.insert("for"          , Token::Type::For  );
-        keywords.insert("in"           , Token::Type::In   );
-        keywords.insert("while"        , Token::Type::While);
-        keywords.insert("loop"         , Token::Type::Loop );
+            keywords.insert("switch"       , Token::Type::Switch );
+            keywords.insert("case"         , Token::Type::Case   );
+            keywords.insert("default"      , Token::Type::Default);
 
-        keywords.insert("switch"       , Token::Type::Switch );
-        keywords.insert("case"         , Token::Type::Case   );
-        keywords.insert("default"      , Token::Type::Default);
+            keywords.insert("import"       , Token::Type::Import);
+            keywords.insert("as"           , Token::Type::As    );
 
-        keywords.insert("import"       , Token::Type::Import);
-        keywords.insert("as"           , Token::Type::As    );
+            keywords.insert("return"       , Token::Type::Return  );
+            keywords.insert("break"        , Token::Type::Break   );
+            keywords.insert("continue"     , Token::Type::Continue);
+            keywords.insert("goto"         , Token::Type::Goto    );
 
-        keywords.insert("return"       , Token::Type::Return  );
-        keywords.insert("break"        , Token::Type::Break   );
-        keywords.insert("continue"     , Token::Type::Continue);
-        keywords.insert("goto"         , Token::Type::Goto    );
+            keywords.insert("func"         , Token::Type::Func  );
+            keywords.insert("inline"       , Token::Type::Inline);
+            keywords.insert("operator"     , Token::Type::Operator);
 
-        keywords.insert("func"         , Token::Type::Func  );
-        keywords.insert("inline"       , Token::Type::Inline);
-        keywords.insert("operator"     , Token::Type::Operator);
+            keywords.insert("rtl"          , Token::Type::RTL);
+            keywords.insert("fsm"          , Token::Type::FSM);
+            keywords.insert("hdl"          , Token::Type::HDL);
 
-        keywords.insert("rtl"          , Token::Type::RTL);
-        keywords.insert("fsm"          , Token::Type::FSM);
-        keywords.insert("hdl"          , Token::Type::HDL);
+            keywords.insert("stimulus"     , Token::Type::Stimulus);
+            keywords.insert("emulate"      , Token::Type::Emulate );
+            keywords.insert("assert"       , Token::Type::Assert  );
+            keywords.insert("wait"         , Token::Type::Wait    );
 
-        keywords.insert("stimulus"     , Token::Type::Stimulus);
-        keywords.insert("emulate"      , Token::Type::Emulate );
-        keywords.insert("assert"       , Token::Type::Assert  );
-        keywords.insert("wait"         , Token::Type::Wait    );
-
-        keywords.insert("posedge"      , Token::Type::PosEdge);
-        keywords.insert("negedge"      , Token::Type::NegEdge);
+            keywords.insert("posedge"      , Token::Type::PosEdge);
+            keywords.insert("negedge"      , Token::Type::NegEdge);
 
         // Conditional Expression
-        operators.insert("?"  , Token::Type::TernaryIf  );
-        operators.insert(":"  , Token::Type::TernaryElse);
-        operators.insert("?:" , Token::Type::Elvis      );
+            operators.insert("?"  , Token::Type::TernaryIf  );
+            operators.insert(":"  , Token::Type::TernaryElse);
+            operators.insert("?:" , Token::Type::Elvis      );
 
         // Bit-wise
-        operators.insert("|"  , Token::Type::BitOr     );
-        operators.insert("~|" , Token::Type::BitNor    );
-        operators.insert("^"  , Token::Type::BitXor    );
-        operators.insert("~^" , Token::Type::BitXnor   );
-        operators.insert("&"  , Token::Type::BitAnd    );
-        operators.insert("~&" , Token::Type::BitNand   );
+            operators.insert("|"  , Token::Type::BitOr     );
+            operators.insert("~|" , Token::Type::BitNor    );
+            operators.insert("^"  , Token::Type::BitXor    );
+            operators.insert("~^" , Token::Type::BitXnor   );
+            operators.insert("&"  , Token::Type::BitAnd    );
+            operators.insert("~&" , Token::Type::BitNand   );
 
         // Relational
-        operators.insert("==" , Token::Type::Equal       );
-        operators.insert("!=" , Token::Type::NotEqual    );
-        operators.insert("<"  , Token::Type::Less        );
-        operators.insert(">"  , Token::Type::Greater     );
-        operators.insert("<=" , Token::Type::LessEqual   );
-        operators.insert(">=" , Token::Type::GreaterEqual);
+            operators.insert("==" , Token::Type::Equal       );
+            operators.insert("!=" , Token::Type::NotEqual    );
+            operators.insert("<"  , Token::Type::Less        );
+            operators.insert(">"  , Token::Type::Greater     );
+            operators.insert("<=" , Token::Type::LessEqual   );
+            operators.insert(">=" , Token::Type::GreaterEqual);
 
         // Shift
-        operators.insert("<<" , Token::Type::ShiftLeft );
-        operators.insert(">>" , Token::Type::ShiftRight);
+            operators.insert("<<" , Token::Type::ShiftLeft );
+            operators.insert(">>" , Token::Type::ShiftRight);
 
         // Arithmetic
-        operators.insert("+"  , Token::Type::Add        );
-        operators.insert("-"  , Token::Type::Subtract   );
-        operators.insert("*"  , Token::Type::Multiply   );
-        operators.insert("/"  , Token::Type::Divide     );
-        operators.insert("%"  , Token::Type::Modulus    );
-        operators.insert("**" , Token::Type::Exponential);
-        operators.insert("!"  , Token::Type::Factorial  );
+            operators.insert("+"  , Token::Type::Add        );
+            operators.insert("-"  , Token::Type::Subtract   );
+            operators.insert("*"  , Token::Type::Multiply   );
+            operators.insert("/"  , Token::Type::Divide     );
+            operators.insert("%"  , Token::Type::Modulus    );
+            operators.insert("**" , Token::Type::Exponential);
+            operators.insert("!"  , Token::Type::Factorial  );
 
         // Concatenation of vectors and arrays
-        operators.insert("`"  , Token::Type::Replicate       );
-        operators.insert(":(" , Token::Type::Concatenate     );
-        operators.insert(":[" , Token::Type::ArrayConcatenate);
+            operators.insert("`"  , Token::Type::Replicate       );
+            operators.insert(":(" , Token::Type::Concatenate     );
+            operators.insert(":[" , Token::Type::ArrayConcatenate);
 
         // Stringification
-        operators.insert("$"  , Token::Type::Stringify          );
-        operators.insert("$(" , Token::Type::StringifyExpression);
+            operators.insert("$"  , Token::Type::Stringify          );
+            operators.insert("$(" , Token::Type::StringifyExpression);
 
         // Reduction
-        operators.insert("&"  , Token::Type::AndReduce );
-        operators.insert("~&" , Token::Type::NandReduce);
-        operators.insert("|"  , Token::Type::OrReduce  );
-        operators.insert("~|" , Token::Type::NorReduce );
-        operators.insert("^"  , Token::Type::XorReduce );
-        operators.insert("~^" , Token::Type::XnorReduce);
-        operators.insert("!"  , Token::Type::LogicalNot);
+            operators.insert("&"  , Token::Type::AndReduce );
+            operators.insert("~&" , Token::Type::NandReduce);
+            operators.insert("|"  , Token::Type::OrReduce  );
+            operators.insert("~|" , Token::Type::NorReduce );
+            operators.insert("^"  , Token::Type::XorReduce );
+            operators.insert("~^" , Token::Type::XnorReduce);
+            operators.insert("!"  , Token::Type::LogicalNot);
 
         // Array
-        operators.insert(".." , Token::Type::To  );
-        operators.insert(":"  , Token::Type::Step);
+            operators.insert(".." , Token::Type::To  );
+            operators.insert(":"  , Token::Type::Step);
 
         // Unary
-        operators.insert("-"  , Token::Type::Negate   );
-        operators.insert("~"  , Token::Type::BitNot  );
-        operators.insert(":"  , Token::Type::RawBits  );
-        operators.insert("++" , Token::Type::Increment);
-        operators.insert("--" , Token::Type::Decrement);
+            operators.insert("-"  , Token::Type::Negate   );
+            operators.insert("~"  , Token::Type::BitNot  );
+            operators.insert(":"  , Token::Type::RawBits  );
+            operators.insert("++" , Token::Type::Increment);
+            operators.insert("--" , Token::Type::Decrement);
 
         // Accessors
-        operators.insert("."  , Token::Type::AccessMember    );
-        operators.insert("?." , Token::Type::AccessMemberSafe);
-        operators.insert(".{" , Token::Type::AccessMemberPush);
-        operators.insert("'"  , Token::Type::AccessAttribute );
+            operators.insert("."  , Token::Type::AccessMember    );
+            operators.insert("?." , Token::Type::AccessMemberSafe);
+            operators.insert(".{" , Token::Type::AccessMemberPush);
+            operators.insert("'"  , Token::Type::AccessAttribute );
 
         // Cast
-        operators.insert("@"  , Token::Type::CastOp);
+            operators.insert("@"  , Token::Type::CastOp);
 
         // Assignment
-        operators.insert("="  , Token::Type::Assign           );
-        operators.insert(":=" , Token::Type::RawAssign        );
-        operators.insert("~=" , Token::Type::AppendAssign     );
-        operators.insert("+=" , Token::Type::AddAssign        );
-        operators.insert("-=" , Token::Type::SubtractAssign   );
-        operators.insert("*=" , Token::Type::MultiplyAssign   );
-        operators.insert("/=" , Token::Type::DivideAssign     );
-        operators.insert("%=" , Token::Type::ModulusAssign    );
-        operators.insert("^=" , Token::Type::XorAssign        );
-        operators.insert("&=" , Token::Type::AndAssign        );
-        operators.insert("|=" , Token::Type::OrAssign         );
-        operators.insert("**=", Token::Type::ExponentialAssign);
-        operators.insert("<<=", Token::Type::ShiftLeftAssign  );
-        operators.insert(">>=", Token::Type::ShiftRightAssign );
+            operators.insert("="  , Token::Type::Assign           );
+            operators.insert(":=" , Token::Type::RawAssign        );
+            operators.insert("~=" , Token::Type::AppendAssign     );
+            operators.insert("+=" , Token::Type::AddAssign        );
+            operators.insert("-=" , Token::Type::SubtractAssign   );
+            operators.insert("*=" , Token::Type::MultiplyAssign   );
+            operators.insert("/=" , Token::Type::DivideAssign     );
+            operators.insert("%=" , Token::Type::ModulusAssign    );
+            operators.insert("^=" , Token::Type::XorAssign        );
+            operators.insert("&=" , Token::Type::AndAssign        );
+            operators.insert("|=" , Token::Type::OrAssign         );
+            operators.insert("**=", Token::Type::ExponentialAssign);
+            operators.insert("<<=", Token::Type::ShiftLeftAssign  );
+            operators.insert(">>=", Token::Type::ShiftRightAssign );
 
         // Punctuators
-        operators.insert("("  , Token::Type::OpenRound  );
-        operators.insert(")"  , Token::Type::CloseRound );
-        operators.insert("["  , Token::Type::OpenSquare );
-        operators.insert("]"  , Token::Type::CloseSquare);
-        operators.insert("{"  , Token::Type::OpenCurly  );
-        operators.insert("}"  , Token::Type::CloseCurly );
-        operators.insert("<"  , Token::Type::OpenAngle  );
-        operators.insert(">"  , Token::Type::CloseAngle );
-        operators.insert(","  , Token::Type::Comma      );
-        operators.insert(":"  , Token::Type::Colon      );
-        operators.insert(";"  , Token::Type::Semicolon  );
+            operators.insert("("  , Token::Type::OpenRound  );
+            operators.insert(")"  , Token::Type::CloseRound );
+            operators.insert("["  , Token::Type::OpenSquare );
+            operators.insert("]"  , Token::Type::CloseSquare);
+            operators.insert("{"  , Token::Type::OpenCurly  );
+            operators.insert("}"  , Token::Type::CloseCurly );
+            operators.insert("<"  , Token::Type::OpenAngle  );
+            operators.insert(">"  , Token::Type::CloseAngle );
+            operators.insert(","  , Token::Type::Comma      );
+            operators.insert(":"  , Token::Type::Colon      );
+            operators.insert(";"  , Token::Type::Semicolon  );
 
         // Simulation operators
-        operators.insert("#"  , Token::Type::WaitFor               );
-        operators.insert("@"  , Token::Type::WaitUntil             );
-        operators.insert("##" , Token::Type::WaitCycles            );
-        operators.insert("[*" , Token::Type::SequenceConsecutive   );
-        operators.insert("[->", Token::Type::SequenceGoto          );
-        operators.insert("[=" , Token::Type::SequenceNonConsecutive);
-        operators.insert("|->", Token::Type::AssertImplies         );
-        operators.insert("|=>", Token::Type::AssertImpliesNext     );
-        operators.insert("||" , Token::Type::Or                    );
-        operators.insert("&&" , Token::Type::And                   );
-        operators.insert("&&&", Token::Type::Intersect             );
+            operators.insert("#"  , Token::Type::WaitFor               );
+            operators.insert("@"  , Token::Type::WaitUntil             );
+            operators.insert("##" , Token::Type::WaitCycles            );
+            operators.insert("[*" , Token::Type::SequenceConsecutive   );
+            operators.insert("[->", Token::Type::SequenceGoto          );
+            operators.insert("[=" , Token::Type::SequenceNonConsecutive);
+            operators.insert("|->", Token::Type::AssertImplies         );
+            operators.insert("|=>", Token::Type::AssertImpliesNext     );
+            operators.insert("||" , Token::Type::Or                    );
+            operators.insert("&&" , Token::Type::And                   );
+            operators.insert("&&&", Token::Type::Intersect             );
 
         spaces   .balance();
         keywords .balance();
@@ -267,12 +268,9 @@ Scanner::Scanner()
         for(int j = 0; characterNames[j]; j += 2){
             characters[characterNames[j]] = (const byte*)characterNames[j+1];
         }
-    }
 
-    line   = 1;
-    index  = 0;
-    error  = false;
-    buffer = 0;
+        initialised = true;
+    }
 }
 //------------------------------------------------------------------------------
 
@@ -440,8 +438,8 @@ bool Scanner::nonDigit()
     }
 
     return (buffer[index] >= 'a' && buffer[index] <= 'z' ) ||
-                  (buffer[index] >= 'A' && buffer[index] <= 'Z' ) ||
-                  (buffer[index] == '_' || buffer[index] >= 0x80);
+           (buffer[index] >= 'A' && buffer[index] <= 'Z' ) ||
+           (buffer[index] == '_' || buffer[index] >= 0x80);
 }
 //------------------------------------------------------------------------------
 
@@ -829,14 +827,23 @@ bool Scanner::open(const char* filename)
 }
 //------------------------------------------------------------------------------
 
+const char* Scanner::getFilename()
+{
+    return filename.c_str();
+}
+//------------------------------------------------------------------------------
+
 bool Scanner::getToken(Token* token)
 {
     token->line = line;
     token->type = Token::Type::Unknown;
     token->data.clear();
 
-    if(!buffer[index]) return false;
-    if( error        ) return false;
+    if(!buffer[index]){
+        token->type = Token::Type::EndOfFile;
+        return false;
+    }
+    if(error) return false;
 
     whiteSpace();
 

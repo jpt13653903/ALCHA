@@ -27,7 +27,6 @@
 
 namespace AST{
     struct OrAssign: public Assignment{
-        OrAssign(int line, std::string filename);
         OrAssign(int line, const char* filename);
        ~OrAssign();
 

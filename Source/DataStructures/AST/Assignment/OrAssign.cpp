@@ -35,10 +35,6 @@ using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-OrAssign::OrAssign(int line, std::string filename):
-    OrAssign(line, filename.c_str()){}
-//------------------------------------------------------------------------------
-
 OrAssign::OrAssign(int line, const char* filename):
     Assignment(line, filename, Type::OrAssign){}
 //------------------------------------------------------------------------------

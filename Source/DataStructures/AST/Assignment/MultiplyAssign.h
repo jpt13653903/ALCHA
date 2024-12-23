@@ -27,7 +27,6 @@
 
 namespace AST{
     struct MultiplyAssign: public Assignment{
-        MultiplyAssign(int line, std::string filename);
         MultiplyAssign(int line, const char* filename);
        ~MultiplyAssign();
 

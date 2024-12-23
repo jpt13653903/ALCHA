@@ -44,12 +44,13 @@ Tokens:
 
 class Scanner{
     private:
-        bool error;
+        bool error = false;
         void printError(const char* message);
 
-        int      line;
-        unsigned index;
-        byte*    buffer;
+        int         line     = 1;
+        unsigned    index    = 0;
+        byte*       buffer   = 0;
+        std::string filename;
 
         bool lineComment  ();
         bool todoComment  ();
@@ -73,9 +74,9 @@ class Scanner{
         Scanner();
        ~Scanner();
 
-        std::string filename; // Read-only
         bool open(const char* filename);
 
+        const char* getFilename();
         bool getToken(Token* token);
 };
 //------------------------------------------------------------------------------
