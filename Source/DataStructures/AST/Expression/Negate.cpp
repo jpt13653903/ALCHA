@@ -20,9 +20,9 @@
 
 #include "Negate.h"
 #include "Literal.h"
-#include "object.h"
+#include "Object.h"
 
-#include "Netlist/Namespace/Module.h"
+#include "Netlist/NameSpace/Module.h"
 #include "Netlist/Synthesisable/Net.h"
 //------------------------------------------------------------------------------
 

@@ -20,7 +20,7 @@
 
 #include "Definition.h"
 
-#include "Netlist/Namespace/Module.h"
+#include "Netlist/NameSpace/Module.h"
 //------------------------------------------------------------------------------
 
 using namespace AST;

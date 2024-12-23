@@ -20,8 +20,8 @@
 
 #include "Net.h"
 
-#include "AST/expression/Literal.h"
-#include "AST/expression/object.h"
+#include "AST/Expression/Literal.h"
+#include "AST/Expression/Object.h"
 //------------------------------------------------------------------------------
 
 using std::string;

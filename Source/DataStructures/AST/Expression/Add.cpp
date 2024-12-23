@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "add.h"
-#include "literal.h"
+#include "Add.h"
+#include "Literal.h"
 //------------------------------------------------------------------------------
 
 using std::string;

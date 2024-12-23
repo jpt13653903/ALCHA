@@ -81,7 +81,7 @@
 #include "AST/Expression/BitNand.h"
 #include "AST/Expression/BitNor.h"
 #include "AST/Expression/BitNot.h"
-#include "AST/Expression/BitOR.h"
+#include "AST/Expression/BitOr.h"
 #include "AST/Expression/BitXnor.h"
 #include "AST/Expression/BitXor.h"
 #include "AST/Expression/Cast.h"

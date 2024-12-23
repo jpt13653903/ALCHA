@@ -19,7 +19,7 @@
 //==============================================================================
 
 #include "Project.h"
-#include "Netlist/Synthesisable/pin.h"
+#include "Netlist/Synthesisable/Pin.h"
 //------------------------------------------------------------------------------
 
 using std::string;

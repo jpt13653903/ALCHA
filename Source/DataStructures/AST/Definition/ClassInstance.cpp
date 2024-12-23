@@ -20,7 +20,7 @@
 
 #include "ClassInstance.h"
 
-#include "Netlist/Namespace/Module.h"
+#include "Netlist/NameSpace/Module.h"
 //------------------------------------------------------------------------------
 
 using std::string;

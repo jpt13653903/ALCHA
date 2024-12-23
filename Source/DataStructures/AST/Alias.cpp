@@ -18,9 +18,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "alias.h"
-#include "Netlist/alias.h"
-#include "Netlist/Namespace/Module.h"
+#include "Alias.h"
+#include "Netlist/Alias.h"
+#include "Netlist/NameSpace/Module.h"
 //------------------------------------------------------------------------------
 
 using std::string;

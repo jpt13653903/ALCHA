@@ -20,8 +20,8 @@
 
 #include "ByteDefinition.h"
 
-#include "Netlist/byte.h"
-#include "Netlist/Namespace/Module.h"
+#include "Netlist/Byte.h"
+#include "Netlist/NameSpace/Module.h"
 //------------------------------------------------------------------------------
 
 using std::string;

@@ -19,11 +19,11 @@
 //==============================================================================
 
 #include "AccessMember.h"
-#include "object.h"
+#include "Object.h"
 #include "Identifier.h"
 #include "Netlist/Alias.h"
-#include "Netlist/Namespace/Module.h"
-#include "Netlist/Namespace.h"
+#include "Netlist/NameSpace/Module.h"
+#include "Netlist/NameSpace.h"
 #include "Netlist/Synthesisable.h"
 //------------------------------------------------------------------------------
 

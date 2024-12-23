@@ -19,8 +19,8 @@
 //==============================================================================
 
 #include "Import.h"
-#include "engine.h"
-#include "Netlist/nameSpace/module.h"
+#include "Engine.h"
+#include "Netlist/NameSpace/Module.h"
 //------------------------------------------------------------------------------
 
 using std::string;

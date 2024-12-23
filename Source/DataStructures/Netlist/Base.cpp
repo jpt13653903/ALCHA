@@ -19,8 +19,8 @@
 //==============================================================================
 
 #include "Base.h"
-#include "attribute.h"
-#include "nameSpace/Module.h"
+#include "Attribute.h"
+#include "NameSpace/Module.h"
 #include "AST/Expression/Identifier.h"
 //------------------------------------------------------------------------------
 

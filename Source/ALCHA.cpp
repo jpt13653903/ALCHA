@@ -23,7 +23,7 @@
 #include "BackEnd.h"
 //------------------------------------------------------------------------------
 
-void pause()
+void waitForEnter()
 {
     printf("\nPress Enter to continue\n");
     fflush(stdout);
@@ -59,7 +59,7 @@ void printUsage()
         "\n",
         MAJOR_VERSION, MINOR_VERSION // These are defined in the Makefile
     );
-    pause();
+    waitForEnter();
 }
 //------------------------------------------------------------------------------
 

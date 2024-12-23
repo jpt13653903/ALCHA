@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "array.h"
+#include "Array.h"
 //------------------------------------------------------------------------------
 
 using std::string;

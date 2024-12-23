@@ -20,8 +20,8 @@
 
 #include "PinDefinition.h"
 
-#include "Netlist/Synthesisable/pin.h"
-#include "Netlist/Namespace/Module.h"
+#include "Netlist/Synthesisable/Pin.h"
+#include "Netlist/NameSpace/Module.h"
 //------------------------------------------------------------------------------
 
 using std::string;

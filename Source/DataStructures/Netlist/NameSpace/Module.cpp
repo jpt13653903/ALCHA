@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "module.h"
+#include "Module.h"
 //------------------------------------------------------------------------------
 
 namespace Netlist{

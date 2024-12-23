@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "accessAttribute.h"
-#include "object.h"
+#include "AccessAttribute.h"
+#include "Object.h"
 #include "Identifier.h"
 #include "Netlist/Base.h"
 //------------------------------------------------------------------------------

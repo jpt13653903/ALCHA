@@ -20,11 +20,11 @@
 
 #include "Multiply.h"
 #include "Literal.h"
-#include "negate.h"
-#include "object.h"
+#include "Negate.h"
+#include "Object.h"
 
-#include "Netlist/Namespace/Module.h"
-#include "Netlist/Synthesisable/net.h"
+#include "Netlist/NameSpace/Module.h"
+#include "Netlist/Synthesisable/Net.h"
 //------------------------------------------------------------------------------
 
 using std::string;

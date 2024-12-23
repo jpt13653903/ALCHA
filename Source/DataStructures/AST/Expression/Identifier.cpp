@@ -19,11 +19,11 @@
 //==============================================================================
 
 #include "Identifier.h"
-#include "object.h"
+#include "Object.h"
 #include "Literal.h"
 
 #include "Netlist/Alias.h"
-#include "Netlist/nameSpace/Module.h"
+#include "Netlist/NameSpace/Module.h"
 #include "Netlist/Synthesisable.h"
 //------------------------------------------------------------------------------
 

@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "engine.h"
-#include "Netlist/nameSpace/Module.h"
+#include "Engine.h"
+#include "Netlist/NameSpace/Module.h"
 //------------------------------------------------------------------------------
 
 Engine* engine;

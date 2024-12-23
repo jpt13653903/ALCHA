@@ -20,14 +20,14 @@
 
 #include "Expression.h"
 #include "Assignment.h"
-#include "Expression/literal.h"
+#include "Expression/Literal.h"
 #include "Expression/Multiply.h"
-#include "Expression/object.h"
+#include "Expression/Object.h"
 #include "Expression/ShiftLeft.h"
 #include "Expression/ShiftRight.h"
 
-#include "Netlist/Namespace/Module.h"
-#include "Netlist/Synthesisable/net.h"
+#include "Netlist/NameSpace/Module.h"
+#include "Netlist/Synthesisable/Net.h"
 //------------------------------------------------------------------------------
 
 using namespace AST;

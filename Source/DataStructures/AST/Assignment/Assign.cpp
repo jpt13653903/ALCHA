@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "assign.h"
+#include "Assign.h"
 
 #include "Netlist/Byte.h"
 #include "Netlist/Character.h"

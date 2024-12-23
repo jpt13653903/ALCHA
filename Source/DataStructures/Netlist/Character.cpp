@@ -20,7 +20,7 @@
 
 #include "Character.h"
 
-#include "AST/expression/Literal.h"
+#include "AST/Expression/Literal.h"
 //------------------------------------------------------------------------------
 
 using std::string;

@@ -18,15 +18,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "object.h"
+#include "Object.h"
 #include "Literal.h"
 
-#include "Netlist/alias.h"
-#include "Netlist/byte.h"
+#include "Netlist/Alias.h"
+#include "Netlist/Byte.h"
 #include "Netlist/Character.h"
-#include "Netlist/num.h"
-#include "Netlist/Namespace/Module.h"
-#include "Netlist/Synthesisable/net.h"
+#include "Netlist/Num.h"
+#include "Netlist/NameSpace/Module.h"
+#include "Netlist/Synthesisable/Net.h"
 //------------------------------------------------------------------------------
 
 using std::string;

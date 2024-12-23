@@ -21,10 +21,10 @@
 #include "Assignment.h"
 
 #include "Netlist/Alias.h"
-#include "Netlist/attribute.h"
+#include "Netlist/Attribute.h"
 #include "Netlist/Synthesisable/Pin.h"
 #include "Netlist/Synthesisable/Net.h"
-#include "Netlist/Namespace/Module.h"
+#include "Netlist/NameSpace/Module.h"
 
 #include "Expression/Object.h"
 #include "Expression/Identifier.h"

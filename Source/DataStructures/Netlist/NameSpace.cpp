@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Namespace.h"
+#include "NameSpace.h"
 //------------------------------------------------------------------------------
 
 using std::string;
