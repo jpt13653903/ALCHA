@@ -26,30 +26,30 @@
 #include "Net.h"
 //------------------------------------------------------------------------------
 
-namespace NETLIST{
-    struct PIN;
+namespace Netlist{
+    struct Pin;
 
-    struct PIN_COMPONENT: public NET{
-        PIN* Pin;
+    struct PinComponent: public Net{
+        Pin* pin;
 
-        PIN_COMPONENT(int Line, const std::string& Filename, const char* Name, PIN* Pin);
-        virtual ~PIN_COMPONENT();
+        PinComponent(int line, const std::string& filename, const char* name, Pin* pin);
+        virtual ~PinComponent();
 
-        bool RawAssign(AST::EXPRESSION* Expression) override;
+        bool rawAssign(AST::Expression* expression) override;
 
-        void PopulateUsed(bool SetUsed) override;
+        void populateUsed(bool setUsed) override;
 
-        BASE*            GetAttribute            (const std::string& Name) override;
-        AST::EXPRESSION* GetAttribValue          (const std::string& Name) override;
-        AST::EXPRESSION* GetBuiltInAttributeValue(const std::string& Name) override;
+        Base*            getAttribute            (const std::string& name) override;
+        AST::Expression* getAttribValue          (const std::string& name) override;
+        AST::Expression* getBuiltInAttributeValue(const std::string& name) override;
 
-        int     Width    () override;
-        NUMBER& FullScale() override;
-        bool    Signed   () override;
+        int     width    () override;
+        Number& fullScale() override;
+        bool    isSigned () override;
 
-        void Display(int Indent = 0) override;
+        void display(int indent = 0) override;
 
-        void Validate() override;
+        void validate() override;
     };
 }
 //------------------------------------------------------------------------------

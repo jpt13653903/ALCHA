@@ -19,264 +19,264 @@
 //==============================================================================
 
 #include "Base.h"
-#include "Attribute.h"
-#include "Namespace/Module.h"
+#include "attribute.h"
+#include "nameSpace/Module.h"
 #include "AST/Expression/Identifier.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
-using namespace NETLIST;
+using std::string;
+using std::to_string;
+using namespace Netlist;
 //------------------------------------------------------------------------------
 
-BASE::BASE(int Line, const string& Filename, const char* Name, TYPE Type)
+Base::Base(int line, const string& filename, const char* name, Type type)
 {
-    Source.Line      = Line;
-    Source.Filename  = Filename;
-    this->Type       = Type;
-    this->Namespace  = 0;
+    source.line      = line;
+    source.filename  = filename;
+    this->type       = type;
+    this->nameSpace  = 0;
 
-    static unsigned GenNameCount = 0;
-    if(Name){
-        Temporary = false;
-        this->Name = Name;
+    static unsigned genNameCount = 0;
+    if(name){
+        temporary = false;
+        this->name = name;
     }else{
-        Temporary = true;
-        switch(Type){
-            case TYPE::Net   : this->Name = "w.."; break;
-            case TYPE::Module: this->Name = "m.."; break;
-            default          : this->Name = "t.."; break;
+        temporary = true;
+        switch(type){
+            case Type::Net   : this->name = "w.."; break;
+            case Type::Module: this->name = "m.."; break;
+            default          : this->name = "t.."; break;
         }
-        if(GenNameCount < 1000000) this->Name += '0';
-        if(GenNameCount <  100000) this->Name += '0';
-        if(GenNameCount <   10000) this->Name += '0';
-        if(GenNameCount <    1000) this->Name += '0';
-        if(GenNameCount <     100) this->Name += '0';
-        if(GenNameCount <      10) this->Name += '0';
-        this->Name += to_string(GenNameCount++);
+        if(genNameCount < 1000000) this->name += '0';
+        if(genNameCount <  100000) this->name += '0';
+        if(genNameCount <   10000) this->name += '0';
+        if(genNameCount <    1000) this->name += '0';
+        if(genNameCount <     100) this->name += '0';
+        if(genNameCount <      10) this->name += '0';
+        this->name += to_string(genNameCount++);
     }
 
-    if(!NamespaceStack.empty()) Namespace = NamespaceStack.front();
+    if(!nameSpaceStack.empty()) nameSpace = nameSpaceStack.front();
 }
 //------------------------------------------------------------------------------
 
-BASE::~BASE()
+Base::~Base()
 {
-    foreach(Attribute, Attributes) delete Attribute->second;
+    for(auto attribute: attributes) delete attribute.second;
 }
 //------------------------------------------------------------------------------
 
-void BASE::Error(const char* Message)
+void Base::printError(const char* message)
 {
-    ::Error(Source.Line, Source.Filename, Message);
+    ::printError(source.line, source.filename, message);
 }
 //------------------------------------------------------------------------------
 
-void BASE::Warning(const char* Message)
+void Base::printWarning(const char* message)
 {
-    ::Warning(Source.Line, Source.Filename.c_str(), Message);
+    ::printWarning(source.line, source.filename.c_str(), message);
 }
 //------------------------------------------------------------------------------
 
-bool BASE::IsSynthesisable()
-{
-    return false;
-}
-//------------------------------------------------------------------------------
-
-bool BASE::IsNamespace()
+bool Base::isSynthesisable()
 {
     return false;
 }
 //------------------------------------------------------------------------------
 
-bool BASE::IsTemporary()
+bool Base::isNamespace()
 {
-    return Temporary;
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool BASE::ApplyAttributes(AST::ASSIGNMENT* AttributeList)
+bool Base::isTemporary()
 {
-    while(AttributeList){
-        assert(AttributeList->Left , return false);
-        assert(AttributeList->Right, return false);
-        assert(AttributeList->Left->Type == AST::BASE::TYPE::Identifier, return false);
+    return temporary;
+}
+//------------------------------------------------------------------------------
 
-        auto Name  = ((AST::IDENTIFIER*)AttributeList->Left)->Name;
-        auto Value = AttributeList->Right;
-        AttributeList->Right = 0;
+bool Base::applyAttributes(AST::Assignment* attributeList)
+{
+    while(attributeList){
+        assert(attributeList->left , return false);
+        assert(attributeList->right, return false);
+        assert(attributeList->left->type == AST::Base::Type::Identifier, return false);
 
-        switch(Value->Type){
-            case AST::BASE::TYPE::String:
-            case AST::BASE::TYPE::Literal:
+        auto name  = ((AST::Identifier*)attributeList->left)->name;
+        auto value = attributeList->right;
+        attributeList->right = 0;
+
+        switch(value->type){
+            case AST::Base::Type::String:
+            case AST::Base::Type::Literal:
                 break;
 
-            case AST::BASE::TYPE::Array:
+            case AST::Base::Type::Array:
                 // TODO Make sure that the array only contains strings or literals
                 break;
 
             default:
-                AttributeList->Error("Attribute values must be strings, literals or arrays");
-                delete Value;
+                attributeList->printError("attribute values must be strings, literals or arrays");
+                delete value;
                 return false;
         }
-        auto Attribute = Attributes[Name];
-        if(!Attribute){
-            Attribute = new ATTRIBUTE(Value->Source.Line, Value->Source.Filename, Name.c_str());
-            Attributes[Name] = Attribute;
+        auto attribute = attributes[name];
+        if(!attribute){
+            attribute = new Attribute(value->source.line, value->source.filename, name.c_str());
+            attributes[name] = attribute;
         }
-        Attribute->Assign(Value);
+        attribute->assign(value);
 
-        AttributeList = (AST::ASSIGNMENT*)AttributeList->Next;
+        attributeList = (AST::Assignment*)attributeList->next;
     }
     return true;
 }
 //------------------------------------------------------------------------------
 
-string& BASE::HDL_Name()
+string& Base::hdlName()
 {
-    static string Result;
-    string SafeName; // Unicode converted to hex
+    static string result;
+    string safeName; // Unicode converted to hex
 
     int n;
-    for(n = 0; Name[n]; n++){
-        if(Name[n] & 0x80) break;
+    for(n = 0; name[n]; n++){
+        if(name[n] & 0x80) break;
     }
-    if(Name[n]){ // Escape Unicode characters
+    if(name[n]){ // Escape Unicode characters
         char s[16];
-        SafeName = "u..";
-        for(int n = 0; Name[n]; n++){
-            sprintf(s, "%02X", (unsigned)((uint8_t)Name[n]));
-            SafeName += s;
+        safeName = "u..";
+        for(int n = 0; name[n]; n++){
+            sprintf(s, "%02X", (unsigned)((uint8_t)name[n]));
+            safeName += s;
         }
     }else{
-        SafeName = Name;
+        safeName = name;
     }
 
-    if(Namespace){
-        switch(Namespace->Type){
-            case TYPE::Module: Result = SafeName; break;
-            case TYPE::Group:  Result = Namespace->HDL_Name() + "." + SafeName; break;
+    if(nameSpace){
+        switch(nameSpace->type){
+            case Type::Module: result = safeName; break;
+            case Type::Group:  result = nameSpace->hdlName() + "." + safeName; break;
             default:;
         }
     }else{
-        Result = SafeName;
+        result = safeName;
     }
-    return Result;
+    return result;
 }
 //------------------------------------------------------------------------------
 
-string& BASE::EscapedName()
+string& Base::escapedName()
 {
-    static string Result;
+    static string result;
 
-    string Name(HDL_Name());
+    string name(hdlName());
 
-    for(int n = 0; Name[n]; n++){
-        if(Name[n] >= '0' && Name[n] <= '9' && n > 0) continue;
-        if(Name[n] >= 'a' && Name[n] <= 'z') continue;
-        if(Name[n] >= 'A' && Name[n] <= 'Z') continue;
-        if(Name[n] == '_') continue;
-        Result = "\\" + Name + " ";
-        return Result;
+    for(int n = 0; name[n]; n++){
+        if(name[n] >= '0' && name[n] <= '9' && n > 0) continue;
+        if(name[n] >= 'a' && name[n] <= 'z') continue;
+        if(name[n] >= 'A' && name[n] <= 'Z') continue;
+        if(name[n] == '_') continue;
+        result = "\\" + name + " ";
+        return result;
     }
-    Result = Name;
-    return Result;
+    result = name;
+    return result;
 }
 //------------------------------------------------------------------------------
 
-void BASE::DisplayLongName()
+void Base::displayLongName()
 {
-    if(Namespace != (NAMESPACE*)&Global){
-        Namespace->DisplayLongName();
-        Debug.Print("::");
+    if(nameSpace != (NameSpace*)&global){
+        nameSpace->displayLongName();
+        debug.print("::");
     }
-    Debug.Print("%s", Name.c_str());
+    debug.print("%s", name.c_str());
 }
 //------------------------------------------------------------------------------
 
-void BASE::DisplayAttributes(int Indent)
+void Base::displayAttributes(int indent)
 {
-    Debug.Indent(Indent);
-    Debug.Print("Line       = %d\n", Source.Line);
+    debug.indent(indent);
+    debug.print("Line       = %d\n", source.line);
 
-    Debug.Indent(Indent);
-    Debug.Print("Filename   = \"%s\"\n", Source.Filename);
+    debug.indent(indent);
+    debug.print("Filename   = \"%s\"\n", source.filename);
 
-    Debug.Indent(Indent);
-    Debug.Print("Attributes:\n");
+    debug.indent(indent);
+    debug.print("Attributes:\n");
 
-    Indent++;
-    foreach(Attribute, Attributes){
-        assert(Attribute->second, break);
-        Attribute->second->Display(Indent);
+    indent++;
+    for(auto attribute: attributes){
+        assert(attribute.second, break);
+        attribute.second->display(indent);
     }
 }
 //------------------------------------------------------------------------------
 
-BASE* BASE::GetAttribute(const std::string& Name)
+Base* Base::getAttribute(const std::string& name)
 {
-    auto Attribute = Attributes.find(Name);
-    if(Attribute != Attributes.end()) return Attribute->second;
+    auto attribute = attributes.find(name);
+    if(attribute != attributes.end()) return attribute->second;
     return 0;
 }
 //------------------------------------------------------------------------------
 
-BASE* BASE::GetMember(const std::string& Name)
+Base* Base::getMember(const std::string& name)
 {
     return 0; // By default, objects do not have members
 }
 //------------------------------------------------------------------------------
 
-AST::EXPRESSION* BASE::GetAttribValue(const string& Name)
+AST::Expression* Base::getAttribValue(const string& name)
 {
-    auto Attribute = GetAttribute(Name);
-    if(Attribute){
+    auto attribute = getAttribute(name);
+    if(attribute){
         // Check for accidental built-in attribute access
-        assert(Attribute->Type == TYPE::Attribute, return 0);
-        return ((ATTRIBUTE*)Attribute)->Value;
+        assert(attribute->type == Type::Attribute, return 0);
+        return ((Attribute*)attribute)->value;
     }
-    if(Namespace) return Namespace->GetAttribValue(Name);
+    if(nameSpace) return nameSpace->getAttribValue(name);
     return 0;
 }
 //------------------------------------------------------------------------------
 
-AST::EXPRESSION* BASE::GetBuiltInAttributeValue(const string& Name)
+AST::Expression* Base::getBuiltInAttributeValue(const string& name)
 {
-    // TODO: Build stuff like Line, Filename, etc.
+    // TODO: Build stuff like line, filename, etc.
     return 0;
 }
 //------------------------------------------------------------------------------
 
-int BASE::Width()
+int Base::width()
 {
     return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& BASE::FullScale()
+Number& Base::fullScale()
 {
-    static NUMBER Zero = 0;
-    return Zero;
+    static Number zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool BASE::Signed()
+bool Base::isSigned()
 {
     return false;
 }
 //------------------------------------------------------------------------------
 
-void BASE::PopulateUsed(bool SetUsed)
-{}
+void Base::populateUsed(bool setUsed){}
 //------------------------------------------------------------------------------
 
-void BASE::Validate()
+void Base::validate()
 {
-    // Don't verify Namespace, it's circular
-    foreach(Attrib, Attributes){
-        assert(Attrib->first == Attrib->second->Name);
-        Attrib->second->Validate();
+    // Don't verify nameSpace, it's circular
+    for(auto attrib: attributes){
+        assert(attrib.first == attrib.second->name);
+        attrib.second->validate();
     }
 }
 //------------------------------------------------------------------------------

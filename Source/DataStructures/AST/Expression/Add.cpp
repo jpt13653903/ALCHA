@@ -18,241 +18,234 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Add.h"
-#include "Literal.h"
+#include "add.h"
+#include "literal.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-ADD::ADD(int Line, const string& Filename): ADD(Line, Filename.c_str())
-{}
+Add::Add(int line, const string& filename): Add(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-ADD::ADD(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Add)
+Add::Add(int line, const char* filename): Expression(line, filename, Type::Add){}
+//------------------------------------------------------------------------------
+
+Add::~Add(){}
+//------------------------------------------------------------------------------
+
+Base* Add::copy()
 {
+    Add* copy = new Add(source.line, source.filename.c_str());
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-ADD::~ADD()
+bool Add::getVerilog(string& body)
 {
-}
-//------------------------------------------------------------------------------
+    assert(left , return false);
+    assert(right, return false);
 
-BASE* ADD::Copy()
-{
-    ADD* Copy = new ADD(Source.Line, Source.Filename.c_str());
-
-    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-    if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-    return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool ADD::GetVerilog(string& Body)
-{
-    assert(Left , return false);
-    assert(Right, return false);
-
-    if(!Left->GetSigned() && Right->GetSigned()){
-        Body += "$signed({1'b0, (";
-        Left->GetVerilog(Body);
-        Body += ")})";
+    if(!left->getSigned() && right->getSigned()){
+        body += "$signed({1'b0, (";
+        left->getVerilog(body);
+        body += ")})";
     }else{
-        Body += "(";
-        Left->GetVerilog(Body);
-        Body += ")";
+        body += "(";
+        left->getVerilog(body);
+        body += ")";
     }
-    Body += " + ";
-    if(Left->GetSigned() && !Right->GetSigned()){
-        Body += "$signed({1'b0, (";
-        Right->GetVerilog(Body);
-        Body += ")})";
+    body += " + ";
+    if(left->getSigned() && !right->getSigned()){
+        body += "$signed({1'b0, (";
+        right->getVerilog(body);
+        body += ")})";
     }else{
-        Body += "(";
-        Right->GetVerilog(Body);
-        Body += ")";
+        body += "(";
+        right->getVerilog(body);
+        body += ")";
     }
 
     return true;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ADD::AddLiteral(EXPRESSION* Object, EXPRESSION* Literal)
+Expression* Add::addLiteral(Expression* object, Expression* literal)
 {
-    ResultWidth     = Object->GetWidth();
-    ResultFullScale = Object->GetFullScale();
+    resultWidth     = object->getWidth();
+    resultFullScale = object->getFullScale();
 
-    NUMBER Scale = 1;
-    Scale.BinScale(ResultWidth);
-    Scale.Div(ResultFullScale);
-    ((LITERAL*)Literal)->Value.Mul(Scale);
+    Number scale = 1;
+    scale.binScale(resultWidth);
+    scale.div(resultFullScale);
+    ((Literal*)literal)->value.mul(scale);
 
-    int LiteralWidth = Literal->GetWidth();
+    int literalWidth = literal->getWidth();
 
-    if(LiteralWidth > ResultWidth){
-        ResultFullScale.BinScale(LiteralWidth - ResultWidth);
-        ResultWidth = LiteralWidth;
+    if(literalWidth > resultWidth){
+        resultFullScale.binScale(literalWidth - resultWidth);
+        resultWidth = literalWidth;
     }
     // Make space for the overflow
-    ResultFullScale.BinScale(1);
-    ResultWidth++;
+    resultFullScale.binScale(1);
+    resultWidth++;
 
-    return MakeObject();
+    return makeObject();
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ADD::Evaluate()
+Expression* Add::evaluate()
 {
-    assert(Left , return this);
-    assert(Right, return this);
+    assert(left , return this);
+    assert(right, return this);
 
-    Left  = Left ->Evaluate();
-    Right = Right->Evaluate();
+    left  = left ->evaluate();
+    right = right->evaluate();
 
-    assert(Left , return this);
-    assert(Right, return this);
+    assert(left , return this);
+    assert(right, return this);
 
-    ResultSigned = (Left->GetSigned() || Right->GetSigned());
+    resultSigned = (left->getSigned() || right->getSigned());
 
-    if(Left->Type == TYPE::Literal && Right->Type == TYPE::Literal){
-        auto Result = new LITERAL(Source.Line, Source.Filename);
-        auto left  = (LITERAL*)Left;
-        auto right = (LITERAL*)Right;
-        Result->Value =   left ->Value;
-        Result->Value.Add(right->Value);
+    if(left->type == Type::Literal && right->type == Type::Literal){
+        auto result = new Literal(source.line, source.filename);
+        result->value =   ((Literal*)left )->value;
+        result->value.add(((Literal*)right)->value);
         delete this;
-        return Result;
+        return result;
     }
 
-    if(Left->Type == TYPE::Literal && Right->Type == TYPE::Object){
-        return AddLiteral(Right, Left);
+    if(left->type == Type::Literal && right->type == Type::Object){
+        return addLiteral(right, left);
 
-    }else if(Left->Type == TYPE::Object && Right->Type == TYPE::Literal){
-        return AddLiteral(Left, Right);
+    }else if(left->type == Type::Object && right->type == Type::Literal){
+        return addLiteral(left, right);
 
-    }else if(Left->Type == TYPE::Object && Right->Type == TYPE::Object){
-        int LeftWidth  = Left ->GetWidth();
-        int RightWidth = Right->GetWidth();
+    }else if(left->type == Type::Object && right->type == Type::Object){
+        int leftWidth  = left ->getWidth();
+        int rightWidth = right->getWidth();
 
-        NUMBER LeftFullScale  = Left ->GetFullScale();
-        NUMBER RightFullScale = Right->GetFullScale();
+        Number leftFullScale  = left ->getFullScale();
+        Number rightFullScale = right->getFullScale();
 
         // The numerator if choosing to scale the left
-        NUMBER Scale1 = LeftFullScale;
-        Scale1.BinScale(RightWidth);
+        Number scale1 = leftFullScale;
+        scale1.binScale(rightWidth);
 
         // The numerator if choosing to scale the right
-        NUMBER Scale2 = RightFullScale;
-        Scale2.BinScale(LeftWidth);
+        Number scale2 = rightFullScale;
+        scale2.binScale(leftWidth);
 
-        if(Scale1 > Scale2){ // Scale the left
-            Scale1.Div(Scale2);
-            Left = Left->ScaleWith(Scale1, RightWidth, RightFullScale);
-            LeftWidth = Left->GetWidth();
+        if(scale1 > scale2){ // scale the left
+            scale1.div(scale2);
+            left = left->scaleWith(scale1, rightWidth, rightFullScale);
+            leftWidth = left->getWidth();
 
-            ResultWidth     = RightWidth;
-            ResultFullScale = RightFullScale;
+            resultWidth     = rightWidth;
+            resultFullScale = rightFullScale;
 
-            if(LeftWidth > ResultWidth){
-                ResultFullScale.BinScale(LeftWidth - ResultWidth);
-                ResultWidth = LeftWidth;
+            if(leftWidth > resultWidth){
+                resultFullScale.binScale(leftWidth - resultWidth);
+                resultWidth = leftWidth;
             }
 
-        }else{ // Scale the right
-            Scale2.Div(Scale1);
-            Right = Right->ScaleWith(Scale2, LeftWidth, LeftFullScale);
-            RightWidth = Right->GetWidth();
+        }else{ // scale the right
+            scale2.div(scale1);
+            right = right->scaleWith(scale2, leftWidth, leftFullScale);
+            rightWidth = right->getWidth();
 
-            ResultWidth     = LeftWidth;
-            ResultFullScale = LeftFullScale;
+            resultWidth     = leftWidth;
+            resultFullScale = leftFullScale;
 
-            if(RightWidth > ResultWidth){
-                ResultFullScale.BinScale(RightWidth - ResultWidth);
-                ResultWidth = RightWidth;
+            if(rightWidth > resultWidth){
+                resultFullScale.binScale(rightWidth - resultWidth);
+                resultWidth = rightWidth;
             }
         }
 
         // Make space for the overflow
-        ResultFullScale.BinScale(1);
-        ResultWidth++;
+        resultFullScale.binScale(1);
+        resultWidth++;
 
-        return MakeObject();
+        return makeObject();
     }
 
     return this;
 }
 //------------------------------------------------------------------------------
 
-int ADD::GetWidth()
+int Add::getWidth()
 {
-    return ResultWidth;
+    return resultWidth;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& ADD::GetFullScale()
+Number& Add::getFullScale()
 {
-    return ResultFullScale;
+    return resultFullScale;
 }
 //------------------------------------------------------------------------------
 
-bool ADD::GetSigned()
+bool Add::getSigned()
 {
-    return ResultSigned;
+    return resultSigned;
 }
 //------------------------------------------------------------------------------
 
-bool ADD::HasCircularReference(NETLIST::BASE* Object)
+bool Add::hasCircularReference(Netlist::Base* object)
 {
-    assert(Left , return false);
-    assert(Right, return false);
+    assert(left , return false);
+    assert(right, return false);
 
-    if(Left ->HasCircularReference(Object)) return true;
-    if(Right->HasCircularReference(Object)) return true;
+    if(left ->hasCircularReference(object)) return true;
+    if(right->hasCircularReference(object)) return true;
 
     return false;
 }
 //------------------------------------------------------------------------------
 
-void ADD::PopulateUsed()
+void Add::populateUsed()
 {
-    assert(Left , return);
-    assert(Right, return);
+    assert(left , return);
+    assert(right, return);
 
-    Left ->PopulateUsed();
-    Right->PopulateUsed();
+    left ->populateUsed();
+    right->populateUsed();
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ADD::RemoveTempNet(int Width, bool Signed)
+Expression* Add::removeTempNet(int width, bool isSigned)
 {
-    if(Left ) Left  = Left ->RemoveTempNet(0, false);
-    if(Right) Right = Right->RemoveTempNet(0, false);
+    if(left ) left  = left ->removeTempNet(0, false);
+    if(right) right = right->removeTempNet(0, false);
     return this;
 }
 //------------------------------------------------------------------------------
 
-void ADD::Display()
+void Add::display()
 {
-    DisplayStart();
+    displayStart();
 
-    Debug.Print(" + " );
+    debug.print(" + " );
 
-    DisplayEnd();
+    displayEnd();
 }
 //------------------------------------------------------------------------------
 
-void ADD::ValidateMembers()
+void Add::validateMembers()
 {
-    assert(Type == TYPE::Add);
+    assert(type == Type::Add);
 
-    assert(!Next);
-    assert(!Prev);
+    assert(!next);
+    assert(!prev);
 
-    assert(Left , return); Left ->Validate();
-    assert(Right, return); Right->Validate();
+    assert(left , return); left ->validate();
+    assert(right, return); right->validate();
 }
 //------------------------------------------------------------------------------
 

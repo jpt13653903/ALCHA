@@ -29,9 +29,9 @@
 #include "Utilities.h"
 //------------------------------------------------------------------------------
 
-class ENGINE{
+class Engine{
     private: // Massages
-        PARSER Parser;
+        Parser parser;
     //----------------------------------------------------------------------------
 
     public: // Engine functions
@@ -40,18 +40,18 @@ class ENGINE{
         // - Creates object instances
         // - Evaluates scripting expressions
         // - Runs import statements
-        AST::BASE* RunAST(const char* Filename);
+        AST::Base* runAST(const char* filename);
     //----------------------------------------------------------------------------
 
     public:
-        ENGINE();
-      ~ENGINE();
+        Engine();
+       ~Engine();
 
-        bool Run(const char* Filename);
+        bool run(const char* filename);
 };
 //------------------------------------------------------------------------------
 
-extern ENGINE* Engine; // Created in ALCHA.cpp::main()
+extern Engine* engine; // Created in ALCHA.cpp::main()
 //------------------------------------------------------------------------------
 
 #endif

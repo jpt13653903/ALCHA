@@ -26,24 +26,24 @@
 #include "AST/Expression.h"
 //------------------------------------------------------------------------------
 
-namespace NETLIST{
-    struct NET: public SYNTHESISABLE{
-        AST::EXPRESSION* Value;
+namespace Netlist{
+    struct Net: public Synthesisable{
+        AST::Expression* value;
 
-                          NET(int Line, const std::string& Filename, const char* Name);
-        virtual ~NET();
+                 Net(int line, const std::string& filename, const char* name);
+        virtual ~Net();
 
-        AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
+        AST::Expression* getExpression(int line, const std::string& filename) override;
 
-        bool Assign   (AST::EXPRESSION* Expression) override;
-        bool RawAssign(AST::EXPRESSION* Expression) override;
+        bool assign   (AST::Expression* expression) override;
+        bool rawAssign(AST::Expression* expression) override;
 
-        bool HasCircularReference(BASE* Object) override;
-        void PopulateUsed(bool SetUsed) override;
+        bool hasCircularReference(Base* object) override;
+        void populateUsed(bool setUsed) override;
 
-        void Display(int Indent = 0) override;
+        void display(int indent = 0) override;
 
-        void Validate() override;
+        void validate() override;
     };
 }
 //------------------------------------------------------------------------------

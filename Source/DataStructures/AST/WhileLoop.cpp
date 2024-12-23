@@ -21,70 +21,69 @@
 #include "WhileLoop.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-WHILE_LOOP::WHILE_LOOP(int Line, std::string& Filename): WHILE_LOOP(Line, Filename.c_str())
-{}
+WhileLoop::WhileLoop(int line, std::string& filename): WhileLoop(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-WHILE_LOOP::WHILE_LOOP(int Line, const char* Filename): BASE(Line, Filename, TYPE::WhileLoop)
+WhileLoop::WhileLoop(int line, const char* filename): Base(line, filename, Type::WhileLoop)
 {
-    Condition  = 0;
-    Statements = 0;
+    condition  = 0;
+    statements = 0;
 }
 //------------------------------------------------------------------------------
 
-WHILE_LOOP::~WHILE_LOOP()
+WhileLoop::~WhileLoop()
 {
-    if(Condition ) delete Condition;
-    if(Statements) delete Statements;
+    if(condition ) delete condition;
+    if(statements) delete statements;
 }
 //------------------------------------------------------------------------------
 
-BASE* WHILE_LOOP::Copy()
+Base* WhileLoop::copy()
 {
-    WHILE_LOOP* Copy = new WHILE_LOOP(Source.Line, Source.Filename.c_str());
+    WhileLoop* copy = new WhileLoop(source.line, source.filename.c_str());
 
-    if(Condition) Copy->Condition = (decltype(Condition))Condition->Copy();
+    if(condition) copy->condition = (decltype(condition))condition->copy();
 
-    Copy->Statements = CopyList(Statements);
+    copy->statements = copyList(statements);
 
-    return Copy;
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-bool WHILE_LOOP::RunAST()
+bool WhileLoop::runAST()
 {
     error("Not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-bool WHILE_LOOP::GetVerilog(string& Body)
+bool WhileLoop::getVerilog(string& body)
 {
     error("Not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-void WHILE_LOOP::Display()
+void WhileLoop::display()
 {
-    DisplayInfo();
-    Debug.Print("while(");
-        if(Condition) Condition->Display();
-    Debug.Print("){\n");
-        if(Statements) Statements->Display();
-    Debug.Print("}\n");
+    displayInfo();
+    debug.print("while(");
+        if(condition) condition->display();
+    debug.print("){\n");
+        if(statements) statements->display();
+    debug.print("}\n");
 
-    if(Next) Next->Display();
+    if(next) next->display();
 }
 //------------------------------------------------------------------------------
 
-void WHILE_LOOP::ValidateMembers()
+void WhileLoop::validateMembers()
 {
-    assert(Type == TYPE::WhileLoop);
+    assert(type == Type::WhileLoop);
 
     error("Not yet implemented");
 }

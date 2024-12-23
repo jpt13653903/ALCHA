@@ -25,20 +25,20 @@
 #include "Base.h"
 //------------------------------------------------------------------------------
 
-namespace NETLIST{
-    struct ARRAY: public BASE{
-                          ARRAY(int Line, const std::string& Filename, const char* Name);
-        virtual ~ARRAY();
+namespace Netlist{
+    struct Array: public Base{
+                 Array(int line, const std::string& filename, const char* name);
+        virtual ~Array();
 
-        AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
-        bool Assign   (AST::EXPRESSION* Expression) override;
-        bool RawAssign(AST::EXPRESSION* Expression) override;
+        AST::Expression* getExpression(int line, const std::string& filename) override;
+        bool assign   (AST::Expression* expression) override;
+        bool rawAssign(AST::Expression* expression) override;
 
-        bool HasCircularReference(BASE* Object) override;
+        bool hasCircularReference(Base* object) override;
 
-        void Display(int Indent = 0) override;
+        void display(int indent = 0) override;
 
-        void Validate() override;
+        void validate() override;
     };
 }
 //------------------------------------------------------------------------------

@@ -21,7 +21,7 @@
 #include "Assignment.h"
 
 #include "Netlist/Alias.h"
-#include "Netlist/Attribute.h"
+#include "Netlist/attribute.h"
 #include "Netlist/Synthesisable/Pin.h"
 #include "Netlist/Synthesisable/Net.h"
 #include "Netlist/Namespace/Module.h"
@@ -30,196 +30,194 @@
 #include "Expression/Identifier.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-ASSIGNMENT::ASSIGNMENT(
-    int             Line,
-    const char*     Filename,
-    TYPE            AssignmentType
-): BASE(Line, Filename, AssignmentType)
+Assignment::Assignment(
+    int             line,
+    const char*     filename,
+    Type            AssignmentType
+): Base(line, filename, AssignmentType)
 {
-    Left = Right = 0;
+    left = right = 0;
 }
 //------------------------------------------------------------------------------
 
-ASSIGNMENT::~ASSIGNMENT()
+Assignment::~Assignment()
 {
-    if(Left ) delete Left;
-    if(Right) delete Right;
+    if(left ) delete left;
+    if(right) delete right;
 }
 //------------------------------------------------------------------------------
 
-bool ASSIGNMENT::IsAssignment()
+bool Assignment::isAssignment()
 {
     return true;
 }
 //------------------------------------------------------------------------------
 
-bool ASSIGNMENT::AddLHS_Object(NETLIST::BASE* Object, target_list& List)
+bool Assignment::addLhsObject(Netlist::Base* object, TargetList& list)
 {
-    bool Result = false;
+    bool result = false;
 
-    if(Object){
-        switch(Object->Type){
-            case NETLIST::BASE::TYPE::Pin:
-            case NETLIST::BASE::TYPE::PinComponent:
-            case NETLIST::BASE::TYPE::Net:
-            case NETLIST::BASE::TYPE::Number:
-            case NETLIST::BASE::TYPE::Byte:
-            case NETLIST::BASE::TYPE::Character:
-            case NETLIST::BASE::TYPE::Module:
-            case NETLIST::BASE::TYPE::Group:{
-                List.push_back(Object);
-                Result = true;
+    if(object){
+        switch(object->type){
+            case Netlist::Base::Type::Pin:
+            case Netlist::Base::Type::PinComponent:
+            case Netlist::Base::Type::Net:
+            case Netlist::Base::Type::Number:
+            case Netlist::Base::Type::Byte:
+            case Netlist::Base::Type::Character:
+            case Netlist::Base::Type::Module:
+            case Netlist::Base::Type::Group:{
+                list.push_back(object);
+                result = true;
                 break;
             }
-            case NETLIST::BASE::TYPE::Alias:{
-                auto Alias = (NETLIST::ALIAS*)Object;
-                NETLIST::NamespaceStack.push_front(Alias->Namespace);
-                    Result = GetLHS(Alias->Expression, List);
-                NETLIST::NamespaceStack.pop_front();
+            case Netlist::Base::Type::Alias:{
+                auto alias = (Netlist::Alias*)object;
+                Netlist::nameSpaceStack.push_front(alias->nameSpace);
+                    result = getLHS(alias->expression, list);
+                Netlist::nameSpaceStack.pop_front();
                 break;
             }
-            case NETLIST::BASE::TYPE::Array:{
+            case Netlist::Base::Type::Array:{
                 error("Array assignment not yet implemented");
                 break;
             }
             default:
-                error("Unknown object type %d", (int)Object->Type);
+                error("Unknown object type %d", (int)object->type);
                 break;
         }
     }
-    return Result;
+    return result;
 }
 //------------------------------------------------------------------------------
 
-bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List)
+bool Assignment::getLHS(Expression* node, TargetList& list)
 {
-    if(!Node) return 0;
+    if(!node) return 0;
 
-    bool Result = false;
+    bool result = false;
 
-    switch(Node->Type){
-        case TYPE::Array:{
+    switch(node->type){
+        case Type::Array:{
             error("Array not yet implemented");
-            // Idea: Simply call GetLHS recursively for each array element
+            // Idea: Simply call getLHS recursively for each array element
             //
-            // auto Element = (EXPRESSION*)Node->Right;
+            // auto Element = (expression*)node->right;
             // while(Element){
-            //   Result->Elements.push_back(Evaluate(Element));
-            //   Element = (EXPRESSION*)Element->Next;
+            //   result->Elements.push_back(Evaluate(Element));
+            //   Element = (expression*)Element->next;
             // }
             break;
         }
 
-        case TYPE::Identifier:{
-            auto Identifier = (IDENTIFIER*)Node;
-            foreach(NamespaceIterator, NETLIST::NamespaceStack){
-                auto Namespace = *NamespaceIterator;
-                while(!Result && Namespace){
-                    auto Object = Namespace->GetMember(Identifier->Name);
-                    if(Object){
-                        Result = AddLHS_Object(Object, List);
+        case Type::Identifier:{
+            auto identifier = (Identifier*)node;
+            for(auto nameSpace: Netlist::nameSpaceStack){
+                while(!result && nameSpace){
+                    auto object = nameSpace->getMember(identifier->name);
+                    if(object){
+                        result = addLhsObject(object, list);
                     }
-                    Namespace = Namespace->Namespace;
+                    nameSpace = nameSpace->nameSpace;
                 }
-                if(Result) break;
+                if(result) break;
             }
-            if(!Result){
-                Node->Error();
-                printf("Undefined identifier: \"%s\"\n", Identifier->Name.c_str());
+            if(!result){
+                node->printError();
+                printf("Undefined identifier: \"%s\"\n", identifier->name.c_str());
             }
             break;
         }
 
-        case TYPE::VectorConcatenate:{
+        case Type::VectorConcatenate:{
             error("VectorConcatenate not yet implemented");
-            // Result = (EXPRESSION*)Node->Copy(true);
+            // result = (Expression*)node->copy(true);
             break;
         }
 
-        case TYPE::ArrayConcatenate:{
+        case Type::ArrayConcatenate:{
             error("ArrayConcatenate not yet implemented");
-            // Result = (EXPRESSION*)Node->Copy(true);
+            // result = (Expression*)node->copy(true);
             break;
         }
 
-        case TYPE::Slice:
+        case Type::Slice:
             error("Slice not yet implemented");
             break;
 
-        case TYPE::AccessMember:{
-            assert(Node->Left , return false);
-            assert(Node->Right, return false);
+        case Type::AccessMember:{
+            assert(node->left , return false);
+            assert(node->right, return false);
 
-            target_list LeftList;
-            if(!GetLHS(Node->Left, LeftList)) return false;
-            assert(!LeftList.empty(), return false);
-            if(LeftList.size() > 1){
+            TargetList leftList;
+            if(!getLHS(node->left, leftList)) return false;
+            assert(!leftList.empty(), return false);
+            if(leftList.size() > 1){
                 error("Multiple assignment targets not yet supported");
                 return false;
             }
-            auto Left  = LeftList.front();
-            auto Right = Node->Right;
+            auto left  = leftList.front();
+            auto right = node->right;
 
-            assert(Right->Type == TYPE::Identifier, return false);
-            auto Object = Left->GetMember(((IDENTIFIER*)Right)->Name);
-            if(!Object){
-                Node->Error();
-                printf("Object %s not a member of %s\n",
-                              ((IDENTIFIER*)Right)->Name.c_str(), Left->Name.c_str());
+            assert(right->type == Type::Identifier, return false);
+            auto object = left->getMember(((Identifier*)right)->name);
+            if(!object){
+                node->printError();
+                printf("object %s not a member of %s\n",
+                              ((Identifier*)right)->name.c_str(), left->name.c_str());
                 return false;
             }
-            Result = AddLHS_Object(Object, List);
+            result = addLhsObject(object, list);
 
             break;
         }
 
-        case TYPE::AccessMemberSafe:
+        case Type::AccessMemberSafe:
             error("AccessMemberSafe not yet implemented");
             break;
 
-        case TYPE::AccessAttribute:{
-            assert(Node->Right, return false);
+        case Type::AccessAttribute:{
+            assert(node->right, return false);
 
-            NETLIST::BASE* Left = 0;
-            if(Node->Left){
-                target_list LeftList;
-                if(!GetLHS(Node->Left, LeftList)) return false;
-                assert(!LeftList.empty(), return false);
-                if(LeftList.size() > 1){
+            Netlist::Base* left = 0;
+            if(node->left){
+                TargetList leftList;
+                if(!getLHS(node->left, leftList)) return false;
+                assert(!leftList.empty(), return false);
+                if(leftList.size() > 1){
                     error("Multiple assignment targets not yet supported");
                     return false;
                 }
-                Left = LeftList.front();
+                left = leftList.front();
             }else{ // An attribute of the current namespace
-                Left = NETLIST::NamespaceStack.front();
+                left = Netlist::nameSpaceStack.front();
             }
-            if(Left->Type == NETLIST::BASE::TYPE::Attribute){
-                Node->Error("Attributes are not hierarchical");
+            if(left->type == Netlist::Base::Type::Attribute){
+                node->printError("attributes are not hierarchical");
                 return false;
             }
-            if(Left->Type == NETLIST::BASE::TYPE::PinComponent){
-                Node->Error("Cannot assign attributes to pin components.  Assign to the pin directly");
+            if(left->type == Netlist::Base::Type::PinComponent){
+                node->printError("Cannot assign attributes to pin components.  Assign to the pin directly");
                 return false;
             }
 
-            auto Right = Node->Right;
-            if(Right->Type == TYPE::Identifier){
+            auto right = node->right;
+            if(right->type == Type::Identifier){
                 // The process of adding an entry initialises the pointer to null.
                 // The default constructor of the pointer type is called.
-                auto Attribute = Left->GetAttribute(((IDENTIFIER*)Right)->Name);
-                if(!Attribute){ // Create a new attribute
-                    auto Attrib = new NETLIST::ATTRIBUTE(Right->Source.Line,
-                                                                                          Right->Source.Filename,
-                                                                                          ((IDENTIFIER*)Right)->Name.c_str());
-                    Left->Attributes[((IDENTIFIER*)Right)->Name] = Attrib;
-                    Attribute = Attrib;
+                auto attribute = left->getAttribute(((Identifier*)right)->name);
+                if(!attribute){ // Create a new attribute
+                    auto attrib = new Netlist::Attribute(right->source.line,
+                                                         right->source.filename,
+                                                         ((Identifier*)right)->name.c_str());
+                    left->attributes[((Identifier*)right)->name] = attrib;
+                    attribute = attrib;
                 }
-                List.push_back(Attribute);
-                Result = true;
+                list.push_back(attribute);
+                result = true;
             }else{
                 // TODO Could be a slice expression, which is not supported yet
                 error("Unimplemented attribute access expression");
@@ -228,36 +226,36 @@ bool ASSIGNMENT::GetLHS(EXPRESSION* Node, target_list& List)
         }
 
         default:
-            Node->Error("Invalid LHS expression");
+            node->printError("Invalid LHS expression");
             break;
     }
-    return Result;
+    return result;
 }
 //------------------------------------------------------------------------------
 
-void ASSIGNMENT::DisplayAssignment(const char* Operator)
+void Assignment::displayAssignment(const char* theOperator)
 {
-    DisplayInfo();
-    Debug.Print("Assignment: ");
+    displayInfo();
+    debug.print("Assignment: ");
 
-    if(Left){
-        if(Left->Left || Left->Right) Debug.Print("(");
-        Left->Display();
-        if(Left->Left || Left->Right) Debug.Print(")");
+    if(left){
+        if(left->left || left->right) debug.print("(");
+        left->display();
+        if(left->left || left->right) debug.print(")");
     }
 
-    Debug.Print(" %s ", Operator);
+    debug.print(" %s ", theOperator);
 
-    if(Right){
-        if(Right->Left || Right->Right) Debug.Print("(");
-        Right->Display();
-        if(Right->Left || Right->Right) Debug.Print(")");
+    if(right){
+        if(right->left || right->right) debug.print("(");
+        right->display();
+        if(right->left || right->right) debug.print(")");
     }else{
-        Debug.Print("{Moved Expression}");
+        debug.print("{Moved expression}");
     }
 
-    Debug.Print("\n");
-    if(Next) Next->Display();
+    debug.print("\n");
+    if(next) next->display();
 }
 //------------------------------------------------------------------------------
 

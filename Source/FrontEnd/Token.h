@@ -30,8 +30,8 @@
 #include "Number.h"
 //------------------------------------------------------------------------------
 
-struct TOKEN{
-    enum class TYPE{
+struct Token{
+    enum class Type{
         Unknown = 0, // also used to designate errors, etc.
 
         // White-space .............................................................
@@ -165,14 +165,14 @@ struct TOKEN{
         CloseAngle  = Greater,
 
         WaitUntil   = CastOp
-    } Type;
+    } type;
 
-    int         Line;  // The line number
-    std::string Data;  // The string contents; otherwise the original token characters
-    NUMBER      Value; // Literal value
+    int         line;  // The line number
+    std::string data;  // The string contents; otherwise the original token characters
+    Number      value; // Literal value
 
-    TOKEN();
-    void Display(); // Used for debugging
+    Token();
+    void display(); // Used for debugging
 };
 //------------------------------------------------------------------------------
 

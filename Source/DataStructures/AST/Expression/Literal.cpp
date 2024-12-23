@@ -21,154 +21,148 @@
 #include "Literal.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
+using std::to_string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-LITERAL::LITERAL(int Line, const string& Filename): LITERAL(Line, Filename.c_str())
-{}
+Literal::Literal(int line, const string& filename): Literal(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-LITERAL::LITERAL(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Literal)
+Literal::Literal(int line, const char* filename): Expression(line, filename, Type::Literal){}
+//------------------------------------------------------------------------------
+
+Literal::~Literal(){}
+//------------------------------------------------------------------------------
+
+Base* Literal::copy()
 {
+    Literal* copy = new Literal(source.line, source.filename.c_str());
+
+    copy->value = value;
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-LITERAL::~LITERAL()
+bool Literal::getVerilog(string& body)
 {
-}
-//------------------------------------------------------------------------------
-
-BASE* LITERAL::Copy()
-{
-    LITERAL* Copy = new LITERAL(Source.Line, Source.Filename.c_str());
-
-    Copy->Value = Value;
-
-    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-    if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-    return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool LITERAL::GetVerilog(string& Body)
-{
-    if(!Value.IsReal()){
-        Error("non-real literal");
+    if(!value.isReal()){
+        printError("non-real literal");
         return false;
     }
 
-    int  Width  = GetWidth ();
-    bool Signed = GetSigned();
+    int  width  = getWidth ();
+    bool isSigned = getSigned();
 
-    NUMBER Result;
-    if(Signed){
-        Body += to_string(Width+1) + "'sh";
-        Result = GetFullScale();
-        Result.BinScale(1);
-        Result.Add(Value);
+    Number result;
+    if(isSigned){
+        body += to_string(width+1) + "'sh";
+        result = getFullScale();
+        result.binScale(1);
+        result.add(value);
     }else{
-        Body += to_string(Width  ) + "'h";
-        Result = Value;
+        body += to_string(width  ) + "'h";
+        result = value;
     }
-    Result.Round();
-    Body += Result.GetString(16);
-    Result.BinScale(-Width);
-    if((!Signed && Result >= 1) || (Signed && Result > 2)){
-        Error("The literal does not fit in its full-scale range");
+    result.round();
+    body += result.getString(16);
+    result.binScale(-width);
+    if((!isSigned && result >= 1) || (isSigned && result > 2)){
+        printError("The literal does not fit in its full-scale range");
         return false;
     }
     return true;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LITERAL::Evaluate()
+Expression* Literal::evaluate()
 {
     return this;
 }
 //------------------------------------------------------------------------------
 
-void LITERAL::SetWidth(int Width)
+void Literal::setWidth(int width)
 {
-    WidthOverride = Width;
+    widthOverride = width;
 }
 //------------------------------------------------------------------------------
 
-int LITERAL::GetWidth()
+int Literal::getWidth()
 {
-    if(WidthOverride) return WidthOverride;
+    if(widthOverride) return widthOverride;
 
-    int Width = 0;
+    int width = 0;
 
-    NUMBER Num = Value;
-    if(Num < 0) Num.Mul(-1);
-    Num.Round();
+    Number num = value;
+    if(num < 0) num.mul(-1);
+    num.round();
 
-    while(Num > 1){
-        Num.BinScale(-1);
-        Width++;
+    while(num > 1){
+        num.binScale(-1);
+        width++;
     }
-    if(!GetSigned() && Num == 1){
-        Num.BinScale(-1);
-        Width++;
+    if(!getSigned() && num == 1){
+        num.binScale(-1);
+        width++;
     }
-    if(!Width) return 1;
-    return Width;
+    if(!width) return 1;
+    return width;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& LITERAL::GetFullScale()
+Number& Literal::getFullScale()
 {
-    static NUMBER Result;
-    Result = 1;
-    Result.BinScale(GetWidth());
-    return Result;
+    static Number result;
+    result = 1;
+    result.binScale(getWidth());
+    return result;
 }
 //------------------------------------------------------------------------------
 
-bool LITERAL::GetSigned()
+bool Literal::getSigned()
 {
-    return Value < 0;
+    return value < 0;
 }
 //------------------------------------------------------------------------------
 
-bool LITERAL::HasCircularReference(NETLIST::BASE* Object)
+bool Literal::hasCircularReference(Netlist::Base* object)
 {
     return false;
 }
 //------------------------------------------------------------------------------
 
-void LITERAL::PopulateUsed()
-{
-}
+void Literal::populateUsed(){}
 //------------------------------------------------------------------------------
 
-EXPRESSION* LITERAL::RemoveTempNet(int Width, bool Signed)
+Expression* Literal::removeTempNet(int width, bool isSigned)
 {
     return this;
 }
 //------------------------------------------------------------------------------
 
-void LITERAL::Display()
+void Literal::display()
 {
-    DisplayStart();
+    displayStart();
 
-    Debug.Print(Value.Display());
+    debug.print(value.display());
 
-    DisplayEnd();
+    displayEnd();
 }
 //------------------------------------------------------------------------------
 
-void LITERAL::ValidateMembers()
+void Literal::validateMembers()
 {
-    assert(Type == TYPE::Literal);
+    assert(type == Type::Literal);
 
-    assert(!Next);
-    assert(!Prev);
+    assert(!next);
+    assert(!prev);
 
-    assert(!Left );
-    assert(!Right);
+    assert(!left );
+    assert(!right);
 }
 //------------------------------------------------------------------------------
 

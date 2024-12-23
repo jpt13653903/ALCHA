@@ -21,117 +21,116 @@
 #include "Switch.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-SWITCH::CASE::CASE()
+Switch::Case::Case()
 {
-    Next       = 0;
-    Statements = 0;
+    next       = 0;
+    statements = 0;
 }
 //------------------------------------------------------------------------------
 
-SWITCH::CASE::CASE(const CASE& Case)
+Switch::Case::Case(const Case& source)
 {
-    if(Case.Next) Next = new CASE(*Case.Next);
+    if(source.next) next = new Case(*source.next);
 
-    Statements = CopyList(Case.Statements);
+    statements = copyList(source.statements);
 
-    foreach(Element, Case.Expressions){
-        Expressions.push_back((EXPRESSION*)(*Element)->Copy());
+    for(auto Element: source.expressions){
+        expressions.push_back((Expression*)Element->copy());
     }
 }
 //------------------------------------------------------------------------------
 
-SWITCH::CASE::~CASE()
+Switch::Case::~Case()
 {
-    if(Next       ) delete Next;
-    if(Statements ) delete Statements;
+    if(next       ) delete next;
+    if(statements ) delete statements;
 
-    foreach(Element, Expressions) delete *Element;
+    for(auto Element: expressions) delete Element;
 }
 //------------------------------------------------------------------------------
 
-SWITCH::SWITCH(int Line, std::string& Filename): SWITCH(Line, Filename.c_str())
-{}
+Switch::Switch(int line, std::string& filename): Switch(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-SWITCH::SWITCH(int Line, const char* Filename): BASE(Line, Filename, TYPE::Switch)
+Switch::Switch(int line, const char* filename): Base(line, filename, Type::Switch)
 {
-    Cases      = 0;
-    Default    = 0;
-    Expression = 0;
+    cases       = 0;
+    defaultCase = 0;
+    expression  = 0;
 }
 //------------------------------------------------------------------------------
 
-SWITCH::~SWITCH()
+Switch::~Switch()
 {
-    if(Cases     ) delete Cases;
-    if(Default   ) delete Default;
-    if(Expression) delete Expression;
+    if(cases      ) delete cases;
+    if(defaultCase) delete defaultCase;
+    if(expression ) delete expression;
 }
 //------------------------------------------------------------------------------
 
-BASE* SWITCH::Copy()
+Base* Switch::copy()
 {
-    SWITCH* Copy = new SWITCH(Source.Line, Source.Filename.c_str());
+    Switch* copy = new Switch(source.line, source.filename.c_str());
 
-    if(Cases     ) Copy->Cases      = new CASE(*Cases);
-    if(Expression) Copy->Expression = (decltype(Expression))Expression->Copy();
+    if(cases     ) copy->cases      = new Case(*cases);
+    if(expression) copy->expression = (decltype(expression))expression->copy();
 
-    Copy->Default = CopyList(Default);
+    copy->defaultCase = copyList(defaultCase);
 
-    return Copy;
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-bool SWITCH::RunAST()
+bool Switch::runAST()
 {
     error("Not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-bool SWITCH::GetVerilog(string& Body)
+bool Switch::getVerilog(string& body)
 {
     error("Not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-void SWITCH::Display()
+void Switch::display()
 {
-    DisplayInfo();
-    Debug.Print("switch(");
-        if(Expression) Expression->Display();
-    Debug.Print("){\n");
-        CASE* Temp = Cases;
-        while(Temp){
-            Debug.Print(" case(");
+    displayInfo();
+    debug.print("switch(");
+        if(expression) expression->display();
+    debug.print("){\n");
+        Case* temp = cases;
+        while(temp){
+            debug.print(" case(");
                 bool isFirst = true;
-                foreach(Expression, Temp->Expressions){
-                    if(!isFirst) Debug.Print(", ");
-                    (*Expression)->Display();
+                for(auto expression: temp->expressions){
+                    if(!isFirst) debug.print(", ");
+                    expression->display();
                     isFirst = false;
                 }
-            Debug.Print("){\n");
-                if(Temp->Statements) Temp->Statements->Display();
-            Debug.Print(" }\n");
-            Temp = Temp->Next;
+            debug.print("){\n");
+                if(temp->statements) temp->statements->display();
+            debug.print(" }\n");
+            temp = temp->next;
         }
-        Debug.Print(" default{\n");
-            if(Default) Default->Display();
-        Debug.Print(" }\n");
-    Debug.Print("}\n");
+        debug.print(" default{\n");
+            if(defaultCase) defaultCase->display();
+        debug.print(" }\n");
+    debug.print("}\n");
 
-    if(Next) Next->Display();
+    if(next) next->display();
 }
 //------------------------------------------------------------------------------
 
-void SWITCH::ValidateMembers()
+void Switch::validateMembers()
 {
-    assert(Type == TYPE::Switch);
+    assert(type == Type::Switch);
 
     error("Not yet implemented");
 }

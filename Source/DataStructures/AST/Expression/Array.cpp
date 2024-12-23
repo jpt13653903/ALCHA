@@ -18,127 +18,124 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Array.h"
+#include "array.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-ARRAY::ARRAY(int Line, const string& Filename): ARRAY(Line, Filename.c_str())
-{}
+Array::Array(int line, const string& filename): Array(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-ARRAY::ARRAY(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Array)
+Array::Array(int line, const char* filename): Expression(line, filename, Type::Array){}
+//------------------------------------------------------------------------------
+
+Array::~Array()
 {
+    for(auto element: elements) delete element;
 }
 //------------------------------------------------------------------------------
 
-ARRAY::~ARRAY()
+Base* Array::copy()
 {
-    foreach(Element, Elements) delete *Element;
-}
-//------------------------------------------------------------------------------
+    Array* copy = new Array(source.line, source.filename.c_str());
 
-BASE* ARRAY::Copy()
-{
-    ARRAY* Copy = new ARRAY(Source.Line, Source.Filename.c_str());
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
 
-    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-    if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-    foreach(Element, Elements){
-        Copy->Elements.push_back((EXPRESSION*)(*Element)->Copy());
+    for(auto element: elements){
+        copy->elements.push_back((Expression*)element->copy());
     }
 
-    return Copy;
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-bool ARRAY::GetVerilog(string& Body)
+bool Array::getVerilog(string& body)
 {
-    error("Not yet implemented");
+    error("not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ARRAY::Evaluate()
+Expression* Array::evaluate()
 {
-    error("Not yet implemented");
+    error("not yet implemented");
     return this;
-//   ARRAY* Array = (ARRAY*)Copy(true);
-//   foreach(Element, Array->Elements) (*Element) = (*Element)->Evaluate();
+//   Array* array = (Array*)copy(true);
+//   for(auto element: array->elements) element = element->evaluate();
 //
-//   return Array->Simplify(false);
+//   return array->simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int ARRAY::GetWidth()
+int Array::getWidth()
 {
-    error("Not yet implemented");
+    error("not yet implemented");
     return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& ARRAY::GetFullScale()
+Number& Array::getFullScale()
 {
-    error("Not yet implemented");
-    static NUMBER zero = 0;
+    error("not yet implemented");
+    static Number zero = 0;
     return zero;
 }
 //------------------------------------------------------------------------------
 
-bool ARRAY::GetSigned()
+bool Array::getSigned()
 {
-    error("Not yet implemented");
+    error("not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-bool ARRAY::HasCircularReference(NETLIST::BASE* Object)
+bool Array::hasCircularReference(Netlist::Base* object)
 {
-    error("Not yet implemented");
+    error("not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-void ARRAY::PopulateUsed()
+void Array::populateUsed()
 {
-    error("Not yet implemented");
+    error("not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ARRAY::RemoveTempNet(int Width, bool Signed)
+Expression* Array::removeTempNet(int width, bool isSigned)
 {
-    error("Not yet implemented");
+    error("not yet implemented");
     return this;
 }
 //------------------------------------------------------------------------------
 
-void ARRAY::Display()
+void Array::display()
 {
-    Debug.Print("(Array: (");
+    debug.print("(array: (");
     bool isFirst = true;
-    foreach(Element, Elements){
-        if(!isFirst) Debug.Print(", ");
-        (*Element)->Display();
+    for(auto element: elements){
+        if(!isFirst) debug.print(", ");
+        element->display();
         isFirst = false;
     }
-    Debug.Print("))");
+    debug.print("))");
 }
 //------------------------------------------------------------------------------
 
-void ARRAY::ValidateMembers()
+void Array::validateMembers()
 {
-    assert(Type == TYPE::Array);
+    assert(type == Type::Array);
 
-    assert(!Next);
-    assert(!Prev);
+    assert(!next);
+    assert(!prev);
 
-    assert(!Left);
-    assert(!Right);
+    assert(!left);
+    assert(!right);
 
-    foreach(Element, Elements) (*Element)->Validate();
+    for(auto element: elements) element->validate();
 }
 //------------------------------------------------------------------------------
 

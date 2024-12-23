@@ -23,106 +23,105 @@
 #include "Netlist/Namespace/Module.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-AST::GROUP::GROUP(int Line, std::string& Filename): AST::GROUP(Line, Filename.c_str())
-{}
+AST::Group::Group(int line, std::string& filename): AST::Group(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-AST::GROUP::GROUP(int Line, const char* Filename): BASE(Line, Filename, TYPE::Group)
+AST::Group::Group(int line, const char* filename): Base(line, filename, Type::Group)
 {
-    Attributes = 0;
-    Body       = 0;
+    attributes = 0;
+    body       = 0;
 }
 //------------------------------------------------------------------------------
 
-AST::GROUP::~GROUP()
+AST::Group::~Group()
 {
-    if(Attributes) delete Attributes;
-    if(Body      ) delete Body;
+    if(attributes) delete attributes;
+    if(body      ) delete body;
 }
 //------------------------------------------------------------------------------
 
-BASE* AST::GROUP::Copy()
+Base* AST::Group::copy()
 {
-    GROUP* Copy = new AST::GROUP(Source.Line, Source.Filename.c_str());
+    Group* copy = new AST::Group(source.line, source.filename.c_str());
 
-    Copy->Identifier = Identifier;
+    copy->identifier = identifier;
 
-    if(Attributes) Copy->Attributes = (decltype(Attributes))Attributes->Copy();
-    if(Body      ) Copy->Body       = (decltype(Body      ))Body      ->Copy();
+    if(attributes) copy->attributes = (decltype(attributes))attributes->copy();
+    if(body      ) copy->body       = (decltype(body      ))body      ->copy();
 
-    return Copy;
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-bool AST::GROUP::RunAST()
+bool AST::Group::runAST()
 {
-    if(Identifier.empty()){
+    if(identifier.empty()){
         error("Anonymous groups not supported yet");
         return false;
     }
 
-    auto Found = NETLIST::NamespaceStack.front()->Symbols.find(Identifier);
-    if(Found != NETLIST::NamespaceStack.front()->Symbols.end()){
-        Error();
+    auto found = Netlist::nameSpaceStack.front()->symbols.find(identifier);
+    if(found != Netlist::nameSpaceStack.front()->symbols.end()){
+        printError();
         printf("Symbol \"%s\" already exists in the current namespace\n",
-                      Identifier.c_str());
+               identifier.c_str());
         return false;
     }
-    auto Object = new NETLIST::GROUP(Source.Line, Source.Filename, Identifier.c_str());
-    Object->ApplyAttributes(Attributes);
-    NETLIST::NamespaceStack.front()->Symbols[Identifier] = Object;
-    NETLIST::NamespaceStack.push_front(Object);
+    auto object = new Netlist::Group(source.line, source.filename, identifier.c_str());
+    object->applyAttributes(attributes);
+    Netlist::nameSpaceStack.front()->symbols[identifier] = object;
+    Netlist::nameSpaceStack.push_front(object);
 
-    bool Result  = true;
-    auto Element = Body;
-    while(Result && Element){
-        Result  = Element->RunAST();
-        Element = Element->Next;
+    bool result  = true;
+    auto element = body;
+    while(result && element){
+        result  = element->runAST();
+        element = element->next;
     }
 
-    NETLIST::NamespaceStack.pop_front();
-    return Result;
+    Netlist::nameSpaceStack.pop_front();
+    return result;
 }
 //------------------------------------------------------------------------------
 
-bool AST::GROUP::GetVerilog(string& Body)
+bool AST::Group::getVerilog(string& body)
 {
     error("Not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-void AST::GROUP::Display()
+void AST::Group::display()
 {
-    DisplayInfo();
+    displayInfo();
 
-    if(Identifier.empty()) Debug.Print("Group:\n");
-    else                   Debug.Print("Group (%s):\n", Identifier.c_str());
+    if(identifier.empty()) debug.print("Group:\n");
+    else                   debug.print("Group (%s):\n", identifier.c_str());
 
-    Debug.Print(" Attributes: ");
-    if(Attributes){
-        Attributes->Display();
-        Debug.Print("\n");
+    debug.print(" attributes: ");
+    if(attributes){
+        attributes->display();
+        debug.print("\n");
     }
 
-    Debug.Print(" {\n");
-    if(Body) Body->Display();
-    Debug.Print(" }\n");
+    debug.print(" {\n");
+    if(body) body->display();
+    debug.print(" }\n");
 
-    if(Next) Next->Display();
+    if(next) next->display();
 }
 //------------------------------------------------------------------------------
 
-void AST::GROUP::ValidateMembers()
+void AST::Group::validateMembers()
 {
-    assert(Type == TYPE::Group);
+    assert(type == Type::Group);
 
-    if(Attributes) Attributes->Validate();
-    if(Body      ) Body      ->Validate();
+    if(attributes) attributes->validate();
+    if(body      ) body      ->validate();
 }
 //------------------------------------------------------------------------------
 

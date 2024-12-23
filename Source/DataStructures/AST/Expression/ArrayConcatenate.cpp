@@ -21,122 +21,119 @@
 #include "ArrayConcatenate.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-ARRAYCONCATENATE::ARRAYCONCATENATE(int Line, const string& Filename): ARRAYCONCATENATE(Line, Filename.c_str())
-{}
+ArrayConcatenate::ArrayConcatenate(int line, const string& filename): ArrayConcatenate(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-ARRAYCONCATENATE::ARRAYCONCATENATE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::ArrayConcatenate)
+ArrayConcatenate::ArrayConcatenate(int line, const char* filename): Expression(line, filename, Type::ArrayConcatenate){}
+//------------------------------------------------------------------------------
+
+ArrayConcatenate::~ArrayConcatenate()
 {
+    for(auto element: elements) delete element;
 }
 //------------------------------------------------------------------------------
 
-ARRAYCONCATENATE::~ARRAYCONCATENATE()
+Base* ArrayConcatenate::copy()
 {
-    foreach(Element, Elements) delete *Element;
-}
-//------------------------------------------------------------------------------
+    ArrayConcatenate* copy = new ArrayConcatenate(source.line, source.filename.c_str());
 
-BASE* ARRAYCONCATENATE::Copy()
-{
-    ARRAYCONCATENATE* Copy = new ARRAYCONCATENATE(Source.Line, Source.Filename.c_str());
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
 
-    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-    if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-    foreach(Element, Elements){
-        Copy->Elements.push_back((EXPRESSION*)(*Element)->Copy());
+    for(auto element: elements){
+        copy->elements.push_back((Expression*)element->copy());
     }
 
-    return Copy;
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-bool ARRAYCONCATENATE::GetVerilog(string& Body)
+bool ArrayConcatenate::getVerilog(string& body)
 {
     error("Not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ARRAYCONCATENATE::Evaluate()
+Expression* ArrayConcatenate::evaluate()
 {
     error("Not yet implemented");
     return this;
-//   auto Array = (AST::ARRAYCONCATENATE*)Copy(true);
-//   foreach(Element, Array->Elements) (*Element) = (*Element)->Evaluate();
+//   auto array = (AST::ArrayConcatenate*)copy(true);
+//   for(auto element: array->elements) element = element->evaluate();
 //
-//   return Array->Simplify(false);
+//   return array->simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int ARRAYCONCATENATE::GetWidth()
+int ArrayConcatenate::getWidth()
 {
     error("Not yet implemented");
     return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& ARRAYCONCATENATE::GetFullScale()
+Number& ArrayConcatenate::getFullScale()
 {
     error("Not yet implemented");
-    static NUMBER zero = 0;
+    static Number zero = 0;
     return zero;
 }
 //------------------------------------------------------------------------------
 
-bool ARRAYCONCATENATE::GetSigned()
+bool ArrayConcatenate::getSigned()
 {
     error("Not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-bool ARRAYCONCATENATE::HasCircularReference(NETLIST::BASE* Object)
+bool ArrayConcatenate::hasCircularReference(Netlist::Base* object)
 {
     error("Not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-void ARRAYCONCATENATE::PopulateUsed()
+void ArrayConcatenate::populateUsed()
 {
     error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ARRAYCONCATENATE::RemoveTempNet(int Width, bool Signed)
+Expression* ArrayConcatenate::removeTempNet(int width, bool isSigned)
 {
     error("Not yet implemented");
     return this;
 }
 //------------------------------------------------------------------------------
 
-void ARRAYCONCATENATE::Display()
+void ArrayConcatenate::display()
 {
-    Debug.Print("(ArrayConcat: (");
+    debug.print("(ArrayConcat: (");
     bool isFirst = true;
-    foreach(Element, Elements){
-        if(!isFirst) Debug.Print(", ");
-        (*Element)->Display();
+    for(auto element: elements){
+        if(!isFirst) debug.print(", ");
+        element->display();
         isFirst = false;
     }
-    Debug.Print("))");
+    debug.print("))");
 }
 //------------------------------------------------------------------------------
 
-void ARRAYCONCATENATE::ValidateMembers()
+void ArrayConcatenate::validateMembers()
 {
-    assert(Type == TYPE::ArrayConcatenate);
+    assert(type == Type::ArrayConcatenate);
 
-    assert(!Next);
-    assert(!Prev);
+    assert(!next);
+    assert(!prev);
 
-    assert(!Left );
-    assert(!Right);
+    assert(!left );
+    assert(!right);
 
     error("Not yet implemented");
 }

@@ -18,85 +18,84 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Alias.h"
-#include "Netlist/Alias.h"
+#include "alias.h"
+#include "Netlist/alias.h"
 #include "Netlist/Namespace/Module.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-ALIAS::ALIAS(int Line, std::string& Filename): ALIAS(Line, Filename.c_str())
-{}
+Alias::Alias(int line, string& filename): Alias(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-ALIAS::ALIAS(int Line, const char* Filename): BASE(Line, Filename, TYPE::Alias)
+Alias::Alias(int line, const char* filename): Base(line, filename, Type::Alias)
 {
-    Expression = 0;
+    expression = 0;
 }
 //------------------------------------------------------------------------------
 
-ALIAS::~ALIAS()
+Alias::~Alias()
 {
-    if(Expression) delete Expression;
+    if(expression) delete expression;
 }
 //------------------------------------------------------------------------------
 
-BASE* ALIAS::Copy()
+Base* Alias::copy()
 {
-    ALIAS* Copy = new ALIAS(Source.Line, Source.Filename.c_str());
+    Alias* copy = new Alias(source.line, source.filename.c_str());
 
-    Copy->Identifier = Identifier;
+    copy->identifier = identifier;
 
-    if(Expression) Copy->Expression = (decltype(Expression))Expression->Copy();
+    if(expression) copy->expression = (decltype(expression))expression->copy();
 
-    return Copy;
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-bool ALIAS::RunAST()
+bool Alias::runAST()
 {
-    auto Symbol = NETLIST::NamespaceStack.front()->Symbols.find(Identifier);
-    if(Symbol != NETLIST::NamespaceStack.front()->Symbols.end()){
-        Error();
+    auto symbol = Netlist::nameSpaceStack.front()->symbols.find(identifier);
+    if(symbol != Netlist::nameSpaceStack.front()->symbols.end()){
+        printError();
         printf("Symbol \"%s\" already defined in the current namespace\n",
-                      Identifier.c_str());
+                      identifier.c_str());
         return false;
     }
 
-    auto Object = new NETLIST::ALIAS(Source.Line, Source.Filename, Identifier.c_str(), Expression);
-    Expression = 0; // It's been moved to Object, so remove it from this node.
+    auto object = new Netlist::Alias(source.line, source.filename, identifier.c_str(), expression);
+    expression = 0; // It's been moved to object, so remove it from this node.
 
-    NETLIST::NamespaceStack.front()->Symbols[Object->Name] = Object;
+    Netlist::nameSpaceStack.front()->symbols[object->name] = object;
 
     return true;
 }
 //------------------------------------------------------------------------------
 
-bool ALIAS::GetVerilog(string& Body)
+bool Alias::getVerilog(string& body)
 {
     error("Not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-void ALIAS::Display()
+void Alias::display()
 {
-    DisplayInfo();
-    Debug.Print("Alias (%s):\n", Identifier.c_str());
+    displayInfo();
+    debug.print("alias (%s):\n", identifier.c_str());
 
-    if(Expression) Expression->Display();
-    else           Debug.Print("{Moved Expression}\n");
+    if(expression) expression->display();
+    else           debug.print("{Moved expression}\n");
 
-    if(Next) Next->Display();
+    if(next) next->display();
 }
 //------------------------------------------------------------------------------
 
-void ALIAS::ValidateMembers()
+void Alias::validateMembers()
 {
-    assert(Type == TYPE::Alias);
-    if(Expression) Expression->Validate();
+    assert(type == Type::Alias);
+    if(expression) expression->validate();
 }
 //------------------------------------------------------------------------------
 

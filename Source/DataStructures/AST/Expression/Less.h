@@ -26,28 +26,28 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-    struct LESS: public EXPRESSION{
-        LESS(int Line, const std::string& Filename);
-        LESS(int Line, const char*        Filename);
-      ~LESS();
+    struct Less: public Expression{
+        Less(int line, const std::string& filename);
+        Less(int line, const char*        filename);
+       ~Less();
 
-        BASE* Copy() override;
+        Base* copy() override;
 
-        bool GetVerilog(std::string& Body) override;
-        EXPRESSION* Evaluate() override;
+        bool getVerilog(std::string& body) override;
+        Expression* evaluate() override;
 
-        int     GetWidth    () override;
-        NUMBER& GetFullScale() override;
-        bool    GetSigned   () override;
+        int     getWidth    () override;
+        Number& getFullScale() override;
+        bool    getSigned   () override;
 
-        bool HasCircularReference(NETLIST::BASE* Object) override;
-        void PopulateUsed() override;
+        bool hasCircularReference(Netlist::Base* object) override;
+        void populateUsed() override;
 
-        EXPRESSION* RemoveTempNet(int Width, bool Signed) override;
+        Expression* removeTempNet(int width, bool isSigned) override;
 
-        void Display() override;
+        void display() override;
 
-        void ValidateMembers() override;
+        void validateMembers() override;
     };
 }
 //------------------------------------------------------------------------------

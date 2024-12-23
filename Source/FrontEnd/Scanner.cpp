@@ -19,398 +19,398 @@
 //==============================================================================
 
 #include "Scanner.h"
-#include "CharacterNames.h"
+#include "characterNames.h"
 //------------------------------------------------------------------------------
 
 using std::string;
 using std::map;
 //------------------------------------------------------------------------------
 
-static bool Initialised = false;
+static bool initialised = false;
 
-static TOKEN_TREE Spaces;
-static TOKEN_TREE Keywords;
-static TOKEN_TREE Operators;
+static TokenTree spaces;
+static TokenTree keywords;
+static TokenTree operators;
 
-typedef map<string, const byte*> CHARACTERS;
-static CHARACTERS Characters;
+typedef map<string, const byte*> Characters;
+static Characters characters;
 //------------------------------------------------------------------------------
 
-SCANNER::SCANNER()
+Scanner::Scanner()
 {
-    if(!Initialised){
-        Initialised = true;
+    if(!initialised){
+        initialised = true;
 
-        Spaces.Insert("\x20"        , TOKEN::TYPE::Space); // U+0020: Space
-        Spaces.Insert("\x09"        , TOKEN::TYPE::Space); // U+0009: Character Tabulation
-        Spaces.Insert("\xC2\xA0"    , TOKEN::TYPE::Space); // U+00A0: No-break Space
-        Spaces.Insert("\xE1\x9A\x80", TOKEN::TYPE::Space); // U+1680: Ogham Space Mark
-        Spaces.Insert("\xE2\x80\x80", TOKEN::TYPE::Space); // U+2000: En Quad
-        Spaces.Insert("\xE2\x80\x81", TOKEN::TYPE::Space); // U+2001: Em Quad
-        Spaces.Insert("\xE2\x80\x82", TOKEN::TYPE::Space); // U+2002: En Space
-        Spaces.Insert("\xE2\x80\x83", TOKEN::TYPE::Space); // U+2003: Em Space
-        Spaces.Insert("\xE2\x80\x84", TOKEN::TYPE::Space); // U+2004: Three-per-em Space
-        Spaces.Insert("\xE2\x80\x85", TOKEN::TYPE::Space); // U+2005: Four-per-em Space
-        Spaces.Insert("\xE2\x80\x86", TOKEN::TYPE::Space); // U+2006: Six-per-em Space
-        Spaces.Insert("\xE2\x80\x87", TOKEN::TYPE::Space); // U+2007: Figure Space
-        Spaces.Insert("\xE2\x80\x88", TOKEN::TYPE::Space); // U+2008: Punctuation Space
-        Spaces.Insert("\xE2\x80\x89", TOKEN::TYPE::Space); // U+2009: Thin Space
-        Spaces.Insert("\xE2\x80\x8A", TOKEN::TYPE::Space); // U+200A: Hair Space
-        Spaces.Insert("\xE2\x80\xAF", TOKEN::TYPE::Space); // U+202F: Narrow No-break Space
-        Spaces.Insert("\xE2\x80\x8B", TOKEN::TYPE::Space); // U+200B: Zero Width Space
-        Spaces.Insert("\xE2\x81\x9F", TOKEN::TYPE::Space); // U+205F: Medium Mathematical Space
-        Spaces.Insert("\xE3\x80\x80", TOKEN::TYPE::Space); // U+3000: Ideographic Space
-        Spaces.Insert("\xEF\xBB\xBF", TOKEN::TYPE::Space); // U+FEFF: Zero Width Non-breaking Space
+        spaces.insert("\x20"        , Token::Type::Space); // U+0020: Space
+        spaces.insert("\x09"        , Token::Type::Space); // U+0009: Character Tabulation
+        spaces.insert("\xC2\xA0"    , Token::Type::Space); // U+00A0: No-break Space
+        spaces.insert("\xE1\x9A\x80", Token::Type::Space); // U+1680: Ogham Space Mark
+        spaces.insert("\xE2\x80\x80", Token::Type::Space); // U+2000: En Quad
+        spaces.insert("\xE2\x80\x81", Token::Type::Space); // U+2001: Em Quad
+        spaces.insert("\xE2\x80\x82", Token::Type::Space); // U+2002: En Space
+        spaces.insert("\xE2\x80\x83", Token::Type::Space); // U+2003: Em Space
+        spaces.insert("\xE2\x80\x84", Token::Type::Space); // U+2004: Three-per-em Space
+        spaces.insert("\xE2\x80\x85", Token::Type::Space); // U+2005: Four-per-em Space
+        spaces.insert("\xE2\x80\x86", Token::Type::Space); // U+2006: Six-per-em Space
+        spaces.insert("\xE2\x80\x87", Token::Type::Space); // U+2007: Figure Space
+        spaces.insert("\xE2\x80\x88", Token::Type::Space); // U+2008: Punctuation Space
+        spaces.insert("\xE2\x80\x89", Token::Type::Space); // U+2009: Thin Space
+        spaces.insert("\xE2\x80\x8A", Token::Type::Space); // U+200A: Hair Space
+        spaces.insert("\xE2\x80\xAF", Token::Type::Space); // U+202F: Narrow No-break Space
+        spaces.insert("\xE2\x80\x8B", Token::Type::Space); // U+200B: Zero Width Space
+        spaces.insert("\xE2\x81\x9F", Token::Type::Space); // U+205F: Medium Mathematical Space
+        spaces.insert("\xE3\x80\x80", Token::Type::Space); // U+3000: Ideographic Space
+        spaces.insert("\xEF\xBB\xBF", Token::Type::Space); // U+FEFF: Zero Width Non-breaking Space
 
-        Spaces.Insert("\n"          , TOKEN::TYPE::Newline);
-        Spaces.Insert("\r"          , TOKEN::TYPE::Newline);
-        Spaces.Insert("\r\n"        , TOKEN::TYPE::Newline);
-        Spaces.Insert("\n\r"        , TOKEN::TYPE::Newline);
-        Spaces.Insert("\x0B"        , TOKEN::TYPE::Newline); // Vertical Tab
-        Spaces.Insert("\x0C"        , TOKEN::TYPE::Newline); // Form Feed
-        Spaces.Insert("\xC2\x85"    , TOKEN::TYPE::Newline); // U+0085: NEL
-        Spaces.Insert("\xE2\x80\xA8", TOKEN::TYPE::Newline); // U+2028: Line Separator
-        Spaces.Insert("\xE2\x80\xA9", TOKEN::TYPE::Newline); // U+2029: Paragraph Separator
+        spaces.insert("\n"          , Token::Type::Newline);
+        spaces.insert("\r"          , Token::Type::Newline);
+        spaces.insert("\r\n"        , Token::Type::Newline);
+        spaces.insert("\n\r"        , Token::Type::Newline);
+        spaces.insert("\x0B"        , Token::Type::Newline); // Vertical Tab
+        spaces.insert("\x0C"        , Token::Type::Newline); // Form Feed
+        spaces.insert("\xC2\x85"    , Token::Type::Newline); // U+0085: NEL
+        spaces.insert("\xE2\x80\xA8", Token::Type::Newline); // U+2028: line Separator
+        spaces.insert("\xE2\x80\xA9", Token::Type::Newline); // U+2029: Paragraph Separator
 
-        Keywords.Insert("__FILE__"     , TOKEN::TYPE::FILE);
-        Keywords.Insert("__LINE__"     , TOKEN::TYPE::LINE);
-        Keywords.Insert("__DATE__"     , TOKEN::TYPE::DATE);
-        Keywords.Insert("__TIME__"     , TOKEN::TYPE::TIME);
+        keywords.insert("__FILE__"     , Token::Type::FILE);
+        keywords.insert("__LINE__"     , Token::Type::LINE);
+        keywords.insert("__DATE__"     , Token::Type::DATE);
+        keywords.insert("__TIME__"     , Token::Type::TIME);
         // __CLASS__, __FUNCTION__, etc. are implemented as special variables
 
-        Keywords.Insert("void"         , TOKEN::TYPE::Void);
-        Keywords.Insert("auto"         , TOKEN::TYPE::Auto);
+        keywords.insert("void"         , Token::Type::Void);
+        keywords.insert("auto"         , Token::Type::Auto);
 
-        Keywords.Insert("pin"          , TOKEN::TYPE::Pin);
-        Keywords.Insert("net"          , TOKEN::TYPE::Net);
+        keywords.insert("pin"          , Token::Type::Pin);
+        keywords.insert("net"          , Token::Type::Net);
 
-        Keywords.Insert("byte"         , TOKEN::TYPE::Byte);
-        Keywords.Insert("char"         , TOKEN::TYPE::Char);
-        Keywords.Insert("num"          , TOKEN::TYPE::Num );
+        keywords.insert("byte"         , Token::Type::Byte);
+        keywords.insert("char"         , Token::Type::Char);
+        keywords.insert("num"          , Token::Type::Num );
 
-        Keywords.Insert("true"         , TOKEN::TYPE::True );
-        Keywords.Insert("false"        , TOKEN::TYPE::False);
+        keywords.insert("true"         , Token::Type::True );
+        keywords.insert("false"        , Token::Type::False);
 
-        Keywords.Insert("class"        , TOKEN::TYPE::Class );
-        Keywords.Insert("enum"         , TOKEN::TYPE::Enum  );
-        Keywords.Insert("struct"       , TOKEN::TYPE::Struct);
-        Keywords.Insert("group"        , TOKEN::TYPE::Group );
-        Keywords.Insert("alias"        , TOKEN::TYPE::Alias );
+        keywords.insert("class"        , Token::Type::Class );
+        keywords.insert("enum"         , Token::Type::Enum  );
+        keywords.insert("struct"       , Token::Type::Struct);
+        keywords.insert("group"        , Token::Type::Group );
+        keywords.insert("alias"        , Token::Type::Alias );
 
-        Keywords.Insert("input"        , TOKEN::TYPE::Input );
-        Keywords.Insert("output"       , TOKEN::TYPE::Output);
+        keywords.insert("input"        , Token::Type::Input );
+        keywords.insert("output"       , Token::Type::Output);
 
-        Keywords.Insert("public"       , TOKEN::TYPE::Public   );
-        Keywords.Insert("private"      , TOKEN::TYPE::Private  );
-        Keywords.Insert("protected"    , TOKEN::TYPE::Protected);
+        keywords.insert("public"       , Token::Type::Public   );
+        keywords.insert("private"      , Token::Type::Private  );
+        keywords.insert("protected"    , Token::Type::Protected);
 
-        Keywords.Insert("if"           , TOKEN::TYPE::If   );
-        Keywords.Insert("else"         , TOKEN::TYPE::Else );
-        Keywords.Insert("for"          , TOKEN::TYPE::For  );
-        Keywords.Insert("in"           , TOKEN::TYPE::In   );
-        Keywords.Insert("while"        , TOKEN::TYPE::While);
-        Keywords.Insert("loop"         , TOKEN::TYPE::Loop );
+        keywords.insert("if"           , Token::Type::If   );
+        keywords.insert("else"         , Token::Type::Else );
+        keywords.insert("for"          , Token::Type::For  );
+        keywords.insert("in"           , Token::Type::In   );
+        keywords.insert("while"        , Token::Type::While);
+        keywords.insert("loop"         , Token::Type::Loop );
 
-        Keywords.Insert("switch"       , TOKEN::TYPE::Switch );
-        Keywords.Insert("case"         , TOKEN::TYPE::Case   );
-        Keywords.Insert("default"      , TOKEN::TYPE::Default);
+        keywords.insert("switch"       , Token::Type::Switch );
+        keywords.insert("case"         , Token::Type::Case   );
+        keywords.insert("default"      , Token::Type::Default);
 
-        Keywords.Insert("import"       , TOKEN::TYPE::Import);
-        Keywords.Insert("as"           , TOKEN::TYPE::As    );
+        keywords.insert("import"       , Token::Type::Import);
+        keywords.insert("as"           , Token::Type::As    );
 
-        Keywords.Insert("return"       , TOKEN::TYPE::Return  );
-        Keywords.Insert("break"        , TOKEN::TYPE::Break   );
-        Keywords.Insert("continue"     , TOKEN::TYPE::Continue);
-        Keywords.Insert("goto"         , TOKEN::TYPE::Goto    );
+        keywords.insert("return"       , Token::Type::Return  );
+        keywords.insert("break"        , Token::Type::Break   );
+        keywords.insert("continue"     , Token::Type::Continue);
+        keywords.insert("goto"         , Token::Type::Goto    );
 
-        Keywords.Insert("func"         , TOKEN::TYPE::Func  );
-        Keywords.Insert("inline"       , TOKEN::TYPE::Inline);
-        Keywords.Insert("operator"     , TOKEN::TYPE::Operator);
+        keywords.insert("func"         , Token::Type::Func  );
+        keywords.insert("inline"       , Token::Type::Inline);
+        keywords.insert("operator"     , Token::Type::Operator);
 
-        Keywords.Insert("rtl"          , TOKEN::TYPE::RTL);
-        Keywords.Insert("fsm"          , TOKEN::TYPE::FSM);
-        Keywords.Insert("hdl"          , TOKEN::TYPE::HDL);
+        keywords.insert("rtl"          , Token::Type::RTL);
+        keywords.insert("fsm"          , Token::Type::FSM);
+        keywords.insert("hdl"          , Token::Type::HDL);
 
-        Keywords.Insert("stimulus"     , TOKEN::TYPE::Stimulus);
-        Keywords.Insert("emulate"      , TOKEN::TYPE::Emulate );
-        Keywords.Insert("assert"       , TOKEN::TYPE::Assert  );
-        Keywords.Insert("wait"         , TOKEN::TYPE::Wait    );
+        keywords.insert("stimulus"     , Token::Type::Stimulus);
+        keywords.insert("emulate"      , Token::Type::Emulate );
+        keywords.insert("assert"       , Token::Type::Assert  );
+        keywords.insert("wait"         , Token::Type::Wait    );
 
-        Keywords.Insert("posedge"      , TOKEN::TYPE::PosEdge);
-        Keywords.Insert("negedge"      , TOKEN::TYPE::NegEdge);
+        keywords.insert("posedge"      , Token::Type::PosEdge);
+        keywords.insert("negedge"      , Token::Type::NegEdge);
 
         // Conditional Expression
-        Operators.Insert("?"  , TOKEN::TYPE::TernaryIf  );
-        Operators.Insert(":"  , TOKEN::TYPE::TernaryElse);
-        Operators.Insert("?:" , TOKEN::TYPE::Elvis      );
+        operators.insert("?"  , Token::Type::TernaryIf  );
+        operators.insert(":"  , Token::Type::TernaryElse);
+        operators.insert("?:" , Token::Type::Elvis      );
 
         // Bit-wise
-        Operators.Insert("|"  , TOKEN::TYPE::Bit_OR     );
-        Operators.Insert("~|" , TOKEN::TYPE::Bit_NOR    );
-        Operators.Insert("^"  , TOKEN::TYPE::Bit_XOR    );
-        Operators.Insert("~^" , TOKEN::TYPE::Bit_XNOR   );
-        Operators.Insert("&"  , TOKEN::TYPE::Bit_AND    );
-        Operators.Insert("~&" , TOKEN::TYPE::Bit_NAND   );
+        operators.insert("|"  , Token::Type::Bit_OR     );
+        operators.insert("~|" , Token::Type::Bit_NOR    );
+        operators.insert("^"  , Token::Type::Bit_XOR    );
+        operators.insert("~^" , Token::Type::Bit_XNOR   );
+        operators.insert("&"  , Token::Type::Bit_AND    );
+        operators.insert("~&" , Token::Type::Bit_NAND   );
 
         // Relational
-        Operators.Insert("==" , TOKEN::TYPE::Equal        );
-        Operators.Insert("!=" , TOKEN::TYPE::Not_Equal    );
-        Operators.Insert("<"  , TOKEN::TYPE::Less         );
-        Operators.Insert(">"  , TOKEN::TYPE::Greater      );
-        Operators.Insert("<=" , TOKEN::TYPE::Less_Equal   );
-        Operators.Insert(">=" , TOKEN::TYPE::Greater_Equal);
+        operators.insert("==" , Token::Type::Equal        );
+        operators.insert("!=" , Token::Type::Not_Equal    );
+        operators.insert("<"  , Token::Type::Less         );
+        operators.insert(">"  , Token::Type::Greater      );
+        operators.insert("<=" , Token::Type::Less_Equal   );
+        operators.insert(">=" , Token::Type::Greater_Equal);
 
         // Shift
-        Operators.Insert("<<" , TOKEN::TYPE::Shift_Left );
-        Operators.Insert(">>" , TOKEN::TYPE::Shift_Right);
+        operators.insert("<<" , Token::Type::Shift_Left );
+        operators.insert(">>" , Token::Type::Shift_Right);
 
         // Arithmetic
-        Operators.Insert("+"  , TOKEN::TYPE::Add        );
-        Operators.Insert("-"  , TOKEN::TYPE::Subtract   );
-        Operators.Insert("*"  , TOKEN::TYPE::Multiply   );
-        Operators.Insert("/"  , TOKEN::TYPE::Divide     );
-        Operators.Insert("%"  , TOKEN::TYPE::Modulus    );
-        Operators.Insert("**" , TOKEN::TYPE::Exponential);
-        Operators.Insert("!"  , TOKEN::TYPE::Factorial  );
+        operators.insert("+"  , Token::Type::Add        );
+        operators.insert("-"  , Token::Type::Subtract   );
+        operators.insert("*"  , Token::Type::Multiply   );
+        operators.insert("/"  , Token::Type::Divide     );
+        operators.insert("%"  , Token::Type::Modulus    );
+        operators.insert("**" , Token::Type::Exponential);
+        operators.insert("!"  , Token::Type::Factorial  );
 
         // Concatenation of vectors and arrays
-        Operators.Insert("`"  , TOKEN::TYPE::Replicate       );
-        Operators.Insert(":(" , TOKEN::TYPE::Concatenate     );
-        Operators.Insert(":[" , TOKEN::TYPE::ArrayConcatenate);
+        operators.insert("`"  , Token::Type::Replicate       );
+        operators.insert(":(" , Token::Type::Concatenate     );
+        operators.insert(":[" , Token::Type::ArrayConcatenate);
 
         // Stringification
-        Operators.Insert("$"  , TOKEN::TYPE::Stringify          );
-        Operators.Insert("$(" , TOKEN::TYPE::StringifyExpression);
+        operators.insert("$"  , Token::Type::Stringify          );
+        operators.insert("$(" , Token::Type::StringifyExpression);
 
         // Reduction
-        Operators.Insert("&"  , TOKEN::TYPE::AND_Reduce );
-        Operators.Insert("~&" , TOKEN::TYPE::NAND_Reduce);
-        Operators.Insert("|"  , TOKEN::TYPE::OR_Reduce  );
-        Operators.Insert("~|" , TOKEN::TYPE::NOR_Reduce );
-        Operators.Insert("^"  , TOKEN::TYPE::XOR_Reduce );
-        Operators.Insert("~^" , TOKEN::TYPE::XNOR_Reduce);
-        Operators.Insert("!"  , TOKEN::TYPE::Logical_NOT);
+        operators.insert("&"  , Token::Type::AND_Reduce );
+        operators.insert("~&" , Token::Type::NAND_Reduce);
+        operators.insert("|"  , Token::Type::OR_Reduce  );
+        operators.insert("~|" , Token::Type::NOR_Reduce );
+        operators.insert("^"  , Token::Type::XOR_Reduce );
+        operators.insert("~^" , Token::Type::XNOR_Reduce);
+        operators.insert("!"  , Token::Type::Logical_NOT);
 
         // Array
-        Operators.Insert(".." , TOKEN::TYPE::To  );
-        Operators.Insert(":"  , TOKEN::TYPE::Step);
+        operators.insert(".." , Token::Type::To  );
+        operators.insert(":"  , Token::Type::Step);
 
         // Unary
-        Operators.Insert("-"  , TOKEN::TYPE::Negate   );
-        Operators.Insert("~"  , TOKEN::TYPE::Bit_NOT  );
-        Operators.Insert(":"  , TOKEN::TYPE::RawBits  );
-        Operators.Insert("++" , TOKEN::TYPE::Increment);
-        Operators.Insert("--" , TOKEN::TYPE::Decrement);
+        operators.insert("-"  , Token::Type::Negate   );
+        operators.insert("~"  , Token::Type::Bit_NOT  );
+        operators.insert(":"  , Token::Type::RawBits  );
+        operators.insert("++" , Token::Type::Increment);
+        operators.insert("--" , Token::Type::Decrement);
 
         // Accessors
-        Operators.Insert("."  , TOKEN::TYPE::AccessMember    );
-        Operators.Insert("?." , TOKEN::TYPE::AccessMemberSafe);
-        Operators.Insert(".{" , TOKEN::TYPE::AccessMemberPush);
-        Operators.Insert("'"  , TOKEN::TYPE::AccessAttribute );
+        operators.insert("."  , Token::Type::AccessMember    );
+        operators.insert("?." , Token::Type::AccessMemberSafe);
+        operators.insert(".{" , Token::Type::AccessMemberPush);
+        operators.insert("'"  , Token::Type::AccessAttribute );
 
         // Cast
-        Operators.Insert("@"  , TOKEN::TYPE::CastOp);
+        operators.insert("@"  , Token::Type::CastOp);
 
         // Assignment
-        Operators.Insert("="  , TOKEN::TYPE::Assign            );
-        Operators.Insert(":=" , TOKEN::TYPE::Raw_Assign        );
-        Operators.Insert("~=" , TOKEN::TYPE::Append_Assign     );
-        Operators.Insert("+=" , TOKEN::TYPE::Add_Assign        );
-        Operators.Insert("-=" , TOKEN::TYPE::Subtract_Assign   );
-        Operators.Insert("*=" , TOKEN::TYPE::Multiply_Assign   );
-        Operators.Insert("/=" , TOKEN::TYPE::Divide_Assign     );
-        Operators.Insert("%=" , TOKEN::TYPE::Modulus_Assign    );
-        Operators.Insert("^=" , TOKEN::TYPE::XOR_Assign        );
-        Operators.Insert("&=" , TOKEN::TYPE::AND_Assign        );
-        Operators.Insert("|=" , TOKEN::TYPE::OR_Assign         );
-        Operators.Insert("**=", TOKEN::TYPE::Exponential_Assign);
-        Operators.Insert("<<=", TOKEN::TYPE::Shift_Left_Assign );
-        Operators.Insert(">>=", TOKEN::TYPE::Shift_Right_Assign);
+        operators.insert("="  , Token::Type::Assign            );
+        operators.insert(":=" , Token::Type::Raw_Assign        );
+        operators.insert("~=" , Token::Type::Append_Assign     );
+        operators.insert("+=" , Token::Type::Add_Assign        );
+        operators.insert("-=" , Token::Type::Subtract_Assign   );
+        operators.insert("*=" , Token::Type::Multiply_Assign   );
+        operators.insert("/=" , Token::Type::Divide_Assign     );
+        operators.insert("%=" , Token::Type::Modulus_Assign    );
+        operators.insert("^=" , Token::Type::XOR_Assign        );
+        operators.insert("&=" , Token::Type::AND_Assign        );
+        operators.insert("|=" , Token::Type::OR_Assign         );
+        operators.insert("**=", Token::Type::Exponential_Assign);
+        operators.insert("<<=", Token::Type::Shift_Left_Assign );
+        operators.insert(">>=", Token::Type::Shift_Right_Assign);
 
         // Punctuators
-        Operators.Insert("("  , TOKEN::TYPE::OpenRound  );
-        Operators.Insert(")"  , TOKEN::TYPE::CloseRound );
-        Operators.Insert("["  , TOKEN::TYPE::OpenSquare );
-        Operators.Insert("]"  , TOKEN::TYPE::CloseSquare);
-        Operators.Insert("{"  , TOKEN::TYPE::OpenCurly  );
-        Operators.Insert("}"  , TOKEN::TYPE::CloseCurly );
-        Operators.Insert("<"  , TOKEN::TYPE::OpenAngle  );
-        Operators.Insert(">"  , TOKEN::TYPE::CloseAngle );
-        Operators.Insert(","  , TOKEN::TYPE::Comma      );
-        Operators.Insert(":"  , TOKEN::TYPE::Colon      );
-        Operators.Insert(";"  , TOKEN::TYPE::Semicolon  );
+        operators.insert("("  , Token::Type::OpenRound  );
+        operators.insert(")"  , Token::Type::CloseRound );
+        operators.insert("["  , Token::Type::OpenSquare );
+        operators.insert("]"  , Token::Type::CloseSquare);
+        operators.insert("{"  , Token::Type::OpenCurly  );
+        operators.insert("}"  , Token::Type::CloseCurly );
+        operators.insert("<"  , Token::Type::OpenAngle  );
+        operators.insert(">"  , Token::Type::CloseAngle );
+        operators.insert(","  , Token::Type::Comma      );
+        operators.insert(":"  , Token::Type::Colon      );
+        operators.insert(";"  , Token::Type::Semicolon  );
 
-        // Simulation Operators
-        Operators.Insert("#"  , TOKEN::TYPE::WaitFor               );
-        Operators.Insert("@"  , TOKEN::TYPE::WaitUntil             );
-        Operators.Insert("##" , TOKEN::TYPE::WaitCycles            );
-        Operators.Insert("[*" , TOKEN::TYPE::SequenceConsecutive   );
-        Operators.Insert("[->", TOKEN::TYPE::SequenceGoto          );
-        Operators.Insert("[=" , TOKEN::TYPE::SequenceNonConsecutive);
-        Operators.Insert("|->", TOKEN::TYPE::AssertImplies         );
-        Operators.Insert("|=>", TOKEN::TYPE::AssertImpliesNext     );
-        Operators.Insert("||" , TOKEN::TYPE::Or                    );
-        Operators.Insert("&&" , TOKEN::TYPE::And                   );
-        Operators.Insert("&&&", TOKEN::TYPE::Intersect             );
+        // Simulation operators
+        operators.insert("#"  , Token::Type::WaitFor               );
+        operators.insert("@"  , Token::Type::WaitUntil             );
+        operators.insert("##" , Token::Type::WaitCycles            );
+        operators.insert("[*" , Token::Type::SequenceConsecutive   );
+        operators.insert("[->", Token::Type::SequenceGoto          );
+        operators.insert("[=" , Token::Type::SequenceNonConsecutive);
+        operators.insert("|->", Token::Type::AssertImplies         );
+        operators.insert("|=>", Token::Type::AssertImpliesNext     );
+        operators.insert("||" , Token::Type::Or                    );
+        operators.insert("&&" , Token::Type::And                   );
+        operators.insert("&&&", Token::Type::Intersect             );
 
-        Spaces   .Balance();
-        Keywords .Balance();
-        Operators.Balance();
+        spaces   .balance();
+        keywords .balance();
+        operators.balance();
 
-        for(int j = 0; CharacterNames[j]; j += 2){
-            Characters[CharacterNames[j]] = (const byte*)CharacterNames[j+1];
+        for(int j = 0; characterNames[j]; j += 2){
+            characters[characterNames[j]] = (const byte*)characterNames[j+1];
         }
     }
 
-    Line   = 1;
-    Index  = 0;
+    line   = 1;
+    index  = 0;
     error  = false;
-    Buffer = 0;
+    buffer = 0;
 }
 //------------------------------------------------------------------------------
 
-SCANNER::~SCANNER()
+Scanner::~Scanner()
 {
-    if(Buffer) delete[] Buffer;
+    if(buffer) delete[] buffer;
 }
 //------------------------------------------------------------------------------
 
-void SCANNER::Error(const char* Message)
+void Scanner::printError(const char* message)
 {
     error = true;
-    ::Error(Line, Filename, Message);
+    ::printError(line, filename, message);
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::LineComment()
+bool Scanner::lineComment()
 {
-    int Count;
+    int count;
 
-    if(Buffer[Index] != '/' || Buffer[Index+1] != '/') return false;
-    Index += 2;
+    if(buffer[index] != '/' || buffer[index+1] != '/') return false;
+    index += 2;
 
-    while(Buffer[Index]){
-        if(Spaces.Match(Buffer+Index, &Count) == TOKEN::TYPE::Newline){
-            Line  ++;
-            Index += Count;
+    while(buffer[index]){
+        if(spaces.match(buffer+index, &count) == Token::Type::Newline){
+            line  ++;
+            index += count;
             return true;
         }
 
-        if(Count) Index += Count;
-        else      Index ++;
+        if(count) index += count;
+        else      index ++;
     }
-    Error("Incomplete line comment");
+    printError("Incomplete line comment");
     return false;
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::TodoComment()
+bool Scanner::todoComment()
 {
-    int    Count;
-    string Comment;
+    int    count;
+    string comment;
 
-    if(Buffer[Index] != '!' || Buffer[Index+1] != '!') return false;
-    Index += 2;
+    if(buffer[index] != '!' || buffer[index+1] != '!') return false;
+    index += 2;
 
-    while(Buffer[Index]){
-        if(Spaces.Match(Buffer+Index, &Count) == TOKEN::TYPE::Newline){
-            if(!Comment.empty()){
+    while(buffer[index]){
+        if(spaces.match(buffer+index, &count) == Token::Type::Newline){
+            if(!comment.empty()){
                 printf(
-                    ANSI_FG_BRIGHT_BLACK   "Line "
+                    ANSI_FG_BRIGHT_BLACK   "line "
                     ANSI_FG_CYAN           "%05d "
                     ANSI_FG_BRIGHT_BLACK   "of "
                     ANSI_FG_YELLOW         "%s\n"
                     ANSI_FG_BRIGHT_MAGENTA "  Todo:"
                     ANSI_RESET             " %s\n",
-                    Line,
-                    Filename.c_str(),
-                    Comment .c_str()
+                    line,
+                    filename.c_str(),
+                    comment .c_str()
                 );
             }
-            Line  ++;
-            Index += Count;
+            line  ++;
+            index += count;
             return true;
         }
-        if(Count){
-            for(int n = 0; n < Count; n++) Comment += Buffer[Index++];
+        if(count){
+            for(int n = 0; n < count; n++) comment += buffer[index++];
         }else{
-            Comment += Buffer[Index++];
+            comment += buffer[index++];
         }
     }
-    Error("Incomplete todo comment");
+    printError("Incomplete todo comment");
     return false;
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::BlockComment()
+bool Scanner::blockComment()
 {
-    int Count;
+    int count;
 
-    if(Buffer[Index] != '/' || Buffer[Index+1] != '*') return false;
-    Index += 2;
+    if(buffer[index] != '/' || buffer[index+1] != '*') return false;
+    index += 2;
 
-    while(Buffer[Index]){
-        if(Buffer[Index] == '*' && Buffer[Index+1] == '/'){
-            Index += 2;
+    while(buffer[index]){
+        if(buffer[index] == '*' && buffer[index+1] == '/'){
+            index += 2;
             return true;
         }
-        if(Spaces.Match(Buffer+Index, &Count) == TOKEN::TYPE::Newline){
-            Line  ++;
-            Index += Count;
+        if(spaces.match(buffer+index, &count) == Token::Type::Newline){
+            line  ++;
+            index += count;
         }else{
-            Index++;
+            index++;
         }
     }
-    Error("Incomplete block comment");
+    printError("Incomplete block comment");
     return false;
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::NestedComment()
+bool Scanner::nestedComment()
 {
-    int Count;
+    int count;
 
-    if(Buffer[Index] != '/' || Buffer[Index+1] != '+') return false;
-    Index += 2;
+    if(buffer[index] != '/' || buffer[index+1] != '+') return false;
+    index += 2;
 
-    while(Buffer[Index]){
-        if(Buffer[Index] == '+' && Buffer[Index+1] == '/'){
-            Index += 2;
+    while(buffer[index]){
+        if(buffer[index] == '+' && buffer[index+1] == '/'){
+            index += 2;
             return true;
         }
 
-        if(NestedComment()) continue;
+        if(nestedComment()) continue;
         if(error) return false;
 
-        if(Spaces.Match(Buffer+Index, &Count) == TOKEN::TYPE::Newline){
-            Line  ++;
-            Index += Count;
+        if(spaces.match(buffer+index, &count) == Token::Type::Newline){
+            line  ++;
+            index += count;
         }else{
-            Index++;
+            index++;
         }
     }
-    Error("Incomplete nested comment");
+    printError("Incomplete nested comment");
     return false;
 }
 //------------------------------------------------------------------------------
 
-void SCANNER::WhiteSpace()
+void Scanner::whiteSpace()
 {
-    TOKEN::TYPE Type;
-    int         Count;
+    Token::Type type;
+    int         count;
 
-    while(Buffer[Index]){
-        while(LineComment() || TodoComment() || BlockComment() | NestedComment());
+    while(buffer[index]){
+        while(lineComment() || todoComment() || blockComment() | nestedComment());
 
-        Type = Spaces.Match(Buffer+Index, &Count);
-        switch(Type){
-            case TOKEN::TYPE::Space:
-                Index += Count;
+        type = spaces.match(buffer+index, &count);
+        switch(type){
+            case Token::Type::Space:
+                index += count;
                 break;
 
-            case TOKEN::TYPE::Newline:
-                Line++;
-                Index += Count;
+            case Token::Type::Newline:
+                line++;
+                index += count;
                 break;
 
             default: return;
@@ -419,81 +419,81 @@ void SCANNER::WhiteSpace()
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::Digit()
+bool Scanner::digit()
 {
-    return (Buffer[Index] >= '0' && Buffer[Index] <= '9');
+    return (buffer[index] >= '0' && buffer[index] <= '9');
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::NonDigit()
+bool Scanner::nonDigit()
 {
-    int Count;
-    if(Buffer[Index] >= 0x80){
-        if(Spaces.Match(Buffer+Index, &Count) != TOKEN::TYPE::Unknown) return false;
+    int count;
+    if(buffer[index] >= 0x80){
+        if(spaces.match(buffer+index, &count) != Token::Type::Unknown) return false;
     }
 
-    return (Buffer[Index] >= 'a' && Buffer[Index] <= 'z' ) ||
-                  (Buffer[Index] >= 'A' && Buffer[Index] <= 'Z' ) ||
-                  (Buffer[Index] == '_' || Buffer[Index] >= 0x80);
+    return (buffer[index] >= 'a' && buffer[index] <= 'z' ) ||
+                  (buffer[index] >= 'A' && buffer[index] <= 'Z' ) ||
+                  (buffer[index] == '_' || buffer[index] >= 0x80);
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::Identifier(TOKEN* Token)
+bool Scanner::getIdentifier(Token* token)
 {
-    time_t Timer;
-    tm*    Time;
+    time_t _timer;
+    tm*    _time;
 
-    if(!NonDigit()) return false;
+    if(!nonDigit()) return false;
 
-    Token->Data += Buffer[Index++];
-    while(Buffer[Index]){
-        if(!Digit() && !NonDigit()) break;
-        Token->Data += Buffer[Index++];
+    token->data += buffer[index++];
+    while(buffer[index]){
+        if(!digit() && !nonDigit()) break;
+        token->data += buffer[index++];
     }
-    Token->Type = Keywords.Find((const byte*)Token->Data.c_str());
+    token->type = keywords.find((const byte*)token->data.c_str());
 
-    switch(Token->Type){
-        case TOKEN::TYPE::Unknown:
-            Token->Type = TOKEN::TYPE::Identifier;
+    switch(token->type){
+        case Token::Type::Unknown:
+            token->type = Token::Type::Identifier;
             break;
 
-        case TOKEN::TYPE::FILE:
-            Token->Type = TOKEN::TYPE::String;
-            Token->Data = Filename.c_str();
+        case Token::Type::FILE:
+            token->type = Token::Type::String;
+            token->data = filename.c_str();
             break;
 
-        case TOKEN::TYPE::LINE:
-            Token->Type  = TOKEN::TYPE::Literal;
-            Token->Value = Token->Line;
+        case Token::Type::LINE:
+            token->type  = Token::Type::Literal;
+            token->value = token->line;
             break;
 
-        case TOKEN::TYPE::DATE:
-            Token->Type = TOKEN::TYPE::String;
-            Token->Data.clear();
-            time(&Timer);
-            Time = localtime(&Timer);
-            Token->Data += Time->tm_year + 1900;
-            Token->Data += "-";
-            if(Time->tm_mon < 9) Token->Data += "0";
-            Token->Data += Time->tm_mon + 1;
-            Token->Data += "-";
-            if(Time->tm_mday < 10) Token->Data += "0";
-            Token->Data += Time->tm_mday;
+        case Token::Type::DATE:
+            token->type = Token::Type::String;
+            token->data.clear();
+            time(&_timer);
+            _time = localtime(&_timer);
+            token->data += _time->tm_year + 1900;
+            token->data += "-";
+            if(_time->tm_mon < 9) token->data += "0";
+            token->data += _time->tm_mon + 1;
+            token->data += "-";
+            if(_time->tm_mday < 10) token->data += "0";
+            token->data += _time->tm_mday;
             break;
 
-        case TOKEN::TYPE::TIME:
-            Token->Type = TOKEN::TYPE::String;
-            Token->Data.clear();
-            time(&Timer);
-            Time = localtime(&Timer);
-            if(Time->tm_hour < 10) Token->Data += "0";
-            Token->Data += Time->tm_hour;
-            Token->Data += ":";
-            if(Time->tm_min < 10) Token->Data += "0";
-            Token->Data += Time->tm_min;
-            Token->Data += ":";
-            if(Time->tm_sec < 10) Token->Data += "0";
-            Token->Data += Time->tm_sec;
+        case Token::Type::TIME:
+            token->type = Token::Type::String;
+            token->data.clear();
+            time(&_timer);
+            _time = localtime(&_timer);
+            if(_time->tm_hour < 10) token->data += "0";
+            token->data += _time->tm_hour;
+            token->data += ":";
+            if(_time->tm_min < 10) token->data += "0";
+            token->data += _time->tm_min;
+            token->data += ":";
+            if(_time->tm_sec < 10) token->data += "0";
+            token->data += _time->tm_sec;
             break;
 
         default:
@@ -503,15 +503,15 @@ bool SCANNER::Identifier(TOKEN* Token)
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::Operator(TOKEN* Token)
+bool Scanner::getOperator(Token* token)
 {
-    int Count;
+    int count;
 
-    Token->Type = Operators.Match(Buffer+Index, &Count);
-    if(Count){
-        while(Count){
-            Token->Data += Buffer[Index++];
-            Count--;
+    token->type = operators.match(buffer+index, &count);
+    if(count){
+        while(count){
+            token->data += buffer[index++];
+            count--;
         }
         return true;
     }
@@ -519,64 +519,64 @@ bool SCANNER::Operator(TOKEN* Token)
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::GetDigit(unsigned* Digit, unsigned Base)
+bool Scanner::getDigit(unsigned* digit, unsigned base)
 {
-    if(Buffer[Index] >= '0' && Buffer[Index] <= '9'){
-        *Digit = Buffer[Index] - '0';
-        return *Digit < Base;
+    if(buffer[index] >= '0' && buffer[index] <= '9'){
+        *digit = buffer[index] - '0';
+        return *digit < base;
     }
-    if(Buffer[Index] >= 'A' && Buffer[Index] <= 'Z'){
-        *Digit = Buffer[Index] - 'A' + 0xA;
-        return *Digit < Base;
+    if(buffer[index] >= 'A' && buffer[index] <= 'Z'){
+        *digit = buffer[index] - 'A' + 0xA;
+        return *digit < base;
     }
-    if(Buffer[Index] >= 'a' && Buffer[Index] <= 'z'){
-        *Digit = Buffer[Index] - 'a' + 0xA;
-        return *Digit < Base;
+    if(buffer[index] >= 'a' && buffer[index] <= 'z'){
+        *digit = buffer[index] - 'a' + 0xA;
+        return *digit < base;
     }
     return false;
 }
 //------------------------------------------------------------------------------
 
-unsigned SCANNER::GetExponent(bool* Sign, TOKEN* Token)
+unsigned Scanner::getExponent(bool* sign, Token* token)
 {
-    unsigned Exponent = 0;
+    unsigned exponent = 0;
 
-    Token->Data += Buffer[Index++];
-    while(Buffer[Index] == '_') Token->Data += Buffer[Index++];
+    token->data += buffer[index++];
+    while(buffer[index] == '_') token->data += buffer[index++];
 
-    *Sign = false;
-    if(Buffer[Index] == '-'){
-        *Sign = true;
-        Token->Data += Buffer[Index++];
-    }else if(Buffer[Index] == '+'){
-        Token->Data += Buffer[Index++];
+    *sign = false;
+    if(buffer[index] == '-'){
+        *sign = true;
+        token->data += buffer[index++];
+    }else if(buffer[index] == '+'){
+        token->data += buffer[index++];
     }
 
-    while(Buffer[Index] == '_') Token->Data += Buffer[Index++];
-    if(Buffer[Index] < '0' || Buffer[Index] > '9'){
-        Error("Exponent digit expected");
+    while(buffer[index] == '_') token->data += buffer[index++];
+    if(buffer[index] < '0' || buffer[index] > '9'){
+        printError("exponent digit expected");
         return 0;
     }
 
-    while(Buffer[Index]){
-        while(Buffer[Index] == '_') Token->Data += Buffer[Index++];
+    while(buffer[index]){
+        while(buffer[index] == '_') token->data += buffer[index++];
 
-        if(Buffer[Index] < '0' || Buffer[Index] > '9') break;
+        if(buffer[index] < '0' || buffer[index] > '9') break;
 
-        Exponent = 10*Exponent + Buffer[Index] - '0';
-        Token->Data += Buffer[Index++];
+        exponent = 10*exponent + buffer[index] - '0';
+        token->data += buffer[index++];
     }
-    return Exponent;
+    return exponent;
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::GetNumber(TOKEN* Token, unsigned Base)
+bool Scanner::getNumber(Token* token, unsigned base)
 {
-    unsigned Digit;
+    unsigned digit;
 
-    while(Buffer[Index] == '_') Token->Data += Buffer[Index++];
-    if(!GetDigit(&Digit, Base) && Buffer[Index] != '.'){
-        Error("Illegal literal format");
+    while(buffer[index] == '_') token->data += buffer[index++];
+    if(!getDigit(&digit, base) && buffer[index] != '.'){
+        printError("Illegal literal format");
         return false;
     }
 
@@ -588,51 +588,51 @@ bool SCANNER::GetNumber(TOKEN* Token, unsigned Base)
     den = 1;
     exp = 1;
 
-    while(Buffer[Index]){
-        while(Buffer[Index] == '_') Token->Data += Buffer[Index++];
+    while(buffer[index]){
+        while(buffer[index] == '_') token->data += buffer[index++];
 
-        if(!GetDigit(&Digit, Base)) break;
+        if(!getDigit(&digit, base)) break;
 
-        num *= Base;  // mpz_mul_ui(num, num, Base);
-        num += Digit; // mpz_add_ui(num, num, Digit);
-        Token->Data += Buffer[Index++];
+        num *= base;  // mpz_mul_ui(num, num, base);
+        num += digit; // mpz_add_ui(num, num, digit);
+        token->data += buffer[index++];
     }
 
-    if(Buffer[Index] == '.' && Buffer[Index+1] != '.'){
-        Token->Data += Buffer[Index++];
-        while(Buffer[Index]){
-            while(Buffer[Index] == '_') Token->Data += Buffer[Index++];
+    if(buffer[index] == '.' && buffer[index+1] != '.'){
+        token->data += buffer[index++];
+        while(buffer[index]){
+            while(buffer[index] == '_') token->data += buffer[index++];
 
-            if(!GetDigit(&Digit, Base)) break;
+            if(!getDigit(&digit, base)) break;
 
-            num *= Base;  // mpz_mul_ui(num, num, Base);
-            den *= Base;  // mpz_mul_ui(den, den, Base);
-            num += Digit; // mpz_add_ui(num, num, Digit);
-            Token->Data += Buffer[Index++];
+            num *= base;  // mpz_mul_ui(num, num, base);
+            den *= base;  // mpz_mul_ui(den, den, base);
+            num += digit; // mpz_add_ui(num, num, digit);
+            token->data += buffer[index++];
         }
     }
 
-    bool     Sign     = false;
-    unsigned Exponent = 0;
+    bool     sign     = false;
+    unsigned exponent = 0;
 
-    if(Base == 10 && (Buffer[Index] == 'e' || Buffer[Index] == 'E')){
-        Exponent = GetExponent(&Sign, Token);
-        exp = pow(10, Exponent); // mpz_ui_pow_ui(exp, 10, Exponent);
+    if(base == 10 && (buffer[index] == 'e' || buffer[index] == 'E')){
+        exponent = getExponent(&sign, token);
+        exp = pow(10, exponent); // mpz_ui_pow_ui(exp, 10, exponent);
 
-    }else if(Buffer[Index] == 'p' || Buffer[Index] == 'P'){
-        Exponent = GetExponent(&Sign, Token);
-        exp = pow(2, Exponent); // mpz_ui_pow_ui(exp, 2, Exponent);
+    }else if(buffer[index] == 'p' || buffer[index] == 'P'){
+        exponent = getExponent(&sign, token);
+        exp = pow(2, exponent); // mpz_ui_pow_ui(exp, 2, exponent);
     }
 
-    if(Sign) den *= exp; // mpz_mul(den, den, exp);
+    if(sign) den *= exp; // mpz_mul(den, den, exp);
     else     num *= exp; // mpz_mul(num, num, exp);
 
-    Token->Value.Set(num, den);
+    token->value.set(num, den);
 
-    if(Buffer[Index] == 'i' || Buffer[Index] == 'j'){
-        Token->Data += Buffer[Index++];
-        while(Buffer[Index] == '_') Token->Data += Buffer[Index++];
-        Token->Value.Mul(0, 1);
+    if(buffer[index] == 'i' || buffer[index] == 'j'){
+        token->data += buffer[index++];
+        while(buffer[index] == '_') token->data += buffer[index++];
+        token->value.mul(0, 1);
     }
 
     // mpz_clear(num);
@@ -643,181 +643,181 @@ bool SCANNER::GetNumber(TOKEN* Token, unsigned Base)
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::Literal(TOKEN* Token)
+bool Scanner::getLiteral(Token* token)
 {
-    Token->Type = TOKEN::TYPE::Literal;
+    token->type = Token::Type::Literal;
 
     if(
-        (                        Buffer[Index  ] < '0' || Buffer[Index  ] > '9') &&
-        (Buffer[Index] != '.' || Buffer[Index+1] < '0' || Buffer[Index+1] > '9')
+        (                        buffer[index  ] < '0' || buffer[index  ] > '9') &&
+        (buffer[index] != '.' || buffer[index+1] < '0' || buffer[index+1] > '9')
     ) return false;
 
-    if(Buffer[Index] == '0'){
-        switch(Buffer[Index+1]){
+    if(buffer[index] == '0'){
+        switch(buffer[index+1]){
             case 'b':
-                Token->Data += Buffer[Index++];
-                Token->Data += Buffer[Index++];
-                return GetNumber(Token, 2);
+                token->data += buffer[index++];
+                token->data += buffer[index++];
+                return getNumber(token, 2);
 
             case 'o':
-                Token->Data += Buffer[Index++];
-                Token->Data += Buffer[Index++];
-                return GetNumber(Token, 8);
+                token->data += buffer[index++];
+                token->data += buffer[index++];
+                return getNumber(token, 8);
 
             case 'x':
-                Token->Data += Buffer[Index++];
-                Token->Data += Buffer[Index++];
-                return GetNumber(Token, 16);
+                token->data += buffer[index++];
+                token->data += buffer[index++];
+                return getNumber(token, 16);
 
             default : break;
         }
     }
-    return GetNumber(Token, 10);
+    return getNumber(token, 10);
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::String(TOKEN* Token)
+bool Scanner::getString(Token* token)
 {
     int      j;
-    unsigned Digit, UTF_32;
-    CHARACTERS::iterator s;
+    unsigned digit, utf32;
+    Characters::iterator s;
 
-    if(Buffer[Index] != '"') return false;
+    if(buffer[index] != '"') return false;
 
-    Token->Type = TOKEN::TYPE::String;
+    token->type = Token::Type::String;
 
-    Index++;
+    index++;
 
-    while(Buffer[Index]){
-        if(Buffer[Index] == '"'){
-            Index++;
-            WhiteSpace();
-            if(Buffer[Index] == '"'){ // Concatenate the next string
-                Index++;
+    while(buffer[index]){
+        if(buffer[index] == '"'){
+            index++;
+            whiteSpace();
+            if(buffer[index] == '"'){ // Concatenate the next string
+                index++;
                 continue;
             }else{
                 return true;
             }
         }
-        if(Buffer[Index] == '\\'){
-            Index++;
-            switch(Buffer[Index]){
-                case 'n' : Token->Data += '\n'; Index++; break;
-                case 't' : Token->Data += '\t'; Index++; break;
-                case 'v' : Token->Data += '\v'; Index++; break;
-                case 'b' : Token->Data += '\b'; Index++; break;
-                case 'r' : Token->Data += '\r'; Index++; break;
-                case 'f' : Token->Data += '\f'; Index++; break;
-                case 'a' : Token->Data += '\a'; Index++; break;
-                case '\\': Token->Data += '\\'; Index++; break;
-                case '?' : Token->Data += '\?'; Index++; break;
-                case '\'': Token->Data += '\''; Index++; break;
-                case '"' : Token->Data += '\"'; Index++; break;
+        if(buffer[index] == '\\'){
+            index++;
+            switch(buffer[index]){
+                case 'n' : token->data += '\n'; index++; break;
+                case 't' : token->data += '\t'; index++; break;
+                case 'v' : token->data += '\v'; index++; break;
+                case 'b' : token->data += '\b'; index++; break;
+                case 'r' : token->data += '\r'; index++; break;
+                case 'f' : token->data += '\f'; index++; break;
+                case 'a' : token->data += '\a'; index++; break;
+                case '\\': token->data += '\\'; index++; break;
+                case '?' : token->data += '\?'; index++; break;
+                case '\'': token->data += '\''; index++; break;
+                case '"' : token->data += '\"'; index++; break;
 
                 case '&': // HTML character name
-                    Index++;
-                    for(j = Index; Buffer[j] && Buffer[j] != ';'; j++);
-                    if(!Buffer[j]){
-                        Error("Invalid \\& code");
+                    index++;
+                    for(j = index; buffer[j] && buffer[j] != ';'; j++);
+                    if(!buffer[j]){
+                        printError("Invalid \\& code");
                         return false;
                     }
-                    Buffer[j] = 0;
-                    s = Characters.find((const char*)(Buffer+Index));
-                    if(s == Characters.end()){
-                        Error("Invalid \\& code");
+                    buffer[j] = 0;
+                    s = characters.find((const char*)(buffer+index));
+                    if(s == characters.end()){
+                        printError("Invalid \\& code");
                         return false;
                     }
-                    Index = j+1;
-                    Token->Data += (const char*)s->second;
+                    index = j+1;
+                    token->data += (const char*)s->second;
                     break;
 
                 case 'x' : // Hexadecimal number
-                    Index++;
-                    UTF_32 = 0;
+                    index++;
+                    utf32 = 0;
                     for(j = 0; j < 2; j++){
-                        if(!GetDigit(&Digit, 16)){
-                            Error("Invalid \\x code");
+                        if(!getDigit(&digit, 16)){
+                            printError("Invalid \\x code");
                             return false;
                         }
-                        UTF_32 = UTF_32*0x10 + Digit;
-                        Index++;
+                        utf32 = utf32*0x10 + digit;
+                        index++;
                     }
-                    Token->Data.append(utfConverter.toUtf8((char32_t)UTF_32));
+                    token->data.append(utfConverter.toUtf8((char32_t)utf32));
                     break;
 
                 case 'u' : // 16-bit Unicode
-                    Index++;
-                    UTF_32 = 0;
+                    index++;
+                    utf32 = 0;
                     for(j = 0; j < 4; j++){
-                        if(!GetDigit(&Digit, 16)){
-                            Error("Invalid \\u code");
+                        if(!getDigit(&digit, 16)){
+                            printError("Invalid \\u code");
                             return false;
                         }
-                        UTF_32 = UTF_32*0x10 + Digit;
-                        Index++;
+                        utf32 = utf32*0x10 + digit;
+                        index++;
                     }
-                    Token->Data.append(utfConverter.toUtf8((char32_t)UTF_32));
+                    token->data.append(utfConverter.toUtf8((char32_t)utf32));
                     break;
 
                 case 'U' : // 32-bit Unicode
-                    Index++;
-                    UTF_32 = 0;
+                    index++;
+                    utf32 = 0;
                     for(j = 0; j < 8; j++){
-                        if(!GetDigit(&Digit, 16)){
-                            Error("Invalid \\U code");
+                        if(!getDigit(&digit, 16)){
+                            printError("Invalid \\U code");
                             return false;
                         }
-                        UTF_32 = UTF_32*0x10 + Digit;
-                        Index++;
+                        utf32 = utf32*0x10 + digit;
+                        index++;
                     }
-                    Token->Data.append(utfConverter.toUtf8((char32_t)UTF_32));
+                    token->data.append(utfConverter.toUtf8((char32_t)utf32));
                     break;
 
                 default: // Could be an octal number...
-                    UTF_32 = 0;
+                    utf32 = 0;
                     for(j = 0; j < 11; j++){
-                        if(Buffer[Index] < '0' || Buffer[Index] > '7'){
+                        if(buffer[index] < '0' || buffer[index] > '7'){
                             if(j) break;
-                            Error("Invalid escape sequence");
+                            printError("Invalid escape sequence");
                             return false;
                         }
-                        UTF_32 = UTF_32*8 + Buffer[Index++] - '0';
+                        utf32 = utf32*8 + buffer[index++] - '0';
                     }
-                    Token->Data.append(utfConverter.toUtf8((char32_t)UTF_32));
+                    token->data.append(utfConverter.toUtf8((char32_t)utf32));
                     break;
             }
         }else{
-            if(Spaces.Match(Buffer+Index, &j) == TOKEN::TYPE::Newline){
-                Line++;
+            if(spaces.match(buffer+index, &j) == Token::Type::Newline){
+                line++;
                 while(j){
-                    Token->Data += Buffer[Index++];
+                    token->data += buffer[index++];
                     j--;
                 }
             }else{
-                Token->Data += Buffer[Index++];
+                token->data += buffer[index++];
             }
         }
     }
-    Error("Incomplete string");
+    printError("Incomplete string");
     return false;
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::Open(const char* Filename)
+bool Scanner::open(const char* filename)
 {
     FileWrapper fs;
 
-    Line  = 1;
-    Index = 0;
+    line  = 1;
+    index = 0;
     error = false;
 
-    if(Buffer) delete[] Buffer;
+    if(buffer) delete[] buffer;
 
-    this->Filename = Filename;
+    this->filename = filename;
 
-    Buffer = (byte*)fs.readAll(Filename);
-    if(!Buffer){
-        error("Cannot read file: %s\n", Filename);
+    buffer = (byte*)fs.readAll(filename);
+    if(!buffer){
+        error("Cannot read file: %s\n", filename);
         return false;
     }
 
@@ -825,30 +825,30 @@ bool SCANNER::Open(const char* Filename)
 }
 //------------------------------------------------------------------------------
 
-bool SCANNER::GetToken(TOKEN* Token)
+bool Scanner::getToken(Token* token)
 {
-    Token->Line = Line;
-    Token->Type = TOKEN::TYPE::Unknown;
-    Token->Data.clear();
+    token->line = line;
+    token->type = Token::Type::Unknown;
+    token->data.clear();
 
-    if(!Buffer[Index]) return false;
+    if(!buffer[index]) return false;
     if( error        ) return false;
 
-    WhiteSpace();
+    whiteSpace();
 
-    Token->Line = Line;
+    token->line = line;
 
-    if(String    (Token)) return true; // This is the least expensive match
-    if(Literal   (Token)) return true;
-    if(Identifier(Token)) return true;
-    if(Operator  (Token)) return true; // This is the most expensive match
+    if(getString    (token)) return true; // This is the least expensive match
+    if(getLiteral   (token)) return true;
+    if(getIdentifier(token)) return true;
+    if(getOperator  (token)) return true; // This is the most expensive match
 
-    if(Buffer[Index]){
+    if(buffer[index]){
         char s[0x100];
-        sprintf(s, "Unknown token near \"%.5s\"", Buffer+Index);
-        Error(s);
+        sprintf(s, "Unknown token near \"%.5s\"", buffer+index);
+        printError(s);
     }
-    Token->Type = TOKEN::TYPE::Unknown;
+    token->type = Token::Type::Unknown;
     return false;
 }
 //------------------------------------------------------------------------------

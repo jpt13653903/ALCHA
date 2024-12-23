@@ -25,24 +25,23 @@
 #include "Expression.h"
 //------------------------------------------------------------------------------
 
-namespace AST
-{
-    struct WHILE_LOOP: public BASE{
-        EXPRESSION* Condition;
-        BASE      * Statements;
+namespace AST{
+    struct WhileLoop: public Base{
+        Expression* condition;
+        Base      * statements;
 
-        WHILE_LOOP(int Line, std::string& Filename);
-        WHILE_LOOP(int Line, const char*  Filename);
-      ~WHILE_LOOP();
+        WhileLoop(int line, std::string& filename);
+        WhileLoop(int line, const char*  filename);
+       ~WhileLoop();
 
-        BASE* Copy() override;
+        Base* copy() override;
 
-        bool RunAST() override;
-        bool GetVerilog(std::string& Body) override;
+        bool runAST() override;
+        bool getVerilog(std::string& body) override;
 
-        void Display() override;
+        void display() override;
 
-        void ValidateMembers() override;
+        void validateMembers() override;
     };
 }
 //------------------------------------------------------------------------------

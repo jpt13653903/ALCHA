@@ -21,71 +21,70 @@
 #include "LoopLoop.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-LOOP_LOOP::LOOP_LOOP(int Line, std::string& Filename): LOOP_LOOP(Line, Filename.c_str())
-{}
+LoopLoop::LoopLoop(int line, std::string& filename): LoopLoop(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-LOOP_LOOP::LOOP_LOOP(int Line, const char* Filename): BASE(Line, Filename, TYPE::LoopLoop)
+LoopLoop::LoopLoop(int line, const char* filename): Base(line, filename, Type::LoopLoop)
 {
-    Count      = 0;
-    Statements = 0;
+    count      = 0;
+    statements = 0;
 }
 //------------------------------------------------------------------------------
 
-LOOP_LOOP::~LOOP_LOOP()
+LoopLoop::~LoopLoop()
 {
-    if(Count     ) delete Count;
-    if(Statements) delete Statements;
+    if(count     ) delete count;
+    if(statements) delete statements;
 }
 //------------------------------------------------------------------------------
 
-BASE* LOOP_LOOP::Copy()
+Base* LoopLoop::copy()
 {
-    LOOP_LOOP* Copy = new LOOP_LOOP(Source.Line, Source.Filename.c_str());
+    LoopLoop* copy = new LoopLoop(source.line, source.filename.c_str());
 
-    if(Count) Copy->Count = (decltype(Count))Count->Copy();
+    if(count) copy->count = (decltype(count))count->copy();
 
-    Copy->Statements = CopyList(Statements);
+    copy->statements = copyList(statements);
 
-    return Copy;
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-bool LOOP_LOOP::RunAST()
+bool LoopLoop::runAST()
 {
     error("Not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-bool LOOP_LOOP::GetVerilog(string& Body)
+bool LoopLoop::getVerilog(string& body)
 {
     error("Not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-void LOOP_LOOP::Display()
+void LoopLoop::display()
 {
-    DisplayInfo();
-    Debug.Print("loop(");
-        if(Count) Count->Display();
-        else      Debug.Print("{inf}");
-    Debug.Print("){\n");
-        if(Statements) Statements->Display();
-    Debug.Print("}\n");
+    displayInfo();
+    debug.print("loop(");
+        if(count) count->display();
+        else      debug.print("{inf}");
+    debug.print("){\n");
+        if(statements) statements->display();
+    debug.print("}\n");
 
-    if(Next) Next->Display();
+    if(next) next->display();
 }
 //------------------------------------------------------------------------------
 
-void LOOP_LOOP::ValidateMembers()
+void LoopLoop::validateMembers()
 {
-    assert(Type == TYPE::LoopLoop);
+    assert(type == Type::LoopLoop);
 
     error("Not yet implemented");
 }

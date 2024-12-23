@@ -50,41 +50,41 @@ Tokens:
 #include "FileWrapper.h"
 //------------------------------------------------------------------------------
 
-class SCANNER{
+class Scanner{
     private:
         bool error;
-        void Error(const char* Message);
+        void printError(const char* message);
 
-        int      Line;
-        unsigned Index;
-        byte*    Buffer;
+        int      line;
+        unsigned index;
+        byte*    buffer;
 
-        bool LineComment  ();
-        bool TodoComment  ();
-        bool BlockComment ();
-        bool NestedComment();
-        void WhiteSpace   (); // Ignores spaces, new-lines and comments
+        bool lineComment  ();
+        bool todoComment  ();
+        bool blockComment ();
+        bool nestedComment();
+        void whiteSpace   (); // Ignores spaces, new-lines and comments
 
-        bool Digit   (); // Returns true on decimal digit
-        bool NonDigit();
+        bool digit   (); // Returns true on decimal digit
+        bool nonDigit();
 
-        bool     GetDigit   (unsigned* Digit, unsigned Base);
-        unsigned GetExponent(bool    * Sign , TOKEN* Token);
-        bool     GetNumber  (TOKEN   * Token, unsigned Base);
+        bool     getDigit   (unsigned* digit, unsigned base);
+        unsigned getExponent(bool    * sign , Token* token);
+        bool     getNumber  (Token   * token, unsigned base);
 
-        bool Identifier(TOKEN* Token);
-        bool Operator  (TOKEN* Token);
-        bool Literal   (TOKEN* Token);
-        bool String    (TOKEN* Token);
+        bool getIdentifier(Token* token);
+        bool getOperator  (Token* token);
+        bool getLiteral   (Token* token);
+        bool getString    (Token* token);
 
     public: // Public interface
-        SCANNER();
-      ~SCANNER();
+        Scanner();
+       ~Scanner();
 
-        std::string Filename; // Read-only
-        bool Open(const char* Filename);
+        std::string filename; // Read-only
+        bool open(const char* filename);
 
-        bool GetToken(TOKEN* Token);
+        bool getToken(Token* token);
 };
 //------------------------------------------------------------------------------
 

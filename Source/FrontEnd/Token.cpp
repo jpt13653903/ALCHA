@@ -21,20 +21,20 @@
 #include "Token.h"
 //------------------------------------------------------------------------------
 
-TOKEN::TOKEN()
+Token::Token()
 {
-    Line = 0;
-    Type = TYPE::Unknown;
+    line = 0;
+    type = Type::Unknown;
 }
 //------------------------------------------------------------------------------
 
-void TOKEN::Display()
+void Token::display()
 {
-    Debug.Print(ANSI_FG_CYAN "Token: " ANSI_RESET);
-    Debug.Print(ANSI_FG_BRIGHT_BLACK "Type = "  ANSI_RESET "%3d "  , (int)Type);
-    Debug.Print(ANSI_FG_BRIGHT_BLACK "Line = "  ANSI_RESET "%5d "  , Line);
-    Debug.Print(ANSI_FG_BRIGHT_BLACK "Data = "  ANSI_RESET "%-40s ", Data.c_str());
-    Debug.Print(ANSI_FG_BRIGHT_BLACK "Value = " ANSI_RESET "%s\n"  , Value.Display());
+    debug.print(ANSI_FG_CYAN "Token: " ANSI_RESET);
+    debug.print(ANSI_FG_BRIGHT_BLACK "Type = "  ANSI_RESET "%3d "  , (int)type);
+    debug.print(ANSI_FG_BRIGHT_BLACK "Line = "  ANSI_RESET "%5d "  , line);
+    debug.print(ANSI_FG_BRIGHT_BLACK "Data = "  ANSI_RESET "%-40s ", data.c_str());
+    debug.print(ANSI_FG_BRIGHT_BLACK "Value = " ANSI_RESET "%s\n"  , value.display());
 }
 //------------------------------------------------------------------------------
 

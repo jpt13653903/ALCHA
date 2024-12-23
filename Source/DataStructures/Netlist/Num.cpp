@@ -20,86 +20,84 @@
 
 #include "Num.h"
 
-#include "AST/Expression/Literal.h"
+#include "AST/expression/Literal.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
-using namespace NETLIST;
+using std::string;
+using namespace Netlist;
 //------------------------------------------------------------------------------
 
-NUM::NUM(int Line, const string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Number)
+Num::Num(int line, const string& filename, const char* name) : Base(line, filename, name, Type::Number)
 {
-    Value = 0;
+    value = 0;
 }
 //------------------------------------------------------------------------------
 
-NUM::~NUM()
+Num::~Num(){}
+//------------------------------------------------------------------------------
+
+AST::Expression* Num::getExpression(int line, const string& filename)
 {
+    AST::Literal* result = new AST::Literal(line, filename);
+    result->value = value;
+    return result;
 }
 //------------------------------------------------------------------------------
 
-AST::EXPRESSION* NUM::GetExpression(int Line, const string& Filename)
+bool Num::assign(AST::Expression* expression)
 {
-    AST::LITERAL* Result = new AST::LITERAL(Line, Filename);
-    Result->Value = Value;
-    return Result;
+    return rawAssign(expression);
 }
 //------------------------------------------------------------------------------
 
-bool NUM::Assign(AST::EXPRESSION* Expression)
+bool Num::rawAssign(AST::Expression* expression)
 {
-    return RawAssign(Expression);
-}
-//------------------------------------------------------------------------------
+    if(!expression) return false;
 
-bool NUM::RawAssign(AST::EXPRESSION* Expression)
-{
-    if(!Expression) return false;
+    expression = expression->evaluate();
+    if(!expression) return false;
 
-    Expression = Expression->Evaluate();
-    if(!Expression) return false;
+    bool result = false;
 
-    bool Result = false;
-
-    if(Expression->Type == AST::BASE::TYPE::Literal){
-        Value = ((AST::LITERAL*)Expression)->Value;
-        Result = true;
+    if(expression->type == AST::Base::Type::Literal){
+        value = ((AST::Literal*)expression)->value;
+        result = true;
     }else{
-        Expression->Error("Expression must evaluate to a literal");
-        Result = false;
+        expression->printError("expression must evaluate to a literal");
+        result = false;
     }
 
-    // Expression has been moved and then used, so it must be deleted
-    delete Expression;
-    return Result;
+    // expression has been moved and then used, so it must be deleted
+    delete expression;
+    return result;
 }
 //------------------------------------------------------------------------------
 
-bool NUM::HasCircularReference(BASE* Object)
+bool Num::hasCircularReference(Base* object)
 {
-    if(this == Object) return true;
+    if(this == object) return true;
     error("Not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-void NUM::Display(int Indent)
+void Num::display(int indent)
 {
-    Debug.Indent(Indent);
-    Debug.Print("Num: %s\n", Name.c_str());
+    debug.indent(indent);
+    debug.print("Num: %s\n", name.c_str());
 
-    Debug.Indent(Indent+1);
-    Debug.Print("Value = ");
-    Debug.Print(Value.Display());
-    Debug.Print("\n");
+    debug.indent(indent+1);
+    debug.print("value = ");
+    debug.print(value.display());
+    debug.print("\n");
 }
 //------------------------------------------------------------------------------
 
-void NUM::Validate()
+void Num::validate()
 {
-    assert(Type == TYPE::Number);
+    assert(type == Type::Number);
 
-    BASE::Validate();
+    Base::validate();
 }
 //------------------------------------------------------------------------------
 

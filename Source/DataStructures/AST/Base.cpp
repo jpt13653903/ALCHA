@@ -24,106 +24,106 @@
 using namespace AST;
 //------------------------------------------------------------------------------
 
-BASE::BASE(int Line, const char* Filename, TYPE Type)
+Base::Base(int line, const char* filename, Type type)
 {
-    Source.Line     = Line;
-    Source.Filename = Filename;
-    this->Type      = Type;
-    this->Next      = 0;
-    this->Prev      = 0;
+    source.line     = line;
+    source.filename = filename;
+    this->type      = type;
+    this->next      = 0;
+    this->prev      = 0;
 }
 //------------------------------------------------------------------------------
 
-BASE::~BASE()
+Base::~Base()
 {
     // The list might be too long for a recursive formulation.
-    BASE* Temp;
-    while(Next){
-        Temp       = Next;
-        Next       = Temp->Next;
-        Temp->Next = 0;
-        delete Temp;
+    Base* temp;
+    while(next){
+        temp       = next;
+        next       = temp->next;
+        temp->next = 0;
+        delete temp;
     }
 }
 //------------------------------------------------------------------------------
 
-bool BASE::IsAssignment()
+bool Base::isAssignment()
 {
     return false;
 }
 //------------------------------------------------------------------------------
 
-bool BASE::IsDefinition()
+bool Base::isDefinition()
 {
     return false;
 }
 //------------------------------------------------------------------------------
 
-bool BASE::IsExpression()
+bool Base::isExpression()
 {
     return false;
 }
 //------------------------------------------------------------------------------
 
-void BASE::Error(const char* Message)
+void Base::printError(const char* message)
 {
-    ::Error(Source.Line, Source.Filename.c_str(), Message);
+    ::printError(source.line, source.filename.c_str(), message);
 }
 //------------------------------------------------------------------------------
 
-void BASE::Warning(const char* Message)
+void Base::printWarning(const char* message)
 {
-    ::Warning(Source.Line, Source.Filename.c_str(), Message);
+    ::printWarning(source.line, source.filename.c_str(), message);
 }
 //------------------------------------------------------------------------------
 
-BASE* BASE::CopyList(BASE* Source)
+Base* Base::copyList(Base* source)
 {
-    BASE* Node   = 0;
-    BASE* Tail   = 0;
-    BASE* Result = 0;
+    Base* node   = 0;
+    Base* tail   = 0;
+    Base* result = 0;
 
-    while(Source){
-        Node = Source->Copy();
-        if(Tail){
-            Tail->Next = Node;
-            Node->Prev = Tail;
+    while(source){
+        node = source->copy();
+        if(tail){
+            tail->next = node;
+            node->prev = tail;
         }else{
-            Result = Node;
+            result = node;
         }
-        Tail   = Node;
-        Source = Source->Next;
+        tail   = node;
+        source = source->next;
     }
 
-    return Result;
+    return result;
 }
 //------------------------------------------------------------------------------
 
-void BASE::DisplayInfo()
+void Base::displayInfo()
 {
-    Debug.Print("\n" ANSI_FG_BRIGHT_BLACK "%s:", Source.Filename.c_str());
-    Debug.Print(ANSI_FG_CYAN "%05d" ANSI_FG_YELLOW " -- " ANSI_RESET, Source.Line);
+    debug.print("\n" ANSI_FG_BRIGHT_BLACK "%s:", source.filename.c_str());
+    debug.print(ANSI_FG_CYAN "%05d" ANSI_FG_YELLOW " -- " ANSI_RESET, source.line);
 }
 //------------------------------------------------------------------------------
 
-void BASE::Validate()
+void Base::validate()
 {
-    assert(Prev == 0);
+    assert(prev == 0);
 
-    BASE* Node = this;
-    while(Node){
-        if(Node->Next) assert(Node->Next->Prev == Node,
-                                                    info("Type = %d, Line = %d, File = %s",
-                                                              (int)Node->Type,
-                                                              Node->Source.Line,
-                                                              Node->Source.Filename.c_str()));
-        if(Node->Prev) assert(Node->Prev->Next == Node,
-                                                    info("Type = %d, Line = %d, File = %s",
-                                                              (int)Node->Type,
-                                                              Node->Source.Line,
-                                                              Node->Source.Filename.c_str()));
-        Node->ValidateMembers();
-        Node = Node->Next;
+    Base* node = this;
+    while(node){
+        if(node->next) assert(node->next->prev == node,
+                              info("type = %d, line = %d, File = %s",
+                                   (int)node->type,
+                                   node->source.line,
+                                   node->source.filename.c_str()));
+        if(node->prev) assert(node->prev->next == node,
+                              info("type = %d, line = %d, File = %s",
+                                   (int)node->type,
+                                   node->source.line,
+                                   node->source.filename.c_str()));
+        node->validateMembers();
+        node = node->next;
     }
 }
 //------------------------------------------------------------------------------

@@ -28,33 +28,33 @@
 #include "Expression.h"
 //------------------------------------------------------------------------------
 
-namespace NETLIST{
-    class BASE;
+namespace Netlist{
+    class Base;
 }
 //------------------------------------------------------------------------------
 
 namespace AST{
-    class ASSIGNMENT: public BASE{
+    class Assignment: public Base{
         public:
             // Left and Right operands
-            EXPRESSION* Left;
-            EXPRESSION* Right;
+            Expression* left;
+            Expression* right;
 
         protected:
             // Populates a list of existing expressions, except when the target is an
             // undefined attribute, in which case the attribute is created first.
-            typedef std::list<NETLIST::BASE*> target_list;
-            bool AddLHS_Object(NETLIST::BASE* Object, target_list& List);
-            bool GetLHS(EXPRESSION* Node, target_list& List);
+            typedef std::list<Netlist::Base*> TargetList;
+            bool addLhsObject(Netlist::Base* object, TargetList& list);
+            bool getLHS(Expression* node, TargetList& list);
 
         protected:
-            void DisplayAssignment(const char* Operator);
+            void displayAssignment(const char* theOperator);
 
         public:
-                              ASSIGNMENT(int Line, const char* Filename, TYPE AssignmentType);
-            virtual ~ASSIGNMENT();
+                     Assignment(int line, const char* filename, Type assignmentType);
+            virtual ~Assignment();
 
-            bool IsAssignment() override;
+            bool isAssignment() override;
     };
 }
 //------------------------------------------------------------------------------

@@ -38,7 +38,7 @@ with open('CharacterNames.h', 'wb') as file:
     file.write(b'https://html.spec.whatwg.org/entities.json                                    */\n')
     file.write(b'//------------------------------------------------------------------------------\n')
     file.write(b'\n')
-    file.write(b'static const char* CharacterNames[] = {\n')
+    file.write(b'static const char* characterNames[] = {\n')
     for name in json_map:
         if(name[0] == '&' and name[-1] == ';'):
             file.write(bytes(f'  "{name[1:-1]}"'.ljust(35), 'utf-8'))

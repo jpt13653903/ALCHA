@@ -29,16 +29,16 @@
 
 class SDC{
     private:
-        std::string Constraints; // The resulting SDC TCL script returned by "Build"
+        std::string constraints; // The resulting SDC TCL script returned by "Build"
 
-        void BuildClocks();
-        void BuildPorts (NETLIST::NAMESPACE* Namespace);
+        void buildClocks();
+        void buildPorts (Netlist::NameSpace* nameSpace);
 
     public:
         SDC();
-      ~SDC();
+       ~SDC();
 
-        std::string& Build();
+        std::string& build();
 };
 //------------------------------------------------------------------------------
 

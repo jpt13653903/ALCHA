@@ -29,8 +29,8 @@
 #include "Dictionary.h"
 
 #include "AST/Alias.h"
-#include "AST/Class_Definition.h"
-#include "AST/Enum_Definition.h"
+#include "AST/ClassDefinition.h"
+#include "AST/EnumDefinition.h"
 #include "AST/Fence.h"
 #include "AST/ForLoop.h"
 #include "AST/FSM.h"
@@ -45,45 +45,45 @@
 #include "AST/Switch.h"
 #include "AST/WhileLoop.h"
 
-#include "AST/Assignment/Add_Assign.h"
-#include "AST/Assignment/AND_Assign.h"
-#include "AST/Assignment/Append_Assign.h"
+#include "AST/Assignment/AddAssign.h"
+#include "AST/Assignment/AndAssign.h"
+#include "AST/Assignment/AppendAssign.h"
 #include "AST/Assignment/Assign.h"
-#include "AST/Assignment/Divide_Assign.h"
-#include "AST/Assignment/Exponential_Assign.h"
-#include "AST/Assignment/Modulus_Assign.h"
-#include "AST/Assignment/Multiply_Assign.h"
-#include "AST/Assignment/OR_Assign.h"
-#include "AST/Assignment/Raw_Assign.h"
-#include "AST/Assignment/Shift_Left_Assign.h"
-#include "AST/Assignment/Shift_Right_Assign.h"
-#include "AST/Assignment/Subtract_Assign.h"
-#include "AST/Assignment/XOR_Assign.h"
+#include "AST/Assignment/DivideAssign.h"
+#include "AST/Assignment/ExponentialAssign.h"
+#include "AST/Assignment/ModulusAssign.h"
+#include "AST/Assignment/MultiplyAssign.h"
+#include "AST/Assignment/OrAssign.h"
+#include "AST/Assignment/RawAssign.h"
+#include "AST/Assignment/ShiftLeftAssign.h"
+#include "AST/Assignment/ShiftRightAssign.h"
+#include "AST/Assignment/SubtractAssign.h"
+#include "AST/Assignment/XorAssign.h"
 
-#include "AST/Definition/Auto_Definition.h"
-#include "AST/Definition/Byte_Definition.h"
-#include "AST/Definition/Char_Definition.h"
-#include "AST/Definition/Class_Instance.h"
-#include "AST/Definition/FuncPtr_Definition.h"
-#include "AST/Definition/Net_Definition.h"
-#include "AST/Definition/Num_Definition.h"
-#include "AST/Definition/Pin_Definition.h"
-#include "AST/Definition/Void_Definition.h"
+#include "AST/Definition/AutoDefinition.h"
+#include "AST/Definition/ByteDefinition.h"
+#include "AST/Definition/CharDefinition.h"
+#include "AST/Definition/ClassInstance.h"
+#include "AST/Definition/FuncPtrDefinition.h"
+#include "AST/Definition/NetDefinition.h"
+#include "AST/Definition/NumDefinition.h"
+#include "AST/Definition/PinDefinition.h"
+#include "AST/Definition/VoidDefinition.h"
 
 #include "AST/Expression/AccessAttribute.h"
 #include "AST/Expression/AccessMember.h"
 #include "AST/Expression/AccessMemberSafe.h"
 #include "AST/Expression/Add.h"
-#include "AST/Expression/AND_Reduce.h"
+#include "AST/Expression/AndReduce.h"
 #include "AST/Expression/Array.h"
 #include "AST/Expression/ArrayConcatenate.h"
-#include "AST/Expression/Bit_AND.h"
-#include "AST/Expression/Bit_NAND.h"
-#include "AST/Expression/Bit_NOR.h"
-#include "AST/Expression/Bit_NOT.h"
-#include "AST/Expression/Bit_OR.h"
-#include "AST/Expression/Bit_XNOR.h"
-#include "AST/Expression/Bit_XOR.h"
+#include "AST/Expression/BitAnd.h"
+#include "AST/Expression/BitNand.h"
+#include "AST/Expression/BitNor.h"
+#include "AST/Expression/BitNot.h"
+#include "AST/Expression/BitOR.h"
+#include "AST/Expression/BitXnor.h"
+#include "AST/Expression/BitXor.h"
 #include "AST/Expression/Cast.h"
 #include "AST/Expression/Conditional.h"
 #include "AST/Expression/Decrement.h"
@@ -97,115 +97,115 @@
 #include "AST/Expression/Identifier.h"
 #include "AST/Expression/Increment.h"
 #include "AST/Expression/Less.h"
-#include "AST/Expression/Less_Equal.h"
+#include "AST/Expression/LessEqual.h"
 #include "AST/Expression/Literal.h"
-#include "AST/Expression/Logical_AND.h"
-#include "AST/Expression/Logical_NOT.h"
-#include "AST/Expression/Logical_OR.h"
+#include "AST/Expression/LogicalAnd.h"
+#include "AST/Expression/LogicalNot.h"
+#include "AST/Expression/LogicalOr.h"
 #include "AST/Expression/Modulus.h"
 #include "AST/Expression/Multiply.h"
-#include "AST/Expression/NAND_Reduce.h"
+#include "AST/Expression/NandReduce.h"
 #include "AST/Expression/Negate.h"
-#include "AST/Expression/NOR_Reduce.h"
-#include "AST/Expression/Not_Equal.h"
+#include "AST/Expression/NorReduce.h"
+#include "AST/Expression/NotEqual.h"
 #include "AST/Expression/Object.h"
-#include "AST/Expression/OR_Reduce.h"
+#include "AST/Expression/OrReduce.h"
 #include "AST/Expression/Range.h"
 #include "AST/Expression/Raw.h"
 #include "AST/Expression/Replicate.h"
-#include "AST/Expression/Shift_Left.h"
-#include "AST/Expression/Shift_Right.h"
+#include "AST/Expression/ShiftLeft.h"
+#include "AST/Expression/ShiftRight.h"
 #include "AST/Expression/Slice.h"
 #include "AST/Expression/String.h"
 #include "AST/Expression/Subtract.h"
 #include "AST/Expression/VectorConcatenate.h"
-#include "AST/Expression/XNOR_Reduce.h"
-#include "AST/Expression/XOR_Reduce.h"
+#include "AST/Expression/XnorReduce.h"
+#include "AST/Expression/XorReduce.h"
 //------------------------------------------------------------------------------
 
-class PARSER{
+class Parser{
     private:
         bool error;
-        void Error(const char* Message);
+        void printError(const char* message);
 
-        TOKEN   Token; // The current token
-        SCANNER Scanner;
+        Token   token; // The current token
+        Scanner scanner;
 
-        void GetToken();
+        void getToken();
 
-        AST::ASSIGNMENT* AttributeAssignment();
-        AST::ASSIGNMENT* AttributeList      ();
+        AST::Assignment* attributeAssignment();
+        AST::Assignment* attributeList      ();
 
-        AST::EXPRESSION* String    ();
-        AST::EXPRESSION* Literal   ();
-        AST::EXPRESSION* Identifier();
+        AST::Expression* string    ();
+        AST::Expression* literal   ();
+        AST::Expression* identifier();
 
-        bool             ExpressionList (std::vector<AST::EXPRESSION*>& List);
-        AST::BASE*       Parameter      ();
-        bool             ParameterList  (std::list<AST::BASE*>& Parameters);
-        AST::EXPRESSION* Array          ();
-        AST::EXPRESSION* ArrayConcat    ();
-        AST::EXPRESSION* VectorConcat   ();
+        bool             expressionList (std::vector<AST::Expression*>& list);
+        AST::Base*       parameter      ();
+        bool             parameterList  (std::list<AST::Base*>& parameters);
+        AST::Expression* array          ();
+        AST::Expression* arrayConcat    ();
+        AST::Expression* vectorConcat   ();
 
-        AST::EXPRESSION* Primary        ();
-        AST::EXPRESSION* CastEpr        (AST::EXPRESSION* Node);
-        AST::EXPRESSION* Cast           ();
-        AST::EXPRESSION* Postfix        ();
-        AST::EXPRESSION* Unary          ();
-        AST::EXPRESSION* Range          ();
-        AST::EXPRESSION* Reduction      ();
-        AST::EXPRESSION* Stringification();
-        AST::EXPRESSION* Replication    ();
-        AST::EXPRESSION* Exponential    ();
-        AST::EXPRESSION* Multiplicative ();
-        AST::EXPRESSION* Additive       ();
-        AST::EXPRESSION* Shift          ();
-        AST::EXPRESSION* Relational     ();
-        AST::EXPRESSION* Equality       ();
-        AST::EXPRESSION* BitwiseAND     ();
-        AST::EXPRESSION* BitwiseXOR     ();
-        AST::EXPRESSION* BitwiseOR      ();
-        AST::EXPRESSION* Expression     (); // AKA Conditional
-        AST::EXPRESSION* TypeIdentifier ();
+        AST::Expression* primary        ();
+        AST::Expression* castEpr        (AST::Expression* node);
+        AST::Expression* cast           ();
+        AST::Expression* postfix        ();
+        AST::Expression* unary          ();
+        AST::Expression* range          ();
+        AST::Expression* reduction      ();
+        AST::Expression* stringification();
+        AST::Expression* replication    ();
+        AST::Expression* exponential    ();
+        AST::Expression* multiplicative ();
+        AST::Expression* additive       ();
+        AST::Expression* shift          ();
+        AST::Expression* relational     ();
+        AST::Expression* equality       ();
+        AST::Expression* bitwiseAND     ();
+        AST::Expression* bitwiseXOR     ();
+        AST::Expression* bitwiseOR      ();
+        AST::Expression* expression     (); // AKA conditional
+        AST::Expression* typeIdentifier ();
 
-        AST::ASSIGNMENT            * Initialiser    (std::string& Identifier);
-        AST::DEFINITION::ARRAY     * ArrayDefinition();
-        AST::DEFINITION::IDENTIFIER* IdentifierList ();
+        AST::Assignment            * initialiser    (std::string& identifier);
+        AST::Definition::Array     * arrayDefinition();
+        AST::Definition::Identifier* identifierList ();
 
         // Define function parameters
-        AST::DEFINITION* DefParameter    ();
-        AST::DEFINITION* DefParameterList();
+        AST::Definition* defParameter    ();
+        AST::Definition* defParameterList();
 
-        bool ValidNamespaceSpecifier(AST::EXPRESSION* Node); // Used by Other()
-        bool ValidTypeSpecifier     (AST::EXPRESSION* Node); // Used by Other()
-        bool ValidLHS               (AST::EXPRESSION* Node); // Used by Other()
+        bool validNamespaceSpecifier(AST::Expression* node); // Used by other()
+        bool validTypeSpecifier     (AST::Expression* node); // Used by other()
+        bool validLHS               (AST::Expression* node); // Used by other()
 
-        AST::CLASS_DEFINITION * ClassDefinition();
-        AST::ENUM_DEFINITION  * EnumDefinition();
-        AST::IF_STATEMENT     * IfStatement();
-        AST::DEFINITION       * Definition();
-        AST::WHILE_LOOP       * WhileLoop();
-        AST::LOOP_LOOP        * LoopLoop();
-        AST::FOR_LOOP         * ForLoop();
-        AST::IMPORT           * Import();
-        AST::SWITCH           * Switch();
-        AST::ALIAS            * Alias();
-        AST::GROUP            * Group();
-        AST::BASE             * Other();
-        AST::JUMP             * Jump();
-        AST::RTL              * RTL();
-        AST::FSM              * FSM();
-        AST::HDL              * HDL();
+        AST::ClassDefinition * classDefinition();
+        AST::EnumDefinition  * enumDefinition();
+        AST::IfStatement     * ifStatement();
+        AST::Definition      * definition();
+        AST::WhileLoop       * whileLoop();
+        AST::LoopLoop        * loopLoop();
+        AST::ForLoop         * forLoop();
+        AST::Import          * import();
+        AST::Switch          * switchStatement();
+        AST::Alias           * alias();
+        AST::Group           * group();
+        AST::Base            * other();
+        AST::Jump            * jump();
+        AST::Rtl             * rtl();
+        AST::Fsm             * fsm();
+        AST::Hdl             * hdl();
 
-        AST::BASE* Statement     ();
-        AST::BASE* Statements    ();
-        AST::BASE* StatementBlock();
+        AST::Base* statement     ();
+        AST::Base* statements    ();
+        AST::Base* statementBlock();
 
     public:
-        PARSER();
-      ~PARSER();
+        Parser();
+       ~Parser();
 
-        AST::BASE* Run(const char* Filename);
+        AST::Base* run(const char* filename);
 };
 //------------------------------------------------------------------------------
 

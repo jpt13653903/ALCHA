@@ -26,68 +26,68 @@
 #include "Assignment.h"
 //------------------------------------------------------------------------------
 
-namespace NETLIST{
-    class BASE;
-    class SYNTHESISABLE;
+namespace Netlist{
+    class Base;
+    class Synthesisable;
 }
 //------------------------------------------------------------------------------
 
 namespace AST{
-    class DEFINITION: public BASE{
+    class Definition: public Base{
         public:
-            struct ARRAY{
-                EXPRESSION* Size;
-                ARRAY     * Next; // Next dimension of the array
+            struct Array{
+                Expression* size;
+                Array     * next; // Next dimension of the array
 
-                ARRAY();
-                ARRAY(const ARRAY& Array);
-              ~ARRAY();
+                Array();
+                Array(const Array& array);
+               ~Array();
             };
 
-            struct IDENTIFIER{
-                std::string Identifier;
-                ARRAY*      Array;      // Null when this is a scalar
+            struct Identifier{
+                std::string identifier;
+                Array*      array;      // Null when this is a scalar
 
-                ASSIGNMENT* Initialiser;
+                Assignment* initialiser;
 
                 // These are used for function definitions.
-                bool        Function; // True when this is a function definition
-                DEFINITION* Parameters; // List of identifiers (calls are duck-typed)
-                BASE*       FunctionBody;
+                bool        function; // True when this is a function definition
+                Definition* parameters; // List of identifiers (calls are duck-typed)
+                Base*       functionBody;
 
-                IDENTIFIER* Next;
+                Identifier* next;
 
-                IDENTIFIER();
-                IDENTIFIER(const IDENTIFIER& Identifier);
-              ~IDENTIFIER();
+                Identifier();
+                Identifier(const Identifier& identifier);
+               ~Identifier();
             };
         //--------------------------------------------------------------------------
 
         public:
-            enum class DIRECTION{Inferred = 0, Input, Output, Bidirectional} Direction;
+            enum class Direction{Inferred = 0, Input, Output, Bidirectional} direction;
 
-            std::list<BASE*> Parameters; // Expression or Assignment
-            ASSIGNMENT* Attributes;
-            IDENTIFIER* Identifiers;
+            std::list<Base*> parameters; // Expression or Assignment
+            Assignment* attributes;
+            Identifier* identifiers;
         //--------------------------------------------------------------------------
 
         protected:
-            void CopyMembers(DEFINITION* Copy);
-            bool VerifyNotDefined(IDENTIFIER* Identifier);
+            void copyMembers(Definition* copy);
+            bool verifyNotDefined(Identifier* identifier);
 
-            void DisplayParameters ();
-            void DisplayAttributes ();
-            void DisplayIdentifiers();
-            void DisplayDefinition (const char* Type);
+            void displayParameters ();
+            void displayAttributes ();
+            void displayIdentifiers();
+            void displayDefinition (const char* type);
         //--------------------------------------------------------------------------
 
         public:
-                              DEFINITION(int Line, const char* Filename, TYPE DefinitionType);
-            virtual ~DEFINITION();
+                     Definition(int line, const char* filename, Type definitionType);
+            virtual ~Definition();
 
-            bool IsDefinition() override;
+            bool isDefinition() override;
 
-            void ValidateMembers() override;
+            void validateMembers() override;
     };
 }
 //------------------------------------------------------------------------------

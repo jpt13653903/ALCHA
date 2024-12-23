@@ -21,116 +21,111 @@
 #include "AccessMemberSafe.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-ACCESSMEMBERSAFE::ACCESSMEMBERSAFE(int Line, const string& Filename): ACCESSMEMBERSAFE(Line, Filename.c_str())
-{}
+AccessMemberSafe::AccessMemberSafe(int line, const string& filename): AccessMemberSafe(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-ACCESSMEMBERSAFE::ACCESSMEMBERSAFE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::AccessMemberSafe)
+AccessMemberSafe::AccessMemberSafe(int line, const char* filename): Expression(line, filename, Type::AccessMemberSafe){}
+//------------------------------------------------------------------------------
+
+AccessMemberSafe::~AccessMemberSafe(){}
+//------------------------------------------------------------------------------
+
+Base* AccessMemberSafe::copy()
 {
+    AccessMemberSafe* copy = new AccessMemberSafe(source.line, source.filename.c_str());
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-ACCESSMEMBERSAFE::~ACCESSMEMBERSAFE()
-{
-}
-//------------------------------------------------------------------------------
-
-BASE* ACCESSMEMBERSAFE::Copy()
-{
-    ACCESSMEMBERSAFE* Copy = new ACCESSMEMBERSAFE(Source.Line, Source.Filename.c_str());
-
-    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-    if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-    return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool ACCESSMEMBERSAFE::GetVerilog(string& Body)
+bool AccessMemberSafe::getVerilog(string& body)
 {
     error("Not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ACCESSMEMBERSAFE::Evaluate()
+Expression* AccessMemberSafe::evaluate()
 {
     error("Not yet implemented");
     return this;
-//   EXPRESSION* Result = 0;
+//   Expression* result = 0;
 //
 //   error("Not yet implemented");
 //
-//   if(!Result) return 0;
-//   return Result->Simplify(false);
+//   if(!result) return 0;
+//   return result->simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int ACCESSMEMBERSAFE::GetWidth()
+int AccessMemberSafe::getWidth()
 {
     error("Not yet implemented");
     return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& ACCESSMEMBERSAFE::GetFullScale()
+Number& AccessMemberSafe::getFullScale()
 {
     error("Not yet implemented");
-    static NUMBER zero = 0;
+    static Number zero = 0;
     return zero;
 }
 //------------------------------------------------------------------------------
 
-bool ACCESSMEMBERSAFE::GetSigned()
+bool AccessMemberSafe::getSigned()
 {
     error("Not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-bool ACCESSMEMBERSAFE::HasCircularReference(NETLIST::BASE* Object)
+bool AccessMemberSafe::hasCircularReference(Netlist::Base* object)
 {
     error("Not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-void ACCESSMEMBERSAFE::PopulateUsed()
+void AccessMemberSafe::populateUsed()
 {
     error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ACCESSMEMBERSAFE::RemoveTempNet(int Width, bool Signed)
+Expression* AccessMemberSafe::removeTempNet(int width, bool isSigned)
 {
     error("Not yet implemented");
     return this;
 }
 //------------------------------------------------------------------------------
 
-void ACCESSMEMBERSAFE::Display()
+void AccessMemberSafe::display()
 {
-    DisplayStart();
+    displayStart();
 
-    Debug.Print("?." );
+    debug.print("?." );
 
-    DisplayEnd();
+    displayEnd();
 }
 //------------------------------------------------------------------------------
 
-void ACCESSMEMBERSAFE::ValidateMembers()
+void AccessMemberSafe::validateMembers()
 {
-    assert(Type == TYPE::AccessMemberSafe);
+    assert(type == Type::AccessMemberSafe);
 
-    assert(!Next);
-    assert(!Prev);
+    assert(!next);
+    assert(!prev);
 
-    // TODO: assert(Left );
-    // TODO: assert(Right);
+    // TODO: assert(left );
+    // TODO: assert(right);
 
     error("Not yet implemented");
 }

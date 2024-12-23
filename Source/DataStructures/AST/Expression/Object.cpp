@@ -18,106 +18,105 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Object.h"
+#include "object.h"
 #include "Literal.h"
 
-#include "Netlist/Alias.h"
-#include "Netlist/Byte.h"
+#include "Netlist/alias.h"
+#include "Netlist/byte.h"
 #include "Netlist/Character.h"
-#include "Netlist/Num.h"
+#include "Netlist/num.h"
 #include "Netlist/Namespace/Module.h"
-#include "Netlist/Synthesisable/Net.h"
+#include "Netlist/Synthesisable/net.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-OBJECT::OBJECT(int Line, const string& Filename): OBJECT(Line, Filename.c_str())
-{}
+Object::Object(int line, const string& filename): Object(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-OBJECT::OBJECT(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Object)
+Object::Object(int line, const char* filename): Expression(line, filename, Type::Object)
 {
-    ObjectRef = 0;
+    objectRef = 0;
 }
 //------------------------------------------------------------------------------
 
-OBJECT::~OBJECT()
+Object::~Object()
 {
-    // Don't delete the Object reference -- it's part of the namespace tree
+    // Don't delete the object reference -- it's part of the namespace tree
 }
 //------------------------------------------------------------------------------
 
-BASE* OBJECT::Copy()
+Base* Object::copy()
 {
-    OBJECT* Copy = new OBJECT(Source.Line, Source.Filename.c_str());
+    Object* copy = new Object(source.line, source.filename.c_str());
 
-    Copy->ObjectRef = ObjectRef;
+    copy->objectRef = objectRef;
 
-    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-    if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
 
-    return Copy;
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-bool OBJECT::GetVerilog(string& Body)
+bool Object::getVerilog(string& body)
 {
-    assert(ObjectRef, return false);
-    Body += ObjectRef->EscapedName();
+    assert(objectRef, return false);
+    body += objectRef->escapedName();
 
     return true;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* OBJECT::Evaluate()
+Expression* Object::evaluate()
 {
-    assert(ObjectRef, delete this; return 0);
+    assert(objectRef, delete this; return 0);
 
-    switch(ObjectRef->Type){
-        case NETLIST::BASE::TYPE::Byte:{
-            auto Byte = (NETLIST::BYTE*)ObjectRef;
-            auto Result = new LITERAL(Source.Line, Source.Filename);
-            Result->Value = Byte->Value;
-            Result->SetWidth(8);
+    switch(objectRef->type){
+        case Netlist::Base::Type::Byte:{
+            auto byte = (Netlist::Byte*)objectRef;
+            auto result = new Literal(source.line, source.filename);
+            result->value = byte->value;
+            result->setWidth(8);
             delete this;
-            return Result;
+            return result;
         }
-        case NETLIST::BASE::TYPE::Character:{
-            auto Char = (NETLIST::CHARACTER*)ObjectRef;
-            auto Result = new LITERAL(Source.Line, Source.Filename);
-            Result->Value = Char->Value;
-            Result->SetWidth(32);
+        case Netlist::Base::Type::Character:{
+            auto character = (Netlist::Character*)objectRef;
+            auto result = new Literal(source.line, source.filename);
+            result->value = character->value;
+            result->setWidth(32);
             delete this;
-            return Result;
+            return result;
         }
-        case NETLIST::BASE::TYPE::Number:{
-            auto Num = (NETLIST::NUM*)ObjectRef;
-            auto Result = new LITERAL(Source.Line, Source.Filename);
-            Result->Value = Num->Value;
+        case Netlist::Base::Type::Number:{
+            auto num = (Netlist::Num*)objectRef;
+            auto result = new Literal(source.line, source.filename);
+            result->value = num->value;
             delete this;
-            return Result;
+            return result;
         }
-        case NETLIST::BASE::TYPE::Alias:{
-            auto Alias  = (NETLIST::ALIAS*)ObjectRef;
-            auto Result = Alias->Expression;
-            if(!Result){
-                Error("Alias has no expression");
+        case Netlist::Base::Type::Alias:{
+            auto alias  = (Netlist::Alias*)objectRef;
+            auto result = alias->expression;
+            if(!result){
+                printError("alias has no expression");
                 delete this;
                 return 0;
             }
-            Result = (EXPRESSION*)Result->Copy();
-            NETLIST::NamespaceStack.push_front(Alias->Namespace);
-                Result = Result->Evaluate();
-            NETLIST::NamespaceStack.pop_front();
-            if(!Result){
-                Error("Error evaluating alias");
+            result = (Expression*)result->copy();
+            Netlist::nameSpaceStack.push_front(alias->nameSpace);
+                result = result->evaluate();
+            Netlist::nameSpaceStack.pop_front();
+            if(!result){
+                printError("Error evaluating alias");
                 delete this;
                 return 0;
             }
             delete this;
-            return Result;
+            return result;
         }
         default:
             break;
@@ -126,59 +125,59 @@ EXPRESSION* OBJECT::Evaluate()
 }
 //------------------------------------------------------------------------------
 
-int OBJECT::GetWidth()
+int Object::getWidth()
 {
-    assert(ObjectRef, return 0);
-    return ObjectRef->Width();
+    assert(objectRef, return 0);
+    return objectRef->width();
 }
 //------------------------------------------------------------------------------
 
-NUMBER& OBJECT::GetFullScale()
+Number& Object::getFullScale()
 {
-    assert(ObjectRef);
-    return ObjectRef->FullScale();
+    assert(objectRef);
+    return objectRef->fullScale();
 }
 //------------------------------------------------------------------------------
 
-bool OBJECT::GetSigned()
+bool Object::getSigned()
 {
-    assert(ObjectRef, return false);
-    return ObjectRef->Signed();
+    assert(objectRef, return false);
+    return objectRef->isSigned();
 }
 //------------------------------------------------------------------------------
 
-bool OBJECT::HasCircularReference(NETLIST::BASE* Object)
+bool Object::hasCircularReference(Netlist::Base* object)
 {
-    if(!ObjectRef) return false;
-    return ObjectRef->HasCircularReference(Object);
+    if(!objectRef) return false;
+    return objectRef->hasCircularReference(object);
 }
 //------------------------------------------------------------------------------
 
-void OBJECT::PopulateUsed()
+void Object::populateUsed()
 {
-    if(ObjectRef) ObjectRef->PopulateUsed(true);
+    if(objectRef) objectRef->populateUsed(true);
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* OBJECT::RemoveTempNet(int Width, bool Signed)
+Expression* Object::removeTempNet(int width, bool isSigned)
 {
     // At this point, everything has been broken down to raw bits, so the
     // full-scale is not important.
 
-    if(ObjectRef && ObjectRef->Type == NETLIST::BASE::TYPE::Net){
-        auto Net = (NETLIST::NET*)ObjectRef;
-        if(Net->Value && Net->IsTemporary()){
-            if(Width  == Net->Width () &&
-                  Signed == Net->Signed() ){
+    if(objectRef && objectRef->type == Netlist::Base::Type::Net){
+        auto net = (Netlist::Net*)objectRef;
+        if(net->value && net->isTemporary()){
+            if(width  == net->width () &&
+                  isSigned == net->isSigned() ){
                 delete this;
-                return ((EXPRESSION*)Net->Value->Copy())->RemoveTempNet(Width, Signed);
+                return ((Expression*)net->value->copy())->removeTempNet(width, isSigned);
             }
-            if(Net->Value->Type == TYPE::Object){
-                auto Object = (OBJECT*)Net->Value;
-                if(GetWidth () == Object->GetWidth () &&
-                      GetSigned() == Object->GetSigned() ){
+            if(net->value->type == Type::Object){
+                auto object = (Object*)net->value;
+                if(getWidth () == object->getWidth () &&
+                      getSigned() == object->getSigned() ){
                     delete this;
-                    return ((EXPRESSION*)Object->Copy())->RemoveTempNet(Width, Signed);
+                    return ((Expression*)object->copy())->removeTempNet(width, isSigned);
                 }
             }
         }
@@ -187,33 +186,33 @@ EXPRESSION* OBJECT::RemoveTempNet(int Width, bool Signed)
 }
 //------------------------------------------------------------------------------
 
-void OBJECT::Display()
+void Object::display()
 {
-    DisplayStart();
+    displayStart();
 
-    if(ObjectRef){
-        // TODO: Display the width here, because it should be a property
+    if(objectRef){
+        // TODO: display the width here, because it should be a property
         //       of the target object, not the expression itself
-        ObjectRef->DisplayLongName();
+        objectRef->displayLongName();
     }else{
         error("Null object reference");
     }
 
-    DisplayEnd();
+    displayEnd();
 }
 //------------------------------------------------------------------------------
 
-void OBJECT::ValidateMembers()
+void Object::validateMembers()
 {
-    assert(Type == TYPE::Object);
+    assert(type == Type::Object);
 
-    assert(!Next);
-    assert(!Prev);
+    assert(!next);
+    assert(!prev);
 
-    assert(!Left );
-    assert(!Right);
+    assert(!left );
+    assert(!right);
 
-    assert(ObjectRef);
+    assert(objectRef);
 }
 //------------------------------------------------------------------------------
 

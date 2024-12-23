@@ -34,43 +34,43 @@ balanced sub-tree of the next character, etc.                                 */
 #include "Token.h"
 //------------------------------------------------------------------------------
 
-class TOKEN_TREE{
+class TokenTree{
     private:
-        struct NODE{
-            byte        Char; // The character at the current depth
-            TOKEN::TYPE Type; // Unknown => this is not a valid entry
+        struct Node{
+            byte        character; // The character at the current depth
+            Token::Type type;      // Unknown => this is not a valid entry
 
-            NODE* Left;
-            NODE* Right;
+            Node* left;
+            Node* right;
 
-            NODE* Next; // Sub-tree of the next character
+            Node* next; // Sub-tree of the next character
 
-            NODE(byte Char);
-          ~NODE();
+            Node(byte chararter);
+           ~Node();
         };
 
-        NODE* Root;
+        Node* root;
 
-        NODE* Insert(NODE* Root, const byte* Pattern, TOKEN::TYPE Type);
+        Node* insert(Node* root, const byte* pattern, Token::Type type);
 
         // Balancing functions
-        NODE* Balance   (NODE* Root);
-        NODE* Compress  (NODE* Root, int Count);
-        void  SubBalance(NODE* Node);
+        Node* balance   (Node* root);
+        Node* compress  (Node* root, int count);
+        void  subBalance(Node* node);
 
     public:
-        TOKEN_TREE();
-      ~TOKEN_TREE();
+        TokenTree();
+       ~TokenTree();
 
         // Insert all the items, then balance it once.  Do not add more items after.
-        void Insert (const char* Pattern, TOKEN::TYPE Type);
-        void Balance();
+        void insert (const char* pattern, Token::Type type);
+        void balance();
 
         // Finds the longest match and returns the token type and character count
-        TOKEN::TYPE Match(const byte* Pattern, int* Count);
+        Token::Type match(const byte* pattern, int* count);
 
         // Finds an exact match only
-        TOKEN::TYPE Find(const byte* Pattern);
+        Token::Type find(const byte* pattern);
 };
 //------------------------------------------------------------------------------
 

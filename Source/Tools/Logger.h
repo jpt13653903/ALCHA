@@ -31,27 +31,27 @@
 #include <string>
 //------------------------------------------------------------------------------
 
-class LOGGER{
+class Logger{
     private:
-        FILE* File;
+        FILE* file;
 
     public:
-        LOGGER(const char* Filename);
-      ~LOGGER();
+        Logger(const char* filename);
+       ~Logger();
 
-        void Indent(int Level);
+        void indent(int level);
 
-        void Print(const char*        String);
-        void Print(const std::string& String);
-        void Print(const char* Format, int i);
-        void Print(const char* Format, double d);
-        void Print(const char* Format, unsigned u);
-        void Print(const char* Format, const char* s);
-        void Print(const char* Format, const std::string& s);
+        void print(const char*        message);
+        void print(const std::string& message);
+        void print(const char* format, int i);
+        void print(const char* format, double d);
+        void print(const char* format, unsigned u);
+        void print(const char* format, const char* s);
+        void print(const char* format, const std::string& s);
 };
 //------------------------------------------------------------------------------
 
-extern LOGGER Debug;
+extern Logger debug;
 //------------------------------------------------------------------------------
 
 #endif

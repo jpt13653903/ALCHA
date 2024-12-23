@@ -21,126 +21,125 @@
 #include "Range.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-RANGE::RANGE(int Line, const string& Filename): RANGE(Line, Filename.c_str())
-{}
+Range::Range(int line, const string& filename): Range(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-RANGE::RANGE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Range)
+Range::Range(int line, const char* filename): Expression(line, filename, Type::Range)
 {
-    Step = 0;
+    step = 0;
 }
 //------------------------------------------------------------------------------
 
-RANGE::~RANGE()
+Range::~Range()
 {
-    if(Step) delete Step;
+    if(step) delete step;
 }
 //------------------------------------------------------------------------------
 
-BASE* RANGE::Copy()
+Base* Range::copy()
 {
-    RANGE* Copy = new RANGE(Source.Line, Source.Filename.c_str());
+    Range* copy = new Range(source.line, source.filename.c_str());
 
-    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-    if(Right) Copy->Right = (decltype(Right))Right->Copy();
-    if(Step ) Copy->Step  = (decltype(Step ))Step ->Copy();
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+    if(step ) copy->step  = (decltype(step ))step ->copy();
 
-    return Copy;
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-bool RANGE::GetVerilog(string& Body)
+bool Range::getVerilog(string& body)
 {
     error("Not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* RANGE::Evaluate()
+Expression* Range::evaluate()
 {
     error("Not yet implemented");
     return this;
-//   EXPRESSION* Result = 0;
+//   Expression* result = 0;
 //
 //   error("Not yet implemented");
 //
-//   if(!Result) return 0;
-//   return Result->Simplify(false);
+//   if(!result) return 0;
+//   return result->simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int RANGE::GetWidth()
+int Range::getWidth()
 {
     error("Not yet implemented");
     return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& RANGE::GetFullScale()
+Number& Range::getFullScale()
 {
     error("Not yet implemented");
-    static NUMBER zero = 0;
+    static Number zero = 0;
     return zero;
 }
 //------------------------------------------------------------------------------
 
-bool RANGE::GetSigned()
+bool Range::getSigned()
 {
     error("Not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-bool RANGE::HasCircularReference(NETLIST::BASE* Object)
+bool Range::hasCircularReference(Netlist::Base* object)
 {
     error("Not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-void RANGE::PopulateUsed()
+void Range::populateUsed()
 {
     error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* RANGE::RemoveTempNet(int Width, bool Signed)
+Expression* Range::removeTempNet(int width, bool isSigned)
 {
     error("Not yet implemented");
     return this;
 }
 //------------------------------------------------------------------------------
 
-void RANGE::Display()
+void Range::display()
 {
-    DisplayStart();
+    displayStart();
 
-    Debug.Print("..");
+    debug.print("..");
 
-    DisplayEnd();
+    displayEnd();
 
-    if(Step){
-        Debug.Print(":");
-        if(Step->Left || Step->Right) Debug.Print("(");
-        Step->Display();
-        if(Step->Left || Step->Right) Debug.Print(")");
+    if(step){
+        debug.print(":");
+        if(step->left || step->right) debug.print("(");
+        step->display();
+        if(step->left || step->right) debug.print(")");
     }
 }
 //------------------------------------------------------------------------------
 
-void RANGE::ValidateMembers()
+void Range::validateMembers()
 {
-    assert(Type == TYPE::Range);
+    assert(type == Type::Range);
 
-    assert(!Next);
-    assert(!Prev);
+    assert(!next);
+    assert(!prev);
 
-    // TODO: assert(!Left );
-    // TODO: assert(!Right);
+    // TODO: assert(!left );
+    // TODO: assert(!right);
 
     error("Not yet implemented");
 }

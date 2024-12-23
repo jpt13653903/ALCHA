@@ -38,36 +38,36 @@
 #include "Netlist/Namespace.h"
 //------------------------------------------------------------------------------
 
-namespace ALTERA{
-    class PROJECT{
+namespace Altera{
+    class Project{
         private:
-            std::string Path;
-            std::string Filename;
+            std::string path;
+            std::string filename;
 
-            std::string Time;
-            std::string Device;
-            std::string Series;
+            std::string time;
+            std::string device;
+            std::string series;
 
-            void Error  (const char* Message = 0);
-            void Warning(const char* Message = 0);
+            void printError  (const char* message = 0);
+            void printWarning(const char* message = 0);
 
-            bool WriteFile(std::string& Filename, const char* Ext, std::string& Body);
+            bool writeFile(std::string& filename, const char* ext, std::string& body);
 
-            void BuildFileList(std::string& Body, NETLIST::MODULE   * Module, std::string Path);
-            void AssignPin    (std::string& Body, const std::string& Location, const std::string& Name);
-            bool BuildPins    (std::string& Body, NETLIST::NAMESPACE* Namespace);
+            void buildFileList(std::string& body, Netlist::Module   * module, std::string path);
+            void assignPin    (std::string& body, const std::string& location, const std::string& name);
+            bool buildPins    (std::string& body, Netlist::NameSpace* nameSpace);
 
-            bool BuildProject          ();
-            bool BuildSettings         ();
-            bool BuildPins             ();
-            bool BuildDesignConstraints();
-            bool BuildConfigChain      ();
+            bool buildProject          ();
+            bool buildSettings         ();
+            bool buildPins             ();
+            bool buildDesignConstraints();
+            bool buildConfigChain      ();
 
         public:
-            PROJECT();
-          ~PROJECT();
+            Project();
+           ~Project();
 
-            bool Build(const char* Path, const char* Filename);
+            bool build(const char* path, const char* filename);
     };
 }
 //------------------------------------------------------------------------------

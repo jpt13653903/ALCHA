@@ -28,15 +28,15 @@
 #include "General.h"
 //------------------------------------------------------------------------------
 
-void Error  (int Line, const std::string& Filename, const char* Message = 0);
-void Warning(int Line, const std::string& Filename, const char* Message = 0);
+void printError  (int line, const std::string& filename, const char* message = 0);
+void printWarning(int line, const std::string& filename, const char* message = 0);
 
 // Replaces "path/../" patterns with "/".
 // In Windows, '\' is also an accepted path specifier.
-void SimplifyFilename(std::string& Filename);
+void simplifyFilename(std::string& filename);
 
 // Adds spaces so that the "cursor" is at the specified column
-void Align(std::string& Body, int Column);
+void align(std::string& body, int column);
 //------------------------------------------------------------------------------
 
 #endif

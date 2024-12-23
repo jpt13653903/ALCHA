@@ -21,75 +21,75 @@
 #include "Attribute.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
-using namespace NETLIST;
+using std::string;
+using namespace Netlist;
 //------------------------------------------------------------------------------
 
-ATTRIBUTE::ATTRIBUTE(int Line, const string& Filename, const char* Name):
-BASE(Line, Filename, Name, TYPE::Attribute)
+Attribute::Attribute(int line, const string& filename, const char* name):
+Base(line, filename, name, Type::Attribute)
 {
-    Value = 0;
+    value = 0;
 }
 //------------------------------------------------------------------------------
 
-ATTRIBUTE::~ATTRIBUTE()
+Attribute::~Attribute()
 {
-    if(Value) delete Value;
+    if(value) delete value;
 }
 //------------------------------------------------------------------------------
 
-AST::EXPRESSION* ATTRIBUTE::GetExpression(int Line, const string& Filename)
+AST::Expression* Attribute::getExpression(int line, const string& filename)
 {
-    if(Value) return (AST::EXPRESSION*)Value->Copy();
-    ::Error(Line, Filename, "Operate-assign on empty object");
+    if(value) return (AST::Expression*)value->copy();
+    ::printError(line, filename, "Operate-assign on empty object");
     return 0;
 }
 //------------------------------------------------------------------------------
 
-bool ATTRIBUTE::Assign(AST::EXPRESSION* Expression)
+bool Attribute::assign(AST::Expression* expression)
 {
-    return RawAssign(Expression);
+    return rawAssign(expression);
 }
 //------------------------------------------------------------------------------
 
-bool ATTRIBUTE::RawAssign(AST::EXPRESSION* Expression)
+bool Attribute::rawAssign(AST::Expression* expression)
 {
-    if(Value){
-        Expression->Warning();
-        printf("Overwriting attribute %s\n", Name.c_str());
-        delete Value;
+    if(value){
+        expression->printWarning();
+        printf("Overwriting attribute %s\n", name.c_str());
+        delete value;
     }
-    Value = Expression;
+    value = expression;
     return true;
 }
 //------------------------------------------------------------------------------
 
-bool ATTRIBUTE::HasCircularReference(BASE* Object)
+bool Attribute::hasCircularReference(Base* object)
 {
-    if(this == Object) return true;
+    if(this == object) return true;
     error("Not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-void ATTRIBUTE::Display(int Indent)
+void Attribute::display(int indent)
 {
-    Debug.Indent(Indent);
-    Debug.Print(Name);
-    Debug.Print(" = ");
-    if(Value) Value->Display();
-    else      Debug.Print("{null}");
-    Debug.Print("\n");
+    debug.indent(indent);
+    debug.print(name);
+    debug.print(" = ");
+    if(value) value->display();
+    else      debug.print("{null}");
+    debug.print("\n");
 }
 //------------------------------------------------------------------------------
 
-void ATTRIBUTE::Validate()
+void Attribute::validate()
 {
-    assert(Type == TYPE::Attribute);
+    assert(type == Type::Attribute);
 
-    assert(Attributes.size() == 0);
+    assert(attributes.size() == 0);
 
-    BASE::Validate();
+    Base::validate();
 }
 //------------------------------------------------------------------------------
 

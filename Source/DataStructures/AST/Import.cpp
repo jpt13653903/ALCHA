@@ -19,110 +19,109 @@
 //==============================================================================
 
 #include "Import.h"
-#include "Engine.h"
-#include "Netlist/Namespace/Module.h"
+#include "engine.h"
+#include "Netlist/nameSpace/module.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-IMPORT::IMPORT(int Line, string& Filename): IMPORT(Line, Filename.c_str())
-{}
+Import::Import(int line, string& filename): Import(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-IMPORT::IMPORT(int Line, const char* Filename): BASE(Line, Filename, TYPE::Import)
+Import::Import(int line, const char* filename): Base(line, filename, Type::Import)
 {
-    Ast = 0;
+    ast = 0;
 }
 //------------------------------------------------------------------------------
 
-IMPORT::~IMPORT()
+Import::~Import()
 {
-    if(Ast) delete Ast;
+    if(ast) delete ast;
 }
 //------------------------------------------------------------------------------
 
-BASE* IMPORT::Copy()
+Base* Import::copy()
 {
-    IMPORT* Copy = new IMPORT(Source.Line, Source.Filename.c_str());
+    Import* copy = new Import(source.line, source.filename.c_str());
 
-    Copy->File      = File;
-    Copy->Namespace = Namespace;
+    copy->file      = file;
+    copy->nameSpace = nameSpace;
 
-    return Copy;
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-bool IMPORT::RunAST()
+bool Import::runAST()
 {
-    string ImportFilename;
-    bool   OwnNamespace = !Namespace.empty();
+    string importFilename;
+    bool   ownNameSpace = !nameSpace.empty();
 
-    NETLIST::MODULE* Module = 0;
+    Netlist::Module* module = 0;
 
-    if(OwnNamespace){
-        auto Found = NETLIST::NamespaceStack.front()->Symbols.find(Namespace);
-        if(Found != NETLIST::NamespaceStack.front()->Symbols.end()){
-            Error();
+    if(ownNameSpace){
+        auto found = Netlist::nameSpaceStack.front()->symbols.find(nameSpace);
+        if(found != Netlist::nameSpaceStack.front()->symbols.end()){
+            printError();
             printf("Symbol \"%s\" already exists in the current namespace\n",
-                          Namespace.c_str());
+                          nameSpace.c_str());
             return false;
         }
-        Module = new NETLIST::MODULE(Source.Line, Source.Filename, Namespace.c_str());
-        NETLIST::NamespaceStack.front()->Symbols[Namespace] = Module;
-        NETLIST::NamespaceStack.push_front(Module);
+        module = new Netlist::Module(source.line, source.filename, nameSpace.c_str());
+        Netlist::nameSpaceStack.front()->symbols[nameSpace] = module;
+        Netlist::nameSpaceStack.push_front(module);
     }
 
-    string& Path = Source.Filename;
+    string& path = source.filename;
     int n;
-    for(n = Path.length()-1; n >= 0; n--){
-        if(Path[n] == '/') break;
+    for(n = path.length()-1; n >= 0; n--){
+        if(path[n] == '/') break;
     }
-    if(n >= 0) ImportFilename = Path.substr(0, n+1);
-    ImportFilename += File;
-    ImportFilename += ".alc";
-    SimplifyFilename(ImportFilename);
-    Debug.Print("\nFilename = %s\n", ImportFilename);
+    if(n >= 0) importFilename = path.substr(0, n+1);
+    importFilename += file;
+    importFilename += ".alc";
+    simplifyFilename(importFilename);
+    debug.print("\nFilename = %s\n", importFilename);
 
-    auto Ast = Engine->RunAST(ImportFilename.c_str());
-    if(!Ast) return false;
+    auto ast = engine->runAST(importFilename.c_str());
+    if(!ast) return false;
 
-    if(OwnNamespace){
-        Module->Ast = Ast;
-        NETLIST::NamespaceStack.pop_front();
+    if(ownNameSpace){
+        module->ast = ast;
+        Netlist::nameSpaceStack.pop_front();
 
     }else{
-        this->Ast = Ast;
+        this->ast = ast;
     }
     return true;
 }
 //------------------------------------------------------------------------------
 
-bool IMPORT::GetVerilog(string& Body)
+bool Import::getVerilog(string& body)
 {
     error("Not yet implemented");
     return false;
 }
 //------------------------------------------------------------------------------
 
-void IMPORT::Display()
+void Import::display()
 {
-    DisplayInfo();
-    Debug.Print("import \"%s\"", File.c_str());
-    if(Namespace.empty()) Debug.Print("\n");
-    else                  Debug.Print(" as %s\n", Namespace.c_str());
+    displayInfo();
+    debug.print("import \"%s\"", file.c_str());
+    if(nameSpace.empty()) debug.print("\n");
+    else                  debug.print(" as %s\n", nameSpace.c_str());
 
-    if(Ast ) Ast ->Display();
-    if(Next) Next->Display();
+    if(ast ) ast ->display();
+    if(next) next->display();
 }
 //------------------------------------------------------------------------------
 
-void IMPORT::ValidateMembers()
+void Import::validateMembers()
 {
-    assert(Type == TYPE::Import);
+    assert(type == Type::Import);
 
-    if(Ast) Ast->Validate();
+    if(ast) ast->validate();
 }
 //------------------------------------------------------------------------------
 

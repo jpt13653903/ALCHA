@@ -19,200 +19,196 @@
 //==============================================================================
 
 #include "Project.h"
-#include "Netlist/Synthesisable/Pin.h"
+#include "Netlist/Synthesisable/pin.h"
 //------------------------------------------------------------------------------
 
 using std::string;
 using std::to_string;
-using namespace ALTERA;
-using namespace NETLIST;
+using namespace Altera;
+using namespace Netlist;
 //------------------------------------------------------------------------------
 
-PROJECT::PROJECT()
+Project::Project(){}
+//------------------------------------------------------------------------------
+
+Project::~Project(){}
+//------------------------------------------------------------------------------
+
+void Project::printError(const char* message)
 {
+    ::printError(0, "", message);
 }
 //------------------------------------------------------------------------------
 
-PROJECT::~PROJECT()
+void Project::printWarning(const char* message)
 {
+    ::printWarning(0, "", message);
 }
 //------------------------------------------------------------------------------
 
-void PROJECT::Error(const char* Message)
+bool Project::writeFile(string& filename, const char* ext, string& body)
 {
-    ::Error(0, "", Message);
+    FileWrapper files;
+    string fullname = path + "/" + filename + "." + ext;
+    return files.writeAll(fullname.c_str(), (const byte*)body.c_str());
 }
 //------------------------------------------------------------------------------
 
-void PROJECT::Warning(const char* Message)
+void Project::buildFileList(string& body, Module* module, string path)
 {
-    ::Warning(0, "", Message);
-}
-//------------------------------------------------------------------------------
+    bool isGlobal = (module == &global);
 
-bool PROJECT::WriteFile(string& Filename, const char* Ext, string& Body)
-{
-    FileWrapper Files;
-    string Fullname = Path + "/" + Filename + "." + Ext;
-    return Files.writeAll(Fullname.c_str(), (const byte*)Body.c_str());
-}
-//------------------------------------------------------------------------------
-
-void PROJECT::BuildFileList(string& Body, MODULE* Module, string Path)
-{
-    bool isGlobal = (Module == &Global);
-
-    foreach(SymbolIterator, Module->Symbols){
-        auto Symbol = SymbolIterator->second;
-        if(Symbol->Type == BASE::TYPE::Module){
-            auto Child = (MODULE*)Symbol;
-            if(isGlobal) BuildFileList(Body, Child, "source");
-            else         BuildFileList(Body, Child, Path + "/" + Module->HDL_Name());
+    for(auto symbolIterator: module->symbols){
+        auto symbol = symbolIterator.second;
+        if(symbol->type == Base::Type::Module){
+            auto child = (Module*)symbol;
+            if(isGlobal) buildFileList(body, child, "source");
+            else         buildFileList(body, child, path + "/" + module->hdlName());
         }
     }
     if(isGlobal){
-        Body += "set_global_assignment -name VERILOG_FILE \""+ Filename +".v\"\n";
+        body += "set_global_assignment -name VERILOG_FILE \""+ filename +".v\"\n";
     }else{
-        Body += "set_global_assignment -name VERILOG_FILE \"" +
-                        Path + "/" + Module->Name +".v\"\n";
+        body += "set_global_assignment -name VERILOG_FILE \"" +
+                        path + "/" + module->name +".v\"\n";
     }
 }
 //------------------------------------------------------------------------------
 
-void PROJECT::AssignPin(string& Body, const string& Location, const string& Name)
+void Project::assignPin(string& body, const string& location, const string& name)
 {
     string P, N;
-    bool Diff = false;
+    bool diff = false;
 
-    for(size_t n = 0; n < Location.length(); n++){
-        switch(Location[n]){
+    for(size_t n = 0; n < location.length(); n++){
+        switch(location[n]){
             case ' ':
             case '\t':
                 break;
             case '-':
-                Diff = true;
+                diff = true;
                 break;
             default:
-                if(Diff) N += Location[n];
-                else     P += Location[n];
+                if(diff) N += location[n];
+                else     P += location[n];
                 break;
         }
     }
-    Body += "set_location_assignment PIN_"+ P + " -to "+ Name +"\n";
-    if(Diff){
-        Body += "set_location_assignment PIN_"+ N + " -to "+ Name +"(n)\n";
+    body += "set_location_assignment PIN_"+ P + " -to "+ name +"\n";
+    if(diff){
+        body += "set_location_assignment PIN_"+ N + " -to "+ name +"(n)\n";
     }
 }
 //------------------------------------------------------------------------------
 
-bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace)
+bool Project::buildPins(string& body, NameSpace* nameSpace)
 {
-    foreach(SymbolIterator, Namespace->Symbols){
-        switch(SymbolIterator->second->Type){
-            case BASE::TYPE::Pin:{
-                auto Pin = (PIN*)(SymbolIterator->second);
-                auto Standard = Pin->GetAttribValue("standard");
-                if(Standard){
-                    if(Standard->Type != AST::BASE::TYPE::String){
-                        Standard->Error("Standard attribute not a string");
+    for(auto symbolIterator: nameSpace->symbols){
+        switch(symbolIterator.second->type){
+            case Base::Type::Pin:{
+                auto pin = (Pin*)(symbolIterator.second);
+                auto standard = pin->getAttribValue("standard");
+                if(standard){
+                    if(standard->type != AST::Base::Type::String){
+                        standard->printError("standard attribute not a string");
                         return false;
                     }
-                    Body += "set_instance_assignment -name "
-                                    "IO_STANDARD \""+ ((AST::STRING*)Standard)->Value +"\" -to "+ Pin->HDL_Name();
-                    if(Pin->Width() > 1) Body += "[*]";
-                    Body += "\n";
+                    body += "set_instance_assignment -name "
+                                    "IO_STANDARD \""+ ((AST::String*)standard)->value +"\" -to "+ pin->hdlName();
+                    if(pin->width() > 1) body += "[*]";
+                    body += "\n";
                 }
-                auto Location = Pin->GetAttribValue("location");
-                if(Location){
-                    if(Pin->Width() == 1){
-                        if(Location->Type != AST::BASE::TYPE::String){
-                            Location->Error("Scalar pin location not a string");
+                auto location = pin->getAttribValue("location");
+                if(location){
+                    if(pin->width() == 1){
+                        if(location->type != AST::Base::Type::String){
+                            location->printError("Scalar pin location not a string");
                             return false;
                         }
-                        AssignPin(Body, ((AST::STRING*)Location)->Value, Pin->HDL_Name());
+                        assignPin(body, ((AST::String*)location)->value, pin->hdlName());
                     }else{
-                        if(Location->Type != AST::BASE::TYPE::Array){
-                            Location->Error("Vector pin location not an array");
+                        if(location->type != AST::Base::Type::Array){
+                            location->printError("Vector pin location not an array");
                             return false;
                         }
-                        auto LocationArray = (AST::ARRAY*)Location;
-                        if(LocationArray->Elements.size() != (size_t)Pin->Width()){
-                            LocationArray->Error("Vector pin location array of wrong size");
+                        auto locationArray = (AST::Array*)location;
+                        if(locationArray->elements.size() != (size_t)pin->width()){
+                            locationArray->printError("Vector pin location array of wrong size");
                             return false;
                         }
-                        for(int n = 0; n < Pin->Width(); n++){
-                            AST::BASE* Temp = LocationArray->Elements[n];
-                            assert(Temp && Temp->IsExpression(), return false);
-                            AST::EXPRESSION* Element = (AST::EXPRESSION*)Temp;
-                            if(Element->Type != AST::BASE::TYPE::String){
-                                Element->Error("Pin location not a string");
+                        for(int n = 0; n < pin->width(); n++){
+                            AST::Base* temp = locationArray->elements[n];
+                            assert(temp && temp->isExpression(), return false);
+                            AST::Expression* element = (AST::Expression*)temp;
+                            if(element->type != AST::Base::Type::String){
+                                element->printError("pin location not a string");
                                 return false;
                             }
-                            AssignPin(Body, ((AST::STRING*)Element)->Value,
-                                                Pin->HDL_Name() +"["+ to_string(Pin->Width()-1-n) +"]");
+                            assignPin(body, ((AST::String*)element)->value,
+                                                pin->hdlName() +"["+ to_string(pin->width()-1-n) +"]");
                         }
                     }
                 }else{
-                    Pin->Warning();
-                    printf("Creating virtual pin %s\n", Pin->HDL_Name().c_str());
-                    Body += "set_instance_assignment "
-                                    "-name VIRTUAL_PIN ON -to "+ Pin->HDL_Name();
-                    if(Pin->Width() > 1) Body += "[*]";
-                    Body += "\n";
+                    pin->printWarning();
+                    printf("Creating virtual pin %s\n", pin->hdlName().c_str());
+                    body += "set_instance_assignment "
+                                    "-name VIRTUAL_PIN ON -to "+ pin->hdlName();
+                    if(pin->width() > 1) body += "[*]";
+                    body += "\n";
                 }
-                auto Current = Pin->GetAttribValue("current");
-                if(Current){
-                    Body += "set_instance_assignment "
+                auto current = pin->getAttribValue("current");
+                if(current){
+                    body += "set_instance_assignment "
                                     "-name CURRENT_STRENGTH_NEW ";
-                    switch(Current->Type){
-                        case AST::BASE::TYPE::Literal:{
-                            if(!((AST::LITERAL*)Current)->Value.IsReal()){
-                                Current->Error("Current attribute not real");
+                    switch(current->type){
+                        case AST::Base::Type::Literal:{
+                            if(!((AST::Literal*)current)->value.isReal()){
+                                current->printError("current attribute not real");
                                 return false;
                             }
-                            NUMBER mA = ((AST::LITERAL*)Current)->Value;
-                            mA.Mul(1e3);
-                            Body += to_string((int)mA.GetReal()) + "MA";
+                            Number mA = ((AST::Literal*)current)->value;
+                            mA.mul(1e3);
+                            body += to_string((int)mA.getReal()) + "MA";
                             break;
                         }
-                        case AST::BASE::TYPE::String:
-                            Body += '"' + ((AST::STRING*)Current)->Value + '"';
+                        case AST::Base::Type::String:
+                            body += '"' + ((AST::String*)current)->value + '"';
                             break;
                         default:
                             // TODO Need to also handle arrays (for vector types) correctly
-                            Current->Error("Unexpected current strength attribute type");
+                            current->printError("Unexpected current strength attribute type");
                             break;
                     }
-                    Body += " -to "+ Pin->HDL_Name();
-                    if(Pin->Width() > 1) Body += "[*]";
-                    Body += "\n";
+                    body += " -to "+ pin->hdlName();
+                    if(pin->width() > 1) body += "[*]";
+                    body += "\n";
                 }
-                auto WeakPullup = Pin->GetAttribValue("pullup");
-                if(WeakPullup){
-                    Body += "set_instance_assignment "
+                auto weakPullup = pin->getAttribValue("pullup");
+                if(weakPullup){
+                    body += "set_instance_assignment "
                                     "-name WEAK_PULL_UP_RESISTOR ";
-                    switch(WeakPullup->Type){
-                        case AST::BASE::TYPE::Literal:{
-                            if(((AST::LITERAL*)WeakPullup)->Value == true) Body += "ON";
-                            else                                           Body += "OFF";
+                    switch(weakPullup->type){
+                        case AST::Base::Type::Literal:{
+                            if(((AST::Literal*)weakPullup)->value == true) body += "ON";
+                            else                                           body += "OFF";
                             break;
                         }
-                        case AST::BASE::TYPE::String:
-                            Body += '"' + ((AST::STRING*)WeakPullup)->Value + '"';
+                        case AST::Base::Type::String:
+                            body += '"' + ((AST::String*)weakPullup)->value + '"';
                             break;
                         default:
                             // TODO Need to also handle arrays (for vector types) correctly
-                            WeakPullup->Error("Unexpected current strength attribute type");
+                            weakPullup->printError("Unexpected current strength attribute type");
                             break;
                     }
-                    Body += " -to "+ Pin->HDL_Name();
-                    if(Pin->Width() > 1) Body += "[*]";
-                    Body += "\n";
+                    body += " -to "+ pin->hdlName();
+                    if(pin->width() > 1) body += "[*]";
+                    body += "\n";
                 }
                 break;
             }
-            case BASE::TYPE::Group:{
-                BuildPins(Body, (NAMESPACE*)SymbolIterator->second);
+            case Base::Type::Group:{
+                buildPins(body, (NameSpace*)symbolIterator.second);
                 break;
             }
             default:
@@ -223,11 +219,11 @@ bool PROJECT::BuildPins(string& Body, NAMESPACE* Namespace)
 }
 //------------------------------------------------------------------------------
 
-bool PROJECT::BuildProject()
+bool Project::buildProject()
 {
-    string Body;
+    string body;
 
-    Body +=
+    body +=
         "#-------------------------------------------------------------------------------\n"
         "#\n"
         "# Generated by ALCHA version " +
@@ -237,22 +233,22 @@ bool PROJECT::BuildProject()
         "#\n"
         "# Quartus II 64-Bit\n"
         "# Version 19.1\n"
-        "# Date created = "+ Time +"\n"
+        "# Date created = "+ time +"\n"
         "#-------------------------------------------------------------------------------\n"
         "\n"
         "QUARTUS_VERSION  = \"19.1\"\n"
-        "DATE             = \""+ Time +"\"\n"
-        "PROJECT_REVISION = \""+ Filename +"\"\n";
+        "DATE             = \""+ time +"\"\n"
+        "PROJECT_REVISION = \""+ filename +"\"\n";
 
-    return WriteFile(Filename, "qpf", Body);
+    return writeFile(filename, "qpf", body);
 }
 //------------------------------------------------------------------------------
 
-bool PROJECT::BuildSettings()
+bool Project::buildSettings()
 {
-    string Body;
+    string body;
 
-    Body += // Header
+    body += // Header
         "#-------------------------------------------------------------------------------\n"
         "#\n"
         "# Generated by ALCHA version " +
@@ -262,15 +258,15 @@ bool PROJECT::BuildSettings()
         "#\n"
         "# Quartus II 64-Bit\n"
         "# Version 19.1\n"
-        "# Date created = "+ Time +"\n"
+        "# Date created = "+ time +"\n"
         "#-------------------------------------------------------------------------------\n"
         "\n";
 
-    Body += // General settings
-        "set_global_assignment -name FAMILY \""+ Series +"\"\n"
-        "set_global_assignment -name DEVICE "+ Device +"\n"
-        "set_global_assignment -name TOP_LEVEL_ENTITY "+ Filename +"\n"
-        "set_global_assignment -name PROJECT_CREATION_TIME_DATE \""+ Time +"\"\n"
+    body += // General settings
+        "set_global_assignment -name FAMILY \""+ series +"\"\n"
+        "set_global_assignment -name DEVICE "+ device +"\n"
+        "set_global_assignment -name TOP_LEVEL_ENTITY "+ filename +"\n"
+        "set_global_assignment -name PROJECT_CREATION_TIME_DATE \""+ time +"\"\n"
         "set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files\n"
         "set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top\n"
         "set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top\n"
@@ -279,49 +275,49 @@ bool PROJECT::BuildSettings()
         "#-------------------------------------------------------------------------------\n"
         "\n";
 
-    auto Standard = Global.GetAttribValue("standard");
-    Body += "set_global_assignment -name STRATIX_DEVICE_IO_STANDARD ";
-    if(Standard){
-        if(Standard->Type != AST::BASE::TYPE::String){
-            Standard->Error("Standard attribute not a string");
+    auto standard = global.getAttribValue("standard");
+    body += "set_global_assignment -name STRATIX_DEVICE_IO_STANDARD ";
+    if(standard){
+        if(standard->type != AST::Base::Type::String){
+            standard->printError("standard attribute not a string");
             return false;
         }
-        Body += "\""+ ((AST::STRING*)Standard)->Value +"\"\n\n";
+        body += "\""+ ((AST::String*)standard)->value +"\"\n\n";
     }else{
-        Body += "\"3.3-V LVCMOS\"\n\n";
+        body += "\"3.3-V LVCMOS\"\n\n";
     }
 
-    Body += "source \""+ Filename +".pin\"\n";
-    Body +=
+    body += "source \""+ filename +".pin\"\n";
+    body +=
         "#-------------------------------------------------------------------------------\n"
         "\n";
 
-    // Body += // TODO - Location attributes
+    // body += // TODO - location attributes
         // "set_location_assignment PLL_1 -to \"altpll:PLL\"\n"
 
-    // Body += // TODO - HDL construct dependency list
+    // body += // TODO - HDL construct dependency list
         //"set_global_assignment -name QIP_FILE Qsys/ADC/synthesis/ADC.qip\n"
 
     // File list
-    BuildFileList(Body, &Global, "");
+    buildFileList(body, &global, "");
 
-    Body += // Tail end
+    body += // Tail end
         "\n"
-        "set_global_assignment -name SDC_FILE \""+ Filename +".sdc\"\n"
-        "set_global_assignment -name CDF_FILE \""+ Filename +".cdf\"\n"
+        "set_global_assignment -name SDC_FILE \""+ filename +".sdc\"\n"
+        "set_global_assignment -name CDF_FILE \""+ filename +".cdf\"\n"
         "#-------------------------------------------------------------------------------\n"
         "\n"
         "set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top\n";
 
-    return WriteFile(Filename, "qsf", Body);
+    return writeFile(filename, "qsf", body);
 }
 //------------------------------------------------------------------------------
 
-bool PROJECT::BuildPins()
+bool Project::buildPins()
 {
-    string Body;
+    string body;
 
-    Body += // Header
+    body += // Header
         "#-------------------------------------------------------------------------------\n"
         "#\n"
         "# Generated by ALCHA version " +
@@ -331,39 +327,39 @@ bool PROJECT::BuildPins()
         "#\n"
         "# Quartus II 64-Bit\n"
         "# Version 19.1\n"
-        "# Date created = "+ Time +"\n"
+        "# Date created = "+ time +"\n"
         "#-------------------------------------------------------------------------------\n"
         "\n";
 
-    if(!BuildPins(Body, &Global)) return false;
-    Body +=
+    if(!buildPins(body, &global)) return false;
+    body +=
         "#-------------------------------------------------------------------------------\n"
         "\n";
 
-    return WriteFile(Filename, "pin", Body);
+    return writeFile(filename, "pin", body);
 }
 //------------------------------------------------------------------------------
 
-bool PROJECT::BuildDesignConstraints()
+bool Project::buildDesignConstraints()
 {
-    SDC Constraints;
+    SDC constraints;
 
-    return WriteFile(Filename, "sdc", Constraints.Build());
+    return writeFile(filename, "sdc", constraints.build());
 }
 //------------------------------------------------------------------------------
 
-bool PROJECT::BuildConfigChain()
+bool Project::buildConfigChain()
 {
-    string Body;
+    string body;
 
-    Body =
+    body =
         "JedecChain;\n"
         "\tFileRevision(JESD32A);\n"
         "\tDefaultMfr(6E);\n"
         "\n"
         "\tP ActionCode(Cfg)\n"
-        "\t\tDevice PartName("+ Device +") "
-        "Path(\"output_files/\") " "File(\""+ Filename +".sof\") " "MfrSpec(OpMask(1));\n"
+        "\t\tDevice PartName("+ device +") "
+        "path(\"output_files/\") " "File(\""+ filename +".sof\") " "MfrSpec(OpMask(1));\n"
         "\n"
         "ChainEnd;\n"
         "\n"
@@ -371,48 +367,48 @@ bool PROJECT::BuildConfigChain()
         "\tChainType(JTAG);\n"
         "AlteraEnd\n";
 
-    return WriteFile(Filename, "cdf", Body);
+    return writeFile(filename, "cdf", body);
 }
 //------------------------------------------------------------------------------
 
-bool PROJECT::Build(const char* Path, const char* Filename)
+bool Project::build(const char* path, const char* filename)
 {
-    this->Path     = Path;
-    this->Filename = Filename;
+    this->path     = path;
+    this->filename = filename;
 
-    char   Time[0x100];
-    time_t RawTime;
-    time(&RawTime);
-    strftime(Time, 0x100, "%H:%M:%S  %B %d, %Y", localtime(&RawTime));
-    this->Time = Time;
+    char   _time[0x100];
+    time_t rawTime;
+    ::time(&rawTime);
+    strftime(_time, 0x100, "%H:%M:%S  %B %d, %Y", localtime(&rawTime));
+    this->time = _time;
 
-    auto Device = Global.GetAttribValue("target_device");
-    if(!Device){
-        Error("Global attribute \"target_device\" not defined");
+    auto device = global.getAttribValue("target_device");
+    if(!device){
+        printError("global attribute \"target_device\" not defined");
         return false;
     }
-    if(Device->Type != AST::BASE::TYPE::String){
-        Device->Error("Global attribute \"target_device\" not a string");
+    if(device->type != AST::Base::Type::String){
+        device->printError("global attribute \"target_device\" not a string");
         return false;
     }
-    this->Device = ((AST::STRING*)Device)->Value;
+    this->device = ((AST::String*)device)->value;
 
-    auto Series = Global.GetAttribValue("target_series");
-    if(!Series){
-        Error("Global attribute \"target_series\" not defined");
+    auto series = global.getAttribValue("target_series");
+    if(!series){
+        printError("global attribute \"target_series\" not defined");
         return false;
     }
-    if(Series->Type != AST::BASE::TYPE::String){
-        Series->Error("Global attribute \"target_series\" not a string");
+    if(series->type != AST::Base::Type::String){
+        series->printError("global attribute \"target_series\" not a string");
         return false;
     }
-    this->Series = ((AST::STRING*)Series)->Value;
+    this->series = ((AST::String*)series)->value;
 
-    if(!BuildProject          ()) return false;
-    if(!BuildSettings         ()) return false;
-    if(!BuildPins             ()) return false;
-    if(!BuildDesignConstraints()) return false;
-    if(!BuildConfigChain      ()) return false;
+    if(!buildProject          ()) return false;
+    if(!buildSettings         ()) return false;
+    if(!buildPins             ()) return false;
+    if(!buildDesignConstraints()) return false;
+    if(!buildConfigChain      ()) return false;
 
     return true;
 }

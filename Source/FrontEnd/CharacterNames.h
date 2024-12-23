@@ -8,7 +8,7 @@ This list is used in the scanner to evaluate escape sequences of the form
 https://html.spec.whatwg.org/entities.json                                    */
 //------------------------------------------------------------------------------
 
-static const char* CharacterNames[] = {
+static const char* characterNames[] = {
   "AElig"                          , "\xC3\x86"                  , /* Æ */
   "AMP"                            , "\x26"                      , /* & */
   "Aacute"                         , "\xC3\x81"                  , /* Á */

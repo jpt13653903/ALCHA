@@ -26,22 +26,22 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-    struct NAMESPACE_PUSH: public BASE{
-        EXPRESSION* Namespace;
-        BASE      * Statements;
+    struct NameSpacePush: public Base{
+        Expression* nameSpace;
+        Base      * statements;
 
-        NAMESPACE_PUSH(int Line, std::string& Filename);
-        NAMESPACE_PUSH(int Line, const char*  Filename);
-      ~NAMESPACE_PUSH();
+        NameSpacePush(int line, std::string& filename);
+        NameSpacePush(int line, const char*  filename);
+       ~NameSpacePush();
 
-        BASE* Copy() override;
+        Base* copy() override;
 
-        bool RunAST() override;
-        bool GetVerilog(std::string& Body) override;
+        bool runAST() override;
+        bool getVerilog(std::string& body) override;
 
-        void Display() override;
+        void display() override;
 
-        void ValidateMembers() override;
+        void validateMembers() override;
     };
 }
 //------------------------------------------------------------------------------

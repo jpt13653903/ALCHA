@@ -26,40 +26,40 @@
 #include "AST/Definition.h"
 #include "AST/Expression.h"
 #include "Netlist/Synthesisable/PinComponent.h"
-#include "Netlist/Namespace/Module.h"
+#include "Netlist/NameSpace/Module.h"
 #include "Altera/Project.h"
 //------------------------------------------------------------------------------
 
-class BACK_END{
+class BackEnd{
     private:
-        std::string Path;
-        std::string Filename;
+        std::string path;
+        std::string filename;
 
-        void Error  (AST::EXPRESSION* Expression, const char* Message = 0);
-        void Warning(AST::EXPRESSION* Expression, const char* Message = 0);
+        void printError  (AST::Expression* expression, const char* message = 0);
+        void printWarning(AST::Expression* expression, const char* message = 0);
 
-        bool WriteFile(std::string& Filename, const char* Ext, std::string& Body);
+        bool writeFile(std::string& filename, const char* ext, std::string& body);
 
-        void RemoveTempNet(NETLIST::NET* Target);
+        void removeTempNet(Netlist::Net* target);
 
-        void RemoveTempNets     (NETLIST::NAMESPACE* Namespace);
-        void PopulateUsed       (NETLIST::NAMESPACE* Namespace);
-        bool DeleteUnused       (NETLIST::NAMESPACE* Namespace);
-        bool AssignPinDirections(NETLIST::NAMESPACE* Namespace);
-        bool RoutePorts         (NETLIST::NAMESPACE* Namespace);
+        void removeTempNets     (Netlist::NameSpace* nameSpace);
+        void populateUsed       (Netlist::NameSpace* nameSpace);
+        bool deleteUnused       (Netlist::NameSpace* nameSpace);
+        bool assignPinDirections(Netlist::NameSpace* nameSpace);
+        bool routePorts         (Netlist::NameSpace* nameSpace);
 
-        void BuildSizeDef    (std::string& Body, int Width, bool Signed);
-        bool BuildAssignments(std::string& Body, NETLIST::NAMESPACE* Namespace);
-        void BuildPorts      (std::string& Body, NETLIST::NAMESPACE* Namespace, bool& isFirst);
-        void BuildNets       (std::string& Body, NETLIST::NAMESPACE* Namespace);
+        void buildSizeDef    (std::string& body, int width, bool isSigned);
+        bool buildAssignments(std::string& body, Netlist::NameSpace* nameSpace);
+        void buildPorts      (std::string& body, Netlist::NameSpace* nameSpace, bool& isFirst);
+        void buildNets       (std::string& body, Netlist::NameSpace* nameSpace);
 
-        bool BuildHDL(NETLIST::MODULE* Module, std::string Path);
+        bool buildHDL(Netlist::Module* module, std::string path);
 
     public:
-        BACK_END();
-       ~BACK_END();
+        BackEnd();
+       ~BackEnd();
 
-        bool BuildAltera(const char* Path, const char* Filename);
+        bool buildAltera(const char* path, const char* filename);
 };
 //------------------------------------------------------------------------------
 

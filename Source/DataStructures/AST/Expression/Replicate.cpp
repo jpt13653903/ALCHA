@@ -22,151 +22,146 @@
 #include "Literal.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-REPLICATE::REPLICATE(int Line, const string& Filename): REPLICATE(Line, Filename.c_str())
-{}
+Replicate::Replicate(int line, const string& filename): Replicate(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-REPLICATE::REPLICATE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Replicate)
+Replicate::Replicate(int line, const char* filename): Expression(line, filename, Type::Replicate){}
+//------------------------------------------------------------------------------
+
+Replicate::~Replicate(){}
+//------------------------------------------------------------------------------
+
+Base* Replicate::copy()
 {
+    Replicate* copy = new Replicate(source.line, source.filename.c_str());
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-REPLICATE::~REPLICATE()
+bool Replicate::getVerilog(string& body)
 {
-}
-//------------------------------------------------------------------------------
-
-BASE* REPLICATE::Copy()
-{
-    REPLICATE* Copy = new REPLICATE(Source.Line, Source.Filename.c_str());
-
-    if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-    if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-    return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool REPLICATE::GetVerilog(string& Body)
-{
-    Body += "{(";
-    Right->GetVerilog(Body);
-    Body += "){";
-    Left->GetVerilog(Body);
-    Body += "}}";
+    body += "{(";
+    right->getVerilog(body);
+    body += "){";
+    left->getVerilog(body);
+    body += "}}";
 
     return true;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* REPLICATE::Evaluate()
+Expression* Replicate::evaluate()
 {
-    assert(Left , return this);
-    assert(Right, return this);
+    assert(left , return this);
+    assert(right, return this);
 
-    Left  = Left ->Evaluate();
-    Right = Right->Evaluate();
+    left  = left ->evaluate();
+    right = right->evaluate();
 
-    assert(Left , return this);
-    assert(Right, return this);
+    assert(left , return this);
+    assert(right, return this);
 
-    if(Right->Type != TYPE::Literal){
-        Error("Replicate number should evaluate to a literal");
+    if(right->type != Type::Literal){
+        printError("Replicate number should evaluate to a literal");
         return this;
     }
 
-    return MakeObject();
+    return makeObject();
 }
 //------------------------------------------------------------------------------
 
-int REPLICATE::GetWidth()
+int Replicate::getWidth()
 {
-    assert(Left , return 0);
-    assert(Right, return 0);
+    assert(left , return 0);
+    assert(right, return 0);
 
-    Left  = Left ->Evaluate();
-    Right = Right->Evaluate();
+    left  = left ->evaluate();
+    right = right->evaluate();
 
-    assert(Left , return 0);
-    assert(Right, return 0);
+    assert(left , return 0);
+    assert(right, return 0);
 
-    if(Right->Type != TYPE::Literal){
-        Error("Replicate number should evaluate to a literal");
+    if(right->type != Type::Literal){
+        printError("Replicate number should evaluate to a literal");
         return 0;
     }
 
-    return Left->GetWidth() * ((LITERAL*)Right)->Value.GetReal();
+    return left->getWidth() * ((Literal*)right)->value.getReal();
 }
 //------------------------------------------------------------------------------
 
-NUMBER& REPLICATE::GetFullScale()
+Number& Replicate::getFullScale()
 {
-    static NUMBER Result;
-    Result = 1;
-    Result.BinScale(GetWidth());
-    return Result;
+    static Number result;
+    result = 1;
+    result.binScale(getWidth());
+    return result;
 }
 //------------------------------------------------------------------------------
 
-bool REPLICATE::GetSigned()
+bool Replicate::getSigned()
 {
     return false;
 }
 //------------------------------------------------------------------------------
 
-bool REPLICATE::HasCircularReference(NETLIST::BASE* Object)
+bool Replicate::hasCircularReference(Netlist::Base* object)
 {
-    assert(Left , return false);
-    assert(Right, return false);
+    assert(left , return false);
+    assert(right, return false);
 
-    if(Left ->HasCircularReference(Object)) return true;
-    if(Right->HasCircularReference(Object)) return true;
+    if(left ->hasCircularReference(object)) return true;
+    if(right->hasCircularReference(object)) return true;
 
     return false;
 }
 //------------------------------------------------------------------------------
 
-void REPLICATE::PopulateUsed()
+void Replicate::populateUsed()
 {
-    assert(Left , return);
-    assert(Right, return);
+    assert(left , return);
+    assert(right, return);
 
-    Left ->PopulateUsed();
-    Right->PopulateUsed();
+    left ->populateUsed();
+    right->populateUsed();
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* REPLICATE::RemoveTempNet(int Width, bool Signed)
+Expression* Replicate::removeTempNet(int width, bool isSigned)
 {
-    if(Left ) Left  = Left ->RemoveTempNet(0, false);
-    if(Right) Right = Right->RemoveTempNet(0, false);
+    if(left ) left  = left ->removeTempNet(0, false);
+    if(right) right = right->removeTempNet(0, false);
     return this;
 }
 //------------------------------------------------------------------------------
 
-void REPLICATE::Display()
+void Replicate::display()
 {
-    DisplayStart();
+    displayStart();
 
-    Debug.Print("{rep}");
+    debug.print("{rep}");
 
-    DisplayEnd();
+    displayEnd();
 }
 //------------------------------------------------------------------------------
 
-void REPLICATE::ValidateMembers()
+void Replicate::validateMembers()
 {
-    assert(Type == TYPE::Replicate);
+    assert(type == Type::Replicate);
 
-    assert(!Next);
-    assert(!Prev);
+    assert(!next);
+    assert(!prev);
 
-    assert(Left , return); Left ->Validate();
-    assert(Right, return); Right->Validate();
+    assert(left , return); left ->validate();
+    assert(right, return); right->validate();
 }
 //------------------------------------------------------------------------------
 

@@ -23,7 +23,7 @@
 #include "BackEnd.h"
 //------------------------------------------------------------------------------
 
-void Pause()
+void pause()
 {
     printf("\nPress Enter to continue\n");
     fflush(stdout);
@@ -31,7 +31,7 @@ void Pause()
 }
 //------------------------------------------------------------------------------
 
-void PrintUsage()
+void printUsage()
 {
     printf(
         "\n"
@@ -59,7 +59,7 @@ void PrintUsage()
         "\n",
         MAJOR_VERSION, MINOR_VERSION // These are defined in the Makefile
     );
-    Pause();
+    pause();
 }
 //------------------------------------------------------------------------------
 
@@ -68,12 +68,12 @@ int main(int argc, char** argv)
     setupTerminal();
 
     if(argc < 3){
-        PrintUsage();
+        printUsage();
         return 0;
     }
 
-    ENGINE Engine;
-    if(!Engine.Run(argv[1])) return 1;
+    Engine engine;
+    if(!engine.run(argv[1])) return 1;
 
     // Remove path and extension from input filename
     int n = strlen(argv[1]);
@@ -82,8 +82,8 @@ int main(int argc, char** argv)
     while(n > 0 && argv[1][n] != '\\' && argv[1][n] != '/') n--;
     if(n > 0) argv[1] += n+1;
 
-    BACK_END BackEnd;
-    if(!BackEnd.BuildAltera(argv[2], argv[1])) return 2;
+    BackEnd backEnd;
+    if(!backEnd.buildAltera(argv[2], argv[1])) return 2;
 
     return 0;
 }

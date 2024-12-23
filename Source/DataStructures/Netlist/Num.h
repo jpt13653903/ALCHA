@@ -26,22 +26,22 @@
 #include "Number.h"
 //------------------------------------------------------------------------------
 
-namespace NETLIST{
-    struct NUM: public BASE{
-        NUMBER Value;
+namespace Netlist{
+    struct Num: public Base{
+        Number value;
 
-                          NUM(int Line, const std::string& Filename, const char* Name);
-        virtual ~NUM();
+                 Num(int line, const std::string& filename, const char* name);
+        virtual ~Num();
 
-        AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
-        bool Assign   (AST::EXPRESSION* Expression) override;
-        bool RawAssign(AST::EXPRESSION* Expression) override;
+        AST::Expression* getExpression(int line, const std::string& filename) override;
+        bool assign   (AST::Expression* expression) override;
+        bool rawAssign(AST::Expression* expression) override;
 
-        bool HasCircularReference(BASE* Object) override;
+        bool hasCircularReference(Base* object) override;
 
-        void Display(int Indent = 0) override;
+        void display(int indent = 0) override;
 
-        void Validate() override;
+        void validate() override;
     };
 }
 //------------------------------------------------------------------------------

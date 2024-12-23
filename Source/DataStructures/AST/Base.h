@@ -40,31 +40,31 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-    class BASE{ // The base type for AST nodes
+    class Base{ // The base type for AST nodes
         public:
-            void Error  (const char* Message = 0);
-            void Warning(const char* Message = 0);
+            void printError  (const char* message = 0);
+            void printWarning(const char* message = 0);
         //--------------------------------------------------------------------------
 
         public:
-            enum class TYPE{
-                Fence, // Empty statement, but also "next-cycle" specifier in FSMs
-                Import,
-                Group,
-                Alias,
+            enum class Type{
+                    Fence, // Empty statement, but also "next-cycle" specifier in FSMs
+                    Import,
+                    Group,
+                    Alias,
 
-                Parameter,  // Parameter definition, not function call
+                    Parameter,  // Parameter definition, not function call
 
-                NamespacePush,
-                IfStatement,
-                ForLoop,
-                LoopLoop,
-                WhileLoop,
-                Switch,
-                Jump,
-                RTL,
-                FSM,
-                HDL,
+                    NamespacePush,
+                    IfStatement,
+                    ForLoop,
+                    LoopLoop,
+                    WhileLoop,
+                    Switch,
+                    Jump,
+                    RTL,
+                    FSM,
+                    HDL,
 
                 // Definition
                     Void_Definition,
@@ -162,50 +162,50 @@ namespace AST{
                     Logical_OR,
 
                     Conditional
-            } Type;
+            } type;
 
-            virtual bool IsAssignment();
-            virtual bool IsDefinition();
-            virtual bool IsExpression();
+            virtual bool isAssignment();
+            virtual bool isDefinition();
+            virtual bool isExpression();
         //--------------------------------------------------------------------------
 
         public:
             struct{
-                int         Line;
-                std::string Filename;
-            } Source;
-            BASE* Next; // Next instruction
-            BASE* Prev; // Previous instruction
+                int         line;
+                std::string filename;
+            } source;
+            Base* next; // Next instruction
+            Base* prev; // Previous instruction
         //--------------------------------------------------------------------------
 
         protected:
-            static BASE* CopyList(BASE* Source);
+            static Base* copyList(Base* source);
         //--------------------------------------------------------------------------
 
         public:
-                              BASE(int Line, const char* Filename, TYPE Type);
-            virtual ~BASE(); // Also deletes the rest of the linked list
+                     Base(int line, const char* filename, Type type);
+            virtual ~Base(); // Also deletes the rest of the linked list
 
             // Returns a copy of this instance
-            virtual BASE* Copy() = 0;
+            virtual Base* copy() = 0;
 
             // Runs through the AST:
             // - Builds the namespaces
             // - Creates object instances (including temporary wires)
             // - Evaluates scripting expressions
             // - Runs import statements
-            virtual bool RunAST() = 0;
+            virtual bool runAST() = 0;
 
             // Appends the Verilog code of this node to Body
-            virtual bool GetVerilog(std::string& Body) = 0;
+            virtual bool getVerilog(std::string& body) = 0;
 
-                            void DisplayInfo();
-            virtual void Display() = 0;
+                    void displayInfo();
+            virtual void display() = 0;
 
             // Runs assertions on the Next and Prev pointers, and then validates the
             // members.  Run this function on the head of the list.
-            void         Validate();
-            virtual void ValidateMembers() = 0;
+            void         validate();
+            virtual void validateMembers() = 0;
     };
 }
 //------------------------------------------------------------------------------

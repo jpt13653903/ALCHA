@@ -19,66 +19,62 @@
 //==============================================================================
 
 #include "BackEnd.h"
-#include "Ast/Expression/Object.h"
+#include "AST/Expression/Object.h"
 #include "Netlist/Synthesisable/Pin.h"
 #include "Netlist/Synthesisable/Net.h"
 //------------------------------------------------------------------------------
 
 using std::string;
 using std::to_string;
-using namespace NETLIST;
+using namespace Netlist;
 //------------------------------------------------------------------------------
 
-BACK_END::BACK_END()
+BackEnd::BackEnd(){}
+//------------------------------------------------------------------------------
+
+BackEnd::~BackEnd(){}
+//------------------------------------------------------------------------------
+
+void BackEnd::printError(AST::Expression* expression, const char* message)
 {
+    ::printError(expression->source.line, expression->source.filename, message);
 }
 //------------------------------------------------------------------------------
 
-BACK_END::~BACK_END()
+void BackEnd::printWarning(AST::Expression* expression, const char* message)
 {
+    ::printWarning(expression->source.line, expression->source.filename.c_str(), message);
 }
 //------------------------------------------------------------------------------
 
-void BACK_END::Error(AST::EXPRESSION* Expression, const char* Message)
+void BackEnd::removeTempNet(Netlist::Net* target)
 {
-    ::Error(Expression->Source.Line, Expression->Source.Filename, Message);
-}
-//------------------------------------------------------------------------------
-
-void BACK_END::Warning(AST::EXPRESSION* Expression, const char* Message)
-{
-    ::Warning(Expression->Source.Line, Expression->Source.Filename.c_str(), Message);
-}
-//------------------------------------------------------------------------------
-
-void BACK_END::RemoveTempNet(NETLIST::NET* Target)
-{
-    if(Target->Value){
-        Target->Value = Target->Value->RemoveTempNet(Target->Width(), Target->Signed());
+    if(target->value){
+        target->value = target->value->removeTempNet(target->width(), target->isSigned());
     }
 }
 //------------------------------------------------------------------------------
 
-void BACK_END::RemoveTempNets(NAMESPACE* Namespace)
+void BackEnd::removeTempNets(NameSpace* nameSpace)
 {
-    if(!Namespace) return;
+    if(!nameSpace) return;
 
-    Debug.Print("Delete temporary nets...\n");
+    debug.print("Delete temporary nets...\n");
 
-    foreach(SymbolIterator, Namespace->Symbols){
-        switch(SymbolIterator->second->Type){
-            case BASE::TYPE::Pin:
-                RemoveTempNet(((PIN*)SymbolIterator->second)->Driver );
-                RemoveTempNet(((PIN*)SymbolIterator->second)->Enabled);
+    for(auto symbolIterator: nameSpace->symbols){
+        switch(symbolIterator.second->type){
+            case Base::Type::Pin:
+                removeTempNet(((Pin*)symbolIterator.second)->driver );
+                removeTempNet(((Pin*)symbolIterator.second)->enabled);
                 break;
 
-            case BASE::TYPE::Net:
-                RemoveTempNet((NET*)SymbolIterator->second);
+            case Base::Type::Net:
+                removeTempNet((Net*)symbolIterator.second);
                 break;
 
-            case BASE::TYPE::Module:
-            case BASE::TYPE::Group:{
-                RemoveTempNets((NAMESPACE*)(SymbolIterator->second));
+            case Base::Type::Module:
+            case Base::Type::Group:{
+                removeTempNets((NameSpace*)(symbolIterator.second));
                 break;
             }
 
@@ -90,19 +86,19 @@ void BACK_END::RemoveTempNets(NAMESPACE* Namespace)
 }
 //------------------------------------------------------------------------------
 
-void BACK_END::PopulateUsed(NAMESPACE* Namespace)
+void BackEnd::populateUsed(NameSpace* nameSpace)
 {
-    Debug.Print("Populate used...\n");
+    debug.print("Populate used...\n");
 
-    foreach(SymbolIterator, Namespace->Symbols){
-        switch(SymbolIterator->second->Type){
-            case BASE::TYPE::Pin: // If it's used, it must end up at a pin
-                SymbolIterator->second->PopulateUsed(false);
+    for(auto symbolIterator: nameSpace->symbols){
+        switch(symbolIterator.second->type){
+            case Base::Type::Pin: // If it's used, it must end up at a pin
+                symbolIterator.second->populateUsed(false);
                 break;
 
-            case BASE::TYPE::Module:
-            case BASE::TYPE::Group:
-                PopulateUsed((NAMESPACE*)(SymbolIterator->second));
+            case Base::Type::Module:
+            case Base::Type::Group:
+                populateUsed((NameSpace*)(symbolIterator.second));
                 break;
 
             default:
@@ -112,57 +108,57 @@ void BACK_END::PopulateUsed(NAMESPACE* Namespace)
 }
 //------------------------------------------------------------------------------
 
-bool BACK_END::DeleteUnused(NAMESPACE* Namespace)
+bool BackEnd::deleteUnused(NameSpace* nameSpace)
 {
-    Debug.Print("Delete unused...\n");
+    debug.print("Delete unused...\n");
 
-    auto SymbolIterator = Namespace->Symbols.begin();
+    auto symbolIterator = nameSpace->symbols.begin();
 
-    while(SymbolIterator != Namespace->Symbols.end()){
-        switch(SymbolIterator->second->Type){
-            case BASE::TYPE::Byte:
-            case BASE::TYPE::Character:
-            case BASE::TYPE::Number:
-            case BASE::TYPE::Alias:{
-                auto Object = (SYNTHESISABLE*)(SymbolIterator->second);
-                SymbolIterator++;
-                Namespace->Symbols.erase(Object->Name);
-                delete Object;
+    while(symbolIterator != nameSpace->symbols.end()){
+        switch(symbolIterator->second->type){
+            case Base::Type::Byte:
+            case Base::Type::Character:
+            case Base::Type::Number:
+            case Base::Type::Alias:{
+                auto object = (Synthesisable*)(symbolIterator->second);
+                symbolIterator++;
+                nameSpace->symbols.erase(object->name);
+                delete object;
                 break;
             }
 
-            case BASE::TYPE::Pin:
-            case BASE::TYPE::Net:{
-                auto Object = (SYNTHESISABLE*)(SymbolIterator->second);
-                SymbolIterator++;
-                if(!Object->Used){
-                    if(!Object->IsTemporary()){
-                        Object->Warning();
-                        printf("Deleting unused object %s\n", Object->HDL_Name().c_str());
+            case Base::Type::Pin:
+            case Base::Type::Net:{
+                auto object = (Synthesisable*)(symbolIterator->second);
+                symbolIterator++;
+                if(!object->used){
+                    if(!object->isTemporary()){
+                        object->printWarning();
+                        printf("Deleting unused object %s\n", object->hdlName().c_str());
                     }
-                    Namespace->Symbols.erase(Object->Name);
-                    delete Object;
+                    nameSpace->symbols.erase(object->name);
+                    delete object;
                 }
                 break;
             }
 
-            case BASE::TYPE::Module:
-            case BASE::TYPE::Group:{
-                auto Object = (NAMESPACE*)(SymbolIterator->second);
-                DeleteUnused(Object);
-                SymbolIterator++;
-                if(Object->Symbols.empty()){
-                    Object->Warning();
-                    printf("Deleting unused object %s\n", Object->HDL_Name().c_str());
-                    Namespace->Symbols.erase(Object->Name);
-                    delete Object;
+            case Base::Type::Module:
+            case Base::Type::Group:{
+                auto object = (NameSpace*)(symbolIterator->second);
+                deleteUnused(object);
+                symbolIterator++;
+                if(object->symbols.empty()){
+                    object->printWarning();
+                    printf("Deleting unused object %s\n", object->hdlName().c_str());
+                    nameSpace->symbols.erase(object->name);
+                    delete object;
                 }
                 break;
             }
 
             default:
-                error("Type %d not handled", (int)SymbolIterator->second->Type);
-                SymbolIterator++;
+                error("Type %d not handled", (int)symbolIterator->second->type);
+                symbolIterator++;
                 break;
         }
     }
@@ -170,38 +166,38 @@ bool BACK_END::DeleteUnused(NAMESPACE* Namespace)
 }
 //------------------------------------------------------------------------------
 
-bool BACK_END::AssignPinDirections(NAMESPACE* Namespace)
+bool BackEnd::assignPinDirections(NameSpace* nameSpace)
 {
-    Debug.Print("Assign pin directions...\n");
+    debug.print("Assign pin directions...\n");
 
-    foreach(SymbolIterator, Namespace->Symbols){
-        switch(SymbolIterator->second->Type){
-            case BASE::TYPE::Pin:{
-                auto Pin = (PIN*)(SymbolIterator->second);
-                if(Pin->Direction == AST::DEFINITION::DIRECTION::Inferred){
-                    if(Pin->Enabled->Value){ // Possible bidirectional
-                        if(Pin->Enabled->Value->Type == AST::BASE::TYPE::Literal){
-                            if(((AST::LITERAL*)Pin->Enabled->Value)->Value == 0){
-                                Pin->Direction = AST::DEFINITION::DIRECTION::Input;
+    for(auto symbolIterator: nameSpace->symbols){
+        switch(symbolIterator.second->type){
+            case Base::Type::Pin:{
+                auto pin = (Pin*)(symbolIterator.second);
+                if(pin->direction == AST::Definition::Direction::Inferred){
+                    if(pin->enabled->value){ // Possible bidirectional
+                        if(pin->enabled->value->type == AST::Base::Type::Literal){
+                            if(((AST::Literal*)pin->enabled->value)->value == 0){
+                                pin->direction = AST::Definition::Direction::Input;
                             }else{
-                                Pin->Direction = AST::DEFINITION::DIRECTION::Output;
+                                pin->direction = AST::Definition::Direction::Output;
                             }
                         }else{
-                            Pin->Direction = AST::DEFINITION::DIRECTION::Bidirectional;
+                            pin->direction = AST::Definition::Direction::Bidirectional;
                         }
                     }else{ // Enabled is undefined
-                        if(Pin->Driver->Value){
-                            Pin->Direction = AST::DEFINITION::DIRECTION::Output;
+                        if(pin->driver->value){
+                            pin->direction = AST::Definition::Direction::Output;
                         }else{
-                            Pin->Direction = AST::DEFINITION::DIRECTION::Input;
+                            pin->direction = AST::Definition::Direction::Input;
                         }
                     }
                 }
                 break;
             }
-            case BASE::TYPE::Module:
-            case BASE::TYPE::Group:
-                AssignPinDirections((NAMESPACE*)(SymbolIterator->second));
+            case Base::Type::Module:
+            case Base::Type::Group:
+                assignPinDirections((NameSpace*)(symbolIterator.second));
                 break;
 
             default:
@@ -212,9 +208,9 @@ bool BACK_END::AssignPinDirections(NAMESPACE* Namespace)
 }
 //------------------------------------------------------------------------------
 
-bool BACK_END::RoutePorts(NAMESPACE* Namespace)
+bool BackEnd::routePorts(NameSpace* nameSpace)
 {
-    Debug.Print("Route ports...\n");
+    debug.print("Route ports...\n");
 
     // At this point, the expressions use pointers, not names.  Any inter-module
     // usage needs to be broken into temporary signals throughout the hierarchy
@@ -223,14 +219,14 @@ bool BACK_END::RoutePorts(NAMESPACE* Namespace)
     // with HDL module ports.
 
     // Do the children first
-    foreach(SymbolIterator, Namespace->Symbols){
-        if(SymbolIterator->second->IsNamespace()){
-            RoutePorts((NAMESPACE*)(SymbolIterator->second));
+    for(auto symbolIterator: nameSpace->symbols){
+        if(symbolIterator.second->isNamespace()){
+            routePorts((NameSpace*)(symbolIterator.second));
         }
     }
 
     // If this is the global module, don't go further
-    if(!Namespace->Namespace) return true;
+    if(!nameSpace->nameSpace) return true;
 
     // Route inter-module connections to the parent
     error("Not yet implemented");
@@ -238,66 +234,66 @@ bool BACK_END::RoutePorts(NAMESPACE* Namespace)
 }
 //------------------------------------------------------------------------------
 
-bool BACK_END::WriteFile(string& Filename, const char* Ext, string& Body)
+bool BackEnd::writeFile(string& filename, const char* ext, string& body)
 {
-    FileWrapper Files;
-    string Fullname = Path + "/" + Filename + "." + Ext;
-    return Files.writeAll(Fullname.c_str(), (const byte*)Body.c_str());
+    FileWrapper files;
+    string fullname = path + "/" + filename + "." + ext;
+    return files.writeAll(fullname.c_str(), (const byte*)body.c_str());
 }
 //------------------------------------------------------------------------------
 
-bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace)
+bool BackEnd::buildAssignments(string& body, NameSpace* nameSpace)
 {
-    foreach(SymbolIterator, Namespace->Symbols){
-        auto Object = SymbolIterator->second;
-        switch(Object->Type){
-            case BASE::TYPE::Pin:{
-                auto Pin = (PIN*)Object;
-                if(Pin->Driver->Value){
-                    string Driver;
-                    if(!Pin->Driver->Value->GetVerilog(Driver)) return false;
-                    if(Pin->Enabled->Value){
-                        string Enabled;
-                        if(!Pin->Enabled->Value->GetVerilog(Enabled)) return false;
-                        Body += "assign "+ Pin->EscapedName();
-                        Align(Body, 25);
-                        Body += "= |("+ Enabled + ") ? ("+ Driver + ")"
-                                        " : " + to_string(Pin->Width()) + "'bZ;";
-                        Align(Body, 70);
-                        Body += "// " + Pin->Driver ->Value->Source.Filename
-                                                    + " +" + to_string(Pin->Driver ->Value->Source.Line)
-                                                    + " (Driver); "
-                                                    + Pin->Enabled->Value->Source.Filename
-                                                    + " +" + to_string(Pin->Enabled->Value->Source.Line)
-                                                    + " (Enabled)\n";
+    for(auto symbolIterator: nameSpace->symbols){
+        auto object = symbolIterator.second;
+        switch(object->type){
+            case Base::Type::Pin:{
+                auto pin = (Pin*)object;
+                if(pin->driver->value){
+                    string driver;
+                    if(!pin->driver->value->getVerilog(driver)) return false;
+                    if(pin->enabled->value){
+                        string enabled;
+                        if(!pin->enabled->value->getVerilog(enabled)) return false;
+                        body += "assign "+ pin->escapedName();
+                        align(body, 25);
+                        body += "= |("+ enabled + ") ? ("+ driver + ")"
+                                " : " + to_string(pin->width()) + "'bZ;";
+                        align(body, 70);
+                        body += "// " + pin->driver ->value->source.filename
+                             + " +" + to_string(pin->driver ->value->source.line)
+                             + " (driver); "
+                             + pin->enabled->value->source.filename
+                             + " +" + to_string(pin->enabled->value->source.line)
+                             + " (enabled)\n";
                     }else{
-                        Body += "assign "+ Pin->EscapedName();
-                        Align(Body, 25);
-                        Body += "= "+ Driver + ";";
-                        Align(Body, 70);
-                        Body += "// " + Pin->Driver->Value->Source.Filename
-                                                    + " +" + to_string(Pin->Driver->Value->Source.Line)
-                                                    + "\n";
+                        body += "assign "+ pin->escapedName();
+                        align(body, 25);
+                        body += "= "+ driver + ";";
+                        align(body, 70);
+                        body += "// " + pin->driver->value->source.filename
+                             + " +" + to_string(pin->driver->value->source.line)
+                             + "\n";
                     }
                 }
                 break;
             }
-            case BASE::TYPE::Net:{
-                auto Net = (NET*)Object;
-                if(Net->Value){
-                    string Value;
-                    if(!Net->Value->GetVerilog(Value)) return false;
-                    Body += "assign "+ Net->EscapedName();
-                    Align(Body, 25);
-                    Body += "= "+ Value +";";
-                    Align(Body, 70);
-                    Body += "// " + Net->Value->Source.Filename
-                                                + " +" + to_string(Net->Value->Source.Line) + "\n";
+            case Base::Type::Net:{
+                auto net = (Net*)object;
+                if(net->value){
+                    string value;
+                    if(!net->value->getVerilog(value)) return false;
+                    body += "assign "+ net->escapedName();
+                    align(body, 25);
+                    body += "= "+ value +";";
+                    align(body, 70);
+                    body += "// " + net->value->source.filename
+                         + " +" + to_string(net->value->source.line) + "\n";
                 }
                 break;
             }
-            case BASE::TYPE::Group:{
-                if(!BuildAssignments(Body, (NAMESPACE*)Object)) return false;
+            case Base::Type::Group:{
+                if(!buildAssignments(body, (NameSpace*)object)) return false;
                 break;
             }
             default:
@@ -308,70 +304,46 @@ bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace)
 }
 //------------------------------------------------------------------------------
 
-void BACK_END::BuildSizeDef(string& Body, int Width, bool Signed)
+void BackEnd::buildSizeDef(string& body, int width, bool isSigned)
 {
-    int Top;
-    if(Signed) Top = Width;
-    else       Top = Width-1;
+    int top;
+    if(isSigned) top = width;
+    else       top = width-1;
 
-    if(Top > 0){
-        Body += "[";
-        if(Top < 100) Body += ' ';
-        if(Top <  10) Body += ' ';
-        Body += to_string(Top) +":0]";
+    if(top > 0){
+        body += "[";
+        if(top < 100) body += ' ';
+        if(top <  10) body += ' ';
+        body += to_string(top) +":0]";
     }else{
-        Body += "       ";
+        body += "       ";
     }
 }
 //------------------------------------------------------------------------------
 
-void BACK_END::BuildPorts(string& Body, NAMESPACE* Namespace, bool& isFirst)
+void BackEnd::buildPorts(string& body, NameSpace* nameSpace, bool& isFirst)
 {
-    foreach(SymbolIterator, Namespace->Symbols){
-        auto Object = SymbolIterator->second;
-        switch(Object->Type){
-            case BASE::TYPE::Pin:{
-                auto Pin = (PIN*)Object;
-                if(!isFirst) Body += ",\n";
+    for(auto symbolIterator: nameSpace->symbols){
+        auto object = symbolIterator.second;
+        switch(object->type){
+            case Base::Type::Pin:{
+                auto pin = (Pin*)object;
+                if(!isFirst) body += ",\n";
                 isFirst = false;
 
-                switch(Pin->Direction){
-                    case AST::DEFINITION::DIRECTION::Input : Body += "  input  logic "; break;
-                    case AST::DEFINITION::DIRECTION::Output: Body += "  output logic "; break;
-                    default                                : Body += "  inout  logic "; break;
+                switch(pin->direction){
+                    case AST::Definition::Direction::Input : body += "  input  logic "; break;
+                    case AST::Definition::Direction::Output: body += "  output logic "; break;
+                    default                                : body += "  inout  logic "; break;
                 }
-                if(Pin->Signed()) Body += "signed ";
-                else              Body += "       ";
-                BuildSizeDef(Body, Pin->Width(), Pin->Signed());
-                Body += Pin->EscapedName();
+                if(pin->isSigned()) body += "isSigned ";
+                else              body += "       ";
+                buildSizeDef(body, pin->width(), pin->isSigned());
+                body += pin->escapedName();
                 break;
             }
-            case BASE::TYPE::Group:{
-                BuildPorts(Body, (NAMESPACE*)Object, isFirst);
-                break;
-            }
-            default:
-                break;
-        }
-    }
-}
-//------------------------------------------------------------------------------
-
-void BACK_END::BuildNets(string& Body, NAMESPACE* Namespace)
-{
-    foreach(SymbolIterator, Namespace->Symbols){
-        switch(SymbolIterator->second->Type){
-            case BASE::TYPE::Net:{
-                auto Net = (NET*)SymbolIterator->second;
-                Body += "logic ";
-                if(Net->Signed()) Body += "signed ";
-                else              Body += "       ";
-                BuildSizeDef(Body, Net->Width(), Net->Signed());
-                Body += Net->EscapedName() + ";\n";
-                break;
-            }
-            case BASE::TYPE::Group:{
-                BuildNets(Body, (NAMESPACE*)SymbolIterator->second);
+            case Base::Type::Group:{
+                buildPorts(body, (NameSpace*)object, isFirst);
                 break;
             }
             default:
@@ -381,103 +353,127 @@ void BACK_END::BuildNets(string& Body, NAMESPACE* Namespace)
 }
 //------------------------------------------------------------------------------
 
-bool BACK_END::BuildHDL(MODULE* Module, string Path)
+void BackEnd::buildNets(string& body, NameSpace* nameSpace)
 {
-    bool isGlobal = (Module == &Global);
+    for(auto symbolIterator: nameSpace->symbols){
+        switch(symbolIterator.second->type){
+            case Base::Type::Net:{
+                auto net = (Net*)symbolIterator.second;
+                body += "logic ";
+                if(net->isSigned()) body += "Signed ";
+                else              body += "       ";
+                buildSizeDef(body, net->width(), net->isSigned());
+                body += net->escapedName() + ";\n";
+                break;
+            }
+            case Base::Type::Group:{
+                buildNets(body, (NameSpace*)symbolIterator.second);
+                break;
+            }
+            default:
+                break;
+        }
+    }
+}
+//------------------------------------------------------------------------------
+
+bool BackEnd::buildHDL(Module* module, string path)
+{
+    bool isGlobal = (module == &global);
 
     // Recursively generate the modules (each namespace is a module)
-    foreach(SymbolIterator, Module->Symbols){
-        auto Symbol = SymbolIterator->second;
-        if(Symbol->Type == BASE::TYPE::Module){
-            auto Child = (MODULE*)Symbol;
-            if(isGlobal) BuildHDL(Child, "source");
-            else         BuildHDL(Child, Path + "/" + Module->HDL_Name());
+    for(auto symbolIterator: module->symbols){
+        auto symbol = symbolIterator.second;
+        if(symbol->type == Base::Type::Module){
+            auto child = (Module*)symbol;
+            if(isGlobal) buildHDL(child, "source");
+            else         buildHDL(child, path + "/" + module->hdlName());
         }
     }
     // Generate this module's name
-    string Name;
-    if(isGlobal) Name = Filename;
-    else         Name = Module->EscapedName();
+    string name;
+    if(isGlobal) name = filename;
+    else         name = module->escapedName();
 
     // Header
-    string Body;
-    Body = "// Auto-generated by ALCHA "
-                  "Version "+ to_string(MAJOR_VERSION) +"."+ to_string(MINOR_VERSION) +" ("
-                  "Built on " __DATE__ " at " __TIME__ ")\n"
-                  "//--------------------------------------"
-                  "----------------------------------------\n\n";
+    string body;
+    body = "// Auto-generated by ALCHA "
+           "Version "+ to_string(MAJOR_VERSION) +"."+ to_string(MINOR_VERSION) +" ("
+           "Built on " __DATE__ " at " __TIME__ ")\n"
+           "//--------------------------------------"
+           "----------------------------------------\n\n";
 
     // Module Definition
-    Body += "module "+ Name +"(\n";
+    body += "module "+ name +"(\n";
 
     // Ports
     bool isFirst = true;
-    BuildPorts(Body, Module, isFirst);
-    if(!isFirst) Body += "\n";
-    Body += ");\n";
-    Body += "//--------------------------------------"
-                    "----------------------------------------\n\n";
+    buildPorts(body, module, isFirst);
+    if(!isFirst) body += "\n";
+    body += ");\n";
+    body += "//--------------------------------------"
+            "----------------------------------------\n\n";
 
     // Nets
-    BuildNets(Body, Module);
-    Body += "//--------------------------------------"
-                    "----------------------------------------\n\n";
+    buildNets(body, module);
+    body += "//--------------------------------------"
+            "----------------------------------------\n\n";
 
     // Assignments
-    if(!BuildAssignments(Body, Module)) return false;
+    if(!buildAssignments(body, module)) return false;
 
-    Body += "//--------------------------------------"
-                    "----------------------------------------\n\n";
-    Body += "endmodule\n";
-    Body += "//--------------------------------------"
-                    "----------------------------------------\n\n";
+    body += "//--------------------------------------"
+            "----------------------------------------\n\n";
+    body += "endmodule\n";
+    body += "//--------------------------------------"
+            "----------------------------------------\n\n";
 
-    if(isGlobal) Name = Filename;
-    else         Name = Path + "/" + Module->Name;
-    WriteFile(Name, "v", Body);
+    if(isGlobal) name = filename;
+    else         name = path + "/" + module->name;
+    writeFile(name, "v", body);
 
     return true;
 }
 //------------------------------------------------------------------------------
 
-bool BACK_END::BuildAltera(const char* Path, const char* Filename)
+bool BackEnd::buildAltera(const char* path, const char* filename)
 {
-    this->Path     = Path;
-    this->Filename = Filename;
+    this->path     = path;
+    this->filename = filename;
 
-    Debug.Print(
+    debug.print(
         ANSI_FG_GREEN "\nStarting BackEnd -----------------------"
-                                    "----------------------------------------\n\n"
+                      "----------------------------------------\n\n"
         ANSI_RESET
     );
 
-    RemoveTempNets(&Global);
-    Debug.Print("\n");
+    removeTempNets(&global);
+    debug.print("\n");
 
-    PopulateUsed(&Global);
-    Debug.Print("\n");
+    populateUsed(&global);
+    debug.print("\n");
 
-    if(!DeleteUnused(&Global)) return false;
-    Debug.Print("\n");
+    if(!deleteUnused(&global)) return false;
+    debug.print("\n");
 
-    if(!AssignPinDirections(&Global)) return false;
-    Debug.Print("\n");
+    if(!assignPinDirections(&global)) return false;
+    debug.print("\n");
 
-    if(!RoutePorts(&Global)) return false;
-    Debug.Print("\n");
+    if(!routePorts(&global)) return false;
+    debug.print("\n");
 
-    Global.Display();
+    global.display();
 
-    Debug.Print(
+    debug.print(
         ANSI_FG_GREEN "\nBuilding Project -----------------------"
-                                    "----------------------------------------\n\n"
+                      "----------------------------------------\n\n"
         ANSI_RESET
     );
 
-    ALTERA::PROJECT Project;
-    Project.Build(Path, Filename);
+    Altera::Project project;
+    project.build(path, filename);
 
-    if(!BuildHDL(&Global, "")) return false;
+    if(!buildHDL(&global, "")) return false;
 
     return true;
 }

@@ -20,104 +20,104 @@
 
 #include "Pin.h"
 
-#include "AST/Expression/Object.h"
+#include "AST/expression/object.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
-using namespace NETLIST;
+using std::string;
+using namespace Netlist;
 //------------------------------------------------------------------------------
 
-PIN::PIN(int Line, const string& Filename, const char* Name) : SYNTHESISABLE(Line, Filename, Name, TYPE::Pin)
+Pin::Pin(int line, const string& filename, const char* name) : Synthesisable(line, filename, name, Type::Pin)
 {
-    Driver  = new PIN_COMPONENT(Line, Filename, "Driver" , this);
-    Enabled = new PIN_COMPONENT(Line, Filename, "Enabled", this);
+    driver  = new PinComponent(line, filename, "driver" , this);
+    enabled = new PinComponent(line, filename, "enabled", this);
 }
 //------------------------------------------------------------------------------
 
-PIN::~PIN()
+Pin::~Pin()
 {
-    delete Driver;
-    delete Enabled;
+    delete driver;
+    delete enabled;
 }
 //------------------------------------------------------------------------------
 
-AST::EXPRESSION* PIN::GetExpression(int Line, const string& Filename)
+AST::Expression* Pin::getExpression(int line, const string& filename)
 {
-    return (AST::EXPRESSION*)Driver->GetExpression(Line, Filename);
+    return (AST::Expression*)driver->getExpression(line, filename);
 }
 //------------------------------------------------------------------------------
 
-bool PIN::Assign(AST::EXPRESSION* Expression)
+bool Pin::assign(AST::Expression* expression)
 {
-    if(Direction == AST::DEFINITION::DIRECTION::Input){
-        Expression->Error("Cannot assign to an input pin");
+    if(direction == AST::Definition::Direction::Input){
+        expression->printError("Cannot assign to an input pin");
         return false;
     }
-    return Driver->Assign(Expression);
+    return driver->assign(expression);
 }
 //------------------------------------------------------------------------------
 
-bool PIN::RawAssign(AST::EXPRESSION* Expression)
+bool Pin::rawAssign(AST::Expression* expression)
 {
-    if(Direction == AST::DEFINITION::DIRECTION::Input){
-        Expression->Error("Cannot assign to an input pin");
+    if(direction == AST::Definition::Direction::Input){
+        expression->printError("Cannot assign to an input pin");
         return false;
     }
-    return Driver->RawAssign(Expression);
+    return driver->rawAssign(expression);
 }
 //------------------------------------------------------------------------------
 
-bool PIN::HasCircularReference(BASE* Object)
+bool Pin::hasCircularReference(Base* object)
 {
-    if(this == Object) return true;
-    if(Driver ->HasCircularReference(Object)) return true;
-    if(Enabled->HasCircularReference(Object)) return true;
+    if(this == object) return true;
+    if(driver ->hasCircularReference(object)) return true;
+    if(enabled->hasCircularReference(object)) return true;
     return false;
 }
 //------------------------------------------------------------------------------
 
-void PIN::PopulateUsed(bool SetUsed)
+void Pin::populateUsed(bool setUsed)
 {
-    if(Used) return; // Prevents circular loops
-    Used = SetUsed;
-    Driver ->PopulateUsed(SetUsed);
-    Enabled->PopulateUsed(SetUsed);
+    if(used) return; // Prevents circular loops
+    used = setUsed;
+    driver ->populateUsed(setUsed);
+    enabled->populateUsed(setUsed);
 
     // Pins that have stuff assigned are always used
-    if(Driver->Value) Used = true;
+    if(driver->value) used = true;
 }
 //------------------------------------------------------------------------------
 
-BASE* PIN::GetMember(const std::string& Name)
+Base* Pin::getMember(const std::string& name)
 {
-    if(Name == "driver" ) return Driver;
-    if(Name == "enabled") return Enabled;
+    if(name == "driver" ) return driver;
+    if(name == "enabled") return enabled;
     return 0;
 }
 //------------------------------------------------------------------------------
 
-void PIN::Display(int Indent)
+void Pin::display(int indent)
 {
-    Debug.Indent(Indent);
-    Debug.Print("Pin: ");
+    debug.indent(indent);
+    debug.print("Pin: ");
 
-    Indent++;
-    DisplayParameters(Indent);
-    DisplayAttributes(Indent);
+    indent++;
+    displayParameters(indent);
+    displayAttributes(indent);
 
-    Driver ->Display(Indent);
-    Enabled->Display(Indent);
+    driver ->display(indent);
+    enabled->display(indent);
 }
 //------------------------------------------------------------------------------
 
-void PIN::Validate()
+void Pin::validate()
 {
-    assert(Type == TYPE::Pin);
+    assert(type == Type::Pin);
 
-    SYNTHESISABLE::Validate();
+    Synthesisable::validate();
 
-    Driver ->Validate();
-    Enabled->Validate();
+    driver ->validate();
+    enabled->validate();
 }
 //------------------------------------------------------------------------------
 

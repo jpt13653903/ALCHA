@@ -26,76 +26,76 @@
 using std::string;
 //------------------------------------------------------------------------------
 
-NUMBER::NUMBER()
+Number::Number()
 {
-    // mpq_init(Real);
-    // mpq_init(Imag);
+    // mpq_init(real);
+    // mpq_init(imag);
 }
 //------------------------------------------------------------------------------
 
-NUMBER::NUMBER(int i)
+Number::Number(int i)
 {
-    // mpq_init(Real);
-    // mpq_init(Imag);
+    // mpq_init(real);
+    // mpq_init(imag);
     operator= (i);
 }
 //------------------------------------------------------------------------------
 
-NUMBER::NUMBER(unsigned u)
+Number::Number(unsigned u)
 {
-    // mpq_init(Real);
-    // mpq_init(Imag);
+    // mpq_init(real);
+    // mpq_init(imag);
     operator= (u);
 }
 //------------------------------------------------------------------------------
 
-NUMBER::NUMBER(double d)
+Number::Number(double d)
 {
-    // mpq_init(Real);
-    // mpq_init(Imag);
+    // mpq_init(real);
+    // mpq_init(imag);
     operator= (d);
 }
 //------------------------------------------------------------------------------
 
-NUMBER::NUMBER(bool b)
+Number::Number(bool b)
 {
-    // mpq_init(Real);
-    // mpq_init(Imag);
+    // mpq_init(real);
+    // mpq_init(imag);
     operator= (b);
 }
 //------------------------------------------------------------------------------
 
-NUMBER::NUMBER(const NUMBER& n)
+Number::Number(const Number& n)
 {
-    // mpq_init(Real);
-    // mpq_init(Imag);
+    // mpq_init(real);
+    // mpq_init(imag);
     operator= (n);
 }
 //------------------------------------------------------------------------------
 
-NUMBER::~NUMBER()
+Number::~Number()
 {
-    // mpq_clear(Real);
-    // mpq_clear(Imag);
+    // mpq_clear(real);
+    // mpq_clear(imag);
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::Set(mpz_t Numerator, mpz_t Denominator)
+void Number::set(mpz_t numerator, mpz_t denominator)
 {
-    // mpz_set(mpq_numref(Real), Numerator  );
-    // mpz_set(mpq_denref(Real), Denominator);
-    // mpq_canonicalize(Real);
+    // mpz_set(mpq_numref(real), numerator  );
+    // mpz_set(mpq_denref(real), denominator);
+    // mpq_canonicalize(real);
 
-    // mpq_set_ui(Imag, 0, 1);
-    Real = Numerator / Denominator;
-    Imag = 0;
+    // mpq_set_ui(imag, 0, 1);
+    real = numerator / denominator;
+    imag = 0;
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::Set_e()
+void Number::set_e()
 {
-    // mpq_set_ui(Real, 2, 1);
-    // mpq_set_ui(Imag, 0, 1);
+    // mpq_set_ui(real, 2, 1);
+    // mpq_set_ui(imag, 0, 1);
 
     // mpq_t t, n;
     // mpq_init(t);
@@ -107,312 +107,312 @@ void NUMBER::Set_e()
     // for(int nn = 2; nn < 43; nn++){
     //   mpq_set_ui(n, nn, 1);
     //   mpq_div(t, t, n);
-    //   mpq_add(Real, Real, t);
+    //   mpq_add(real, real, t);
     // }
 
     // mpq_clear(n);
     // mpq_clear(t);
-    Real = M_E;
-    Imag = 0;
+    real = M_E;
+    imag = 0;
 }
 //------------------------------------------------------------------------------
 
 // Numerator:   https://oeis.org/A002485/b002485.txt
 // Denominator: https://oeis.org/A002486/b002486.txt
-void NUMBER::Set_pi()
+void Number::set_pi()
 {
-    // mpq_set_str(Real,
+    // mpq_set_str(real,
     //             "394372834342725903069943709807632345074473102456264/"
     //             "125532772013612015195543173729505082616186012726141", 10);
-    // mpq_canonicalize(Real);
-    // mpq_set_ui(Imag, 0, 1);
-    Real = M_PI;
-    Imag = 0;
+    // mpq_canonicalize(real);
+    // mpq_set_ui(imag, 0, 1);
+    real = M_PI;
+    imag = 0;
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::Set_i()
+void Number::set_i()
 {
-    // mpq_set_ui(Real, 0, 1);
-    // mpq_set_ui(Imag, 1, 1);
-    Real = 0;
-    Imag = 1;
+    // mpq_set_ui(real, 0, 1);
+    // mpq_set_ui(imag, 1, 1);
+    real = 0;
+    imag = 1;
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::operator= (int i)
+void Number::operator= (int i)
 {
-    // mpq_set_si(Real, i, 1);
-    // mpq_set_ui(Imag, 0, 1);
-    Real = i;
-    Imag = 0;
+    // mpq_set_si(real, i, 1);
+    // mpq_set_ui(imag, 0, 1);
+    real = i;
+    imag = 0;
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::operator= (unsigned u)
+void Number::operator= (unsigned u)
 {
-    // mpq_set_ui(Real, u, 1);
-    // mpq_set_ui(Imag, 0, 1);
-    Real = u;
-    Imag = 0;
+    // mpq_set_ui(real, u, 1);
+    // mpq_set_ui(imag, 0, 1);
+    real = u;
+    imag = 0;
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::operator= (double d)
+void Number::operator= (double d)
 {
-    // mpq_set_d (Real, d);
-    // mpq_set_ui(Imag, 0, 1);
-    Real = d;
-    Imag = 0;
+    // mpq_set_d (real, d);
+    // mpq_set_ui(imag, 0, 1);
+    real = d;
+    imag = 0;
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::operator= (bool b)
+void Number::operator= (bool b)
 {
     operator= (b ? 1 : 0);
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::operator= (const NUMBER& n)
+void Number::operator= (const Number& n)
 {
-    // mpq_set(Real, n.Real);
-    // mpq_set(Imag, n.Imag);
-    Real = n.Real;
-    Imag = n.Imag;
+    // mpq_set(real, n.real);
+    // mpq_set(imag, n.imag);
+    real = n.real;
+    imag = n.imag;
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator== (int i) const
+bool Number::operator== (int i) const
 {
-    if(!IsReal()) return false;
+    if(!isReal()) return false;
 
-    NUMBER n(i);
+    Number n(i);
     return operator== (n);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator== (unsigned u) const
+bool Number::operator== (unsigned u) const
 {
-    if(!IsReal()) return false;
+    if(!isReal()) return false;
 
-    NUMBER n(u);
+    Number n(u);
     return operator== (n);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator== (double d) const
+bool Number::operator== (double d) const
 {
-    if(!IsReal()) return false;
+    if(!isReal()) return false;
 
-    NUMBER n(d);
+    Number n(d);
     return operator== (n);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator== (bool b) const
+bool Number::operator== (bool b) const
 {
     return (operator== (0)) != b;
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator== (const NUMBER& n) const
+bool Number::operator== (const Number& n) const
 {
-    // if(!mpq_equal(Real, n.Real)) return false;
-    // if(!mpq_equal(Imag, n.Imag)) return false;
-    if(Real == n.Real) return false;
-    if(Imag == n.Imag) return false;
+    // if(!mpq_equal(real, n.real)) return false;
+    // if(!mpq_equal(imag, n.imag)) return false;
+    if(real == n.real) return false;
+    if(imag == n.imag) return false;
     return true;
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator!= (int i) const
+bool Number::operator!= (int i) const
 {
     return !operator==(i);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator!= (unsigned u) const
+bool Number::operator!= (unsigned u) const
 {
     return !operator==(u);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator!= (double d) const
+bool Number::operator!= (double d) const
 {
     return !operator==(d);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator!= (bool b) const
+bool Number::operator!= (bool b) const
 {
     return !operator==(b);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator!= (const NUMBER& n) const
+bool Number::operator!= (const Number& n) const
 {
     return !operator==(n);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator< (int i) const
+bool Number::operator< (int i) const
 {
-    NUMBER n(i);
+    Number n(i);
     return operator<(n);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator< (unsigned u) const
+bool Number::operator< (unsigned u) const
 {
-    NUMBER n(u);
+    Number n(u);
     return operator<(n);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator< (double d) const
+bool Number::operator< (double d) const
 {
-    NUMBER n(d);
+    Number n(d);
     return operator<(n);
 }
 //------------------------------------------------------------------------------
 
 #include "General.h"
-bool NUMBER::operator< (const NUMBER& n) const
+bool Number::operator< (const Number& n) const
 {
-    // int Result = mpq_cmp(Real, n.Real);
-    // if(Result < 0) return true;
-    // if(Result > 0) return false;
-    // return mpq_cmp(Imag, n.Imag) < 0;
-    if(Real == n.Real) return Imag < n.Imag;
-    return Real < n.Real;
+    // int result = mpq_cmp(real, n.real);
+    // if(result < 0) return true;
+    // if(result > 0) return false;
+    // return mpq_cmp(imag, n.imag) < 0;
+    if(real == n.real) return imag < n.imag;
+    return real < n.real;
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator<= (int i) const
+bool Number::operator<= (int i) const
 {
     return operator<(i) || operator==(i);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator<= (unsigned u) const
+bool Number::operator<= (unsigned u) const
 {
     return operator<(u) || operator==(u);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator<= (double d) const
+bool Number::operator<= (double d) const
 {
     return operator<(d) || operator==(d);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator<= (const NUMBER& n) const
+bool Number::operator<= (const Number& n) const
 {
     return operator<(n) || operator==(n);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator> (int i) const
+bool Number::operator> (int i) const
 {
     return !operator<(i) && !operator==(i);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator> (unsigned u) const
+bool Number::operator> (unsigned u) const
 {
     return !operator<(u) && !operator==(u);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator> (double d) const
+bool Number::operator> (double d) const
 {
     return !operator<(d) && !operator==(d);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator> (const NUMBER& n) const
+bool Number::operator> (const Number& n) const
 {
     return !operator<(n) && !operator==(n);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator>= (int i) const
+bool Number::operator>= (int i) const
 {
     return !operator<(i);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator>= (unsigned u) const
+bool Number::operator>= (unsigned u) const
 {
     return !operator<(u);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator>= (double d) const
+bool Number::operator>= (double d) const
 {
     return !operator<(d);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::operator>= (const NUMBER& n) const
+bool Number::operator>= (const Number& n) const
 {
     return !operator<(n);
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::Add(double r, double i)
+void Number::add(double r, double i)
 {
     // mpq_t a, b;
 
     // mpq_init(a); mpq_set_d(a, r);
     // mpq_init(b); mpq_set_d(b, i);
 
-    // mpq_add(Real, Real, a);
-    // mpq_add(Imag, Imag, b);
+    // mpq_add(real, real, a);
+    // mpq_add(imag, imag, b);
 
     // mpq_clear(a);
     // mpq_clear(b);
-    Real += r;
-    Imag += i;
+    real += r;
+    imag += i;
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::Add(const NUMBER& n)
+void Number::add(const Number& n)
 {
-    // mpq_add(Real, Real, n.Real);
-    // mpq_add(Imag, Imag, n.Imag);
-    Real += n.Real;
-    Imag += n.Imag;
+    // mpq_add(real, real, n.real);
+    // mpq_add(imag, imag, n.imag);
+    real += n.real;
+    imag += n.imag;
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::Sub(double r, double i)
+void Number::sub(double r, double i)
 {
     // mpq_t a, b;
 
     // mpq_init(a); mpq_set_d(a, r);
     // mpq_init(b); mpq_set_d(b, i);
 
-    // mpq_sub(Real, Real, a);
-    // mpq_sub(Imag, Imag, b);
+    // mpq_sub(real, real, a);
+    // mpq_sub(imag, imag, b);
 
     // mpq_clear(a);
     // mpq_clear(b);
-    Real -= r;
-    Imag -= i;
+    real -= r;
+    imag -= i;
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::Sub(const NUMBER& n)
+void Number::sub(const Number& n)
 {
-    // mpq_sub(Real, Real, n.Real);
-    // mpq_sub(Imag, Imag, n.Imag);
-    Real -= n.Real;
-    Imag -= n.Imag;
+    // mpq_sub(real, real, n.real);
+    // mpq_sub(imag, imag, n.imag);
+    real -= n.real;
+    imag -= n.imag;
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::Mul(double r, double i)
+void Number::mul(double r, double i)
 {
     // mpq_t a, b, c, d;
 
@@ -421,70 +421,70 @@ void NUMBER::Mul(double r, double i)
     // mpq_init(c);
     // mpq_init(d);
 
-    // mpq_set  (a, Real);
-    // mpq_set  (b, Imag);
+    // mpq_set  (a, real);
+    // mpq_set  (b, imag);
     // mpq_set_d(c, r   );
     // mpq_set_d(d, i   );
 
-    // mpq_mul(Real, a, c);
-    // mpq_mul(Imag, b, d);
-    // mpq_sub(Real, Real, Imag);
+    // mpq_mul(real, a, c);
+    // mpq_mul(imag, b, d);
+    // mpq_sub(real, real, imag);
 
-    // mpq_mul(Imag, a, d);
+    // mpq_mul(imag, a, d);
     // mpq_mul(a   , b, c);
-    // mpq_add(Imag, Imag, a);
+    // mpq_add(imag, imag, a);
 
     // mpq_clear(a);
     // mpq_clear(b);
     // mpq_clear(c);
     // mpq_clear(d);
-    double a = Real;
-    double b = Imag;
+    double a = real;
+    double b = imag;
     double c = r;
     double d = i;
-    Real  = a*c;
-    Imag  = b*d;
-    Real -= Imag;
-    Imag  = a*d;
+    real  = a*c;
+    imag  = b*d;
+    real -= imag;
+    imag  = a*d;
     a     = b*c;
-    Imag += a;
+    imag += a;
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::Mul(const NUMBER& n)
+void Number::mul(const Number& n)
 {
     // mpq_t a, b;
 
     // mpq_init(a);
     // mpq_init(b);
 
-    // mpq_set(a, Real);
-    // mpq_set(b, Imag);
+    // mpq_set(a, real);
+    // mpq_set(b, imag);
 
-    // mpq_mul(Real, a, n.Real);
-    // mpq_mul(Imag, b, n.Imag);
-    // mpq_sub(Real, Real, Imag);
+    // mpq_mul(real, a, n.real);
+    // mpq_mul(imag, b, n.imag);
+    // mpq_sub(real, real, imag);
 
-    // mpq_mul(Imag, a, n.Imag);
-    // mpq_mul(a   , b, n.Real);
-    // mpq_add(Imag, Imag, a);
+    // mpq_mul(imag, a, n.imag);
+    // mpq_mul(a   , b, n.real);
+    // mpq_add(imag, imag, a);
 
     // mpq_clear(a);
     // mpq_clear(b);
-    double a = Real;
-    double b = Imag;
-    double c = n.Real;
-    double d = n.Imag;
-    Real  = a*c;
-    Imag  = b*d;
-    Real -= Imag;
-    Imag  = a*d;
+    double a = real;
+    double b = imag;
+    double c = n.real;
+    double d = n.imag;
+    real  = a*c;
+    imag  = b*d;
+    real -= imag;
+    imag  = a*d;
     a     = b*c;
-    Imag += a;
+    imag += a;
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::Div(double r, double i)
+void Number::div(double r, double i)
 {
     // mpq_t a, b, c, d;
 
@@ -493,48 +493,48 @@ void NUMBER::Div(double r, double i)
     // mpq_init(c);
     // mpq_init(d);
 
-    // mpq_set  (a, Real);
-    // mpq_set  (b, Imag);
+    // mpq_set  (a, real);
+    // mpq_set  (b, imag);
     // mpq_set_d(c, r   );
     // mpq_set_d(d, i   );
 
-    // mpq_mul(Real, a, c);
-    // mpq_mul(Imag, b, d);
-    // mpq_add(Real, Real, Imag);
+    // mpq_mul(real, a, c);
+    // mpq_mul(imag, b, d);
+    // mpq_add(real, real, imag);
 
-    // mpq_mul(Imag, b, c);
+    // mpq_mul(imag, b, c);
     // mpq_mul(a   , a, d);
-    // mpq_sub(Imag, Imag, a);
+    // mpq_sub(imag, imag, a);
 
     // mpq_mul(c, c, c);
     // mpq_mul(d, d, d);
     // mpq_add(c, c, d);
-    // mpq_div(Real, Real, c);
-    // mpq_div(Imag, Imag, c);
+    // mpq_div(real, real, c);
+    // mpq_div(imag, imag, c);
 
     // mpq_clear(a);
     // mpq_clear(b);
     // mpq_clear(c);
     // mpq_clear(d);
-    double a = Real;
-    double b = Imag;
+    double a = real;
+    double b = imag;
     double c = r;
     double d = i;
-    Real = a*c;
-    Imag = b*d;
-    Real += Imag;
-    Imag = b*c;
+    real = a*c;
+    imag = b*d;
+    real += imag;
+    imag = b*c;
     a = a*d;
-    Imag -= a;
+    imag -= a;
     c *= c;
     d *= d;
     c += d;
-    Real /= c;
-    Imag /= c;
+    real /= c;
+    imag /= c;
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::Div(const NUMBER& n)
+void Number::div(const Number& n)
 {
     // mpq_t a, b, c, d;
 
@@ -543,72 +543,72 @@ void NUMBER::Div(const NUMBER& n)
     // mpq_init(c);
     // mpq_init(d);
 
-    // mpq_set(a,   Real);
-    // mpq_set(b,   Imag);
-    // mpq_set(c, n.Real);
-    // mpq_set(d, n.Imag);
+    // mpq_set(a,   real);
+    // mpq_set(b,   imag);
+    // mpq_set(c, n.real);
+    // mpq_set(d, n.imag);
 
-    // mpq_mul(Real, a, c);
-    // mpq_mul(Imag, b, d);
-    // mpq_add(Real, Real, Imag);
+    // mpq_mul(real, a, c);
+    // mpq_mul(imag, b, d);
+    // mpq_add(real, real, imag);
 
-    // mpq_mul(Imag, b, c);
+    // mpq_mul(imag, b, c);
     // mpq_mul(a   , a, d);
-    // mpq_sub(Imag, Imag, a);
+    // mpq_sub(imag, imag, a);
 
     // mpq_mul(c, c, c);
     // mpq_mul(d, d, d);
     // mpq_add(c, c, d);
-    // mpq_div(Real, Real, c);
-    // mpq_div(Imag, Imag, c);
+    // mpq_div(real, real, c);
+    // mpq_div(imag, imag, c);
 
     // mpq_clear(a);
     // mpq_clear(b);
     // mpq_clear(c);
     // mpq_clear(d);
-    double a = Real;
-    double b = Imag;
-    double c = n.Real;
-    double d = n.Imag;
-    Real = a*c;
-    Imag = b*d;
-    Real += Imag;
-    Imag = b*c;
+    double a = real;
+    double b = imag;
+    double c = n.real;
+    double d = n.imag;
+    real = a*c;
+    imag = b*d;
+    real += imag;
+    imag = b*c;
     a = a*d;
-    Imag -= a;
+    imag -= a;
     c *= c;
     d *= d;
     c += d;
-    Real /= c;
-    Imag /= c;
+    real /= c;
+    imag /= c;
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::BinScale(int N)
+void Number::binScale(int N)
 {
     if(N > 0){
-        // mpq_mul_2exp(Real, Real, N);
-        // mpq_mul_2exp(Imag, Imag, N);
-        Real *= pow(2, N);
-        Imag *= pow(2, N);
+        // mpq_mul_2exp(real, real, N);
+        // mpq_mul_2exp(imag, imag, N);
+        real *= pow(2, N);
+        imag *= pow(2, N);
     }else{
-        // mpq_div_2exp(Real, Real, -N);
-        // mpq_div_2exp(Imag, Imag, -N);
-        Real /= pow(2, N);
-        Imag /= pow(2, N);
+        // mpq_div_2exp(real, real, -N);
+        // mpq_div_2exp(imag, imag, -N);
+        real /= pow(2, N);
+        imag /= pow(2, N);
     }
 }
 //------------------------------------------------------------------------------
 
-void NUMBER::Round()
+void Number::round()
 {
     // mpz_t n, d;
 
     // mpz_init(n);
     // mpz_init(d);
 
-    // mpq_get_num(n, Real);
-    // mpq_get_den(d, Real);
+    // mpq_get_num(n, real);
+    // mpq_get_den(d, real);
 
     // if(mpz_cmp_ui(d, 1)){
     //   mpz_mul_ui(n, n, 2);
@@ -617,13 +617,13 @@ void NUMBER::Round()
     //   mpz_fdiv_q(n, n, d);
     //   mpz_set_ui(d, 1);
 
-    //   mpq_set_num(Real, n);
-    //   mpq_set_den(Real, d);
+    //   mpq_set_num(real, n);
+    //   mpq_set_den(real, d);
     // }
 
-    // if(mpq_cmp_ui(Imag, 0, 1)){
-    //   mpq_get_num(n, Imag);
-    //   mpq_get_den(d, Imag);
+    // if(mpq_cmp_ui(imag, 0, 1)){
+    //   mpq_get_num(n, imag);
+    //   mpq_get_den(d, imag);
 
     //   if(mpz_cmp_ui(d, 1)){
     //     mpz_mul_ui(n, n, 2);
@@ -632,116 +632,116 @@ void NUMBER::Round()
     //     mpz_fdiv_q(n, n, d);
     //     mpz_set_ui(d, 1);
 
-    //     mpq_set_num(Imag, n);
-    //     mpq_set_den(Imag, d);
+    //     mpq_set_num(imag, n);
+    //     mpq_set_den(imag, d);
     //   }
     // }
 
     // mpz_clear(n);
     // mpz_clear(d);
-    Real = round(Real);
-    Imag = round(Imag);
+    real = ::round(real);
+    imag = ::round(imag);
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::IsInt() const
+bool Number::isInt() const
 {
-    // return !mpq_cmp_ui(Imag, 0, 1) && !mpz_cmp_ui(mpq_denref(Real), 1);
-    return round(Real) == Real && Imag == 0;
+    // return !mpq_cmp_ui(imag, 0, 1) && !mpz_cmp_ui(mpq_denref(real), 1);
+    return ::round(real) == real && imag == 0;
 }
 //------------------------------------------------------------------------------
 
-bool NUMBER::IsReal() const
+bool Number::isReal() const
 {
-    // return !mpq_cmp_ui(Imag, 0, 1);
-    return Imag == 0;
+    // return !mpq_cmp_ui(imag, 0, 1);
+    return imag == 0;
 }
 //------------------------------------------------------------------------------
 
-double NUMBER::GetReal() const
+double Number::getReal() const
 {
-    // return mpq_get_d(Real);
-    return Real;
+    // return mpq_get_d(real);
+    return real;
 }
 //------------------------------------------------------------------------------
 
-double NUMBER::GetImag() const
+double Number::getImag() const
 {
-    // return mpq_get_d(Imag);
-    return Imag;
+    // return mpq_get_d(imag);
+    return imag;
 }
 //------------------------------------------------------------------------------
 
-string& NUMBER::GetString(int Base) const
+string& Number::getString(int base) const
 {
-    static string Result;
-    Result.clear();
+    static string result;
+    result.clear();
 
-    // bool   r = mpq_cmp_ui(Real, 0, 1);
-    // bool   i = mpq_cmp_ui(Imag, 0, 1);
+    // bool   r = mpq_cmp_ui(real, 0, 1);
+    // bool   i = mpq_cmp_ui(imag, 0, 1);
 
-    // char* sr = mpq_get_str(0, Base, Real);
-    // char* si = mpq_get_str(0, Base, Imag);
+    // char* sr = mpq_get_str(0, base, real);
+    // char* si = mpq_get_str(0, base, imag);
 
     // char* s = new char[strlen(sr) + strlen(si) + 0x100];
     // if(r && i) sprintf(s, "(%s+%sj)", sr, si);
     // else if(i) sprintf(s, "%sj"     , si);
     // else       sprintf(s, "%s"      , sr);
 
-    // if(Base > 10){
+    // if(base > 10){
     //   for(int n = 0; s[n]; n++){
     //     if(s[n] >= 'a' && s[n] <= 'z') s[n] += 'A' - 'a';
     //   }
     // }
-    // Result += s;
+    // result += s;
 
     // free(sr);
     // free(si);
 
     // delete[] s;
 
-    bool r = (Real != 0);
-    bool i = (Imag != 0);
+    bool r = (real != 0);
+    bool i = (imag != 0);
 
     char s[0x100];
 
-    if(r && i) sprintf(s, "(%f+%fj)", Real, Imag);
-    else if(i) sprintf(s, "%fj"     , Imag);
-    else       sprintf(s, "%f"      , Real);
+    if(r && i) sprintf(s, "(%f+%fj)", real, imag);
+    else if(i) sprintf(s, "%fj"     , imag);
+    else       sprintf(s, "%f"      , real);
 
-    Result += s;
+    result += s;
 
-    return Result;
+    return result;
 }
 //------------------------------------------------------------------------------
 
-string& NUMBER::Display() const
+string& Number::display() const
 {
-    // static string Result;
-    // Result.clear();
+    // static string result;
+    // result.clear();
 
-    // bool   r = mpq_cmp_ui(Real, 0, 1);
-    // bool   i = mpq_cmp_ui(Imag, 0, 1);
+    // bool   r = mpq_cmp_ui(real, 0, 1);
+    // bool   i = mpq_cmp_ui(imag, 0, 1);
 
-    // char* sr = mpq_get_str(0, 10, Real);
-    // char* si = mpq_get_str(0, 10, Imag);
+    // char* sr = mpq_get_str(0, 10, real);
+    // char* si = mpq_get_str(0, 10, imag);
 
-    // double dr = mpq_get_d(Real);
-    // double di = mpq_get_d(Imag);
+    // double dr = mpq_get_d(real);
+    // double di = mpq_get_d(imag);
 
     // char* s = new char[strlen(sr) + strlen(si) + 0x100];
     // if(r && i) sprintf(s, "(%s+%sj) (~(%.18g+%.18gj))", sr, si, dr, di);
     // else if(i) sprintf(s, "%sj (~%.18gj)", si, di);
     // else       sprintf(s, "%s (~%.18g)"  , sr, dr);
-    // Result += s;
+    // result += s;
 
     // free(sr);
     // free(si);
 
     // delete[] s;
 
-    // return Result;
+    // return result;
 
-    return GetString();
+    return getString();
 }
 //------------------------------------------------------------------------------
