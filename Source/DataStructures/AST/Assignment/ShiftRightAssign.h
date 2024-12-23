@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Assignment_Shift_Right_Assign_h
-#define AST_Assignment_Shift_Right_Assign_h
+#ifndef AST_Assignment_ShiftRightAssign_h
+#define AST_Assignment_ShiftRightAssign_h
 //------------------------------------------------------------------------------
 
 #include "../Assignment.h"

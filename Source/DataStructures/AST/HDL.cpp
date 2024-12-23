@@ -75,10 +75,10 @@ bool Hdl::getVerilog(string& body)
 void Hdl::display()
 {
     displayInfo();
-    debug.print("hdl (%s):\n", identifier.c_str());
-    debug.print(" Files:\n  "     ); if(files     ) files     ->display(); debug.print("\n");
-    debug.print(" Parameters:\n  "); if(parameters) parameters->display();
-    debug.print(" Ports:\n  "     ); if(ports     ) ports     ->display();
+    logger.print("hdl (%s):\n", identifier.c_str());
+    logger.print(" Files:\n  "     ); if(files     ) files     ->display(); logger.print("\n");
+    logger.print(" Parameters:\n  "); if(parameters) parameters->display();
+    logger.print(" Ports:\n  "     ); if(ports     ) ports     ->display();
 
     if(next) next->display();
 }

@@ -51,24 +51,24 @@ void Parser::getToken()
     if(!scanner.getToken(&token)) return;
 
     #ifdef DEBUG
-        debug.print(ANSI_FG_BRIGHT_BLACK);
-        debug.print(scanner.filename);
-        debug.print(":" ANSI_FG_CYAN "");
-        debug.print("%05d", token.line);
-        debug.print("  \t" ANSI_RESET);
+        logger.print(ANSI_FG_BRIGHT_BLACK);
+        logger.print(scanner.filename);
+        logger.print(":" ANSI_FG_CYAN "");
+        logger.print("%05d", token.line);
+        logger.print("  \t" ANSI_RESET);
         switch(token.type){
-            case Token::Type::Identifier: debug.print("identifier\t"                 ); break;
-            case Token::Type::Literal   : debug.print("literal   \t"                 ); break;
-            case Token::Type::String    : debug.print("string    \t\""               ); break;
-            default                     : debug.print("token %d  \t", (int)token.type); break;
+            case Token::Type::Identifier: logger.print("identifier\t"                 ); break;
+            case Token::Type::Literal   : logger.print("literal   \t"                 ); break;
+            case Token::Type::String    : logger.print("string    \t\""               ); break;
+            default                     : logger.print("token %d  \t", (int)token.type); break;
         }
-        debug.print(token.data.c_str());
+        logger.print(token.data.c_str());
         switch(token.type){
-            case Token::Type::Literal: debug.print(" = %s", token.value.display()); break;
-            case Token::Type::String : debug.print("\""); break;
+            case Token::Type::Literal: logger.print(" = %s", token.value.display()); break;
+            case Token::Type::String : logger.print("\""); break;
             default                  : break;
         }
-        debug.print("\n");
+        logger.print("\n");
     #endif
 }
 //------------------------------------------------------------------------------
@@ -351,7 +351,7 @@ AST::Base* Parser::parameter()
                 node = new AST::Assign(token.line, scanner.filename);
                 break;
 
-            case Token::Type::Raw_Assign:
+            case Token::Type::RawAssign:
                 node = new AST::RawAssign(token.line, scanner.filename);
                 break;
 
@@ -691,7 +691,7 @@ AST::Expression* Parser::unary()
         if(token.type == Token::Type::Negate){
             node = new AST::Negate(token.line, scanner.filename);
 
-        }else if(token.type == Token::Type::Bit_NOT){
+        }else if(token.type == Token::Type::BitNot){
             node = new AST::BitNot(token.line, scanner.filename);
 
         }else if(token.type == Token::Type::Colon){
@@ -765,37 +765,37 @@ AST::Expression* Parser::reduction()
 {
     AST::Expression* node = 0;
     switch(token.type){
-        case Token::Type::Bit_AND:
+        case Token::Type::BitAnd:
             node = new AST::AndReduce(token.line, scanner.filename);
             getToken();
             break;
 
-        case Token::Type::Bit_NAND:
+        case Token::Type::BitNand:
             node = new AST::NandReduce(token.line, scanner.filename);
             getToken();
             break;
 
-        case Token::Type::Bit_OR:
+        case Token::Type::BitOr:
             node = new AST::OrReduce(token.line, scanner.filename);
             getToken();
             break;
 
-        case Token::Type::Bit_NOR:
+        case Token::Type::BitNor:
             node = new AST::NorReduce(token.line, scanner.filename);
             getToken();
             break;
 
-        case Token::Type::Bit_XOR:
+        case Token::Type::BitXor:
             node = new AST::XorReduce(token.line, scanner.filename);
             getToken();
             break;
 
-        case Token::Type::Bit_XNOR:
+        case Token::Type::BitXnor:
             node = new AST::XnorReduce(token.line, scanner.filename);
             getToken();
             break;
 
-        case Token::Type::Logical_NOT:
+        case Token::Type::LogicalNot:
             node = new AST::LogicalNot(token.line, scanner.filename);
             getToken();
             break;
@@ -965,10 +965,10 @@ AST::Expression* Parser::shift()
 
     while(token.type != Token::Type::Unknown){
         switch(token.type){
-            case Token::Type::Shift_Left:
+            case Token::Type::ShiftLeft:
                 temp = new AST::ShiftLeft(token.line, scanner.filename);
                 break;
-            case Token::Type::Shift_Right:
+            case Token::Type::ShiftRight:
                 temp = new AST::ShiftRight(token.line, scanner.filename);
                 break;
             default:
@@ -1006,10 +1006,10 @@ AST::Expression* Parser::relational()
             case Token::Type::Greater:
                 temp = new AST::Greater(token.line, scanner.filename);
                 break;
-            case Token::Type::Less_Equal:
+            case Token::Type::LessEqual:
                 temp = new AST::LessEqual(token.line, scanner.filename);
                 break;
-            case Token::Type::Greater_Equal:
+            case Token::Type::GreaterEqual:
                 temp = new AST::GreaterEqual(token.line, scanner.filename);
                 break;
             default:
@@ -1044,7 +1044,7 @@ AST::Expression* Parser::equality()
             case Token::Type::Equal:
                 temp = new AST::Equal(token.line, scanner.filename);
                 break;
-            case Token::Type::Not_Equal:
+            case Token::Type::NotEqual:
                 temp = new AST::NotEqual(token.line, scanner.filename);
                 break;
             default:
@@ -1076,10 +1076,10 @@ AST::Expression* Parser::bitwiseAND()
 
     while(token.type != Token::Type::Unknown){
         switch(token.type){
-            case Token::Type::Bit_AND:
+            case Token::Type::BitAnd:
                 temp = new AST::BitAnd(token.line, scanner.filename);
                 break;
-            case Token::Type::Bit_NAND:
+            case Token::Type::BitNand:
                 temp = new AST::BitNand(token.line, scanner.filename);
                 break;
             default:
@@ -1111,10 +1111,10 @@ AST::Expression* Parser::bitwiseXOR()
 
     while(token.type != Token::Type::Unknown){
         switch(token.type){
-            case Token::Type::Bit_XOR:
+            case Token::Type::BitXor:
                 temp = new AST::BitXor(token.line, scanner.filename);
                 break;
-            case Token::Type::Bit_XNOR:
+            case Token::Type::BitXnor:
                 temp = new AST::BitXnor(token.line, scanner.filename);
                 break;
             default:
@@ -1146,10 +1146,10 @@ AST::Expression* Parser::bitwiseOR()
 
     while(token.type != Token::Type::Unknown){
         switch(token.type){
-            case Token::Type::Bit_OR:
+            case Token::Type::BitOr:
                 temp = new AST::BitOr(token.line, scanner.filename);
                 break;
-            case Token::Type::Bit_NOR:
+            case Token::Type::BitNor:
                 temp = new AST::BitNor(token.line, scanner.filename);
                 break;
             default:
@@ -1249,7 +1249,7 @@ AST::Assignment* Parser::initialiser(std::string& identifier)
         case Token::Type::Assign:
             node = new AST::Assign(token.line, scanner.filename);
             break;
-        case Token::Type::Raw_Assign:
+        case Token::Type::RawAssign:
             node = new AST::RawAssign(token.line, scanner.filename);
             break;
         default:
@@ -1340,7 +1340,7 @@ AST::Definition* Parser::defParameter()
         node->identifiers->identifier = token.data;
         getToken();
 
-    }else if(node->type == AST::Base::Type::Class_Instance){
+    }else if(node->type == AST::Base::Type::ClassInstance){
         auto temp = ((AST::ClassInstance*)node);
         if(
             temp->className &&
@@ -1525,17 +1525,17 @@ AST::Definition* Parser::definition()
     parameterList(node->parameters);
 
     if(!node->parameters.empty()){
-        if(node->type == AST::Base::Type::Void_Definition){
+        if(node->type == AST::Base::Type::VoidDefinition){
             printError("Void type does not take parameters");
             delete node;
             return 0;
         }
-        if(node->type == AST::Base::Type::Auto_Definition){
+        if(node->type == AST::Base::Type::AutoDefinition){
             printError("Auto type does not take parameters");
             delete node;
             return 0;
         }
-        if(node->type == AST::Base::Type::FuncPtr_Definition){
+        if(node->type == AST::Base::Type::FuncPtrDefinition){
             printError("Func type does not take parameters");
             delete node;
             return 0;
@@ -1554,7 +1554,7 @@ AST::Definition* Parser::definition()
         delete node;
         return 0;
     }
-    if(node->type == AST::Base::Type::Void_Definition){
+    if(node->type == AST::Base::Type::VoidDefinition){
         if(!node->identifiers->function){
             printError("Only functions can have \"void\" type.\n");
         }
@@ -1563,7 +1563,7 @@ AST::Definition* Parser::definition()
 }
 //------------------------------------------------------------------------------
 
-bool Parser::validNamespaceSpecifier(AST::Expression* node)
+bool Parser::validNameSpaceSpecifier(AST::Expression* node)
 {
     // Only a few operations are invalid:
     switch(node->type){
@@ -1576,10 +1576,10 @@ bool Parser::validNamespaceSpecifier(AST::Expression* node)
     }
 
     if(node->left){
-        if(!validNamespaceSpecifier(node->left)) return false;
+        if(!validNameSpaceSpecifier(node->left)) return false;
     }
     if(node->right){
-        if(!validNamespaceSpecifier(node->right)) return false;
+        if(!validNameSpaceSpecifier(node->right)) return false;
     }
     return true;
 }
@@ -1678,7 +1678,7 @@ AST::Base* Parser::other()
     }
 
     if(token.type == Token::Type::AccessMemberPush){ // nameSpace push
-        if(!validNamespaceSpecifier(expr)){
+        if(!validNameSpaceSpecifier(expr)){
             printError("Invalid name-space specifier expression");
             delete expr;
             return 0;
@@ -1737,43 +1737,43 @@ AST::Base* Parser::other()
         case Token::Type::Assign:
             assign = new AST::Assign(token.line, scanner.filename);
             break;
-        case Token::Type::Raw_Assign:
+        case Token::Type::RawAssign:
             assign = new AST::RawAssign(token.line, scanner.filename);
             break;
-        case Token::Type::Append_Assign:
+        case Token::Type::AppendAssign:
             assign = new AST::AppendAssign(token.line, scanner.filename);
             break;
-        case Token::Type::Add_Assign:
+        case Token::Type::AddAssign:
             assign = new AST::AddAssign(token.line, scanner.filename);
             break;
-        case Token::Type::Subtract_Assign:
+        case Token::Type::SubtractAssign:
             assign = new AST::SubtractAssign(token.line, scanner.filename);
             break;
-        case Token::Type::Multiply_Assign:
+        case Token::Type::MultiplyAssign:
             assign = new AST::MultiplyAssign(token.line, scanner.filename);
             break;
-        case Token::Type::Divide_Assign:
+        case Token::Type::DivideAssign:
             assign = new AST::DivideAssign(token.line, scanner.filename);
             break;
-        case Token::Type::Modulus_Assign:
+        case Token::Type::ModulusAssign:
             assign = new AST::ModulusAssign(token.line, scanner.filename);
             break;
-        case Token::Type::Exponential_Assign:
+        case Token::Type::ExponentialAssign:
             assign = new AST::ExponentialAssign(token.line, scanner.filename);
             break;
-        case Token::Type::AND_Assign:
+        case Token::Type::AndAssign:
             assign = new AST::AndAssign(token.line, scanner.filename);
             break;
-        case Token::Type::OR_Assign:
+        case Token::Type::OrAssign:
             assign = new AST::OrAssign(token.line, scanner.filename);
             break;
-        case Token::Type::XOR_Assign:
+        case Token::Type::XorAssign:
             assign = new AST::XorAssign(token.line, scanner.filename);
             break;
-        case Token::Type::Shift_Left_Assign:
+        case Token::Type::ShiftLeftAssign:
             assign = new AST::ShiftLeftAssign(token.line, scanner.filename);
             break;
-        case Token::Type::Shift_Right_Assign:
+        case Token::Type::ShiftRightAssign:
             assign = new AST::ShiftRightAssign(token.line, scanner.filename);
             break;
 
@@ -2387,9 +2387,9 @@ AST::Base* Parser::statementBlock()
 
 AST::Base* Parser::run(const char* filename)
 {
-    debug.print("Building AST for ");
-    debug.print(filename);
-    debug.print("...\n");
+    logger.print("Building AST for ");
+    logger.print(filename);
+    logger.print("...\n");
 
     error = false;
 
@@ -2404,11 +2404,11 @@ AST::Base* Parser::run(const char* filename)
     }
 
     #ifdef DEBUG
-        debug.print(ANSI_FG_GREEN "\nDisplaying AST of ");
-        debug.print(filename);
-        debug.print(" -------------------------------------\n\n" ANSI_RESET);
+        logger.print(ANSI_FG_GREEN "\nDisplaying AST of ");
+        logger.print(filename);
+        logger.print(" -------------------------------------\n\n" ANSI_RESET);
         if(AST) AST->display();
-        else    debug.print("AST is empty\n");
+        else    logger.print("AST is empty\n");
 
         AST->validate();
     #endif

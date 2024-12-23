@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Definition_Num_Definition_h
-#define AST_Definition_Num_Definition_h
+#ifndef AST_Definition_NumDefinition_h
+#define AST_Definition_NumDefinition_h
 //------------------------------------------------------------------------------
 
 #include "../Definition.h"

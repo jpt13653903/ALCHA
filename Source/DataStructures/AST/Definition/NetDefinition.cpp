@@ -37,7 +37,7 @@ NetDefinition::NetDefinition(
 NetDefinition::NetDefinition(
     int             line,
     const char*     filename
-): Definition(line, filename, Type::Net_Definition){}
+): Definition(line, filename, Type::NetDefinition){}
 //------------------------------------------------------------------------------
 
 NetDefinition::~NetDefinition(){}
@@ -96,7 +96,7 @@ void NetDefinition::display()
 
 void NetDefinition::validateMembers()
 {
-    assert(type == Type::Net_Definition);
+    assert(type == Type::NetDefinition);
 
     Definition::validateMembers();
 }

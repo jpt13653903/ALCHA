@@ -111,7 +111,7 @@ void Conditional::display()
 {
     displayStart();
 
-    debug.print(" ? ");
+    logger.print(" ? ");
 
     displayEnd();
 }

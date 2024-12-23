@@ -28,7 +28,7 @@ using namespace AST;
 LogicalOr::LogicalOr(int line, const string& filename): LogicalOr(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-LogicalOr::LogicalOr(int line, const char* filename): Expression(line, filename, Type::Logical_OR){}
+LogicalOr::LogicalOr(int line, const char* filename): Expression(line, filename, Type::LogicalOr){}
 //------------------------------------------------------------------------------
 
 LogicalOr::~LogicalOr(){}
@@ -116,7 +116,7 @@ void LogicalOr::display()
 {
     displayStart();
 
-    debug.print(" || ");
+    logger.print(" || ");
 
     displayEnd();
 }
@@ -124,7 +124,7 @@ void LogicalOr::display()
 
 void LogicalOr::validateMembers()
 {
-    assert(type == Type::Logical_OR);
+    assert(type == Type::LogicalOr);
 
     assert(!next);
     assert(!prev);

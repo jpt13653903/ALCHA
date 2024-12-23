@@ -50,7 +50,7 @@ EnumDefinition::EnumDefinition(int line, std::string& filename):
 //------------------------------------------------------------------------------
 
 EnumDefinition::EnumDefinition(int line, const char* filename):
-    Base(line, filename, Type::Enum_Definition)
+    Base(line, filename, Type::EnumDefinition)
 {
     values = 0;
 }
@@ -91,15 +91,15 @@ bool EnumDefinition::getVerilog(string& body)
 void EnumDefinition::display()
 {
     displayInfo();
-    debug.print("Enum Definition (%s):\n", identifier.c_str());
+    logger.print("Enum Definition (%s):\n", identifier.c_str());
 
-    debug.print(" Values: ");
+    logger.print(" Values: ");
     Value* value = values;
     while(value){
-        debug.print("%s", value->identifier.c_str());
+        logger.print("%s", value->identifier.c_str());
         value = value->next;
-        if(value) debug.print(", ");
-        else      debug.print("\n");
+        if(value) logger.print(", ");
+        else      logger.print("\n");
     }
 
     if(next) next->display();
@@ -108,7 +108,7 @@ void EnumDefinition::display()
 
 void EnumDefinition::validateMembers()
 {
-    assert(type == Type::Enum_Definition);
+    assert(type == Type::EnumDefinition);
 
     error("Not yet implemented");
 }

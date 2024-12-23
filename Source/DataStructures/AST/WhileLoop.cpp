@@ -71,11 +71,11 @@ bool WhileLoop::getVerilog(string& body)
 void WhileLoop::display()
 {
     displayInfo();
-    debug.print("while(");
+    logger.print("while(");
         if(condition) condition->display();
-    debug.print("){\n");
+    logger.print("){\n");
         if(statements) statements->display();
-    debug.print("}\n");
+    logger.print("}\n");
 
     if(next) next->display();
 }

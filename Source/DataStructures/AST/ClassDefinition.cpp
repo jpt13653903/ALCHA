@@ -60,7 +60,7 @@ ClassDefinition::Parent::~Parent()
 ClassDefinition::ClassDefinition(int line, std::string& filename): ClassDefinition(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-ClassDefinition::ClassDefinition(int line, const char* filename): Base(line, filename, Type::Class_Definition)
+ClassDefinition::ClassDefinition(int line, const char* filename): Base(line, filename, Type::ClassDefinition)
 {
     attributes = 0;
     parameters = 0;
@@ -113,34 +113,34 @@ bool ClassDefinition::getVerilog(string& body)
 void ClassDefinition::display()
 {
     displayInfo();
-    debug.print("Class Definition (%s):\n", identifier.c_str());
+    logger.print("Class Definition (%s):\n", identifier.c_str());
 
     if(attributes){
-        debug.print(" Attributes:\n"); attributes->display(); debug.print("\n");
+        logger.print(" Attributes:\n"); attributes->display(); logger.print("\n");
     }
     if(parameters){
-        debug.print(" Parameters:\n"); parameters->display(); debug.print("\n");
+        logger.print(" Parameters:\n"); parameters->display(); logger.print("\n");
     }
 
-    if(parents) debug.print(" Parents:\n");
+    if(parents) logger.print(" Parents:\n");
     Parent* parent = parents;
     while(parent){
-        debug.print(" - ");
+        logger.print(" - ");
         if(parent->className) parent->className->display();
-        debug.print("(");
+        logger.print("(");
         bool isFirst = true;
         for(auto parameter: parent->parameters){
-            if(isFirst) debug.print(", ");
+            if(isFirst) logger.print(", ");
             isFirst = false;
             parameter->display();
         }
-        debug.print(")\n");
+        logger.print(")\n");
         parent = parent->next;
     }
 
-    debug.print(" {\n");
+    logger.print(" {\n");
     if(body) body->display();
-    debug.print(" }\n");
+    logger.print(" }\n");
 
     if(next) next->display();
 }
@@ -148,7 +148,7 @@ void ClassDefinition::display()
 
 void ClassDefinition::validateMembers()
 {
-    assert(type == Type::Class_Definition);
+    assert(type == Type::ClassDefinition);
 
     error("Not yet implemented");
 }

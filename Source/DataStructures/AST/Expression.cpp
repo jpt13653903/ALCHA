@@ -203,9 +203,9 @@ Expression* Expression::makeObject()
 void Expression::displayStart()
 {
     if(left){
-        if(left->left || left->right) debug.print("(");
+        if(left->left || left->right) logger.print("(");
         left->display();
-        if(left->left || left->right) debug.print(")");
+        if(left->left || left->right) logger.print(")");
     }
 }
 //------------------------------------------------------------------------------
@@ -213,9 +213,9 @@ void Expression::displayStart()
 void Expression::displayEnd()
 {
     if(right){
-        if(right->left || right->right || right->next) debug.print("(");
+        if(right->left || right->right || right->next) logger.print("(");
         right->display();
-        if(right->left || right->right || right->next) debug.print(")");
+        if(right->left || right->right || right->next) logger.print(")");
     }
 }
 //------------------------------------------------------------------------------

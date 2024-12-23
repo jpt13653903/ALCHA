@@ -202,7 +202,7 @@ void Cast::display()
 {
     displayStart();
 
-    debug.print(" {cast} ");
+    logger.print(" {cast} ");
 
     displayEnd();
 }

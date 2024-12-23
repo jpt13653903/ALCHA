@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Expression_Less_Equal_h
-#define AST_Expression_Less_Equal_h
+#ifndef AST_Expression_LessEqual_h
+#define AST_Expression_LessEqual_h
 //------------------------------------------------------------------------------
 
 #include "../Expression.h"

@@ -28,7 +28,7 @@ using namespace AST;
 ShiftLeft::ShiftLeft(int line, const string& filename): ShiftLeft(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-ShiftLeft::ShiftLeft(int line, const char* filename): Expression(line, filename, Type::Shift_Left){}
+ShiftLeft::ShiftLeft(int line, const char* filename): Expression(line, filename, Type::ShiftLeft){}
 //------------------------------------------------------------------------------
 
 ShiftLeft::~ShiftLeft(){}
@@ -126,7 +126,7 @@ void ShiftLeft::display()
 {
     displayStart();
 
-    debug.print(" << ");
+    logger.print(" << ");
 
     displayEnd();
 }
@@ -134,7 +134,7 @@ void ShiftLeft::display()
 
 void ShiftLeft::validateMembers()
 {
-    assert(type == Type::Shift_Left);
+    assert(type == Type::ShiftLeft);
 
     assert(!next);
     assert(!prev);

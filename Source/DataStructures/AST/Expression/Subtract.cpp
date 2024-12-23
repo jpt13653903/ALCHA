@@ -231,7 +231,7 @@ void Subtract::display()
 {
     displayStart();
 
-    debug.print(" - " );
+    logger.print(" - " );
 
     displayEnd();
 }

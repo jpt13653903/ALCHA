@@ -28,7 +28,7 @@ using namespace AST;
 LessEqual::LessEqual(int line, const string& filename): LessEqual(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-LessEqual::LessEqual(int line, const char* filename): Expression(line, filename, Type::Less_Equal){}
+LessEqual::LessEqual(int line, const char* filename): Expression(line, filename, Type::LessEqual){}
 //------------------------------------------------------------------------------
 
 LessEqual::~LessEqual(){}
@@ -116,7 +116,7 @@ void LessEqual::display()
 {
     displayStart();
 
-    debug.print(" <= ");
+    logger.print(" <= ");
 
     displayEnd();
 }
@@ -124,7 +124,7 @@ void LessEqual::display()
 
 void LessEqual::validateMembers()
 {
-    assert(type == Type::Less_Equal);
+    assert(type == Type::LessEqual);
 
     assert(!next);
     assert(!prev);

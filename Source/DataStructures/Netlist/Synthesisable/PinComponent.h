@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Netlist_PinComponent_h
-#define Netlist_PinComponent_h
+#ifndef Netlist_Synthesisable_PinComponent_h
+#define Netlist_Synthesisable_PinComponent_h
 //------------------------------------------------------------------------------
 
 #include "../Base.h"

@@ -236,25 +236,25 @@ bool Assignment::getLHS(Expression* node, TargetList& list)
 void Assignment::displayAssignment(const char* theOperator)
 {
     displayInfo();
-    debug.print("Assignment: ");
+    logger.print("Assignment: ");
 
     if(left){
-        if(left->left || left->right) debug.print("(");
+        if(left->left || left->right) logger.print("(");
         left->display();
-        if(left->left || left->right) debug.print(")");
+        if(left->left || left->right) logger.print(")");
     }
 
-    debug.print(" %s ", theOperator);
+    logger.print(" %s ", theOperator);
 
     if(right){
-        if(right->left || right->right) debug.print("(");
+        if(right->left || right->right) logger.print("(");
         right->display();
-        if(right->left || right->right) debug.print(")");
+        if(right->left || right->right) logger.print(")");
     }else{
-        debug.print("{Moved expression}");
+        logger.print("{Moved expression}");
     }
 
-    debug.print("\n");
+    logger.print("\n");
     if(next) next->display();
 }
 //------------------------------------------------------------------------------

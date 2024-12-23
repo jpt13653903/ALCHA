@@ -40,7 +40,7 @@ SubtractAssign::SubtractAssign(int line, std::string filename):
 //------------------------------------------------------------------------------
 
 SubtractAssign::SubtractAssign(int line, const char* filename):
-    Assignment(line, filename, Type::Subtract_Assign){}
+    Assignment(line, filename, Type::SubtractAssign){}
 //------------------------------------------------------------------------------
 
 SubtractAssign::~SubtractAssign(){}
@@ -111,7 +111,7 @@ void SubtractAssign::display()
 
 void SubtractAssign::validateMembers()
 {
-    assert(type == Type::Subtract_Assign);
+    assert(type == Type::SubtractAssign);
 
     assert(left, return);
     left->validate();

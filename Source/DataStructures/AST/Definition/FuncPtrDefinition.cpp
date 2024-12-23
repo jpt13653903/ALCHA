@@ -36,7 +36,7 @@ FuncPtrDefinition::FuncPtrDefinition(
 FuncPtrDefinition::FuncPtrDefinition(
     int             line,
     const char*     filename
-): Definition(line, filename, Type::FuncPtr_Definition){}
+): Definition(line, filename, Type::FuncPtrDefinition){}
 //------------------------------------------------------------------------------
 
 FuncPtrDefinition::~FuncPtrDefinition(){}
@@ -88,7 +88,7 @@ void FuncPtrDefinition::display()
 
 void FuncPtrDefinition::validateMembers()
 {
-    assert(type == Type::FuncPtr_Definition);
+    assert(type == Type::FuncPtrDefinition);
 
     assert(parameters.empty());
 

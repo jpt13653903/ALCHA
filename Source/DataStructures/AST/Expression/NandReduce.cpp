@@ -28,7 +28,7 @@ using namespace AST;
 NandReduce::NandReduce(int line, const string& filename): NandReduce(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-NandReduce::NandReduce(int line, const char* filename): Expression(line, filename, Type::NAND_Reduce){}
+NandReduce::NandReduce(int line, const char* filename): Expression(line, filename, Type::NandReduce){}
 //------------------------------------------------------------------------------
 
 NandReduce::~NandReduce(){}
@@ -114,7 +114,7 @@ void NandReduce::display()
 {
     displayStart();
 
-    debug.print(" ~&");
+    logger.print(" ~&");
 
     displayEnd();
 }
@@ -122,7 +122,7 @@ void NandReduce::display()
 
 void NandReduce::validateMembers()
 {
-    assert(type == Type::NAND_Reduce);
+    assert(type == Type::NandReduce);
 
     assert(!next);
     assert(!prev);

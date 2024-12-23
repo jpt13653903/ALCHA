@@ -28,7 +28,7 @@ using namespace AST;
 BitAnd::BitAnd(int line, const string& filename): BitAnd(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-BitAnd::BitAnd(int line, const char* filename): Expression(line, filename, Type::Bit_AND){}
+BitAnd::BitAnd(int line, const char* filename): Expression(line, filename, Type::BitAnd){}
 //------------------------------------------------------------------------------
 
 BitAnd::~BitAnd(){}
@@ -116,7 +116,7 @@ void BitAnd::display()
 {
     displayStart();
 
-    debug.print( " & ");
+    logger.print( " & ");
 
     displayEnd();
 }
@@ -124,7 +124,7 @@ void BitAnd::display()
 
 void BitAnd::validateMembers()
 {
-    assert(type == Type::Bit_AND);
+    assert(type == Type::BitAnd);
 
     assert(!next);
     assert(!prev);

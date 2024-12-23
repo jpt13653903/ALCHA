@@ -37,7 +37,7 @@ PinDefinition::PinDefinition(
 PinDefinition::PinDefinition(
     int             line,
     const char*     filename
-): Definition(line, filename, Type::Pin_Definition){}
+): Definition(line, filename, Type::PinDefinition){}
 //------------------------------------------------------------------------------
 
 PinDefinition::~PinDefinition(){}
@@ -98,7 +98,7 @@ void PinDefinition::display()
 
 void PinDefinition::validateMembers()
 {
-    assert(type == Type::Pin_Definition);
+    assert(type == Type::PinDefinition);
 
     Definition::validateMembers();
 }

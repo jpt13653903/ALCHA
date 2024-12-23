@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Netlist_Module_h
-#define Netlist_Module_h
+#ifndef Netlist_NameSpace_Module_h
+#define Netlist_NameSpace_Module_h
 //------------------------------------------------------------------------------
 
 #include <map>

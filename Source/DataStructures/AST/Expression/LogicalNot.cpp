@@ -28,7 +28,7 @@ using namespace AST;
 LogicalNot::LogicalNot(int line, const string& filename): LogicalNot(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-LogicalNot::LogicalNot(int line, const char* filename): Expression(line, filename, Type::Logical_NOT){}
+LogicalNot::LogicalNot(int line, const char* filename): Expression(line, filename, Type::LogicalNot){}
 //------------------------------------------------------------------------------
 
 LogicalNot::~LogicalNot(){}
@@ -114,7 +114,7 @@ void LogicalNot::display()
 {
     displayStart();
 
-    debug.print( " !");
+    logger.print( " !");
 
     displayEnd();
 }
@@ -122,7 +122,7 @@ void LogicalNot::display()
 
 void LogicalNot::validateMembers()
 {
-    assert(type == Type::Logical_NOT);
+    assert(type == Type::LogicalNot);
 
     assert(!next);
     assert(!prev);

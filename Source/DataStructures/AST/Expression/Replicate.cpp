@@ -147,7 +147,7 @@ void Replicate::display()
 {
     displayStart();
 
-    debug.print("{rep}");
+    logger.print("{rep}");
 
     displayEnd();
 }

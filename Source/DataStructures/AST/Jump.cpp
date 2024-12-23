@@ -69,16 +69,16 @@ bool Jump::getVerilog(string& body)
 void Jump::display()
 {
     displayInfo();
-    debug.print("jump(");
+    logger.print("jump(");
     switch(jumpType){
-        case JumpType::Return  : debug.print("return) "           ); break;
-        case JumpType::Break   : debug.print("break) "            ); break;
-        case JumpType::Continue: debug.print("continue) "         ); break;
-        default                : debug.print("Unknown jump type) "); break;
+        case JumpType::Return  : logger.print("return) "           ); break;
+        case JumpType::Break   : logger.print("break) "            ); break;
+        case JumpType::Continue: logger.print("continue) "         ); break;
+        default                : logger.print("Unknown jump type) "); break;
     }
     if(expression) expression->display();
-    else           debug.print("{default}");
-    debug.print("\n");
+    else           logger.print("{default}");
+    logger.print("\n");
 
     if(next) next->display();
 }

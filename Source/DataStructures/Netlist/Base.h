@@ -69,13 +69,13 @@ namespace Netlist{
                     Net,
                     PinComponent,
 
-                // Namespace
+                // NameSpace
                     Module,
                     Group
             } type;
 
             virtual bool isSynthesisable();
-            virtual bool isNamespace    ();
+            virtual bool isNameSpace    ();
 
             // The line and filename that resulted in this object, used for error reporting
             struct{

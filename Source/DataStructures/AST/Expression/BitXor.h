@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Expression_Bit_XOR_h
-#define AST_Expression_Bit_XOR_h
+#ifndef AST_Expression_BitXor_h
+#define AST_Expression_BitXor_h
 //------------------------------------------------------------------------------
 
 #include "../Expression.h"

@@ -37,7 +37,7 @@ NumDefinition::NumDefinition(
 NumDefinition::NumDefinition(
     int             line,
     const char*     filename
-): Definition(line, filename, Type::Num_Definition){}
+): Definition(line, filename, Type::NumDefinition){}
 //------------------------------------------------------------------------------
 
 NumDefinition::~NumDefinition(){}
@@ -94,7 +94,7 @@ void NumDefinition::display()
 
 void NumDefinition::validateMembers()
 {
-    assert(type == Type::Num_Definition);
+    assert(type == Type::NumDefinition);
 
     Definition::validateMembers();
 }

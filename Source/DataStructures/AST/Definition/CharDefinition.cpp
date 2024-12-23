@@ -37,7 +37,7 @@ CharDefinition::CharDefinition(
 CharDefinition::CharDefinition(
     int             line,
     const char*     filename
-): Definition(line, filename, Type::Char_Definition){}
+): Definition(line, filename, Type::CharDefinition){}
 //------------------------------------------------------------------------------
 
 CharDefinition::~CharDefinition(){}
@@ -94,7 +94,7 @@ void CharDefinition::display()
 
 void CharDefinition::validateMembers()
 {
-    assert(type == Type::Char_Definition);
+    assert(type == Type::CharDefinition);
 
     Definition::validateMembers();
 }

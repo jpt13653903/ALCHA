@@ -36,7 +36,7 @@ AutoDefinition::AutoDefinition(
 AutoDefinition::AutoDefinition(
     int             line,
     const char*     filename
-): Definition(line, filename, Type::Auto_Definition){}
+): Definition(line, filename, Type::AutoDefinition){}
 //------------------------------------------------------------------------------
 
 AutoDefinition::~AutoDefinition(){}
@@ -88,7 +88,7 @@ void AutoDefinition::display()
 
 void AutoDefinition::validateMembers()
 {
-    assert(type == Type::Auto_Definition);
+    assert(type == Type::AutoDefinition);
 
     assert(parameters.empty());
 

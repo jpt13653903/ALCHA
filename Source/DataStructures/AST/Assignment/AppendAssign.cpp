@@ -40,7 +40,7 @@ AppendAssign::AppendAssign(int line, std::string filename):
 //------------------------------------------------------------------------------
 
 AppendAssign::AppendAssign(int line, const char* filename):
-    Assignment(line, filename, Type::Append_Assign){}
+    Assignment(line, filename, Type::AppendAssign){}
 //------------------------------------------------------------------------------
 
 AppendAssign::~AppendAssign(){}
@@ -112,7 +112,7 @@ void AppendAssign::display()
 
 void AppendAssign::validateMembers()
 {
-    assert(type == Type::Append_Assign);
+    assert(type == Type::AppendAssign);
 
     assert(left, return);
     left->validate();

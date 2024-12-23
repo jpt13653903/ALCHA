@@ -40,7 +40,7 @@ DivideAssign::DivideAssign(int line, std::string filename):
 //------------------------------------------------------------------------------
 
 DivideAssign::DivideAssign(int line, const char* filename):
-    Assignment(line, filename, Type::Divide_Assign){}
+    Assignment(line, filename, Type::DivideAssign){}
 //------------------------------------------------------------------------------
 
 DivideAssign::~DivideAssign(){}
@@ -111,7 +111,7 @@ void DivideAssign::display()
 
 void DivideAssign::validateMembers()
 {
-    assert(type == Type::Divide_Assign);
+    assert(type == Type::DivideAssign);
 
     assert(left, return);
     left->validate();

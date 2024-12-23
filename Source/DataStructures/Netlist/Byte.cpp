@@ -69,10 +69,10 @@ bool Netlist::Byte::hasCircularReference(Base* object)
 
 void Netlist::Byte::display(int indent)
 {
-    debug.indent(indent+1);
-    debug.print("Byte: %s\n", name.c_str());
-    debug.indent(indent+2);
-    debug.print("value = 0x%02X\n", value);
+    logger.indent(indent+1);
+    logger.print("Byte: %s\n", name.c_str());
+    logger.indent(indent+2);
+    logger.print("value = 0x%02X\n", value);
 }
 //------------------------------------------------------------------------------
 

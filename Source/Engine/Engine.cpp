@@ -63,15 +63,15 @@ bool Engine::run(const char* filename)
     if(!Netlist::global.ast) return 0;
 
     #ifdef DEBUG
-        debug.print(ANSI_FG_GREEN "\nDisplaying global AST ");
-        debug.print(filename);
-        debug.print(" -------------------------------------\n\n" ANSI_RESET);
+        logger.print(ANSI_FG_GREEN "\nDisplaying global AST ");
+        logger.print(filename);
+        logger.print(" -------------------------------------\n\n" ANSI_RESET);
         if(Netlist::global.ast) Netlist::global.ast->display();
-        else                    debug.print("AST is empty\n");
+        else                    logger.print("AST is empty\n");
 
-        debug.print(ANSI_FG_GREEN "\nDisplaying global Symbols ");
-        debug.print(filename);
-        debug.print(" -------------------------------------\n\n" ANSI_RESET);
+        logger.print(ANSI_FG_GREEN "\nDisplaying global Symbols ");
+        logger.print(filename);
+        logger.print(" -------------------------------------\n\n" ANSI_RESET);
         Netlist::global.display();
 
         for(auto nameSpace: Netlist::nameSpaceStack){

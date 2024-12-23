@@ -75,16 +75,16 @@ bool Fsm::getVerilog(string& body)
 void Fsm::display()
 {
     displayInfo();
-    debug.print("fsm(");
+    logger.print("fsm(");
         bool isFirst = true;
         for(auto parameter: parameters){
-            if(isFirst) debug.print(", ");
+            if(isFirst) logger.print(", ");
             isFirst = false;
             if(parameter) parameter->display();
         }
-    debug.print("){\n");
+    logger.print("){\n");
         if(statements) statements->display();
-    debug.print("}\n");
+    logger.print("}\n");
 
     if(next) next->display();
 }

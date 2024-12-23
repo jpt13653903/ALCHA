@@ -28,7 +28,7 @@ using namespace AST;
 NorReduce::NorReduce(int line, const string& filename): NorReduce(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-NorReduce::NorReduce(int line, const char* filename): Expression(line, filename, Type::NOR_Reduce){}
+NorReduce::NorReduce(int line, const char* filename): Expression(line, filename, Type::NorReduce){}
 //------------------------------------------------------------------------------
 
 NorReduce::~NorReduce(){}
@@ -114,7 +114,7 @@ void NorReduce::display()
 {
     displayStart();
 
-    debug.print(" ~|");
+    logger.print(" ~|");
 
     displayEnd();
 }
@@ -122,7 +122,7 @@ void NorReduce::display()
 
 void NorReduce::validateMembers()
 {
-    assert(type == Type::NOR_Reduce);
+    assert(type == Type::NorReduce);
 
     assert(!next);
     assert(!prev);

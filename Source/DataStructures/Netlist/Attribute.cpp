@@ -74,12 +74,12 @@ bool Attribute::hasCircularReference(Base* object)
 
 void Attribute::display(int indent)
 {
-    debug.indent(indent);
-    debug.print(name);
-    debug.print(" = ");
+    logger.indent(indent);
+    logger.print(name);
+    logger.print(" = ");
     if(value) value->display();
-    else      debug.print("{null}");
-    debug.print("\n");
+    else      logger.print("{null}");
+    logger.print("\n");
 }
 //------------------------------------------------------------------------------
 

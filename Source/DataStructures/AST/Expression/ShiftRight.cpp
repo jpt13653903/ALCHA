@@ -28,7 +28,7 @@ using namespace AST;
 ShiftRight::ShiftRight(int line, const string& filename): ShiftRight(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-ShiftRight::ShiftRight(int line, const char* filename): Expression(line, filename, Type::Shift_Right){}
+ShiftRight::ShiftRight(int line, const char* filename): Expression(line, filename, Type::ShiftRight){}
 //------------------------------------------------------------------------------
 
 ShiftRight::~ShiftRight(){}
@@ -126,7 +126,7 @@ void ShiftRight::display()
 {
     displayStart();
 
-    debug.print(" >> ");
+    logger.print(" >> ");
 
     displayEnd();
 }
@@ -134,7 +134,7 @@ void ShiftRight::display()
 
 void ShiftRight::validateMembers()
 {
-    assert(type == Type::Shift_Right);
+    assert(type == Type::ShiftRight);
 
     assert(!next);
     assert(!prev);

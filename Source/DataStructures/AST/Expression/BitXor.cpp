@@ -28,7 +28,7 @@ using namespace AST;
 BitXor::BitXor(int line, const string& filename): BitXor(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-BitXor::BitXor(int line, const char* filename): Expression(line, filename, Type::Bit_XOR){}
+BitXor::BitXor(int line, const char* filename): Expression(line, filename, Type::BitXor){}
 //------------------------------------------------------------------------------
 
 BitXor::~BitXor(){}
@@ -116,7 +116,7 @@ void BitXor::display()
 {
     displayStart();
 
-    debug.print( " # ");
+    logger.print( " # ");
 
     displayEnd();
 }
@@ -124,7 +124,7 @@ void BitXor::display()
 
 void BitXor::validateMembers()
 {
-    assert(type == Type::Bit_XOR);
+    assert(type == Type::BitXor);
 
     assert(!next);
     assert(!prev);

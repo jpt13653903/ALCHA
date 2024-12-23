@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Expression_Expression_h
-#define AST_Expression_Expression_h
+#ifndef AST_Expression_h
+#define AST_Expression_h
 //------------------------------------------------------------------------------
 
 #include "Base.h"

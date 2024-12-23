@@ -113,7 +113,7 @@ void String::display()
 {
     displayStart();
 
-    debug.print("\"%s\"", value.c_str());
+    logger.print("\"%s\"", value.c_str());
 
     displayEnd();
 }

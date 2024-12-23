@@ -55,7 +55,7 @@ namespace AST{
 
                     Parameter,  // Parameter definition, not function call
 
-                    NamespacePush,
+                    NameSpacePush,
                     IfStatement,
                     ForLoop,
                     LoopLoop,
@@ -67,33 +67,33 @@ namespace AST{
                     HDL,
 
                 // Definition
-                    Void_Definition,
-                    Auto_Definition,
-                    Pin_Definition,
-                    Net_Definition,
-                    Byte_Definition,
-                    Char_Definition,
-                    Num_Definition,
-                    FuncPtr_Definition,
-                    Enum_Definition,
-                    Class_Definition,
-                    Class_Instance,
+                    VoidDefinition,
+                    AutoDefinition,
+                    PinDefinition,
+                    NetDefinition,
+                    ByteDefinition,
+                    CharDefinition,
+                    NumDefinition,
+                    FuncPtrDefinition,
+                    EnumDefinition,
+                    ClassDefinition,
+                    ClassInstance,
 
                 // Assignment
-                    Assign,             //   =
-                    Raw_Assign,         //  :=
-                    Append_Assign,      //  ~=
-                    Add_Assign,         //  +=
-                    Subtract_Assign,    //  -=
-                    Multiply_Assign,    //  *=
-                    Divide_Assign,      //  /=
-                    Modulus_Assign,     //  %=
-                    Exponential_Assign, // **=
-                    AND_Assign,         //  &=
-                    OR_Assign,          //  |=
-                    XOR_Assign,         //  ^=
-                    Shift_Left_Assign,  // <<=
-                    Shift_Right_Assign, // >>=
+                    Assign,            //   =
+                    RawAssign,         //  :=
+                    AppendAssign,      //  ~=
+                    AddAssign,         //  +=
+                    SubtractAssign,    //  -=
+                    MultiplyAssign,    //  *=
+                    DivideAssign,      //  /=
+                    ModulusAssign,     //  %=
+                    ExponentialAssign, // **=
+                    AndAssign,         //  &=
+                    OrAssign,          //  |=
+                    XorAssign,         //  ^=
+                    ShiftLeftAssign,   // <<=
+                    ShiftRightAssign,  // >>=
 
                 // Expression
                     String,
@@ -117,16 +117,16 @@ namespace AST{
                     Factorial,
 
                     Negate,
-                    Bit_NOT,
+                    BitNot,
                     Raw,     // Unary operator to cast to "raw bits", or "unsigned int"
 
-                    AND_Reduce,
-                    NAND_Reduce,
-                    OR_Reduce,
-                    NOR_Reduce,
-                    XOR_Reduce,
-                    XNOR_Reduce,
-                    Logical_NOT,
+                    AndReduce,
+                    NandReduce,
+                    OrReduce,
+                    NorReduce,
+                    XorReduce,
+                    XnorReduce,
+                    LogicalNot,
 
                     Cast,
 
@@ -140,26 +140,26 @@ namespace AST{
                     Add,
                     Subtract,
 
-                    Shift_Left,
-                    Shift_Right,
+                    ShiftLeft,
+                    ShiftRight,
 
                     Less,
                     Greater,
-                    Less_Equal,
+                    LessEqual,
                     Greater_Equal,
 
                     Equal,
-                    Not_Equal,
+                    NotEqual,
 
-                    Bit_AND,
-                    Bit_NAND,
-                    Bit_OR,
-                    Bit_NOR,
-                    Bit_XOR,
-                    Bit_XNOR,
+                    BitAnd,
+                    BitNand,
+                    BitOr,
+                    BitNor,
+                    BitXor,
+                    BitXnor,
 
-                    Logical_AND,
-                    Logical_OR,
+                    LogicalAnd,
+                    LogicalOr,
 
                     Conditional
             } type;

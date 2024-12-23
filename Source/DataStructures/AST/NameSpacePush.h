@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_NamespacePush_h
-#define AST_NamespacePush_h
+#ifndef AST_NameSpacePush_h
+#define AST_NameSpacePush_h
 //------------------------------------------------------------------------------
 
 #include "Expression.h"

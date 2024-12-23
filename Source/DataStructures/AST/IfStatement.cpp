@@ -74,13 +74,13 @@ bool IfStatement::getVerilog(string& body)
 void IfStatement::display()
 {
     displayInfo();
-    debug.print("if(");
+    logger.print("if(");
         if(condition) condition->display();
-    debug.print("){\n");
+    logger.print("){\n");
         if(trueStatements) trueStatements->display();
-    debug.print("}else{\n");
+    logger.print("}else{\n");
         if(falseStatements) falseStatements->display();
-    debug.print("}\n");
+    logger.print("}\n");
 
     if(next) next->display();
 }

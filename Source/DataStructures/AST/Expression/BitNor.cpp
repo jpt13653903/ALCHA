@@ -28,7 +28,7 @@ using namespace AST;
 BitNor::BitNor(int line, const string& filename): BitNor(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-BitNor::BitNor(int line, const char* filename): Expression(line, filename, Type::Bit_NOR){}
+BitNor::BitNor(int line, const char* filename): Expression(line, filename, Type::BitNor){}
 //------------------------------------------------------------------------------
 
 BitNor::~BitNor(){}
@@ -116,7 +116,7 @@ void BitNor::display()
 {
     displayStart();
 
-    debug.print(" ~| ");
+    logger.print(" ~| ");
 
     displayEnd();
 }
@@ -124,7 +124,7 @@ void BitNor::display()
 
 void BitNor::validateMembers()
 {
-    assert(type == Type::Bit_NOR);
+    assert(type == Type::BitNor);
 
     assert(!next);
     assert(!prev);

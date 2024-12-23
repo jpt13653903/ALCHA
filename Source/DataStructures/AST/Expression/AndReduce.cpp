@@ -28,7 +28,7 @@ using namespace AST;
 AndReduce::AndReduce(int line, const string& filename): AndReduce(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-AndReduce::AndReduce(int line, const char* filename): Expression(line, filename, Type::AND_Reduce){}
+AndReduce::AndReduce(int line, const char* filename): Expression(line, filename, Type::AndReduce){}
 //------------------------------------------------------------------------------
 
 AndReduce::~AndReduce(){}
@@ -115,7 +115,7 @@ void AndReduce::display()
 {
     displayStart();
 
-    debug.print( " &");
+    logger.print( " &");
 
     displayEnd();
 }
@@ -123,7 +123,7 @@ void AndReduce::display()
 
 void AndReduce::validateMembers()
 {
-    assert(type == Type::AND_Reduce);
+    assert(type == Type::AndReduce);
 
     assert(!next);
     assert(!prev);

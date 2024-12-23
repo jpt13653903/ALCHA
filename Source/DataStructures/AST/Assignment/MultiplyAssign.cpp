@@ -40,7 +40,7 @@ MultiplyAssign::MultiplyAssign(int line, std::string filename):
 //------------------------------------------------------------------------------
 
 MultiplyAssign::MultiplyAssign(int line, const char* filename):
-    Assignment(line, filename, Type::Multiply_Assign){}
+    Assignment(line, filename, Type::MultiplyAssign){}
 //------------------------------------------------------------------------------
 
 MultiplyAssign::~MultiplyAssign(){}
@@ -111,7 +111,7 @@ void MultiplyAssign::display()
 
 void MultiplyAssign::validateMembers()
 {
-    assert(type == Type::Multiply_Assign);
+    assert(type == Type::MultiplyAssign);
 
     assert(left, return);
     left->validate();

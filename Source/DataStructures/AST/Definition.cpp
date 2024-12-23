@@ -149,20 +149,20 @@ bool Definition::verifyNotDefined(Identifier* identifier)
 
 void Definition::displayParameters()
 {
-    debug.print(" direction = ");
+    logger.print(" direction = ");
     switch(direction){
-        case Direction::Input : debug.print("Input\n"   ); break;
-        case Direction::Output: debug.print("Output\n"  ); break;
-        default               : debug.print("Inferred\n"); break;
+        case Direction::Input : logger.print("Input\n"   ); break;
+        case Direction::Output: logger.print("Output\n"  ); break;
+        default               : logger.print("Inferred\n"); break;
     }
 
-    debug.print(" parameters: ");
+    logger.print(" parameters: ");
     if(parameters.empty()){
-        debug.print("none / default\n");
+        logger.print("none / default\n");
     }else{
         for(auto parameter: parameters){
             if(parameter) parameter->display();
-            debug.print("\n");
+            logger.print("\n");
         }
     }
 }
@@ -170,42 +170,42 @@ void Definition::displayParameters()
 
 void Definition::displayAttributes()
 {
-    debug.print(" attributes: ");
+    logger.print(" attributes: ");
     if(attributes){
         attributes->display();
-        debug.print("\n");
+        logger.print("\n");
     }
 }
 //------------------------------------------------------------------------------
 
 void Definition::displayIdentifiers()
 {
-    debug.print(" identifiers:\n");
+    logger.print(" identifiers:\n");
     Identifier* identifier = identifiers;
     Array     * array;
     while(identifier){
-        debug.print(" - %s", identifier->identifier.c_str());
+        logger.print(" - %s", identifier->identifier.c_str());
         array = identifier->array;
         while(array){
-            debug.print("[");
+            logger.print("[");
             if(array->size) array->size->display();
-            debug.print("]");
+            logger.print("]");
             array = array->next;
         }
 
         if(identifier->function){
-            debug.print(" -- function:\n  parameters: (\n");
+            logger.print(" -- function:\n  parameters: (\n");
             if(identifier->parameters) identifier->parameters->display();
-            debug.print(" )\n  Body:{\n");
+            logger.print(" )\n  Body:{\n");
             if(identifier->functionBody) identifier->functionBody->display();
-            debug.print("  }\n");
+            logger.print("  }\n");
         }
         if(identifier->initialiser){
-            debug.print(" -- initialiser:");
+            logger.print(" -- initialiser:");
             identifier->initialiser->display();
         }
 
-        debug.print("\n");
+        logger.print("\n");
         identifier = identifier->next;
     }
 }
@@ -214,7 +214,7 @@ void Definition::displayIdentifiers()
 void Definition::displayDefinition(const char* type)
 {
     displayInfo();
-    debug.print("Definition (%s):\n", type);
+    logger.print("Definition (%s):\n", type);
 
     displayParameters ();
     displayAttributes ();

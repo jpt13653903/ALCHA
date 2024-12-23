@@ -33,7 +33,7 @@ using namespace AST;
 BitNot::BitNot(int line, const string& filename): BitNot(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-BitNot::BitNot(int line, const char* filename): Expression(line, filename, Type::Bit_NOT){}
+BitNot::BitNot(int line, const char* filename): Expression(line, filename, Type::BitNot){}
 //------------------------------------------------------------------------------
 
 BitNot::~BitNot(){}
@@ -155,7 +155,7 @@ void BitNot::display()
 {
     displayStart();
 
-    debug.print(" ~");
+    logger.print(" ~");
 
     displayEnd();
 }
@@ -163,7 +163,7 @@ void BitNot::display()
 
 void BitNot::validateMembers()
 {
-    assert(type == Type::Bit_NOT);
+    assert(type == Type::BitNot);
 
     assert(!next);
     assert(!prev);

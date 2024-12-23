@@ -23,10 +23,6 @@
 //------------------------------------------------------------------------------
 
 #include <string>
-//------------------------------------------------------------------------------
-
-#include "Logger.h"
-#include "General.h"
 #include "Number.h"
 //------------------------------------------------------------------------------
 
@@ -34,15 +30,15 @@ struct Token{
     enum class Type{
         Unknown = 0, // also used to designate errors, etc.
 
-        // White-space .............................................................
+        // White-space .........................................................
         Space, // Spaces are only used in the scanner
         Newline,
 
-        // Special keywords ........................................................
-        FILE, LINE, DATE, TIME,
+        // Special keywords ....................................................
+        File, Line, Date, Time,
         // __CLASS__, __FUNCTION__, etc. are implemented as special variables
 
-        // Keywords ................................................................
+        // Keywords ............................................................
         Void    , Auto   ,
         Pin     , Net    ,
         Byte    , Char   , Num,
@@ -59,26 +55,26 @@ struct Token{
         Stimulus, Emulate, Assert, Wait ,
         PosEdge , NegEdge,
 
-        // Operators ...............................................................
+        // Operators ...........................................................
         TernaryIf,
         Elvis,
 
-        Bit_OR,
-        Bit_NOR,
-        Bit_XOR,
-        Bit_XNOR,
-        Bit_AND,
-        Bit_NAND,
+        BitOr,
+        BitNor,
+        BitXor,
+        BitXnor,
+        BitAnd,
+        BitNand,
 
         Equal,
-        Not_Equal,
+        NotEqual,
         Less,
         Greater,
-        Less_Equal,
-        Greater_Equal,
+        LessEqual,
+        GreaterEqual,
 
-        Shift_Left,
-        Shift_Right,
+        ShiftLeft,
+        ShiftRight,
 
         Add,
         Subtract,
@@ -97,7 +93,7 @@ struct Token{
 
         To,
 
-        Bit_NOT,
+        BitNot,
         Increment,
         Decrement,
 
@@ -109,19 +105,19 @@ struct Token{
         CastOp,
 
         Assign,
-        Raw_Assign,
-        Append_Assign,
-        Add_Assign,
-        Subtract_Assign,
-        Multiply_Assign,
-        Divide_Assign,
-        Modulus_Assign,
-        XOR_Assign,
-        AND_Assign,
-        OR_Assign,
-        Exponential_Assign,
-        Shift_Left_Assign,
-        Shift_Right_Assign,
+        RawAssign,
+        AppendAssign,
+        AddAssign,
+        SubtractAssign,
+        MultiplyAssign,
+        DivideAssign,
+        ModulusAssign,
+        XorAssign,
+        AndAssign,
+        OrAssign,
+        ExponentialAssign,
+        ShiftLeftAssign,
+        ShiftRightAssign,
 
         OpenRound,
         CloseRound,
@@ -144,19 +140,19 @@ struct Token{
         And,
         Intersect,
 
-        // Other types .............................................................
+        // Other types .........................................................
         Identifier,
         Literal,
         String,
 
-        // Aliases .................................................................
-        AND_Reduce  = Bit_AND,
-        NAND_Reduce = Bit_NAND,
-        OR_Reduce   = Bit_OR,
-        NOR_Reduce  = Bit_NOR,
-        XOR_Reduce  = Bit_XOR,
-        XNOR_Reduce = Bit_XNOR,
-        Logical_NOT = Factorial,
+        // Aliases .............................................................
+        AndReduce   = BitAnd,
+        NandReduce  = BitNand,
+        OrReduce    = BitOr,
+        NorReduce   = BitNor,
+        XorReduce   = BitXor,
+        XnorReduce  = BitXnor,
+        LogicalNot  = Factorial,
         TernaryElse = Colon,
         Step        = Colon,
         RawBits     = Colon,

@@ -139,14 +139,14 @@ Expression* VectorConcatenate::removeTempNet(int width, bool isSigned)
 
 void VectorConcatenate::display()
 {
-    debug.print("(VectorConcat: (");
+    logger.print("(VectorConcat: (");
     bool isFirst = true;
     for(auto element: elements){
-        if(!isFirst) debug.print(", ");
+        if(!isFirst) logger.print(", ");
         element->display();
         isFirst = false;
     }
-    debug.print("))");
+    logger.print("))");
 }
 //------------------------------------------------------------------------------
 

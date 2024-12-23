@@ -124,17 +124,17 @@ void Net::populateUsed(bool setUsed)
 
 void Net::display(int indent)
 {
-    debug.indent(indent);
-    debug.print("Net: ");
+    logger.indent(indent);
+    logger.print("Net: ");
 
     indent++;
     displayParameters(indent);
 
-    debug.indent(indent);
-    debug.print("value      = ");
+    logger.indent(indent);
+    logger.print("value      = ");
     if(value) value->display();
-    else      debug.print("{open}");
-    debug.print("\n");
+    else      logger.print("{open}");
+    logger.print("\n");
 
     displayAttributes(indent);
 }

@@ -111,7 +111,7 @@ void Modulus::display()
 {
     displayStart();
 
-    debug.print(" %% ");
+    logger.print(" %% ");
 
     displayEnd();
 }

@@ -40,7 +40,7 @@ ModulusAssign::ModulusAssign(int line, std::string filename):
 //------------------------------------------------------------------------------
 
 ModulusAssign::ModulusAssign(int line, const char* filename):
-    Assignment(line, filename, Type::Modulus_Assign){}
+    Assignment(line, filename, Type::ModulusAssign){}
 //------------------------------------------------------------------------------
 
 ModulusAssign::~ModulusAssign(){}
@@ -111,7 +111,7 @@ void ModulusAssign::display()
 
 void ModulusAssign::validateMembers()
 {
-    assert(type == Type::Modulus_Assign);
+    assert(type == Type::ModulusAssign);
 
     assert(left, return);
     left->validate();

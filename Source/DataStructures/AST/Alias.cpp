@@ -83,10 +83,10 @@ bool Alias::getVerilog(string& body)
 void Alias::display()
 {
     displayInfo();
-    debug.print("alias (%s):\n", identifier.c_str());
+    logger.print("alias (%s):\n", identifier.c_str());
 
     if(expression) expression->display();
-    else           debug.print("{Moved expression}\n");
+    else           logger.print("{Moved expression}\n");
 
     if(next) next->display();
 }

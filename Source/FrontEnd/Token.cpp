@@ -19,6 +19,8 @@
 //==============================================================================
 
 #include "Token.h"
+#include "Logger.h"
+#include "General.h"
 //------------------------------------------------------------------------------
 
 Token::Token()
@@ -30,11 +32,11 @@ Token::Token()
 
 void Token::display()
 {
-    debug.print(ANSI_FG_CYAN "Token: " ANSI_RESET);
-    debug.print(ANSI_FG_BRIGHT_BLACK "Type = "  ANSI_RESET "%3d "  , (int)type);
-    debug.print(ANSI_FG_BRIGHT_BLACK "Line = "  ANSI_RESET "%5d "  , line);
-    debug.print(ANSI_FG_BRIGHT_BLACK "Data = "  ANSI_RESET "%-40s ", data.c_str());
-    debug.print(ANSI_FG_BRIGHT_BLACK "Value = " ANSI_RESET "%s\n"  , value.display());
+    logger.print(ANSI_FG_CYAN "Token: " ANSI_RESET);
+    logger.print(ANSI_FG_BRIGHT_BLACK "Type = "  ANSI_RESET "%3d "  , (int)type);
+    logger.print(ANSI_FG_BRIGHT_BLACK "Line = "  ANSI_RESET "%5d "  , line);
+    logger.print(ANSI_FG_BRIGHT_BLACK "Data = "  ANSI_RESET "%-40s ", data.c_str());
+    logger.print(ANSI_FG_BRIGHT_BLACK "Value = " ANSI_RESET "%s\n"  , value.display());
 }
 //------------------------------------------------------------------------------
 

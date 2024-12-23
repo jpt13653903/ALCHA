@@ -36,7 +36,7 @@ VoidDefinition::VoidDefinition(
 VoidDefinition::VoidDefinition(
     int             line,
     const char*     filename
-): Definition(line, filename, Type::Void_Definition){}
+): Definition(line, filename, Type::VoidDefinition){}
 //------------------------------------------------------------------------------
 
 VoidDefinition::~VoidDefinition(){}
@@ -88,7 +88,7 @@ void VoidDefinition::display()
 
 void VoidDefinition::validateMembers()
 {
-    assert(type == Type::Void_Definition);
+    assert(type == Type::VoidDefinition);
 
     assert(parameters.empty());
 

@@ -40,7 +40,7 @@ AndAssign::AndAssign(int line, std::string filename):
 //------------------------------------------------------------------------------
 
 AndAssign::AndAssign(int line, const char* filename):
-    Assignment(line, filename, Type::AND_Assign){}
+    Assignment(line, filename, Type::AndAssign){}
 //------------------------------------------------------------------------------
 
 AndAssign::~AndAssign(){}
@@ -111,7 +111,7 @@ void AndAssign::display()
 
 void AndAssign::validateMembers()
 {
-    assert(type == Type::AND_Assign);
+    assert(type == Type::AndAssign);
 
     assert(left, return);
     left->validate();

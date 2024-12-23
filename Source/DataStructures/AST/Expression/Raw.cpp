@@ -111,7 +111,7 @@ void Raw::display()
 {
     displayStart();
 
-    debug.print(" :");
+    logger.print(" :");
 
     displayEnd();
 }

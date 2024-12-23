@@ -127,15 +127,15 @@ void FunctionCall::display()
 {
     displayStart();
 
-    debug.print("{call}(");
+    logger.print("{call}(");
 
     bool isFirst = true;
     for(auto parameter: parameters){
-        if(!isFirst) debug.print(", ");
+        if(!isFirst) logger.print(", ");
         isFirst = false;
         parameter->display();
     }
-    debug.print(")");
+    logger.print(")");
 
     displayEnd();
 }

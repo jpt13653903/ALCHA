@@ -73,11 +73,11 @@ bool ForLoop::getVerilog(string& body)
 void ForLoop::display()
 {
     displayInfo();
-    debug.print("for(%s in ", identifier.c_str());
+    logger.print("for(%s in ", identifier.c_str());
         if(range) range->display();
-    debug.print("){\n");
+    logger.print("){\n");
         if(statements) statements->display();
-    debug.print("}\n");
+    logger.print("}\n");
 
     if(next) next->display();
 }

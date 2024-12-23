@@ -28,7 +28,7 @@ using namespace AST;
 LogicalAnd::LogicalAnd(int line, const string& filename): LogicalAnd(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-LogicalAnd::LogicalAnd(int line, const char* filename): Expression(line, filename, Type::Logical_AND){}
+LogicalAnd::LogicalAnd(int line, const char* filename): Expression(line, filename, Type::LogicalAnd){}
 //------------------------------------------------------------------------------
 
 LogicalAnd::~LogicalAnd(){}
@@ -116,7 +116,7 @@ void LogicalAnd::display()
 {
     displayStart();
 
-    debug.print(" && ");
+    logger.print(" && ");
 
     displayEnd();
 }
@@ -124,7 +124,7 @@ void LogicalAnd::display()
 
 void LogicalAnd::validateMembers()
 {
-    assert(type == Type::Logical_AND);
+    assert(type == Type::LogicalAnd);
 
     assert(!next);
     assert(!prev);

@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "NamespacePush.h"
+#include "NameSpacePush.h"
 //------------------------------------------------------------------------------
 
 using std::string;
@@ -28,7 +28,7 @@ using namespace AST;
 NameSpacePush::NameSpacePush(int line, std::string& filename): NameSpacePush(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-NameSpacePush::NameSpacePush(int line, const char* filename): Base(line, filename, Type::NamespacePush)
+NameSpacePush::NameSpacePush(int line, const char* filename): Base(line, filename, Type::NameSpacePush)
 {
     nameSpace  = 0;
     statements = 0;
@@ -70,17 +70,17 @@ bool NameSpacePush::getVerilog(string& body)
 void NameSpacePush::display()
 {
     displayInfo();
-    debug.print("NamespacePush:\n ");
+    logger.print("NameSpacePush:\n ");
 
     if(nameSpace){
-        if(nameSpace->left || nameSpace->right) debug.print("(");
+        if(nameSpace->left || nameSpace->right) logger.print("(");
         nameSpace->display();
-        if(nameSpace->left || nameSpace->right) debug.print(")");
+        if(nameSpace->left || nameSpace->right) logger.print(")");
     }
 
-    debug.print(".{\n");
+    logger.print(".{\n");
         if(statements) statements->display();
-    debug.print("}\n");
+    logger.print("}\n");
 
     if(next) next->display();
 }
@@ -88,7 +88,7 @@ void NameSpacePush::display()
 
 void NameSpacePush::validateMembers()
 {
-    assert(type == Type::NamespacePush);
+    assert(type == Type::NameSpacePush);
 
     error("Not yet implemented");
 }

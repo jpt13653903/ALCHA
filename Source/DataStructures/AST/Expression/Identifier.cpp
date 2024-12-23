@@ -145,7 +145,7 @@ void Identifier::display()
     displayStart();
 
     if(name.empty()) error ("(Identifier node has no name)");
-    else             debug.print("%s", name.c_str());
+    else             logger.print("%s", name.c_str());
 
     displayEnd();
 }

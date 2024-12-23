@@ -40,7 +40,7 @@ ShiftRightAssign::ShiftRightAssign(int line, std::string filename):
 //------------------------------------------------------------------------------
 
 ShiftRightAssign::ShiftRightAssign(int line, const char* filename):
-    Assignment(line, filename, Type::Shift_Right_Assign){}
+    Assignment(line, filename, Type::ShiftRightAssign){}
 //------------------------------------------------------------------------------
 
 ShiftRightAssign::~ShiftRightAssign(){}
@@ -111,7 +111,7 @@ void ShiftRightAssign::display()
 
 void ShiftRightAssign::validateMembers()
 {
-    assert(type == Type::Shift_Right_Assign);
+    assert(type == Type::ShiftRightAssign);
 
     assert(left, return);
     left->validate();

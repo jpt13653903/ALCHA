@@ -37,17 +37,9 @@ Tokens:
 #define Scanner_h
 //------------------------------------------------------------------------------
 
-#include <map>
 #include <string>
-#include <time.h>
-//------------------------------------------------------------------------------
-
 #include "Token.h"
-#include "Number.h"
-#include "Utilities.h"
-#include "TokenTree.h"
-#include "Dictionary.h"
-#include "FileWrapper.h"
+#include "General.h"
 //------------------------------------------------------------------------------
 
 class Scanner{

@@ -33,25 +33,25 @@ Netlist::Group::~Group(){}
 
 void Netlist::Group::display(int indent)
 {
-    debug.indent(indent);
-    debug.print("Group: ");
+    logger.indent(indent);
+    logger.print("Group: ");
 
-    if(name.empty()) debug.print("{Anonymous}");
+    if(name.empty()) logger.print("{Anonymous}");
     else             displayLongName();
-    debug.print("\n");
+    logger.print("\n");
 
     indent++;
     displayAttributes(indent);
-    debug.print("\n");
+    logger.print("\n");
 
     for(auto s: symbols){
         if(s.second){
             s.second->display(indent);
         }else{
-            debug.indent(indent);
-            debug.print("- %s: {null}\n", s.first.c_str());
+            logger.indent(indent);
+            logger.print("- %s: {null}\n", s.first.c_str());
         }
-        debug.print("\n");
+        logger.print("\n");
     }
 }
 //------------------------------------------------------------------------------

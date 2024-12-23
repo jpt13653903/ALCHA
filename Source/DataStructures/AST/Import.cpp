@@ -82,7 +82,7 @@ bool Import::runAST()
     importFilename += file;
     importFilename += ".alc";
     simplifyFilename(importFilename);
-    debug.print("\nFilename = %s\n", importFilename);
+    logger.print("\nFilename = %s\n", importFilename);
 
     auto ast = engine->runAST(importFilename.c_str());
     if(!ast) return false;
@@ -108,9 +108,9 @@ bool Import::getVerilog(string& body)
 void Import::display()
 {
     displayInfo();
-    debug.print("import \"%s\"", file.c_str());
-    if(nameSpace.empty()) debug.print("\n");
-    else                  debug.print(" as %s\n", nameSpace.c_str());
+    logger.print("import \"%s\"", file.c_str());
+    if(nameSpace.empty()) logger.print("\n");
+    else                  logger.print(" as %s\n", nameSpace.c_str());
 
     if(ast ) ast ->display();
     if(next) next->display();

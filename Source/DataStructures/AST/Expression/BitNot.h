@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Expression_Bit_NOT_h
-#define AST_Expression_Bit_NOT_h
+#ifndef AST_Expression_BitNot_h
+#define AST_Expression_BitNot_h
 //------------------------------------------------------------------------------
 
 #include "../Expression.h"

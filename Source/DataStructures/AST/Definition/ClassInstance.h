@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Definition_Class_Instance_h
-#define AST_Definition_Class_Instance_h
+#ifndef AST_Definition_ClassInstance_h
+#define AST_Definition_ClassInstance_h
 //------------------------------------------------------------------------------
 
 #include "../Definition.h"

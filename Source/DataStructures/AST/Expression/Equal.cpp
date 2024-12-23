@@ -116,7 +116,7 @@ void Equal::display()
 {
     displayStart();
 
-    debug.print(" == ");
+    logger.print(" == ");
 
     displayEnd();
 }

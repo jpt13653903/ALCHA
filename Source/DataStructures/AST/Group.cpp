@@ -99,18 +99,18 @@ void AST::Group::display()
 {
     displayInfo();
 
-    if(identifier.empty()) debug.print("Group:\n");
-    else                   debug.print("Group (%s):\n", identifier.c_str());
+    if(identifier.empty()) logger.print("Group:\n");
+    else                   logger.print("Group (%s):\n", identifier.c_str());
 
-    debug.print(" attributes: ");
+    logger.print(" attributes: ");
     if(attributes){
         attributes->display();
-        debug.print("\n");
+        logger.print("\n");
     }
 
-    debug.print(" {\n");
+    logger.print(" {\n");
     if(body) body->display();
-    debug.print(" }\n");
+    logger.print(" }\n");
 
     if(next) next->display();
 }

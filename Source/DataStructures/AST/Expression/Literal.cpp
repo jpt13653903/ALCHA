@@ -148,7 +148,7 @@ void Literal::display()
 {
     displayStart();
 
-    debug.print(value.display());
+    logger.print(value.display());
 
     displayEnd();
 }

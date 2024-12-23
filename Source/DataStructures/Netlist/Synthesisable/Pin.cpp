@@ -98,8 +98,8 @@ Base* Pin::getMember(const std::string& name)
 
 void Pin::display(int indent)
 {
-    debug.indent(indent);
-    debug.print("Pin: ");
+    logger.indent(indent);
+    logger.print("Pin: ");
 
     indent++;
     displayParameters(indent);

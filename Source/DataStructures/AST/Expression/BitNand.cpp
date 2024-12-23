@@ -28,7 +28,7 @@ using namespace AST;
 BitNand::BitNand(int line, const string& filename): BitNand(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-BitNand::BitNand(int line, const char* filename): Expression(line, filename, Type::Bit_NAND){}
+BitNand::BitNand(int line, const char* filename): Expression(line, filename, Type::BitNand){}
 //------------------------------------------------------------------------------
 
 BitNand::~BitNand(){}
@@ -116,7 +116,7 @@ void BitNand::display()
 {
     displayStart();
 
-    debug.print(" ~& ");
+    logger.print(" ~& ");
 
     displayEnd();
 }
@@ -124,7 +124,7 @@ void BitNand::display()
 
 void BitNand::validateMembers()
 {
-    assert(type == Type::Bit_NAND);
+    assert(type == Type::BitNand);
 
     assert(!next);
     assert(!prev);

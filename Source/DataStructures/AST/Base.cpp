@@ -101,8 +101,8 @@ Base* Base::copyList(Base* source)
 
 void Base::displayInfo()
 {
-    debug.print("\n" ANSI_FG_BRIGHT_BLACK "%s:", source.filename.c_str());
-    debug.print(ANSI_FG_CYAN "%05d" ANSI_FG_YELLOW " -- " ANSI_RESET, source.line);
+    logger.print("\n" ANSI_FG_BRIGHT_BLACK "%s:", source.filename.c_str());
+    logger.print(ANSI_FG_CYAN "%05d" ANSI_FG_YELLOW " -- " ANSI_RESET, source.line);
 }
 //------------------------------------------------------------------------------
 

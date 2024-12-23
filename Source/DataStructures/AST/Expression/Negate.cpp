@@ -136,7 +136,7 @@ void Negate::display()
 {
     displayStart();
 
-    debug.print(" -");
+    logger.print(" -");
 
     displayEnd();
 }

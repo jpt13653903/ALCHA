@@ -75,16 +75,16 @@ bool Rtl::getVerilog(string& body)
 void Rtl::display()
 {
     displayInfo();
-    debug.print("rtl(");
+    logger.print("rtl(");
         bool isFirst = true;
         for(auto parameter: parameters){
-            if(isFirst) debug.print(", ");
+            if(isFirst) logger.print(", ");
             isFirst = false;
             if(parameter) parameter->display();
         }
-    debug.print("){\n");
+    logger.print("){\n");
         if(statements) statements->display();
-    debug.print("}\n");
+    logger.print("}\n");
 
     if(next) next->display();
 }

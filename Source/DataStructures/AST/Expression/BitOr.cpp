@@ -28,7 +28,7 @@ using namespace AST;
 BitOr::BitOr(int line, const string& filename): BitOr(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-BitOr::BitOr(int line, const char* filename): Expression(line, filename, Type::Bit_OR){}
+BitOr::BitOr(int line, const char* filename): Expression(line, filename, Type::BitOr){}
 //------------------------------------------------------------------------------
 
 BitOr::~BitOr(){}
@@ -116,7 +116,7 @@ void BitOr::display()
 {
     displayStart();
 
-    debug.print( " | ");
+    logger.print( " | ");
 
     displayEnd();
 }
@@ -124,7 +124,7 @@ void BitOr::display()
 
 void BitOr::validateMembers()
 {
-    assert(type == Type::Bit_OR);
+    assert(type == Type::BitOr);
 
     assert(!next);
     assert(!prev);

@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Assignment_Multiply_Assign_h
-#define AST_Assignment_Multiply_Assign_h
+#ifndef AST_Assignment_MultiplyAssign_h
+#define AST_Assignment_MultiplyAssign_h
 //------------------------------------------------------------------------------
 
 #include "../Assignment.h"

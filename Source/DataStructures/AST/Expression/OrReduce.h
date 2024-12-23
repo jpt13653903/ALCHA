@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Expression_OR_Reduce_h
-#define AST_Expression_OR_Reduce_h
+#ifndef AST_Expression_OrReduce_h
+#define AST_Expression_OrReduce_h
 //------------------------------------------------------------------------------
 
 #include "../Expression.h"

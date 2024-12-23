@@ -37,7 +37,7 @@ ByteDefinition::ByteDefinition(
 ByteDefinition::ByteDefinition(
     int             line,
     const char*     filename
-): Definition(line, filename, Type::Byte_Definition){}
+): Definition(line, filename, Type::ByteDefinition){}
 //------------------------------------------------------------------------------
 
 ByteDefinition::~ByteDefinition(){}
@@ -94,7 +94,7 @@ void ByteDefinition::display()
 
 void ByteDefinition::validateMembers()
 {
-    assert(type == Type::Byte_Definition);
+    assert(type == Type::ByteDefinition);
 
     Definition::validateMembers();
 }

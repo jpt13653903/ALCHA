@@ -40,16 +40,16 @@ Module::~Module(){}
 
 void Module::display(int indent)
 {
-    debug.indent(indent);
-    debug.print("module: ");
+    logger.indent(indent);
+    logger.print("module: ");
 
-    if(this == &global) debug.print("{global}");
+    if(this == &global) logger.print("{global}");
     else                displayLongName();
-    debug.print("\n");
+    logger.print("\n");
     indent++;
 
     displayAttributes(indent);
-    debug.print("\n");
+    logger.print("\n");
 
     list<Base*> modules;
 
@@ -58,15 +58,15 @@ void Module::display(int indent)
             if(s.second->type == Type::Module) modules.push_back(s.second);
             else s.second->display(indent);
         }else{
-            debug.indent(indent);
-            debug.print("- %s: {null}\n", s.first.c_str());
+            logger.indent(indent);
+            logger.print("- %s: {null}\n", s.first.c_str());
         }
-        debug.print("\n");
+        logger.print("\n");
     }
 
     for(auto s: modules){
         s->display(indent);
-        debug.print("\n");
+        logger.print("\n");
     }
 }
 //------------------------------------------------------------------------------

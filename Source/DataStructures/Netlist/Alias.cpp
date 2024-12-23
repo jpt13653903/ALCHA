@@ -67,13 +67,13 @@ bool Alias::hasCircularReference(Base* object)
 
 void Alias::display(int indent)
 {
-    debug.indent(indent);
-    debug.print("Alias: %s\n", name.c_str());
+    logger.indent(indent);
+    logger.print("Alias: %s\n", name.c_str());
 
-    debug.indent(indent+1);
+    logger.indent(indent+1);
     if(expression) expression->display();
-    else           debug.print("{null}");
-    debug.print("\n");
+    else           logger.print("{null}");
+    logger.print("\n");
 }
 //------------------------------------------------------------------------------
 

@@ -169,25 +169,25 @@ bool Synthesisable::applyParameters(list<AST::Base*>& parameters)
 
 void Synthesisable::displayParameters(int indent)
 {
-    debug.print("%s\n", name.c_str());
+    logger.print("%s\n", name.c_str());
 
-    debug.indent(indent);
-    debug.print("used       = %s\n", used ? "true" : "false");
-    debug.indent(indent);
-    debug.print("width      = %u\n", width());
-    debug.indent(indent);
-    debug.print("Full-scale = %s\n", fullScale().display());
-    debug.indent(indent);
-    debug.print("Signed     = %s\n", isSigned() ? "true" : "false");
+    logger.indent(indent);
+    logger.print("used       = %s\n", used ? "true" : "false");
+    logger.indent(indent);
+    logger.print("width      = %u\n", width());
+    logger.indent(indent);
+    logger.print("Full-scale = %s\n", fullScale().display());
+    logger.indent(indent);
+    logger.print("Signed     = %s\n", isSigned() ? "true" : "false");
 
-    debug.indent(indent);
-    debug.print("Direction  = ");
+    logger.indent(indent);
+    logger.print("Direction  = ");
     switch(direction){
-        case AST::Definition::Direction::Inferred     : debug.print("Inferred\n"     ); break;
-        case AST::Definition::Direction::Input        : debug.print("Input\n"        ); break;
-        case AST::Definition::Direction::Output       : debug.print("Output\n"       ); break;
-        case AST::Definition::Direction::Bidirectional: debug.print("Bidirectional\n"); break;
-        default                                       : debug.print("Invalid\n"      ); break;
+        case AST::Definition::Direction::Inferred     : logger.print("Inferred\n"     ); break;
+        case AST::Definition::Direction::Input        : logger.print("Input\n"        ); break;
+        case AST::Definition::Direction::Output       : logger.print("Output\n"       ); break;
+        case AST::Definition::Direction::Bidirectional: logger.print("Bidirectional\n"); break;
+        default                                       : logger.print("Invalid\n"      ); break;
     }
 }
 //------------------------------------------------------------------------------

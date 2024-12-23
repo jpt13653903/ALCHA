@@ -69,12 +69,12 @@ bool Character::hasCircularReference(Base* object)
 
 void Character::display(int indent)
 {
-    debug.indent(indent+1);
-    debug.print("Character: %s\n", name.c_str());
+    logger.indent(indent+1);
+    logger.print("Character: %s\n", name.c_str());
 
-    debug.indent(indent+2);
-    debug.print("value = '%s' ", utfConverter.toUtf8(value));
-    debug.print("(%d)\n", value);
+    logger.indent(indent+2);
+    logger.print("value = '%s' ", utfConverter.toUtf8(value));
+    logger.print("(%d)\n", value);
 }
 //------------------------------------------------------------------------------
 

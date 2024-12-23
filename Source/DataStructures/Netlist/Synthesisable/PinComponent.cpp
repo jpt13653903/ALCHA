@@ -99,15 +99,15 @@ bool PinComponent::isSigned()
 
 void PinComponent::display(int indent)
 {
-    debug.indent(indent);
-    debug.print("pin Component: %s\n", name.c_str());
+    logger.indent(indent);
+    logger.print("pin Component: %s\n", name.c_str());
 
     indent++;
-    debug.indent(indent);
-    debug.print("value = ");
+    logger.indent(indent);
+    logger.print("value = ");
     if(value) value->display();
-    else      debug.print("{null}");
-    debug.print("\n");
+    else      logger.print("{null}");
+    logger.print("\n");
 }
 //------------------------------------------------------------------------------
 

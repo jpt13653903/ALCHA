@@ -40,7 +40,7 @@
 #include "AST/Import.h"
 #include "AST/Jump.h"
 #include "AST/LoopLoop.h"
-#include "AST/NamespacePush.h"
+#include "AST/NameSpacePush.h"
 #include "AST/RTL.h"
 #include "AST/Switch.h"
 #include "AST/WhileLoop.h"
@@ -176,7 +176,7 @@ class Parser{
         AST::Definition* defParameter    ();
         AST::Definition* defParameterList();
 
-        bool validNamespaceSpecifier(AST::Expression* node); // Used by other()
+        bool validNameSpaceSpecifier(AST::Expression* node); // Used by other()
         bool validTypeSpecifier     (AST::Expression* node); // Used by other()
         bool validLHS               (AST::Expression* node); // Used by other()
 

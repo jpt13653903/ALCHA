@@ -36,7 +36,7 @@ ClassInstance::ClassInstance(
 ClassInstance::ClassInstance(
     int             line,
     const char*     filename
-): Definition(line, filename, Type::Class_Instance)
+): Definition(line, filename, Type::ClassInstance)
 {
     className = 0;
 }
@@ -91,12 +91,12 @@ bool ClassInstance::getVerilog(string& body)
 void ClassInstance::display()
 {
     displayInfo();
-    debug.print("Definition (");
+    logger.print("Definition (");
 
-    debug.print("Class instance definition (");
+    logger.print("Class instance definition (");
     if(className) className->display();
-    else          debug.print("Class instance with no class name");
-    debug.print("):\n");
+    else          logger.print("Class instance with no class name");
+    logger.print("):\n");
 
     displayParameters ();
     displayAttributes ();
@@ -108,7 +108,7 @@ void ClassInstance::display()
 
 void ClassInstance::validateMembers()
 {
-    assert(type == Type::Class_Instance);
+    assert(type == Type::ClassInstance);
 
     if(className) className->validate();
 

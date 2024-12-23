@@ -28,7 +28,7 @@ using namespace AST;
 XnorReduce::XnorReduce(int line, const string& filename): XnorReduce(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-XnorReduce::XnorReduce(int line, const char* filename): Expression(line, filename, Type::XNOR_Reduce){}
+XnorReduce::XnorReduce(int line, const char* filename): Expression(line, filename, Type::XnorReduce){}
 //------------------------------------------------------------------------------
 
 XnorReduce::~XnorReduce(){}
@@ -114,7 +114,7 @@ void XnorReduce::display()
 {
     displayStart();
 
-    debug.print(" ~#");
+    logger.print(" ~#");
 
     displayEnd();
 }
@@ -122,7 +122,7 @@ void XnorReduce::display()
 
 void XnorReduce::validateMembers()
 {
-    assert(type == Type::XNOR_Reduce);
+    assert(type == Type::XnorReduce);
 
     assert(!next);
     assert(!prev);

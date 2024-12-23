@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Expression_Logical_NOT_h
-#define AST_Expression_Logical_NOT_h
+#ifndef AST_Expression_LogicalNot_h
+#define AST_Expression_LogicalNot_h
 //------------------------------------------------------------------------------
 
 #include "../Expression.h"

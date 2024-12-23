@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Expression_Shift_Right_h
-#define AST_Expression_Shift_Right_h
+#ifndef AST_Expression_ShiftRight_h
+#define AST_Expression_ShiftRight_h
 //------------------------------------------------------------------------------
 
 #include "../Expression.h"

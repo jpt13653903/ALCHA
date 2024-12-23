@@ -28,7 +28,7 @@ using namespace AST;
 NotEqual::NotEqual(int line, const string& filename): NotEqual(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-NotEqual::NotEqual(int line, const char* filename): Expression(line, filename, Type::Not_Equal){}
+NotEqual::NotEqual(int line, const char* filename): Expression(line, filename, Type::NotEqual){}
 //------------------------------------------------------------------------------
 
 NotEqual::~NotEqual(){}
@@ -116,7 +116,7 @@ void NotEqual::display()
 {
     displayStart();
 
-    debug.print(" != ");
+    logger.print(" != ");
 
     displayEnd();
 }
@@ -124,7 +124,7 @@ void NotEqual::display()
 
 void NotEqual::validateMembers()
 {
-    assert(type == Type::Not_Equal);
+    assert(type == Type::NotEqual);
 
     assert(!next);
     assert(!prev);

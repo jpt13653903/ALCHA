@@ -111,7 +111,7 @@ void AccessMemberSafe::display()
 {
     displayStart();
 
-    debug.print("?." );
+    logger.print("?." );
 
     displayEnd();
 }

@@ -28,7 +28,7 @@ using namespace AST;
 XorReduce::XorReduce(int line, const string& filename): XorReduce(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-XorReduce::XorReduce(int line, const char* filename): Expression(line, filename, Type::XOR_Reduce){}
+XorReduce::XorReduce(int line, const char* filename): Expression(line, filename, Type::XorReduce){}
 //------------------------------------------------------------------------------
 
 XorReduce::~XorReduce(){}
@@ -114,7 +114,7 @@ void XorReduce::display()
 {
     displayStart();
 
-    debug.print(" #");
+    logger.print(" #");
 
     displayEnd();
 }
@@ -122,7 +122,7 @@ void XorReduce::display()
 
 void XorReduce::validateMembers()
 {
-    assert(type == Type::XOR_Reduce);
+    assert(type == Type::XorReduce);
 
     assert(!next);
     assert(!prev);

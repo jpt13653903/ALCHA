@@ -71,12 +71,12 @@ bool LoopLoop::getVerilog(string& body)
 void LoopLoop::display()
 {
     displayInfo();
-    debug.print("loop(");
+    logger.print("loop(");
         if(count) count->display();
-        else      debug.print("{inf}");
-    debug.print("){\n");
+        else      logger.print("{inf}");
+    logger.print("){\n");
         if(statements) statements->display();
-    debug.print("}\n");
+    logger.print("}\n");
 
     if(next) next->display();
 }

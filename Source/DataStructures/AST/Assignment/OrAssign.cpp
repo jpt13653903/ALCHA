@@ -40,7 +40,7 @@ OrAssign::OrAssign(int line, std::string filename):
 //------------------------------------------------------------------------------
 
 OrAssign::OrAssign(int line, const char* filename):
-    Assignment(line, filename, Type::OR_Assign){}
+    Assignment(line, filename, Type::OrAssign){}
 //------------------------------------------------------------------------------
 
 OrAssign::~OrAssign(){}
@@ -111,7 +111,7 @@ void OrAssign::display()
 
 void OrAssign::validateMembers()
 {
-    assert(type == Type::OR_Assign);
+    assert(type == Type::OrAssign);
 
     assert(left, return);
     left->validate();

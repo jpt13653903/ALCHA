@@ -28,7 +28,7 @@ using namespace AST;
 BitXnor::BitXnor(int line, const string& filename): BitXnor(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-BitXnor::BitXnor(int line, const char* filename): Expression(line, filename, Type::Bit_XNOR){}
+BitXnor::BitXnor(int line, const char* filename): Expression(line, filename, Type::BitXnor){}
 //------------------------------------------------------------------------------
 
 BitXnor::~BitXnor(){}
@@ -116,7 +116,7 @@ void BitXnor::display()
 {
     displayStart();
 
-    debug.print(" ~# ");
+    logger.print(" ~# ");
 
     displayEnd();
 }
@@ -124,7 +124,7 @@ void BitXnor::display()
 
 void BitXnor::validateMembers()
 {
-    assert(type == Type::Bit_XNOR);
+    assert(type == Type::BitXnor);
 
     assert(!next);
     assert(!prev);

@@ -231,7 +231,7 @@ void Add::display()
 {
     displayStart();
 
-    debug.print(" + " );
+    logger.print(" + " );
 
     displayEnd();
 }

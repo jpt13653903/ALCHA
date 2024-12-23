@@ -60,7 +60,7 @@ bool Fence::getVerilog(string& body)
 void Fence::display()
 {
     displayInfo();
-    debug.print("Fence\n");
+    logger.print("Fence\n");
 
     if(next) next->display();
 }

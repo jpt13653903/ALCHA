@@ -114,14 +114,14 @@ Expression* Array::removeTempNet(int width, bool isSigned)
 
 void Array::display()
 {
-    debug.print("(array: (");
+    logger.print("(array: (");
     bool isFirst = true;
     for(auto element: elements){
-        if(!isFirst) debug.print(", ");
+        if(!isFirst) logger.print(", ");
         element->display();
         isFirst = false;
     }
-    debug.print("))");
+    logger.print("))");
 }
 //------------------------------------------------------------------------------
 

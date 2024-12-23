@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Netlist_Net_h
-#define Netlist_Net_h
+#ifndef Netlist_Synthesisable_Net_h
+#define Netlist_Synthesisable_Net_h
 //------------------------------------------------------------------------------
 
 #include "../Synthesisable.h"

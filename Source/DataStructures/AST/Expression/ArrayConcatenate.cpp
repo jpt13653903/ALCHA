@@ -114,14 +114,14 @@ Expression* ArrayConcatenate::removeTempNet(int width, bool isSigned)
 
 void ArrayConcatenate::display()
 {
-    debug.print("(ArrayConcat: (");
+    logger.print("(ArrayConcat: (");
     bool isFirst = true;
     for(auto element: elements){
-        if(!isFirst) debug.print(", ");
+        if(!isFirst) logger.print(", ");
         element->display();
         isFirst = false;
     }
-    debug.print("))");
+    logger.print("))");
 }
 //------------------------------------------------------------------------------
 

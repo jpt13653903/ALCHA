@@ -83,13 +83,13 @@ bool Num::hasCircularReference(Base* object)
 
 void Num::display(int indent)
 {
-    debug.indent(indent);
-    debug.print("Num: %s\n", name.c_str());
+    logger.indent(indent);
+    logger.print("Num: %s\n", name.c_str());
 
-    debug.indent(indent+1);
-    debug.print("value = ");
-    debug.print(value.display());
-    debug.print("\n");
+    logger.indent(indent+1);
+    logger.print("value = ");
+    logger.print(value.display());
+    logger.print("\n");
 }
 //------------------------------------------------------------------------------
 

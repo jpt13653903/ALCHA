@@ -40,7 +40,7 @@ ExponentialAssign::ExponentialAssign(int line, std::string filename):
 //------------------------------------------------------------------------------
 
 ExponentialAssign::ExponentialAssign(int line, const char* filename):
-    Assignment(line, filename, Type::Exponential_Assign){}
+    Assignment(line, filename, Type::ExponentialAssign){}
 //------------------------------------------------------------------------------
 
 ExponentialAssign::~ExponentialAssign(){}
@@ -111,7 +111,7 @@ void ExponentialAssign::display()
 
 void ExponentialAssign::validateMembers()
 {
-    assert(type == Type::Exponential_Assign);
+    assert(type == Type::ExponentialAssign);
 
     assert(left, return);
     left->validate();

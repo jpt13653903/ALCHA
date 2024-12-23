@@ -19,8 +19,15 @@
 //==============================================================================
 
 #include "Scanner.h"
+
+#include "Utilities.h"
+#include "TokenTree.h"
+#include "FileWrapper.h"
 #include "CharacterNames.h"
 //------------------------------------------------------------------------------
+
+#include <map>
+#include <time.h>
 
 using std::string;
 using std::map;
@@ -72,10 +79,10 @@ Scanner::Scanner()
         spaces.insert("\xE2\x80\xA8", Token::Type::Newline); // U+2028: line Separator
         spaces.insert("\xE2\x80\xA9", Token::Type::Newline); // U+2029: Paragraph Separator
 
-        keywords.insert("__FILE__"     , Token::Type::FILE);
-        keywords.insert("__LINE__"     , Token::Type::LINE);
-        keywords.insert("__DATE__"     , Token::Type::DATE);
-        keywords.insert("__TIME__"     , Token::Type::TIME);
+        keywords.insert("__FILE__"     , Token::Type::File);
+        keywords.insert("__LINE__"     , Token::Type::Line);
+        keywords.insert("__DATE__"     , Token::Type::Date);
+        keywords.insert("__TIME__"     , Token::Type::Time);
         // __CLASS__, __FUNCTION__, etc. are implemented as special variables
 
         keywords.insert("void"         , Token::Type::Void);
@@ -145,24 +152,24 @@ Scanner::Scanner()
         operators.insert("?:" , Token::Type::Elvis      );
 
         // Bit-wise
-        operators.insert("|"  , Token::Type::Bit_OR     );
-        operators.insert("~|" , Token::Type::Bit_NOR    );
-        operators.insert("^"  , Token::Type::Bit_XOR    );
-        operators.insert("~^" , Token::Type::Bit_XNOR   );
-        operators.insert("&"  , Token::Type::Bit_AND    );
-        operators.insert("~&" , Token::Type::Bit_NAND   );
+        operators.insert("|"  , Token::Type::BitOr     );
+        operators.insert("~|" , Token::Type::BitNor    );
+        operators.insert("^"  , Token::Type::BitXor    );
+        operators.insert("~^" , Token::Type::BitXnor   );
+        operators.insert("&"  , Token::Type::BitAnd    );
+        operators.insert("~&" , Token::Type::BitNand   );
 
         // Relational
-        operators.insert("==" , Token::Type::Equal        );
-        operators.insert("!=" , Token::Type::Not_Equal    );
-        operators.insert("<"  , Token::Type::Less         );
-        operators.insert(">"  , Token::Type::Greater      );
-        operators.insert("<=" , Token::Type::Less_Equal   );
-        operators.insert(">=" , Token::Type::Greater_Equal);
+        operators.insert("==" , Token::Type::Equal       );
+        operators.insert("!=" , Token::Type::NotEqual    );
+        operators.insert("<"  , Token::Type::Less        );
+        operators.insert(">"  , Token::Type::Greater     );
+        operators.insert("<=" , Token::Type::LessEqual   );
+        operators.insert(">=" , Token::Type::GreaterEqual);
 
         // Shift
-        operators.insert("<<" , Token::Type::Shift_Left );
-        operators.insert(">>" , Token::Type::Shift_Right);
+        operators.insert("<<" , Token::Type::ShiftLeft );
+        operators.insert(">>" , Token::Type::ShiftRight);
 
         // Arithmetic
         operators.insert("+"  , Token::Type::Add        );
@@ -183,13 +190,13 @@ Scanner::Scanner()
         operators.insert("$(" , Token::Type::StringifyExpression);
 
         // Reduction
-        operators.insert("&"  , Token::Type::AND_Reduce );
-        operators.insert("~&" , Token::Type::NAND_Reduce);
-        operators.insert("|"  , Token::Type::OR_Reduce  );
-        operators.insert("~|" , Token::Type::NOR_Reduce );
-        operators.insert("^"  , Token::Type::XOR_Reduce );
-        operators.insert("~^" , Token::Type::XNOR_Reduce);
-        operators.insert("!"  , Token::Type::Logical_NOT);
+        operators.insert("&"  , Token::Type::AndReduce );
+        operators.insert("~&" , Token::Type::NandReduce);
+        operators.insert("|"  , Token::Type::OrReduce  );
+        operators.insert("~|" , Token::Type::NorReduce );
+        operators.insert("^"  , Token::Type::XorReduce );
+        operators.insert("~^" , Token::Type::XnorReduce);
+        operators.insert("!"  , Token::Type::LogicalNot);
 
         // Array
         operators.insert(".." , Token::Type::To  );
@@ -197,7 +204,7 @@ Scanner::Scanner()
 
         // Unary
         operators.insert("-"  , Token::Type::Negate   );
-        operators.insert("~"  , Token::Type::Bit_NOT  );
+        operators.insert("~"  , Token::Type::BitNot  );
         operators.insert(":"  , Token::Type::RawBits  );
         operators.insert("++" , Token::Type::Increment);
         operators.insert("--" , Token::Type::Decrement);
@@ -212,20 +219,20 @@ Scanner::Scanner()
         operators.insert("@"  , Token::Type::CastOp);
 
         // Assignment
-        operators.insert("="  , Token::Type::Assign            );
-        operators.insert(":=" , Token::Type::Raw_Assign        );
-        operators.insert("~=" , Token::Type::Append_Assign     );
-        operators.insert("+=" , Token::Type::Add_Assign        );
-        operators.insert("-=" , Token::Type::Subtract_Assign   );
-        operators.insert("*=" , Token::Type::Multiply_Assign   );
-        operators.insert("/=" , Token::Type::Divide_Assign     );
-        operators.insert("%=" , Token::Type::Modulus_Assign    );
-        operators.insert("^=" , Token::Type::XOR_Assign        );
-        operators.insert("&=" , Token::Type::AND_Assign        );
-        operators.insert("|=" , Token::Type::OR_Assign         );
-        operators.insert("**=", Token::Type::Exponential_Assign);
-        operators.insert("<<=", Token::Type::Shift_Left_Assign );
-        operators.insert(">>=", Token::Type::Shift_Right_Assign);
+        operators.insert("="  , Token::Type::Assign           );
+        operators.insert(":=" , Token::Type::RawAssign        );
+        operators.insert("~=" , Token::Type::AppendAssign     );
+        operators.insert("+=" , Token::Type::AddAssign        );
+        operators.insert("-=" , Token::Type::SubtractAssign   );
+        operators.insert("*=" , Token::Type::MultiplyAssign   );
+        operators.insert("/=" , Token::Type::DivideAssign     );
+        operators.insert("%=" , Token::Type::ModulusAssign    );
+        operators.insert("^=" , Token::Type::XorAssign        );
+        operators.insert("&=" , Token::Type::AndAssign        );
+        operators.insert("|=" , Token::Type::OrAssign         );
+        operators.insert("**=", Token::Type::ExponentialAssign);
+        operators.insert("<<=", Token::Type::ShiftLeftAssign  );
+        operators.insert(">>=", Token::Type::ShiftRightAssign );
 
         // Punctuators
         operators.insert("("  , Token::Type::OpenRound  );
@@ -457,17 +464,17 @@ bool Scanner::getIdentifier(Token* token)
             token->type = Token::Type::Identifier;
             break;
 
-        case Token::Type::FILE:
+        case Token::Type::File:
             token->type = Token::Type::String;
             token->data = filename.c_str();
             break;
 
-        case Token::Type::LINE:
+        case Token::Type::Line:
             token->type  = Token::Type::Literal;
             token->value = token->line;
             break;
 
-        case Token::Type::DATE:
+        case Token::Type::Date:
             token->type = Token::Type::String;
             token->data.clear();
             time(&_timer);
@@ -481,7 +488,7 @@ bool Scanner::getIdentifier(Token* token)
             token->data += _time->tm_mday;
             break;
 
-        case Token::Type::TIME:
+        case Token::Type::Time:
             token->type = Token::Type::String;
             token->data.clear();
             time(&_timer);
@@ -677,7 +684,6 @@ bool Scanner::getString(Token* token)
 {
     int      j;
     unsigned digit, utf32;
-    Characters::iterator s;
 
     if(buffer[index] != '"') return false;
 
@@ -711,7 +717,7 @@ bool Scanner::getString(Token* token)
                 case '\'': token->data += '\''; index++; break;
                 case '"' : token->data += '\"'; index++; break;
 
-                case '&': // HTML character name
+                case '&':{ // HTML character name
                     index++;
                     for(j = index; buffer[j] && buffer[j] != ';'; j++);
                     if(!buffer[j]){
@@ -719,7 +725,7 @@ bool Scanner::getString(Token* token)
                         return false;
                     }
                     buffer[j] = 0;
-                    s = characters.find((const char*)(buffer+index));
+                    auto s = characters.find((const char*)(buffer+index));
                     if(s == characters.end()){
                         printError("Invalid \\& code");
                         return false;
@@ -727,6 +733,7 @@ bool Scanner::getString(Token* token)
                     index = j+1;
                     token->data += (const char*)s->second;
                     break;
+                }
 
                 case 'x' : // Hexadecimal number
                     index++;

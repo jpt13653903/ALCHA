@@ -116,7 +116,7 @@ void Greater::display()
 {
     displayStart();
 
-    debug.print(" > " );
+    logger.print(" > " );
 
     displayEnd();
 }

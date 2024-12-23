@@ -59,7 +59,7 @@ void BackEnd::removeTempNets(NameSpace* nameSpace)
 {
     if(!nameSpace) return;
 
-    debug.print("Delete temporary nets...\n");
+    logger.print("Delete temporary nets...\n");
 
     for(auto symbolIterator: nameSpace->symbols){
         switch(symbolIterator.second->type){
@@ -88,7 +88,7 @@ void BackEnd::removeTempNets(NameSpace* nameSpace)
 
 void BackEnd::populateUsed(NameSpace* nameSpace)
 {
-    debug.print("Populate used...\n");
+    logger.print("Populate used...\n");
 
     for(auto symbolIterator: nameSpace->symbols){
         switch(symbolIterator.second->type){
@@ -110,7 +110,7 @@ void BackEnd::populateUsed(NameSpace* nameSpace)
 
 bool BackEnd::deleteUnused(NameSpace* nameSpace)
 {
-    debug.print("Delete unused...\n");
+    logger.print("Delete unused...\n");
 
     auto symbolIterator = nameSpace->symbols.begin();
 
@@ -168,7 +168,7 @@ bool BackEnd::deleteUnused(NameSpace* nameSpace)
 
 bool BackEnd::assignPinDirections(NameSpace* nameSpace)
 {
-    debug.print("Assign pin directions...\n");
+    logger.print("Assign pin directions...\n");
 
     for(auto symbolIterator: nameSpace->symbols){
         switch(symbolIterator.second->type){
@@ -210,7 +210,7 @@ bool BackEnd::assignPinDirections(NameSpace* nameSpace)
 
 bool BackEnd::routePorts(NameSpace* nameSpace)
 {
-    debug.print("Route ports...\n");
+    logger.print("Route ports...\n");
 
     // At this point, the expressions use pointers, not names.  Any inter-module
     // usage needs to be broken into temporary signals throughout the hierarchy
@@ -220,7 +220,7 @@ bool BackEnd::routePorts(NameSpace* nameSpace)
 
     // Do the children first
     for(auto symbolIterator: nameSpace->symbols){
-        if(symbolIterator.second->isNamespace()){
+        if(symbolIterator.second->isNameSpace()){
             routePorts((NameSpace*)(symbolIterator.second));
         }
     }
@@ -441,30 +441,30 @@ bool BackEnd::buildAltera(const char* path, const char* filename)
     this->path     = path;
     this->filename = filename;
 
-    debug.print(
+    logger.print(
         ANSI_FG_GREEN "\nStarting BackEnd -----------------------"
                       "----------------------------------------\n\n"
         ANSI_RESET
     );
 
     removeTempNets(&global);
-    debug.print("\n");
+    logger.print("\n");
 
     populateUsed(&global);
-    debug.print("\n");
+    logger.print("\n");
 
     if(!deleteUnused(&global)) return false;
-    debug.print("\n");
+    logger.print("\n");
 
     if(!assignPinDirections(&global)) return false;
-    debug.print("\n");
+    logger.print("\n");
 
     if(!routePorts(&global)) return false;
-    debug.print("\n");
+    logger.print("\n");
 
     global.display();
 
-    debug.print(
+    logger.print(
         ANSI_FG_GREEN "\nBuilding Project -----------------------"
                       "----------------------------------------\n\n"
         ANSI_RESET

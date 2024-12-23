@@ -118,15 +118,15 @@ void Range::display()
 {
     displayStart();
 
-    debug.print("..");
+    logger.print("..");
 
     displayEnd();
 
     if(step){
-        debug.print(":");
-        if(step->left || step->right) debug.print("(");
+        logger.print(":");
+        if(step->left || step->right) logger.print("(");
         step->display();
-        if(step->left || step->right) debug.print(")");
+        if(step->left || step->right) logger.print(")");
     }
 }
 //------------------------------------------------------------------------------

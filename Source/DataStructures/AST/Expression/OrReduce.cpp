@@ -28,7 +28,7 @@ using namespace AST;
 OrReduce::OrReduce(int line, const string& filename): OrReduce(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-OrReduce::OrReduce(int line, const char* filename): Expression(line, filename, Type::OR_Reduce){}
+OrReduce::OrReduce(int line, const char* filename): Expression(line, filename, Type::OrReduce){}
 //------------------------------------------------------------------------------
 
 OrReduce::~OrReduce(){}
@@ -114,7 +114,7 @@ void OrReduce::display()
 {
     displayStart();
 
-    debug.print(" |");
+    logger.print(" |");
 
     displayEnd();
 }
@@ -122,7 +122,7 @@ void OrReduce::display()
 
 void OrReduce::validateMembers()
 {
-    assert(type == Type::OR_Reduce);
+    assert(type == Type::OrReduce);
 
     assert(!next);
     assert(!prev);

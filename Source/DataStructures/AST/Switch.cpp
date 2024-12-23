@@ -102,27 +102,27 @@ bool Switch::getVerilog(string& body)
 void Switch::display()
 {
     displayInfo();
-    debug.print("switch(");
+    logger.print("switch(");
         if(expression) expression->display();
-    debug.print("){\n");
+    logger.print("){\n");
         Case* temp = cases;
         while(temp){
-            debug.print(" case(");
+            logger.print(" case(");
                 bool isFirst = true;
                 for(auto expression: temp->expressions){
-                    if(!isFirst) debug.print(", ");
+                    if(!isFirst) logger.print(", ");
                     expression->display();
                     isFirst = false;
                 }
-            debug.print("){\n");
+            logger.print("){\n");
                 if(temp->statements) temp->statements->display();
-            debug.print(" }\n");
+            logger.print(" }\n");
             temp = temp->next;
         }
-        debug.print(" default{\n");
+        logger.print(" default{\n");
             if(defaultCase) defaultCase->display();
-        debug.print(" }\n");
-    debug.print("}\n");
+        logger.print(" }\n");
+    logger.print("}\n");
 
     if(next) next->display();
 }

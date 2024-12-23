@@ -84,7 +84,7 @@ bool Base::isSynthesisable()
 }
 //------------------------------------------------------------------------------
 
-bool Base::isNamespace()
+bool Base::isNameSpace()
 {
     return false;
 }
@@ -190,22 +190,22 @@ void Base::displayLongName()
 {
     if(nameSpace != (NameSpace*)&global){
         nameSpace->displayLongName();
-        debug.print("::");
+        logger.print("::");
     }
-    debug.print("%s", name.c_str());
+    logger.print("%s", name.c_str());
 }
 //------------------------------------------------------------------------------
 
 void Base::displayAttributes(int indent)
 {
-    debug.indent(indent);
-    debug.print("Line       = %d\n", source.line);
+    logger.indent(indent);
+    logger.print("Line       = %d\n", source.line);
 
-    debug.indent(indent);
-    debug.print("Filename   = \"%s\"\n", source.filename);
+    logger.indent(indent);
+    logger.print("Filename   = \"%s\"\n", source.filename);
 
-    debug.indent(indent);
-    debug.print("Attributes:\n");
+    logger.indent(indent);
+    logger.print("Attributes:\n");
 
     indent++;
     for(auto attribute: attributes){

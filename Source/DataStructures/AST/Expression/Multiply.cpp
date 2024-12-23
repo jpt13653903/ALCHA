@@ -216,7 +216,7 @@ void Multiply::display()
 {
     displayStart();
 
-    debug.print(" * " );
+    logger.print(" * " );
 
     displayEnd();
 }

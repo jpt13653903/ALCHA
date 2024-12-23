@@ -40,7 +40,7 @@ XorAssign::XorAssign(int line, std::string filename):
 //------------------------------------------------------------------------------
 
 XorAssign::XorAssign(int line, const char* filename):
-    Assignment(line, filename, Type::XOR_Assign){}
+    Assignment(line, filename, Type::XorAssign){}
 //------------------------------------------------------------------------------
 
 XorAssign::~XorAssign(){}
@@ -111,7 +111,7 @@ void XorAssign::display()
 
 void XorAssign::validateMembers()
 {
-    assert(type == Type::XOR_Assign);
+    assert(type == Type::XorAssign);
 
     assert(left, return);
     left->validate();

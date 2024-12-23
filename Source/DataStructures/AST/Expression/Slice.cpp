@@ -111,7 +111,7 @@ void Slice::display()
 {
     displayStart();
 
-    debug.print("{slice}");
+    logger.print("{slice}");
 
     displayEnd();
 }

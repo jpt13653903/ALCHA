@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Netlist_Namespace_h
-#define Netlist_Namespace_h
+#ifndef Netlist_NameSpace_h
+#define Netlist_NameSpace_h
 //------------------------------------------------------------------------------
 
 #include <map>
@@ -45,7 +45,7 @@ namespace Netlist{
 
             bool hasCircularReference(Base* object) override;
 
-            bool isNamespace() override;
+            bool isNameSpace() override;
 
             Base* getMember(const std::string& name) override;
 

@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Enum_Definition_h
-#define AST_Enum_Definition_h
+#ifndef AST_EnumDefinition_h
+#define AST_EnumDefinition_h
 //------------------------------------------------------------------------------
 
 #include "Base.h"

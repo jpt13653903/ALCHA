@@ -39,7 +39,7 @@ RawAssign::RawAssign(int line, std::string filename):
 //------------------------------------------------------------------------------
 
 RawAssign::RawAssign(int line, const char* filename):
-    Assignment(line, filename, Type::Raw_Assign){}
+    Assignment(line, filename, Type::RawAssign){}
 //------------------------------------------------------------------------------
 
 RawAssign::~RawAssign(){}
@@ -100,7 +100,7 @@ void RawAssign::display()
 
 void RawAssign::validateMembers()
 {
-    assert(type == Type::Raw_Assign);
+    assert(type == Type::RawAssign);
 
     assert(left, return);
     left->validate();

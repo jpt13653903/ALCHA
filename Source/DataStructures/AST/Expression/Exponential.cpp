@@ -111,7 +111,7 @@ void Exponential::display()
 {
     displayStart();
 
-    debug.print(" ^ " );
+    logger.print(" ^ " );
 
     displayEnd();
 }

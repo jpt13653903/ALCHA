@@ -204,7 +204,7 @@ void Divide::display()
 {
     displayStart();
 
-    debug.print(" / " );
+    logger.print(" / " );
 
     displayEnd();
 }

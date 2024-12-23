@@ -67,7 +67,7 @@ bool NameSpace::hasCircularReference(Base* object)
 }
 //------------------------------------------------------------------------------
 
-bool NameSpace::isNamespace()
+bool NameSpace::isNameSpace()
 {
     return true;
 }
