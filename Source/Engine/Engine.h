@@ -29,29 +29,29 @@
 #include "Utilities.h"
 //------------------------------------------------------------------------------
 
-class ENGINE{
-  private: // Massages
-    PARSER Parser;
-  //----------------------------------------------------------------------------
+class Engine{
+    private: // Massages
+        Parser parser;
+    //----------------------------------------------------------------------------
 
-  public: // Engine functions
-    // Parses the file and runs through the resulting AST:
-    // - Builds the namespaces
-    // - Creates object instances
-    // - Evaluates scripting expressions
-    // - Runs import statements
-    AST::BASE* RunAST(const char* Filename);
-  //----------------------------------------------------------------------------
+    public: // Engine functions
+        // Parses the file and runs through the resulting AST:
+        // - Builds the namespaces
+        // - Creates object instances
+        // - Evaluates scripting expressions
+        // - Runs import statements
+        AST::Base* runAST(const char* filename);
+    //----------------------------------------------------------------------------
 
-  public:
-    ENGINE();
-   ~ENGINE();
+    public:
+        Engine();
+       ~Engine();
 
-    bool Run(const char* Filename);
+        bool run(const char* filename);
 };
 //------------------------------------------------------------------------------
 
-extern ENGINE* Engine; // Created in ALCHA.cpp::main()
+extern Engine* engine; // Created in ALCHA.cpp::main()
 //------------------------------------------------------------------------------
 
 #endif

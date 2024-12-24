@@ -27,25 +27,25 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct HDL: public BASE{
-    std::string Identifier;
-    EXPRESSION* Files; // Only string constants are allowed
-    ASSIGNMENT* Parameters;
-    DEFINITION* Ports;
+    struct Hdl: public Base{
+        std::string identifier;
+        Expression* files; // Only string constants are allowed
+        Assignment* parameters;
+        Definition* ports;
 
-    HDL(int Line, std::string& Filename);
-    HDL(int Line, const char*  Filename);
-   ~HDL();
+        Hdl(int line, std::string& filename);
+        Hdl(int line, const char*  filename);
+       ~Hdl();
 
-    BASE* Copy() override;
+        Base* copy() override;
 
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
+        bool runAST() override;
+        bool getVerilog(std::string& body) override;
 
-    void Display() override;
+        void display() override;
 
-    void ValidateMembers() override;
-  };
+        void validateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

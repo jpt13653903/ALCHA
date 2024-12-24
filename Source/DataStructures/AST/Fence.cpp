@@ -21,51 +21,54 @@
 #include "Fence.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-FENCE::FENCE(int Line, std::string& Filename): FENCE(Line, Filename.c_str()){}
+Fence::Fence(int line, std::string& filename): Fence(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-FENCE::FENCE(int Line, const char* Filename): BASE(Line, Filename, TYPE::Fence){
+Fence::Fence(int line, const char* filename): Base(line, filename, Type::Fence){}
+//------------------------------------------------------------------------------
+
+Fence::~Fence(){}
+//------------------------------------------------------------------------------
+
+Base* Fence::copy()
+{
+    Fence* copy = new Fence(source.line, source.filename.c_str());
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-FENCE::~FENCE(){
+bool Fence::runAST()
+{
+    // Fences are ignored during this stage.
+    // They only have significance within FSM constructs
+    return true;
 }
 //------------------------------------------------------------------------------
 
-BASE* FENCE::Copy(){
-  FENCE* Copy = new FENCE(Source.Line, Source.Filename.c_str());
-
-  return Copy;
+bool Fence::getVerilog(string& body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool FENCE::RunAST(){
-  // Fences are ignored during this stage.
-  // They only have significance within FSM constructs
-  return true;
+void Fence::display()
+{
+    displayInfo();
+    logger.print("Fence\n");
+
+    if(next) next->display();
 }
 //------------------------------------------------------------------------------
 
-bool FENCE::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
-void FENCE::Display(){
-  DisplayInfo();
-  Debug.Print("Fence\n");
-
-  if(Next) Next->Display();
-}
-//------------------------------------------------------------------------------
-
-void FENCE::ValidateMembers(){
-  assert(Type == TYPE::Fence);
+void Fence::validateMembers()
+{
+    assert(type == Type::Fence);
 }
 //------------------------------------------------------------------------------
 

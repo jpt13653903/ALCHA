@@ -5,8 +5,9 @@ all:
 
 clean:
 	$(MAKE) -C Source clean
+	$(MAKE) -C Tests  clean
 
 test:
-	$(MAKE) -C Source test
+	$(MAKE) -C Tests test
 #-------------------------------------------------------------------------------
 

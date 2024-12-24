@@ -18,9 +18,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-/* This class is used as a base for PIN and NET
- *
- */
+/* This class is used as a base for Pin and Net
+  *
+  */
 //------------------------------------------------------------------------------
 
 #ifndef Netlist_Synthesisable_h
@@ -32,44 +32,44 @@
 #include "AST/Definition.h"
 //------------------------------------------------------------------------------
 
-namespace NETLIST{
-  class SYNTHESISABLE: public BASE{
-    private:
-      struct FORMAT{
-        NUM* Width;
-        NUM* FullScale;
-        NUM* Signed;
-      } Format;
+namespace Netlist{
+    class Synthesisable: public Base{
+        private:
+            struct Format{
+                Num* width;
+                Num* fullScale;
+                Num* isSigned;
+            } format;
 
-    protected:
-      void DisplayParameters(int Indent);
+        protected:
+            void displayParameters(int indent);
 
-    public:
-      bool    Used; // Actually used in an expression somewhere
-      int     Width    () override;
-      NUMBER& FullScale() override;
-      bool    Signed   () override;
+        public:
+            bool    used; // Actually used in an expression somewhere
+            int     width    () override;
+            Number& fullScale() override;
+            bool    isSigned () override;
 
-      // If "Signed" is not specified, the signedness is taken from the sign
-      // of Width and / or FullScale, otherwise both Width and FullScale are
-      // expected to be positive.
-      void SetFixedPoint(int Width, const NUMBER& FullScale);
-      void SetFixedPoint(int Width, const NUMBER& FullScale, bool Signed);
+            // If "Signed" is not specified, the signedness is taken from the sign
+            // of Width and / or FullScale, otherwise both Width and FullScale are
+            // expected to be positive.
+            void setFixedPoint(int width, const Number& fullScale);
+            void setFixedPoint(int width, const Number& fullScale, bool isSigned);
 
-      AST::DEFINITION::DIRECTION Direction;
+            AST::Definition::Direction direction;
 
-               SYNTHESISABLE(int Line, const std::string& Filename, const char* Name, TYPE Type);
-      virtual ~SYNTHESISABLE();
+                     Synthesisable(int line, const std::string& filename, const char* name, Type type);
+            virtual ~Synthesisable();
 
-      bool IsSynthesisable() override;
+            bool isSynthesisable() override;
 
-      bool ApplyParameters(std::list<AST::BASE*>& Parameters);
+            bool applyParameters(std::list<AST::Base*>& parameters);
 
-      BASE*            GetAttribute            (const std::string& Name) override;
-      AST::EXPRESSION* GetBuiltInAttributeValue(const std::string& Name) override;
+            Base*            getAttribute            (const std::string& name) override;
+            AST::Expression* getBuiltInAttributeValue(const std::string& name) override;
 
-      void Validate() override;
-  };
+            void validate() override;
+    };
 }
 //------------------------------------------------------------------------------
 

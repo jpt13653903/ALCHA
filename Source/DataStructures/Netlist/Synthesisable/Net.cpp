@@ -24,120 +24,129 @@
 #include "AST/Expression/Object.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
-using namespace NETLIST;
+using std::string;
+using namespace Netlist;
 //------------------------------------------------------------------------------
 
-NET::NET(int Line, const string& Filename, const char* Name) : SYNTHESISABLE(Line, Filename, Name, TYPE::Net){
-  Value = 0;
+Net::Net(int line, const string& filename, const char* name) : Synthesisable(line, filename, name, Type::Net)
+{
+    value = 0;
 }
 //------------------------------------------------------------------------------
 
-NET::~NET(){
-  if(Value) delete Value;
+Net::~Net()
+{
+    if(value) delete value;
 }
 //------------------------------------------------------------------------------
 
-AST::EXPRESSION* NET::GetExpression(int Line, const string& Filename){
-  if(Value) return (AST::EXPRESSION*)Value->Copy();
-  ::Error(Line, Filename, "Operate-assign on empty object");
-  return 0;
+AST::Expression* Net::getExpression(int line, const string& filename)
+{
+    if(value) return (AST::Expression*)value->copy();
+    ::printError(line, filename, "Operate-assign on empty object");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-bool NET::Assign(AST::EXPRESSION* Expression){
-  assert(Expression, return false);
+bool Net::assign(AST::Expression* expression)
+{
+    assert(expression, return false);
 
-  Expression = Expression->Evaluate();
-  if(!Expression) return false;
+    expression = expression->evaluate();
+    if(!expression) return false;
 
-  switch(Expression->Type){
-    case AST::BASE::TYPE::Literal:{
-      NUMBER Scale = 1;
-      Scale.BinScale(Width());
-      Scale.Div(FullScale());
-      ((AST::LITERAL*)Expression)->Value.Mul(Scale);
-      break;
+    switch(expression->type){
+        case AST::Base::Type::Literal:{
+            Number scale = 1;
+            scale.binScale(width());
+            scale.div(fullScale());
+            ((AST::Literal*)expression)->value.mul(scale);
+            break;
+        }
+
+        case AST::Base::Type::Object:{
+            auto object = ((AST::Object*)expression)->objectRef;
+            assert(object, return false);
+
+            int    exprWidth     = object->width    ();
+            Number exprFullScale = object->fullScale();
+
+            Number scale = 1;
+            scale.binScale(width() - exprWidth);
+            scale.mul(exprFullScale);
+            scale.div(fullScale());
+
+            expression = expression->scaleWith(scale, width(), fullScale());
+            break;
+        }
+
+        default:
+            printError("Cannot assign this type to a net");
+            delete expression;
+            return false;
     }
+    return rawAssign(expression);
+}
+//------------------------------------------------------------------------------
 
-    case AST::BASE::TYPE::Object:{
-      auto Object = ((AST::OBJECT*)Expression)->ObjectRef;
-      assert(Object, return false);
+bool Net::rawAssign(AST::Expression* expression)
+{
+    if(!expression) return false;
 
-      int    ExprWidth     = Object->Width    ();
-      NUMBER ExprFullScale = Object->FullScale();
-
-      NUMBER Scale = 1;
-      Scale.BinScale(Width() - ExprWidth);
-      Scale.Mul(ExprFullScale);
-      Scale.Div(FullScale());
-
-      Expression = Expression->ScaleWith(Scale, Width(), FullScale());
-      break;
+    if(value){
+        expression->printWarning();
+        printf("Overwriting net value %s\n", name.c_str());
+        delete value;
     }
-
-    default:
-      Error("Cannot assign this type to a net");
-      delete Expression;
-      return false;
-  }
-  return RawAssign(Expression);
+    value = expression->evaluate();
+    if(value && value->hasCircularReference(this)){
+        value->printError("Circular combinational circuit");
+    }
+    return value;
 }
 //------------------------------------------------------------------------------
 
-bool NET::RawAssign(AST::EXPRESSION* Expression){
-  if(!Expression) return false;
-
-  if(Value){
-    Expression->Warning();
-    printf("Overwriting net value %s\n", Name.c_str());
-    delete Value;
-  }
-  Value = Expression->Evaluate();
-  if(Value && Value->HasCircularReference(this)){
-    Value->Error("Circular combinational circuit");
-  }
-  return Value;
+bool Net::hasCircularReference(Base* object)
+{
+    if(this == object) return true;
+    if(!value) return false;
+    return value->hasCircularReference(object);
 }
 //------------------------------------------------------------------------------
 
-bool NET::HasCircularReference(BASE* Object){
-  if(this == Object) return true;
-  if(!Value) return false;
-  return Value->HasCircularReference(Object);
+void Net::populateUsed(bool setUsed)
+{
+    if(used) return; // Prevents circular loops
+    used = setUsed;
+    if(value) value->populateUsed();
 }
 //------------------------------------------------------------------------------
 
-void NET::PopulateUsed(bool SetUsed){
-  if(Used) return; // Prevents circular loops
-  Used = SetUsed;
-  if(Value) Value->PopulateUsed();
+void Net::display(int indent)
+{
+    logger.indent(indent);
+    logger.print("Net: ");
+
+    indent++;
+    displayParameters(indent);
+
+    logger.indent(indent);
+    logger.print("value      = ");
+    if(value) value->display();
+    else      logger.print("{open}");
+    logger.print("\n");
+
+    displayAttributes(indent);
 }
 //------------------------------------------------------------------------------
 
-void NET::Display(int Indent){
-  Debug.Indent(Indent);
-  Debug.Print("Net: ");
+void Net::validate()
+{
+    assert(type == Type::Net);
 
-  Indent++;
-  DisplayParameters(Indent);
+    Synthesisable::validate();
 
-  Debug.Indent(Indent);
-  Debug.Print("Value      = ");
-  if(Value) Value->Display();
-  else      Debug.Print("{open}");
-  Debug.Print("\n");
-
-  DisplayAttributes(Indent);
-}
-//------------------------------------------------------------------------------
-
-void NET::Validate(){
-  assert(Type == TYPE::Net);
-
-  SYNTHESISABLE::Validate();
-
-  if(Value) Value->Validate();
+    if(value) value->validate();
 }
 //------------------------------------------------------------------------------
 

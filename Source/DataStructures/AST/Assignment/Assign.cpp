@@ -30,78 +30,78 @@
 #include "../Expression/Literal.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-ASSIGN::ASSIGN(int Line, std::string Filename):
-ASSIGN(Line, Filename.c_str()){}
+Assign::Assign(int line, const char* filename):
+    Assignment(line, filename, Type::Assign){}
 //------------------------------------------------------------------------------
 
-ASSIGN::ASSIGN(int Line, const char* Filename):
-ASSIGNMENT(Line, Filename, TYPE::Assign){}
+Assign::~Assign(){}
 //------------------------------------------------------------------------------
 
-ASSIGN::~ASSIGN(){
+Base* Assign::copy()
+{
+    Assign* copy = new Assign(source.line, source.filename.c_str());
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-BASE* ASSIGN::Copy(){
-  ASSIGN* Copy = new ASSIGN(Source.Line, Source.Filename.c_str());
+bool Assign::runAST()
+{
+    TargetList targetList;
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    assert(left , return false);
+    assert(right, return false);
 
-  return Copy;
+    if(!getLHS(left, targetList)) return false;
+    if(targetList.empty()){
+        printError("target object list is empty");
+        return false;
+    }
+
+    if(targetList.size() > 1){
+        error("Multiple assignment targets not supported yet");
+        return false;
+    }
+
+    Netlist::Base* target = targetList.front();
+    assert(target, return false);
+
+    // Move the expression
+    bool result = target->assign(right);
+    right  = 0;
+
+    return result;
 }
 //------------------------------------------------------------------------------
 
-bool ASSIGN::RunAST(){
-  target_list TargetList;
-
-  assert(Left , return false);
-  assert(Right, return false);
-
-  if(!GetLHS(Left, TargetList)) return false;
-  if(TargetList.empty()){
-    Error("Target object list is empty");
+bool Assign::getVerilog(string& body)
+{
+    error("Not yet implemented");
     return false;
-  }
-
-  if(TargetList.size() > 1){
-    error("Multiple assignment targets not supported yet");
-    return false;
-  }
-
-  NETLIST::BASE* Target = TargetList.front();
-  assert(Target, return false);
-
-  // Move the expression
-  bool Result = Target->Assign(Right);
-  Right  = 0;
-
-  return Result;
 }
 //------------------------------------------------------------------------------
 
-bool ASSIGN::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+void Assign::display()
+{
+    displayAssignment("=");
 }
 //------------------------------------------------------------------------------
 
-void ASSIGN::Display(){
-  DisplayAssignment("=");
-}
-//------------------------------------------------------------------------------
+void Assign::validateMembers()
+{
+    assert(type == Type::Assign);
 
-void ASSIGN::ValidateMembers(){
-  assert(Type == TYPE::Assign);
+    assert(left, return);
+    left->validate();
 
-  assert(Left, return);
-  Left->Validate();
-
-  if(Right) Right->Validate();
+    if(right) right->validate();
 }
 //------------------------------------------------------------------------------
 

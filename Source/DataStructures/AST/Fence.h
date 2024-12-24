@@ -25,21 +25,22 @@
 #include "Base.h"
 //------------------------------------------------------------------------------
 
-namespace AST{
-  struct FENCE: public BASE{
-    FENCE(int Line, std::string& Filename);
-    FENCE(int Line, const char*  Filename);
-   ~FENCE();
+namespace AST
+{
+    struct Fence: public Base{
+        Fence(int line, std::string& filename);
+        Fence(int line, const char*  filename);
+       ~Fence();
 
-    BASE* Copy() override;
+        Base* copy() override;
 
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
+        bool runAST() override;
+        bool getVerilog(std::string& body) override;
 
-    void Display() override;
+        void display() override;
 
-    void ValidateMembers() override;
-  };
+        void validateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

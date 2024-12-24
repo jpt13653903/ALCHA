@@ -26,23 +26,23 @@
 #include "UTF_Converter.h"
 //------------------------------------------------------------------------------
 
-namespace NETLIST{
-  struct CHARACTER: public BASE{
-    char32_t Value;
+namespace Netlist{
+    struct Character: public Base{
+        char32_t value;
 
-             CHARACTER(int Line, const std::string& Filename, const char* Name);
-    virtual ~CHARACTER();
+                 Character(int line, const std::string& filename, const char* name);
+        virtual ~Character();
 
-    AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
-    bool Assign   (AST::EXPRESSION* Expression) override;
-    bool RawAssign(AST::EXPRESSION* Expression) override;
+        AST::Expression* getExpression(int line, const std::string& filename) override;
+        bool assign   (AST::Expression* expression) override;
+        bool rawAssign(AST::Expression* expression) override;
 
-    bool HasCircularReference(BASE* Object) override;
+        bool hasCircularReference(Base* object) override;
 
-    void Display(int Indent = 0) override;
+        void display(int indent = 0) override;
 
-    void Validate() override;
-  };
+        void validate() override;
+    };
 }
 //------------------------------------------------------------------------------
 

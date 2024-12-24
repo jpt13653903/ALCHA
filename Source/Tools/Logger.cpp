@@ -21,59 +21,69 @@
 #include "Logger.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 //------------------------------------------------------------------------------
 
-LOGGER Debug("Debug.log");
+Logger logger("Debug.log");
 //------------------------------------------------------------------------------
 
-LOGGER::LOGGER(const char* Filename){
-  File = fopen(Filename, "wb");
+Logger::Logger(const char* filename)
+{
+    file = fopen(filename, "wb");
 }
 //------------------------------------------------------------------------------
 
-LOGGER::~LOGGER(){
-  fclose(File);
+Logger::~Logger()
+{
+    fclose(file);
 }
 //------------------------------------------------------------------------------
 
-void LOGGER::Indent(int Level){
-  for(int n = 0; n < Level; n++) fprintf(File, "    ");
+void Logger::indent(int level)
+{
+    for(int n = 0; n < level; n++) fprintf(file, "    ");
 }
 //------------------------------------------------------------------------------
 
-void LOGGER::Print(const char* String){
-  fprintf(File, "%s", String);
+void Logger::print(const char* message)
+{
+    fprintf(file, "%s", message);
 }
 //------------------------------------------------------------------------------
 
-void LOGGER::Print(const std::string& String){
-  fprintf(File, "%s", String.c_str());
+void Logger::print(const string& message)
+{
+    fprintf(file, "%s", message.c_str());
 }
 //------------------------------------------------------------------------------
 
-void LOGGER::Print(const char* Format, int i){
-  fprintf(File, Format, i);
+void Logger::print(const char* format, int i)
+{
+    fprintf(file, format, i);
 }
 //------------------------------------------------------------------------------
 
-void LOGGER::Print(const char* Format, double d){
-  fprintf(File, Format, d);
+void Logger::print(const char* format, double d)
+{
+    fprintf(file, format, d);
 }
 //------------------------------------------------------------------------------
 
-void LOGGER::Print(const char* Format, unsigned u){
-  fprintf(File, Format, u);
+void Logger::print(const char* format, unsigned u)
+{
+    fprintf(file, format, u);
 }
 //------------------------------------------------------------------------------
 
-void LOGGER::Print(const char* Format, const char* s){
-  fprintf(File, Format, s);
+void Logger::print(const char* format, const char* s)
+{
+    fprintf(file, format, s);
 }
 //------------------------------------------------------------------------------
 
-void LOGGER::Print(const char* Format, const string& s){
-  fprintf(File, Format, s.c_str());
+void Logger::print(const char* format, const string& s)
+{
+    fprintf(file, format, s.c_str());
 }
 //------------------------------------------------------------------------------
 

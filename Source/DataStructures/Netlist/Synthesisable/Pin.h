@@ -18,35 +18,35 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Netlist_Pin_h
-#define Netlist_Pin_h
+#ifndef Netlist_Synthesisable_Pin_h
+#define Netlist_Synthesisable_Pin_h
 //------------------------------------------------------------------------------
 
 #include "PinComponent.h"
 #include "AST/Expression.h"
 //------------------------------------------------------------------------------
 
-namespace NETLIST{
-  struct PIN: public SYNTHESISABLE{
-    PIN_COMPONENT* Driver;
-    PIN_COMPONENT* Enabled;
+namespace Netlist{
+    struct Pin: public Synthesisable{
+        PinComponent* driver;
+        PinComponent* enabled;
 
-    PIN(int Line, const std::string& Filename, const char* Name);
-   ~PIN();
+        Pin(int line, const std::string& filename, const char* name);
+       ~Pin();
 
-    AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
-    bool Assign   (AST::EXPRESSION* Expression) override;
-    bool RawAssign(AST::EXPRESSION* Expression) override;
+        AST::Expression* getExpression(int line, const std::string& filename) override;
+        bool assign   (AST::Expression* expression) override;
+        bool rawAssign(AST::Expression* expression) override;
 
-    bool HasCircularReference(BASE* Object) override;
-    void PopulateUsed(bool SetUsed) override;
+        bool hasCircularReference(Base* object) override;
+        void populateUsed(bool setUsed) override;
 
-    BASE* GetMember(const std::string& Name) override;
+        Base* getMember(const std::string& name) override;
 
-    void Display(int Indent = 0) override;
+        void display(int indent = 0) override;
 
-    void Validate() override;
-  };
+        void validate() override;
+    };
 }
 //------------------------------------------------------------------------------
 

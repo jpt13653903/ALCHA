@@ -23,195 +23,202 @@
 #include "Negate.h"
 #include "Object.h"
 
-#include "Netlist/Namespace/Module.h"
+#include "Netlist/NameSpace/Module.h"
 #include "Netlist/Synthesisable/Net.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-DIVIDE::DIVIDE(int Line, const string& Filename): DIVIDE(Line, Filename.c_str()){}
+Divide::Divide(int line, const string& filename): Divide(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-DIVIDE::DIVIDE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Divide){
+Divide::Divide(int line, const char* filename): Expression(line, filename, Type::Divide){}
+//------------------------------------------------------------------------------
+
+Divide::~Divide(){}
+//------------------------------------------------------------------------------
+
+Base* Divide::copy()
+{
+    Divide* copy = new Divide(source.line, source.filename.c_str());
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-DIVIDE::~DIVIDE(){
-}
-//------------------------------------------------------------------------------
+bool Divide::getVerilog(string& body)
+{
+    assert(left , return false);
+    assert(right, return false);
 
-BASE* DIVIDE::Copy(){
-  DIVIDE* Copy = new DIVIDE(Source.Line, Source.Filename.c_str());
-
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-  return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool DIVIDE::GetVerilog(string& Body){
-  assert(Left , return false);
-  assert(Right, return false);
-
-  if(!Left->GetSigned() && Right->GetSigned()){
-    Body += "$signed({1'b0, (";
-    Left->GetVerilog(Body);
-    Body += ")})";
-  }else{
-    Body += "(";
-    Left->GetVerilog(Body);
-    Body += ")";
-  }
-  Body += " / ";
-  if(Left->GetSigned() && !Right->GetSigned()){
-    Body += "$signed({1'b0, (";
-    Right->GetVerilog(Body);
-    Body += ")})";
-  }else{
-    Body += "(";
-    Right->GetVerilog(Body);
-    Body += ")";
-  }
-
-  return true;
-}
-//------------------------------------------------------------------------------
-
-EXPRESSION* DIVIDE::Evaluate(){
-  assert(Left , return this);
-  assert(Right, return this);
-
-  Left  = Left ->Evaluate();
-  Right = Right->Evaluate();
-
-  assert(Left , return this);
-  assert(Right, return this);
-
-  if(Left->Type == TYPE::Literal && Right->Type == TYPE::Literal){
-    auto Result = new LITERAL(Source.Line, Source.Filename);
-    auto left  = (LITERAL*)Left;
-    auto right = (LITERAL*)Right;
-    Result->Value =   left ->Value;
-    Result->Value.Div(right->Value);
-    delete this;
-    return Result;
-  }
-
-  if(Left->Type == TYPE::Object && Right->Type == TYPE::Object){
-    error("Not yet implemented");
-    // TODO: Should this be supported at all, or issue an error?
-    delete this;
-    return 0;
-  }
-
-  if(Left->Type == TYPE::Literal && Right->Type == TYPE::Object){
-    error("Not yet implemented");
-    // TODO: Should this be supported at all, or issue an error?
-    delete this;
-    return 0;
-  }
-
-  if(Left->Type == TYPE::Object && Right->Type == TYPE::Literal){
-    auto left  = ((OBJECT *)Left )->ObjectRef;
-    auto right =  (LITERAL*)Right;
-
-    assert(left);
-
-    auto Object = new OBJECT      (Source.Line, Source.Filename);
-    auto Net    = new NETLIST::NET(Source.Line, Source.Filename, 0);
-    Object->ObjectRef = Net;
-
-    NUMBER FullScale = left->FullScale();
-    FullScale.Div(right->Value);
-
-    bool Signed = left->Signed();
-
-    if(right->GetSigned()){
-      Signed = true;
-      FullScale.Mul(-1);
-
-      auto Negate = new NEGATE(Source.Line, Source.Filename);
-      Negate->Right = Left;
-      Net   ->Value = Negate;
-    }else{ // Positive literal
-      Net->Value = Left;
+    if(!left->getSigned() && right->getSigned()){
+        body += "$signed({1'b0, (";
+        left->getVerilog(body);
+        body += ")})";
+    }else{
+        body += "(";
+        left->getVerilog(body);
+        body += ")";
     }
-    Net->SetFixedPoint(left->Width(), FullScale, Signed);
-    NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
-    Left = 0;
-    delete this;
-    return Object;
-  }
+    body += " / ";
+    if(left->getSigned() && !right->getSigned()){
+        body += "$signed({1'b0, (";
+        right->getVerilog(body);
+        body += ")})";
+    }else{
+        body += "(";
+        right->getVerilog(body);
+        body += ")";
+    }
 
-  return this;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-int DIVIDE::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+Expression* Divide::evaluate()
+{
+    assert(left , return this);
+    assert(right, return this);
+
+    left  = left ->evaluate();
+    right = right->evaluate();
+
+    assert(left , return this);
+    assert(right, return this);
+
+    if(left->type == Type::Literal && right->type == Type::Literal){
+        auto result = new Literal(source.line, source.filename);
+        result->value =   ((Literal*)left )->value;
+        result->value.div(((Literal*)right)->value);
+        delete this;
+        return result;
+    }
+
+    if(left->type == Type::Object && right->type == Type::Object){
+        error("Not yet implemented");
+        // TODO: Should this be supported at all, or issue an error?
+        delete this;
+        return 0;
+    }
+
+    if(left->type == Type::Literal && right->type == Type::Object){
+        error("Not yet implemented");
+        // TODO: Should this be supported at all, or issue an error?
+        delete this;
+        return 0;
+    }
+
+    if(left->type == Type::Object && right->type == Type::Literal){
+        auto _left  = ((Object *)left )->objectRef;
+        auto _right =  (Literal*)right;
+
+        assert(_left);
+
+        auto object = new Object      (source.line, source.filename);
+        auto net    = new Netlist::Net(source.line, source.filename, 0);
+        object->objectRef = net;
+
+        Number fullScale = _left->fullScale();
+        fullScale.div(_right->value);
+
+        bool isSigned = _left->isSigned();
+
+        if(_right->getSigned()){
+            isSigned = true;
+            fullScale.mul(-1);
+
+            auto negate = new Negate(source.line, source.filename);
+            negate->right = left;
+            net   ->value = negate;
+        }else{ // Positive literal
+            net->value = left;
+        }
+        net->setFixedPoint(_left->width(), fullScale, isSigned);
+        Netlist::nameSpaceStack.front()->symbols[net->name] = net;
+        left = 0;
+        delete this;
+        return object;
+    }
+
+    return this;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& DIVIDE::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+int Divide::getWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-bool DIVIDE::GetSigned(){
-  return (Left->GetSigned() || Right->GetSigned());
+Number& Divide::getFullScale()
+{
+    error("Not yet implemented");
+    static Number zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool DIVIDE::HasCircularReference(NETLIST::BASE* Object){
-  assert(Left , return false);
-  assert(Right, return false);
-  
-  if(Left ->HasCircularReference(Object)) return true;
-  if(Right->HasCircularReference(Object)) return true;
-
-  return false;
+bool Divide::getSigned()
+{
+    return (left->getSigned() || right->getSigned());
 }
 //------------------------------------------------------------------------------
 
-void DIVIDE::PopulateUsed(){
-  assert(Left , return);
-  assert(Right, return);
-  
-  Left ->PopulateUsed();
-  Right->PopulateUsed();
+bool Divide::hasCircularReference(Netlist::Base* object)
+{
+    assert(left , return false);
+    assert(right, return false);
+
+    if(left ->hasCircularReference(object)) return true;
+    if(right->hasCircularReference(object)) return true;
+
+    return false;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* DIVIDE::RemoveTempNet(int Width, bool Signed){
-  if(Left ) Left  = Left ->RemoveTempNet(0, false);
-  if(Right) Right = Right->RemoveTempNet(0, false);
-  return this;
+void Divide::populateUsed()
+{
+    assert(left , return);
+    assert(right, return);
+
+    left ->populateUsed();
+    right->populateUsed();
 }
 //------------------------------------------------------------------------------
 
-void DIVIDE::Display(){
-  DisplayStart();
-
-  Debug.Print(" / " );
-
-  DisplayEnd();
+Expression* Divide::removeTempNet(int width, bool isSigned)
+{
+    if(left ) left  = left ->removeTempNet(0, false);
+    if(right) right = right->removeTempNet(0, false);
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void DIVIDE::ValidateMembers(){
-  assert(Type == TYPE::Divide);
+void Divide::display()
+{
+    displayStart();
 
-  assert(!Next);
-  assert(!Prev);
+    logger.print(" / " );
 
-  assert(Left , return); Left ->Validate();
-  assert(Right, return); Right->Validate();
+    displayEnd();
+}
+//------------------------------------------------------------------------------
+
+void Divide::validateMembers()
+{
+    assert(type == Type::Divide);
+
+    assert(!next);
+    assert(!prev);
+
+    assert(left , return); left ->validate();
+    assert(right, return); right->validate();
 }
 //------------------------------------------------------------------------------
 

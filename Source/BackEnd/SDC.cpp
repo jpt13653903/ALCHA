@@ -22,118 +22,120 @@
 #include "Netlist/Synthesisable/Pin.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
-using namespace NETLIST;
+using std::string;
+using std::to_string;
+using namespace Netlist;
 //------------------------------------------------------------------------------
 
-SDC::SDC(){
-}
+SDC::SDC(){}
 //------------------------------------------------------------------------------
 
-SDC::~SDC(){
-}
+SDC::~SDC(){}
 //------------------------------------------------------------------------------
 
-void SDC::BuildClocks(){
-  int ClockCount = 0;
+void SDC::buildClocks()
+{
+    int clockCount = 0;
 
-  foreach(SymbolIterator, Global.Symbols){
-    if(SymbolIterator->second->Type == BASE::TYPE::Pin){
-      auto Pin  = (PIN*)(SymbolIterator->second);
-      auto Freq = Pin->GetAttribValue("frequency");
-      if(Freq){
-        if(Freq->Type != AST::BASE::TYPE::Literal){
-          error("frequency attribute not a literal");
-          return;
+    for(auto symbolIterator: global.symbols){
+        if(symbolIterator.second->type == Base::Type::Pin){
+            auto pin  = (Pin*)(symbolIterator.second);
+            auto freq = pin->getAttribValue("frequency");
+            if(freq){
+                if(freq->type != AST::Base::Type::Literal){
+                    error("frequency attribute not a literal");
+                    return;
+                }
+                if(!((AST::Literal*)freq)->value.isReal()){
+                    error("frequency attribute not real");
+                    return;
+                }
+                double period = 1e9/((AST::Literal*)freq)->value.getReal(); // ns
+                constraints +=
+                    "create_clock -name {" + pin->hdlName()     + "}"   +
+                    " -period "            + to_string(period)   + "ns"  +
+                    " -waveform {0ns "     + to_string(period/2) + "ns}" +
+                    " [get_ports {"        + pin->hdlName()     + "}]\n";
+                clockCount++;
+            }
         }
-        if(!((AST::LITERAL*)Freq)->Value.IsReal()){
-          error("frequency attribute not real");
-          return;
+        // No recursion required -- all pins are top-level at this point
+    }
+
+    // Create clock groups
+    if(clockCount){
+        constraints += "\nset_clock_groups -asynchronous";
+
+        for(auto symbolIterator: global.symbols){
+            if(symbolIterator.second->type == Base::Type::Pin){
+                auto pin  = (Pin*)(symbolIterator.second);
+                auto freq = pin->getAttribValue("frequency");
+                // Already checked for validity above, so no need to check again
+                if(freq) constraints += " \\\n  -group {"+ pin->hdlName() +"}";
+            }
         }
-        double Period = 1e9/((AST::LITERAL*)Freq)->Value.GetReal(); // ns
-        Constraints +=
-          "create_clock -name {" + Pin->HDL_Name()     + "}"   +
-          " -period "            + to_string(Period)   + "ns"  +
-          " -waveform {0ns "     + to_string(Period/2) + "ns}" +
-          " [get_ports {"        + Pin->HDL_Name()     + "}]\n";
-        ClockCount++;
-      }
+        constraints += "\n";
     }
-    // No recursion required -- all pins are top-level at this point
-  }
-
-  // Create clock groups
-  if(ClockCount){
-    Constraints += "\nset_clock_groups -asynchronous";
-
-    foreach(SymbolIterator, Global.Symbols){
-      if(SymbolIterator->second->Type == BASE::TYPE::Pin){
-        auto Pin  = (PIN*)(SymbolIterator->second);
-        auto Freq = Pin->GetAttribValue("frequency");
-        // Already checked for validity above, so no need to check again
-        if(Freq) Constraints += " \\\n  -group {"+ Pin->HDL_Name() +"}";
-      }
-    }
-    Constraints += "\n";
-  }
 }
 //------------------------------------------------------------------------------
 
-void SDC::BuildPorts(NETLIST::NAMESPACE* Namespace){
-  // TODO: Handle the input and output delays properly
-  warning("input_delay and output_delay not yet implemented");
+void SDC::buildPorts(Netlist::NameSpace* nameSpace)
+{
+    // TODO: Handle the input and output delays properly
+    warning("input_delay and output_delay not yet implemented");
 
-  foreach(SymbolIterator, Namespace->Symbols){
-    switch(SymbolIterator->second->Type){
-      case BASE::TYPE::Pin:{
-        auto Pin = (PIN*)(SymbolIterator->second);
-        if(!Pin->GetAttribValue("frequency")){ // Not a clock
-          if(Pin->Direction != AST::DEFINITION::DIRECTION::Output){ // Input or bidirectional
-            Constraints += "set_false_path -to   * -from ";
-            Constraints += "[get_ports {" + Pin->HDL_Name();
-            if(Pin->Width() > 1) Constraints += "[*]";
-            Constraints += "} ]\n";
-          }
-          if(Pin->Direction != AST::DEFINITION::DIRECTION::Input){ // Output or bidirectional
-            Constraints += "set_false_path -from * -to   ";
-            Constraints += "[get_ports {" + Pin->HDL_Name();
-            if(Pin->Width() > 1) Constraints += "[*]";
-            Constraints += "} ]\n";
-          }
+    for(auto symbolIterator: nameSpace->symbols){
+        switch(symbolIterator.second->type){
+            case Base::Type::Pin:{
+                auto pin = (Pin*)(symbolIterator.second);
+                if(!pin->getAttribValue("frequency")){ // Not a clock
+                    if(pin->direction != AST::Definition::Direction::Output){ // Input or bidirectional
+                        constraints += "set_false_path -to   * -from ";
+                        constraints += "[get_ports {" + pin->hdlName();
+                        if(pin->width() > 1) constraints += "[*]";
+                        constraints += "} ]\n";
+                    }
+                    if(pin->direction != AST::Definition::Direction::Input){ // Output or bidirectional
+                        constraints += "set_false_path -from * -to   ";
+                        constraints += "[get_ports {" + pin->hdlName();
+                        if(pin->width() > 1) constraints += "[*]";
+                        constraints += "} ]\n";
+                    }
+                }
+                break;
+            }
+            case Base::Type::Group:{
+                buildPorts((NameSpace*)symbolIterator.second);
+                break;
+            }
+            default:
+                break;
         }
-        break;
-      }
-      case BASE::TYPE::Group:{
-        BuildPorts((NAMESPACE*)SymbolIterator->second);
-        break;
-      }
-      default:
-        break;
+        // No recursion required -- all pins are top-level at this point
     }
-    // No recursion required -- all pins are top-level at this point
-  }
 }
 //------------------------------------------------------------------------------
 
-string& SDC::Build(){
-  Constraints.clear();
+string& SDC::build()
+{
+    constraints.clear();
 
-  Constraints = "# Define Clocks\n";
-  BuildClocks();
-  Constraints +=
-    "\n"
-    "derive_pll_clocks -create_base_clocks -use_net_name\n"
-    "#-------------------------------------------------------------------------------\n"
-    "\n"
-    "# Calculate Clock Uncertainties\n"
-    "derive_clock_uncertainty\n"
-    "#-------------------------------------------------------------------------------\n"
-    "\n";
-  BuildPorts(&Global);
-  Constraints +=
-    "#-------------------------------------------------------------------------------\n";
+    constraints = "# Define Clocks\n";
+    buildClocks();
+    constraints +=
+        "\n"
+        "derive_pll_clocks -create_base_clocks -use_net_name\n"
+        "#-------------------------------------------------------------------------------\n"
+        "\n"
+        "# Calculate Clock Uncertainties\n"
+        "derive_clock_uncertainty\n"
+        "#-------------------------------------------------------------------------------\n"
+        "\n";
+    buildPorts(&global);
+    constraints +=
+        "#-------------------------------------------------------------------------------\n";
 
-  return Constraints;
+    return constraints;
 }
 //------------------------------------------------------------------------------
 

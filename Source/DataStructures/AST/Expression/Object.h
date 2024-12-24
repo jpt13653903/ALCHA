@@ -25,38 +25,38 @@
 #include "../Expression.h"
 //------------------------------------------------------------------------------
 
-namespace NETLIST{
-  class BASE;
+namespace Netlist{
+    class Base;
 }
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct OBJECT: public EXPRESSION{
-    NETLIST::BASE* ObjectRef; // Not deleted by this class
-                              // (it's part of the namespace tree)
+    struct Object: public Expression{
+        Netlist::Base* objectRef; // Not deleted by this class
+                                  // (it's part of the namespace tree)
 
-    OBJECT(int Line, const std::string& Filename);
-    OBJECT(int Line, const char*        Filename);
-   ~OBJECT();
+        Object(int line, const std::string& filename);
+        Object(int line, const char*        filename);
+       ~Object();
 
-    BASE* Copy() override;
+        Base* copy() override;
 
-    bool GetVerilog(std::string& Body) override;
-    EXPRESSION* Evaluate() override;
+        bool getVerilog(std::string& body) override;
+        Expression* evaluate() override;
 
-    int     GetWidth    () override;
-    NUMBER& GetFullScale() override;
-    bool    GetSigned   () override;
+        int     getWidth    () override;
+        Number& getFullScale() override;
+        bool    getSigned   () override;
 
-    bool HasCircularReference(NETLIST::BASE* Object) override;
-    void PopulateUsed() override;
+        bool hasCircularReference(Netlist::Base* object) override;
+        void populateUsed() override;
 
-    EXPRESSION* RemoveTempNet(int Width, bool Signed) override;
+        Expression* removeTempNet(int width, bool isSigned) override;
 
-    void Display() override;
+        void display() override;
 
-    void ValidateMembers() override;
-  };
+        void validateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

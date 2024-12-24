@@ -25,23 +25,23 @@
 #include "Base.h"
 //------------------------------------------------------------------------------
 
-namespace NETLIST{
-  struct BYTE: public BASE{
-    uint8_t Value;
+namespace Netlist{
+    struct Byte: public Base{
+        uint8_t value;
 
-             BYTE(int Line, const std::string& Filename, const char* Name);
-    virtual ~BYTE();
+                 Byte(int line, const std::string& filename, const char* name);
+        virtual ~Byte();
 
-    AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
-    bool Assign   (AST::EXPRESSION* Expression) override;
-    bool RawAssign(AST::EXPRESSION* Expression) override;
+        AST::Expression* getExpression(int line, const std::string& filename) override;
+        bool assign   (AST::Expression* expression) override;
+        bool rawAssign(AST::Expression* expression) override;
 
-    bool HasCircularReference(BASE* Object) override;
+        bool hasCircularReference(Base* object) override;
 
-    void Display(int Indent = 0) override;
+        void display(int indent = 0) override;
 
-    void Validate() override;
-  };
+        void validate() override;
+    };
 }
 //------------------------------------------------------------------------------
 

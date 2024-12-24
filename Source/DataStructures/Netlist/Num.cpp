@@ -23,75 +23,81 @@
 #include "AST/Expression/Literal.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
-using namespace NETLIST;
+using std::string;
+using namespace Netlist;
 //------------------------------------------------------------------------------
 
-NUM::NUM(int Line, const string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Number){
-  Value = 0;
+Num::Num(int line, const string& filename, const char* name) : Base(line, filename, name, Type::Number)
+{
+    value = 0;
 }
 //------------------------------------------------------------------------------
 
-NUM::~NUM(){
+Num::~Num(){}
+//------------------------------------------------------------------------------
+
+AST::Expression* Num::getExpression(int line, const string& filename)
+{
+    AST::Literal* result = new AST::Literal(line, filename);
+    result->value = value;
+    return result;
 }
 //------------------------------------------------------------------------------
 
-AST::EXPRESSION* NUM::GetExpression(int Line, const string& Filename){
-  AST::LITERAL* Result = new AST::LITERAL(Line, Filename);
-  Result->Value = Value;
-  return Result;
+bool Num::assign(AST::Expression* expression)
+{
+    return rawAssign(expression);
 }
 //------------------------------------------------------------------------------
 
-bool NUM::Assign(AST::EXPRESSION* Expression){
-  return RawAssign(Expression);
+bool Num::rawAssign(AST::Expression* expression)
+{
+    if(!expression) return false;
+
+    expression = expression->evaluate();
+    if(!expression) return false;
+
+    bool result = false;
+
+    if(expression->type == AST::Base::Type::Literal){
+        value = ((AST::Literal*)expression)->value;
+        result = true;
+    }else{
+        expression->printError("expression must evaluate to a literal");
+        result = false;
+    }
+
+    // expression has been moved and then used, so it must be deleted
+    delete expression;
+    return result;
 }
 //------------------------------------------------------------------------------
 
-bool NUM::RawAssign(AST::EXPRESSION* Expression){
-  if(!Expression) return false;
-
-  Expression = Expression->Evaluate();
-  if(!Expression) return false;
-
-  bool Result = false;
-
-  if(Expression->Type == AST::BASE::TYPE::Literal){
-    Value = ((AST::LITERAL*)Expression)->Value;
-    Result = true;
-  }else{
-    Expression->Error("Expression must evaluate to a literal");
-    Result = false;
-  }
-
-  // Expression has been moved and then used, so it must be deleted
-  delete Expression;
-  return Result;
+bool Num::hasCircularReference(Base* object)
+{
+    if(this == object) return true;
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool NUM::HasCircularReference(BASE* Object){
-  if(this == Object) return true;
-  error("Not yet implemented");
-  return false;
+void Num::display(int indent)
+{
+    logger.indent(indent);
+    logger.print("Num: %s\n", name.c_str());
+
+    logger.indent(indent+1);
+    logger.print("value = ");
+    logger.print(value.display());
+    logger.print("\n");
 }
 //------------------------------------------------------------------------------
 
-void NUM::Display(int Indent){
-  Debug.Indent(Indent);
-  Debug.Print("Num: %s\n", Name.c_str());
+void Num::validate()
+{
+    assert(type == Type::Number);
 
-  Debug.Indent(Indent+1);
-  Debug.Print("Value = ");
-  Debug.Print(Value.Display());
-  Debug.Print("\n");
-}
-//------------------------------------------------------------------------------
-
-void NUM::Validate(){
-  assert(Type == TYPE::Number);
-
-  BASE::Validate();
+    Base::validate();
 }
 //------------------------------------------------------------------------------
 

@@ -21,61 +21,69 @@
 #include "Alias.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
-using namespace NETLIST;
+using std::string;
+using namespace Netlist;
 //------------------------------------------------------------------------------
 
-ALIAS::ALIAS(int Line, const string& Filename, const char* Name, AST::EXPRESSION* Expression): BASE(Line, Filename, Name, TYPE::Alias){
-  this->Expression = Expression;
+Alias::Alias(int line, const string& filename, const char* name, AST::Expression* expression): Base(line, filename, name, Type::Alias)
+{
+    this->expression = expression;
 }
 //------------------------------------------------------------------------------
 
-ALIAS::~ALIAS(){
-  if(Expression) delete Expression;
+Alias::~Alias()
+{
+    if(expression) delete expression;
 }
 //------------------------------------------------------------------------------
 
-AST::EXPRESSION* ALIAS::GetExpression(int Line, const string& Filename){
-  assert(Expression, return 0);
-  return (AST::EXPRESSION*)Expression->Copy();
+AST::Expression* Alias::getExpression(int line, const string& filename)
+{
+    assert(expression, return 0);
+    return (AST::Expression*)expression->copy();
 }
 //------------------------------------------------------------------------------
 
-bool ALIAS::Assign(AST::EXPRESSION* Expression){
-  return RawAssign(Expression);
+bool Alias::assign(AST::Expression* expression)
+{
+    return rawAssign(expression);
 }
 //------------------------------------------------------------------------------
 
-bool ALIAS::RawAssign(AST::EXPRESSION* Expression){
-  Expression->Error("Cannot assign to an alias");
-  return false;
+bool Alias::rawAssign(AST::Expression* expression)
+{
+    expression->printError("Cannot assign to an alias");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool ALIAS::HasCircularReference(BASE* Object){
-  if(this == Object) return true;
-  error("Not yet implemented");
-  return false;
+bool Alias::hasCircularReference(Base* object)
+{
+    if(this == object) return true;
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void ALIAS::Display(int Indent){
-  Debug.Indent(Indent);
-  Debug.Print("Alias: %s\n", Name.c_str());
+void Alias::display(int indent)
+{
+    logger.indent(indent);
+    logger.print("Alias: %s\n", name.c_str());
 
-  Debug.Indent(Indent+1);
-  if(Expression) Expression->Display();
-  else           Debug.Print("{null}");
-  Debug.Print("\n");
+    logger.indent(indent+1);
+    if(expression) expression->display();
+    else           logger.print("{null}");
+    logger.print("\n");
 }
 //------------------------------------------------------------------------------
 
-void ALIAS::Validate(){
-  assert(Type == TYPE::Alias);
+void Alias::validate()
+{
+    assert(type == Type::Alias);
 
-  BASE::Validate();
+    Base::validate();
 
-  if(Expression) Expression->Validate();
+    if(expression) expression->validate();
 }
 //------------------------------------------------------------------------------
 

@@ -26,25 +26,25 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct GROUP: public BASE{
-    ASSIGNMENT* Attributes;
+    struct Group: public Base{
+        Assignment* attributes;
 
-    std::string Identifier;
-    BASE*       Body;
+        std::string identifier;
+        Base*       body;
 
-    GROUP(int Line, std::string& Filename);
-    GROUP(int Line, const char*  Filename);
-   ~GROUP();
+        Group(int line, std::string& filename);
+        Group(int line, const char*  filename);
+       ~Group();
 
-    BASE* Copy() override;
+        Base* copy() override;
 
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
+        bool runAST() override;
+        bool getVerilog(std::string& body) override;
 
-    void Display() override;
+        void display() override;
 
-    void ValidateMembers() override;
-  };
+        void validateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

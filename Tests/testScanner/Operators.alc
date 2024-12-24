@@ -1,0 +1,114 @@
+// Conditional Expression
+?
+:
+?:
+
+// Bit-wise
+|
+~|
+^
+~^
+&
+~&
+
+// Relational
+==
+!=
+<
+>
+<=
+>=
+
+// Shift
+<<
+>>
+
+// Arithmetic
++
+-
+*
+/
+%
+**
+!
+
+// Concatenation of vectors and arrays
+`
+:(
+:[
+
+// Stringificatio
+$
+$(
+
+// Reduction
+&
+~&
+|
+~|
+^
+~^
+!
+
+// Array
+..
+:
+
+// Unary
+-
+~
+:
+++
+--
+
+// Accessors
+.
+?.
+.{
+'
+
+// Cast
+@
+
+// Assignment
+=
+:=
+~=
++=
+-=
+*=
+/=
+%=
+^=
+&=
+|=
+**=
+<<=
+>>=
+
+// Punctuators
+(
+)
+[
+]
+{
+}
+<
+>
+,
+:
+;
+
+// Simulation operators
+#
+@
+##
+[*
+[->
+[=
+|->
+|=>
+||
+&&
+&&&
+

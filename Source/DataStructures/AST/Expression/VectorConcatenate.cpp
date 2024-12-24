@@ -21,138 +21,149 @@
 #include "VectorConcatenate.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-VECTORCONCATENATE::VECTORCONCATENATE(int Line, const string& Filename): VECTORCONCATENATE(Line, Filename.c_str()){}
+VectorConcatenate::VectorConcatenate(int line, const string& filename): VectorConcatenate(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-VECTORCONCATENATE::VECTORCONCATENATE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::VectorConcatenate){
+VectorConcatenate::VectorConcatenate(int line, const char* filename): Expression(line, filename, Type::VectorConcatenate){}
+//------------------------------------------------------------------------------
+
+VectorConcatenate::~VectorConcatenate()
+{
+    for(auto element: elements) delete element;
 }
 //------------------------------------------------------------------------------
 
-VECTORCONCATENATE::~VECTORCONCATENATE(){
-  foreach(Element, Elements) delete *Element;
-}
-//------------------------------------------------------------------------------
+Base* VectorConcatenate::copy()
+{
+    VectorConcatenate* copy = new VectorConcatenate(source.line, source.filename.c_str());
 
-BASE* VECTORCONCATENATE::Copy(){
-  VECTORCONCATENATE* Copy = new VECTORCONCATENATE(Source.Line, Source.Filename.c_str());
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-  foreach(Element, Elements){
-    Copy->Elements.push_back((EXPRESSION*)(*Element)->Copy());
-  }
-
-  return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool VECTORCONCATENATE::GetVerilog(string& Body){
-  bool isFirst = true;
-
-  if(Elements.size() > 1){
-    foreach(Element, Elements){
-      if(isFirst) Body += "{";
-      else        Body += ", ";
-      (*Element)->GetVerilog(Body);
-      isFirst = false;
+    for(auto element: elements){
+        copy->elements.push_back((Expression*)element->copy());
     }
-    Body += "}";
-  }else{
-    Elements.front()->GetVerilog(Body);
-  }
 
-  return true;
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* VECTORCONCATENATE::Evaluate(){
-  foreach(Element, Elements){
-    (*Element) = (*Element)->Evaluate();
-  }
-  warning("Incomplete implementation");
-  // TODO: If there are elements that can be combined, do so
-  return this;
+bool VectorConcatenate::getVerilog(string& body)
+{
+    bool isFirst = true;
+
+    if(elements.size() > 1){
+        for(auto element: elements){
+            if(isFirst) body += "{";
+            else        body += ", ";
+            element->getVerilog(body);
+            isFirst = false;
+        }
+        body += "}";
+    }else{
+        elements.front()->getVerilog(body);
+    }
+
+    return true;
 }
 //------------------------------------------------------------------------------
 
-int VECTORCONCATENATE::GetWidth(){
-  int Result = 0;
-  foreach(Element, Elements){
-   *Element = (*Element)->Evaluate();
-    Result += (*Element)->GetWidth();
-  }
-  return Result;
+Expression* VectorConcatenate::evaluate()
+{
+    for(auto element: elements){
+        element = element->evaluate();
+    }
+    warning("Incomplete implementation");
+    // TODO: If there are elements that can be combined, do so
+    return this;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& VECTORCONCATENATE::GetFullScale(){
-  static NUMBER Result;
-  Result = 1;
-  Result.BinScale(GetWidth());
-  return Result;
+int VectorConcatenate::getWidth()
+{
+    int result = 0;
+    for(auto element: elements){
+        element = element->evaluate();
+        result += element->getWidth();
+    }
+    return result;
 }
 //------------------------------------------------------------------------------
 
-bool VECTORCONCATENATE::GetSigned(){
-  return false;
+Number& VectorConcatenate::getFullScale()
+{
+    static Number result;
+    result = 1;
+    result.binScale(getWidth());
+    return result;
 }
 //------------------------------------------------------------------------------
 
-bool VECTORCONCATENATE::HasCircularReference(NETLIST::BASE* Object){
-  foreach(Element, Elements){
-    assert(*Element, return false);
-    if((*Element)->HasCircularReference(Object)) return true;
-  }
-  return false;
+bool VectorConcatenate::getSigned()
+{
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void VECTORCONCATENATE::PopulateUsed(){
-  foreach(Element, Elements){
-    assert(*Element, return);
-    (*Element)->PopulateUsed();
-  }
+bool VectorConcatenate::hasCircularReference(Netlist::Base* object)
+{
+    for(auto element: elements){
+        assert(element, return false);
+        if(element->hasCircularReference(object)) return true;
+    }
+    return false;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* VECTORCONCATENATE::RemoveTempNet(int Width, bool Signed){
-  foreach(Element, Elements){
-    if(*Element) (*Element)->RemoveTempNet(0, false);
-  }
-  return this;
+void VectorConcatenate::populateUsed()
+{
+    for(auto element: elements){
+        assert(element, return);
+        element->populateUsed();
+    }
 }
 //------------------------------------------------------------------------------
 
-void VECTORCONCATENATE::Display(){
-  Debug.Print("(VectorConcat: (");
-  bool isFirst = true;
-  foreach(Element, Elements){
-    if(!isFirst) Debug.Print(", ");
-    (*Element)->Display();
-    isFirst = false;
-  }
-  Debug.Print("))");
+Expression* VectorConcatenate::removeTempNet(int width, bool isSigned)
+{
+    for(auto element: elements){
+        if(element) element->removeTempNet(0, false);
+    }
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void VECTORCONCATENATE::ValidateMembers(){
-  assert(Type == TYPE::VectorConcatenate);
+void VectorConcatenate::display()
+{
+    logger.print("(VectorConcat: (");
+    bool isFirst = true;
+    for(auto element: elements){
+        if(!isFirst) logger.print(", ");
+        element->display();
+        isFirst = false;
+    }
+    logger.print("))");
+}
+//------------------------------------------------------------------------------
 
-  assert(!Next);
-  assert(!Prev);
+void VectorConcatenate::validateMembers()
+{
+    assert(type == Type::VectorConcatenate);
 
-  assert(!Left);
-  assert(!Right);
+    assert(!next);
+    assert(!prev);
 
-  foreach(Element, Elements){
-    assert(*Element);
-    (*Element)->Validate();
-  }
+    assert(!left);
+    assert(!right);
+
+    for(auto element: elements){
+        assert(element);
+        element->validate();
+    }
 }
 //------------------------------------------------------------------------------
 

@@ -21,195 +21,204 @@
 #include "Cast.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-CAST::CAST(int Line, const string& Filename): CAST(Line, Filename.c_str()){}
+Cast::Cast(int line, const string& filename): Cast(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-CAST::CAST(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Cast){
+Cast::Cast(int line, const char* filename): Expression(line, filename, Type::Cast){}
+//------------------------------------------------------------------------------
+
+Cast::~Cast(){}
+//------------------------------------------------------------------------------
+
+Base* Cast::copy()
+{
+    Cast* copy = new Cast(source.line, source.filename.c_str());
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-CAST::~CAST(){
+bool Cast::getVerilog(string& body)
+{
+    // TODO: Move to new strategy of synthesising single operations into temporaries
+    error("Not yet implemented");
+    // assert( expression->left , return false);
+    // assert(!expression->right, return false);
+    // AST::Expression* from = expression->left;
+    // AST::Expression* to   = expression;
+    // Number factor = from->fullScale;
+    // factor.div(to->fullScale);
+    // factor.binScale(to->width - from->width);
+    // assert(factor != 0, expression->display(); return false);
+
+    // // Calculate the limit of the inferred multiplier size.  Most FPGAs have
+    // // 18-bit multipliers, so make that the minimum limit, otherwise use the
+    // // target width as the limit so that no to little resolution is lost.
+    // Number limit(1);
+    // if(to->width < 18) limit.binScale(18);
+    // else               limit.binScale(to->width);
+    // int shift = 0;
+    // while(factor.isInt()){
+    //   factor.binScale(-1);
+    //   shift--;
+    // }
+    // while(!factor.isInt() && (factor < limit)){
+    //   factor.binScale(1);
+    //   shift++;
+    // }
+    // while(factor >= limit){
+    //   factor.binScale(-1);
+    //   shift--;
+    // }
+    // Number fullFactor(factor);
+    // factor.round();
+    // if(factor != fullFactor){
+    //   printWarning(expression, "Rounding the scaling factor - this can be fixed "
+    //                       "with an explicit scaling multiplication.");
+    //   while(factor.isInt()){ // Make sure it's still minimised after rounding
+    //     factor.binScale(-1);
+    //     shift--;
+    //   }
+    //   while(!factor.isInt()){
+    //     factor.binScale(1);
+    //     shift++;
+    //   }
+    // }
+
+    // int width = 0;
+    // Number num(factor);
+    // while(num >= 1){
+    //   num.binScale(-1);
+    //   width++;
+    // }
+
+    // string fromString;
+    // if(!buildExpression(body, from, fromString)) return false;
+
+    // if(factor == 1){
+    //   body += "wire ";
+    //   if(to->width > 1){
+    //     if(to->signed) body += "["+ to_string(to->width  ) +":0] ";
+    //     else           body += "["+ to_string(to->width-1) +":0] ";
+    //   }
+    //   wire = getWireName();
+    //   body += wire +"= ";
+    //   if     (shift > 0) body += fromString +" >> "+ to_string( shift);
+    //   else if(shift < 0) body += fromString +" << "+ to_string(-shift);
+    //   body += ";\n";
+
+    // }else{
+    //   printWarning(expression, "Non power-of-two scaling factor: synthesising a multiplier");
+    //   string mulWireName = getWireName();
+
+    //   // TODO: signed
+    //   body += "wire ["+ to_string(from->width + width - 1) +":0] ";
+    //   body += mulWireName +"= "+ fromString + " * ";
+
+    //   body += to_string(width) + "'h";
+    //   body += factor.getString(16);
+    //   body += ";\n";
+
+    //   body += "wire ";
+    //   if(to->width > 1){
+    //     if(to->signed) body += "["+ to_string(to->width  ) +":0] ";
+    //     else           body += "["+ to_string(to->width-1) +":0] ";
+    //   }
+    //   wire = getWireName();
+    //   body += wire +"= ";
+    //   if     (shift > 0) body += mulWireName +" >> "+ to_string( shift);
+    //   else if(shift < 0) body += mulWireName +" << "+ to_string(-shift);
+    //   body += ";\n";
+    // }
+
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-BASE* CAST::Copy(){
-  CAST* Copy = new CAST(Source.Line, Source.Filename.c_str());
-
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-  return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool CAST::GetVerilog(string& Body){
-  // TODO: Move to new strategy of synthesising single operations into temporaries
-  error("Not yet implemented");
-  // assert( Expression->Left , return false);
-  // assert(!Expression->Right, return false);
-  // AST::EXPRESSION* From = Expression->Left;
-  // AST::EXPRESSION* To   = Expression;
-  // NUMBER Factor = From->FullScale;
-  // Factor.Div(To->FullScale);
-  // Factor.BinScale(To->Width - From->Width);
-  // assert(Factor != 0, Expression->Display(); return false);
-
-  // // Calculate the limit of the inferred multiplier size.  Most FPGAs have 
-  // // 18-bit multipliers, so make that the minimum limit, otherwise use the 
-  // // target width as the limit so that no to little resolution is lost.
-  // NUMBER Limit(1);
-  // if(To->Width < 18) Limit.BinScale(18);
-  // else               Limit.BinScale(To->Width);
-  // int Shift = 0;
-  // while(Factor.IsInt()){
-  //   Factor.BinScale(-1);
-  //   Shift--;
-  // }
-  // while(!Factor.IsInt() && (Factor < Limit)){
-  //   Factor.BinScale(1);
-  //   Shift++;
-  // }
-  // while(Factor >= Limit){
-  //   Factor.BinScale(-1);
-  //   Shift--;
-  // }
-  // NUMBER FullFactor(Factor);
-  // Factor.Round();
-  // if(Factor != FullFactor){
-  //   Warning(Expression, "Rounding the scaling factor - this can be fixed "
-  //                       "with an explicit scaling multiplication.");
-  //   while(Factor.IsInt()){ // Make sure it's still minimised after rounding
-  //     Factor.BinScale(-1);
-  //     Shift--;
-  //   }
-  //   while(!Factor.IsInt()){
-  //     Factor.BinScale(1);
-  //     Shift++;
-  //   }
-  // }
-
-  // int Width = 0;
-  // NUMBER Num(Factor);
-  // while(Num >= 1){
-  //   Num.BinScale(-1);
-  //   Width++;
-  // }
-
-  // string FromString;
-  // if(!BuildExpression(Body, From, FromString)) return false;
-
-  // if(Factor == 1){
-  //   Body += "wire ";
-  //   if(To->Width > 1){
-  //     if(To->Signed) Body += "["+ to_string(To->Width  ) +":0] ";
-  //     else           Body += "["+ to_string(To->Width-1) +":0] ";
-  //   }
-  //   Wire = GetWireName();
-  //   Body += Wire +"= ";
-  //   if     (Shift > 0) Body += FromString +" >> "+ to_string( Shift);
-  //   else if(Shift < 0) Body += FromString +" << "+ to_string(-Shift);
-  //   Body += ";\n";
-
-  // }else{
-  //   Warning(Expression, "Non power-of-two scaling factor: synthesising a multiplier");
-  //   string MulWireName = GetWireName();
-
-  //   // TODO: Signed
-  //   Body += "wire ["+ to_string(From->Width + Width - 1) +":0] ";
-  //   Body += MulWireName +"= "+ FromString + " * ";
-
-  //   Body += to_string(Width) + "'h";
-  //   Body += Factor.GetString(16);
-  //   Body += ";\n";
-
-  //   Body += "wire ";
-  //   if(To->Width > 1){
-  //     if(To->Signed) Body += "["+ to_string(To->Width  ) +":0] ";
-  //     else           Body += "["+ to_string(To->Width-1) +":0] ";
-  //   }
-  //   Wire = GetWireName();
-  //   Body += Wire +"= ";
-  //   if     (Shift > 0) Body += MulWireName +" >> "+ to_string( Shift);
-  //   else if(Shift < 0) Body += MulWireName +" << "+ to_string(-Shift);
-  //   Body += ";\n";
-  // }
-
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
-EXPRESSION* CAST::Evaluate(){
-  error("Not yet implemented");
-  return this;
-//   EXPRESSION* Result = 0;
-// 
+Expression* Cast::evaluate()
+{
+    error("Not yet implemented");
+    return this;
+//   Expression* result = 0;
+//
 //   error("Not yet implemented");
-// 
-//   if(!Result) return 0;
-//   return Result->Simplify(false);
+//
+//   if(!result) return 0;
+//   return result->simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int CAST::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int Cast::getWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& CAST::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+Number& Cast::getFullScale()
+{
+    error("Not yet implemented");
+    static Number zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool CAST::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool Cast::getSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool CAST::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool Cast::hasCircularReference(Netlist::Base* object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void CAST::PopulateUsed(){
-  error("Not yet implemented");
+void Cast::populateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* CAST::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+Expression* Cast::removeTempNet(int width, bool isSigned)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void CAST::Display(){
-  DisplayStart();
+void Cast::display()
+{
+    displayStart();
 
-  Debug.Print(" {cast} ");
+    logger.print(" {cast} ");
 
-  DisplayEnd();
+    displayEnd();
 }
 //------------------------------------------------------------------------------
 
-void CAST::ValidateMembers(){
-  assert(Type == TYPE::Cast);
+void Cast::validateMembers()
+{
+    assert(type == Type::Cast);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!next);
+    assert(!prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!left );
+    // TODO: assert(!right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

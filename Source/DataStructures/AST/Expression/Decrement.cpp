@@ -21,104 +21,113 @@
 #include "Decrement.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-DECREMENT::DECREMENT(int Line, const string& Filename): DECREMENT(Line, Filename.c_str()){}
+Decrement::Decrement(int line, const string& filename): Decrement(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-DECREMENT::DECREMENT(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Decrement){
+Decrement::Decrement(int line, const char* filename): Expression(line, filename, Type::Decrement){}
+//------------------------------------------------------------------------------
+
+Decrement::~Decrement(){}
+//------------------------------------------------------------------------------
+
+Base* Decrement::copy()
+{
+    Decrement* copy = new Decrement(source.line, source.filename.c_str());
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-DECREMENT::~DECREMENT(){
+bool Decrement::getVerilog(string& body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-BASE* DECREMENT::Copy(){
-  DECREMENT* Copy = new DECREMENT(Source.Line, Source.Filename.c_str());
-
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-  return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool DECREMENT::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
-EXPRESSION* DECREMENT::Evaluate(){
-  error("Not yet implemented");
-  return this;
-//   EXPRESSION* Result = 0;
-// 
+Expression* Decrement::evaluate()
+{
+    error("Not yet implemented");
+    return this;
+//   Expression* result = 0;
+//
 //   error("Not yet implemented");
-// 
-//   if(!Result) return 0;
-//   return Result->Simplify(false);
+//
+//   if(!result) return 0;
+//   return result->simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int DECREMENT::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int Decrement::getWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& DECREMENT::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+Number& Decrement::getFullScale()
+{
+    error("Not yet implemented");
+    static Number zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool DECREMENT::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool Decrement::getSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool DECREMENT::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool Decrement::hasCircularReference(Netlist::Base* object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void DECREMENT::PopulateUsed(){
-  error("Not yet implemented");
+void Decrement::populateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* DECREMENT::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+Expression* Decrement::removeTempNet(int width, bool isSigned)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void DECREMENT::Display(){
-  DisplayStart();
+void Decrement::display()
+{
+    displayStart();
 
-  Debug.Print("--");
+    logger.print("--");
 
-  DisplayEnd();
+    displayEnd();
 }
 //------------------------------------------------------------------------------
 
-void DECREMENT::ValidateMembers(){
-  assert(Type == TYPE::Decrement);
+void Decrement::validateMembers()
+{
+    assert(type == Type::Decrement);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!next);
+    assert(!prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!left );
+    // TODO: assert(!right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

@@ -21,109 +21,118 @@
 #include "Equal.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-EQUAL::EQUAL(int Line, const string& Filename): EQUAL(Line, Filename.c_str()){}
+Equal::Equal(int line, const string& filename): Equal(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-EQUAL::EQUAL(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Equal){
+Equal::Equal(int line, const char* filename): Expression(line, filename, Type::Equal){}
+//------------------------------------------------------------------------------
+
+Equal::~Equal(){}
+//------------------------------------------------------------------------------
+
+Base* Equal::copy()
+{
+    Equal* copy = new Equal(source.line, source.filename.c_str());
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-EQUAL::~EQUAL(){
+bool Equal::getVerilog(string& body)
+{
+    body += "(";
+    left->getVerilog(body);
+    body += ") == (";
+    right->getVerilog(body);
+    body += ")";
+
+    return true;
 }
 //------------------------------------------------------------------------------
 
-BASE* EQUAL::Copy(){
-  EQUAL* Copy = new EQUAL(Source.Line, Source.Filename.c_str());
-
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-  return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool EQUAL::GetVerilog(string& Body){
-  Body += "(";
-  Left->GetVerilog(Body);
-  Body += ") == (";
-  Right->GetVerilog(Body);
-  Body += ")";
-
-  return true;
-}
-//------------------------------------------------------------------------------
-
-EXPRESSION* EQUAL::Evaluate(){
-  error("Not yet implemented");
-  return this;
-//   EXPRESSION* Result = 0;
-// 
+Expression* Equal::evaluate()
+{
+    error("Not yet implemented");
+    return this;
+//   Expression* result = 0;
+//
 //   error("Not yet implemented");
-// 
-//   if(!Result) return 0;
-//   return Result->Simplify(false);
+//
+//   if(!result) return 0;
+//   return result->simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int EQUAL::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int Equal::getWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& EQUAL::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+Number& Equal::getFullScale()
+{
+    error("Not yet implemented");
+    static Number zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool EQUAL::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool Equal::getSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool EQUAL::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool Equal::hasCircularReference(Netlist::Base* object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void EQUAL::PopulateUsed(){
-  error("Not yet implemented");
+void Equal::populateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* EQUAL::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+Expression* Equal::removeTempNet(int width, bool isSigned)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void EQUAL::Display(){
-  DisplayStart();
+void Equal::display()
+{
+    displayStart();
 
-  Debug.Print(" == ");
+    logger.print(" == ");
 
-  DisplayEnd();
+    displayEnd();
 }
 //------------------------------------------------------------------------------
 
-void EQUAL::ValidateMembers(){
-  assert(Type == TYPE::Equal);
+void Equal::validateMembers()
+{
+    assert(type == Type::Equal);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!next);
+    assert(!prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!left );
+    // TODO: assert(!right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

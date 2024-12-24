@@ -22,143 +22,152 @@
 #include "Object.h"
 #include "Identifier.h"
 #include "Netlist/Alias.h"
-#include "Netlist/Namespace/Module.h"
-#include "Netlist/Namespace.h"
+#include "Netlist/NameSpace/Module.h"
+#include "Netlist/NameSpace.h"
 #include "Netlist/Synthesisable.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-ACCESSMEMBER::ACCESSMEMBER(int Line, const string& Filename): ACCESSMEMBER(Line, Filename.c_str()){}
+AccessMember::AccessMember(int line, const string& filename): AccessMember(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-ACCESSMEMBER::ACCESSMEMBER(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::AccessMember){
+AccessMember::AccessMember(int line, const char* filename): Expression(line, filename, Type::AccessMember){}
+//------------------------------------------------------------------------------
+
+AccessMember::~AccessMember(){}
+//------------------------------------------------------------------------------
+
+Base* AccessMember::copy()
+{
+    AccessMember* copy = new AccessMember(source.line, source.filename.c_str());
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-ACCESSMEMBER::~ACCESSMEMBER(){
+bool AccessMember::getVerilog(string& body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-BASE* ACCESSMEMBER::Copy(){
-  ACCESSMEMBER* Copy = new ACCESSMEMBER(Source.Line, Source.Filename.c_str());
+Expression* AccessMember::evaluate()
+{
+    assert(left , delete this; return 0);
+    assert(right, delete this; return 0);
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    left = left->evaluate();
 
-  return Copy;
-}
-//------------------------------------------------------------------------------
+    assert(left, delete this; return 0);
 
-bool ACCESSMEMBER::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
+    if(left->type != Type::Object){
+        printError("Invalid member access expression");
+        delete this;
+        return 0;
+    }
+    switch(right->type){
+        case Type::Identifier:
+            break;
 
-EXPRESSION* ACCESSMEMBER::Evaluate(){
-  assert(Left , delete this; return 0);
-  assert(Right, delete this; return 0);
+        case Type::Slice:
+            error("Not yet implemented");
+            delete this;
+            return 0;
 
-  Left = Left->Evaluate();
+        default:
+            printError("Invalid member access expression");
+            delete this;
+            return 0;
+    }
 
-  assert(Left, delete this; return 0);
+    auto object = ((Object    *)left )->objectRef;
+    auto name   = ((Identifier*)right)->name;
 
-  if(Left->Type != TYPE::Object){
-    Error("Invalid member access expression");
+    auto member = object->getMember(name);
+    if(!member){
+        printError();
+        printf("member %s not found in object %s\n",
+               name.c_str(), object->name.c_str());
+        delete this;
+        return 0;
+    }
+
+    auto result = new Object(source.line, source.filename);
+    result->objectRef = member;
     delete this;
+    return result->evaluate();
+}
+//------------------------------------------------------------------------------
+
+int AccessMember::getWidth()
+{
+    error("Not yet implemented");
     return 0;
-  }
-  switch(Right->Type){
-    case TYPE::Identifier:
-      break;
-
-    case TYPE::Slice:
-      error("Not yet implemented");
-      delete this;
-      return 0;
-      
-    default:
-      Error("Invalid member access expression");
-      delete this;
-      return 0;
-  }
-  
-  auto Object = ((OBJECT    *)Left )->ObjectRef;
-  auto Name   = ((IDENTIFIER*)Right)->Name;
-
-  auto Member = Object->GetMember(Name);
-  if(!Member){
-    Error();
-    printf("Member %s not found in object %s\n",
-           Name.c_str(), Object->Name.c_str());
-    delete this;
-    return 0;
-  }
-
-  auto Result = new OBJECT(Source.Line, Source.Filename);
-  Result->ObjectRef = Member;
-  delete this;
-  return Result->Evaluate();
 }
 //------------------------------------------------------------------------------
 
-int ACCESSMEMBER::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+Number& AccessMember::getFullScale()
+{
+    error("Not yet implemented");
+    static Number zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& ACCESSMEMBER::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+bool AccessMember::getSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool ACCESSMEMBER::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool AccessMember::hasCircularReference(Netlist::Base* object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool ACCESSMEMBER::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+void AccessMember::populateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-void ACCESSMEMBER::PopulateUsed(){
-  error("Not yet implemented");
+Expression* AccessMember::removeTempNet(int width, bool isSigned)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ACCESSMEMBER::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+void AccessMember::display()
+{
+    displayStart();
+
+    logger.print("." );
+
+    displayEnd();
 }
 //------------------------------------------------------------------------------
 
-void ACCESSMEMBER::Display(){
-  DisplayStart();
+void AccessMember::validateMembers()
+{
+    assert(type == Type::AccessMember);
 
-  Debug.Print("." );
+    assert(!next);
+    assert(!prev);
 
-  DisplayEnd();
-}
-//------------------------------------------------------------------------------
-
-void ACCESSMEMBER::ValidateMembers(){
-  assert(Type == TYPE::AccessMember);
-  
-  assert(!Next);
-  assert(!Prev);
-
-  // TODO: The "Left" assertion fails when the member cannot be found
-  assert(Left , return); Left ->Validate();
-  assert(Right, return); Right->Validate();
+    // TODO: The "left" assertion fails when the member cannot be found
+    assert(left , return); left ->validate();
+    assert(right, return); right->validate();
 }
 //------------------------------------------------------------------------------
 

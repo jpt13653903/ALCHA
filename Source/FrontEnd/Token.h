@@ -23,155 +23,153 @@
 //------------------------------------------------------------------------------
 
 #include <string>
-//------------------------------------------------------------------------------
-
-#include "Logger.h"
-#include "General.h"
 #include "Number.h"
 //------------------------------------------------------------------------------
 
-struct TOKEN{
-  enum class TYPE{
-    Unknown = 0, // also used to designate errors, etc.
+struct Token{
+    enum class Type{
+            Unknown = 0, // also used to designate errors, etc.
+            EndOfFile,
 
-    // White-space .............................................................
-    Space, // Spaces are only used in the scanner
-    Newline,
+        // White-space .........................................................
+            Space, // Spaces are only used in the scanner
+            Newline,
 
-    // Special keywords ........................................................
-    FILE, LINE, DATE, TIME,
-    // __CLASS__, __FUNCTION__, etc. are implemented as special variables
+        // Special keywords ....................................................
+            File, Line, Date, Time,
+            // __CLASS__, __FUNCTION__, etc. are implemented as special variables
 
-    // Keywords ................................................................
-    Void    , Auto   ,
-    Pin     , Net    ,
-    Byte    , Char   , Num,
-    True    , False  ,
-    Class   , Enum   , Struct   , Group , Alias,
-    Input   , Output ,
-    Public  , Private, Protected,
-    If      , Else   , For, In  , While , Loop ,
-    Switch  , Case   , Default  ,
-    Import  , As     ,
-    Return  , Break  , Continue , Goto  ,
-    Func    , Inline ,
-    RTL     , FSM    , HDL,
-    Stimulus, Emulate, Sequence , Assert, Wait ,
+        // Keywords ............................................................
+            Void    , Auto   ,
+            Pin     , Net    ,
+            Byte    , Char   , Num,
+            True    , False  ,
+            Class   , Enum   , Struct   , Group , Alias,
+            Input   , Output ,
+            Public  , Private, Protected,
+            If      , Else   , For, In  , While , Loop ,
+            Switch  , Case   , Default  ,
+            Import  , As     ,
+            Return  , Break  , Continue , Goto  ,
+            Func    , Inline , Operator ,
+            RTL     , FSM    , HDL,
+            Stimulus, Emulate, Assert, Wait ,
+            PosEdge , NegEdge,
 
-    // Operators ...............................................................
-    TernaryIf,
-    Elvis,
+        // Operators ...........................................................
+            TernaryIf,
+            Elvis,
 
-    Bit_OR,
-    Bit_NOR,
-    Bit_XOR,
-    Bit_XNOR,
-    Bit_AND,
-    Bit_NAND,
+            BitOr,
+            BitNor,
+            BitXor,
+            BitXnor,
+            BitAnd,
+            BitNand,
 
-    Equal,
-    Not_Equal,
-    Less,
-    Greater,
-    Less_Equal,
-    Greater_Equal,
+            Equal,
+            NotEqual,
+            Less,
+            Greater,
+            LessEqual,
+            GreaterEqual,
 
-    Shift_Left,
-    Shift_Right,
+            ShiftLeft,
+            ShiftRight,
 
-    Add,
-    Subtract,
-    Multiply,
-    Divide,
-    Modulus,
-    Exponential,
-    Factorial,
+            Add,
+            Subtract,
+            Multiply,
+            Divide,
+            Modulus,
+            Exponential,
+            Factorial,
 
-    Replicate,
-    Concatenate,
-    ArrayConcatenate,
+            Replicate,
+            Concatenate,
+            ArrayConcatenate,
 
-    Stringify,
-    StringifyExpression,
+            Stringify,
+            StringifyExpression,
 
-    To,
+            To,
 
-    Bit_NOT,
-    Increment,
-    Decrement,
+            BitNot,
+            Increment,
+            Decrement,
 
-    AccessMember,
-    AccessMemberSafe,
-    AccessMemberPush,
-    AccessAttribute,
+            AccessMember,
+            AccessMemberSafe,
+            AccessMemberPush,
+            AccessAttribute,
 
-    CastOp,
+            CastOp,
 
-    Assign,
-    Raw_Assign,
-    Append_Assign,
-    Add_Assign,
-    Subtract_Assign,
-    Multiply_Assign,
-    Divide_Assign,
-    Modulus_Assign,
-    XOR_Assign,
-    AND_Assign,
-    OR_Assign,
-    Exponential_Assign,
-    Shift_Left_Assign,
-    Shift_Right_Assign,
+            Assign,
+            RawAssign,
+            AppendAssign,
+            AddAssign,
+            SubtractAssign,
+            MultiplyAssign,
+            DivideAssign,
+            ModulusAssign,
+            XorAssign,
+            AndAssign,
+            OrAssign,
+            ExponentialAssign,
+            ShiftLeftAssign,
+            ShiftRightAssign,
 
-    OpenRound,
-    CloseRound,
-    OpenSquare,
-    CloseSquare,
-    OpenCurly,
-    CloseCurly,
-    Comma,
-    Colon,
-    Semicolon,
+            OpenRound,
+            CloseRound,
+            OpenSquare,
+            CloseSquare,
+            OpenCurly,
+            CloseCurly,
+            Comma,
+            Colon,
+            Semicolon,
 
-    WaitFor,
-    WaitCycles,
-    SequenceConsecutive,
-    SequenceGoto,
-    SequenceNonConsecutive,
-    AssertImplies,
-    AssertImpliesNext,
-    Or,
-    And,
-    Intersect,
+            WaitFor,
+            WaitCycles,
+            SequenceConsecutive,
+            SequenceGoto,
+            SequenceNonConsecutive,
+            AssertImplies,
+            AssertImpliesNext,
+            Or,
+            And,
+            Intersect,
 
-    // Other types .............................................................
-    Identifier,
-    Literal,
-    String,
+        // Other types .........................................................
+            Identifier,
+            Literal,
+            String,
 
-    // Aliases .................................................................
-    AND_Reduce  = Bit_AND,
-    NAND_Reduce = Bit_NAND,
-    OR_Reduce   = Bit_OR,
-    NOR_Reduce  = Bit_NOR,
-    XOR_Reduce  = Bit_XOR,
-    XNOR_Reduce = Bit_XNOR,
-    Logical_NOT = Factorial,
-    TernaryElse = Colon,
-    Step        = Colon,
-    RawBits     = Colon,
-    Negate      = Subtract,
-    OpenAngle   = Less,
-    CloseAngle  = Greater,
+        // Aliases .............................................................
+            AndReduce   = BitAnd,
+            NandReduce  = BitNand,
+            OrReduce    = BitOr,
+            NorReduce   = BitNor,
+            XorReduce   = BitXor,
+            XnorReduce  = BitXnor,
+            LogicalNot  = Factorial,
+            TernaryElse = Colon,
+            Step        = Colon,
+            RawBits     = Colon,
+            Negate      = Subtract,
+            OpenAngle   = Less,
+            CloseAngle  = Greater,
 
-    WaitUntil   = CastOp
-  } Type;
+            WaitUntil   = CastOp
+    } type = Type::Unknown;
 
-  int         Line;  // The line number
-  std::string Data;  // The string contents; otherwise the original token characters
-  NUMBER      Value; // Literal value
+    int         line  = 0;
+    std::string data; // The string contents; otherwise the original token characters
+    Number      value;
 
-  TOKEN();
-  void Display(); // Used for debugging
+    const char*  decodeType();
+    std::string& display();
 };
 //------------------------------------------------------------------------------
 

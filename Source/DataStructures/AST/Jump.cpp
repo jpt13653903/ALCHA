@@ -21,67 +21,74 @@
 #include "Jump.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-JUMP::JUMP(int Line, std::string& Filename, JUMP_TYPE JumpType): JUMP(Line, Filename.c_str(), JumpType){}
+Jump::Jump(int line, std::string& filename, JumpType jumpType): Jump(line, filename.c_str(), jumpType){}
 //------------------------------------------------------------------------------
 
-JUMP::JUMP(int Line, const char* Filename, JUMP_TYPE JumpType): BASE(Line, Filename, TYPE::Jump){
-  this->JumpType = JumpType;
+Jump::Jump(int line, const char* filename, JumpType jumpType): Base(line, filename, Type::Jump)
+{
+    this->jumpType = jumpType;
 
-  Expression = 0;
+    expression = 0;
 }
 //------------------------------------------------------------------------------
 
-JUMP::~JUMP(){
-  if(Expression) delete Expression;
+Jump::~Jump()
+{
+    if(expression) delete expression;
 }
 //------------------------------------------------------------------------------
 
-BASE* JUMP::Copy(){
-  JUMP* Copy = new JUMP(Source.Line, Source.Filename.c_str(), JumpType);
+Base* Jump::copy()
+{
+    Jump* copy = new Jump(source.line, source.filename.c_str(), jumpType);
 
-  if(Expression) Copy->Expression = (decltype(Expression))Expression->Copy();
+    if(expression) copy->expression = (decltype(expression))expression->copy();
 
-  return Copy;
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-bool JUMP::RunAST(){
-  error("Not yet implemented");
-  return false;
+bool Jump::runAST()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool JUMP::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool Jump::getVerilog(string& body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void JUMP::Display(){
-  DisplayInfo();
-  Debug.Print("jump(");
-  switch(JumpType){
-    case JUMP_TYPE::Return  : Debug.Print("return) "           ); break;
-    case JUMP_TYPE::Break   : Debug.Print("break) "            ); break;
-    case JUMP_TYPE::Continue: Debug.Print("continue) "         ); break;
-    default                 : Debug.Print("Unknown jump type) "); break;
-  }
-  if(Expression) Expression->Display();
-  else           Debug.Print("{default}");
-  Debug.Print("\n");
+void Jump::display()
+{
+    displayInfo();
+    logger.print("jump(");
+    switch(jumpType){
+        case JumpType::Return  : logger.print("return) "           ); break;
+        case JumpType::Break   : logger.print("break) "            ); break;
+        case JumpType::Continue: logger.print("continue) "         ); break;
+        default                : logger.print("Unknown jump type) "); break;
+    }
+    if(expression) expression->display();
+    else           logger.print("{default}");
+    logger.print("\n");
 
-  if(Next) Next->Display();
+    if(next) next->display();
 }
 //------------------------------------------------------------------------------
 
-void JUMP::ValidateMembers(){
-  assert(Type == TYPE::Jump);
+void Jump::validateMembers()
+{
+    assert(type == Type::Jump);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

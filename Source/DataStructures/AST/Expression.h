@@ -18,70 +18,70 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Expression_Expression_h
-#define AST_Expression_Expression_h
+#ifndef AST_Expression_h
+#define AST_Expression_h
 //------------------------------------------------------------------------------
 
 #include "Base.h"
 #include "Number.h"
 //------------------------------------------------------------------------------
 
-namespace NETLIST{
-  class BASE;
+namespace Netlist{
+    class Base;
 }
 //------------------------------------------------------------------------------
 
 namespace AST{
-  class EXPRESSION: public BASE{
-    protected:
-      void DisplayStart();
-      void DisplayEnd  ();
+    class Expression: public Base{
+        protected:
+            void displayStart();
+            void displayEnd  ();
 
-      // Turns the current expression into a temporary net object
-      EXPRESSION* MakeObject();
-    //--------------------------------------------------------------------------
+            // turns the current expression into a temporary net object
+            Expression* makeObject();
+        //--------------------------------------------------------------------------
 
-    public:
-      // Left and Right operands
-      EXPRESSION* Left;
-      EXPRESSION* Right;
+        public:
+            // Left and Right operands
+            Expression* left;
+            Expression* right;
 
-               EXPRESSION(int Line, const char* Filename, TYPE ExpressionType);
-      virtual ~EXPRESSION();
+                     Expression(int line, const char* filename, Type expressionType);
+            virtual ~Expression();
 
-      bool IsExpression() override;
+            bool isExpression() override;
 
-      bool RunAST() override;
+            bool runAST() override;
 
-      // Evaluates the expression as far as possible, creating new wires if required
-      // Returns the instance of the node to use as replacement
-      // For example: Node = Node->Evaluate() might change the value of Node
-      virtual EXPRESSION* Evaluate() = 0;
+            // Evaluates the expression as far as possible, creating new wires if required
+            // Returns the instance of the node to use as replacement
+            // For example: Node = Node->Evaluate() might change the value of Node
+            virtual Expression* evaluate() = 0;
 
-      // Returns the width of the result, if known.  Issues an error if the 
-      // width is not defined
-      // These functions must be called after a call to Evaluate()
-      virtual int     GetWidth    () = 0;
-      virtual NUMBER& GetFullScale() = 0;
-      virtual bool    GetSigned   () = 0;
+            // Returns the width of the result, if known.  Issues an error if the
+            // width is not defined
+            // These functions must be called after a call to Evaluate()
+            virtual int     getWidth    () = 0;
+            virtual Number& getFullScale() = 0;
+            virtual bool    getSigned   () = 0;
 
-      // Used for fixed-point scaling...
-      // If the scaling is not a power-of-two, it also synthesises a multiplier.
-      // The resulting object might be larger that the Width requested in order
-      // to prevent loss of precision.
-      EXPRESSION* ScaleWith(NUMBER Scale, int Width, NUMBER FullScale);
+            // Used for fixed-point scaling...
+            // If the scaling is not a power-of-two, it also synthesises a multiplier.
+            // The resulting object might be larger that the Width requested in order
+            // to prevent loss of precision.
+            Expression* scaleWith(Number scale, int width, Number fullScale);
 
-      // Check for circular reference to the netlist object specified
-      virtual bool HasCircularReference(NETLIST::BASE* Object) = 0;
+            // Check for circular reference to the netlist object specified
+            virtual bool hasCircularReference(Netlist::Base* object) = 0;
 
-      // Populates the "Used" flag so that the back-end can remove unused objects.
-      virtual void PopulateUsed() = 0;
+            // Populates the "Used" flag so that the back-end can remove unused objects.
+            virtual void populateUsed() = 0;
 
-      // If the expression references an object, which in turn references 
-      // another object of the same width and signedness, the temporary net in 
-      // the middle is removed.
-      virtual EXPRESSION* RemoveTempNet(int Width, bool Signed) = 0;
-  };
+            // If the expression references an object, which in turn references
+            // another object of the same width and signedness, the temporary net in
+            // the middle is removed.
+            virtual Expression* removeTempNet(int width, bool isSigned) = 0;
+    };
 }
 //------------------------------------------------------------------------------
 

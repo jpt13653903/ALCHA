@@ -22,93 +22,103 @@
 #include "Pin.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
-using namespace NETLIST;
+using std::string;
+using namespace Netlist;
 //------------------------------------------------------------------------------
 
-PIN_COMPONENT::PIN_COMPONENT(int Line, const string& Filename, const char* Name, PIN* Pin):
-NET(Line, Filename, Name){
-  Type = TYPE::PinComponent;
+PinComponent::PinComponent(int line, const string& filename, const char* name, Pin* pin):
+    Net(line, filename, name)
+{
+    type = Type::PinComponent;
 
-  this->Pin = Pin;
-  Namespace = Pin->Namespace;
+    this->pin = pin;
+    nameSpace = pin->nameSpace;
 }
 //------------------------------------------------------------------------------
 
-PIN_COMPONENT::~PIN_COMPONENT(){
-}
+PinComponent::~PinComponent(){}
 //------------------------------------------------------------------------------
 
-bool PIN_COMPONENT::RawAssign(AST::EXPRESSION* Expression){
-  assert(Expression, return false);
+bool PinComponent::rawAssign(AST::Expression* expression)
+{
+    assert(expression, return false);
 
-  if(Value) delete Value;
-  Value = Expression->Evaluate();
-  if(Value){
-    if(Value->HasCircularReference(this) ||
-       Value->HasCircularReference(Pin ) ){
-      Value->Error("Circular combinational circuit");
+    if(value) delete value;
+    value = expression->evaluate();
+    if(value){
+        if(value->hasCircularReference(this) ||
+              value->hasCircularReference(pin ) ){
+            value->printError("Circular combinational circuit");
+        }
     }
-  }
-  return Value;
+    return value;
 }
 //------------------------------------------------------------------------------
 
-void PIN_COMPONENT::PopulateUsed(bool SetUsed){
-  if(Value) Value->PopulateUsed();
+void PinComponent::populateUsed(bool setUsed)
+{
+    if(value) value->populateUsed();
 }
 //------------------------------------------------------------------------------
 
-BASE* PIN_COMPONENT::GetAttribute(const std::string& Name){
-  return Pin->GetAttribute(Name);
+Base* PinComponent::getAttribute(const std::string& name)
+{
+    return pin->getAttribute(name);
 }
 //------------------------------------------------------------------------------
 
-AST::EXPRESSION* PIN_COMPONENT::GetAttribValue(const std::string& Name){
-  return Pin->GetAttribValue(Name);
+AST::Expression* PinComponent::getAttribValue(const std::string& name)
+{
+    return pin->getAttribValue(name);
 }
 //------------------------------------------------------------------------------
 
-AST::EXPRESSION* PIN_COMPONENT::GetBuiltInAttributeValue(const std::string& Name){
-  return Pin->GetBuiltInAttributeValue(Name);
+AST::Expression* PinComponent::getBuiltInAttributeValue(const std::string& name)
+{
+    return pin->getBuiltInAttributeValue(name);
 }
 //------------------------------------------------------------------------------
 
-int PIN_COMPONENT::Width(){
-  return Pin->Width();
+int PinComponent::width()
+{
+    return pin->width();
 }
 //------------------------------------------------------------------------------
 
-NUMBER& PIN_COMPONENT::FullScale(){
-  return Pin->FullScale();
+Number& PinComponent::fullScale()
+{
+    return pin->fullScale();
 }
 //------------------------------------------------------------------------------
 
-bool PIN_COMPONENT::Signed(){
-  return Pin->Signed();
+bool PinComponent::isSigned()
+{
+    return pin->isSigned();
 }
 //------------------------------------------------------------------------------
 
-void PIN_COMPONENT::Display(int Indent){
-  Debug.Indent(Indent);
-  Debug.Print("Pin Component: %s\n", Name.c_str());
+void PinComponent::display(int indent)
+{
+    logger.indent(indent);
+    logger.print("pin Component: %s\n", name.c_str());
 
-  Indent++;
-  Debug.Indent(Indent);
-  Debug.Print("Value = ");
-  if(Value) Value->Display();
-  else      Debug.Print("{null}");
-  Debug.Print("\n");
+    indent++;
+    logger.indent(indent);
+    logger.print("value = ");
+    if(value) value->display();
+    else      logger.print("{null}");
+    logger.print("\n");
 }
 //------------------------------------------------------------------------------
 
-void PIN_COMPONENT::Validate(){
-  assert(Type == TYPE::PinComponent);
+void PinComponent::validate()
+{
+    assert(type == Type::PinComponent);
 
-  assert(Attributes.size() == 0);
-  assert(Namespace == Pin->Namespace);
+    assert(attributes.size() == 0);
+    assert(nameSpace == pin->nameSpace);
 
-  BASE::Validate();
+    Base::validate();
 }
 //------------------------------------------------------------------------------
 

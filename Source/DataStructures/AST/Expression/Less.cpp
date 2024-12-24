@@ -21,109 +21,118 @@
 #include "Less.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-LESS::LESS(int Line, const string& Filename): LESS(Line, Filename.c_str()){}
+Less::Less(int line, const string& filename): Less(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-LESS::LESS(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Less){
+Less::Less(int line, const char* filename): Expression(line, filename, Type::Less){}
+//------------------------------------------------------------------------------
+
+Less::~Less(){}
+//------------------------------------------------------------------------------
+
+Base* Less::copy()
+{
+    Less* copy = new Less(source.line, source.filename.c_str());
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-LESS::~LESS(){
+bool Less::getVerilog(string& body)
+{
+    body += "(";
+    left->getVerilog(body);
+    body += ") < (";
+    right->getVerilog(body);
+    body += ")";
+
+    return true;
 }
 //------------------------------------------------------------------------------
 
-BASE* LESS::Copy(){
-  LESS* Copy = new LESS(Source.Line, Source.Filename.c_str());
-
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-  return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool LESS::GetVerilog(string& Body){
-  Body += "(";
-  Left->GetVerilog(Body);
-  Body += ") < (";
-  Right->GetVerilog(Body);
-  Body += ")";
-
-  return true;
-}
-//------------------------------------------------------------------------------
-
-EXPRESSION* LESS::Evaluate(){
-  error("Not yet implemented");
-  return this;
-//   EXPRESSION* Result = 0;
-// 
+Expression* Less::evaluate()
+{
+    error("Not yet implemented");
+    return this;
+//   Expression* result = 0;
+//
 //   error("Not yet implemented");
-// 
-//   if(!Result) return 0;
-//   return Result->Simplify(false);
+//
+//   if(!result) return 0;
+//   return result->simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int LESS::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int Less::getWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& LESS::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+Number& Less::getFullScale()
+{
+    error("Not yet implemented");
+    static Number zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool LESS::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool Less::getSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool LESS::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool Less::hasCircularReference(Netlist::Base* object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void LESS::PopulateUsed(){
-  error("Not yet implemented");
+void Less::populateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LESS::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+Expression* Less::removeTempNet(int width, bool isSigned)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void LESS::Display(){
-  DisplayStart();
+void Less::display()
+{
+    displayStart();
 
-  Debug.Print(" < " );
+    logger.print(" < " );
 
-  DisplayEnd();
+    displayEnd();
 }
 //------------------------------------------------------------------------------
 
-void LESS::ValidateMembers(){
-  assert(Type == TYPE::Less);
+void Less::validateMembers()
+{
+    assert(type == Type::Less);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!next);
+    assert(!prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!left );
+    // TODO: assert(!right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

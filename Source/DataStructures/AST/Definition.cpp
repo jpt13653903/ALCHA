@@ -20,232 +20,247 @@
 
 #include "Definition.h"
 
-#include "Netlist/Namespace/Module.h"
+#include "Netlist/NameSpace/Module.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-DEFINITION::ARRAY::ARRAY(){
-  Size = 0;
-  Next = 0;
+Definition::Array::Array()
+{
+    size = 0;
+    next = 0;
 }
 //------------------------------------------------------------------------------
 
-DEFINITION::ARRAY::ARRAY(const ARRAY& Array){
-  Size = 0;
-  Next = 0;
+Definition::Array::Array(const Array& array)
+{
+    size = 0;
+    next = 0;
 
-  if(Array.Size) Size = (decltype(Array.Size))Array.Size->Copy();
-  if(Array.Next) Next = new ARRAY(*Array.Next);
+    if(array.size) size = (decltype(array.size))array.size->copy();
+    if(array.next) next = new Array(*array.next);
 }
 //------------------------------------------------------------------------------
 
-DEFINITION::ARRAY::~ARRAY(){
-  if(Size) delete Size;
-  if(Next) delete Next;
+Definition::Array::~Array()
+{
+    if(size) delete size;
+    if(next) delete next;
 }
 //------------------------------------------------------------------------------
 
-DEFINITION::IDENTIFIER::IDENTIFIER(){
-  Next        = 0;
-  Array       = 0;
-  Initialiser = 0;
+Definition::Identifier::Identifier()
+{
+    next        = 0;
+    array       = 0;
+    initialiser = 0;
 
-  Function     = false;
-  Parameters   = 0;
-  FunctionBody = 0;
+    function     = false;
+    parameters   = 0;
+    functionBody = 0;
 }
 //------------------------------------------------------------------------------
 
-DEFINITION::IDENTIFIER::IDENTIFIER(const IDENTIFIER& Identifier){
-  Next        = 0;
-  Array       = 0;
-  Initialiser = 0;
+Definition::Identifier::Identifier(const Identifier& identifier)
+{
+    next        = 0;
+    array       = 0;
+    initialiser = 0;
 
-  Function     = Identifier.Function;
-  Parameters   = 0;
-  FunctionBody = 0;
+    function     = identifier.function;
+    parameters   = 0;
+    functionBody = 0;
 
-  if(Identifier.Next       ) Next        = new IDENTIFIER(*Identifier.Next );
-  if(Identifier.Array      ) Array       = new ARRAY     (*Identifier.Array);
-  if(Identifier.Initialiser) Initialiser = (decltype(Identifier.Initialiser))Identifier.Initialiser->Copy();
+    if(identifier.next       ) next        = new Identifier(*identifier.next );
+    if(identifier.array      ) array       = new Array     (*identifier.array);
+    if(identifier.initialiser) initialiser = (decltype(identifier.initialiser))identifier.initialiser->copy();
 
-  FunctionBody =              CopyList(Identifier.FunctionBody);
-  Parameters   = (DEFINITION*)CopyList(Identifier.Parameters  );
+    functionBody =              copyList(identifier.functionBody);
+    parameters   = (Definition*)copyList(identifier.parameters  );
 }
 //------------------------------------------------------------------------------
 
-DEFINITION::IDENTIFIER::~IDENTIFIER(){
-  if(Next        ) delete Next;
-  if(Array       ) delete Array;
-  if(Parameters  ) delete Parameters;
-  if(Initialiser ) delete Initialiser;
-  if(FunctionBody) delete FunctionBody;
+Definition::Identifier::~Identifier()
+{
+    if(next        ) delete next;
+    if(array       ) delete array;
+    if(parameters  ) delete parameters;
+    if(initialiser ) delete initialiser;
+    if(functionBody) delete functionBody;
 }
 //------------------------------------------------------------------------------
 
-DEFINITION::DEFINITION(
-  int         Line,
-  const char* Filename,
-  TYPE        DefinitionType
-): BASE(Line, Filename, DefinitionType){
-  Direction = DIRECTION::Inferred;
+Definition::Definition(
+    int         line,
+    const char* filename,
+    Type        definitionType
+): Base(line, filename, definitionType)
+{
+    direction = Direction::Inferred;
 
-  Attributes  = 0;
-  Identifiers = 0;
+    attributes  = 0;
+    identifiers = 0;
 }
 //------------------------------------------------------------------------------
 
-DEFINITION::~DEFINITION(){
-  if(Attributes ) delete Attributes;
-  if(Identifiers) delete Identifiers;
+Definition::~Definition()
+{
+    if(attributes ) delete attributes;
+    if(identifiers) delete identifiers;
 
-  foreach(Parameter, Parameters){
-    if(*Parameter) delete *Parameter;
-  }
-}
-//------------------------------------------------------------------------------
-
-bool DEFINITION::IsDefinition(){
-  return true;
-}
-//------------------------------------------------------------------------------
-
-void DEFINITION::CopyMembers(DEFINITION* Copy){
-  Copy->Direction = Direction;
-
-  if(Attributes ) Copy->Attributes  = (decltype(Attributes))Attributes->Copy();
-  if(Identifiers) Copy->Identifiers = new IDENTIFIER(*Identifiers);
-
-  foreach(Parameter, Parameters){
-    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy());
-  }
-}
-//------------------------------------------------------------------------------
-
-bool DEFINITION::VerifyNotDefined(IDENTIFIER* Identifier){
-  auto Symbol = NETLIST::NamespaceStack.front()->Symbols.find(Identifier->Identifier);
-  if(Symbol != NETLIST::NamespaceStack.front()->Symbols.end()){
-    Error();
-    printf("Symbol \"%s\" already defined in the current namespace\n",
-           Identifier->Identifier.c_str());
-    return false;
-  }
-  return true;
-}
-//------------------------------------------------------------------------------
-
-void DEFINITION::DisplayParameters(){
-  Debug.Print(" Direction = ");
-  switch(Direction){
-    case DIRECTION::Input : Debug.Print("Input\n"   ); break;
-    case DIRECTION::Output: Debug.Print("Output\n"  ); break;
-    default               : Debug.Print("Inferred\n"); break;
-  }
-
-  Debug.Print(" Parameters: ");
-  if(Parameters.empty()){
-    Debug.Print("none / default\n");
-  }else{
-    foreach(Parameter, Parameters){
-      if(*Parameter) (*Parameter)->Display();
-      Debug.Print("\n");
+    for(auto parameter: parameters){
+        if(parameter) delete parameter;
     }
-  }
 }
 //------------------------------------------------------------------------------
 
-void DEFINITION::DisplayAttributes(){
-  Debug.Print(" Attributes: ");
-  if(Attributes){
-    Attributes->Display();
-    Debug.Print("\n");
-  }
+bool Definition::isDefinition()
+{
+    return true;
 }
 //------------------------------------------------------------------------------
 
-void DEFINITION::DisplayIdentifiers(){
-  Debug.Print(" Identifiers:\n");
-  IDENTIFIER* Identifier = Identifiers;
-  ARRAY     * Array;
-  while(Identifier){
-    Debug.Print(" - %s", Identifier->Identifier.c_str());
-    Array = Identifier->Array;
-    while(Array){
-      Debug.Print("[");
-      if(Array->Size) Array->Size->Display();
-      Debug.Print("]");
-      Array = Array->Next;
+void Definition::copyMembers(Definition* copy)
+{
+    copy->direction = direction;
+
+    if(attributes ) copy->attributes  = (decltype(attributes))attributes->copy();
+    if(identifiers) copy->identifiers = new Identifier(*identifiers);
+
+    for(auto parameter: parameters){
+        if(parameter) copy->parameters.push_back(parameter->copy());
+    }
+}
+//------------------------------------------------------------------------------
+
+bool Definition::verifyNotDefined(Identifier* identifier)
+{
+    auto symbol = Netlist::nameSpaceStack.front()->symbols.find(identifier->identifier);
+    if(symbol != Netlist::nameSpaceStack.front()->symbols.end()){
+        printError();
+        printf("symbol \"%s\" already defined in the current namespace\n",
+               identifier->identifier.c_str());
+        return false;
+    }
+    return true;
+}
+//------------------------------------------------------------------------------
+
+void Definition::displayParameters()
+{
+    logger.print(" direction = ");
+    switch(direction){
+        case Direction::Input : logger.print("Input\n"   ); break;
+        case Direction::Output: logger.print("Output\n"  ); break;
+        default               : logger.print("Inferred\n"); break;
     }
 
-    if(Identifier->Function){
-      Debug.Print(" -- function:\n  Parameters: (\n");
-      if(Identifier->Parameters) Identifier->Parameters->Display();
-      Debug.Print(" )\n  Body:{\n");
-      if(Identifier->FunctionBody) Identifier->FunctionBody->Display();
-      Debug.Print("  }\n");
-    }
-    if(Identifier->Initialiser){
-      Debug.Print(" -- initialiser:");
-      Identifier->Initialiser->Display();
-    }
-
-    Debug.Print("\n");
-    Identifier = Identifier->Next;
-  }
-}
-//------------------------------------------------------------------------------
-
-void DEFINITION::DisplayDefinition(const char* Type){
-  DisplayInfo();
-  Debug.Print("Definition (%s):\n", Type);
-
-  DisplayParameters ();
-  DisplayAttributes ();
-  DisplayIdentifiers();
-
-  if(Next) Next->Display();
-}
-//------------------------------------------------------------------------------
-
-void DEFINITION::ValidateMembers(){
-  if(!Parameters.empty()){
-    foreach(Parameter, Parameters){
-      if(*Parameter) (*Parameter)->Validate();
-    }
-  }
-
-  if(Attributes) Attributes ->Validate();
-
-  IDENTIFIER* Identifier = Identifiers;
-  ARRAY     * Array;
-
-  while(Identifier){
-    Array = Identifier->Array;
-    while(Array){
-      if(Array->Size) Array->Size->Validate();
-      Array = Array->Next;
-    }
-
-    if(Identifier->Function){
-      assert(Identifier              == Identifiers);
-      assert(Identifier->Next        == 0);
-      assert(Identifier->Initialiser == 0);
-
-      if(Identifier->Parameters  ) Identifier->Parameters  ->Validate();
-      if(Identifier->FunctionBody) Identifier->FunctionBody->Validate();
-
+    logger.print(" parameters: ");
+    if(parameters.empty()){
+        logger.print("none / default\n");
     }else{
-      assert(Identifier->Parameters   == 0);
-      assert(Identifier->FunctionBody == 0);
+        for(auto parameter: parameters){
+            if(parameter) parameter->display();
+            logger.print("\n");
+        }
+    }
+}
+//------------------------------------------------------------------------------
 
-      if(Identifier->Initialiser) Identifier->Initialiser ->Validate();
+void Definition::displayAttributes()
+{
+    logger.print(" attributes: ");
+    if(attributes){
+        attributes->display();
+        logger.print("\n");
+    }
+}
+//------------------------------------------------------------------------------
+
+void Definition::displayIdentifiers()
+{
+    logger.print(" identifiers:\n");
+    Identifier* identifier = identifiers;
+    Array     * array;
+    while(identifier){
+        logger.print(" - %s", identifier->identifier.c_str());
+        array = identifier->array;
+        while(array){
+            logger.print("[");
+            if(array->size) array->size->display();
+            logger.print("]");
+            array = array->next;
+        }
+
+        if(identifier->function){
+            logger.print(" -- function:\n  parameters: (\n");
+            if(identifier->parameters) identifier->parameters->display();
+            logger.print(" )\n  Body:{\n");
+            if(identifier->functionBody) identifier->functionBody->display();
+            logger.print("  }\n");
+        }
+        if(identifier->initialiser){
+            logger.print(" -- initialiser:");
+            identifier->initialiser->display();
+        }
+
+        logger.print("\n");
+        identifier = identifier->next;
+    }
+}
+//------------------------------------------------------------------------------
+
+void Definition::displayDefinition(const char* type)
+{
+    displayInfo();
+    logger.print("Definition (%s):\n", type);
+
+    displayParameters ();
+    displayAttributes ();
+    displayIdentifiers();
+
+    if(next) next->display();
+}
+//------------------------------------------------------------------------------
+
+void Definition::validateMembers()
+{
+    if(!parameters.empty()){
+        for(auto parameter: parameters){
+            if(parameter) parameter->validate();
+        }
     }
 
-    Identifier = Identifier->Next;
-  }
+    if(attributes) attributes ->validate();
+
+    Identifier* identifier = identifiers;
+    Array     * array;
+
+    while(identifier){
+        array = identifier->array;
+        while(array){
+            if(array->size) array->size->validate();
+            array = array->next;
+        }
+
+        if(identifier->function){
+            assert(identifier              == identifiers);
+            assert(identifier->next        == 0);
+            assert(identifier->initialiser == 0);
+
+            if(identifier->parameters  ) identifier->parameters  ->validate();
+            if(identifier->functionBody) identifier->functionBody->validate();
+
+        }else{
+            assert(identifier->parameters   == 0);
+            assert(identifier->functionBody == 0);
+
+            if(identifier->initialiser) identifier->initialiser ->validate();
+        }
+
+        identifier = identifier->next;
+    }
 }
 //------------------------------------------------------------------------------
 

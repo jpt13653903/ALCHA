@@ -30,19 +30,19 @@
 #include "Number.h"
 //------------------------------------------------------------------------------
 
-class CONSTANTS{
-  private:
-    std::map<std::string, NUMBER> Constants;
+class Constants{
+    private:
+        std::map<std::string, Number> constants;
 
-  public:
-    CONSTANTS();
-   ~CONSTANTS();
+    public:
+        Constants();
+       ~Constants();
 
-    bool GetConstant(const std::string& Name, NUMBER* Constant);
+        bool getConstant(const std::string& name, Number* constant);
 };
 //------------------------------------------------------------------------------
 
-extern CONSTANTS Constants;
+extern Constants constants;
 //------------------------------------------------------------------------------
 
 #endif

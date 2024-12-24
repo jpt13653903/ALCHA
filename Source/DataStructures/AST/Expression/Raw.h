@@ -26,29 +26,29 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct RAW: public EXPRESSION{
-    RAW(int Line, const std::string& Filename);
-    RAW(int Line, const char*        Filename);
-   ~RAW();
+    struct Raw: public Expression{
+        Raw(int line, const std::string& filename);
+        Raw(int line, const char*        filename);
+       ~Raw();
 
-    BASE* Copy() override;
+        Base* copy() override;
 
-    bool GetVerilog(std::string& Body) override;
-    EXPRESSION* Evaluate() override;
+        bool getVerilog(std::string& body) override;
+        Expression* evaluate() override;
 
-    int     GetWidth    () override;
-    NUMBER& GetFullScale() override;
-    bool    GetSigned   () override;
+        int     getWidth    () override;
+        Number& getFullScale() override;
+        bool    getSigned   () override;
 
-    bool HasCircularReference(NETLIST::BASE* Object) override;
-    void PopulateUsed() override;
+        bool hasCircularReference(Netlist::Base* object) override;
+        void populateUsed() override;
 
-    EXPRESSION* RemoveTempNet(int Width, bool Signed) override;
+        Expression* removeTempNet(int width, bool isSigned) override;
 
-    void Display() override;
+        void display() override;
 
-    void ValidateMembers() override;
-  };
+        void validateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

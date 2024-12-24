@@ -23,207 +23,214 @@
 #include "Negate.h"
 #include "Object.h"
 
-#include "Netlist/Namespace/Module.h"
+#include "Netlist/NameSpace/Module.h"
 #include "Netlist/Synthesisable/Net.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-MULTIPLY::MULTIPLY(int Line, const string& Filename): MULTIPLY(Line, Filename.c_str()){}
+Multiply::Multiply(int line, const string& filename): Multiply(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-MULTIPLY::MULTIPLY(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Multiply){
+Multiply::Multiply(int line, const char* filename): Expression(line, filename, Type::Multiply){}
+//------------------------------------------------------------------------------
+
+Multiply::~Multiply(){}
+//------------------------------------------------------------------------------
+
+Base* Multiply::copy()
+{
+    Multiply* copy = new Multiply(source.line, source.filename.c_str());
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-MULTIPLY::~MULTIPLY(){
-}
-//------------------------------------------------------------------------------
+bool Multiply::getVerilog(string& body)
+{
+    assert(left , return false);
+    assert(right, return false);
 
-BASE* MULTIPLY::Copy(){
-  MULTIPLY* Copy = new MULTIPLY(Source.Line, Source.Filename.c_str());
-
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-  return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool MULTIPLY::GetVerilog(string& Body){
-  assert(Left , return false);
-  assert(Right, return false);
-
-  if(!Left->GetSigned() && Right->GetSigned()){
-    Body += "$signed({1'b0, (";
-    Left->GetVerilog(Body);
-    Body += ")})";
-  }else{
-    Body += "(";
-    Left->GetVerilog(Body);
-    Body += ")";
-  }
-  Body += " * ";
-  if(Left->GetSigned() && !Right->GetSigned()){
-    Body += "$signed({1'b0, (";
-    Right->GetVerilog(Body);
-    Body += ")})";
-  }else{
-    Body += "(";
-    Right->GetVerilog(Body);
-    Body += ")";
-  }
-
-  return true;
-}
-//------------------------------------------------------------------------------
-
-EXPRESSION* MULTIPLY::Evaluate(){
-  assert(Left , return this);
-  assert(Right, return this);
-
-  Left  = Left ->Evaluate();
-  Right = Right->Evaluate();
-
-  assert(Left , return this);
-  assert(Right, return this);
-
-  if(Left->Type == TYPE::Literal && Right->Type == TYPE::Literal){
-    auto Result = new LITERAL(Source.Line, Source.Filename);
-    auto left  = (LITERAL*)Left;
-    auto right = (LITERAL*)Right;
-    Result->Value =   left ->Value;
-    Result->Value.Mul(right->Value);
-    delete this;
-    return Result;
-  }
-
-  // Replace a object * object with a wire
-  if(Left->Type == TYPE::Object && Right->Type == TYPE::Object){
-    return MakeObject();
-  }
-
-  // Put the literal on the right (if there is one)
-  if(Left->Type == TYPE::Literal){
-    auto Temp = Left;
-    Left  = Right;
-    Right = Temp;
-  }
-
-  if(Left->Type == TYPE::Object && Right->Type == TYPE::Literal){
-    auto left  = ((OBJECT *)Left )->ObjectRef;
-    auto right =  (LITERAL*)Right;
-
-    assert(left);
-
-    auto Object = new OBJECT      (Source.Line, Source.Filename);
-    auto Net    = new NETLIST::NET(Source.Line, Source.Filename, 0);
-    Object->ObjectRef = Net;
-
-    NUMBER FullScale = left->FullScale();
-    FullScale.Mul(right->Value);
-
-    bool Signed = left->Signed();
-
-    if(right->GetSigned()){
-      Signed = true;
-      FullScale.Mul(-1);
-
-      auto Negate = new NEGATE(Source.Line, Source.Filename);
-      Negate->Right = Left;
-      Net   ->Value = Negate;
-    }else{ // Positive literal
-      Net->Value = Left;
+    if(!left->getSigned() && right->getSigned()){
+        body += "$signed({1'b0, (";
+        left->getVerilog(body);
+        body += ")})";
+    }else{
+        body += "(";
+        left->getVerilog(body);
+        body += ")";
     }
-    Net->SetFixedPoint(left->Width(), FullScale, Signed);
-    NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
-    Left = 0;
-    delete this;
-    return Object;
-  }
+    body += " * ";
+    if(left->getSigned() && !right->getSigned()){
+        body += "$signed({1'b0, (";
+        right->getVerilog(body);
+        body += ")})";
+    }else{
+        body += "(";
+        right->getVerilog(body);
+        body += ")";
+    }
 
-  return this;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-int MULTIPLY::GetWidth(){
-  assert(Left , return 0);
-  assert(Right, return 0);
+Expression* Multiply::evaluate()
+{
+    assert(left , return this);
+    assert(right, return this);
 
-  if(Left->GetSigned() && Right->GetSigned()){
-    return Left->GetWidth() + Right->GetWidth() + 1;
-  }
-  return Left->GetWidth() + Right->GetWidth();
+    left  = left ->evaluate();
+    right = right->evaluate();
+
+    assert(left , return this);
+    assert(right, return this);
+
+    if(left->type == Type::Literal && right->type == Type::Literal){
+        auto result = new Literal(source.line, source.filename);
+        result->value =   ((Literal*)left )->value;
+        result->value.mul(((Literal*)right)->value);
+        delete this;
+        return result;
+    }
+
+    // Replace a object * object with a wire
+    if(left->type == Type::Object && right->type == Type::Object){
+        return makeObject();
+    }
+
+    // Put the literal on the right (if there is one)
+    if(left->type == Type::Literal){
+        auto temp = left;
+        left  = right;
+        right = temp;
+    }
+
+    if(left->type == Type::Object && right->type == Type::Literal){
+        auto _left  = ((Object *)left )->objectRef;
+        auto _right =  (Literal*)right;
+
+        assert(_left);
+
+        auto object = new Object      (source.line, source.filename);
+        auto net    = new Netlist::Net(source.line, source.filename, 0);
+        object->objectRef = net;
+
+        Number fullScale = _left->fullScale();
+        fullScale.mul(_right->value);
+
+        bool isSigned = _left->isSigned();
+
+        if(_right->getSigned()){
+            isSigned = true;
+            fullScale.mul(-1);
+
+            auto negate = new Negate(source.line, source.filename);
+            negate->right = left;
+            net   ->value = negate;
+        }else{ // Positive literal
+            net->value = left;
+        }
+        net->setFixedPoint(_left->width(), fullScale, isSigned);
+        Netlist::nameSpaceStack.front()->symbols[net->name] = net;
+        left = 0;
+        delete this;
+        return object;
+    }
+
+    return this;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& MULTIPLY::GetFullScale(){
-  static NUMBER Result;
+int Multiply::getWidth()
+{
+    assert(left , return 0);
+    assert(right, return 0);
 
-  assert(Left , Result = 0; return Result);
-  assert(Right, Result = 0; return Result);
-
-  Result = Left->GetFullScale();
-  Result.Mul(Right->GetFullScale());
-
-  // Make space for the signed bit
-  if(Left->GetSigned() && Right->GetSigned()) Result.BinScale(1);
-
-  return Result;
+    if(left->getSigned() && right->getSigned()){
+        return left->getWidth() + right->getWidth() + 1;
+    }
+    return left->getWidth() + right->getWidth();
 }
 //------------------------------------------------------------------------------
 
-bool MULTIPLY::GetSigned(){
-  return (Left->GetSigned() || Right->GetSigned());
+Number& Multiply::getFullScale()
+{
+    static Number result;
+
+    assert(left , result = 0; return result);
+    assert(right, result = 0; return result);
+
+    result = left->getFullScale();
+    result.mul(right->getFullScale());
+
+    // Make space for the signed bit
+    if(left->getSigned() && right->getSigned()) result.binScale(1);
+
+    return result;
 }
 //------------------------------------------------------------------------------
 
-bool MULTIPLY::HasCircularReference(NETLIST::BASE* Object){
-  assert(Left , return false);
-  assert(Right, return false);
-  
-  if(Left ->HasCircularReference(Object)) return true;
-  if(Right->HasCircularReference(Object)) return true;
-
-  return false;
+bool Multiply::getSigned()
+{
+    return (left->getSigned() || right->getSigned());
 }
 //------------------------------------------------------------------------------
 
-void MULTIPLY::PopulateUsed(){
-  assert(Left , return);
-  assert(Right, return);
-  
-  Left ->PopulateUsed();
-  Right->PopulateUsed();
+bool Multiply::hasCircularReference(Netlist::Base* object)
+{
+    assert(left , return false);
+    assert(right, return false);
+
+    if(left ->hasCircularReference(object)) return true;
+    if(right->hasCircularReference(object)) return true;
+
+    return false;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* MULTIPLY::RemoveTempNet(int Width, bool Signed){
-  if(Left ) Left  = Left ->RemoveTempNet(0, false);
-  if(Right) Right = Right->RemoveTempNet(0, false);
-  return this;
+void Multiply::populateUsed()
+{
+    assert(left , return);
+    assert(right, return);
+
+    left ->populateUsed();
+    right->populateUsed();
 }
 //------------------------------------------------------------------------------
 
-void MULTIPLY::Display(){
-  DisplayStart();
-
-  Debug.Print(" * " );
-
-  DisplayEnd();
+Expression* Multiply::removeTempNet(int width, bool isSigned)
+{
+    if(left ) left  = left ->removeTempNet(0, false);
+    if(right) right = right->removeTempNet(0, false);
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void MULTIPLY::ValidateMembers(){
-  assert(Type == TYPE::Multiply);
+void Multiply::display()
+{
+    displayStart();
 
-  assert(!Next);
-  assert(!Prev);
+    logger.print(" * " );
 
-  assert(Left , return); Left ->Validate();
-  assert(Right, return); Right->Validate();
+    displayEnd();
+}
+//------------------------------------------------------------------------------
+
+void Multiply::validateMembers()
+{
+    assert(type == Type::Multiply);
+
+    assert(!next);
+    assert(!prev);
+
+    assert(left , return); left ->validate();
+    assert(right, return); right->validate();
 }
 //------------------------------------------------------------------------------
 

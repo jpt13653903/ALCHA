@@ -21,56 +21,62 @@
 #include "Array.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
-using namespace NETLIST;
+using std::string;
+using namespace Netlist;
 //------------------------------------------------------------------------------
 
-ARRAY::ARRAY(int Line, const string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Array){
-  error("Not yet implemented");
+Array::Array(int line, const string& filename, const char* name) : Base(line, filename, name, Type::Array)
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-ARRAY::~ARRAY(){
+Array::~Array(){}
+//------------------------------------------------------------------------------
+
+AST::Expression* Array::getExpression(int line, const string& filename)
+{
+    error("Not yet implemented");
+    // TODO: Generate an AST::Array expression and fill with elements
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-AST::EXPRESSION* ARRAY::GetExpression(int Line, const string& Filename){
-  error("Not yet implemented");
-  // TODO: Generate an AST::ARRAY expression and fill with elements
-  return 0;
+bool Array::assign(AST::Expression* expression)
+{
+    error("Not yet implemented");
+    return rawAssign(expression);
 }
 //------------------------------------------------------------------------------
 
-bool ARRAY::Assign(AST::EXPRESSION* Expression){
-  error("Not yet implemented");
-  return RawAssign(Expression);
+bool Array::rawAssign(AST::Expression* expression)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool ARRAY::RawAssign(AST::EXPRESSION* Expression){
-  error("Not yet implemented");
-  return false;
+bool Array::hasCircularReference(Base* object)
+{
+    if(this == object) return true;
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool ARRAY::HasCircularReference(BASE* Object){
-  if(this == Object) return true;
-  error("Not yet implemented");
-  return false;
+void Array::display(int indent)
+{
+    error("Not implemented yet");
 }
 //------------------------------------------------------------------------------
 
-void ARRAY::Display(int Indent){
-  error("Not implemented yet");
-}
-//------------------------------------------------------------------------------
+void Array::validate()
+{
+    assert(type == Type::Array);
 
-void ARRAY::Validate(){
-  assert(Type == TYPE::Array);
+    Base::validate();
 
-  BASE::Validate();
-
-  error("Not implemented yet");
+    error("Not implemented yet");
 }
 //------------------------------------------------------------------------------
 

@@ -21,108 +21,118 @@
 #include "Switch.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-SWITCH::CASE::CASE(){
-  Next       = 0;
-  Statements = 0;
+Switch::Case::Case()
+{
+    next       = 0;
+    statements = 0;
 }
 //------------------------------------------------------------------------------
 
-SWITCH::CASE::CASE(const CASE& Case){
-  if(Case.Next) Next = new CASE(*Case.Next);
+Switch::Case::Case(const Case& source)
+{
+    if(source.next) next = new Case(*source.next);
 
-  Statements = CopyList(Case.Statements);
+    statements = copyList(source.statements);
 
-  foreach(Element, Case.Expressions){
-    Expressions.push_back((EXPRESSION*)(*Element)->Copy());
-  }
-}
-//------------------------------------------------------------------------------
-
-SWITCH::CASE::~CASE(){
-  if(Next       ) delete Next;
-  if(Statements ) delete Statements;
-
-  foreach(Element, Expressions) delete *Element;
-}
-//------------------------------------------------------------------------------
-
-SWITCH::SWITCH(int Line, std::string& Filename): SWITCH(Line, Filename.c_str()){}
-//------------------------------------------------------------------------------
-
-SWITCH::SWITCH(int Line, const char* Filename): BASE(Line, Filename, TYPE::Switch){
-  Cases      = 0;
-  Default    = 0;
-  Expression = 0;
-}
-//------------------------------------------------------------------------------
-
-SWITCH::~SWITCH(){
-  if(Cases     ) delete Cases;
-  if(Default   ) delete Default;
-  if(Expression) delete Expression;
-}
-//------------------------------------------------------------------------------
-
-BASE* SWITCH::Copy(){
-  SWITCH* Copy = new SWITCH(Source.Line, Source.Filename.c_str());
-
-  if(Cases     ) Copy->Cases      = new CASE(*Cases);
-  if(Expression) Copy->Expression = (decltype(Expression))Expression->Copy();
-
-  Copy->Default = CopyList(Default);
-
-  return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool SWITCH::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
-bool SWITCH::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
-void SWITCH::Display(){
-  DisplayInfo();
-  Debug.Print("switch(");
-    if(Expression) Expression->Display();
-  Debug.Print("){\n");
-    CASE* Temp = Cases;
-    while(Temp){
-      Debug.Print(" case(");
-        bool isFirst = true;
-        foreach(Expression, Temp->Expressions){
-          if(!isFirst) Debug.Print(", ");
-          (*Expression)->Display();
-          isFirst = false;
-        }
-      Debug.Print("){\n");
-        if(Temp->Statements) Temp->Statements->Display();
-      Debug.Print(" }\n");
-      Temp = Temp->Next;
+    for(auto Element: source.expressions){
+        expressions.push_back((Expression*)Element->copy());
     }
-    Debug.Print(" default{\n");
-      if(Default) Default->Display();
-    Debug.Print(" }\n");
-  Debug.Print("}\n");
-
-  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
 
-void SWITCH::ValidateMembers(){
-  assert(Type == TYPE::Switch);
+Switch::Case::~Case()
+{
+    if(next       ) delete next;
+    if(statements ) delete statements;
 
-  error("Not yet implemented");
+    for(auto Element: expressions) delete Element;
+}
+//------------------------------------------------------------------------------
+
+Switch::Switch(int line, std::string& filename): Switch(line, filename.c_str()){}
+//------------------------------------------------------------------------------
+
+Switch::Switch(int line, const char* filename): Base(line, filename, Type::Switch)
+{
+    cases       = 0;
+    defaultCase = 0;
+    expression  = 0;
+}
+//------------------------------------------------------------------------------
+
+Switch::~Switch()
+{
+    if(cases      ) delete cases;
+    if(defaultCase) delete defaultCase;
+    if(expression ) delete expression;
+}
+//------------------------------------------------------------------------------
+
+Base* Switch::copy()
+{
+    Switch* copy = new Switch(source.line, source.filename.c_str());
+
+    if(cases     ) copy->cases      = new Case(*cases);
+    if(expression) copy->expression = (decltype(expression))expression->copy();
+
+    copy->defaultCase = copyList(defaultCase);
+
+    return copy;
+}
+//------------------------------------------------------------------------------
+
+bool Switch::runAST()
+{
+    error("Not yet implemented");
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Switch::getVerilog(string& body)
+{
+    error("Not yet implemented");
+    return false;
+}
+//------------------------------------------------------------------------------
+
+void Switch::display()
+{
+    displayInfo();
+    logger.print("switch(");
+        if(expression) expression->display();
+    logger.print("){\n");
+        Case* temp = cases;
+        while(temp){
+            logger.print(" case(");
+                bool isFirst = true;
+                for(auto expression: temp->expressions){
+                    if(!isFirst) logger.print(", ");
+                    expression->display();
+                    isFirst = false;
+                }
+            logger.print("){\n");
+                if(temp->statements) temp->statements->display();
+            logger.print(" }\n");
+            temp = temp->next;
+        }
+        logger.print(" default{\n");
+            if(defaultCase) defaultCase->display();
+        logger.print(" }\n");
+    logger.print("}\n");
+
+    if(next) next->display();
+}
+//------------------------------------------------------------------------------
+
+void Switch::validateMembers()
+{
+    assert(type == Type::Switch);
+
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

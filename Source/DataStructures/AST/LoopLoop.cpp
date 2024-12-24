@@ -21,65 +21,72 @@
 #include "LoopLoop.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-LOOP_LOOP::LOOP_LOOP(int Line, std::string& Filename): LOOP_LOOP(Line, Filename.c_str()){}
+LoopLoop::LoopLoop(int line, std::string& filename): LoopLoop(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-LOOP_LOOP::LOOP_LOOP(int Line, const char* Filename): BASE(Line, Filename, TYPE::LoopLoop){
-  Count      = 0;
-  Statements = 0;
+LoopLoop::LoopLoop(int line, const char* filename): Base(line, filename, Type::LoopLoop)
+{
+    count      = 0;
+    statements = 0;
 }
 //------------------------------------------------------------------------------
 
-LOOP_LOOP::~LOOP_LOOP(){
-  if(Count     ) delete Count;
-  if(Statements) delete Statements;
+LoopLoop::~LoopLoop()
+{
+    if(count     ) delete count;
+    if(statements) delete statements;
 }
 //------------------------------------------------------------------------------
 
-BASE* LOOP_LOOP::Copy(){
-  LOOP_LOOP* Copy = new LOOP_LOOP(Source.Line, Source.Filename.c_str());
+Base* LoopLoop::copy()
+{
+    LoopLoop* copy = new LoopLoop(source.line, source.filename.c_str());
 
-  if(Count) Copy->Count = (decltype(Count))Count->Copy();
+    if(count) copy->count = (decltype(count))count->copy();
 
-  Copy->Statements = CopyList(Statements);
+    copy->statements = copyList(statements);
 
-  return Copy;
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-bool LOOP_LOOP::RunAST(){
-  error("Not yet implemented");
-  return false;
+bool LoopLoop::runAST()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool LOOP_LOOP::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool LoopLoop::getVerilog(string& body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void LOOP_LOOP::Display(){
-  DisplayInfo();
-  Debug.Print("loop(");
-    if(Count) Count->Display();
-    else      Debug.Print("{inf}");
-  Debug.Print("){\n");
-    if(Statements) Statements->Display();
-  Debug.Print("}\n");
+void LoopLoop::display()
+{
+    displayInfo();
+    logger.print("loop(");
+        if(count) count->display();
+        else      logger.print("{inf}");
+    logger.print("){\n");
+        if(statements) statements->display();
+    logger.print("}\n");
 
-  if(Next) Next->Display();
+    if(next) next->display();
 }
 //------------------------------------------------------------------------------
 
-void LOOP_LOOP::ValidateMembers(){
-  assert(Type == TYPE::LoopLoop);
+void LoopLoop::validateMembers()
+{
+    assert(type == Type::LoopLoop);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

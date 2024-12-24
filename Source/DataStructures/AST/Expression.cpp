@@ -23,201 +23,208 @@
 #include "Expression/Literal.h"
 #include "Expression/Multiply.h"
 #include "Expression/Object.h"
-#include "Expression/Shift_Left.h"
-#include "Expression/Shift_Right.h"
+#include "Expression/ShiftLeft.h"
+#include "Expression/ShiftRight.h"
 
-#include "Netlist/Namespace/Module.h"
+#include "Netlist/NameSpace/Module.h"
 #include "Netlist/Synthesisable/Net.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-EXPRESSION::EXPRESSION(int Line, const char* Filename, TYPE ExpressionType):
-BASE(Line, Filename, ExpressionType){
-  Left  = 0;
-  Right = 0;
+Expression::Expression(int line, const char* filename, Type expressionType):
+    Base(line, filename, expressionType)
+{
+    left  = 0;
+    right = 0;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION::~EXPRESSION(){
-  if(Left ) delete Left;
-  if(Right) delete Right;
-  assert(!Next);
+Expression::~Expression()
+{
+    if(left ) delete left;
+    if(right) delete right;
+    assert(!next);
 }
 //------------------------------------------------------------------------------
 
-bool EXPRESSION::IsExpression(){
-  return true;
+bool Expression::isExpression()
+{
+    return true;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* EXPRESSION::ScaleWith(NUMBER Scale, int Width, NUMBER FullScale){
-  if(Scale == 1) return this;
+Expression* Expression::scaleWith(Number scale, int width, Number fullScale)
+{
+    if(scale == 1) return this;
 
-  bool Signed    = GetSigned();
-  int  ThisWidth = GetWidth ();
+    bool isSigned  = getSigned();
+    int  thisWidth = getWidth ();
 
-  int ScaleWidth = 0;
-  NUMBER Num = Scale;
-  if(Num < 0) Num.Mul(-1);
-  while(Num < 1){
-    Num.BinScale(1);
-    ScaleWidth--;
-  }
-  while(Num > 1){
-    Num.BinScale(-1);
-    ScaleWidth++;
-  }
-
-  if(ThisWidth + ScaleWidth > Width){
-    FullScale.BinScale(ThisWidth + ScaleWidth - Width);
-    Width = ThisWidth + ScaleWidth;
-  }
-
-  // Calculate the limit of the inferred multiplier size.  Most FPGAs have 
-  // 18-bit multipliers, so make that the minimum limit, otherwise use the 
-  // target width as the limit so that no to little resolution is lost.
-  NUMBER Limit(1);
-  if(Signed) Limit.BinScale(18);
-  else       Limit.BinScale(17);
-
-  // Convert the multiplication to a shift, as far as possible
-  int Shift = 0;
-  while(Scale.IsInt()){
-    Scale.BinScale(-1);
-    Shift--;
-  }
-  while(!Scale.IsInt() && (Scale < Limit)){
-    Scale.BinScale(1);
-    Shift++;
-  }
-  while(Scale >= Limit){
-    Scale.BinScale(-1);
-    Shift--;
-  }
-  NUMBER FullFactor(Scale);
-  Scale.Round();
-  if(Scale != FullFactor){
-    Warning("Rounding the scaling factor - this can be fixed "
-            "with an explicit scaling multiplication.");
-    while(Scale.IsInt()){ // Make sure it's still minimised after rounding
-      Scale.BinScale(-1);
-      Shift--;
+    int scaleWidth = 0;
+    Number num = scale;
+    if(num < 0) num.mul(-1);
+    while(num < 1){
+        num.binScale(1);
+        scaleWidth--;
     }
-    while(!Scale.IsInt()){
-      Scale.BinScale(1);
-      Shift++;
-    }
-  }
-  
-  auto Net = new NETLIST::NET(Source.Line, Source.Filename, 0);
-  Net->SetFixedPoint(Width, FullScale, Signed);
-  NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
-  
-  if(Scale == 1){ // Shift only
-    auto Literal = new LITERAL(Source.Line, Source.Filename);
-
-    if(Shift > 0){
-      Net->Value = new SHIFT_RIGHT(Source.Line, Source.Filename);
-      Literal->Value = Shift;
-
-    }else{
-      Net->Value = new SHIFT_LEFT(Source.Line, Source.Filename);
-      Literal->Value = -Shift;
+    while(num > 1){
+        num.binScale(-1);
+        scaleWidth++;
     }
 
-    Net->Value->Left  = this;
-    Net->Value->Right = Literal;
-
-  }else if(Shift == 0){ // Multiply only
-    auto Literal = new LITERAL(Source.Line, Source.Filename);
-    Literal->Value = Scale;
-
-    auto Mul = new MULTIPLY(Source.Line, Source.Filename);
-    Mul->Left  = this;
-    Mul->Right = Literal;
-
-    Net->Value = Mul;
-
-  }else{ // Multiply and shift
-    auto MulLiteral = new LITERAL(Source.Line, Source.Filename);
-    MulLiteral->Value = Scale;
-
-    auto Mul = new MULTIPLY(Source.Line, Source.Filename);
-    Mul->Left  = this;
-    Mul->Right = MulLiteral;
-
-    auto MulNet = new NETLIST::NET(Source.Line, Source.Filename, 0);
-    NUMBER MulFullScale = FullScale;
-    MulFullScale.BinScale(Shift);
-    MulNet->SetFixedPoint(Mul->GetWidth(), MulFullScale, GetSigned());
-    MulNet->Value = Mul;
-    NETLIST::NamespaceStack.front()->Symbols[MulNet->Name] = MulNet;
-
-    auto MulObject = new OBJECT(Source.Line, Source.Filename);
-    MulObject->ObjectRef = MulNet;
-
-    auto ShiftLiteral = new LITERAL(Source.Line, Source.Filename);
-
-    if(Shift > 0){
-      Net->Value = new SHIFT_RIGHT(Source.Line, Source.Filename);
-      ShiftLiteral->Value = Shift;
-
-    }else{
-      Net->Value = new SHIFT_LEFT(Source.Line, Source.Filename);
-      ShiftLiteral->Value = -Shift;
+    if(thisWidth + scaleWidth > width){
+        fullScale.binScale(thisWidth + scaleWidth - width);
+        width = thisWidth + scaleWidth;
     }
 
-    Net->Value->Left  = MulObject;
-    Net->Value->Right = ShiftLiteral;
-  }
+    // Calculate the limit of the inferred multiplier size.  Most FPGAs have
+    // 18-bit multipliers, so make that the minimum limit, otherwise use the
+    // target width as the limit so that no to little resolution is lost.
+    Number limit(1);
+    if(isSigned) limit.binScale(18);
+    else         limit.binScale(17);
 
-  auto Object = new OBJECT(Source.Line, Source.Filename);
-  Object->ObjectRef = Net;
-  return Object;
+    // Convert the multiplication to a shift, as far as possible
+    int shift = 0;
+    while(scale.isInt()){
+        scale.binScale(-1);
+        shift--;
+    }
+    while(!scale.isInt() && (scale < limit)){
+        scale.binScale(1);
+        shift++;
+    }
+    while(scale >= limit){
+        scale.binScale(-1);
+        shift--;
+    }
+    Number fullFactor(scale);
+    scale.round();
+    if(scale != fullFactor){
+        printWarning("Rounding the scaling factor - this can be fixed "
+                     "with an explicit scaling multiplication.");
+        while(scale.isInt()){ // Make sure it's still minimised after rounding
+            scale.binScale(-1);
+            shift--;
+        }
+        while(!scale.isInt()){
+            scale.binScale(1);
+            shift++;
+        }
+    }
+
+    auto net = new Netlist::Net(source.line, source.filename, 0);
+    net->setFixedPoint(width, fullScale, isSigned);
+    Netlist::nameSpaceStack.front()->symbols[net->name] = net;
+
+    if(scale == 1){ // shift only
+        auto literal = new Literal(source.line, source.filename);
+
+        if(shift > 0){
+            net->value = new ShiftRight(source.line, source.filename);
+            literal->value = shift;
+
+        }else{
+            net->value = new ShiftLeft(source.line, source.filename);
+            literal->value = -shift;
+        }
+
+        net->value->left  = this;
+        net->value->right = literal;
+
+    }else if(shift == 0){ // Multiply only
+        auto literal = new Literal(source.line, source.filename);
+        literal->value = scale;
+
+        auto mul = new Multiply(source.line, source.filename);
+        mul->left  = this;
+        mul->right = literal;
+
+        net->value = mul;
+
+    }else{ // Multiply and shift
+        auto mulLiteral = new Literal(source.line, source.filename);
+        mulLiteral->value = scale;
+
+        auto mul = new Multiply(source.line, source.filename);
+        mul->left  = this;
+        mul->right = mulLiteral;
+
+        auto mulNet = new Netlist::Net(source.line, source.filename, 0);
+        Number mulFullScale = fullScale;
+        mulFullScale.binScale(shift);
+        mulNet->setFixedPoint(mul->getWidth(), mulFullScale, getSigned());
+        mulNet->value = mul;
+        Netlist::nameSpaceStack.front()->symbols[mulNet->name] = mulNet;
+
+        auto mulObject = new Object(source.line, source.filename);
+        mulObject->objectRef = mulNet;
+
+        auto shiftLiteral = new Literal(source.line, source.filename);
+
+        if(shift > 0){
+            net->value = new ShiftRight(source.line, source.filename);
+            shiftLiteral->value = shift;
+
+        }else{
+            net->value = new ShiftLeft(source.line, source.filename);
+            shiftLiteral->value = -shift;
+        }
+
+        net->value->left  = mulObject;
+        net->value->right = shiftLiteral;
+    }
+
+    auto object = new Object(source.line, source.filename);
+    object->objectRef = net;
+    return object;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* EXPRESSION::MakeObject(){
-  if(Type == TYPE::Object) return this;
+Expression* Expression::makeObject()
+{
+    if(type == Type::Object) return this;
 
-  auto Object = new OBJECT      (Source.Line, Source.Filename);
-  auto Net    = new NETLIST::NET(Source.Line, Source.Filename, 0);
-  Object->ObjectRef = Net;
+    auto object = new Object      (source.line, source.filename);
+    auto net    = new Netlist::Net(source.line, source.filename, 0);
+    object->objectRef = net;
 
-  Net->SetFixedPoint(GetWidth(), GetFullScale(), GetSigned());
-  Net->Value = this;
+    net->setFixedPoint(getWidth(), getFullScale(), getSigned());
+    net->value = this;
 
-  NETLIST::NamespaceStack.front()->Symbols[Net->Name] = Net;
+    Netlist::nameSpaceStack.front()->symbols[net->name] = net;
 
-  return Object;
+    return object;
 }
 //------------------------------------------------------------------------------
 
-void EXPRESSION::DisplayStart(){
-  if(Left){
-    if(Left->Left || Left->Right) Debug.Print("(");
-    Left->Display();
-    if(Left->Left || Left->Right) Debug.Print(")");
-  }
+void Expression::displayStart()
+{
+    if(left){
+        if(left->left || left->right) logger.print("(");
+        left->display();
+        if(left->left || left->right) logger.print(")");
+    }
 }
 //------------------------------------------------------------------------------
 
-void EXPRESSION::DisplayEnd(){
-  if(Right){
-    if(Right->Left || Right->Right || Right->Next) Debug.Print("(");
-    Right->Display();
-    if(Right->Left || Right->Right || Right->Next) Debug.Print(")");
-  }
+void Expression::displayEnd()
+{
+    if(right){
+        if(right->left || right->right || right->next) logger.print("(");
+        right->display();
+        if(right->left || right->right || right->next) logger.print(")");
+    }
 }
 //------------------------------------------------------------------------------
 
-bool EXPRESSION::RunAST(){
-  // For most expression types, this function is never called
-  error("Unexpected RunAST call");
-  return false;
+bool Expression::runAST()
+{
+    // For most expression types, this function is never called
+    error("Unexpected runAST call");
+    return false;
 }
 //------------------------------------------------------------------------------
 

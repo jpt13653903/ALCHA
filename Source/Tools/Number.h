@@ -19,7 +19,7 @@
 //==============================================================================
 
 /**
-  Class wrapper for GNU MP rational numbers
+    Class wrapper for GNU MP rational numbers
 */
 //------------------------------------------------------------------------------
 
@@ -35,91 +35,92 @@
 #include "gmp.h"
 //------------------------------------------------------------------------------
 
-class NUMBER{
-  private:
-    mpq_t Real;
-    mpq_t Imag;
+class Number{
+    private:
+        mpq_t real;
+        mpq_t imag;
 
-  public:
-    NUMBER();
-    NUMBER(int           i);
-    NUMBER(unsigned      u);
-    NUMBER(double        d);
-    NUMBER(bool          b);
-    NUMBER(const NUMBER& n);
-   ~NUMBER();
+    public:
+        Number();
+        Number(int           i);
+        Number(unsigned      u);
+        Number(double        d);
+        Number(bool          b);
+        Number(const Number& n);
+        Number(int num, int denum);
+       ~Number();
 
-    void Set(mpz_t Numerator, mpz_t Denominator);
-    void Set_e (); // First 43 terms of the series e = sum(1/n!)
-    void Set_pi(); // 100th fraction approximation
-    void Set_i ();
+        void set(mpz_t numerator, mpz_t denominator);
+        void set_e (); // First 43 terms of the series e = sum(1/n!)
+        void set_pi(); // 100th fraction approximation
+        void set_i ();
 
-    // Operators
-    void operator=  (int           i);
-    void operator=  (unsigned      u);
-    void operator=  (double        d);
-    void operator=  (bool          b);
-    void operator=  (const NUMBER& n);
+        // Operators
+        void operator=  (int           i);
+        void operator=  (unsigned      u);
+        void operator=  (double        d);
+        void operator=  (bool          b);
+        void operator=  (const Number& n);
 
-    bool operator== (int           i) const;
-    bool operator== (unsigned      u) const;
-    bool operator== (double        d) const;
-    bool operator== (bool          b) const;
-    bool operator== (const NUMBER& n) const;
+        bool operator== (int           i) const;
+        bool operator== (unsigned      u) const;
+        bool operator== (double        d) const;
+        bool operator== (bool          b) const;
+        bool operator== (const Number& n) const;
 
-    bool operator!= (int           i) const;
-    bool operator!= (unsigned      u) const;
-    bool operator!= (double        d) const;
-    bool operator!= (bool          b) const;
-    bool operator!= (const NUMBER& n) const;
+        bool operator!= (int           i) const;
+        bool operator!= (unsigned      u) const;
+        bool operator!= (double        d) const;
+        bool operator!= (bool          b) const;
+        bool operator!= (const Number& n) const;
 
-    // Relational comparisons for complex numbers follow the rules presented in
-    // https://www.cut-the-knot.org/do_you_know/complex_compare.shtml
-    // i.e. (a + ib) < (c + id), provided either a < c or a = c and b < d. 
-    bool operator<  (int           i) const;
-    bool operator<  (unsigned      u) const;
-    bool operator<  (double        d) const;
-    bool operator<  (const NUMBER& n) const;
+        // Relational comparisons for complex numbers follow the rules presented in
+        // https://www.cut-the-knot.org/do_you_know/complex_compare.shtml
+        // i.e. (a + ib) < (c + id), provided either a < c or a = c and b < d.
+        bool operator<  (int           i) const;
+        bool operator<  (unsigned      u) const;
+        bool operator<  (double        d) const;
+        bool operator<  (const Number& n) const;
 
-    bool operator<= (int           i) const;
-    bool operator<= (unsigned      u) const;
-    bool operator<= (double        d) const;
-    bool operator<= (const NUMBER& n) const;
+        bool operator<= (int           i) const;
+        bool operator<= (unsigned      u) const;
+        bool operator<= (double        d) const;
+        bool operator<= (const Number& n) const;
 
-    bool operator>  (int           i) const;
-    bool operator>  (unsigned      u) const;
-    bool operator>  (double        d) const;
-    bool operator>  (const NUMBER& n) const;
+        bool operator>  (int           i) const;
+        bool operator>  (unsigned      u) const;
+        bool operator>  (double        d) const;
+        bool operator>  (const Number& n) const;
 
-    bool operator>= (int           i) const;
-    bool operator>= (unsigned      u) const;
-    bool operator>= (double        d) const;
-    bool operator>= (const NUMBER& n) const;
+        bool operator>= (int           i) const;
+        bool operator>= (unsigned      u) const;
+        bool operator>= (double        d) const;
+        bool operator>= (const Number& n) const;
 
-    void Add(double r, double i = 0);
-    void Add(const NUMBER& n);
+        void add(double r, double i = 0);
+        void add(const Number& n);
 
-    void Sub(double r, double i = 0);
-    void Sub(const NUMBER& n);
+        void sub(double r, double i = 0);
+        void sub(const Number& n);
 
-    void Mul(double r, double i = 0);
-    void Mul(const NUMBER& n);
+        void mul(double r, double i = 0);
+        void mul(const Number& n);
 
-    void Div(double r, double i = 0);
-    void Div(const NUMBER& n);
+        void div(double r, double i = 0);
+        void div(const Number& n);
 
-    void BinScale(int N); // *= 2^N
+        void binScale(int n); // *= 2^n
 
-    void Round();
+        void round();
 
-    bool IsInt () const; // Imag == 0 && Real.Denominator == 1
-    bool IsReal() const; // Imag == 0
+        bool isInt () const; // imag == 0 && real.denominator == 1
+        bool isReal() const; // imag == 0
 
-    double GetReal() const;
-    double GetImag() const;
+        double getReal() const;
+        double getImag() const;
 
-    std::string& GetString(int Base = 10) const; // Format "123/456"
-    std::string& Display  () const;              // Format "123/456 (~0.269737)"
+        std::string& getString(int base = 10) const; // Format "123/456"
+        std::string& display  () const;              // Format "123/456 (~0.269737)"
 };
 //------------------------------------------------------------------------------
 

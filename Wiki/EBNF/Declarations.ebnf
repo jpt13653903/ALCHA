@@ -1,12 +1,14 @@
 Module = [Statements];
 
+(* Wait statements only valid within Stimulus and Emulate blocks *)
 Statements = Statement {Statement};
-Statement  = Label | Definition | ClassDefinition | EnumDefinition
+Statement  = [Wait]
+             (Label | Definition | ClassDefinition | EnumDefinition
            | Alias | Import | Struct | Group | AccessDirectionGroup
-           | IfStatement | For | While  | Loop | Switch | Jump | GoTo
-           | FunctionCall | NamespacePush | Assignment
+           | IfStatement | For | While  | Loop | Switch | Case | Jump | GoTo
+           | FunctionCallStatement | NamespacePush | Assignment
            | RTL | FSM | HDL
-           | Stimulus | Emulate | ForkJoin | Assert | Sequence | ";";
+           | Stimulus | Emulate | ForkJoin | Assert | ";");
 
 Label  = Identifier ":"; (* Only useful within an fsm construct *)
 
@@ -35,7 +37,7 @@ BaseType = "pin"  | "net"          (* Synthesisable types *)
 IdentifierList = FunctionDef | (VariableDef {"," VariableDef} ";");
 
 VariableDef    = Identifier {ArrayDefinition} [Initialiser];
-FunctionDef    = ["inline"] Identifier {ArrayDefinition}
+FunctionDef    = ["inline"] ((Identifier {ArrayDefinition}) | ("operator" Operator))
                  "(" [DefParameterList] ")"
                  "{" [Statements] "}" ;
 
@@ -43,10 +45,10 @@ ArrayDefinition  = "[" [Expression] "]";
 Initialiser      = ("=" | ":=") Expression;
 
 DefParameterList = DefParameter {"," DefParameter};
-DefParameter     = [BaseType | TypeIdentifier] Identifier {"[" "]"}
-                   [Initialiser];
+DefParameter     = [(BaseType | TypeIdentifier) [ParameterList]]
+                   Identifier {"[" "]"} [Initialiser];
 
-AttributeList       = "<" AttributeAssignment {, AttributeAssignment} ">";
+AttributeList       = "<" AttributeAssignment {"," AttributeAssignment} ">";
 AttributeAssignment = Identifier "=" Primary;
 
 EnumDefinition = "enum" Identifier "{" Identifier {"," Identifier} "}";

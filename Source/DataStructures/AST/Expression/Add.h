@@ -26,39 +26,39 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  class ADD: public EXPRESSION{
-    private:
-      // Result format, calculated in Evaluate()
-      int    ResultWidth = 0;
-      NUMBER ResultFullScale;
-      bool   ResultSigned = false;
+    class Add: public Expression{
+        private:
+            // Result format, calculated in Evaluate()
+            int    resultWidth = 0;
+            Number resultFullScale;
+            bool   resultSigned = false;
 
-      // Helper function to add literals to objects
-      EXPRESSION* AddLiteral(EXPRESSION* Object, EXPRESSION* Literal);
+            // Helper function to add literals to objects
+            Expression* addLiteral(Expression* object, Expression* literal);
 
-    public: // Public interface
-      ADD(int Line, const std::string& Filename);
-      ADD(int Line, const char*        Filename);
-     ~ADD();
+        public: // Public interface
+            Add(int line, const std::string& filename);
+            Add(int line, const char*        filename);
+           ~Add();
 
-      BASE* Copy() override;
+            Base* copy() override;
 
-      bool GetVerilog(std::string& Body) override;
-      EXPRESSION* Evaluate() override;
+            bool getVerilog(std::string& body) override;
+            Expression* evaluate() override;
 
-      int     GetWidth    () override;
-      NUMBER& GetFullScale() override;
-      bool    GetSigned   () override;
+            int     getWidth    () override;
+            Number& getFullScale() override;
+            bool    getSigned   () override;
 
-      bool HasCircularReference(NETLIST::BASE* Object) override;
-      void PopulateUsed() override;
+            bool hasCircularReference(Netlist::Base* object) override;
+            void populateUsed() override;
 
-      EXPRESSION* RemoveTempNet(int Width, bool Signed) override;
+            Expression* removeTempNet(int width, bool isSigned) override;
 
-      void Display() override;
+            void display() override;
 
-      void ValidateMembers() override;
-  };
+            void validateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

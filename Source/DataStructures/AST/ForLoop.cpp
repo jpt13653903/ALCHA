@@ -21,66 +21,73 @@
 #include "ForLoop.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-FOR_LOOP::FOR_LOOP(int Line, std::string& Filename): FOR_LOOP(Line, Filename.c_str()){}
+ForLoop::ForLoop(int line, std::string& filename): ForLoop(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-FOR_LOOP::FOR_LOOP(int Line, const char* Filename): BASE(Line, Filename, TYPE::ForLoop){
-  Range      = 0;
-  Statements = 0;
+ForLoop::ForLoop(int line, const char* filename): Base(line, filename, Type::ForLoop)
+{
+    range      = 0;
+    statements = 0;
 }
 //------------------------------------------------------------------------------
 
-FOR_LOOP::~FOR_LOOP(){
-  if(Range     ) delete Range;
-  if(Statements) delete Statements;
+ForLoop::~ForLoop()
+{
+    if(range     ) delete range;
+    if(statements) delete statements;
 }
 //------------------------------------------------------------------------------
 
-BASE* FOR_LOOP::Copy(){
-  FOR_LOOP* Copy = new FOR_LOOP(Source.Line, Source.Filename.c_str());
+Base* ForLoop::copy()
+{
+    ForLoop* copy = new ForLoop(source.line, source.filename.c_str());
 
-  Copy->Identifier = Identifier;
+    copy->identifier = identifier;
 
-  if(Range) Copy->Range = (decltype(Range))Range->Copy();
+    if(range) copy->range = (decltype(range))range->copy();
 
-  Copy->Statements = CopyList(Statements);
+    copy->statements = copyList(statements);
 
-  return Copy;
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-bool FOR_LOOP::RunAST(){
-  error("Not yet implemented");
-  return false;
+bool ForLoop::runAST()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool FOR_LOOP::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool ForLoop::getVerilog(string& body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void FOR_LOOP::Display(){
-  DisplayInfo();
-  Debug.Print("for(%s in ", Identifier.c_str());
-    if(Range) Range->Display();
-  Debug.Print("){\n");
-    if(Statements) Statements->Display();
-  Debug.Print("}\n");
+void ForLoop::display()
+{
+    displayInfo();
+    logger.print("for(%s in ", identifier.c_str());
+        if(range) range->display();
+    logger.print("){\n");
+        if(statements) statements->display();
+    logger.print("}\n");
 
-  if(Next) Next->Display();
+    if(next) next->display();
 }
 //------------------------------------------------------------------------------
 
-void FOR_LOOP::ValidateMembers(){
-  assert(Type == TYPE::ForLoop);
+void ForLoop::validateMembers()
+{
+    assert(type == Type::ForLoop);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

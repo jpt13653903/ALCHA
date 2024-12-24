@@ -21,104 +21,113 @@
 #include "Factorial.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-FACTORIAL::FACTORIAL(int Line, const string& Filename): FACTORIAL(Line, Filename.c_str()){}
+Factorial::Factorial(int line, const string& filename): Factorial(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-FACTORIAL::FACTORIAL(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Factorial){
+Factorial::Factorial(int line, const char* filename): Expression(line, filename, Type::Factorial){}
+//------------------------------------------------------------------------------
+
+Factorial::~Factorial(){}
+//------------------------------------------------------------------------------
+
+Base* Factorial::copy()
+{
+    Factorial* copy = new Factorial(source.line, source.filename.c_str());
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-FACTORIAL::~FACTORIAL(){
+bool Factorial::getVerilog(string& body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-BASE* FACTORIAL::Copy(){
-  FACTORIAL* Copy = new FACTORIAL(Source.Line, Source.Filename.c_str());
-
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-  return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool FACTORIAL::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
-EXPRESSION* FACTORIAL::Evaluate(){
-  error("Not yet implemented");
-  return this;
-//   EXPRESSION* Result = 0;
-// 
+Expression* Factorial::evaluate()
+{
+    error("Not yet implemented");
+    return this;
+//   Expression* result = 0;
+//
 //   error("Not yet implemented");
-// 
-//   if(!Result) return 0;
-//   return Result->Simplify(false);
+//
+//   if(!result) return 0;
+//   return result->simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int FACTORIAL::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int Factorial::getWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& FACTORIAL::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+Number& Factorial::getFullScale()
+{
+    error("Not yet implemented");
+    static Number zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool FACTORIAL::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool Factorial::getSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool FACTORIAL::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool Factorial::hasCircularReference(Netlist::Base* object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void FACTORIAL::PopulateUsed(){
-  error("Not yet implemented");
+void Factorial::populateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* FACTORIAL::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+Expression* Factorial::removeTempNet(int width, bool isSigned)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void FACTORIAL::Display(){
-  DisplayStart();
+void Factorial::display()
+{
+    displayStart();
 
-  Debug.Print("!" );
+    logger.print("!" );
 
-  DisplayEnd();
+    displayEnd();
 }
 //------------------------------------------------------------------------------
 
-void FACTORIAL::ValidateMembers(){
-  assert(Type == TYPE::Factorial);
+void Factorial::validateMembers()
+{
+    assert(type == Type::Factorial);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!next);
+    assert(!prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!left );
+    // TODO: assert(!right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

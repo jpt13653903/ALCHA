@@ -25,181 +25,194 @@
 #include "Netlist/Byte.h"
 #include "Netlist/Character.h"
 #include "Netlist/Num.h"
-#include "Netlist/Namespace/Module.h"
+#include "Netlist/NameSpace/Module.h"
 #include "Netlist/Synthesisable/Net.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-OBJECT::OBJECT(int Line, const string& Filename): OBJECT(Line, Filename.c_str()){}
+Object::Object(int line, const string& filename): Object(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-OBJECT::OBJECT(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Object){
-  ObjectRef = 0;
+Object::Object(int line, const char* filename): Expression(line, filename, Type::Object)
+{
+    objectRef = 0;
 }
 //------------------------------------------------------------------------------
 
-OBJECT::~OBJECT(){
-  // Don't delete the Object reference -- it's part of the namespace tree
+Object::~Object()
+{
+    // Don't delete the object reference -- it's part of the namespace tree
 }
 //------------------------------------------------------------------------------
 
-BASE* OBJECT::Copy(){
-  OBJECT* Copy = new OBJECT(Source.Line, Source.Filename.c_str());
+Base* Object::copy()
+{
+    Object* copy = new Object(source.line, source.filename.c_str());
 
-  Copy->ObjectRef = ObjectRef;
+    copy->objectRef = objectRef;
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
 
-  return Copy;
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-bool OBJECT::GetVerilog(string& Body){
-  assert(ObjectRef, return false);
-  Body += ObjectRef->EscapedName();
+bool Object::getVerilog(string& body)
+{
+    assert(objectRef, return false);
+    body += objectRef->escapedName();
 
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* OBJECT::Evaluate(){
-  assert(ObjectRef, delete this; return 0);
+Expression* Object::evaluate()
+{
+    assert(objectRef, delete this; return 0);
 
-  switch(ObjectRef->Type){
-    case NETLIST::BASE::TYPE::Byte:{
-      auto Byte = (NETLIST::BYTE*)ObjectRef;
-      auto Result = new LITERAL(Source.Line, Source.Filename);
-      Result->Value = Byte->Value;
-      Result->SetWidth(8);
-      delete this;
-      return Result;
-    }
-    case NETLIST::BASE::TYPE::Character:{
-      auto Char = (NETLIST::CHARACTER*)ObjectRef;
-      auto Result = new LITERAL(Source.Line, Source.Filename);
-      Result->Value = Char->Value;
-      Result->SetWidth(32);
-      delete this;
-      return Result;
-    }
-    case NETLIST::BASE::TYPE::Number:{
-      auto Num = (NETLIST::NUM*)ObjectRef;
-      auto Result = new LITERAL(Source.Line, Source.Filename);
-      Result->Value = Num->Value;
-      delete this;
-      return Result;
-    }
-    case NETLIST::BASE::TYPE::Alias:{
-      auto Alias  = (NETLIST::ALIAS*)ObjectRef;
-      auto Result = Alias->Expression;
-      if(!Result){
-        Error("Alias has no expression");
-        delete this;
-        return 0;
-      }
-      Result = (EXPRESSION*)Result->Copy();
-      NETLIST::NamespaceStack.push_front(Alias->Namespace);
-        Result = Result->Evaluate();
-      NETLIST::NamespaceStack.pop_front();
-      if(!Result){
-        Error("Error evaluating alias");
-        delete this;
-        return 0;
-      }
-      delete this;
-      return Result;
-    }
-    default:
-      break;
-  }
-  return this;
-}
-//------------------------------------------------------------------------------
-
-int OBJECT::GetWidth(){
-  assert(ObjectRef, return 0);
-  return ObjectRef->Width();
-}
-//------------------------------------------------------------------------------
-
-NUMBER& OBJECT::GetFullScale(){
-  assert(ObjectRef);
-  return ObjectRef->FullScale();
-}
-//------------------------------------------------------------------------------
-
-bool OBJECT::GetSigned(){
-  assert(ObjectRef, return false);
-  return ObjectRef->Signed();
-}
-//------------------------------------------------------------------------------
-
-bool OBJECT::HasCircularReference(NETLIST::BASE* Object){
-  if(!ObjectRef) return false;
-  return ObjectRef->HasCircularReference(Object);
-}
-//------------------------------------------------------------------------------
-
-void OBJECT::PopulateUsed(){
-  if(ObjectRef) ObjectRef->PopulateUsed(true);
-}
-//------------------------------------------------------------------------------
-
-EXPRESSION* OBJECT::RemoveTempNet(int Width, bool Signed){
-  // At this point, everything has been broken down to raw bits, so the
-  // full-scale is not important.
-
-  if(ObjectRef && ObjectRef->Type == NETLIST::BASE::TYPE::Net){
-    auto Net = (NETLIST::NET*)ObjectRef;
-    if(Net->Value && Net->IsTemporary()){
-      if(Width  == Net->Width () &&
-         Signed == Net->Signed() ){
-        delete this;
-        return ((EXPRESSION*)Net->Value->Copy())->RemoveTempNet(Width, Signed);
-      }
-      if(Net->Value->Type == TYPE::Object){
-        auto Object = (OBJECT*)Net->Value;
-        if(GetWidth () == Object->GetWidth () &&
-           GetSigned() == Object->GetSigned() ){
-          delete this;
-          return ((EXPRESSION*)Object->Copy())->RemoveTempNet(Width, Signed);
+    switch(objectRef->type){
+        case Netlist::Base::Type::Byte:{
+            auto byte = (Netlist::Byte*)objectRef;
+            auto result = new Literal(source.line, source.filename);
+            result->value = byte->value;
+            result->setWidth(8);
+            delete this;
+            return result;
         }
-      }
+        case Netlist::Base::Type::Character:{
+            auto character = (Netlist::Character*)objectRef;
+            auto result = new Literal(source.line, source.filename);
+            result->value = character->value;
+            result->setWidth(32);
+            delete this;
+            return result;
+        }
+        case Netlist::Base::Type::Number:{
+            auto num = (Netlist::Num*)objectRef;
+            auto result = new Literal(source.line, source.filename);
+            result->value = num->value;
+            delete this;
+            return result;
+        }
+        case Netlist::Base::Type::Alias:{
+            auto alias  = (Netlist::Alias*)objectRef;
+            auto result = alias->expression;
+            if(!result){
+                printError("alias has no expression");
+                delete this;
+                return 0;
+            }
+            result = (Expression*)result->copy();
+            Netlist::nameSpaceStack.push_front(alias->nameSpace);
+                result = result->evaluate();
+            Netlist::nameSpaceStack.pop_front();
+            if(!result){
+                printError("Error evaluating alias");
+                delete this;
+                return 0;
+            }
+            delete this;
+            return result;
+        }
+        default:
+            break;
     }
-  }
-  return this;
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void OBJECT::Display(){
-  DisplayStart();
-
-  if(ObjectRef){
-    // TODO: Display the width here, because it should be a property
-    //       of the target object, not the expression itself
-    ObjectRef->DisplayLongName();
-  }else{
-    error("Null object reference");
-  }
-
-  DisplayEnd();
+int Object::getWidth()
+{
+    assert(objectRef, return 0);
+    return objectRef->width();
 }
 //------------------------------------------------------------------------------
 
-void OBJECT::ValidateMembers(){
-  assert(Type == TYPE::Object);
+Number& Object::getFullScale()
+{
+    assert(objectRef);
+    return objectRef->fullScale();
+}
+//------------------------------------------------------------------------------
 
-  assert(!Next);
-  assert(!Prev);
+bool Object::getSigned()
+{
+    assert(objectRef, return false);
+    return objectRef->isSigned();
+}
+//------------------------------------------------------------------------------
 
-  assert(!Left );
-  assert(!Right);
+bool Object::hasCircularReference(Netlist::Base* object)
+{
+    if(!objectRef) return false;
+    return objectRef->hasCircularReference(object);
+}
+//------------------------------------------------------------------------------
 
-  assert(ObjectRef);
+void Object::populateUsed()
+{
+    if(objectRef) objectRef->populateUsed(true);
+}
+//------------------------------------------------------------------------------
+
+Expression* Object::removeTempNet(int width, bool isSigned)
+{
+    // At this point, everything has been broken down to raw bits, so the
+    // full-scale is not important.
+
+    if(objectRef && objectRef->type == Netlist::Base::Type::Net){
+        auto net = (Netlist::Net*)objectRef;
+        if(net->value && net->isTemporary()){
+            if(width  == net->width () &&
+                  isSigned == net->isSigned() ){
+                delete this;
+                return ((Expression*)net->value->copy())->removeTempNet(width, isSigned);
+            }
+            if(net->value->type == Type::Object){
+                auto object = (Object*)net->value;
+                if(getWidth () == object->getWidth () &&
+                      getSigned() == object->getSigned() ){
+                    delete this;
+                    return ((Expression*)object->copy())->removeTempNet(width, isSigned);
+                }
+            }
+        }
+    }
+    return this;
+}
+//------------------------------------------------------------------------------
+
+void Object::display()
+{
+    displayStart();
+
+    if(objectRef){
+        // TODO: display the width here, because it should be a property
+        //       of the target object, not the expression itself
+        objectRef->displayLongName();
+    }else{
+        error("Null object reference");
+    }
+
+    displayEnd();
+}
+//------------------------------------------------------------------------------
+
+void Object::validateMembers()
+{
+    assert(type == Type::Object);
+
+    assert(!next);
+    assert(!prev);
+
+    assert(!left );
+    assert(!right);
+
+    assert(objectRef);
 }
 //------------------------------------------------------------------------------
 

@@ -21,104 +21,113 @@
 #include "String.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-STRING::STRING(int Line, const string& Filename): STRING(Line, Filename.c_str()){}
+String::String(int line, const string& filename): String(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-STRING::STRING(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::String){
+String::String(int line, const char* filename): Expression(line, filename, Type::String){}
+//------------------------------------------------------------------------------
+
+String::~String(){}
+//------------------------------------------------------------------------------
+
+Base* String::copy()
+{
+    String* copy = new String(source.line, source.filename.c_str());
+
+    copy->value = value;
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-STRING::~STRING(){
+bool String::getVerilog(string& body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-BASE* STRING::Copy(){
-  STRING* Copy = new STRING(Source.Line, Source.Filename.c_str());
-
-  Copy->Value = Value;
-
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-  return Copy;
+Expression* String::evaluate()
+{
+    error("Not yet implemented");
+    return this;
+//   Expression* result = 0;
+//
+//   result = (Expression*)copy();
+//
+//   if(!result) return 0;
+//   return result->simplify(false);
 }
 //------------------------------------------------------------------------------
 
-bool STRING::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+int String::getWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* STRING::Evaluate(){
-  error("Not yet implemented");
-  return this;
-//   EXPRESSION* Result = 0;
-// 
-//   Result = (EXPRESSION*)Copy();
-// 
-//   if(!Result) return 0;
-//   return Result->Simplify(false);
+Number& String::getFullScale()
+{
+    error("Not yet implemented");
+    static Number zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-int STRING::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+bool String::getSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& STRING::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+bool String::hasCircularReference(Netlist::Base* object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool STRING::GetSigned(){
-  error("Not yet implemented");
-  return false;
+void String::populateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-bool STRING::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+Expression* String::removeTempNet(int width, bool isSigned)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void STRING::PopulateUsed(){
-  error("Not yet implemented");
+void String::display()
+{
+    displayStart();
+
+    logger.print("\"%s\"", value.c_str());
+
+    displayEnd();
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* STRING::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
-}
-//------------------------------------------------------------------------------
+void String::validateMembers()
+{
+    assert(type == Type::String);
 
-void STRING::Display(){
-  DisplayStart();
+    assert(!next);
+    assert(!prev);
 
-  Debug.Print("\"%s\"", Value.c_str());
-
-  DisplayEnd();
-}
-//------------------------------------------------------------------------------
-
-void STRING::ValidateMembers(){
-  assert(Type == TYPE::String);
-
-  assert(!Next);
-  assert(!Prev);
-
-  assert(!Left );
-  assert(!Right);
+    assert(!left );
+    assert(!right);
 }
 //------------------------------------------------------------------------------
 

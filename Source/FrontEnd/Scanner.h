@@ -37,54 +37,47 @@ Tokens:
 #define Scanner_h
 //------------------------------------------------------------------------------
 
-#include <map>
 #include <string>
-#include <time.h>
-//------------------------------------------------------------------------------
-
 #include "Token.h"
-#include "Number.h"
-#include "Utilities.h"
-#include "TokenTree.h"
-#include "Dictionary.h"
-#include "FileWrapper.h"
+#include "General.h"
 //------------------------------------------------------------------------------
 
-class SCANNER{
-  private:
-    bool error;
-    void Error(const char* Message);
+class Scanner{
+    private:
+        bool error = false;
+        void printError(const char* message);
 
-    int      Line;
-    unsigned Index;
-    byte*    Buffer;
+        int         line     = 1;
+        unsigned    index    = 0;
+        byte*       buffer   = 0;
+        std::string filename;
 
-    bool LineComment  ();
-    bool TodoComment  ();
-    bool BlockComment ();
-    bool NestedComment();
-    void WhiteSpace   (); // Ignores spaces, new-lines and comments
+        bool lineComment  ();
+        bool todoComment  ();
+        bool blockComment ();
+        bool nestedComment();
+        void whiteSpace   (); // Ignores spaces, new-lines and comments
 
-    bool Digit   (); // Returns true on decimal digit
-    bool NonDigit();
+        bool digit   (); // Returns true on decimal digit
+        bool nonDigit();
 
-    bool     GetDigit   (unsigned* Digit, unsigned Base);
-    unsigned GetExponent(bool    * Sign , TOKEN* Token);
-    bool     GetNumber  (TOKEN   * Token, unsigned Base);
+        bool     getDigit   (unsigned* digit, unsigned base);
+        unsigned getExponent(bool    * sign , Token* token);
+        bool     getNumber  (Token   * token, unsigned base);
 
-    bool Identifier(TOKEN* Token);
-    bool Operator  (TOKEN* Token);
-    bool Literal   (TOKEN* Token);
-    bool String    (TOKEN* Token);
+        bool getIdentifier(Token* token);
+        bool getOperator  (Token* token);
+        bool getLiteral   (Token* token);
+        bool getString    (Token* token);
 
-  public: // Public interface
-    SCANNER();
-   ~SCANNER();
+    public: // Public interface
+        Scanner();
+       ~Scanner();
 
-    std::string Filename; // Read-only
-    bool Open(const char* Filename);
+        bool open(const char* filename);
 
-    bool GetToken(TOKEN* Token);
+        const char* getFilename();
+        bool getToken(Token* token);
 };
 //------------------------------------------------------------------------------
 

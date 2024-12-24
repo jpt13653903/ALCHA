@@ -31,46 +31,47 @@ balanced sub-tree of the next character, etc.                                 */
 #define TokenTree_h
 //------------------------------------------------------------------------------
 
+#include "General.h"
 #include "Token.h"
 //------------------------------------------------------------------------------
 
-class TOKEN_TREE{
-  private:
-    struct NODE{
-      byte        Char; // The character at the current depth
-      TOKEN::TYPE Type; // Unknown => this is not a valid entry
+class TokenTree{
+    private:
+        struct Node{
+            byte        character; // The character at the current depth
+            Token::Type type;      // Unknown => this is not a valid entry
 
-      NODE* Left;
-      NODE* Right;
+            Node* left;
+            Node* right;
 
-      NODE* Next; // Sub-tree of the next character
+            Node* next; // Sub-tree of the next character
 
-      NODE(byte Char);
-     ~NODE();
-    };
+            Node(byte chararter);
+           ~Node();
+        };
 
-    NODE* Root;
+        Node* root;
 
-    NODE* Insert(NODE* Root, const byte* Pattern, TOKEN::TYPE Type);
+        Node* insert(Node* root, const byte* pattern, Token::Type type);
 
-    // Balancing functions
-    NODE* Balance   (NODE* Root);
-    NODE* Compress  (NODE* Root, int Count);
-    void  SubBalance(NODE* Node);
+        // Balancing functions
+        Node* balance   (Node* root);
+        Node* compress  (Node* root, int count);
+        void  subBalance(Node* node);
 
-  public:
-    TOKEN_TREE();
-   ~TOKEN_TREE();
+    public:
+        TokenTree();
+       ~TokenTree();
 
-    // Insert all the items, then balance it once.  Do not add more items after.
-    void Insert (const char* Pattern, TOKEN::TYPE Type);
-    void Balance();
+        // Insert all the items, then balance it once.  Do not add more items after.
+        void insert (const char* pattern, Token::Type type);
+        void balance();
 
-    // Finds the longest match and returns the token type and character count
-    TOKEN::TYPE Match(const byte* Pattern, int* Count);
+        // Finds the longest match and returns the token type and character count
+        Token::Type match(const byte* pattern, int* count);
 
-    // Finds an exact match only
-    TOKEN::TYPE Find(const byte* Pattern);
+        // Finds an exact match only
+        Token::Type find(const byte* pattern);
 };
 //------------------------------------------------------------------------------
 

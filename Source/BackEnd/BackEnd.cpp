@@ -19,449 +19,463 @@
 //==============================================================================
 
 #include "BackEnd.h"
-#include "Ast/Expression/Object.h"
+#include "AST/Expression/Object.h"
 #include "Netlist/Synthesisable/Pin.h"
 #include "Netlist/Synthesisable/Net.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
-using namespace NETLIST;
+using std::string;
+using std::to_string;
+using namespace Netlist;
 //------------------------------------------------------------------------------
 
-BACK_END::BACK_END(){
+BackEnd::BackEnd(){}
+//------------------------------------------------------------------------------
+
+BackEnd::~BackEnd(){}
+//------------------------------------------------------------------------------
+
+void BackEnd::printError(AST::Expression* expression, const char* message)
+{
+    ::printError(expression->source.line, expression->source.filename, message);
 }
 //------------------------------------------------------------------------------
 
-BACK_END::~BACK_END(){
+void BackEnd::printWarning(AST::Expression* expression, const char* message)
+{
+    ::printWarning(expression->source.line, expression->source.filename.c_str(), message);
 }
 //------------------------------------------------------------------------------
 
-void BACK_END::Error(AST::EXPRESSION* Expression, const char* Message){
-  ::Error(Expression->Source.Line, Expression->Source.Filename, Message);
-}
-//------------------------------------------------------------------------------
-
-void BACK_END::Warning(AST::EXPRESSION* Expression, const char* Message){
-  ::Warning(Expression->Source.Line, Expression->Source.Filename.c_str(), Message);
-}
-//------------------------------------------------------------------------------
-
-void BACK_END::RemoveTempNet(NETLIST::NET* Target){
-  if(Target->Value){
-    Target->Value = Target->Value->RemoveTempNet(Target->Width(), Target->Signed());
-  }
-}
-//------------------------------------------------------------------------------
-
-void BACK_END::RemoveTempNets(NAMESPACE* Namespace){
-  if(!Namespace) return;
-
-  Debug.Print("Delete temporary nets...\n");
-
-  foreach(SymbolIterator, Namespace->Symbols){
-    switch(SymbolIterator->second->Type){
-      case BASE::TYPE::Pin:
-        RemoveTempNet(((PIN*)SymbolIterator->second)->Driver );
-        RemoveTempNet(((PIN*)SymbolIterator->second)->Enabled);
-        break;
-
-      case BASE::TYPE::Net:
-        RemoveTempNet((NET*)SymbolIterator->second);
-        break;
-
-      case BASE::TYPE::Module:
-      case BASE::TYPE::Group:{
-        RemoveTempNets((NAMESPACE*)(SymbolIterator->second));
-        break;
-      }
-
-      default:
-        break;
+void BackEnd::removeTempNet(Netlist::Net* target)
+{
+    if(target->value){
+        target->value = target->value->removeTempNet(target->width(), target->isSigned());
     }
-  }
-  return;
 }
 //------------------------------------------------------------------------------
 
-void BACK_END::PopulateUsed(NAMESPACE* Namespace){
-  Debug.Print("Populate used...\n");
+void BackEnd::removeTempNets(NameSpace* nameSpace)
+{
+    if(!nameSpace) return;
 
-  foreach(SymbolIterator, Namespace->Symbols){
-    switch(SymbolIterator->second->Type){
-      case BASE::TYPE::Pin: // If it's used, it must end up at a pin
-        SymbolIterator->second->PopulateUsed(false);
-        break;
+    logger.print("Delete temporary nets...\n");
 
-      case BASE::TYPE::Module:
-      case BASE::TYPE::Group:
-        PopulateUsed((NAMESPACE*)(SymbolIterator->second));
-        break;
+    for(auto symbolIterator: nameSpace->symbols){
+        switch(symbolIterator.second->type){
+            case Base::Type::Pin:
+                removeTempNet(((Pin*)symbolIterator.second)->driver );
+                removeTempNet(((Pin*)symbolIterator.second)->enabled);
+                break;
 
-      default:
-        break;
-    }
-  }
-}
-//------------------------------------------------------------------------------
+            case Base::Type::Net:
+                removeTempNet((Net*)symbolIterator.second);
+                break;
 
-bool BACK_END::DeleteUnused(NAMESPACE* Namespace){
-  Debug.Print("Delete unused...\n");
-
-  auto SymbolIterator = Namespace->Symbols.begin();
-
-  while(SymbolIterator != Namespace->Symbols.end()){
-    switch(SymbolIterator->second->Type){
-      case BASE::TYPE::Byte:
-      case BASE::TYPE::Character:
-      case BASE::TYPE::Number:
-      case BASE::TYPE::Alias:{
-        auto Object = (SYNTHESISABLE*)(SymbolIterator->second);
-        SymbolIterator++;
-        Namespace->Symbols.erase(Object->Name);
-        delete Object;
-        break;
-      }
-
-      case BASE::TYPE::Pin:
-      case BASE::TYPE::Net:{
-        auto Object = (SYNTHESISABLE*)(SymbolIterator->second);
-        SymbolIterator++;
-        if(!Object->Used){
-          if(!Object->IsTemporary()){
-            Object->Warning();
-            printf("Deleting unused object %s\n", Object->HDL_Name().c_str());
-          }
-          Namespace->Symbols.erase(Object->Name);
-          delete Object;
-        }
-        break;
-      }
-
-      case BASE::TYPE::Module:
-      case BASE::TYPE::Group:{
-        auto Object = (NAMESPACE*)(SymbolIterator->second);
-        DeleteUnused(Object);
-        SymbolIterator++;
-        if(Object->Symbols.empty()){
-          Object->Warning();
-          printf("Deleting unused object %s\n", Object->HDL_Name().c_str());
-          Namespace->Symbols.erase(Object->Name);
-          delete Object;
-        }
-        break;
-      }
-
-      default:
-        error("Type %d not handled", (int)SymbolIterator->second->Type);
-        SymbolIterator++;
-        break;
-    }
-  }
-  return true;
-}
-//------------------------------------------------------------------------------
-
-bool BACK_END::AssignPinDirections(NAMESPACE* Namespace){
-  Debug.Print("Assign pin directions...\n");
-
-  foreach(SymbolIterator, Namespace->Symbols){
-    switch(SymbolIterator->second->Type){
-      case BASE::TYPE::Pin:{
-        auto Pin = (PIN*)(SymbolIterator->second);
-        if(Pin->Direction == AST::DEFINITION::DIRECTION::Inferred){
-          if(Pin->Enabled->Value){ // Possible bidirectional
-            if(Pin->Enabled->Value->Type == AST::BASE::TYPE::Literal){
-              if(((AST::LITERAL*)Pin->Enabled->Value)->Value == 0){
-                Pin->Direction = AST::DEFINITION::DIRECTION::Input;
-              }else{
-                Pin->Direction = AST::DEFINITION::DIRECTION::Output;
-              }
-            }else{
-              Pin->Direction = AST::DEFINITION::DIRECTION::Bidirectional;
+            case Base::Type::Module:
+            case Base::Type::Group:{
+                removeTempNets((NameSpace*)(symbolIterator.second));
+                break;
             }
-          }else{ // Enabled is undefined
-            if(Pin->Driver->Value){
-              Pin->Direction = AST::DEFINITION::DIRECTION::Output;
-            }else{
-              Pin->Direction = AST::DEFINITION::DIRECTION::Input;
+
+            default:
+                break;
+        }
+    }
+    return;
+}
+//------------------------------------------------------------------------------
+
+void BackEnd::populateUsed(NameSpace* nameSpace)
+{
+    logger.print("Populate used...\n");
+
+    for(auto symbolIterator: nameSpace->symbols){
+        switch(symbolIterator.second->type){
+            case Base::Type::Pin: // If it's used, it must end up at a pin
+                symbolIterator.second->populateUsed(false);
+                break;
+
+            case Base::Type::Module:
+            case Base::Type::Group:
+                populateUsed((NameSpace*)(symbolIterator.second));
+                break;
+
+            default:
+                break;
+        }
+    }
+}
+//------------------------------------------------------------------------------
+
+bool BackEnd::deleteUnused(NameSpace* nameSpace)
+{
+    logger.print("Delete unused...\n");
+
+    auto symbolIterator = nameSpace->symbols.begin();
+
+    while(symbolIterator != nameSpace->symbols.end()){
+        switch(symbolIterator->second->type){
+            case Base::Type::Byte:
+            case Base::Type::Character:
+            case Base::Type::Number:
+            case Base::Type::Alias:{
+                auto object = (Synthesisable*)(symbolIterator->second);
+                symbolIterator++;
+                nameSpace->symbols.erase(object->name);
+                delete object;
+                break;
             }
-          }
+
+            case Base::Type::Pin:
+            case Base::Type::Net:{
+                auto object = (Synthesisable*)(symbolIterator->second);
+                symbolIterator++;
+                if(!object->used){
+                    if(!object->isTemporary()){
+                        object->printWarning();
+                        printf("Deleting unused object %s\n", object->hdlName().c_str());
+                    }
+                    nameSpace->symbols.erase(object->name);
+                    delete object;
+                }
+                break;
+            }
+
+            case Base::Type::Module:
+            case Base::Type::Group:{
+                auto object = (NameSpace*)(symbolIterator->second);
+                deleteUnused(object);
+                symbolIterator++;
+                if(object->symbols.empty()){
+                    object->printWarning();
+                    printf("Deleting unused object %s\n", object->hdlName().c_str());
+                    nameSpace->symbols.erase(object->name);
+                    delete object;
+                }
+                break;
+            }
+
+            default:
+                error("Type %d not handled", (int)symbolIterator->second->type);
+                symbolIterator++;
+                break;
         }
-        break;
-      }
-      case BASE::TYPE::Module:
-      case BASE::TYPE::Group:
-        AssignPinDirections((NAMESPACE*)(SymbolIterator->second));
-        break;
-
-      default:
-        break;
     }
-  }
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
-bool BACK_END::RoutePorts(NAMESPACE* Namespace){
-  Debug.Print("Route ports...\n");
+bool BackEnd::assignPinDirections(NameSpace* nameSpace)
+{
+    logger.print("Assign pin directions...\n");
 
-  // At this point, the expressions use pointers, not names.  Any inter-module
-  // usage needs to be broken into temporary signals throughout the hierarchy
-  // and assigned to either module ports or internal signals.  Pins need to be
-  // routed to be moved to the top-level entity, and the original replaced
-  // with HDL module ports.
+    for(auto symbolIterator: nameSpace->symbols){
+        switch(symbolIterator.second->type){
+            case Base::Type::Pin:{
+                auto pin = (Pin*)(symbolIterator.second);
+                if(pin->direction == AST::Definition::Direction::Inferred){
+                    if(pin->enabled->value){ // Possible bidirectional
+                        if(pin->enabled->value->type == AST::Base::Type::Literal){
+                            if(((AST::Literal*)pin->enabled->value)->value == 0){
+                                pin->direction = AST::Definition::Direction::Input;
+                            }else{
+                                pin->direction = AST::Definition::Direction::Output;
+                            }
+                        }else{
+                            pin->direction = AST::Definition::Direction::Bidirectional;
+                        }
+                    }else{ // Enabled is undefined
+                        if(pin->driver->value){
+                            pin->direction = AST::Definition::Direction::Output;
+                        }else{
+                            pin->direction = AST::Definition::Direction::Input;
+                        }
+                    }
+                }
+                break;
+            }
+            case Base::Type::Module:
+            case Base::Type::Group:
+                assignPinDirections((NameSpace*)(symbolIterator.second));
+                break;
 
-  // Do the children first
-  foreach(SymbolIterator, Namespace->Symbols){
-    if(SymbolIterator->second->IsNamespace()){
-      RoutePorts((NAMESPACE*)(SymbolIterator->second));
-    }
-  }
-
-  // If this is the global module, don't go further
-  if(!Namespace->Namespace) return true;
-
-  // Route inter-module connections to the parent
-  error("Not yet implemented");
-  return true;
-}
-//------------------------------------------------------------------------------
-
-bool BACK_END::WriteFile(string& Filename, const char* Ext, string& Body){
-  FILE_WRAPPER Files;
-  string Fullname = Path + "/" + Filename + "." + Ext;
-  return Files.WriteAll(Fullname.c_str(), (const byte*)Body.c_str());
-}
-//------------------------------------------------------------------------------
-
-bool BACK_END::BuildAssignments(string& Body, NAMESPACE* Namespace){
-  foreach(SymbolIterator, Namespace->Symbols){
-    auto Object = SymbolIterator->second;
-    switch(Object->Type){
-      case BASE::TYPE::Pin:{
-        auto Pin = (PIN*)Object;
-        if(Pin->Driver->Value){
-          string Driver;
-          if(!Pin->Driver->Value->GetVerilog(Driver)) return false;
-          if(Pin->Enabled->Value){
-            string Enabled;
-            if(!Pin->Enabled->Value->GetVerilog(Enabled)) return false;
-            Body += "assign "+ Pin->EscapedName();
-            Align(Body, 25);
-            Body += "= |("+ Enabled + ") ? ("+ Driver + ")"
-                    " : " + to_string(Pin->Width()) + "'bZ;";
-            Align(Body, 70);
-            Body += "// " + Pin->Driver ->Value->Source.Filename
-                          + " +" + to_string(Pin->Driver ->Value->Source.Line)
-                          + " (Driver); "
-                          + Pin->Enabled->Value->Source.Filename
-                          + " +" + to_string(Pin->Enabled->Value->Source.Line)
-                          + " (Enabled)\n";
-          }else{
-            Body += "assign "+ Pin->EscapedName();
-            Align(Body, 25);
-            Body += "= "+ Driver + ";";
-            Align(Body, 70);
-            Body += "// " + Pin->Driver->Value->Source.Filename
-                          + " +" + to_string(Pin->Driver->Value->Source.Line)
-                          + "\n";
-          }
+            default:
+                break;
         }
-        break;
-      }
-      case BASE::TYPE::Net:{
-        auto Net = (NET*)Object;
-        if(Net->Value){
-          string Value;
-          if(!Net->Value->GetVerilog(Value)) return false;
-          Body += "assign "+ Net->EscapedName();
-          Align(Body, 25);
-          Body += "= "+ Value +";";
-          Align(Body, 70);
-          Body += "// " + Net->Value->Source.Filename
-                        + " +" + to_string(Net->Value->Source.Line) + "\n";
+    }
+    return true;
+}
+//------------------------------------------------------------------------------
+
+bool BackEnd::routePorts(NameSpace* nameSpace)
+{
+    logger.print("Route ports...\n");
+
+    // At this point, the expressions use pointers, not names.  Any inter-module
+    // usage needs to be broken into temporary signals throughout the hierarchy
+    // and assigned to either module ports or internal signals.  Pins need to be
+    // routed to be moved to the top-level entity, and the original replaced
+    // with HDL module ports.
+
+    // Do the children first
+    for(auto symbolIterator: nameSpace->symbols){
+        if(symbolIterator.second->isNameSpace()){
+            routePorts((NameSpace*)(symbolIterator.second));
         }
-        break;
-      }
-      case BASE::TYPE::Group:{
-        if(!BuildAssignments(Body, (NAMESPACE*)Object)) return false;
-        break;
-      }
-      default:
-        break;
     }
-  }
-  return true;
+
+    // If this is the global module, don't go further
+    if(!nameSpace->nameSpace) return true;
+
+    // Route inter-module connections to the parent
+    error("Not yet implemented");
+    return true;
 }
 //------------------------------------------------------------------------------
 
-void BACK_END::BuildSizeDef(string& Body, int Width, bool Signed){
-  int Top;
-  if(Signed) Top = Width;
-  else       Top = Width-1;
-
-  if(Top > 0){
-    Body += "[";
-    if(Top < 100) Body += ' ';
-    if(Top <  10) Body += ' ';
-    Body += to_string(Top) +":0]";
-  }else{
-    Body += "       ";
-  }
+bool BackEnd::writeFile(string& filename, const char* ext, string& body)
+{
+    FileWrapper files;
+    string fullname = path + "/" + filename + "." + ext;
+    return files.writeAll(fullname.c_str(), (const byte*)body.c_str());
 }
 //------------------------------------------------------------------------------
 
-void BACK_END::BuildPorts(string& Body, NAMESPACE* Namespace, bool& isFirst){
-  foreach(SymbolIterator, Namespace->Symbols){
-    auto Object = SymbolIterator->second;
-    switch(Object->Type){
-      case BASE::TYPE::Pin:{
-        auto Pin = (PIN*)Object;
-        if(!isFirst) Body += ",\n";
-        isFirst = false;
-
-        switch(Pin->Direction){
-          case AST::DEFINITION::DIRECTION::Input : Body += "  input  logic "; break;
-          case AST::DEFINITION::DIRECTION::Output: Body += "  output logic "; break;
-          default                                : Body += "  inout  logic "; break;
+bool BackEnd::buildAssignments(string& body, NameSpace* nameSpace)
+{
+    for(auto symbolIterator: nameSpace->symbols){
+        auto object = symbolIterator.second;
+        switch(object->type){
+            case Base::Type::Pin:{
+                auto pin = (Pin*)object;
+                if(pin->driver->value){
+                    string driver;
+                    if(!pin->driver->value->getVerilog(driver)) return false;
+                    if(pin->enabled->value){
+                        string enabled;
+                        if(!pin->enabled->value->getVerilog(enabled)) return false;
+                        body += "assign "+ pin->escapedName();
+                        align(body, 25);
+                        body += "= |("+ enabled + ") ? ("+ driver + ")"
+                                " : " + to_string(pin->width()) + "'bZ;";
+                        align(body, 70);
+                        body += "// " + pin->driver ->value->source.filename
+                             + " +" + to_string(pin->driver ->value->source.line)
+                             + " (driver); "
+                             + pin->enabled->value->source.filename
+                             + " +" + to_string(pin->enabled->value->source.line)
+                             + " (enabled)\n";
+                    }else{
+                        body += "assign "+ pin->escapedName();
+                        align(body, 25);
+                        body += "= "+ driver + ";";
+                        align(body, 70);
+                        body += "// " + pin->driver->value->source.filename
+                             + " +" + to_string(pin->driver->value->source.line)
+                             + "\n";
+                    }
+                }
+                break;
+            }
+            case Base::Type::Net:{
+                auto net = (Net*)object;
+                if(net->value){
+                    string value;
+                    if(!net->value->getVerilog(value)) return false;
+                    body += "assign "+ net->escapedName();
+                    align(body, 25);
+                    body += "= "+ value +";";
+                    align(body, 70);
+                    body += "// " + net->value->source.filename
+                         + " +" + to_string(net->value->source.line) + "\n";
+                }
+                break;
+            }
+            case Base::Type::Group:{
+                if(!buildAssignments(body, (NameSpace*)object)) return false;
+                break;
+            }
+            default:
+                break;
         }
-        if(Pin->Signed()) Body += "signed ";
-        else              Body += "       ";
-        BuildSizeDef(Body, Pin->Width(), Pin->Signed());
-        Body += Pin->EscapedName();
-        break;
-      }
-      case BASE::TYPE::Group:{
-        BuildPorts(Body, (NAMESPACE*)Object, isFirst);
-        break;
-      }
-      default:
-        break;
     }
-  }
+    return true;
 }
 //------------------------------------------------------------------------------
 
-void BACK_END::BuildNets(string& Body, NAMESPACE* Namespace){
-  foreach(SymbolIterator, Namespace->Symbols){
-    switch(SymbolIterator->second->Type){
-      case BASE::TYPE::Net:{
-        auto Net = (NET*)SymbolIterator->second;
-        Body += "logic ";
-        if(Net->Signed()) Body += "signed ";
-        else              Body += "       ";
-        BuildSizeDef(Body, Net->Width(), Net->Signed());
-        Body += Net->EscapedName() + ";\n";
-        break;
-      }
-      case BASE::TYPE::Group:{
-        BuildNets(Body, (NAMESPACE*)SymbolIterator->second);
-        break;
-      }
-      default:
-        break;
+void BackEnd::buildSizeDef(string& body, int width, bool isSigned)
+{
+    int top;
+    if(isSigned) top = width;
+    else       top = width-1;
+
+    if(top > 0){
+        body += "[";
+        if(top < 100) body += ' ';
+        if(top <  10) body += ' ';
+        body += to_string(top) +":0]";
+    }else{
+        body += "       ";
     }
-  }
 }
 //------------------------------------------------------------------------------
 
-bool BACK_END::BuildHDL(MODULE* Module, string Path){
-  bool isGlobal = (Module == &Global);
+void BackEnd::buildPorts(string& body, NameSpace* nameSpace, bool& isFirst)
+{
+    for(auto symbolIterator: nameSpace->symbols){
+        auto object = symbolIterator.second;
+        switch(object->type){
+            case Base::Type::Pin:{
+                auto pin = (Pin*)object;
+                if(!isFirst) body += ",\n";
+                isFirst = false;
 
-  // Recursively generate the modules (each namespace is a module)
-  foreach(SymbolIterator, Module->Symbols){
-    auto Symbol = SymbolIterator->second;
-    if(Symbol->Type == BASE::TYPE::Module){
-      auto Child = (MODULE*)Symbol;
-      if(isGlobal) BuildHDL(Child, "source");
-      else         BuildHDL(Child, Path + "/" + Module->HDL_Name());
+                switch(pin->direction){
+                    case AST::Definition::Direction::Input : body += "  input  logic "; break;
+                    case AST::Definition::Direction::Output: body += "  output logic "; break;
+                    default                                : body += "  inout  logic "; break;
+                }
+                if(pin->isSigned()) body += "isSigned ";
+                else              body += "       ";
+                buildSizeDef(body, pin->width(), pin->isSigned());
+                body += pin->escapedName();
+                break;
+            }
+            case Base::Type::Group:{
+                buildPorts(body, (NameSpace*)object, isFirst);
+                break;
+            }
+            default:
+                break;
+        }
     }
-  }
-  // Generate this module's name
-  string Name;
-  if(isGlobal) Name = Filename;
-  else         Name = Module->EscapedName();
-
-  // Header
-  string Body;
-  Body = "// Auto-generated by ALCHA "
-         "Version "+ to_string(MAJOR_VERSION) +"."+ to_string(MINOR_VERSION) +" ("
-         "Built on " __DATE__ " at " __TIME__ ")\n"
-         "//--------------------------------------"
-         "----------------------------------------\n\n";
-
-  // Module Definition
-  Body += "module "+ Name +"(\n";
-
-  // Ports
-  bool isFirst = true;
-  BuildPorts(Body, Module, isFirst);
-  if(!isFirst) Body += "\n";
-  Body += ");\n";
-  Body += "//--------------------------------------"
-          "----------------------------------------\n\n";
-
-  // Nets
-  BuildNets(Body, Module);
-  Body += "//--------------------------------------"
-          "----------------------------------------\n\n";
-
-  // Assignments
-  if(!BuildAssignments(Body, Module)) return false;
-
-  Body += "//--------------------------------------"
-          "----------------------------------------\n\n";
-  Body += "endmodule\n";
-  Body += "//--------------------------------------"
-          "----------------------------------------\n\n";
-
-  if(isGlobal) Name = Filename;
-  else         Name = Path + "/" + Module->Name;
-  WriteFile(Name, "v", Body);
-
-  return true;
 }
 //------------------------------------------------------------------------------
 
-bool BACK_END::BuildAltera(const char* Path, const char* Filename){
-  this->Path     = Path;
-  this->Filename = Filename;
+void BackEnd::buildNets(string& body, NameSpace* nameSpace)
+{
+    for(auto symbolIterator: nameSpace->symbols){
+        switch(symbolIterator.second->type){
+            case Base::Type::Net:{
+                auto net = (Net*)symbolIterator.second;
+                body += "logic ";
+                if(net->isSigned()) body += "Signed ";
+                else              body += "       ";
+                buildSizeDef(body, net->width(), net->isSigned());
+                body += net->escapedName() + ";\n";
+                break;
+            }
+            case Base::Type::Group:{
+                buildNets(body, (NameSpace*)symbolIterator.second);
+                break;
+            }
+            default:
+                break;
+        }
+    }
+}
+//------------------------------------------------------------------------------
 
-  Debug.Print(
-    ANSI_FG_GREEN "\nStarting BackEnd -----------------------"
-                  "----------------------------------------\n\n"
-    ANSI_RESET
-  );
+bool BackEnd::buildHDL(Module* module, string path)
+{
+    bool isGlobal = (module == &global);
 
-  RemoveTempNets(&Global);
-  Debug.Print("\n");
+    // Recursively generate the modules (each namespace is a module)
+    for(auto symbolIterator: module->symbols){
+        auto symbol = symbolIterator.second;
+        if(symbol->type == Base::Type::Module){
+            auto child = (Module*)symbol;
+            if(isGlobal) buildHDL(child, "source");
+            else         buildHDL(child, path + "/" + module->hdlName());
+        }
+    }
+    // Generate this module's name
+    string name;
+    if(isGlobal) name = filename;
+    else         name = module->escapedName();
 
-  PopulateUsed(&Global);
-  Debug.Print("\n");
+    // Header
+    string body;
+    body = "// Auto-generated by ALCHA "
+           "Version "+ to_string(MAJOR_VERSION) +"."+ to_string(MINOR_VERSION) +" ("
+           "Built on " __DATE__ " at " __TIME__ ")\n"
+           "//--------------------------------------"
+           "----------------------------------------\n\n";
 
-  if(!DeleteUnused(&Global)) return false;
-  Debug.Print("\n");
+    // Module Definition
+    body += "module "+ name +"(\n";
 
-  if(!AssignPinDirections(&Global)) return false;
-  Debug.Print("\n");
+    // Ports
+    bool isFirst = true;
+    buildPorts(body, module, isFirst);
+    if(!isFirst) body += "\n";
+    body += ");\n";
+    body += "//--------------------------------------"
+            "----------------------------------------\n\n";
 
-  if(!RoutePorts(&Global)) return false;
-  Debug.Print("\n");
+    // Nets
+    buildNets(body, module);
+    body += "//--------------------------------------"
+            "----------------------------------------\n\n";
 
-  Global.Display();
+    // Assignments
+    if(!buildAssignments(body, module)) return false;
 
-  Debug.Print(
-    ANSI_FG_GREEN "\nBuilding Project -----------------------"
-                  "----------------------------------------\n\n"
-    ANSI_RESET
-  );
+    body += "//--------------------------------------"
+            "----------------------------------------\n\n";
+    body += "endmodule\n";
+    body += "//--------------------------------------"
+            "----------------------------------------\n\n";
 
-  ALTERA::PROJECT Project;
-  Project.Build(Path, Filename);
+    if(isGlobal) name = filename;
+    else         name = path + "/" + module->name;
+    writeFile(name, "v", body);
 
-  if(!BuildHDL(&Global, "")) return false;
+    return true;
+}
+//------------------------------------------------------------------------------
 
-  return true;
+bool BackEnd::buildAltera(const char* path, const char* filename)
+{
+    this->path     = path;
+    this->filename = filename;
+
+    logger.print(
+        ANSI_FG_GREEN "\nStarting BackEnd -----------------------"
+                      "----------------------------------------\n\n"
+        ANSI_RESET
+    );
+
+    removeTempNets(&global);
+    logger.print("\n");
+
+    populateUsed(&global);
+    logger.print("\n");
+
+    if(!deleteUnused(&global)) return false;
+    logger.print("\n");
+
+    if(!assignPinDirections(&global)) return false;
+    logger.print("\n");
+
+    if(!routePorts(&global)) return false;
+    logger.print("\n");
+
+    global.display();
+
+    logger.print(
+        ANSI_FG_GREEN "\nBuilding Project -----------------------"
+                      "----------------------------------------\n\n"
+        ANSI_RESET
+    );
+
+    Altera::Project project;
+    project.build(path, filename);
+
+    if(!buildHDL(&global, "")) return false;
+
+    return true;
 }
 //------------------------------------------------------------------------------
 

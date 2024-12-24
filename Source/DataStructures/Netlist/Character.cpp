@@ -23,62 +23,68 @@
 #include "AST/Expression/Literal.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
-using namespace NETLIST;
+using std::string;
+using namespace Netlist;
 //------------------------------------------------------------------------------
 
-CHARACTER::CHARACTER(int Line, const string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Character){
-  Value = 0;
+Character::Character(int line, const string& filename, const char* name) : Base(line, filename, name, Type::Character)
+{
+    value = 0;
 }
 //------------------------------------------------------------------------------
 
-CHARACTER::~CHARACTER(){
+Character::~Character(){}
+//------------------------------------------------------------------------------
+
+AST::Expression* Character::getExpression(int line, const string& filename)
+{
+    AST::Literal* result = new AST::Literal(line, filename);
+    result->value = value;
+    result->setWidth(32);
+    return result;
 }
 //------------------------------------------------------------------------------
 
-AST::EXPRESSION* CHARACTER::GetExpression(int Line, const string& Filename){
-  AST::LITERAL* Result = new AST::LITERAL(Line, Filename);
-  Result->Value = Value;
-  Result->SetWidth(32);
-  return Result;
+bool Character::assign(AST::Expression* expression)
+{
+    error("Not yet implemented");
+    return rawAssign(expression);
 }
 //------------------------------------------------------------------------------
 
-bool CHARACTER::Assign(AST::EXPRESSION* Expression){
-  error("Not yet implemented");
-  return RawAssign(Expression);
+bool Character::rawAssign(AST::Expression* expression)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool CHARACTER::RawAssign(AST::EXPRESSION* Expression){
-  error("Not yet implemented");
-  return false;
+bool Character::hasCircularReference(Base* object)
+{
+    if(this == object) return true;
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool CHARACTER::HasCircularReference(BASE* Object){
-  if(this == Object) return true;
-  error("Not yet implemented");
-  return false;
+void Character::display(int indent)
+{
+    logger.indent(indent+1);
+    logger.print("Character: %s\n", name.c_str());
+
+    logger.indent(indent+2);
+    logger.print("value = '%s' ", utfConverter.toUtf8(value));
+    logger.print("(%d)\n", value);
 }
 //------------------------------------------------------------------------------
 
-void CHARACTER::Display(int Indent){
-  Debug.Indent(Indent+1);
-  Debug.Print("Character: %s\n", Name.c_str());
+void Character::validate()
+{
+    assert(type == Type::Character);
 
-  Debug.Indent(Indent+2);
-  Debug.Print("Value = '%s' ", UTF_Converter.UTF8(Value));
-  Debug.Print("(%d)\n", Value);
-}
-//------------------------------------------------------------------------------
+    Base::validate();
 
-void CHARACTER::Validate(){
-  assert(Type == TYPE::Character);
-
-  BASE::Validate();
-
-  error("Not implemented yet");
+    error("Not implemented yet");
 }
 //------------------------------------------------------------------------------
 

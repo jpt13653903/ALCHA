@@ -24,141 +24,150 @@
 #include "Netlist/Base.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-ACCESSATTRIBUTE::ACCESSATTRIBUTE(int Line, const string& Filename): ACCESSATTRIBUTE(Line, Filename.c_str()){}
+AccessAttribute::AccessAttribute(int line, const string& filename): AccessAttribute(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-ACCESSATTRIBUTE::ACCESSATTRIBUTE(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::AccessAttribute){
+AccessAttribute::AccessAttribute(int line, const char* filename): Expression(line, filename, Type::AccessAttribute){}
+//------------------------------------------------------------------------------
+
+AccessAttribute::~AccessAttribute(){}
+//------------------------------------------------------------------------------
+
+Base* AccessAttribute::copy()
+{
+    AccessAttribute* copy = new AccessAttribute(source.line, source.filename.c_str());
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-ACCESSATTRIBUTE::~ACCESSATTRIBUTE(){
+bool AccessAttribute::getVerilog(string& body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-BASE* ACCESSATTRIBUTE::Copy(){
-  ACCESSATTRIBUTE* Copy = new ACCESSATTRIBUTE(Source.Line, Source.Filename.c_str());
+Expression* AccessAttribute::evaluate()
+{
+    assert(left , delete this; return 0);
+    assert(right, delete this; return 0);
 
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
+    left = left->evaluate();
 
-  return Copy;
-}
-//------------------------------------------------------------------------------
+    assert(left, delete this; return 0);
 
-bool ACCESSATTRIBUTE::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
+    if(left->type != Type::Object){
+        printError("Invalid attribute access expression");
+        delete this;
+        return 0;
+    }
+    switch(right->type){
+        case Type::Identifier:
+            break;
 
-EXPRESSION* ACCESSATTRIBUTE::Evaluate(){
-  assert(Left , delete this; return 0);
-  assert(Right, delete this; return 0);
+        case Type::Slice:
+            error("Not yet implemented");
+            delete this;
+            return 0;
 
-  Left = Left->Evaluate();
+        default:
+            printError("Invalid attribute access expression");
+            delete this;
+            return 0;
+    }
 
-  assert(Left, delete this; return 0);
+    auto object = ((Object    *)left )->objectRef;
+    auto name   = ((Identifier*)right)->name;
 
-  if(Left->Type != TYPE::Object){
-    Error("Invalid attribute access expression");
+    auto result = object->getBuiltInAttributeValue(name);
+    if(result){
+        delete this;
+        return result;
+    }
+
+    result = object->getAttribValue(name);
+    if(result){
+        delete this;
+        return (decltype(result))result->copy();
+    }
+
+    printError();
+    printf("Attribute %s not found in object %s\n",
+           name.c_str(), object->name.c_str());
     delete this;
     return 0;
-  }
-  switch(Right->Type){
-    case TYPE::Identifier:
-      break;
-
-    case TYPE::Slice:
-      error("Not yet implemented");
-      delete this;
-      return 0;
-      
-    default:
-      Error("Invalid attribute access expression");
-      delete this;
-      return 0;
-  }
-  
-  auto Object = ((OBJECT    *)Left )->ObjectRef;
-  auto Name   = ((IDENTIFIER*)Right)->Name;
-
-  auto Result = Object->GetBuiltInAttributeValue(Name);
-  if(Result){
-    delete this;
-    return Result;
-  }
-
-  Result = Object->GetAttribValue(Name);
-  if(Result){
-    delete this;
-    return (decltype(Result))Result->Copy();
-  }
-
-  Error();
-  printf("Attribute %s not found in object %s\n",
-         Name.c_str(), Object->Name.c_str());
-  delete this;
-  return 0;
 }
 //------------------------------------------------------------------------------
 
-int ACCESSATTRIBUTE::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int AccessAttribute::getWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& ACCESSATTRIBUTE::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+Number& AccessAttribute::getFullScale()
+{
+    error("Not yet implemented");
+    static Number zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool ACCESSATTRIBUTE::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool AccessAttribute::getSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool ACCESSATTRIBUTE::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool AccessAttribute::hasCircularReference(Netlist::Base* object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void ACCESSATTRIBUTE::PopulateUsed(){
-  error("Not yet implemented");
+void AccessAttribute::populateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* ACCESSATTRIBUTE::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+Expression* AccessAttribute::removeTempNet(int width, bool isSigned)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void ACCESSATTRIBUTE::Display(){
-  DisplayStart();
+void AccessAttribute::display()
+{
+    displayStart();
 
-  Debug.Print("'" );
+    logger.print("'" );
 
-  DisplayEnd();
+    displayEnd();
 }
 //------------------------------------------------------------------------------
 
-void ACCESSATTRIBUTE::ValidateMembers(){
-  assert(Type == TYPE::AccessAttribute);
-  
-  assert(!Next);
-  assert(!Prev);
+void AccessAttribute::validateMembers()
+{
+    assert(type == Type::AccessAttribute);
 
-  if(Left) Left->Validate();
-  assert(Right, return); Right->Validate();
+    assert(!next);
+    assert(!prev);
+
+    if(left) left->validate();
+    assert(right, return); right->validate();
 }
 //------------------------------------------------------------------------------
 

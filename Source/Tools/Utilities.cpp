@@ -21,101 +21,106 @@
 #include "Utilities.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 //------------------------------------------------------------------------------
 
 bool error = false;
 //------------------------------------------------------------------------------
 
-static void Header(int Line, const std::string& Filename){
-  if(Line) printf(ANSI_FG_BRIGHT_BLACK "Line "
-                  ANSI_FG_CYAN         "%05d "
-                  ANSI_FG_BRIGHT_BLACK "of "
-                  ANSI_FG_YELLOW       "%s\n"
-                  ANSI_RESET,
-                  Line,
-                  Filename.c_str());
-  else     printf(ANSI_FG_BRIGHT_BLACK "Global\n");
+static void header(int line, const std::string& filename)
+{
+    if(line) printf(ANSI_FG_BRIGHT_BLACK "Line "
+                    ANSI_FG_CYAN         "%05d "
+                    ANSI_FG_BRIGHT_BLACK "of "
+                    ANSI_FG_YELLOW       "%s\n"
+                    ANSI_RESET,
+                    line,
+                    filename.c_str());
+    else     printf(ANSI_FG_BRIGHT_BLACK "Global\n");
 }
 //------------------------------------------------------------------------------
 
-void Error(int Line, const std::string& Filename, const char* Message){
-  if(error) return;
-  error = true;
+void printError(int line, const std::string& filename, const char* message)
+{
+    if(error) return;
+    error = true;
 
-  Header(Line, Filename);
-  printf(ANSI_FG_BRIGHT_RED "  Error: " ANSI_RESET);
+    header(line, filename);
+    printf(ANSI_FG_BRIGHT_RED "  Error: " ANSI_RESET);
 
-  if(Message) printf("%s\n", Message);
+    if(message) printf("%s\n", message);
 }
 //------------------------------------------------------------------------------
 
-void Warning(int Line, const std::string& Filename, const char* Message){
-  Header(Line, Filename);
-  printf(ANSI_FG_MAGENTA "  Warning: " ANSI_RESET);
+void printWarning(int line, const std::string& filename, const char* message)
+{
+    header(line, filename);
+    printf(ANSI_FG_MAGENTA "  Warning: " ANSI_RESET);
 
-  if(Message) printf("%s\n", Message);
+    if(message) printf("%s\n", message);
 }
 //------------------------------------------------------------------------------
 
-void SimplifyFilename(string& Filename){
-  int  LastSlash;
-  int  n, c;
-  bool Changes;
+void simplifyFilename(string& filename)
+{
+    int  lastSlash;
+    int  n, c;
+    bool changes;
 
-  do{
-    Changes   = false;
-    LastSlash = -1;
+    do{
+        changes   = false;
+        lastSlash = -1;
 
-    for(n = 0; Filename[n]; n++){
-      if(Filename[n] == '/'
-        #ifdef WINVER
-          || Filename[n] == '\\'
-        #endif
-      ){
-        if(
-          Filename[n+1] == '.' &&
-          Filename[n+2] == '.' && (
-            Filename[n+3] == '/'
-            #ifdef WINVER
-              || Filename[n+3] == '\\'
-            #endif
-          ) && (
-            n > LastSlash+3 ||
-            Filename[LastSlash+1] != '.' ||
-            Filename[LastSlash+2] != '.'
-          )
-        ){
-          n += 4;
-          for(c = LastSlash+1; Filename[n]; c++, n++) Filename[c] = Filename[n];
-          Filename[c] = 0;
-          Changes = true;
-          break;
-        }else{
-          LastSlash = n;
+        for(n = 0; filename[n]; n++){
+            if(filename[n] == '/'
+                #ifdef WINVER
+                    || filename[n] == '\\'
+                #endif
+            ){
+                if(
+                    filename[n+1] == '.' &&
+                    filename[n+2] == '.' && (
+                        filename[n+3] == '/'
+                        #ifdef WINVER
+                            || filename[n+3] == '\\'
+                        #endif
+                    ) && (
+                        n > lastSlash+3 ||
+                        filename[lastSlash+1] != '.' ||
+                        filename[lastSlash+2] != '.'
+                    )
+                ){
+                    n += 4;
+                    for(c = lastSlash+1; filename[n]; c++, n++) filename[c] = filename[n];
+                    filename[c] = 0;
+                    changes = true;
+                    break;
+                }else{
+                    lastSlash = n;
+                }
+            }
         }
-      }
-    }
-  }while(Changes);
+    }while(changes);
 
-  Filename.resize(n);
+    filename.resize(n);
 }
 //------------------------------------------------------------------------------
 
-void Align(string& Body, int Column){
-  Body += ' ';
+void align(string& body, int column)
+{
+    body += ' ';
 
-  int n = Body.length()-1;
-  while(n >= 0){
-    if(Body[n] == '\n') break;
-    n--;
-  }
+    int n = body.length()-1;
+    while(n >= 0){
+        if(body[n] == '\n') break;
+        n--;
+    }
 
-  n = Column - (Body.length() - n);
-  while(n > 0){
-    Body += ' ';
-    n--;
-  }
+    n = column - (body.length() - n);
+    while(n > 0){
+        body += ' ';
+        n--;
+    }
 }
 //------------------------------------------------------------------------------
 

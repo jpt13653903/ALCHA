@@ -24,21 +24,21 @@
 
 #include "Engine.h"
 #include "AST/Definition.h"
-#include "Netlist/Namespace/Module.h"
+#include "Netlist/NameSpace/Module.h"
 //------------------------------------------------------------------------------
 
 class SDC{
-  private:
-    std::string Constraints; // The resulting SDC TCL script returned by "Build"
+    private:
+        std::string constraints; // The resulting SDC TCL script returned by "Build"
 
-    void BuildClocks();
-    void BuildPorts (NETLIST::NAMESPACE* Namespace);
+        void buildClocks();
+        void buildPorts (Netlist::NameSpace* nameSpace);
 
-  public:
-    SDC();
-   ~SDC();
+    public:
+        SDC();
+       ~SDC();
 
-    std::string& Build();
+        std::string& build();
 };
 //------------------------------------------------------------------------------
 

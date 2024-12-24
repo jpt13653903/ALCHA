@@ -23,135 +23,143 @@
 #include "Literal.h"
 
 #include "Netlist/Alias.h"
-#include "Netlist/Namespace/Module.h"
+#include "Netlist/NameSpace/Module.h"
 #include "Netlist/Synthesisable.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-IDENTIFIER::IDENTIFIER(int Line, const string& Filename): IDENTIFIER(Line, Filename.c_str()){}
+Identifier::Identifier(int line, const string& filename): Identifier(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-IDENTIFIER::IDENTIFIER(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Identifier){
+Identifier::Identifier(int line, const char* filename): Expression(line, filename, Type::Identifier){}
+//------------------------------------------------------------------------------
+
+Identifier::~Identifier(){}
+//------------------------------------------------------------------------------
+
+Base* Identifier::copy()
+{
+    Identifier* copy = new Identifier(source.line, source.filename.c_str());
+
+    copy->name = name;
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-IDENTIFIER::~IDENTIFIER(){
+bool Identifier::getVerilog(string& body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-BASE* IDENTIFIER::Copy(){
-  IDENTIFIER* Copy = new IDENTIFIER(Source.Line, Source.Filename.c_str());
-
-  Copy->Name = Name;
-
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-  return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool IDENTIFIER::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
-EXPRESSION* IDENTIFIER::Evaluate(){
-  foreach(NamespaceIterator, NETLIST::NamespaceStack){
-    auto Namespace = *NamespaceIterator;
-    while(Namespace){
-      auto Object = Namespace->GetMember(Name);
-      if(Object){
-        auto ObjResult = new OBJECT(Source.Line, Source.Filename);
-        ObjResult->ObjectRef = Object;
-        // It might be an alias, or evaluate further to a literal
-        auto Result = ObjResult->Evaluate();
-        if(Result){ // The source reference gets messed up during alias expansion
-          Result->Source.Line     = Source.Line;
-          Result->Source.Filename = Source.Filename;
+Expression* Identifier::evaluate()
+{
+    for(auto nameSpace: Netlist::nameSpaceStack){
+        while(nameSpace){
+            auto object = nameSpace->getMember(name);
+            if(object){
+                auto objResult = new Object(source.line, source.filename);
+                objResult->objectRef = object;
+                // It might be an alias, or evaluate further to a literal
+                auto result = objResult->evaluate();
+                if(result){ // The source reference gets messed up during alias expansion
+                    result->source.line     = source.line;
+                    result->source.filename = source.filename;
+                }
+                delete this;
+                return result;
+            }
+            nameSpace = nameSpace->nameSpace;
         }
-        delete this;
-        return Result;
-      }
-      Namespace = Namespace->Namespace;
     }
-  }
 
-  // Identifier not found, so try the constants table
-  NUMBER Constant;
-  if(Constants.GetConstant(Name, &Constant)){
-    auto Result = new LITERAL(Source.Line, Source.Filename);
-    Result->Value = Constant;
+    // Identifier not found, so try the constants table
+    Number constant;
+    if(constants.getConstant(name, &constant)){
+        auto result = new Literal(source.line, source.filename);
+        result->value = constant;
+        delete this;
+        return result;
+    }
+
+    printError();
+    printf("Undefined identifier: \"%s\"\n", name.c_str());
+
     delete this;
-    return Result;
-  }
-
-  Error();
-  printf("Undefined identifier: \"%s\"\n", Name.c_str());
-
-  delete this;
-  return 0;
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-int IDENTIFIER::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int Identifier::getWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& IDENTIFIER::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+Number& Identifier::getFullScale()
+{
+    error("Not yet implemented");
+    static Number zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool IDENTIFIER::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool Identifier::getSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool IDENTIFIER::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool Identifier::hasCircularReference(Netlist::Base* object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void IDENTIFIER::PopulateUsed(){
-  error("Not yet implemented");
+void Identifier::populateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* IDENTIFIER::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+Expression* Identifier::removeTempNet(int width, bool isSigned)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void IDENTIFIER::Display(){
-  DisplayStart();
+void Identifier::display()
+{
+    displayStart();
 
-  if(Name.empty()) error ("(Identifier node has no name)");
-  else             Debug.Print("%s", Name.c_str());
+    if(name.empty()) error ("(Identifier node has no name)");
+    else             logger.print("%s", name.c_str());
 
-  DisplayEnd();
+    displayEnd();
 }
 //------------------------------------------------------------------------------
 
-void IDENTIFIER::ValidateMembers(){
-  assert(Type == TYPE::Identifier);
+void Identifier::validateMembers()
+{
+    assert(type == Type::Identifier);
 
-  assert(!Next);
-  assert(!Prev);
-  
-  assert(!Left );
-  assert(!Right);
+    assert(!next);
+    assert(!prev);
+
+    assert(!left );
+    assert(!right);
 }
 //------------------------------------------------------------------------------
 

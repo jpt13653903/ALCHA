@@ -26,23 +26,23 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct LOOP_LOOP: public BASE{
-    EXPRESSION* Count;
-    BASE      * Statements;
+    struct LoopLoop: public Base{
+        Expression* count;
+        Base      * statements;
 
-    LOOP_LOOP(int Line, std::string& Filename);
-    LOOP_LOOP(int Line, const char*  Filename);
-   ~LOOP_LOOP();
+        LoopLoop(int line, std::string& filename);
+        LoopLoop(int line, const char*  filename);
+       ~LoopLoop();
 
-    BASE* Copy() override;
+        Base* copy() override;
 
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
+        bool runAST() override;
+        bool getVerilog(std::string& body) override;
 
-    void Display() override;
+        void display() override;
 
-    void ValidateMembers() override;
-  };
+        void validateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

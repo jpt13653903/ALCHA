@@ -32,124 +32,124 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  class BASE;
-  class ASSIGNMENT;
-  class EXPRESSION;
+    class Base;
+    class Assignment;
+    class Expression;
 }
 //------------------------------------------------------------------------------
 
-namespace NETLIST{
-  class ATTRIBUTE;
-  class NAMESPACE;
-  class SYNTHESISABLE;
+namespace Netlist{
+    class Attribute;
+    class NameSpace;
+    class Synthesisable;
 
-  class BASE{ // Base class for the symbol table
-    private:
-      bool Temporary;
-    //--------------------------------------------------------------------------
+    class Base{ // Base class for the symbol table
+        private:
+            bool temporary;
+        //--------------------------------------------------------------------------
 
-    protected:
-      void DisplayAttributes(int Indent);
-    //--------------------------------------------------------------------------
+        protected:
+            void displayAttributes(int indent);
+        //--------------------------------------------------------------------------
 
-    public:
-      // Indentation follows the inheritance tree
-      enum class TYPE{
-        Attribute,
-        Number,
-        Byte,
-        Character,
+        public:
+            // Indentation follows the inheritance tree
+            enum class Type{
+                    Attribute,
+                    Number,
+                    Byte,
+                    Character,
 
-        Alias,
-        Array, // An array of objects
+                    Alias,
+                    Array, // An array of objects
 
-        
-        // Synthesisable
-          Pin,
-          Net,
-            PinComponent,
 
-        // Namespace
-          Module,
-          Group
-      } Type;
+                // Synthesisable
+                    Pin,
+                    Net,
+                    PinComponent,
 
-      virtual bool IsSynthesisable();
-      virtual bool IsNamespace    ();
+                // NameSpace
+                    Module,
+                    Group
+            } type;
 
-      // The line and filename that resulted in this object, used for error reporting
-      struct{
-        int         Line;
-        std::string Filename;
-      } Source;
+            virtual bool isSynthesisable();
+            virtual bool isNameSpace    ();
 
-      std::string Name;
-      NAMESPACE*  Namespace;
-      std::map<std::string, ATTRIBUTE*> Attributes;
+            // The line and filename that resulted in this object, used for error reporting
+            struct{
+                int         line;
+                std::string filename;
+            } source;
 
-      bool IsTemporary();
-    //--------------------------------------------------------------------------
+            std::string name;
+            NameSpace*  nameSpace;
+            std::map<std::string, Attribute*> attributes;
 
-    public:
-      // When Name is 0, a name is auto-generated
-               BASE(int Line, const std::string& Filename, const char* Name, TYPE Type);
-      virtual ~BASE();
+            bool isTemporary();
+        //--------------------------------------------------------------------------
 
-      void Error  (const char* Message = 0);
-      void Warning(const char* Message = 0);
+        public:
+            // When Name is 0, a name is auto-generated
+                     Base(int line, const std::string& filename, const char* name, Type type);
+            virtual ~Base();
 
-      // Called by the definition to assign the attribute list
-      bool ApplyAttributes(AST::ASSIGNMENT* AttributeList);
+            void printError  (const char* message = 0);
+            void printWarning(const char* message = 0);
 
-      // Used specifically for operate-and-assign expressions.
-      // If a value has been assigned, returns a copy of the expression.
-      // For pins, the "Driver" component is used.
-      // Returns null on error, or when no value has been assigned yet.
-      virtual AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) = 0;
+            // Called by the definition to assign the attribute list
+            bool applyAttributes(AST::Assignment* attributeList);
 
-      // Assigns the expression, taking ownership (i.e. will delete later)
-      virtual bool Assign   (AST::EXPRESSION* Expression) = 0;
-      virtual bool RawAssign(AST::EXPRESSION* Expression) = 0;
+            // Used specifically for operate-and-assign expressions.
+            // If a value has been assigned, returns a copy of the expression.
+            // For pins, the "Driver" component is used.
+            // Returns null on error, or when no value has been assigned yet.
+            virtual AST::Expression* getExpression(int line, const std::string& filename) = 0;
 
-      // Generates a name based on the parent group(s), if it is not directly
-      // part of the module.  This is the name used in the output HDL.
-      std::string& HDL_Name();
-      std::string& EscapedName(); // Inserts '\' in front if required
+            // Assigns the expression, taking ownership (i.e. will delete later)
+            virtual bool assign   (AST::Expression* expression) = 0;
+            virtual bool rawAssign(AST::Expression* expression) = 0;
 
-      virtual void Display        (int Indent = 0) = 0;
-              void DisplayLongName();
+            // Generates a name based on the parent group(s), if it is not directly
+            // part of the module.  This is the name used in the output HDL.
+            std::string& hdlName();
+            std::string& escapedName(); // Inserts '\' in front if required
 
-      // Access the attribute or member object
-      // Only searches this object and returns null when not found
-      // It returns the original, not a copy; used to modify the original
-      virtual BASE* GetAttribute(const std::string& Name);
-      virtual BASE* GetMember   (const std::string& Name);
+            virtual void display        (int indent = 0) = 0;
+                    void displayLongName();
 
-      // Access the attribute, but searches up to the root and
-      // returns null when not found
-      virtual AST::EXPRESSION* GetAttribValue(const std::string& Name);
+            // Access the attribute or member object
+            // Only searches this object and returns null when not found
+            // It returns the original, not a copy; used to modify the original
+            virtual Base* getAttribute(const std::string& name);
+            virtual Base* getMember   (const std::string& name);
 
-      // If the named built-in attribute exists, creates a new EXPRESSION node
-      // and populates in appropriately.  Returns null otherwise.
-      virtual AST::EXPRESSION* GetBuiltInAttributeValue(const std::string& Name);
+            // Access the attribute, but searches up to the root and
+            // returns null when not found
+            virtual AST::Expression* getAttribValue(const std::string& name);
 
-      // Returns the number of bits when synthesising the object.
-      // Returns 0 by default, indicating an invalid question.
-      virtual int     Width    ();
-      virtual NUMBER& FullScale();
-      virtual bool    Signed   ();
+            // If the named built-in attribute exists, creates a new Expression node
+            // and populates in appropriately.  Returns null otherwise.
+            virtual AST::Expression* getBuiltInAttributeValue(const std::string& name);
 
-      virtual bool HasCircularReference(BASE* Object) = 0;
+            // Returns the number of bits when synthesising the object.
+            // Returns 0 by default, indicating an invalid question.
+            virtual int     width    ();
+            virtual Number& fullScale();
+            virtual bool    isSigned ();
 
-      // Populates the "Used" flag so that the back-end can remove unused objects.
-      // SetUsed means that this node must be marked as "Used".  When calling
-      // from AST::EXPRESSION, this is true; when calling from BACK_END, this
-      // is false.
-      virtual void PopulateUsed(bool SetUsed);
+            virtual bool hasCircularReference(Base* object) = 0;
 
-      // Runs assertions to validate the members.
-      virtual void Validate();
-  };
+            // Populates the "Used" flag so that the back-end can remove unused objects.
+            // SetUsed means that this node must be marked as "Used".  When calling
+            // from AST::Expression, this is true; when calling from BackEnd, this
+            // is false.
+            virtual void populateUsed(bool setUsed);
+
+            // Runs assertions to validate the members.
+            virtual void validate();
+    };
 }
 //------------------------------------------------------------------------------
 

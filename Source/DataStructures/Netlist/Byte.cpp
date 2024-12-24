@@ -23,60 +23,66 @@
 #include "AST/Expression/Literal.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
-using namespace NETLIST;
+using std::string;
+using namespace Netlist;
 //------------------------------------------------------------------------------
 
-NETLIST::BYTE::BYTE(int Line, const string& Filename, const char* Name) : BASE(Line, Filename, Name, TYPE::Byte){
-  Value = 0;
+Netlist::Byte::Byte(int line, const string& filename, const char* name) : Base(line, filename, name, Type::Byte)
+{
+    value = 0;
 }
 //------------------------------------------------------------------------------
 
-NETLIST::BYTE::~BYTE(){
+Netlist::Byte::~Byte(){}
+//------------------------------------------------------------------------------
+
+AST::Expression* Netlist::Byte::getExpression(int line, const string& filename)
+{
+    AST::Literal* result = new AST::Literal(line, filename);
+    result->value = value;
+    result->setWidth(8);
+    return result;
 }
 //------------------------------------------------------------------------------
 
-AST::EXPRESSION* NETLIST::BYTE::GetExpression(int Line, const string& Filename){
-  AST::LITERAL* Result = new AST::LITERAL(Line, Filename);
-  Result->Value = Value;
-  Result->SetWidth(8);
-  return Result;
+bool Netlist::Byte::assign(AST::Expression* expression)
+{
+    error("Not yet implemented");
+    return rawAssign(expression);
 }
 //------------------------------------------------------------------------------
 
-bool NETLIST::BYTE::Assign(AST::EXPRESSION* Expression){
-  error("Not yet implemented");
-  return RawAssign(Expression);
+bool Netlist::Byte::rawAssign(AST::Expression* expression)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool NETLIST::BYTE::RawAssign(AST::EXPRESSION* Expression){
-  error("Not yet implemented");
-  return false;
+bool Netlist::Byte::hasCircularReference(Base* object)
+{
+    if(this == object) return true;
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool NETLIST::BYTE::HasCircularReference(BASE* Object){
-  if(this == Object) return true;
-  error("Not yet implemented");
-  return false;
+void Netlist::Byte::display(int indent)
+{
+    logger.indent(indent+1);
+    logger.print("Byte: %s\n", name.c_str());
+    logger.indent(indent+2);
+    logger.print("value = 0x%02X\n", value);
 }
 //------------------------------------------------------------------------------
 
-void NETLIST::BYTE::Display(int Indent){
-  Debug.Indent(Indent+1);
-  Debug.Print("Byte: %s\n", Name.c_str());
-  Debug.Indent(Indent+2);
-  Debug.Print("Value = 0x%02X\n", Value);
-}
-//------------------------------------------------------------------------------
+void Netlist::Byte::validate()
+{
+    assert(type == Type::Byte);
 
-void NETLIST::BYTE::Validate(){
-  assert(Type == TYPE::Byte);
+    Base::validate();
 
-  BASE::Validate();
-
-  error("Not implemented yet");
+    error("Not implemented yet");
 }
 //------------------------------------------------------------------------------
 

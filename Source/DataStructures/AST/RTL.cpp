@@ -21,73 +21,80 @@
 #include "RTL.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-RTL::RTL(int Line, std::string& Filename): RTL(Line, Filename.c_str()){}
+Rtl::Rtl(int line, std::string& filename): Rtl(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-RTL::RTL(int Line, const char* Filename): BASE(Line, Filename, TYPE::RTL){
-  Statements = 0;
+Rtl::Rtl(int line, const char* filename): Base(line, filename, Type::RTL)
+{
+    statements = 0;
 }
 //------------------------------------------------------------------------------
 
-RTL::~RTL(){
-  if(Statements) delete Statements;
+Rtl::~Rtl()
+{
+    if(statements) delete statements;
 
-  foreach(Parameter, Parameters){
-    if(*Parameter) delete *Parameter;
-  }
-}
-//------------------------------------------------------------------------------
-
-BASE* RTL::Copy(){
-  RTL* Copy = new RTL(Source.Line, Source.Filename.c_str());
-
-  Copy->Statements = (decltype(Statements))CopyList(Statements);
-
-  foreach(Parameter, Parameters){
-    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy());
-  }
-
-  return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool RTL::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
-bool RTL::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
-void RTL::Display(){
-  DisplayInfo();
-  Debug.Print("rtl(");
-    bool isFirst = true;
-    foreach(Parameter, Parameters){
-      if(isFirst) Debug.Print(", ");
-      isFirst = false;
-      if(*Parameter) (*Parameter)->Display();
+    for(auto parameter: parameters){
+        if(parameter) delete parameter;
     }
-  Debug.Print("){\n");
-    if(Statements) Statements->Display();
-  Debug.Print("}\n");
-
-  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
 
-void RTL::ValidateMembers(){
-  assert(Type == TYPE::RTL);
+Base* Rtl::copy()
+{
+    Rtl* copy = new Rtl(source.line, source.filename.c_str());
 
-  error("Not yet implemented");
+    copy->statements = (decltype(statements))copyList(statements);
+
+    for(auto parameter: parameters){
+        if(parameter) copy->parameters.push_back(parameter->copy());
+    }
+
+    return copy;
+}
+//------------------------------------------------------------------------------
+
+bool Rtl::runAST()
+{
+    error("Not yet implemented");
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Rtl::getVerilog(string& body)
+{
+    error("Not yet implemented");
+    return false;
+}
+//------------------------------------------------------------------------------
+
+void Rtl::display()
+{
+    displayInfo();
+    logger.print("rtl(");
+        bool isFirst = true;
+        for(auto parameter: parameters){
+            if(isFirst) logger.print(", ");
+            isFirst = false;
+            if(parameter) parameter->display();
+        }
+    logger.print("){\n");
+        if(statements) statements->display();
+    logger.print("}\n");
+
+    if(next) next->display();
+}
+//------------------------------------------------------------------------------
+
+void Rtl::validateMembers()
+{
+    assert(type == Type::RTL);
+
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

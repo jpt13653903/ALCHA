@@ -22,222 +22,230 @@
 #include "Literal.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-SUBTRACT::SUBTRACT(int Line, const string& Filename): SUBTRACT(Line, Filename.c_str()){}
+Subtract::Subtract(int line, const string& filename): Subtract(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-SUBTRACT::SUBTRACT(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Subtract){
+Subtract::Subtract(int line, const char* filename): Expression(line, filename, Type::Subtract){}
+//------------------------------------------------------------------------------
+
+Subtract::~Subtract(){}
+//------------------------------------------------------------------------------
+
+Base* Subtract::copy()
+{
+    Subtract* copy = new Subtract(source.line, source.filename.c_str());
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-SUBTRACT::~SUBTRACT(){
-}
-//------------------------------------------------------------------------------
+bool Subtract::getVerilog(string& body)
+{
+    assert(left , return false);
+    assert(right, return false);
 
-BASE* SUBTRACT::Copy(){
-  SUBTRACT* Copy = new SUBTRACT(Source.Line, Source.Filename.c_str());
-
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-  return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool SUBTRACT::GetVerilog(string& Body){
-  assert(Left , return false);
-  assert(Right, return false);
-
-  if(!Left->GetSigned() && Right->GetSigned()){
-    Body += "$signed({1'b0, (";
-    Left->GetVerilog(Body);
-    Body += ")})";
-  }else{
-    Body += "(";
-    Left->GetVerilog(Body);
-    Body += ")";
-  }
-  Body += " - ";
-  if(Left->GetSigned() && !Right->GetSigned()){
-    Body += "$signed({1'b0, (";
-    Right->GetVerilog(Body);
-    Body += ")})";
-  }else{
-    Body += "(";
-    Right->GetVerilog(Body);
-    Body += ")";
-  }
-
-  return true;
-}
-//------------------------------------------------------------------------------
-
-EXPRESSION* SUBTRACT::SubtractLiteral(EXPRESSION* Object, EXPRESSION* Literal){
-  ResultWidth     = Object->GetWidth();
-  ResultFullScale = Object->GetFullScale();
-
-  NUMBER Scale = 1;
-  Scale.BinScale(ResultWidth);
-  Scale.Div(ResultFullScale);
-  ((LITERAL*)Literal)->Value.Mul(Scale);
-
-  int LiteralWidth = Literal->GetWidth();
-
-  if(LiteralWidth > ResultWidth){
-    ResultFullScale.BinScale(LiteralWidth - ResultWidth);
-    ResultWidth = LiteralWidth;
-  }
-  // Make space for the overflow
-  ResultFullScale.BinScale(1);
-  ResultWidth++;
-
-  return MakeObject();
-}
-//------------------------------------------------------------------------------
-
-EXPRESSION* SUBTRACT::Evaluate(){
-  assert(Left , return this);
-  assert(Right, return this);
-
-  Left  = Left ->Evaluate();
-  Right = Right->Evaluate();
-
-  assert(Left , return this);
-  assert(Right, return this);
-
-  ResultSigned = (Left->GetSigned() || Right->GetSigned());
-
-  if(Left->Type == TYPE::Literal && Right->Type == TYPE::Literal){
-    auto Result = new LITERAL(Source.Line, Source.Filename);
-    auto left  = (LITERAL*)Left;
-    auto right = (LITERAL*)Right;
-    Result->Value =   left ->Value;
-    Result->Value.Sub(right->Value);
-    delete this;
-    return Result;
-  }
-
-  if(Left->Type == TYPE::Literal && Right->Type == TYPE::Object){
-    return SubtractLiteral(Right, Left);
-
-  }else if(Left->Type == TYPE::Object && Right->Type == TYPE::Literal){
-    return SubtractLiteral(Left, Right);
-
-  }else if(Left->Type == TYPE::Object && Right->Type == TYPE::Object){
-    int LeftWidth  = Left ->GetWidth();
-    int RightWidth = Right->GetWidth();
-
-    NUMBER LeftFullScale  = Left ->GetFullScale();
-    NUMBER RightFullScale = Right->GetFullScale();
-
-    // The numerator if choosing to scale the left
-    NUMBER Scale1 = LeftFullScale;
-    Scale1.BinScale(RightWidth);
-
-    // The numerator if choosing to scale the right
-    NUMBER Scale2 = RightFullScale;
-    Scale2.BinScale(LeftWidth);
-
-    if(Scale1 > Scale2){ // Scale the left
-      Scale1.Div(Scale2);
-      Left = Left->ScaleWith(Scale1, RightWidth, RightFullScale);
-      LeftWidth = Left->GetWidth();
-
-      ResultWidth     = RightWidth;
-      ResultFullScale = RightFullScale;
-
-      if(LeftWidth > ResultWidth){
-        ResultFullScale.BinScale(LeftWidth - ResultWidth);
-        ResultWidth = LeftWidth;
-      }
-
-    }else{ // Scale the right
-      Scale2.Div(Scale1);
-      Right = Right->ScaleWith(Scale2, LeftWidth, LeftFullScale);
-      RightWidth = Right->GetWidth();
-
-      ResultWidth     = LeftWidth;
-      ResultFullScale = LeftFullScale;
-
-      if(RightWidth > ResultWidth){
-        ResultFullScale.BinScale(RightWidth - ResultWidth);
-        ResultWidth = RightWidth;
-      }
+    if(!left->getSigned() && right->getSigned()){
+        body += "$signed({1'b0, (";
+        left->getVerilog(body);
+        body += ")})";
+    }else{
+        body += "(";
+        left->getVerilog(body);
+        body += ")";
+    }
+    body += " - ";
+    if(left->getSigned() && !right->getSigned()){
+        body += "$signed({1'b0, (";
+        right->getVerilog(body);
+        body += ")})";
+    }else{
+        body += "(";
+        right->getVerilog(body);
+        body += ")";
     }
 
+    return true;
+}
+//------------------------------------------------------------------------------
+
+Expression* Subtract::subtractLiteral(Expression* object, Expression* literal)
+{
+    resultWidth     = object->getWidth();
+    resultFullScale = object->getFullScale();
+
+    Number scale = 1;
+    scale.binScale(resultWidth);
+    scale.div(resultFullScale);
+    ((Literal*)literal)->value.mul(scale);
+
+    int literalWidth = literal->getWidth();
+
+    if(literalWidth > resultWidth){
+        resultFullScale.binScale(literalWidth - resultWidth);
+        resultWidth = literalWidth;
+    }
     // Make space for the overflow
-    ResultFullScale.BinScale(1);
-    ResultWidth++;
+    resultFullScale.binScale(1);
+    resultWidth++;
 
-    return MakeObject();
-  }
-
-  return this;
+    return makeObject();
 }
 //------------------------------------------------------------------------------
 
-int SUBTRACT::GetWidth(){
-  return ResultWidth;
+Expression* Subtract::evaluate()
+{
+    assert(left , return this);
+    assert(right, return this);
+
+    left  = left ->evaluate();
+    right = right->evaluate();
+
+    assert(left , return this);
+    assert(right, return this);
+
+    resultSigned = (left->getSigned() || right->getSigned());
+
+    if(left->type == Type::Literal && right->type == Type::Literal){
+        auto result = new Literal(source.line, source.filename);
+        result->value =   ((Literal*)left )->value;
+        result->value.sub(((Literal*)right)->value);
+        delete this;
+        return result;
+    }
+
+    if(left->type == Type::Literal && right->type == Type::Object){
+        return subtractLiteral(right, left);
+
+    }else if(left->type == Type::Object && right->type == Type::Literal){
+        return subtractLiteral(left, right);
+
+    }else if(left->type == Type::Object && right->type == Type::Object){
+        int leftWidth  = left ->getWidth();
+        int rightWidth = right->getWidth();
+
+        Number leftFullScale  = left ->getFullScale();
+        Number rightFullScale = right->getFullScale();
+
+        // The numerator if choosing to scale the left
+        Number scale1 = leftFullScale;
+        scale1.binScale(rightWidth);
+
+        // The numerator if choosing to scale the right
+        Number scale2 = rightFullScale;
+        scale2.binScale(leftWidth);
+
+        if(scale1 > scale2){ // scale the left
+            scale1.div(scale2);
+            left = left->scaleWith(scale1, rightWidth, rightFullScale);
+            leftWidth = left->getWidth();
+
+            resultWidth     = rightWidth;
+            resultFullScale = rightFullScale;
+
+            if(leftWidth > resultWidth){
+                resultFullScale.binScale(leftWidth - resultWidth);
+                resultWidth = leftWidth;
+            }
+
+        }else{ // scale the right
+            scale2.div(scale1);
+            right = right->scaleWith(scale2, leftWidth, leftFullScale);
+            rightWidth = right->getWidth();
+
+            resultWidth     = leftWidth;
+            resultFullScale = leftFullScale;
+
+            if(rightWidth > resultWidth){
+                resultFullScale.binScale(rightWidth - resultWidth);
+                resultWidth = rightWidth;
+            }
+        }
+
+        // Make space for the overflow
+        resultFullScale.binScale(1);
+        resultWidth++;
+
+        return makeObject();
+    }
+
+    return this;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& SUBTRACT::GetFullScale(){
-  return ResultFullScale;
+int Subtract::getWidth()
+{
+    return resultWidth;
 }
 //------------------------------------------------------------------------------
 
-bool SUBTRACT::GetSigned(){
-  return ResultSigned;
+Number& Subtract::getFullScale()
+{
+    return resultFullScale;
 }
 //------------------------------------------------------------------------------
 
-bool SUBTRACT::HasCircularReference(NETLIST::BASE* Object){
-  assert(Left , return false);
-  assert(Right, return false);
-  
-  if(Left ->HasCircularReference(Object)) return true;
-  if(Right->HasCircularReference(Object)) return true;
-
-  return false;
+bool Subtract::getSigned()
+{
+    return resultSigned;
 }
 //------------------------------------------------------------------------------
 
-void SUBTRACT::PopulateUsed(){
-  assert(Left , return);
-  assert(Right, return);
-  
-  Left ->PopulateUsed();
-  Right->PopulateUsed();
+bool Subtract::hasCircularReference(Netlist::Base* object)
+{
+    assert(left , return false);
+    assert(right, return false);
+
+    if(left ->hasCircularReference(object)) return true;
+    if(right->hasCircularReference(object)) return true;
+
+    return false;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* SUBTRACT::RemoveTempNet(int Width, bool Signed){
-  if(Left ) Left  = Left ->RemoveTempNet(0, false);
-  if(Right) Right = Right->RemoveTempNet(0, false);
-  return this;
+void Subtract::populateUsed()
+{
+    assert(left , return);
+    assert(right, return);
+
+    left ->populateUsed();
+    right->populateUsed();
 }
 //------------------------------------------------------------------------------
 
-void SUBTRACT::Display(){
-  DisplayStart();
-
-  Debug.Print(" - " );
-
-  DisplayEnd();
+Expression* Subtract::removeTempNet(int width, bool isSigned)
+{
+    if(left ) left  = left ->removeTempNet(0, false);
+    if(right) right = right->removeTempNet(0, false);
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void SUBTRACT::ValidateMembers(){
-  assert(Type == TYPE::Subtract);
-  
-  assert(!Next);
-  assert(!Prev);
+void Subtract::display()
+{
+    displayStart();
 
-  assert(Left , return); Left ->Validate();
-  assert(Right, return); Right->Validate();
+    logger.print(" - " );
+
+    displayEnd();
+}
+//------------------------------------------------------------------------------
+
+void Subtract::validateMembers()
+{
+    assert(type == Type::Subtract);
+
+    assert(!next);
+    assert(!prev);
+
+    assert(left , return); left ->validate();
+    assert(right, return); right->validate();
 }
 //------------------------------------------------------------------------------
 

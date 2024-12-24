@@ -21,73 +21,80 @@
 #include "FSM.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-FSM::FSM(int Line, std::string& Filename): FSM(Line, Filename.c_str()){}
+Fsm::Fsm(int line, std::string& filename): Fsm(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-FSM::FSM(int Line, const char* Filename): BASE(Line, Filename, TYPE::FSM){
-  Statements = 0;
+Fsm::Fsm(int line, const char* filename): Base(line, filename, Type::FSM)
+{
+    statements = 0;
 }
 //------------------------------------------------------------------------------
 
-FSM::~FSM(){
-  if(Statements) delete Statements;
+Fsm::~Fsm()
+{
+    if(statements) delete statements;
 
-  foreach(Parameter, Parameters){
-    if(*Parameter) delete *Parameter;
-  }
-}
-//------------------------------------------------------------------------------
-
-BASE* FSM::Copy(){
-  FSM* Copy = new FSM(Source.Line, Source.Filename.c_str());
-
-  Copy->Statements = CopyList(Statements);
-
-  foreach(Parameter, Parameters){
-    if(*Parameter) Copy->Parameters.push_back((*Parameter)->Copy());
-  }
-
-  return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool FSM::RunAST(){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
-bool FSM::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
-void FSM::Display(){
-  DisplayInfo();
-  Debug.Print("fsm(");
-    bool isFirst = true;
-    foreach(Parameter, Parameters){
-      if(isFirst) Debug.Print(", ");
-      isFirst = false;
-      if(*Parameter) (*Parameter)->Display();
+    for(auto parameter: parameters){
+        if(parameter) delete parameter;
     }
-  Debug.Print("){\n");
-    if(Statements) Statements->Display();
-  Debug.Print("}\n");
-
-  if(Next) Next->Display();
 }
 //------------------------------------------------------------------------------
 
-void FSM::ValidateMembers(){
-  assert(Type == TYPE::FSM);
+Base* Fsm::copy()
+{
+    Fsm* copy = new Fsm(source.line, source.filename.c_str());
 
-  error("Not yet implemented");
+    copy->statements = copyList(statements);
+
+    for(auto parameter: parameters){
+        if(parameter) copy->parameters.push_back(parameter->copy());
+    }
+
+    return copy;
+}
+//------------------------------------------------------------------------------
+
+bool Fsm::runAST()
+{
+    error("Not yet implemented");
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Fsm::getVerilog(string& body)
+{
+    error("Not yet implemented");
+    return false;
+}
+//------------------------------------------------------------------------------
+
+void Fsm::display()
+{
+    displayInfo();
+    logger.print("fsm(");
+        bool isFirst = true;
+        for(auto parameter: parameters){
+            if(isFirst) logger.print(", ");
+            isFirst = false;
+            if(parameter) parameter->display();
+        }
+    logger.print("){\n");
+        if(statements) statements->display();
+    logger.print("}\n");
+
+    if(next) next->display();
+}
+//------------------------------------------------------------------------------
+
+void Fsm::validateMembers()
+{
+    assert(type == Type::FSM);
+
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

@@ -21,104 +21,113 @@
 #include "Increment.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-INCREMENT::INCREMENT(int Line, const string& Filename): INCREMENT(Line, Filename.c_str()){}
+Increment::Increment(int line, const string& filename): Increment(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-INCREMENT::INCREMENT(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Increment){
+Increment::Increment(int line, const char* filename): Expression(line, filename, Type::Increment){}
+//------------------------------------------------------------------------------
+
+Increment::~Increment(){}
+//------------------------------------------------------------------------------
+
+Base* Increment::copy()
+{
+    Increment* copy = new Increment(source.line, source.filename.c_str());
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-INCREMENT::~INCREMENT(){
+bool Increment::getVerilog(string& body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-BASE* INCREMENT::Copy(){
-  INCREMENT* Copy = new INCREMENT(Source.Line, Source.Filename.c_str());
-
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-  return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool INCREMENT::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
-EXPRESSION* INCREMENT::Evaluate(){
-  error("Not yet implemented");
-  return this;
-//   EXPRESSION* Result = 0;
-// 
+Expression* Increment::evaluate()
+{
+    error("Not yet implemented");
+    return this;
+//   Expression* result = 0;
+//
 //   error("Not yet implemented");
-// 
-//   if(!Result) return 0;
-//   return Result->Simplify(false);
+//
+//   if(!result) return 0;
+//   return result->simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int INCREMENT::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int Increment::getWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& INCREMENT::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+Number& Increment::getFullScale()
+{
+    error("Not yet implemented");
+    static Number zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool INCREMENT::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool Increment::getSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool INCREMENT::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool Increment::hasCircularReference(Netlist::Base* object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void INCREMENT::PopulateUsed(){
-  error("Not yet implemented");
+void Increment::populateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* INCREMENT::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+Expression* Increment::removeTempNet(int width, bool isSigned)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void INCREMENT::Display(){
-  DisplayStart();
+void Increment::display()
+{
+    displayStart();
 
-  Debug.Print("++");
+    logger.print("++");
 
-  DisplayEnd();
+    displayEnd();
 }
 //------------------------------------------------------------------------------
 
-void INCREMENT::ValidateMembers(){
-  assert(Type == TYPE::Increment);
+void Increment::validateMembers()
+{
+    assert(type == Type::Increment);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!next);
+    assert(!prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!left );
+    // TODO: assert(!right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

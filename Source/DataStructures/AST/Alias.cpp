@@ -20,75 +20,82 @@
 
 #include "Alias.h"
 #include "Netlist/Alias.h"
-#include "Netlist/Namespace/Module.h"
+#include "Netlist/NameSpace/Module.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-ALIAS::ALIAS(int Line, std::string& Filename): ALIAS(Line, Filename.c_str()){}
+Alias::Alias(int line, string& filename): Alias(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-ALIAS::ALIAS(int Line, const char* Filename): BASE(Line, Filename, TYPE::Alias){
-  Expression = 0;
+Alias::Alias(int line, const char* filename): Base(line, filename, Type::Alias)
+{
+    expression = 0;
 }
 //------------------------------------------------------------------------------
 
-ALIAS::~ALIAS(){
-  if(Expression) delete Expression;
+Alias::~Alias()
+{
+    if(expression) delete expression;
 }
 //------------------------------------------------------------------------------
 
-BASE* ALIAS::Copy(){
-  ALIAS* Copy = new ALIAS(Source.Line, Source.Filename.c_str());
+Base* Alias::copy()
+{
+    Alias* copy = new Alias(source.line, source.filename.c_str());
 
-  Copy->Identifier = Identifier;
+    copy->identifier = identifier;
 
-  if(Expression) Copy->Expression = (decltype(Expression))Expression->Copy();
+    if(expression) copy->expression = (decltype(expression))expression->copy();
 
-  return Copy;
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-bool ALIAS::RunAST(){
-  auto Symbol = NETLIST::NamespaceStack.front()->Symbols.find(Identifier);
-  if(Symbol != NETLIST::NamespaceStack.front()->Symbols.end()){
-    Error();
-    printf("Symbol \"%s\" already defined in the current namespace\n",
-           Identifier.c_str());
+bool Alias::runAST()
+{
+    auto symbol = Netlist::nameSpaceStack.front()->symbols.find(identifier);
+    if(symbol != Netlist::nameSpaceStack.front()->symbols.end()){
+        printError();
+        printf("Symbol \"%s\" already defined in the current namespace\n",
+                      identifier.c_str());
+        return false;
+    }
+
+    auto object = new Netlist::Alias(source.line, source.filename, identifier.c_str(), expression);
+    expression = 0; // It's been moved to object, so remove it from this node.
+
+    Netlist::nameSpaceStack.front()->symbols[object->name] = object;
+
+    return true;
+}
+//------------------------------------------------------------------------------
+
+bool Alias::getVerilog(string& body)
+{
+    error("Not yet implemented");
     return false;
-  }
-
-  auto Object = new NETLIST::ALIAS(Source.Line, Source.Filename, Identifier.c_str(), Expression);
-  Expression = 0; // It's been moved to Object, so remove it from this node.
-
-  NETLIST::NamespaceStack.front()->Symbols[Object->Name] = Object;
-
-  return true;
 }
 //------------------------------------------------------------------------------
 
-bool ALIAS::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+void Alias::display()
+{
+    displayInfo();
+    logger.print("alias (%s):\n", identifier.c_str());
+
+    if(expression) expression->display();
+    else           logger.print("{Moved expression}\n");
+
+    if(next) next->display();
 }
 //------------------------------------------------------------------------------
 
-void ALIAS::Display(){
-  DisplayInfo();
-  Debug.Print("Alias (%s):\n", Identifier.c_str());
-
-  if(Expression) Expression->Display();
-  else           Debug.Print("{Moved Expression}\n");
-
-  if(Next) Next->Display();
-}
-//------------------------------------------------------------------------------
-
-void ALIAS::ValidateMembers(){
-  assert(Type == TYPE::Alias);
-  if(Expression) Expression->Validate();
+void Alias::validateMembers()
+{
+    assert(type == Type::Alias);
+    if(expression) expression->validate();
 }
 //------------------------------------------------------------------------------
 

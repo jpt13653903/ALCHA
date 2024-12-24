@@ -21,104 +21,113 @@
 #include "Raw.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-RAW::RAW(int Line, const string& Filename): RAW(Line, Filename.c_str()){}
+Raw::Raw(int line, const string& filename): Raw(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-RAW::RAW(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Raw){
+Raw::Raw(int line, const char* filename): Expression(line, filename, Type::Raw){}
+//------------------------------------------------------------------------------
+
+Raw::~Raw(){}
+//------------------------------------------------------------------------------
+
+Base* Raw::copy()
+{
+    Raw* copy = new Raw(source.line, source.filename.c_str());
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-RAW::~RAW(){
+bool Raw::getVerilog(string& body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-BASE* RAW::Copy(){
-  RAW* Copy = new RAW(Source.Line, Source.Filename.c_str());
-
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-  return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool RAW::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
-EXPRESSION* RAW::Evaluate(){
-  error("Not yet implemented");
-  return this;
-//   EXPRESSION* Result = 0;
-// 
+Expression* Raw::evaluate()
+{
+    error("Not yet implemented");
+    return this;
+//   Expression* result = 0;
+//
 //   error("Not yet implemented");
-// 
-//   if(!Result) return 0;
-//   return Result->Simplify(false);
+//
+//   if(!result) return 0;
+//   return result->simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int RAW::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int Raw::getWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& RAW::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+Number& Raw::getFullScale()
+{
+    error("Not yet implemented");
+    static Number zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool RAW::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool Raw::getSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool RAW::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool Raw::hasCircularReference(Netlist::Base* object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void RAW::PopulateUsed(){
-  error("Not yet implemented");
+void Raw::populateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* RAW::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+Expression* Raw::removeTempNet(int width, bool isSigned)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void RAW::Display(){
-  DisplayStart();
+void Raw::display()
+{
+    displayStart();
 
-  Debug.Print(" :");
+    logger.print(" :");
 
-  DisplayEnd();
+    displayEnd();
 }
 //------------------------------------------------------------------------------
 
-void RAW::ValidateMembers(){
-  assert(Type == TYPE::Raw);
+void Raw::validateMembers()
+{
+    assert(type == Type::Raw);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!next);
+    assert(!prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!left );
+    // TODO: assert(!right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

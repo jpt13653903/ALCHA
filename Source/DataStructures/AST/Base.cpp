@@ -24,97 +24,107 @@
 using namespace AST;
 //------------------------------------------------------------------------------
 
-BASE::BASE(int Line, const char* Filename, TYPE Type){
-  Source.Line     = Line;
-  Source.Filename = Filename;
-  this->Type      = Type;
-  this->Next      = 0;
-  this->Prev      = 0;
+Base::Base(int line, const char* filename, Type type)
+{
+    source.line     = line;
+    source.filename = filename;
+    this->type      = type;
+    this->next      = 0;
+    this->prev      = 0;
 }
 //------------------------------------------------------------------------------
 
-BASE::~BASE(){
-  // The list might be too long for a recursive formulation.
-  BASE* Temp;
-  while(Next){
-    Temp       = Next;
-    Next       = Temp->Next;
-    Temp->Next = 0;
-    delete Temp;
-  }
-}
-//------------------------------------------------------------------------------
-
-bool BASE::IsAssignment(){
-  return false;
-}
-//------------------------------------------------------------------------------
-
-bool BASE::IsDefinition(){
-  return false;
-}
-//------------------------------------------------------------------------------
-
-bool BASE::IsExpression(){
-  return false;
-}
-//------------------------------------------------------------------------------
-
-void BASE::Error(const char* Message){
-  ::Error(Source.Line, Source.Filename.c_str(), Message);
-}
-//------------------------------------------------------------------------------
-
-void BASE::Warning(const char* Message){
-  ::Warning(Source.Line, Source.Filename.c_str(), Message);
-}
-//------------------------------------------------------------------------------
-
-BASE* BASE::CopyList(BASE* Source){
-  BASE* Node   = 0;
-  BASE* Tail   = 0;
-  BASE* Result = 0;
-
-  while(Source){
-    Node = Source->Copy();
-    if(Tail){
-      Tail->Next = Node;
-      Node->Prev = Tail;
-    }else{
-      Result = Node;
+Base::~Base()
+{
+    // The list might be too long for a recursive formulation.
+    Base* temp;
+    while(next){
+        temp       = next;
+        next       = temp->next;
+        temp->next = 0;
+        delete temp;
     }
-    Tail   = Node;
-    Source = Source->Next;
-  }
-
-  return Result;
 }
 //------------------------------------------------------------------------------
 
-void BASE::DisplayInfo(){
-  Debug.Print("\n" ANSI_FG_BRIGHT_BLACK "%s:", Source.Filename.c_str());
-  Debug.Print(ANSI_FG_CYAN "%05d" ANSI_FG_YELLOW " -- " ANSI_RESET, Source.Line);
+bool Base::isAssignment()
+{
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void BASE::Validate(){
-  assert(Prev == 0);
+bool Base::isDefinition()
+{
+    return false;
+}
+//------------------------------------------------------------------------------
 
-  BASE* Node = this;
-  while(Node){
-    if(Node->Next) assert(Node->Next->Prev == Node,
-                          info("Type = %d, Line = %d, File = %s",
-                               (int)Node->Type,
-                               Node->Source.Line,
-                               Node->Source.Filename.c_str()));
-    if(Node->Prev) assert(Node->Prev->Next == Node,
-                          info("Type = %d, Line = %d, File = %s",
-                               (int)Node->Type,
-                               Node->Source.Line,
-                               Node->Source.Filename.c_str()));
-    Node->ValidateMembers();
-    Node = Node->Next;
-  }
+bool Base::isExpression()
+{
+    return false;
+}
+//------------------------------------------------------------------------------
+
+void Base::printError(const char* message)
+{
+    ::printError(source.line, source.filename.c_str(), message);
+}
+//------------------------------------------------------------------------------
+
+void Base::printWarning(const char* message)
+{
+    ::printWarning(source.line, source.filename.c_str(), message);
+}
+//------------------------------------------------------------------------------
+
+Base* Base::copyList(Base* source)
+{
+    Base* node   = 0;
+    Base* tail   = 0;
+    Base* result = 0;
+
+    while(source){
+        node = source->copy();
+        if(tail){
+            tail->next = node;
+            node->prev = tail;
+        }else{
+            result = node;
+        }
+        tail   = node;
+        source = source->next;
+    }
+
+    return result;
+}
+//------------------------------------------------------------------------------
+
+void Base::displayInfo()
+{
+    logger.print("\n" ANSI_FG_BRIGHT_BLACK "%s:", source.filename.c_str());
+    logger.print(ANSI_FG_CYAN "%05d" ANSI_FG_YELLOW " -- " ANSI_RESET, source.line);
+}
+//------------------------------------------------------------------------------
+
+void Base::validate()
+{
+    assert(prev == 0);
+
+    Base* node = this;
+    while(node){
+        if(node->next) assert(node->next->prev == node,
+                              info("type = %d, line = %d, File = %s",
+                                   (int)node->type,
+                                   node->source.line,
+                                   node->source.filename.c_str()));
+        if(node->prev) assert(node->prev->next == node,
+                              info("type = %d, line = %d, File = %s",
+                                   (int)node->type,
+                                   node->source.line,
+                                   node->source.filename.c_str()));
+        node->validateMembers();
+        node = node->next;
+    }
 }
 //------------------------------------------------------------------------------
 

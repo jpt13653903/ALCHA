@@ -21,139 +21,148 @@
 #include "Literal.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
+using std::to_string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-LITERAL::LITERAL(int Line, const string& Filename): LITERAL(Line, Filename.c_str()){}
+Literal::Literal(int line, const string& filename): Literal(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-LITERAL::LITERAL(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Literal){
+Literal::Literal(int line, const char* filename): Expression(line, filename, Type::Literal){}
+//------------------------------------------------------------------------------
+
+Literal::~Literal(){}
+//------------------------------------------------------------------------------
+
+Base* Literal::copy()
+{
+    Literal* copy = new Literal(source.line, source.filename.c_str());
+
+    copy->value = value;
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-LITERAL::~LITERAL(){
+bool Literal::getVerilog(string& body)
+{
+    if(!value.isReal()){
+        printError("non-real literal");
+        return false;
+    }
+
+    int  width  = getWidth ();
+    bool isSigned = getSigned();
+
+    Number result;
+    if(isSigned){
+        body += to_string(width+1) + "'sh";
+        result = getFullScale();
+        result.binScale(1);
+        result.add(value);
+    }else{
+        body += to_string(width  ) + "'h";
+        result = value;
+    }
+    result.round();
+    body += result.getString(16);
+    result.binScale(-width);
+    if((!isSigned && result >= 1) || (isSigned && result > 2)){
+        printError("The literal does not fit in its full-scale range");
+        return false;
+    }
+    return true;
 }
 //------------------------------------------------------------------------------
 
-BASE* LITERAL::Copy(){
-  LITERAL* Copy = new LITERAL(Source.Line, Source.Filename.c_str());
-
-  Copy->Value = Value;
-
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-  return Copy;
+Expression* Literal::evaluate()
+{
+    return this;
 }
 //------------------------------------------------------------------------------
 
-bool LITERAL::GetVerilog(string& Body){
-  if(!Value.IsReal()){
-    Error("non-real literal");
+void Literal::setWidth(int width)
+{
+    widthOverride = width;
+}
+//------------------------------------------------------------------------------
+
+int Literal::getWidth()
+{
+    if(widthOverride) return widthOverride;
+
+    int width = 0;
+
+    Number num = value;
+    if(num < 0) num.mul(-1);
+    num.round();
+
+    while(num > 1){
+        num.binScale(-1);
+        width++;
+    }
+    if(!getSigned() && num == 1){
+        num.binScale(-1);
+        width++;
+    }
+    if(!width) return 1;
+    return width;
+}
+//------------------------------------------------------------------------------
+
+Number& Literal::getFullScale()
+{
+    static Number result;
+    result = 1;
+    result.binScale(getWidth());
+    return result;
+}
+//------------------------------------------------------------------------------
+
+bool Literal::getSigned()
+{
+    return value < 0;
+}
+//------------------------------------------------------------------------------
+
+bool Literal::hasCircularReference(Netlist::Base* object)
+{
     return false;
-  }
-
-  int  Width  = GetWidth ();
-  bool Signed = GetSigned();
-
-  NUMBER Result;
-  if(Signed){
-    Body += to_string(Width+1) + "'sh";
-    Result = GetFullScale();
-    Result.BinScale(1);
-    Result.Add(Value);
-  }else{
-    Body += to_string(Width  ) + "'h";
-    Result = Value;
-  }
-  Result.Round();
-  Body += Result.GetString(16);
-  Result.BinScale(-Width);
-  if((!Signed && Result >= 1) || (Signed && Result > 2)){
-    Error("The literal does not fit in its full-scale range");
-    return false;
-  }
-  return true;
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* LITERAL::Evaluate(){
-  return this;
+void Literal::populateUsed(){}
+//------------------------------------------------------------------------------
+
+Expression* Literal::removeTempNet(int width, bool isSigned)
+{
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void LITERAL::SetWidth(int Width){
-  WidthOverride = Width;
+void Literal::display()
+{
+    displayStart();
+
+    logger.print(value.display());
+
+    displayEnd();
 }
 //------------------------------------------------------------------------------
 
-int LITERAL::GetWidth(){
-  if(WidthOverride) return WidthOverride;
+void Literal::validateMembers()
+{
+    assert(type == Type::Literal);
 
-  int Width = 0;
+    assert(!next);
+    assert(!prev);
 
-  NUMBER Num = Value;
-  if(Num < 0) Num.Mul(-1);
-  Num.Round();
-
-  while(Num > 1){
-    Num.BinScale(-1);
-    Width++;
-  }
-  if(!GetSigned() && Num == 1){
-    Num.BinScale(-1);
-    Width++;
-  }
-  if(!Width) return 1;
-  return Width;
-}
-//------------------------------------------------------------------------------
-
-NUMBER& LITERAL::GetFullScale(){
-  static NUMBER Result;
-  Result = 1;
-  Result.BinScale(GetWidth());
-  return Result;
-}
-//------------------------------------------------------------------------------
-
-bool LITERAL::GetSigned(){
-  return Value < 0;
-}
-//------------------------------------------------------------------------------
-
-bool LITERAL::HasCircularReference(NETLIST::BASE* Object){
-  return false;
-}
-//------------------------------------------------------------------------------
-
-void LITERAL::PopulateUsed(){
-}
-//------------------------------------------------------------------------------
-
-EXPRESSION* LITERAL::RemoveTempNet(int Width, bool Signed){
-  return this;
-}
-//------------------------------------------------------------------------------
-
-void LITERAL::Display(){
-  DisplayStart();
-
-  Debug.Print(Value.Display());
-
-  DisplayEnd();
-}
-//------------------------------------------------------------------------------
-
-void LITERAL::ValidateMembers(){
-  assert(Type == TYPE::Literal);
-
-  assert(!Next);
-  assert(!Prev);
-
-  assert(!Left );
-  assert(!Right);
+    assert(!left );
+    assert(!right);
 }
 //------------------------------------------------------------------------------
 

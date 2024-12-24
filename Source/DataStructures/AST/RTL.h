@@ -27,23 +27,23 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct RTL: public BASE{
-    std::list<BASE*> Parameters;
-    BASE* Statements;
+    struct Rtl: public Base{
+        std::list<Base*> parameters;
+        Base* statements;
 
-    RTL(int Line, std::string& Filename);
-    RTL(int Line, const char*  Filename);
-   ~RTL();
+        Rtl(int line, std::string& filename);
+        Rtl(int line, const char*  filename);
+       ~Rtl();
 
-    BASE* Copy() override;
+        Base* copy() override;
 
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
+        bool runAST() override;
+        bool getVerilog(std::string& body) override;
 
-    void Display() override;
+        void display() override;
 
-    void ValidateMembers() override;
-  };
+        void validateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

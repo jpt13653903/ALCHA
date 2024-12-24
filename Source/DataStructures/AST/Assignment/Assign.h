@@ -26,20 +26,19 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct ASSIGN: public ASSIGNMENT{
-    ASSIGN(int Line, std::string Filename);
-    ASSIGN(int Line, const char* Filename);
-   ~ASSIGN();
+    struct Assign: public Assignment{
+        Assign(int line, const char* filename);
+       ~Assign();
 
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
+        bool runAST() override;
+        bool getVerilog(std::string& body) override;
 
-    void Display() override;
+        void display() override;
 
-    void ValidateMembers() override;
+        void validateMembers() override;
 
-    BASE* Copy() override;
-  };
+        Base* copy() override;
+    };
 }
 //------------------------------------------------------------------------------
 

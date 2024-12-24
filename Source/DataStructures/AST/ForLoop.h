@@ -26,24 +26,24 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct FOR_LOOP: public BASE{
-    std::string Identifier;
-    EXPRESSION* Range;
-    BASE      * Statements;
+    struct ForLoop: public Base{
+        std::string identifier;
+        Expression* range;
+        Base      * statements;
 
-    FOR_LOOP(int Line, std::string& Filename);
-    FOR_LOOP(int Line, const char*  Filename);
-   ~FOR_LOOP();
+        ForLoop(int line, std::string& filename);
+        ForLoop(int line, const char*  filename);
+       ~ForLoop();
 
-    BASE* Copy() override;
+        Base* copy() override;
 
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
+        bool runAST() override;
+        bool getVerilog(std::string& body) override;
 
-    void Display() override;
+        void display() override;
 
-    void ValidateMembers() override;
-  };
+        void validateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

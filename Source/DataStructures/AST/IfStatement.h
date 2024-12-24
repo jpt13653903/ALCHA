@@ -26,24 +26,24 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct IF_STATEMENT: public BASE{
-    EXPRESSION* Condition;
-    BASE      * TrueStatements;
-    BASE      * FalseStatements;
+    struct IfStatement: public Base{
+        Expression* condition;
+        Base      * trueStatements;
+        Base      * falseStatements;
 
-    IF_STATEMENT(int Line, std::string& Filename);
-    IF_STATEMENT(int Line, const char*  Filename);
-   ~IF_STATEMENT();
+        IfStatement(int line, std::string& filename);
+        IfStatement(int line, const char*  filename);
+       ~IfStatement();
 
-    BASE* Copy() override;
+        Base* copy() override;
 
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
+        bool runAST() override;
+        bool getVerilog(std::string& body) override;
 
-    void Display() override;
+        void display() override;
 
-    void ValidateMembers() override;
-  };
+        void validateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

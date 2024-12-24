@@ -21,67 +21,74 @@
 #include "HDL.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-HDL::HDL(int Line, std::string& Filename): HDL(Line, Filename.c_str()){}
+Hdl::Hdl(int line, std::string& filename): Hdl(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-HDL::HDL(int Line, const char* Filename): BASE(Line, Filename, TYPE::HDL){
-  Files      = 0;
-  Ports      = 0;
-  Parameters = 0;
+Hdl::Hdl(int line, const char* filename): Base(line, filename, Type::HDL)
+{
+    files      = 0;
+    ports      = 0;
+    parameters = 0;
 }
 //------------------------------------------------------------------------------
 
-HDL::~HDL(){
-  if(Files     ) delete Files;
-  if(Ports     ) delete Ports;
-  if(Parameters) delete Parameters;
+Hdl::~Hdl()
+{
+    if(files     ) delete files;
+    if(ports     ) delete ports;
+    if(parameters) delete parameters;
 }
 //------------------------------------------------------------------------------
 
-BASE* HDL::Copy(){
-  HDL* Copy = new HDL(Source.Line, Source.Filename.c_str());
+Base* Hdl::copy()
+{
+    Hdl* copy = new Hdl(source.line, source.filename.c_str());
 
-  Copy->Identifier = Identifier;
+    copy->identifier = identifier;
 
-  Copy->Files      = (decltype(Files     ))CopyList(Files);
-  Copy->Ports      = (decltype(Ports     ))CopyList(Ports);
-  Copy->Parameters = (decltype(Parameters))CopyList(Parameters);
+    copy->files      = (decltype(files     ))copyList(files);
+    copy->ports      = (decltype(ports     ))copyList(ports);
+    copy->parameters = (decltype(parameters))copyList(parameters);
 
-  return Copy;
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-bool HDL::RunAST(){
-  error("Not yet implemented");
-  return false;
+bool Hdl::runAST()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool HDL::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
+bool Hdl::getVerilog(string& body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void HDL::Display(){
-  DisplayInfo();
-  Debug.Print("hdl (%s):\n", Identifier.c_str());
-  Debug.Print(" Files:\n  "     ); if(Files     ) Files     ->Display(); Debug.Print("\n");
-  Debug.Print(" Parameters:\n  "); if(Parameters) Parameters->Display();
-  Debug.Print(" Ports:\n  "     ); if(Ports     ) Ports     ->Display();
+void Hdl::display()
+{
+    displayInfo();
+    logger.print("hdl (%s):\n", identifier.c_str());
+    logger.print(" Files:\n  "     ); if(files     ) files     ->display(); logger.print("\n");
+    logger.print(" Parameters:\n  "); if(parameters) parameters->display();
+    logger.print(" Ports:\n  "     ); if(ports     ) ports     ->display();
 
-  if(Next) Next->Display();
+    if(next) next->display();
 }
 //------------------------------------------------------------------------------
 
-void HDL::ValidateMembers(){
-  assert(Type == TYPE::HDL);
+void Hdl::validateMembers()
+{
+    assert(type == Type::HDL);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

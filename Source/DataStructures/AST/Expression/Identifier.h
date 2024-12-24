@@ -27,33 +27,33 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct IDENTIFIER: public EXPRESSION{
-    std::string Name;
+    struct Identifier: public Expression{
+        std::string name;
 
-    IDENTIFIER(int Line, const std::string& Filename);
-    IDENTIFIER(int Line, const char*        Filename);
-   ~IDENTIFIER();
+        Identifier(int line, const std::string& filename);
+        Identifier(int line, const char*        filename);
+       ~Identifier();
 
-    BASE* Copy() override;
+        Base* copy() override;
 
-    bool GetVerilog(std::string& Body) override;
+        bool getVerilog(std::string& body) override;
 
-    // Evaluates to an OBJECT
-    EXPRESSION* Evaluate() override;
+        // Evaluates to an Object
+        Expression* evaluate() override;
 
-    int     GetWidth    () override;
-    NUMBER& GetFullScale() override;
-    bool    GetSigned   () override;
+        int     getWidth    () override;
+        Number& getFullScale() override;
+        bool    getSigned   () override;
 
-    bool HasCircularReference(NETLIST::BASE* Object) override;
-    void PopulateUsed() override;
+        bool hasCircularReference(Netlist::Base* object) override;
+        void populateUsed() override;
 
-    EXPRESSION* RemoveTempNet(int Width, bool Signed) override;
+        Expression* removeTempNet(int width, bool isSigned) override;
 
-    void Display() override;
+        void display() override;
 
-    void ValidateMembers() override;
-  };
+        void validateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

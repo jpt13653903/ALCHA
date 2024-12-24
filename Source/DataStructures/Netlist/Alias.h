@@ -26,23 +26,23 @@
 #include "AST/Expression.h"
 //------------------------------------------------------------------------------
 
-namespace NETLIST{
-  struct ALIAS: public BASE{
-    AST::EXPRESSION* Expression;
+namespace Netlist{
+    struct Alias: public Base{
+        AST::Expression* expression;
 
-             ALIAS(int Line, const std::string& Filename, const char* Name, AST::EXPRESSION* Expression);
-    virtual ~ALIAS();
+                 Alias(int line, const std::string& filename, const char* name, AST::Expression* expression);
+        virtual ~Alias();
 
-    AST::EXPRESSION* GetExpression(int Line, const std::string& Filename) override;
-    bool Assign   (AST::EXPRESSION* Expression) override;
-    bool RawAssign(AST::EXPRESSION* Expression) override;
+        AST::Expression* getExpression(int line, const std::string& filename) override;
+        bool assign   (AST::Expression* expression) override;
+        bool rawAssign(AST::Expression* expression) override;
 
-    bool HasCircularReference(BASE* Object) override;
+        bool hasCircularReference(Base* object) override;
 
-    void Display(int Indent = 0) override;
+        void display(int indent = 0) override;
 
-    void Validate() override;
-  };
+        void validate() override;
+    };
 }
 //------------------------------------------------------------------------------
 

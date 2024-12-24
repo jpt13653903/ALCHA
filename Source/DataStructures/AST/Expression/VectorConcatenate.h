@@ -27,31 +27,31 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct VECTORCONCATENATE: public EXPRESSION{
-    std::vector<EXPRESSION*> Elements;
+    struct VectorConcatenate: public Expression{
+        std::vector<Expression*> elements;
 
-    VECTORCONCATENATE(int Line, const std::string& Filename);
-    VECTORCONCATENATE(int Line, const char*        Filename);
-   ~VECTORCONCATENATE();
+        VectorConcatenate(int line, const std::string& filename);
+        VectorConcatenate(int line, const char*        filename);
+       ~VectorConcatenate();
 
-    BASE* Copy() override;
+        Base* copy() override;
 
-    bool GetVerilog(std::string& Body) override;
-    EXPRESSION* Evaluate() override;
+        bool getVerilog(std::string& body) override;
+        Expression* evaluate() override;
 
-    int     GetWidth    () override;
-    NUMBER& GetFullScale() override;
-    bool    GetSigned   () override;
+        int     getWidth    () override;
+        Number& getFullScale() override;
+        bool    getSigned   () override;
 
-    bool HasCircularReference(NETLIST::BASE* Object) override;
-    void PopulateUsed() override;
+        bool hasCircularReference(Netlist::Base* object) override;
+        void populateUsed() override;
 
-    EXPRESSION* RemoveTempNet(int Width, bool Signed) override;
+        Expression* removeTempNet(int width, bool isSigned) override;
 
-    void Display() override;
+        void display() override;
 
-    void ValidateMembers() override;
-  };
+        void validateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

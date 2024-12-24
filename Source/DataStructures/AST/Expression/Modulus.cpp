@@ -21,104 +21,113 @@
 #include "Modulus.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-MODULUS::MODULUS(int Line, const string& Filename): MODULUS(Line, Filename.c_str()){}
+Modulus::Modulus(int line, const string& filename): Modulus(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-MODULUS::MODULUS(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Modulus){
+Modulus::Modulus(int line, const char* filename): Expression(line, filename, Type::Modulus){}
+//------------------------------------------------------------------------------
+
+Modulus::~Modulus(){}
+//------------------------------------------------------------------------------
+
+Base* Modulus::copy()
+{
+    Modulus* copy = new Modulus(source.line, source.filename.c_str());
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-MODULUS::~MODULUS(){
+bool Modulus::getVerilog(string& body)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-BASE* MODULUS::Copy(){
-  MODULUS* Copy = new MODULUS(Source.Line, Source.Filename.c_str());
-
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-  return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool MODULUS::GetVerilog(string& Body){
-  error("Not yet implemented");
-  return false;
-}
-//------------------------------------------------------------------------------
-
-EXPRESSION* MODULUS::Evaluate(){
-  error("Not yet implemented");
-  return this;
-//   EXPRESSION* Result = 0;
-// 
+Expression* Modulus::evaluate()
+{
+    error("Not yet implemented");
+    return this;
+//   Expression* result = 0;
+//
 //   error("Not yet implemented");
-// 
-//   if(!Result) return 0;
-//   return Result->Simplify(false);
+//
+//   if(!result) return 0;
+//   return result->simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int MODULUS::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int Modulus::getWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& MODULUS::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+Number& Modulus::getFullScale()
+{
+    error("Not yet implemented");
+    static Number zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool MODULUS::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool Modulus::getSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool MODULUS::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool Modulus::hasCircularReference(Netlist::Base* object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void MODULUS::PopulateUsed(){
-  error("Not yet implemented");
+void Modulus::populateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* MODULUS::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+Expression* Modulus::removeTempNet(int width, bool isSigned)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void MODULUS::Display(){
-  DisplayStart();
+void Modulus::display()
+{
+    displayStart();
 
-  Debug.Print(" %% ");
+    logger.print(" %% ");
 
-  DisplayEnd();
+    displayEnd();
 }
 //------------------------------------------------------------------------------
 
-void MODULUS::ValidateMembers(){
-  assert(Type == TYPE::Modulus);
+void Modulus::validateMembers()
+{
+    assert(type == Type::Modulus);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!next);
+    assert(!prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!left );
+    // TODO: assert(!right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

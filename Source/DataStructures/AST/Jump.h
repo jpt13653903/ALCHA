@@ -26,27 +26,27 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-  struct JUMP: public BASE{
-    enum class JUMP_TYPE{
-      Return,
-      Break,
-      Continue
-    } JumpType;
-    EXPRESSION* Expression;
+    struct Jump: public Base{
+        enum class JumpType{
+            Return,
+            Break,
+            Continue
+        } jumpType;
+        Expression* expression;
 
-    JUMP(int Line, std::string& Filename, JUMP_TYPE JumpType);
-    JUMP(int Line, const char*  Filename, JUMP_TYPE JumpType);
-   ~JUMP();
+        Jump(int line, std::string& filename, JumpType jumpType);
+        Jump(int line, const char*  filename, JumpType jumpType);
+       ~Jump();
 
-    BASE* Copy() override;
+        Base* copy() override;
 
-    bool RunAST() override;
-    bool GetVerilog(std::string& Body) override;
+        bool runAST() override;
+        bool getVerilog(std::string& body) override;
 
-    void Display() override;
+        void display() override;
 
-    void ValidateMembers() override;
-  };
+        void validateMembers() override;
+    };
 }
 //------------------------------------------------------------------------------
 

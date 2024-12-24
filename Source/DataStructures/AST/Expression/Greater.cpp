@@ -21,109 +21,118 @@
 #include "Greater.h"
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-GREATER::GREATER(int Line, const string& Filename): GREATER(Line, Filename.c_str()){}
+Greater::Greater(int line, const string& filename): Greater(line, filename.c_str()){}
 //------------------------------------------------------------------------------
 
-GREATER::GREATER(int Line, const char* Filename): EXPRESSION(Line, Filename, TYPE::Greater){
+Greater::Greater(int line, const char* filename): Expression(line, filename, Type::Greater){}
+//------------------------------------------------------------------------------
+
+Greater::~Greater(){}
+//------------------------------------------------------------------------------
+
+Base* Greater::copy()
+{
+    Greater* copy = new Greater(source.line, source.filename.c_str());
+
+    if(left ) copy->left  = (decltype(left ))left ->copy();
+    if(right) copy->right = (decltype(right))right->copy();
+
+    return copy;
 }
 //------------------------------------------------------------------------------
 
-GREATER::~GREATER(){
+bool Greater::getVerilog(string& body)
+{
+    body += "(";
+    left->getVerilog(body);
+    body += ") > (";
+    right->getVerilog(body);
+    body += ")";
+
+    return true;
 }
 //------------------------------------------------------------------------------
 
-BASE* GREATER::Copy(){
-  GREATER* Copy = new GREATER(Source.Line, Source.Filename.c_str());
-
-  if(Left ) Copy->Left  = (decltype(Left ))Left ->Copy();
-  if(Right) Copy->Right = (decltype(Right))Right->Copy();
-
-  return Copy;
-}
-//------------------------------------------------------------------------------
-
-bool GREATER::GetVerilog(string& Body){
-  Body += "(";
-  Left->GetVerilog(Body);
-  Body += ") > (";
-  Right->GetVerilog(Body);
-  Body += ")";
-
-  return true;
-}
-//------------------------------------------------------------------------------
-
-EXPRESSION* GREATER::Evaluate(){
-  error("Not yet implemented");
-  return this;
-//   EXPRESSION* Result = 0;
-// 
+Expression* Greater::evaluate()
+{
+    error("Not yet implemented");
+    return this;
+//   Expression* result = 0;
+//
 //   error("Not yet implemented");
-// 
-//   if(!Result) return 0;
-//   return Result->Simplify(false);
+//
+//   if(!result) return 0;
+//   return result->simplify(false);
 }
 //------------------------------------------------------------------------------
 
-int GREATER::GetWidth(){
-  error("Not yet implemented");
-  return 0;
+int Greater::getWidth()
+{
+    error("Not yet implemented");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-NUMBER& GREATER::GetFullScale(){
-  error("Not yet implemented");
-  static NUMBER zero = 0;
-  return zero;
+Number& Greater::getFullScale()
+{
+    error("Not yet implemented");
+    static Number zero = 0;
+    return zero;
 }
 //------------------------------------------------------------------------------
 
-bool GREATER::GetSigned(){
-  error("Not yet implemented");
-  return false;
+bool Greater::getSigned()
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-bool GREATER::HasCircularReference(NETLIST::BASE* Object){
-  error("Not yet implemented");
-  return false;
+bool Greater::hasCircularReference(Netlist::Base* object)
+{
+    error("Not yet implemented");
+    return false;
 }
 //------------------------------------------------------------------------------
 
-void GREATER::PopulateUsed(){
-  error("Not yet implemented");
+void Greater::populateUsed()
+{
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 
-EXPRESSION* GREATER::RemoveTempNet(int Width, bool Signed){
-  error("Not yet implemented");
-  return this;
+Expression* Greater::removeTempNet(int width, bool isSigned)
+{
+    error("Not yet implemented");
+    return this;
 }
 //------------------------------------------------------------------------------
 
-void GREATER::Display(){
-  DisplayStart();
+void Greater::display()
+{
+    displayStart();
 
-  Debug.Print(" > " );
+    logger.print(" > " );
 
-  DisplayEnd();
+    displayEnd();
 }
 //------------------------------------------------------------------------------
 
-void GREATER::ValidateMembers(){
-  assert(Type == TYPE::Greater);
+void Greater::validateMembers()
+{
+    assert(type == Type::Greater);
 
-  assert(!Next);
-  assert(!Prev);
+    assert(!next);
+    assert(!prev);
 
-  // TODO: assert(!Left );
-  // TODO: assert(!Right);
+    // TODO: assert(!left );
+    // TODO: assert(!right);
 
-  error("Not yet implemented");
+    error("Not yet implemented");
 }
 //------------------------------------------------------------------------------
 

@@ -21,48 +21,49 @@
 #include "Constants.h"
 //------------------------------------------------------------------------------
 
-CONSTANTS Constants;
+Constants constants;
 //------------------------------------------------------------------------------
 
-using namespace std;
+using std::string;
 //------------------------------------------------------------------------------
 
-CONSTANTS::CONSTANTS(){
-  Constants["e" ].Set_e ();
-  Constants["π" ].Set_pi();
-  Constants["pi"].Set_pi();
-  Constants["i" ].Set_i ();
-  Constants["j" ].Set_i ();
+Constants::Constants()
+{
+    constants["e" ].set_e ();
+    constants["π" ].set_pi();
+    constants["pi"].set_pi();
+    constants["i" ].set_i ();
+    constants["j" ].set_i ();
 
-  time_t RawTime;
-  struct tm* Time;
+    time_t rawTime;
+    struct tm* _time;
 
-  time(&RawTime);
-  Time = localtime(&RawTime);
+    time(&rawTime);
+    _time = localtime(&rawTime);
 
-  Constants["__YEAR__"   ] = Time->tm_year+1900;
-  Constants["__MONTH__"  ] = Time->tm_mon+1;
-  Constants["__DAY__"    ] = Time->tm_mday;
-  Constants["__HOUR__"   ] = Time->tm_hour;
-  Constants["__MINUTE__" ] = Time->tm_min;
-  Constants["__SECOND__" ] = Time->tm_sec;
+    constants["__YEAR__"   ] = _time->tm_year+1900;
+    constants["__MONTH__"  ] = _time->tm_mon+1;
+    constants["__DAY__"    ] = _time->tm_mday;
+    constants["__HOUR__"   ] = _time->tm_hour;
+    constants["__MINUTE__" ] = _time->tm_min;
+    constants["__SECOND__" ] = _time->tm_sec;
 
-  Constants["__WEEKDAY__"] = ((Time->tm_wday+6)%7)+1;
-  Constants["__YEARDAY__"] = Time->tm_yday+1;
+    constants["__WEEKDAY__"] = ((_time->tm_wday+6)%7)+1;
+    constants["__YEARDAY__"] = _time->tm_yday+1;
 }
 //------------------------------------------------------------------------------
 
-CONSTANTS::~CONSTANTS(){
-}
+Constants::~Constants(){}
 //------------------------------------------------------------------------------
 
-bool CONSTANTS::GetConstant(const string& Name, NUMBER* Constant){
-  auto Result = Constants.find(Name);
-  if(Result == Constants.end()) return false;
+bool Constants::getConstant(const string& name, Number* constant)
+{
+    auto result = constants.find(name);
+    if(result == constants.end()) return false;
 
-  *Constant = Result->second;
+    *constant = result->second;
 
-  return true;
+    return true;
 }
 //------------------------------------------------------------------------------
 
