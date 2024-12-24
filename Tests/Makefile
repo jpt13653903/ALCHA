@@ -71,7 +71,7 @@ testSource   = $(shell find * -iname "*.cpp")
 testBinaries = $(testSource:%.cpp=bin/%$(ext))
 #-------------------------------------------------------------------------------
 
-.PHONY: clean all
+.PHONY: clean all FORCE
 .SECONDARY:
 
 all: $(testBinaries)
@@ -79,6 +79,9 @@ all: $(testBinaries)
 test: all
 	bin/testScanner
 	bin/testParser
+
+test%: bin/test%$(ext) FORCE
+	$<
 
 clean:
 	- rm -rf bin/test*
