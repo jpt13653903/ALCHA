@@ -197,13 +197,21 @@ const char* Token::decodeType()
 }
 //------------------------------------------------------------------------------
 
-void Token::display()
+std::string& Token::display()
 {
-    logger.print(ANSI_FG_CYAN "Token: " ANSI_RESET);
-    logger.print(ANSI_FG_BRIGHT_BLACK "Type = "  ANSI_RESET "%s "   , decodeType());
-    logger.print(ANSI_FG_BRIGHT_BLACK "Line = "  ANSI_RESET "%5d "  , line);
-    logger.print(ANSI_FG_BRIGHT_BLACK "Data = "  ANSI_RESET "%-40s ", data.c_str());
-    logger.print(ANSI_FG_BRIGHT_BLACK "Value = " ANSI_RESET "%s\n"  , value.display());
+    static std::string result;
+    char _string[0x100];
+
+    snprintf(_string, 0x100,
+             ANSI_FG_CYAN "Token: " ANSI_RESET
+             ANSI_FG_BRIGHT_BLACK "Type = "  ANSI_RESET "%-24s "
+             ANSI_FG_BRIGHT_BLACK "Line = "  ANSI_RESET "%5d "
+             ANSI_FG_BRIGHT_BLACK "Data = "  ANSI_RESET "%-40s "
+             ANSI_FG_BRIGHT_BLACK "Value = " ANSI_RESET "%s",
+             decodeType(), line, data.c_str(), value.display().c_str());
+
+    result = _string;
+    return result;
 }
 //------------------------------------------------------------------------------
 

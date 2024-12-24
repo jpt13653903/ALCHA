@@ -168,8 +168,8 @@ struct Token{
     std::string data; // The string contents; otherwise the original token characters
     Number      value;
 
-    const char* decodeType();
-    void        display(); // Used for debugging
+    const char*  decodeType();
+    std::string& display();
 };
 //------------------------------------------------------------------------------
 

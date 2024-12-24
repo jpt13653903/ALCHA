@@ -71,6 +71,16 @@ Number::Number(const Number& n)
 }
 //------------------------------------------------------------------------------
 
+Number::Number(int num, int denum)
+{
+    mpq_init(real);
+    mpq_init(imag);
+    mpq_set_si(real, num, denum);
+    mpq_canonicalize(real);
+    mpq_set_ui(imag, 0, 1);
+}
+//------------------------------------------------------------------------------
+
 Number::~Number()
 {
     mpq_clear(real);
@@ -504,14 +514,14 @@ void Number::div(const Number& n)
 }
 //------------------------------------------------------------------------------
 
-void Number::binScale(int N)
+void Number::binScale(int n)
 {
-    if(N > 0){
-        mpq_mul_2exp(real, real, N);
-        mpq_mul_2exp(imag, imag, N);
+    if(n > 0){
+        mpq_mul_2exp(real, real, n);
+        mpq_mul_2exp(imag, imag, n);
     }else{
-        mpq_div_2exp(real, real, -N);
-        mpq_div_2exp(imag, imag, -N);
+        mpq_div_2exp(real, real, -n);
+        mpq_div_2exp(imag, imag, -n);
     }
 }
 //------------------------------------------------------------------------------

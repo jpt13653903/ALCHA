@@ -835,9 +835,12 @@ const char* Scanner::getFilename()
 
 bool Scanner::getToken(Token* token)
 {
-    token->line = line;
-    token->type = Token::Type::Unknown;
+    token->line  = line;
+    token->type  = Token::Type::Unknown;
+    token->value = 0;
     token->data.clear();
+
+    whiteSpace();
 
     if(!buffer[index]){
         token->type = Token::Type::EndOfFile;
@@ -845,15 +848,13 @@ bool Scanner::getToken(Token* token)
     }
     if(error) return false;
 
-    whiteSpace();
-
     token->line = line;
 
     // In order of least to most expensive match
-    if(getString    (token)) return true; if(error) return false;
-    if(getLiteral   (token)) return true; if(error) return false;
-    if(getIdentifier(token)) return true; if(error) return false;
-    if(getOperator  (token)) return true; if(error) return false;
+    if(getString    (token)) { return true; } if(error) { return false; }
+    if(getLiteral   (token)) { return true; } if(error) { return false; }
+    if(getIdentifier(token)) { return true; } if(error) { return false; }
+    if(getOperator  (token)) { return true; } if(error) { return false; }
 
     if(buffer[index]){
         char s[0x100];

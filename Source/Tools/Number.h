@@ -47,6 +47,7 @@ class Number{
         Number(double        d);
         Number(bool          b);
         Number(const Number& n);
+        Number(int num, int denum);
        ~Number();
 
         void set(mpz_t numerator, mpz_t denominator);
@@ -108,7 +109,7 @@ class Number{
         void div(double r, double i = 0);
         void div(const Number& n);
 
-        void binScale(int N); // *= 2^N
+        void binScale(int n); // *= 2^n
 
         void round();
 

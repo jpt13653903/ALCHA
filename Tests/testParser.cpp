@@ -19,25 +19,27 @@
 //==============================================================================
 
 #include "General.h"
-#include "Parser.h"
+// #include "Parser.h"
 //------------------------------------------------------------------------------
 
 int main(int argc, const char** argv)
 {
     setupTerminal();
 
-    const char*  inputFile = "../TestCases/FrontEnd/Parser.alc";
-    if(argc > 1) inputFile = argv[1];
+    warning("testParser not yet implemented");
 
-    info("inputFile = %s", inputFile);
+    // const char*  inputFile = "../TestCases/FrontEnd/Parser.alc";
+    // if(argc > 1) inputFile = argv[1];
 
-    Parser parser;
-    AST::Base* root = parser.run(inputFile);
-    if(!root){
-        error("Error while parsing \"%s\"", inputFile);
-        return -1;
-    }
-    if(root) delete root;
+    // info("inputFile = %s", inputFile);
+
+    // Parser parser;
+    // AST::Base* root = parser.run(inputFile);
+    // if(!root){
+    //     error("Error while parsing \"%s\"", inputFile);
+    //     return -1;
+    // }
+    // if(root) delete root;
 
     return 0;
 }
