@@ -78,6 +78,7 @@ all: $(testBinaries)
 
 test: all
 	bin/testScanner
+	bin/testParser
 
 clean:
 	- rm -rf bin/test*
@@ -104,6 +105,14 @@ bin/testScanner$(ext): $(testScannerObjects) $(Resources) $(Headers)
 
 testParserObjects += $(ObjectPath)/Tests/testParser.o
 testParserObjects += $(ObjectPath)/Toolbox/General.o
+testParserObjects += $(ObjectPath)/Toolbox/FileWrapper.o
+testParserObjects += $(ObjectPath)/Toolbox/UTF_Converter.o
+testParserObjects += $(ObjectPath)/Source/FrontEnd/Scanner.o
+testParserObjects += $(ObjectPath)/Source/FrontEnd/Parser.o
+testParserObjects += $(ObjectPath)/Source/FrontEnd/Token.o
+testParserObjects += $(ObjectPath)/Source/DataStructures/TokenTree.o
+testParserObjects += $(ObjectPath)/Source/Tools/Number.o
+testParserObjects += $(ObjectPath)/Source/Tools/Utilities.o
 
 bin/testParser$(ext): $(testParserObjects) $(Resources) $(Headers)
 	mkdir -p bin

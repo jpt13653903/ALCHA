@@ -1,0 +1,4 @@
+print(__FILE__);
+print(__LINE__);
+print(__DATE__);
+print(__TIME__);

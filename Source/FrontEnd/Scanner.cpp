@@ -30,6 +30,7 @@
 #include <time.h>
 
 using std::string;
+using std::to_string;
 using std::map;
 //------------------------------------------------------------------------------
 
@@ -472,34 +473,29 @@ bool Scanner::getIdentifier(Token* token)
             token->value = token->line;
             break;
 
-        case Token::Type::Date:
+        case Token::Type::Date:{
             token->type = Token::Type::String;
             token->data.clear();
             time(&_timer);
             _time = localtime(&_timer);
-            token->data += _time->tm_year + 1900;
-            token->data += "-";
-            if(_time->tm_mon < 9) token->data += "0";
-            token->data += _time->tm_mon + 1;
-            token->data += "-";
-            if(_time->tm_mday < 10) token->data += "0";
-            token->data += _time->tm_mday;
+            char s[0x10];
+            snprintf(s, 0x10, "%04d-%02d-%02d",
+                     _time->tm_year+1900, _time->tm_mon+1, _time->tm_mday);
+            token->data += s;
             break;
+        }
 
-        case Token::Type::Time:
+        case Token::Type::Time:{
             token->type = Token::Type::String;
             token->data.clear();
             time(&_timer);
             _time = localtime(&_timer);
-            if(_time->tm_hour < 10) token->data += "0";
-            token->data += _time->tm_hour;
-            token->data += ":";
-            if(_time->tm_min < 10) token->data += "0";
-            token->data += _time->tm_min;
-            token->data += ":";
-            if(_time->tm_sec < 10) token->data += "0";
-            token->data += _time->tm_sec;
+            char s[0x10];
+            snprintf(s, 0x10, "%02d:%02d:%02d",
+                     _time->tm_hour, _time->tm_min, _time->tm_sec);
+            token->data += s;
             break;
+        }
 
         default:
             break;

@@ -18,29 +18,55 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "General.h"
-// #include "Parser.h"
+#include "Parser.h"
+//------------------------------------------------------------------------------
+
+#include <string>
+using std::string;
+
+Parser* parser;
+//------------------------------------------------------------------------------
+
+bool startTest(const char* name)
+{
+    printf(ANSI_FG_CYAN "Starting test: " ANSI_RESET "%s...\n", name); \
+
+    string filenmae;
+    filenmae  = "testParser/";
+    filenmae += name;
+    filenmae += ".alc";
+
+    if(!parser->run(filenmae.c_str())){
+        error("Cannot parse file %s", filenmae.c_str());
+        return false;
+    }
+    return true;
+}
+//------------------------------------------------------------------------------
+
+bool testParser()
+{
+    if(!startTest("Parser")) return false;
+
+    printf(ANSI_FG_GREEN "PASS\n" ANSI_RESET);
+    return true;
+}
 //------------------------------------------------------------------------------
 
 int main(int argc, const char** argv)
 {
+    Parser _parser;
+    parser = &_parser;
     setupTerminal();
 
-    warning("testParser not yet implemented");
+    printf("\n\n");
+    if(!testParser() ) goto MainError;
 
-    // const char*  inputFile = "../TestCases/FrontEnd/Parser.alc";
-    // if(argc > 1) inputFile = argv[1];
-
-    // info("inputFile = %s", inputFile);
-
-    // Parser parser;
-    // AST::Base* root = parser.run(inputFile);
-    // if(!root){
-    //     error("Error while parsing \"%s\"", inputFile);
-    //     return -1;
-    // }
-    // if(root) delete root;
-
+    printf(ANSI_FG_GREEN "All OK\n\n" ANSI_RESET);
     return 0;
+
+    MainError:
+        printf(ANSI_FG_BRIGHT_RED "There were errors\n\n" ANSI_RESET);
+        return -1;
 }
 //------------------------------------------------------------------------------
