@@ -40,11 +40,10 @@ else
 endif
 #-------------------------------------------------------------------------------
 
-Includes += -I$(Source)/Tools
 Includes += -I$(Source)/DataStructures
 Includes += -I$(Source)/FrontEnd
-Includes += -I$(Source)/Engine
-Includes += -I$(Source)/BackEnd
+Includes += -I$(Source)/Tools
+Includes += -I$(Source)/Symbols
 Includes += -I$(Toolbox)/Cpp
 Includes += -I$(Toolbox)/Test
 #-------------------------------------------------------------------------------

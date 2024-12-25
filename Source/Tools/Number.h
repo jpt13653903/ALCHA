@@ -119,8 +119,7 @@ class Number{
         double getReal() const;
         double getImag() const;
 
-        std::string& getString(int base = 10) const; // Format "123/456"
-        std::string& display  () const;              // Format "123/456 (~0.269737)"
+        std::string& print() const;
 };
 //------------------------------------------------------------------------------
 

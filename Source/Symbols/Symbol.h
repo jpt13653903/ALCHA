@@ -18,43 +18,37 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Parser_h
-#define Parser_h
+#ifndef Symbol_h
+#define Symbol_h
 //------------------------------------------------------------------------------
 
 #include "General.h"
-#include "Scanner.h"
+
+#include <string>
+#include <map>
 //------------------------------------------------------------------------------
 
-class Parser{
-    private: // Local Objects
-        Token   token; // The current token
-        Scanner scanner;
+class Symbol{
+    protected: // Types
+        enum class Type{
+            Num
+        } type;
 
-    private: // Parser State
-        bool error    = false;
-        bool isInline = false;
+    protected: // Properties
+        std::string name;
+        std::map<std::string, Symbol*> attributes;
 
-    private: // Parser Functions
-        void printError(const char* message);
-
-
-        bool getToken();
-
-        bool print();
-        bool identifierStatement();
-        bool identifierlist(Token::Type type);
-        bool definition();
-        bool statement();
-        bool statements();
+        Symbol* parent;
 
     public:
-        Parser();
-       ~Parser();
+        Symbol(Symbol* parent, Type type);
+        virtual ~Symbol();
 
-        bool run(const char* filename);
+        const char* decodeType() const;
+        virtual std::string& print() const;
 };
 //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------
+

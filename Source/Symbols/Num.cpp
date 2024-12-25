@@ -18,43 +18,44 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Parser_h
-#define Parser_h
+#include "Num.h"
 //------------------------------------------------------------------------------
 
-#include "General.h"
-#include "Scanner.h"
+using std::string;
 //------------------------------------------------------------------------------
 
-class Parser{
-    private: // Local Objects
-        Token   token; // The current token
-        Scanner scanner;
-
-    private: // Parser State
-        bool error    = false;
-        bool isInline = false;
-
-    private: // Parser Functions
-        void printError(const char* message);
-
-
-        bool getToken();
-
-        bool print();
-        bool identifierStatement();
-        bool identifierlist(Token::Type type);
-        bool definition();
-        bool statement();
-        bool statements();
-
-    public:
-        Parser();
-       ~Parser();
-
-        bool run(const char* filename);
-};
+Num::Num(Symbol* parent):
+    Symbol(parent, Type::Num)
+{
+}
 //------------------------------------------------------------------------------
 
-#endif
+Num::Num(Symbol* parent, Number value):
+    Symbol(parent, Type::Num)
+{
+    this->value = value;
+}
 //------------------------------------------------------------------------------
+
+Num::~Num()
+{
+}
+//------------------------------------------------------------------------------
+
+void Num::set(Number value)
+{
+    this->value = value;
+}
+//------------------------------------------------------------------------------
+
+std::string& Num::print() const
+{
+    static string result;
+
+    result  = Symbol::print();
+    result += value.print().c_str();
+
+    return result;
+}
+//------------------------------------------------------------------------------
+

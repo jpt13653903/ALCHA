@@ -47,12 +47,12 @@ bool startTest(const char* name)
 
 void printError(Token& token, int line, Token::Type type, Number value, const char* data)
 {
-    string got = token.display();
+    string got = token.print();
     token.line  = line;
     token.type  = type;
     token.value = value;
     token.data  = data;
-    string expected = token.display();
+    string expected = token.print();
 
     printf(ANSI_FG_BRIGHT_RED "FAILED:\n"
            ANSI_FG_GREEN      "   Expected: %s\n"
@@ -136,7 +136,7 @@ bool testKeywords()
     if(!test(41, Token::Type::Return,    0, "return"))    return false;
     if(!test(42, Token::Type::Break,     0, "break"))     return false;
     if(!test(43, Token::Type::Continue,  0, "continue"))  return false;
-    if(!test(44, Token::Type::Goto,      0, "goto"))      return false;
+    if(!test(44, Token::Type::GoTo,      0, "goto"))      return false;
     if(!test(46, Token::Type::Func,      0, "func"))      return false;
     if(!test(47, Token::Type::Inline,    0, "inline"))    return false;
     if(!test(48, Token::Type::Operator,  0, "operator"))  return false;
@@ -234,10 +234,10 @@ bool testOperators()
     if(!test( 99, Token::Type::Colon,                  0, ":"  )) return false;
     if(!test(100, Token::Type::Semicolon,              0, ";"  )) return false;
     if(!test(103, Token::Type::WaitFor,                0, "#"  )) return false;
-    if(!test(104, Token::Type::WaitUntil,              0, "@"  )) return false;
+    if(!test(104, Token::Type::WaitOn,                 0, "@"  )) return false;
     if(!test(105, Token::Type::WaitCycles,             0, "##" )) return false;
     if(!test(106, Token::Type::SequenceConsecutive,    0, "[*" )) return false;
-    if(!test(107, Token::Type::SequenceGoto,           0, "[->")) return false;
+    if(!test(107, Token::Type::SequenceGoTo,           0, "[->")) return false;
     if(!test(108, Token::Type::SequenceNonConsecutive, 0, "[=" )) return false;
     if(!test(109, Token::Type::AssertImplies,          0, "|->")) return false;
     if(!test(110, Token::Type::AssertImpliesNext,      0, "|=>")) return false;

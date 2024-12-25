@@ -130,7 +130,7 @@ Scanner::Scanner()
             keywords.insert("return"       , Token::Type::Return  );
             keywords.insert("break"        , Token::Type::Break   );
             keywords.insert("continue"     , Token::Type::Continue);
-            keywords.insert("goto"         , Token::Type::Goto    );
+            keywords.insert("goto"         , Token::Type::GoTo    );
 
             keywords.insert("func"         , Token::Type::Func  );
             keywords.insert("inline"       , Token::Type::Inline);
@@ -251,10 +251,10 @@ Scanner::Scanner()
 
         // Simulation operators
             operators.insert("#"  , Token::Type::WaitFor               );
-            operators.insert("@"  , Token::Type::WaitUntil             );
+            operators.insert("@"  , Token::Type::WaitOn                );
             operators.insert("##" , Token::Type::WaitCycles            );
             operators.insert("[*" , Token::Type::SequenceConsecutive   );
-            operators.insert("[->", Token::Type::SequenceGoto          );
+            operators.insert("[->", Token::Type::SequenceGoTo          );
             operators.insert("[=" , Token::Type::SequenceNonConsecutive);
             operators.insert("|->", Token::Type::AssertImplies         );
             operators.insert("|=>", Token::Type::AssertImpliesNext     );
