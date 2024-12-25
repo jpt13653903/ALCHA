@@ -14,7 +14,7 @@ Label  = Identifier ":"; (* Only useful within an fsm construct *)
 
 (* Inline only applies to function definitions *)
 Definition = ["inline"] ( BaseType | TypeIdentifier ) [ParameterList]
-             [AttributeList] IdentifierList;
+             [AttributeList] (IdentifierList | FunctionDef | OperatorOverload);
 
 ClassDefinition = "class" [AttributeList] Identifier
                   ["(" [DefParameterList] ")"]
@@ -35,12 +35,14 @@ BaseType = "pin"  | "net"          (* Synthesisable types *)
          | "byte" | "char" | "num" (* Scripting types     *)
          | "func" ;                (* Function pointer    *)
 
-IdentifierList = FunctionDef | (VariableDef {"," VariableDef} ";");
-
-VariableDef    = Identifier {ArrayDefinition} [Initialiser];
-FunctionDef    = ((Identifier {ArrayDefinition}) | ("operator" Operator))
-                 "(" [DefParameterList] ")"
-                 "{" [Statements] "}" ;
+IdentifierList   = VariableDef {"," VariableDef} ";";
+VariableDef      = Identifier {ArrayDefinition} [Initialiser];
+FunctionDef      = (Identifier {ArrayDefinition})
+                   "(" [DefParameterList] ")"
+                   "{" [Statements] "}" ;
+OperatorOverload = ("operator" Operator)
+                   "(" [DefParameterList] ")"
+                   "{" [Statements] "}" ;
 
 ArrayDefinition  = "[" [Expression] "]";
 Initialiser      = ("=" | ":=") Expression;
