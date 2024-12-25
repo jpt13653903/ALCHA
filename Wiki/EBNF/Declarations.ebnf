@@ -12,7 +12,8 @@ Statement  = [Wait]
 
 Label  = Identifier ":"; (* Only useful within an fsm construct *)
 
-Definition = ( BaseType | TypeIdentifier ) [ParameterList]
+(* Inline only applies to function definitions *)
+Definition = ["inline"] ( BaseType | TypeIdentifier ) [ParameterList]
              [AttributeList] IdentifierList;
 
 ClassDefinition = "class" [AttributeList] Identifier
@@ -37,7 +38,7 @@ BaseType = "pin"  | "net"          (* Synthesisable types *)
 IdentifierList = FunctionDef | (VariableDef {"," VariableDef} ";");
 
 VariableDef    = Identifier {ArrayDefinition} [Initialiser];
-FunctionDef    = ["inline"] ((Identifier {ArrayDefinition}) | ("operator" Operator))
+FunctionDef    = ((Identifier {ArrayDefinition}) | ("operator" Operator))
                  "(" [DefParameterList] ")"
                  "{" [Statements] "}" ;
 
