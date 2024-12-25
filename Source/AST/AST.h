@@ -18,24 +18,34 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Symbol_Num_h
-#define Symbol_Num_h
+#ifndef AST_h
+#define AST_h
 //------------------------------------------------------------------------------
 
-#include "Symbol.h"
-#include "Number.h"
+#include "General.h"
+
+#include <string>
+#include <map>
 //------------------------------------------------------------------------------
 
-namespace Symbols{
-    struct Num: public Symbol{
-        Number value;
+namespace AST{
+    struct AST{
+        AST* next = 0;
 
-        Num(Symbol* parent = 0);
-        Num(Symbol* parent, Number value);
-       ~Num();
+        enum class Type{
+            Literal,
+            String,
+            Definition,
+            FunctionCall
+        } type;
 
-        void set(Number value);
-        std::string& print() const override;
+        AST(Type type);
+        virtual ~AST();
+
+        virtual bool run() = 0;
+
+        const char* decodeType() const;
+        virtual std::string& print() const = 0;
     };
 }
 //------------------------------------------------------------------------------

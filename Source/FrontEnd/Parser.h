@@ -24,6 +24,7 @@
 
 #include "General.h"
 #include "Scanner.h"
+#include "AST.h"
 //------------------------------------------------------------------------------
 
 class Parser{
@@ -41,18 +42,20 @@ class Parser{
 
         bool getToken();
 
-        bool print();
-        bool identifierStatement();
-        bool identifierlist(Token::Type type);
-        bool definition();
-        bool statement();
-        bool statements();
+        AST::AST* parameter();
+        AST::AST* parameterList();
+        AST::AST* identifierStatement();
+        AST::AST* functionDef(Token::Type type, std::string& identifier);
+        AST::AST* identifierlist(Token::Type type);
+        AST::AST* definition();
+        AST::AST* statement();
+        AST::AST* statements();
 
     public:
         Parser();
        ~Parser();
 
-        bool run(const char* filename);
+       AST::AST* parse(const char* filename);
 };
 //------------------------------------------------------------------------------
 

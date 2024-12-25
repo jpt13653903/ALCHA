@@ -28,25 +28,27 @@
 #include <map>
 //------------------------------------------------------------------------------
 
-class Symbol{
-    protected: // Types
-        enum class Type{
-            Num
-        } type;
+namespace Symbols{
+    class Symbol{
+        protected: // Types
+            enum class Type{
+                Num
+            } type;
 
-    protected: // Properties
-        std::string name;
-        std::map<std::string, Symbol*> attributes;
+        protected: // Properties
+            std::string name;
+            std::map<std::string, Symbol*> attributes;
 
-        Symbol* parent;
+            Symbol* parent;
 
-    public:
-        Symbol(Symbol* parent, Type type);
-        virtual ~Symbol();
+        public:
+            Symbol(Symbol* parent, Type type);
+            virtual ~Symbol();
 
-        const char* decodeType() const;
-        virtual std::string& print() const;
-};
+            const char* decodeType() const;
+            virtual std::string& print() const;
+    };
+}
 //------------------------------------------------------------------------------
 
 #endif

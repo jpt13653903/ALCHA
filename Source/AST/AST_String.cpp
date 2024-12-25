@@ -18,28 +18,37 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Symbol_Num_h
-#define Symbol_Num_h
+#include "AST_String.h"
 //------------------------------------------------------------------------------
 
-#include "Symbol.h"
-#include "Number.h"
+using std::string;
+using namespace AST;
 //------------------------------------------------------------------------------
 
-namespace Symbols{
-    struct Num: public Symbol{
-        Number value;
-
-        Num(Symbol* parent = 0);
-        Num(Symbol* parent, Number value);
-       ~Num();
-
-        void set(Number value);
-        std::string& print() const override;
-    };
+String::String():
+    AST(Type::String)
+{
 }
 //------------------------------------------------------------------------------
 
-#endif
+String::~String()
+{
+}
+//------------------------------------------------------------------------------
+
+bool String::run()
+{
+    return true;
+}
+//------------------------------------------------------------------------------
+
+std::string& String::print() const
+{
+    static string result;
+
+    result += '"' + data + '"';
+
+    return result;
+}
 //------------------------------------------------------------------------------
 

@@ -5,9 +5,9 @@ print(__TIME__);
 
 print(0x1234567890ABCDEF);
 
-num a;
-num b;
-a = 3;
-b = 5;
-print(a + b);
+// num a;
+// num b;
+// a = 3;
+// b = 5;
+// print(a + b);
 

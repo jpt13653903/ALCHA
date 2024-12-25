@@ -18,23 +18,23 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Symbol_Num_h
-#define Symbol_Num_h
+#ifndef AST_FunctionCall_h
+#define AST_FunctionCall_h
 //------------------------------------------------------------------------------
 
-#include "Symbol.h"
-#include "Number.h"
+#include "AST.h"
+#include <string>
 //------------------------------------------------------------------------------
 
-namespace Symbols{
-    struct Num: public Symbol{
-        Number value;
+namespace AST{
+    struct FunctionCall: public AST{
+        std::string name;
+        AST* parameters = 0;
 
-        Num(Symbol* parent = 0);
-        Num(Symbol* parent, Number value);
-       ~Num();
+        FunctionCall();
+       ~FunctionCall();
 
-        void set(Number value);
+        bool run() override;
         std::string& print() const override;
     };
 }

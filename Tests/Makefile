@@ -40,6 +40,8 @@ else
 endif
 #-------------------------------------------------------------------------------
 
+Includes += -I$(Source)
+Includes += -I$(Source)/AST
 Includes += -I$(Source)/DataStructures
 Includes += -I$(Source)/FrontEnd
 Includes += -I$(Source)/Tools
@@ -106,15 +108,22 @@ bin/testScanner$(ext): $(testScannerObjects) $(Resources) $(Headers)
 #-------------------------------------------------------------------------------
 
 testParserObjects += $(ObjectPath)/Tests/testParser.o
-testParserObjects += $(ObjectPath)/Toolbox/General.o
-testParserObjects += $(ObjectPath)/Toolbox/FileWrapper.o
-testParserObjects += $(ObjectPath)/Toolbox/UTF_Converter.o
+
+testParserObjects += $(ObjectPath)/Source/AST/AST.o
+testParserObjects += $(ObjectPath)/Source/AST/AST_String.o
+testParserObjects += $(ObjectPath)/Source/AST/Definition.o
+testParserObjects += $(ObjectPath)/Source/AST/FunctionCall.o
+testParserObjects += $(ObjectPath)/Source/AST/Literal.o
+testParserObjects += $(ObjectPath)/Source/DataStructures/TokenTree.o
 testParserObjects += $(ObjectPath)/Source/FrontEnd/Scanner.o
 testParserObjects += $(ObjectPath)/Source/FrontEnd/Parser.o
 testParserObjects += $(ObjectPath)/Source/FrontEnd/Token.o
-testParserObjects += $(ObjectPath)/Source/DataStructures/TokenTree.o
 testParserObjects += $(ObjectPath)/Source/Tools/Number.o
 testParserObjects += $(ObjectPath)/Source/Tools/Utilities.o
+
+testParserObjects += $(ObjectPath)/Toolbox/General.o
+testParserObjects += $(ObjectPath)/Toolbox/FileWrapper.o
+testParserObjects += $(ObjectPath)/Toolbox/UTF_Converter.o
 
 bin/testParser$(ext): $(testParserObjects) $(Resources) $(Headers)
 	mkdir -p bin

@@ -18,66 +18,64 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Parser.h"
+#include "FunctionCall.h"
+#include "Literal.h"
+#include "AST_String.h"
 //------------------------------------------------------------------------------
 
-#include <string>
 using std::string;
-
-AST::AST* ast = 0;
-Parser* parser;
+using namespace AST;
 //------------------------------------------------------------------------------
 
-bool startTest(const char* name)
+FunctionCall::FunctionCall():
+    AST(Type::FunctionCall)
 {
-    printf(ANSI_FG_CYAN "Starting test: " ANSI_RESET "%s...\n", name); \
+}
+//------------------------------------------------------------------------------
 
-    string filename;
-    filename  = "testParser/";
-    filename += name;
-    filename += ".alc";
+FunctionCall::~FunctionCall()
+{
+    if(parameters) delete parameters;
+}
+//------------------------------------------------------------------------------
 
-    if(ast) delete ast;
-    ast = parser->parse(filename.c_str());
-
-    if(!ast){
-        error("Cannot parse file %s", filename.c_str());
-        return false;
-    }
-    auto node = ast;
-    while(node){
-        if(!node->run()) return false;
-        node = node->next;
+bool FunctionCall::run()
+{
+    if(name == "print"){
+        if(parameters){
+            if(parameters->type == AST::Type::String){
+                printf(ANSI_FG_BRIGHT_BLACK "String: " ANSI_RESET "%s\n",
+                       ((String*)parameters)->data.c_str());
+            }
+            else if(parameters->type == AST::Type::Literal){
+                printf(ANSI_FG_BRIGHT_BLACK "Literal: " ANSI_RESET "%s\n",
+                       ((Literal*)parameters)->value.print().c_str());
+            }
+        }else{
+            printf("\n");
+        }
     }
     return true;
 }
 //------------------------------------------------------------------------------
 
-bool testParser()
+std::string& FunctionCall::print() const
 {
-    if(!startTest("Parser")) return false;
+    static string result;
 
-    printf(ANSI_FG_GREEN "PASS\n" ANSI_RESET);
-    return true;
+    result = name + "(";
+
+    bool first = true;
+    AST* parameter = parameters;
+    while(parameter){
+        if(!first) result += ", ";
+        first = false;
+        result += parameter->print();
+        parameter = parameter->next;
+    }
+    result += ")\n";
+
+    return result;
 }
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv)
-{
-    Parser _parser;
-    parser = &_parser;
-    setupTerminal();
-
-    printf("\n\n");
-    if(!testParser() ) goto MainError;
-
-    printf(ANSI_FG_GREEN "All OK\n\n" ANSI_RESET);
-    if(ast) delete ast;
-    return 0;
-
-    MainError:
-        printf(ANSI_FG_BRIGHT_RED "There were errors\n\n" ANSI_RESET);
-        if(ast) delete ast;
-        return -1;
-}
-//------------------------------------------------------------------------------

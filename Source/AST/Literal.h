@@ -18,23 +18,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Symbol_Num_h
-#define Symbol_Num_h
+#ifndef AST_Literal_h
+#define AST_Literal_h
 //------------------------------------------------------------------------------
 
-#include "Symbol.h"
+#include "AST.h"
 #include "Number.h"
 //------------------------------------------------------------------------------
 
-namespace Symbols{
-    struct Num: public Symbol{
+namespace AST{
+    struct Literal: public AST{
         Number value;
 
-        Num(Symbol* parent = 0);
-        Num(Symbol* parent, Number value);
-       ~Num();
+        Literal();
+       ~Literal();
 
-        void set(Number value);
+        bool run() override;
         std::string& print() const override;
     };
 }

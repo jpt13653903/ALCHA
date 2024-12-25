@@ -18,28 +18,33 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Symbol_Num_h
-#define Symbol_Num_h
+#include "AST.h"
 //------------------------------------------------------------------------------
 
-#include "Symbol.h"
-#include "Number.h"
+using std::string;
 //------------------------------------------------------------------------------
 
-namespace Symbols{
-    struct Num: public Symbol{
-        Number value;
-
-        Num(Symbol* parent = 0);
-        Num(Symbol* parent, Number value);
-       ~Num();
-
-        void set(Number value);
-        std::string& print() const override;
-    };
+AST::AST::AST(Type type)
+{
+    this->type = type;
 }
 //------------------------------------------------------------------------------
 
-#endif
+AST::AST::~AST()
+{
+    if(next) delete next;
+}
+//------------------------------------------------------------------------------
+
+const char* AST::AST::decodeType() const
+{
+    switch(type){
+        case Type::Literal:      return "Literal";
+        case Type::String:       return "String";
+        case Type::Definition:   return "Definition";
+        case Type::FunctionCall: return "FunctionCall";
+        default:                 return "Invalid Type Index";
+    }
+}
 //------------------------------------------------------------------------------
 

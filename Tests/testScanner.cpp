@@ -32,13 +32,13 @@ bool startTest(const char* name)
 {
     printf(ANSI_FG_CYAN "Starting test: " ANSI_RESET "%s... ", name); \
 
-    string filenmae;
-    filenmae  = "testScanner/";
-    filenmae += name;
-    filenmae += ".alc";
+    string filename;
+    filename  = "testScanner/";
+    filename += name;
+    filename += ".alc";
 
-    if(!scanner->open(filenmae.c_str())){
-        error("Cannot open file %s", filenmae.c_str());
+    if(!scanner->open(filename.c_str())){
+        error("Cannot open file %s", filename.c_str());
         return false;
     }
     return true;

@@ -22,6 +22,12 @@
 #include "Utilities.h"
 //------------------------------------------------------------------------------
 
+#include "AST/AST_String.h"
+#include "AST/Definition.h"
+#include "AST/FunctionCall.h"
+#include "AST/Literal.h"
+//------------------------------------------------------------------------------
+
 using std::string;
 //------------------------------------------------------------------------------
 
@@ -57,7 +63,7 @@ bool Parser::getToken()
 }
 //------------------------------------------------------------------------------
 
-// bool Parser::statementBlock()
+// AST::AST* Parser::statementBlock()
 // {
 //     if(token.type == Token::Type::OpenCurly){
 //         getToken();
@@ -77,166 +83,262 @@ bool Parser::getToken()
 // }
 //------------------------------------------------------------------------------
 
-bool Parser::print()
+AST::AST* Parser::parameter()
 {
-    if(token.type != Token::Type::OpenRound){
-        printError("( expected");
-        return false;
+    if(token.type == Token::Type::Identifier){
+        string identifier = token.data;
+        getToken();
+        if(token.type == Token::Type::Assign ||
+           token.type == Token::Type::RawAssign){
+            printError("TODO: Named parameters");
+            return 0;
+        }else{
+            printError("TODO: Expressions");
+            return 0;
+        }
+    }else if(token.type == Token::Type::Literal){
+        auto result = new AST::Literal;
+        result->value = token.value;
+        getToken();
+        return result;
+
+    }else if(token.type == Token::Type::String){
+        auto result = new AST::String;
+        result->data = token.data;
+        getToken();
+        return result;
     }
+    return 0;
+}
+//------------------------------------------------------------------------------
+
+AST::AST* Parser::parameterList()
+{
     getToken();
 
-    if(token.type == Token::Type::String){
-        printf(ANSI_FG_BRIGHT_BLACK "String: " ANSI_RESET "%s\n",
-               token.data.c_str());
-    }
-    else if(token.type == Token::Type::Literal){
-        printf(ANSI_FG_BRIGHT_BLACK "Literal: " ANSI_RESET "%s\n",
-               token.value.print().c_str());
-    }
-    getToken();
+    AST::AST* result  = 0;
+    AST::AST* last    = 0;
+    AST::AST* current = 0;
 
+    current = parameter();
+    result = last = current;
+
+    if(!current) return 0;
+
+    while(token.type == Token::Type::Comma){
+        current = parameter();
+        if(!current){
+            printError("Parameter expected");
+            delete result;
+            return 0;
+        }
+        last->next = current;
+        last = current;
+    }
     if(token.type != Token::Type::CloseRound){
-        printError("( expected");
-        return false;
+        printError(") expected");
+        delete result;
+        return 0;
     }
     getToken();
 
-    return true;
+    return result;
 }
 //------------------------------------------------------------------------------
 
-bool Parser::identifierStatement()
+AST::AST* Parser::identifierStatement()
 {
-    if(token.data == "print"){
-        getToken();
-        print();
+    string identifier = token.data;
+    getToken();
 
-        if(token.type != Token::Type::Semicolon){
-            printError("; expected");
-            return false;
-        }
-        getToken();
-
-        return true;
-    }else{
-        printError("TODO: Label");
-        printError("TODO: Definition (using defined type)");
-        printError("TODO: FuntionCallStatement");
-        printError("TODO: NameSpacePush");
-        printError("TODO: Assignment");
-        return false;
-    }
-    return false;
-}
-//------------------------------------------------------------------------------
-
-bool Parser::functionDef(Token::Type type, string& identifier)
-{
-    printError("TODO FunctionDef");
-    return false;
-}
-//------------------------------------------------------------------------------
-
-bool Parser::identifierlist(Token::Type type)
-{
-    bool   isList = false;
-    bool   isVariableDef = false;
-    string identifier;
-
-    while(token.type > Token::Type::EndOfFile){
-        if(token.type == Token::Type::
-        identifier = token.data;
-        getToken();
-
-        while(token.type == Token::Type::OpenSquare){
-            printError("TODO ArrayDefinition");
-            return false;
-        }
-
-        Symbol* symbol = 0;
-        switch(token.type){
-            case Token::Type::Assign:
-                break;
-
-            case Token::Type::Comma:
-                break;
-
-            case Token::Type::Semicolon:
-                break;
-
-            case Token::Type::OpenRound:
-                if(isList){
-                    printError("Unexpected function definition (cannot be part of a list)");
-                    return false;
-                }
-                return functionDef(type, identifier);
-
-            default:
-                printError("Unexpected token");
-                return false;
-        }
-
-        switch
-    }
-    return false;
-}
-//------------------------------------------------------------------------------
-
-bool Parser::definition()
-{
-    isInline = false;
-    if(token.type == Token::Type::Inline){
-        isInline = true;
-        getToken();
-    }
-
-    Token::Type type;
     switch(token.type){
-        case Token::Type::Pin:
-        case Token::Type::Net:
-        case Token::Type::Void:
-        case Token::Type::Auto:
-        case Token::Type::Byte:
-        case Token::Type::Char:
-        case Token::Type::Num:
-        case Token::Type::Func:
+        case Token::Type::Colon:
+            printError("TODO: Label");
+            return 0;
+
+        case Token::Type::OpenRound:{
+            auto parameters = parameterList();
+            if(token.type == Token::Type::Semicolon){
+                auto result = new AST::FunctionCall;
+                result->name = identifier;
+                result->parameters = parameters;
+                getToken();
+                return result;
+            }
+            if(token.type == Token::Type::OpenAngle){
+                printError("TODO: Definition (using defined type)");
+                if(parameters) delete parameters;
+                return 0;
+            }
+            if(token.type == Token::Type::Identifier){
+                printError("TODO: Definition (using defined type)");
+                if(parameters) delete parameters;
+                return 0;
+            }else{
+                printError("Identifier expected");
+                if(parameters) delete parameters;
+                return 0;
+            }
+        }
+
+        case Token::Type::OpenAngle:
         case Token::Type::Identifier:
-            type = token.type;
-            getToken();
-            break;
+            printError("TODO: Definition (using defined type)");
+            return 0;
+
+        case Token::Type::AccessMemberPush:
+            printError("TODO: NameSpacePush");
+            return 0;
+
+        case Token::Type::Assign:
+        case Token::Type::RawAssign:
+        case Token::Type::AppendAssign:
+        case Token::Type::AddAssign:
+        case Token::Type::SubtractAssign:
+        case Token::Type::MultiplyAssign:
+        case Token::Type::DivideAssign:
+        case Token::Type::ModulusAssign:
+        case Token::Type::XorAssign:
+        case Token::Type::AndAssign:
+        case Token::Type::OrAssign:
+        case Token::Type::ExponentialAssign:
+        case Token::Type::ShiftLeftAssign:
+        case Token::Type::ShiftRightAssign:
+            printError("TODO: Assign");
+            return 0;
 
         default:
             printError("Unexpected token");
-            return false;
+            return 0;
     }
-
-    if(token.type == Token::Type::OpenRound){
-        printError("TODO ParameterList");
-        return false;
-    }
-
-    if(token.type == Token::Type::OpenAngle){
-        printError("TODO AttributeList");
-        return false;
-    }
-
-    if(token.type == Token::Type::Identifier){
-        return identifierlist(type);
-
-    }else if(token.type == Token::Type::Operator){
-        printError("TODO OperatorOverload");
-        return false;
-
-    }else{
-        printError("Identifier expected");
-        return false;
-    }
-
-    return false;
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-bool Parser::statement()
+AST::AST* Parser::functionDef(Token::Type type, string& identifier)
+{
+    printError("TODO FunctionDef");
+    return 0;
+}
+//------------------------------------------------------------------------------
+
+AST::AST* Parser::identifierlist(Token::Type type)
+{
+    printError("TODO IdentifierList");
+    return 0;
+
+    // bool   isList = false;
+    // bool   isVariableDef = false;
+    // string identifier;
+
+    // while(token.type > Token::Type::EndOfFile){
+    //     if(token.type == Token::Type::Identifier){
+    //         identifier = token.data;
+    //         getToken();
+    //     }else{
+    //         printError("Identifier expected");
+    //         return 0;
+    //     }
+
+    //     while(token.type == Token::Type::OpenSquare){
+    //         printError("TODO ArrayDefinition");
+    //         return 0;
+    //     }
+
+    //     switch(token.type){
+    //         case Token::Type::Assign:
+    //             isVariableDef = true;
+    //             printError("TODO Initialiser");
+    //             return 0;
+
+    //         case Token::Type::Comma:
+    //             isList = true;
+    //             isVariableDef = false;
+    //             getToken();
+    //             break;
+
+    //         case Token::Type::Semicolon:
+    //             getToken();
+    //             return true;
+
+    //         case Token::Type::OpenRound:
+    //             if(isList){
+    //                 printError("Unexpected function definition (cannot be part of a list)");
+    //                 return false;
+    //             }
+    //             if(isVariableDef){
+    //                 printError("Unexpected initialiser before function definition");
+    //                 return false;
+    //             }
+    //             return functionDef(type, identifier);
+
+    //         default:
+    //             printError("Unexpected token");
+    //             return false;
+    //     }
+    // }
+    // return false;
+}
+//------------------------------------------------------------------------------
+
+AST::AST* Parser::definition()
+{
+    printError("TODO Definition");
+    return 0;
+
+    // isInline = false;
+    // if(token.type == Token::Type::Inline){
+    //     isInline = true;
+    //     getToken();
+    // }
+
+    // Token::Type type;
+    // switch(token.type){
+    //     case Token::Type::Pin:
+    //     case Token::Type::Net:
+    //     case Token::Type::Void:
+    //     case Token::Type::Auto:
+    //     case Token::Type::Byte:
+    //     case Token::Type::Char:
+    //     case Token::Type::Num:
+    //     case Token::Type::Func:
+    //     case Token::Type::Identifier:
+    //         type = token.type;
+    //         getToken();
+    //         break;
+
+    //     default:
+    //         printError("Unexpected token");
+    //         return false;
+    // }
+
+    // if(token.type == Token::Type::OpenRound){
+    //     printError("TODO ParameterList");
+    //     return false;
+    // }
+
+    // if(token.type == Token::Type::OpenAngle){
+    //     printError("TODO AttributeList");
+    //     return false;
+    // }
+
+    // if(token.type == Token::Type::Identifier){
+    //     return identifierlist(type);
+
+    // }else if(token.type == Token::Type::Operator){
+    //     printError("TODO OperatorOverload");
+    //     return false;
+
+    // }else{
+    //     printError("Identifier expected");
+    //     return false;
+    // }
+
+    // return 0;
+}
+//------------------------------------------------------------------------------
+
+AST::AST* Parser::statement()
 {
     switch(token.type){
         case Token::Type::WaitUntil:
@@ -244,7 +346,7 @@ bool Parser::statement()
         case Token::Type::WaitFor:
         case Token::Type::WaitCycles:
             printError("TODO Wait");
-            return false;
+            return 0;
 
         case Token::Type::Identifier:
             return identifierStatement();
@@ -262,27 +364,27 @@ bool Parser::statement()
 
         case Token::Type::Class:
             printError("TODO: ClassDefinition");
-            return false;
+            return 0;
 
         case Token::Type::Enum:
             printError("TODO: EnumDefinition");
-            return false;
+            return 0;
 
         case Token::Type::Alias:
             printError("TODO: Alias");
-            return false;
+            return 0;
 
         case Token::Type::Import:
             printError("TODO: Import");
-            return false;
+            return 0;
 
         case Token::Type::Struct:
             printError("TODO: Struct");
-            return false;
+            return 0;
 
         case Token::Type::Group:
             printError("TODO: Group");
-            return false;
+            return 0;
 
         case Token::Type::Public:
         case Token::Type::Private:
@@ -290,104 +392,120 @@ bool Parser::statement()
         case Token::Type::Input:
         case Token::Type::Output:
             printError("TODO: AccessDirectionGroup");
-            return false;
+            return 0;
 
         case Token::Type::If:
             printError("TODO: IfStatement");
-            return false;
+            return 0;
 
         case Token::Type::For:
             printError("TODO: For");
-            return false;
+            return 0;
 
         case Token::Type::While:
             printError("TODO: While");
-            return false;
+            return 0;
 
         case Token::Type::Loop:
             printError("TODO: Loop");
-            return false;
+            return 0;
 
         case Token::Type::Switch:
             printError("TODO: Switch");
-            return false;
+            return 0;
 
         case Token::Type::Case:
             printError("TODO: Case");
-            return false;
+            return 0;
 
         case Token::Type::Return:
         case Token::Type::Break:
         case Token::Type::Continue:
             printError("TODO: Jump");
-            return false;
+            return 0;
 
         case Token::Type::GoTo:
             printError("TODO: GoTo");
-            return false;
+            return 0;
 
         case Token::Type::RTL:
             printError("TODO: RTL");
-            return false;
+            return 0;
 
         case Token::Type::FSM:
             printError("TODO: FSM");
-            return false;
+            return 0;
 
         case Token::Type::HDL:
             printError("TODO: HDL");
-            return false;
+            return 0;
 
         case Token::Type::Stimulus:
             printError("TODO: Stimulus");
-            return false;
+            return 0;
 
         case Token::Type::Emulate:
             printError("TODO: Emulate");
-            return false;
+            return 0;
 
         case Token::Type::OpenCurly:
             printError("TODO: ForkJoin");
-            return false;
+            return 0;
 
         case Token::Type::Assert:
             printError("TODO: Assert");
-            return false;
+            return 0;
 
         case Token::Type::Semicolon:
-            getToken();
-            return true;
+            printError("TODO: Fence");
+            return 0;
 
         case Token::Type::EndOfFile:
-            return false;
+            return 0;
 
         default:{
             printError("Unexpected token");
-            return false;
+            return 0;
         }
     }
-    return false;
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-bool Parser::statements()
+AST::AST* Parser::statements()
 {
-    if(!statement()) return false;
-    while(statement());
-    return !error;
+    AST::AST* result  = 0;
+    AST::AST* last    = 0;
+    AST::AST* current = 0;
+
+    current = statement();
+    if(!current) return 0;
+    result = last = current;
+
+    current = statement();
+    while(current){
+        last->next = current;
+        last = current;
+        current = statement();
+    }
+    return result;
 }
 //------------------------------------------------------------------------------
 
-bool Parser::run(const char* filename)
+AST::AST* Parser::parse(const char* filename)
 {
     info("Running %s", filename);
 
     error = !scanner.open(filename);
-    if(error) return false;
+    if(error) return 0;
 
     getToken();
-    statements();
+    AST::AST* result = statements();
 
-    return !error;
+    if(error){
+        if(result) delete result;
+        return 0;
+    }
+    return result;
 }
 //------------------------------------------------------------------------------
