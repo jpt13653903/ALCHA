@@ -25,16 +25,8 @@ using std::string;
 using namespace Symbols;
 //------------------------------------------------------------------------------
 
-Num::Num(Symbol* parent):
-    Symbol(parent, Type::Num)
+Num::Num(): Symbol(Type::Num)
 {
-}
-//------------------------------------------------------------------------------
-
-Num::Num(Symbol* parent, Number value):
-    Symbol(parent, Type::Num)
-{
-    this->value = value;
 }
 //------------------------------------------------------------------------------
 
@@ -43,18 +35,11 @@ Num::~Num()
 }
 //------------------------------------------------------------------------------
 
-void Num::set(Number value)
-{
-    this->value = value;
-}
-//------------------------------------------------------------------------------
-
 std::string& Num::print() const
 {
     static string result;
 
-    result  = Symbol::print();
-    result += value.print().c_str();
+    result = value.print().c_str();
 
     return result;
 }

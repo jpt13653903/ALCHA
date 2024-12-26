@@ -30,11 +30,9 @@ namespace Symbols{
     struct Num: public Symbol{
         Number value;
 
-        Num(Symbol* parent = 0);
-        Num(Symbol* parent, Number value);
+        Num();
        ~Num();
 
-        void set(Number value);
         std::string& print() const override;
     };
 }

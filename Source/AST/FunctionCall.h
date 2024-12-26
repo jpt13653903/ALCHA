@@ -31,7 +31,7 @@ namespace AST{
         std::string name;
         AST* parameters = 0;
 
-        FunctionCall();
+        FunctionCall(int line, int filenameIndex);
        ~FunctionCall();
 
         bool run() override;

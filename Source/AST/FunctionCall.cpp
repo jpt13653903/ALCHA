@@ -27,8 +27,8 @@ using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-FunctionCall::FunctionCall():
-    AST(Type::FunctionCall)
+FunctionCall::FunctionCall(int line, int filenameIndex):
+    AST(line, filenameIndex, Type::FunctionCall)
 {
 }
 //------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ std::string& FunctionCall::print() const
         result += parameter->print();
         parameter = parameter->next;
     }
-    result += ")\n";
+    result += ")";
 
     return result;
 }

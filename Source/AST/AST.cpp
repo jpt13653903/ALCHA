@@ -19,14 +19,20 @@
 //==============================================================================
 
 #include "AST.h"
+#include "Utilities.h"
 //------------------------------------------------------------------------------
 
 using std::string;
 //------------------------------------------------------------------------------
 
-AST::AST::AST(Type type)
+std::vector<std::string> AST::filenameBuffer;
+//------------------------------------------------------------------------------
+
+AST::AST::AST(int line, int filenameIndex, Type type)
 {
-    this->type = type;
+    this->line          = line;
+    this->filenameIndex = filenameIndex;
+    this->type          = type;
 }
 //------------------------------------------------------------------------------
 
@@ -36,14 +42,22 @@ AST::AST::~AST()
 }
 //------------------------------------------------------------------------------
 
+void AST::AST::printError(const char* message)
+{
+    ::printError(line, filenameBuffer[filenameIndex], message);
+}
+//------------------------------------------------------------------------------
+
 const char* AST::AST::decodeType() const
 {
     switch(type){
-        case Type::Literal:      return "Literal";
-        case Type::String:       return "String";
-        case Type::Definition:   return "Definition";
-        case Type::FunctionCall: return "FunctionCall";
-        default:                 return "Invalid Type Index";
+        case Type::Literal:          return "Literal";
+        case Type::String:           return "String";
+        case Type::VariableDef:      return "VariableDef";
+        case Type::FunctionDef:      return "FunctionDef";
+        case Type::OperatorOverload: return "OperatorOverload";
+        case Type::FunctionCall:     return "FunctionCall";
+        default:                     return "Invalid Type Index";
     }
 }
 //------------------------------------------------------------------------------

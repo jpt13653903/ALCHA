@@ -25,24 +25,33 @@
 #include "General.h"
 
 #include <string>
-#include <map>
+#include <vector>
 //------------------------------------------------------------------------------
 
 namespace AST{
+    extern std::vector<std::string> filenameBuffer;
+
     struct AST{
+        int line          = 0;
+        int filenameIndex = 0;
+
         AST* next = 0;
 
         enum class Type{
             Literal,
             String,
-            Definition,
+            VariableDef,
+            FunctionDef,
+            OperatorOverload,
             FunctionCall
         } type;
 
-        AST(Type type);
+        AST(int line, int filenameIndex, Type type);
         virtual ~AST();
 
         virtual bool run() = 0;
+
+        void printError(const char* message);
 
         const char* decodeType() const;
         virtual std::string& print() const = 0;

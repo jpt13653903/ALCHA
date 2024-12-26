@@ -607,9 +607,9 @@ string& Number::print() const
     double di = mpq_get_d(imag);
 
     char* s = new char[strlen(sr) + strlen(si) + 0x100];
-    if(r && i) sprintf(s, "(%s+%sj) (~(%.18g+%.18gj))", sr, si, dr, di);
-    else if(i) sprintf(s, "%sj (~%.18gj)", si, di);
-    else       sprintf(s, "%s (~%.18g)"  , sr, dr);
+    if(r && i) sprintf(s, "(%s+%sj) (~(%.6g+%.6gj))", sr, si, dr, di);
+    else if(i) sprintf(s, "%sj (~%.6gj)", si, di);
+    else       sprintf(s, "%s (~%.6g)"  , sr, dr);
     result += s;
 
     free(sr);

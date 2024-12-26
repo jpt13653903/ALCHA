@@ -31,6 +31,7 @@ class Parser{
     private: // Local Objects
         Token   token; // The current token
         Scanner scanner;
+        int     astFilenameIndex = 0;
 
     private: // Parser State
         bool error    = false;

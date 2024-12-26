@@ -32,21 +32,21 @@ namespace Symbols{
     class Symbol{
         protected: // Types
             enum class Type{
+                NameSpace,
                 Num
             } type;
 
         protected: // Properties
-            std::string name;
             std::map<std::string, Symbol*> attributes;
 
             Symbol* parent;
 
         public:
-            Symbol(Symbol* parent, Type type);
+            Symbol(Type type);
             virtual ~Symbol();
 
             const char* decodeType() const;
-            virtual std::string& print() const;
+            virtual std::string& print() const = 0;
     };
 }
 //------------------------------------------------------------------------------

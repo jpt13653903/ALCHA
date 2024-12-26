@@ -18,20 +18,27 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_String_h
-#define AST_String_h
+#ifndef AST_VariableDef_h
+#define AST_VariableDef_h
 //------------------------------------------------------------------------------
 
 #include "AST.h"
+#include "Token.h"
+
 #include <string>
 //------------------------------------------------------------------------------
 
 namespace AST{
-    struct String: public AST{
-        std::string data;
+    struct VariableDef: public AST{
+        Token::Type type = Token::Type::Unknown;
+        std::string name;
+        AST* typeIdentifier = 0;
+        AST* parameters     = 0;
+        AST* attributes     = 0;
+        AST* initialiser    = 0;
 
-        String(int line, int filenameIndex);
-       ~String();
+        VariableDef(int line, int filenameIndex);
+       ~VariableDef();
 
         bool run() override;
         std::string& print() const override;

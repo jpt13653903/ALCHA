@@ -18,21 +18,23 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Definition_h
-#define AST_Definition_h
+#ifndef Symbol_NameSpace_h
+#define Symbol_NameSpace_h
 //------------------------------------------------------------------------------
 
-#include "AST.h"
+#include "Symbol.h"
 //------------------------------------------------------------------------------
 
-namespace AST{
-    struct Definition: public AST{
-        Definition();
-       ~Definition();
+namespace Symbols{
+    struct NameSpace: public Symbol{
+        std::map<std::string, Symbol*> symbols;
 
-        bool run() override;
+        NameSpace();
+       ~NameSpace();
+
         std::string& print() const override;
     };
+    extern NameSpace global;
 }
 //------------------------------------------------------------------------------
 

@@ -25,8 +25,8 @@ using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-String::String():
-    AST(Type::String)
+String::String(int line, int filenameIndex):
+    AST(line, filenameIndex, Type::String)
 {
 }
 //------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ std::string& String::print() const
 {
     static string result;
 
-    result += '"' + data + '"';
+    result = '"' + data + '"';
 
     return result;
 }

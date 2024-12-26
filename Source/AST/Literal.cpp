@@ -25,8 +25,8 @@ using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-Literal::Literal():
-    AST(Type::Literal)
+Literal::Literal(int line, int filenameIndex):
+    AST(line, filenameIndex, Type::Literal)
 {
 }
 //------------------------------------------------------------------------------

@@ -22,38 +22,32 @@
 //------------------------------------------------------------------------------
 
 using std::string;
+using std::map;
 using namespace Symbols;
 //------------------------------------------------------------------------------
 
-Symbol::Symbol(Symbol* parent, Type type)
+Symbol::Symbol(Type type)
 {
-    this->type   = type;
-    this->parent = parent;
+    this->type = type;
 }
 //------------------------------------------------------------------------------
 
 Symbol::~Symbol()
 {
+    for(auto attrib: attributes){
+        if(attrib.second) delete(attrib.second);
+    }
 }
 //------------------------------------------------------------------------------
 
 const char* Symbol::decodeType() const
 {
     switch(type){
-        case Type::Num: return "Num";
-        default:        return "Invalid Type Index";
+        case Type::NameSpace: return "NameSpace";
+        case Type::Num:       return "Num";
+
+        default: return "Invalid Type Index";
     }
 }
 //------------------------------------------------------------------------------
 
-string& Symbol::print() const
-{
-    static string result;
-
-    result  = name;
-    result += " (";
-    result  = decodeType();
-    result += "): ";
-    return result;
-}
-//------------------------------------------------------------------------------

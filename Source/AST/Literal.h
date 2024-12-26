@@ -30,7 +30,7 @@ namespace AST{
     struct Literal: public AST{
         Number value;
 
-        Literal();
+        Literal(int line, int filenameIndex);
        ~Literal();
 
         bool run() override;

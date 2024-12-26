@@ -18,35 +18,40 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Definition.h"
+#include "NameSpace.h"
 //------------------------------------------------------------------------------
 
 using std::string;
-using namespace AST;
+using namespace Symbols;
 //------------------------------------------------------------------------------
 
-Definition::Definition():
-    AST(Type::Definition)
+NameSpace Symbols::global;
+//------------------------------------------------------------------------------
+
+NameSpace::NameSpace(): Symbol(Type::NameSpace)
 {
 }
 //------------------------------------------------------------------------------
 
-Definition::~Definition()
+NameSpace::~NameSpace()
 {
+    for(auto symbol: symbols){
+        if(symbol.second) delete(symbol.second);
+    }
 }
 //------------------------------------------------------------------------------
 
-bool Definition::run()
-{
-    return true;
-}
-//------------------------------------------------------------------------------
-
-std::string& Definition::print() const
+std::string& NameSpace::print() const
 {
     static string result;
 
-    result = "TODO Definition::print";
+    result  = ANSI_FG_BRIGHT_BLACK;
+    result += decodeType();
+    result += ": " ANSI_RESET "[\n";
+    for(auto symbol: symbols){
+        result += "    " + symbol.second->print();
+    }
+    result += "]";
 
     return result;
 }

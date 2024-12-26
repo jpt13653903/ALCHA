@@ -109,17 +109,12 @@ bin/testScanner$(ext): $(testScannerObjects) $(Resources) $(Headers)
 
 testParserObjects += $(ObjectPath)/Tests/testParser.o
 
-testParserObjects += $(ObjectPath)/Source/AST/AST.o
-testParserObjects += $(ObjectPath)/Source/AST/AST_String.o
-testParserObjects += $(ObjectPath)/Source/AST/Definition.o
-testParserObjects += $(ObjectPath)/Source/AST/FunctionCall.o
-testParserObjects += $(ObjectPath)/Source/AST/Literal.o
-testParserObjects += $(ObjectPath)/Source/DataStructures/TokenTree.o
-testParserObjects += $(ObjectPath)/Source/FrontEnd/Scanner.o
-testParserObjects += $(ObjectPath)/Source/FrontEnd/Parser.o
-testParserObjects += $(ObjectPath)/Source/FrontEnd/Token.o
-testParserObjects += $(ObjectPath)/Source/Tools/Number.o
-testParserObjects += $(ObjectPath)/Source/Tools/Utilities.o
+testParserSource  += $(shell find $(Source)/AST            -iname "*.cpp")
+testParserSource  += $(shell find $(Source)/DataStructures -iname "*.cpp")
+testParserSource  += $(shell find $(Source)/FrontEnd       -iname "*.cpp")
+testParserSource  += $(shell find $(Source)/Symbols        -iname "*.cpp")
+testParserSource  += $(shell find $(Source)/Tools          -iname "*.cpp")
+testParserObjects += $(testParserSource:$(Source)/%.cpp=$(ObjectPath)/Source/%.o)
 
 testParserObjects += $(ObjectPath)/Toolbox/General.o
 testParserObjects += $(ObjectPath)/Toolbox/FileWrapper.o
