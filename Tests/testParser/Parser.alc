@@ -9,7 +9,7 @@ print(123.456);
 num a;
 num b;
 num c, d;
-a = 3;
+a(15, 8) = 3;
 // b = 5;
 // print(a + b);
 
