@@ -31,10 +31,14 @@
 using std::string;
 //------------------------------------------------------------------------------
 
-Parser::Parser(){}
+Parser::Parser()
+{
+}
 //------------------------------------------------------------------------------
 
-Parser::~Parser(){}
+Parser::~Parser()
+{
+}
 //------------------------------------------------------------------------------
 
 void Parser::printError(const char* message)
@@ -375,6 +379,10 @@ AST::AST* Parser::statement()
 
         case Token::Type::Identifier:
             return identifierStatement();
+
+        case Token::Type::AccessAttribute:
+            printError("TODO global attribute");
+            return 0;
 
         case Token::Type::Inline:
         case Token::Type::Pin:

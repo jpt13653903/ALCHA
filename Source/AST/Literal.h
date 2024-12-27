@@ -33,7 +33,6 @@ namespace AST{
         Literal(int line, int filenameIndex);
        ~Literal();
 
-        bool run() override;
         std::string& print() const override;
     };
 }

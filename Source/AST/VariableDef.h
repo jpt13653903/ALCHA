@@ -40,7 +40,6 @@ namespace AST{
         VariableDef(int line, int filenameIndex);
        ~VariableDef();
 
-        bool run() override;
         std::string& print() const override;
     };
 }

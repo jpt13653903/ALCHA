@@ -19,14 +19,15 @@
 //==============================================================================
 
 #include "Parser.h"
-#include "Symbols/NameSpace.h"
+#include "Interpreter.h"
 //------------------------------------------------------------------------------
 
 #include <string>
 using std::string;
 
-AST::AST* ast = 0;
-Parser* parser;
+AST::AST*    ast = 0;
+Parser*      parser;
+Interpreter* interpreter;
 //------------------------------------------------------------------------------
 
 bool startTest(const char* name)
@@ -82,7 +83,6 @@ bool runTest(const char** expected)
         }
         if(!test(n, node, expected[n])) return false;
         n++;
-        node->run();
         node = node->next;
     }
     if(expected[n]){
@@ -107,8 +107,8 @@ void endTest(const char* message = "PASS")
 
 bool testSymbol(const char* name, const char* expected)
 {
-    auto symbol = Symbols::global.symbols.find(name);
-    if(symbol == Symbols::global.symbols.end()){
+    auto symbol = interpreter->global.symbols.find(name);
+    if(symbol == interpreter->global.symbols.end()){
         printf(ANSI_FG_BRIGHT_RED "FAILED:\n"
                ANSI_RESET         "    Cannot find \"%s\" in symbol table\n",
                name);
@@ -148,6 +148,8 @@ bool testParser()
     };
     if(!runTest(expected)) return false;
 
+    interpreter->run(ast);
+
     if(!testSymbol("a", "0 (~0)")) return false;
     if(!testSymbol("b", "0 (~0)")) return false;
     if(!testSymbol("c", "0 (~0)")) return false;
@@ -166,6 +168,10 @@ int main(int argc, const char** argv)
 {
     Parser _parser;
     parser = &_parser;
+
+    Interpreter _interpreter;
+    interpreter = &_interpreter;
+
     setupTerminal();
 
     printf("\n\n");

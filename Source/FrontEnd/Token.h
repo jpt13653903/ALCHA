@@ -112,11 +112,11 @@ struct Token{
             SubtractAssign,
             MultiplyAssign,
             DivideAssign,
+            ExponentialAssign,
             ModulusAssign,
-            XorAssign,
             AndAssign,
             OrAssign,
-            ExponentialAssign,
+            XorAssign,
             ShiftLeftAssign,
             ShiftRightAssign,
 

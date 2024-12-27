@@ -43,15 +43,12 @@ namespace AST{
             VariableDef,
             FunctionDef,
             OperatorOverload,
+            Assignment,
             FunctionCall
         } type;
 
         AST(int line, int filenameIndex, Type type);
         virtual ~AST();
-
-        virtual bool run() = 0;
-
-        void printError(const char* message);
 
         const char* decodeType() const;
         virtual std::string& print() const = 0;

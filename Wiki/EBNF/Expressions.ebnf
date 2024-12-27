@@ -27,7 +27,7 @@ Accessor = Cast { Array           | (* Slice *)
                   ParameterList   | (* Function call *)
                   "."  Identifier | (* Member reference *)
                   "?." Identifier | (* Safe member reference *)
-                  "'"  Identifier}; (* Factorial *)
+                  "'"  Identifier}; (* Attribute reference *)
 
 Cast     = Primary [CastExpr];
 CastExpr = "@" ( Identifier | Literal | ("(" ExpressionList ")") );

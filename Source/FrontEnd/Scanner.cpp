@@ -228,11 +228,11 @@ Scanner::Scanner()
             operators.insert("-=" , Token::Type::SubtractAssign   );
             operators.insert("*=" , Token::Type::MultiplyAssign   );
             operators.insert("/=" , Token::Type::DivideAssign     );
+            operators.insert("**=", Token::Type::ExponentialAssign);
             operators.insert("%=" , Token::Type::ModulusAssign    );
-            operators.insert("^=" , Token::Type::XorAssign        );
             operators.insert("&=" , Token::Type::AndAssign        );
             operators.insert("|=" , Token::Type::OrAssign         );
-            operators.insert("**=", Token::Type::ExponentialAssign);
+            operators.insert("^=" , Token::Type::XorAssign        );
             operators.insert("<<=", Token::Type::ShiftLeftAssign  );
             operators.insert(">>=", Token::Type::ShiftRightAssign );
 

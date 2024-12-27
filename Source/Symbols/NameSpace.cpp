@@ -25,7 +25,6 @@ using std::string;
 using namespace Symbols;
 //------------------------------------------------------------------------------
 
-NameSpace Symbols::global;
 //------------------------------------------------------------------------------
 
 NameSpace::NameSpace(): Symbol(Type::NameSpace)

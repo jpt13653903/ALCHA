@@ -18,26 +18,40 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_String_h
-#define AST_String_h
+#ifndef Interpreter_h
+#define Interpreter_h
 //------------------------------------------------------------------------------
 
 #include "AST.h"
-#include <string>
+#include "NameSpace.h"
 //------------------------------------------------------------------------------
 
-namespace AST{
-    struct String: public AST{
-        std::string data;
+class Interpreter{
+    private: // Local Objects
+        AST::AST* ast;
 
-        String(int line, int filenameIndex);
-       ~String();
+    private: // Interpreter State
+        bool error = false;
 
-        std::string& print() const override;
-    };
-}
+    private: // Interpreter Functions
+        void printError(const char* message);
+
+        bool variableDef();
+        bool functionDef();
+        bool operatorOverload();
+        bool assignment();
+        bool functionCall();
+
+    public: // Testable structures
+        Symbols::NameSpace global;
+
+    public:
+        Interpreter();
+       ~Interpreter();
+
+       bool run(AST::AST* ast);
+};
 //------------------------------------------------------------------------------
 
 #endif
 //------------------------------------------------------------------------------
-

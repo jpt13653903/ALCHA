@@ -39,26 +39,6 @@ FunctionCall::~FunctionCall()
 }
 //------------------------------------------------------------------------------
 
-bool FunctionCall::run()
-{
-    if(name == "print"){
-        if(parameters){
-            if(parameters->type == AST::Type::String){
-                printf(ANSI_FG_BRIGHT_BLACK "String: " ANSI_RESET "%s\n",
-                       ((String*)parameters)->data.c_str());
-            }
-            else if(parameters->type == AST::Type::Literal){
-                printf(ANSI_FG_BRIGHT_BLACK "Literal: " ANSI_RESET "%s\n",
-                       ((Literal*)parameters)->value.print().c_str());
-            }
-        }else{
-            printf("\n");
-        }
-    }
-    return true;
-}
-//------------------------------------------------------------------------------
-
 std::string& FunctionCall::print() const
 {
     static string result;

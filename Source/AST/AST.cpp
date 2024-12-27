@@ -42,12 +42,6 @@ AST::AST::~AST()
 }
 //------------------------------------------------------------------------------
 
-void AST::AST::printError(const char* message)
-{
-    ::printError(line, filenameBuffer[filenameIndex], message);
-}
-//------------------------------------------------------------------------------
-
 const char* AST::AST::decodeType() const
 {
     switch(type){
@@ -56,6 +50,7 @@ const char* AST::AST::decodeType() const
         case Type::VariableDef:      return "VariableDef";
         case Type::FunctionDef:      return "FunctionDef";
         case Type::OperatorOverload: return "OperatorOverload";
+        case Type::Assignment:       return "Assignment";
         case Type::FunctionCall:     return "FunctionCall";
         default:                     return "Invalid Type Index";
     }
