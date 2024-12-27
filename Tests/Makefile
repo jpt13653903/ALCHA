@@ -68,7 +68,7 @@ ifeq ($(OS), Windows_NT)
 endif
 #-------------------------------------------------------------------------------
 
-testSource   = $(shell find * -iname "*.cpp")
+testSource   = $(shell find * -iname "test*.cpp")
 testBinaries = $(testSource:%.cpp=bin/%$(ext))
 #-------------------------------------------------------------------------------
 
@@ -80,6 +80,7 @@ all: $(testBinaries)
 test: all
 	bin/testScanner
 	bin/testParser
+	bin/testInterpreter
 
 test%: bin/test%$(ext) FORCE
 	$<
@@ -123,6 +124,24 @@ testParserObjects += $(ObjectPath)/Toolbox/UTF_Converter.o
 bin/testParser$(ext): $(testParserObjects) $(Resources) $(Headers)
 	mkdir -p bin
 	$(CXX) $(Options) $(testParserObjects) $(Resources) -s $(LibInclude) $(Libraries) -o $@
+#-------------------------------------------------------------------------------
+
+testInterpreterObjects += $(ObjectPath)/Tests/testInterpreter.o
+
+testInterpreterSource  += $(shell find $(Source)/AST            -iname "*.cpp")
+testInterpreterSource  += $(shell find $(Source)/DataStructures -iname "*.cpp")
+testInterpreterSource  += $(shell find $(Source)/FrontEnd       -iname "*.cpp")
+testInterpreterSource  += $(shell find $(Source)/Symbols        -iname "*.cpp")
+testInterpreterSource  += $(shell find $(Source)/Tools          -iname "*.cpp")
+testInterpreterObjects += $(testInterpreterSource:$(Source)/%.cpp=$(ObjectPath)/Source/%.o)
+
+testInterpreterObjects += $(ObjectPath)/Toolbox/General.o
+testInterpreterObjects += $(ObjectPath)/Toolbox/FileWrapper.o
+testInterpreterObjects += $(ObjectPath)/Toolbox/UTF_Converter.o
+
+bin/testInterpreter$(ext): $(testInterpreterObjects) $(Resources) $(Headers)
+	mkdir -p bin
+	$(CXX) $(Options) $(testInterpreterObjects) $(Resources) -s $(LibInclude) $(Libraries) -o $@
 #-------------------------------------------------------------------------------
 
 # Objects

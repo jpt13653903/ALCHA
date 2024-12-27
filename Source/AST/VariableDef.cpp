@@ -19,14 +19,9 @@
 //==============================================================================
 
 #include "VariableDef.h"
-
-#include "Symbols/Symbol.h"
-#include "Symbols/NameSpace.h"
-#include "Symbols/Num.h"
 //------------------------------------------------------------------------------
 
 using std::string;
-using Symbols::global;
 using namespace AST;
 //------------------------------------------------------------------------------
 
@@ -45,11 +40,11 @@ VariableDef::~VariableDef()
 }
 //------------------------------------------------------------------------------
 
-std::string& VariableDef::print() const
+std::string VariableDef::print() const
 {
-    static string result;
+    string result;
 
-    switch(type){
+    switch(defType){
         case Token::Type::Pin:  result = "pin ";  break;
         case Token::Type::Net:  result = "net ";  break;
         case Token::Type::Void: result = "void "; break;
@@ -61,7 +56,7 @@ std::string& VariableDef::print() const
 
         case Token::Type::Identifier: result = "TODO: print TypeIdentifier "; break;
 
-        default: result = "Unknown type "; break;
+        default: result = "Unknown defType "; break;
     }
     if(parameters){
         result += "(";

@@ -30,14 +30,14 @@
 
 namespace AST{
     struct Assignment: public AST{
-        Token::Type type = Token::Type::Unknown;
+        Token::Type operation = Token::Type::Unknown;
         AST* target     = 0;
         AST* expression = 0;
 
         Assignment(int line, int filenameIndex);
        ~Assignment();
 
-        std::string& print() const override;
+        std::string print() const override;
     };
 }
 //------------------------------------------------------------------------------

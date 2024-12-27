@@ -18,49 +18,55 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_h
-#define AST_h
+#include "Concatenate.h"
 //------------------------------------------------------------------------------
 
-#include "General.h"
-
-#include <string>
-#include <vector>
+using std::string;
+using namespace AST;
 //------------------------------------------------------------------------------
 
-namespace AST{
-    extern std::vector<std::string> filenameBuffer;
-
-    struct AST{
-        int line          = 0;
-        int filenameIndex = 0;
-
-        AST* next = 0;
-
-        enum class Type{
-            Literal,
-            String,
-            Identifier,
-            VariableDef,
-            FunctionDef,
-            OperatorOverload,
-            Expression,
-            Stringify,
-            Concatenate,
-            Slice,
-            FunctionCall,
-            Assignment
-        } type;
-
-        AST(int line, int filenameIndex, Type type);
-        virtual ~AST();
-
-        const char* decodeType() const;
-        virtual std::string print() const = 0;
-    };
+Concatenate::Concatenate(int line, int filenameIndex):
+    AST(line, filenameIndex, Type::Concatenate)
+{
 }
 //------------------------------------------------------------------------------
 
-#endif
+Concatenate::~Concatenate()
+{
+    if(members) delete members;
+}
+//------------------------------------------------------------------------------
+
+std::string Concatenate::print() const
+{
+    string result;
+
+    switch(operation){
+        case Token::Type::Concatenate:      result = ":("; break;
+        case Token::Type::ArrayConcatenate: result = ":["; break;
+
+        default: result = "Unknown concatenate operation "; break;
+    }
+
+    bool first = false;
+    AST* member = members;
+    while(member){
+        if(!first) result += ", ";
+        first = false;
+
+        result += member->print();
+
+        member = member->next;
+    }
+
+    switch(operation){
+        case Token::Type::Concatenate:      result = ")"; break;
+        case Token::Type::ArrayConcatenate: result = "]"; break;
+
+        default: result = "Unknown concatenate operation "; break;
+    }
+
+    return result;
+}
 //------------------------------------------------------------------------------
 

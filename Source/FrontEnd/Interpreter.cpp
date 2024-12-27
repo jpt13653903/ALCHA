@@ -22,10 +22,14 @@
 #include "Utilities.h"
 //------------------------------------------------------------------------------
 
-#include "AST/AST_String.h"
-#include "AST/VariableDef.h"
-#include "AST/FunctionCall.h"
-#include "AST/Literal.h"
+#include "AST.h"
+#include "AST_String.h"
+#include "Assignment.h"
+#include "Expression.h"
+#include "FunctionCall.h"
+#include "Identifier.h"
+#include "Literal.h"
+#include "VariableDef.h"
 //------------------------------------------------------------------------------
 
 #include "Symbols/Num.h"
@@ -64,7 +68,7 @@ bool Interpreter::variableDef()
         return false;
     }
 
-    switch(ast->type){
+    switch(ast->defType){
         case Token::Type::Pin:
             printError("TODO Pin Definition");
             return false;
@@ -139,7 +143,8 @@ bool Interpreter::assignment()
 bool Interpreter::functionCall()
 {
     auto ast = (AST::FunctionCall*)this->ast;
-    if(ast->name == "print"){
+    if(ast->name->type == AST::AST::Type::Identifier &&
+       ((AST::Identifier*)ast->name)->name == "print"){
         if(ast->parameters){
             if(ast->parameters->type == AST::AST::Type::String){
                 printf(ANSI_FG_BRIGHT_BLACK "String: " ANSI_RESET "%s\n",

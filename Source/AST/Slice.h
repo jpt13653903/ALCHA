@@ -18,45 +18,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_h
-#define AST_h
+#ifndef AST_Slice_h
+#define AST_Slice_h
 //------------------------------------------------------------------------------
 
-#include "General.h"
+#include "AST.h"
+#include "Token.h"
 
 #include <string>
-#include <vector>
 //------------------------------------------------------------------------------
 
 namespace AST{
-    extern std::vector<std::string> filenameBuffer;
+    struct Slice: public AST{
+        AST* array = 0;
+        AST* slice = 0;
 
-    struct AST{
-        int line          = 0;
-        int filenameIndex = 0;
+        Slice(int line, int filenameIndex);
+       ~Slice();
 
-        AST* next = 0;
-
-        enum class Type{
-            Literal,
-            String,
-            Identifier,
-            VariableDef,
-            FunctionDef,
-            OperatorOverload,
-            Expression,
-            Stringify,
-            Concatenate,
-            Slice,
-            FunctionCall,
-            Assignment
-        } type;
-
-        AST(int line, int filenameIndex, Type type);
-        virtual ~AST();
-
-        const char* decodeType() const;
-        virtual std::string print() const = 0;
+        std::string print() const override;
     };
 }
 //------------------------------------------------------------------------------

@@ -1,15 +1,19 @@
-print(__FILE__);
-print(__LINE__);
-// print(__DATE__);
-// print(__TIME__);
-
-print(0x1234567890ABCDEF);
-print(123.456);
-
 num a;
 num b;
 num c, d;
-a(15, 8) = 3;
-// b = 5;
-// print(a + b);
+
+a = 3;
+b = 5;
+print(a + b);
+
+a++;
+a();
+a--;
+a <<= a*b + c*d;
+
+a = a+++ ++b;
+a = a ? b : c;
+a = x | x ~| x ^ x ~^ x & x ~& x == x != x < x > x <= x >= x << x >> x + x - x * x / x % x ** x ` x;
+a = x ` x ** x % x / x * x - x + x >> x << x >= x <= x > x < x != x == x ~& x & x ~^ x ^ x ~| x | x;
+a[5][6][7..9, 8, 1..10:2] = b.c.d.e'attribute;
 

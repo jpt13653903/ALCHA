@@ -470,7 +470,7 @@ int main(int argc, const char** argv)
     scanner = &_scanner;
     setupTerminal();
 
-    printf("\n\n");
+    printf("\n");
     if(!testKeywords() ) goto MainError;
     if(!testOperators()) goto MainError;
     if(!testOthers()   ) goto MainError;

@@ -29,8 +29,7 @@ Accessor = Cast { Array           | (* Slice *)
                   "?." Identifier | (* Safe member reference *)
                   "'"  Identifier}; (* Attribute reference *)
 
-Cast     = Primary [CastExpr];
-CastExpr = "@" ( Identifier | Literal | ("(" ExpressionList ")") );
+Cast = Primary [ "@" ( Identifier | Literal | ("(" ExpressionList ")") ) ];
 
 (* The "'" prefix chooses the global scope *)
 Primary = (["'"] Identifier) | Literal | "true" | "false"

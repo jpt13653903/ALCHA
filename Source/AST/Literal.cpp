@@ -36,9 +36,9 @@ Literal::~Literal()
 }
 //------------------------------------------------------------------------------
 
-std::string& Literal::print() const
+std::string Literal::print() const
 {
-    static string result;
+    string result;
 
     result = value.print();
 

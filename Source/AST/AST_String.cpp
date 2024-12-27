@@ -36,9 +36,9 @@ String::~String()
 }
 //------------------------------------------------------------------------------
 
-std::string& String::print() const
+std::string String::print() const
 {
-    static string result;
+    string result;
 
     result = '"' + data + '"';
 

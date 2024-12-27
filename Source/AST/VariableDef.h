@@ -30,7 +30,7 @@
 
 namespace AST{
     struct VariableDef: public AST{
-        Token::Type type = Token::Type::Unknown;
+        Token::Type defType = Token::Type::Unknown;
         std::string name;
         AST* typeIdentifier = 0;
         AST* parameters     = 0;
@@ -40,7 +40,7 @@ namespace AST{
         VariableDef(int line, int filenameIndex);
        ~VariableDef();
 
-        std::string& print() const override;
+        std::string print() const override;
     };
 }
 //------------------------------------------------------------------------------

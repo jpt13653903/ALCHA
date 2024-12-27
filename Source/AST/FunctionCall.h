@@ -28,13 +28,13 @@
 
 namespace AST{
     struct FunctionCall: public AST{
-        std::string name;
+        AST* name;
         AST* parameters = 0;
 
         FunctionCall(int line, int filenameIndex);
        ~FunctionCall();
 
-        std::string& print() const override;
+        std::string print() const override;
     };
 }
 //------------------------------------------------------------------------------

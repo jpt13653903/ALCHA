@@ -19,13 +19,9 @@
 //==============================================================================
 
 #include "Assignment.h"
-
-#include "Symbols/Symbol.h"
-#include "Symbols/NameSpace.h"
 //------------------------------------------------------------------------------
 
 using std::string;
-using Symbols::global;
 using namespace AST;
 //------------------------------------------------------------------------------
 
@@ -42,30 +38,33 @@ Assignment::~Assignment()
 }
 //------------------------------------------------------------------------------
 
-std::string& Assignment::print() const
+std::string Assignment::print() const
 {
-    static string result;
+    string result;
 
     result = target->print();
-    switch(type){
-        case Token::Type::Assign:            result = " = ";   break;
-        case Token::Type::RawAssign:         result = " := ";  break;
-        case Token::Type::AppendAssign:      result = " ~= ";  break;
-        case Token::Type::AddAssign:         result = " += ";  break;
-        case Token::Type::SubtractAssign:    result = " -= ";  break;
-        case Token::Type::MultiplyAssign:    result = " *= ";  break;
-        case Token::Type::DivideAssign:      result = " /= ";  break;
-        case Token::Type::ExponentialAssign: result = " **= "; break;
-        case Token::Type::ModulusAssign:     result = " %= ";  break;
-        case Token::Type::AndAssign:         result = " &= ";  break;
-        case Token::Type::OrAssign:          result = " |= ";  break;
-        case Token::Type::XorAssign:         result = " ^= ";  break;
-        case Token::Type::ShiftLeftAssign:   result = " <<= "; break;
-        case Token::Type::ShiftRightAssign:  result = " >>= "; break;
+    switch(operation){
+        case Token::Type::Assign:            result += " = ";   break;
+        case Token::Type::RawAssign:         result += " := ";  break;
+        case Token::Type::AppendAssign:      result += " ~= ";  break;
+        case Token::Type::AddAssign:         result += " += ";  break;
+        case Token::Type::SubtractAssign:    result += " -= ";  break;
+        case Token::Type::MultiplyAssign:    result += " *= ";  break;
+        case Token::Type::DivideAssign:      result += " /= ";  break;
+        case Token::Type::ExponentialAssign: result += " **= "; break;
+        case Token::Type::ModulusAssign:     result += " %= ";  break;
+        case Token::Type::AndAssign:         result += " &= ";  break;
+        case Token::Type::OrAssign:          result += " |= ";  break;
+        case Token::Type::XorAssign:         result += " ^= ";  break;
+        case Token::Type::ShiftLeftAssign:   result += " <<= "; break;
+        case Token::Type::ShiftRightAssign:  result += " >>= "; break;
 
-        default: result = "Unknown assignment type "; break;
+        case Token::Type::Increment: result += "++"; break;
+        case Token::Type::Decrement: result += "--"; break;
+
+        default: result += "Unknown assignment type "; break;
     }
-    result += expression->print();
+    if(expression) result += expression->print();
 
     return result;
 }

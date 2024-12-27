@@ -19,13 +19,15 @@
 //==============================================================================
 
 #include "Parser.h"
+#include "Interpreter.h"
 //------------------------------------------------------------------------------
 
 #include <string>
 using std::string;
 
-AST::AST* ast = 0;
-Parser*   parser;
+AST::AST*    ast = 0;
+Parser*      parser;
+Interpreter* interpreter;
 //------------------------------------------------------------------------------
 
 bool startTest(const char* name)
@@ -33,7 +35,7 @@ bool startTest(const char* name)
     printf(ANSI_FG_CYAN "Starting test: " ANSI_RESET "%s...\n", name); \
 
     string filename;
-    filename  = "testParser/";
+    filename  = "testInterpreter/";
     filename += name;
     filename += ".alc";
 
@@ -44,24 +46,35 @@ bool startTest(const char* name)
         error("Cannot parse file %s", filename.c_str());
         return false;
     }
+    if(!interpreter->run(ast)){
+        error("Cannot interpret AST of file %s", filename.c_str());
+        return false;
+    }
 
     return true;
 }
 //------------------------------------------------------------------------------
 
-bool test(int testIndex, AST::AST* node, const char* expected)
+bool test(int testIndex, const char* name, const char* expected)
 {
-    assert(node, return false);
-
-    string got = node->print();
+    auto symbol = interpreter->global.symbols.find(name);
+    if(symbol == interpreter->global.symbols.end()){
+        printf(ANSI_FG_BRIGHT_RED "FAILED:\n"
+               ANSI_RESET         "    Cannot find \"%s\" in symbol table\n",
+               name);
+        return false;
+    }
+    string got = symbol->second->print();
 
     if(got != expected){
         printf(ANSI_FG_BRIGHT_RED "FAILED: "
-               ANSI_RESET         "Test %d\n"
+               ANSI_RESET         "Test %d; "
+               ANSI_FG_YELLOW     "%s\n"
                ANSI_FG_GREEN      "    Expected: %s\n"
                ANSI_FG_BRIGHT_RED "    Got:      %s\n"
                ANSI_RESET,
                testIndex+1,
+               name,
                expected,
                got.c_str());
         return false;
@@ -72,25 +85,14 @@ bool test(int testIndex, AST::AST* node, const char* expected)
 
 bool runTest(const char** expected)
 {
-    int n = 0;
-    auto node = ast;
-    while(node){
+    for(int n = 0; expected[n]; n += 2){
         if(!expected[n]){
             printf(ANSI_FG_BRIGHT_RED "FAILED:\n"
                    ANSI_RESET         "    More AST nodes than expected\n");
             return false;
         }
-        if(!test(n, node, expected[n])) return false;
-        n++;
-        node = node->next;
+        if(!test(n/2, expected[n], expected[n+1])) return false;
     }
-    if(expected[n]){
-        printf(ANSI_FG_BRIGHT_RED "FAILED:\n"
-               ANSI_RESET         "    Fewer AST nodes than expected\n");
-        return false;
-    }
-
-    assert(!node, return false);
     return true;
 }
 //------------------------------------------------------------------------------
@@ -109,25 +111,15 @@ bool testParser()
     if(!startTest("Parser")) return false;
 
     const char* expected[] = {
-        "num a",
-        "num b",
-        "num c",
-        "num d",
-        "a = 3 (~3)",
-        "b = 5 (~5)",
-        "print((a) + (b))",
-        "a++",
-        "a()",
-        "a--",
-        "a <<= ((a) * (b)) + ((c) * (d))",
-        "a = ((a) ++ ) + ( ++ (b))",
-        "a = (a) ? (b) : (c)",
-        "a = ((x) | (x)) ~| (((x) ^ (x)) ~^ (((x) & (x)) ~& (((x) == (x)) != (((((x) < (x)) > (x)) <= (x)) >= (((x) << (x)) >> (((x) + (x)) - ((((x) * (x)) / (x)) % ((x) ** ((x) ` (x))))))))))",
-        "a = (((((((((((((((((((((x) ` (x)) ** (x)) % (x)) / (x)) * (x)) - (x)) + (x)) >> (x)) << (x)) >= (x)) <= (x)) > (x)) < (x)) != (x)) == (x)) ~& (x)) & (x)) ~^ (x)) ^ (x)) ~| (x)) | (x)",
-        "(((a)[5 (~5)])[6 (~6)])[(7 (~7)) .. (9 (~9)), 8 (~8), (1 (~1)) .. (10 (~10)):(2 (~2))] = ((((b) . (c)) . (d)) . (e)) ' (attribute)",
-        0
+        "a", "0 (~0)",
+        "b", "0 (~0)",
+        "c", "0 (~0)",
+        "d", "0 (~0)",
+        0, 0
     };
     if(!runTest(expected)) return false;
+
+    // TODO Test that the netlist table is correct
 
     endTest();
     return true;
@@ -138,6 +130,9 @@ int main(int argc, const char** argv)
 {
     Parser _parser;
     parser = &_parser;
+
+    Interpreter _interpreter;
+    interpreter = &_interpreter;
 
     setupTerminal();
 

@@ -40,14 +40,39 @@ class Parser{
     private: // Parser Functions
         void printError(const char* message);
 
-
         bool getToken();
 
-        AST::AST* parameter();
+        AST::AST* expression();
+        AST::AST* bitwiseOr();
+        AST::AST* bitwiseXor();
+        AST::AST* bitwiseAnd();
+        AST::AST* equality();
+        AST::AST* relational();
+        AST::AST* shift();
+        AST::AST* additive();
+        AST::AST* multiplicative();
+        AST::AST* exponential();
+        AST::AST* replication();
+        AST::AST* stringification();
+        AST::AST* reduction();
+        AST::AST* range();
+        AST::AST* unary();
+        AST::AST* postfix();
+        AST::AST* accessor();
+        AST::AST* castExpression();
+        AST::AST* primary();
+        AST::AST* concatenate();
+        AST::AST* array();
+
+        AST::AST* expressionList();
         AST::AST* parameterList();
+        AST::AST* parameter();
+        AST::AST* attributeList();
+        AST::AST* attributeAssignment();
+
         AST::AST* identifierStatement();
         AST::AST* functionDef(Token::Type type, std::string& identifier);
-        AST::AST* identifierlist(Token::Type type);
+        AST::AST* variableDefList(Token::Type type);
         AST::AST* definition();
         AST::AST* statement();
         AST::AST* statements();

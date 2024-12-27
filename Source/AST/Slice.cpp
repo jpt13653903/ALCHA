@@ -18,49 +18,51 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_h
-#define AST_h
+#include "Slice.h"
 //------------------------------------------------------------------------------
 
-#include "General.h"
-
-#include <string>
-#include <vector>
+using std::string;
+using namespace AST;
 //------------------------------------------------------------------------------
 
-namespace AST{
-    extern std::vector<std::string> filenameBuffer;
-
-    struct AST{
-        int line          = 0;
-        int filenameIndex = 0;
-
-        AST* next = 0;
-
-        enum class Type{
-            Literal,
-            String,
-            Identifier,
-            VariableDef,
-            FunctionDef,
-            OperatorOverload,
-            Expression,
-            Stringify,
-            Concatenate,
-            Slice,
-            FunctionCall,
-            Assignment
-        } type;
-
-        AST(int line, int filenameIndex, Type type);
-        virtual ~AST();
-
-        const char* decodeType() const;
-        virtual std::string print() const = 0;
-    };
+Slice::Slice(int line, int filenameIndex):
+    AST(line, filenameIndex, Type::Slice)
+{
 }
 //------------------------------------------------------------------------------
 
-#endif
+Slice::~Slice()
+{
+    if(array) delete array;
+    if(slice) delete slice;
+}
+//------------------------------------------------------------------------------
+
+std::string Slice::print() const
+{
+    string result;
+
+    result.clear();
+
+    if(array){
+        result += "(";
+        result += array->print();
+        result += ")[";
+    }
+
+    bool first = true;
+    AST* element = slice;
+    while(element){
+        if(!first) result += ", ";
+        first = false;
+
+        result += element->print();
+
+        element = element->next;
+    }
+    result += "]";
+
+    return result;
+}
 //------------------------------------------------------------------------------
 

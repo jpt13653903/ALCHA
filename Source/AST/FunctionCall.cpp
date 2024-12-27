@@ -39,11 +39,11 @@ FunctionCall::~FunctionCall()
 }
 //------------------------------------------------------------------------------
 
-std::string& FunctionCall::print() const
+std::string FunctionCall::print() const
 {
-    static string result;
+    string result;
 
-    result = name + "(";
+    result = name->print() + "(";
 
     bool first = true;
     AST* parameter = parameters;

@@ -18,49 +18,36 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_h
-#define AST_h
+#include "Stringify.h"
 //------------------------------------------------------------------------------
 
-#include "General.h"
-
-#include <string>
-#include <vector>
+using std::string;
+using namespace AST;
 //------------------------------------------------------------------------------
 
-namespace AST{
-    extern std::vector<std::string> filenameBuffer;
-
-    struct AST{
-        int line          = 0;
-        int filenameIndex = 0;
-
-        AST* next = 0;
-
-        enum class Type{
-            Literal,
-            String,
-            Identifier,
-            VariableDef,
-            FunctionDef,
-            OperatorOverload,
-            Expression,
-            Stringify,
-            Concatenate,
-            Slice,
-            FunctionCall,
-            Assignment
-        } type;
-
-        AST(int line, int filenameIndex, Type type);
-        virtual ~AST();
-
-        const char* decodeType() const;
-        virtual std::string print() const = 0;
-    };
+Stringify::Stringify(int line, int filenameIndex):
+    AST(line, filenameIndex, Type::Stringify)
+{
 }
 //------------------------------------------------------------------------------
 
-#endif
+Stringify::~Stringify()
+{
+    if(expression) delete expression;
+    if(format    ) delete format;
+}
+//------------------------------------------------------------------------------
+
+std::string Stringify::print() const
+{
+    string result;
+
+    result = "$(";
+    if(expression) result += expression->print();
+    if(format    ) result += ", " + format->print();
+    result += ")";
+
+    return result;
+}
 //------------------------------------------------------------------------------
 

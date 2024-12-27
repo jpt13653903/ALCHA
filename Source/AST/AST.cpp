@@ -47,12 +47,18 @@ const char* AST::AST::decodeType() const
     switch(type){
         case Type::Literal:          return "Literal";
         case Type::String:           return "String";
+        case Type::Identifier:       return "Identifier";
         case Type::VariableDef:      return "VariableDef";
         case Type::FunctionDef:      return "FunctionDef";
         case Type::OperatorOverload: return "OperatorOverload";
-        case Type::Assignment:       return "Assignment";
+        case Type::Expression:       return "Expression";
+        case Type::Stringify:        return "Stringify";
+        case Type::Concatenate:      return "Concatenate";
+        case Type::Slice:            return "Slice";
         case Type::FunctionCall:     return "FunctionCall";
-        default:                     return "Invalid Type Index";
+        case Type::Assignment:       return "Assignment";
+
+        default: return "Invalid Type Index";
     }
 }
 //------------------------------------------------------------------------------
