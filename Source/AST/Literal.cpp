@@ -36,11 +36,12 @@ Literal::~Literal()
 }
 //------------------------------------------------------------------------------
 
-std::string Literal::print() const
+std::string Literal::print(int indent) const
 {
     string result;
 
-    result = value.print();
+    for(int n = 0; n < indent; n++) result += "    ";
+    result += value.print();
 
     return result;
 }

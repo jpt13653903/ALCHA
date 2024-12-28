@@ -58,65 +58,69 @@ void Interpreter::printError(const char* message)
 bool Interpreter::variableDef()
 {
     auto ast = (AST::VariableDef*)this->ast;
-    if(!ast->name.size()){
-        printError("Definition with no name");
-        return false;
-    }
-    if(global.symbols.contains(ast->name)){
-        string s = ast->name + " already exists in the current namespace";
-        printError(s.c_str());
-        return false;
-    }
-
-    switch(ast->defType){
-        case Token::Type::Pin:
-            printError("TODO Pin Definition");
+    auto def = ast->defList;
+    while(def){
+        if(!def->name.size()){
+            printError("Definition with no name");
             return false;
-
-        case Token::Type::Net:
-            printError("TODO Net Definition");
+        }
+        if(global.symbols.contains(def->name)){
+            string s = def->name + " already exists in the current namespace";
+            printError(s.c_str());
             return false;
+        }
 
-        case Token::Type::Void:
-            printError("TODO Void Definition");
-            return false;
+        switch(ast->defType){
+            case Token::Type::Pin:
+                printError("TODO Pin Definition");
+                return false;
 
-        case Token::Type::Auto:
-            printError("TODO Auto Definition");
-            return false;
+            case Token::Type::Net:
+                printError("TODO Net Definition");
+                return false;
 
-        case Token::Type::Byte:
-            printError("TODO Byte Definition");
-            return false;
+            case Token::Type::Void:
+                printError("TODO Void Definition");
+                return false;
 
-        case Token::Type::Char:
-            printError("TODO Char Definition");
-            return false;
+            case Token::Type::Auto:
+                printError("TODO Auto Definition");
+                return false;
 
-        case Token::Type::Num:
-            global.symbols[ast->name] = new Symbols::Num;
-            if(ast->parameters){
-                printError("TODO Definition with parameters");
-            }
-            if(ast->attributes){
-                printError("TODO Definition with attributes");
-            }
-            if(ast->initialiser){
-                printError("TODO Definition with initialiser");
-            }
-            return true;
+            case Token::Type::Byte:
+                printError("TODO Byte Definition");
+                return false;
 
-        case Token::Type::Func:
-            printError("TODO Func Definition");
-            return false;
+            case Token::Type::Char:
+                printError("TODO Char Definition");
+                return false;
 
-        case Token::Type::Identifier:
-            printError("TODO TypeIdentifier Definition");
-            return false;
+            case Token::Type::Num:
+                global.symbols[def->name] = new Symbols::Num;
+                if(ast->parameters){
+                    printError("TODO Definition with parameters");
+                }
+                if(ast->attributes){
+                    printError("TODO Definition with attributes");
+                }
+                if(def->initialiser){
+                    printError("TODO Definition with initialiser");
+                }
+                break;
 
-        default:
-            printError("Unknown type in variable definition");
-            return false;
+            case Token::Type::Func:
+                printError("TODO Func Definition");
+                return false;
+
+            case Token::Type::Identifier:
+                printError("TODO TypeIdentifier Definition");
+                return false;
+
+            default:
+                printError("Unknown type in variable definition");
+                return false;
+        }
+        def = def->next;
     }
     return true;
 }

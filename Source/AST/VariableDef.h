@@ -31,16 +31,23 @@
 namespace AST{
     struct VariableDef: public AST{
         Token::Type defType = Token::Type::Unknown;
-        std::string name;
         AST* typeIdentifier = 0;
         AST* parameters     = 0;
         AST* attributes     = 0;
-        AST* initialiser    = 0;
+
+        struct Definition{
+            std::string name;
+            AST* arrayDefs   = 0;
+            AST* initialiser = 0;
+            Definition* next = 0;
+
+            ~Definition();
+        }* defList = 0;
 
         VariableDef(int line, int filenameIndex);
        ~VariableDef();
 
-        std::string print() const override;
+        std::string print(int indent = 0) const override;
     };
 }
 //------------------------------------------------------------------------------

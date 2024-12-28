@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Slice_h
-#define AST_Slice_h
+#ifndef AST_FunctionDef_h
+#define AST_FunctionDef_h
 //------------------------------------------------------------------------------
 
 #include "AST.h"
@@ -29,12 +29,23 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-    struct Slice: public AST{
-        AST* array = 0;
-        AST* slice = 0;
+    struct FunctionDef: public AST{
+        bool isInline = false;
 
-        Slice(int line, int filenameIndex);
-       ~Slice();
+        struct ReturnType{
+            Token::Type type = Token::Type::Unknown;
+            AST* typeIdentifier = 0;
+            AST* parameters     = 0;
+        } returnType;
+
+        AST*        attributes = 0;
+        std::string identifier;
+        AST*        arrayDefs  = 0;
+        AST*        parameters = 0;
+        AST*        body       = 0;
+
+        FunctionDef(int line, int filenameIndex);
+       ~FunctionDef();
 
         std::string print(int indent = 0) const override;
     };

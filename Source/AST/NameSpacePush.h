@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Slice_h
-#define AST_Slice_h
+#ifndef AST_NameSpacePush_h
+#define AST_NameSpacePush_h
 //------------------------------------------------------------------------------
 
 #include "AST.h"
@@ -29,12 +29,12 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-    struct Slice: public AST{
-        AST* array = 0;
-        AST* slice = 0;
+    struct NameSpacePush: public AST{
+        AST* nameSpace = 0;
+        AST* body      = 0;
 
-        Slice(int line, int filenameIndex);
-       ~Slice();
+        NameSpacePush(int line, int filenameIndex);
+       ~NameSpacePush();
 
         std::string print(int indent = 0) const override;
     };

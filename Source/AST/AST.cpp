@@ -45,18 +45,24 @@ AST::AST::~AST()
 const char* AST::AST::decodeType() const
 {
     switch(type){
-        case Type::Literal:          return "Literal";
-        case Type::String:           return "String";
-        case Type::Identifier:       return "Identifier";
-        case Type::VariableDef:      return "VariableDef";
-        case Type::FunctionDef:      return "FunctionDef";
-        case Type::OperatorOverload: return "OperatorOverload";
-        case Type::Expression:       return "Expression";
-        case Type::Stringify:        return "Stringify";
-        case Type::Concatenate:      return "Concatenate";
-        case Type::Slice:            return "Slice";
-        case Type::FunctionCall:     return "FunctionCall";
-        case Type::Assignment:       return "Assignment";
+        case Type::AccessDirectionGroup: return "AccessDirectionGroup";
+        case Type::Assignment:           return "Assignment";
+        case Type::Concatenate:          return "Concatenate";
+        case Type::ClassDefinition:      return "ClassDefinition";
+        case Type::Expression:           return "Expression";
+        case Type::EnumDefinition:       return "EnumDefinition";
+        case Type::FunctionCall:         return "FunctionCall";
+        case Type::FunctionDef:          return "FunctionDef";
+        case Type::Identifier:           return "Identifier";
+        case Type::Label:                return "Label";
+        case Type::Literal:              return "Literal";
+        case Type::NameSpacePush:        return "NameSpacePush";
+        case Type::OperatorOverload:     return "OperatorOverload";
+        case Type::ParameterDef:         return "ParameterDef";
+        case Type::Slice:                return "Slice";
+        case Type::String:               return "String";
+        case Type::Stringify:            return "Stringify";
+        case Type::VariableDef:          return "VariableDef";
 
         default: return "Invalid Type Index";
     }

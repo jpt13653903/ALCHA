@@ -17,7 +17,7 @@ Definition = ["inline"] ( BaseType | TypeIdentifier ) [ParameterList]
              [AttributeList] (VariableDefList | FunctionDef | OperatorOverload);
 
 ClassDefinition = "class" [AttributeList] Identifier
-                  ["(" [DefParameterList] ")"]
+                  ["(" [ParameterDefList] ")"]
                   [
                     ":" TypeIdentifier [ParameterList]
                    {"," TypeIdentifier [ParameterList]}
@@ -38,17 +38,17 @@ BaseType = "pin"  | "net"          (* Synthesisable types *)
 VariableDefList  = VariableDef {"," VariableDef} ";";
 VariableDef      = Identifier {ArrayDefinition} [Initialiser];
 FunctionDef      = (Identifier {ArrayDefinition})
-                   "(" [DefParameterList] ")"
+                   "(" [ParameterDefList] ")"
                    "{" [Statements] "}" ;
 OperatorOverload = ("operator" Operator)
-                   "(" [DefParameterList] ")"
+                   "(" [ParameterDefList] ")"
                    "{" [Statements] "}" ;
 
 ArrayDefinition  = "[" [Expression] "]";
 Initialiser      = ("=" | ":=") Expression;
 
-DefParameterList = DefParameter {"," DefParameter};
-DefParameter     = [(BaseType | TypeIdentifier) [ParameterList]]
+ParameterDefList = ParameterDef {"," ParameterDef};
+ParameterDef     = [(BaseType | TypeIdentifier) [ParameterList]]
                    Identifier {"[" "]"} [Initialiser];
 
 AttributeList       = "<" AttributeAssignment {"," AttributeAssignment} ">";

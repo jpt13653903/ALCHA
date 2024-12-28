@@ -42,7 +42,7 @@ namespace AST{
         Expression(int line, int filenameIndex);
        ~Expression();
 
-        std::string print() const override;
+        std::string print(int indent = 0) const override;
     };
 }
 //------------------------------------------------------------------------------

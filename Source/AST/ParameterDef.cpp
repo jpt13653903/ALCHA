@@ -18,37 +18,28 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "VariableDef.h"
+#include "ParameterDef.h"
 //------------------------------------------------------------------------------
 
 using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-VariableDef::VariableDef(int line, int filenameIndex):
-    AST(line, filenameIndex, Type::VariableDef)
+ParameterDef::ParameterDef(int line, int filenameIndex):
+    AST(line, filenameIndex, Type::ParameterDef)
 {
 }
 //------------------------------------------------------------------------------
 
-VariableDef::~VariableDef()
+ParameterDef::~ParameterDef()
 {
-    if(typeIdentifier) delete typeIdentifier;
-    if(parameters    ) delete parameters;
-    if(attributes    ) delete attributes;
-    if(defList       ) delete defList;
+    if(!typeIdentifier) delete typeIdentifier;
+    if(!parameters    ) delete parameters;
+    if(!initialiser   ) delete initialiser;
 }
 //------------------------------------------------------------------------------
 
-VariableDef::Definition::~Definition()
-{
-    if(arrayDefs  ) delete arrayDefs;
-    if(initialiser) delete initialiser;
-    if(next       ) delete next;
-}
-//------------------------------------------------------------------------------
-
-std::string VariableDef::print(int indent) const
+std::string ParameterDef::print(int indent) const
 {
     string result;
 
@@ -69,7 +60,8 @@ std::string VariableDef::print(int indent) const
             else               result += "Invalid typeIdentifier ";
             break;
 
-        default: result += "Unknown defType "; break;
+        default:
+            break;
     }
     if(parameters){
         bool first = true;
@@ -83,39 +75,15 @@ std::string VariableDef::print(int indent) const
         }
         result += ") ";
     }
-    if(attributes){
-        bool first = true;
-        result += "<";
-        auto attrib = attributes;
-        while(attrib){
-            if(!first) result += ", ";
-            first = false;
-            result += attrib->print();
-            attrib  = attrib->next;
-        }
-        result += "> ";
+    result += identifier;
+
+    for(int n = 0; n < arrayDimentions; n++){
+        result += "[]";
     }
-
-    bool first = true;
-    auto def = defList;
-    while(def){
-        if(!first) result += ", ";
-        first = false;
-
-        result += def->name;
-
-        auto arrayDef = def->arrayDefs;
-        while(arrayDef){
-            result += "[" + arrayDef->print() + "]";
-            arrayDef = arrayDef->next;
-        }
-        if(def->initialiser){
-            result += " = ";
-            result += def->initialiser->print();
-        }
-        def = def->next;
+    if(initialiser){
+        result += " = ";
+        result += initialiser->print();
     }
-
     return result;
 }
 //------------------------------------------------------------------------------

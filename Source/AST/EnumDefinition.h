@@ -18,23 +18,23 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Slice_h
-#define AST_Slice_h
+#ifndef AST_EnumDefinition_h
+#define AST_EnumDefinition_h
 //------------------------------------------------------------------------------
 
 #include "AST.h"
-#include "Token.h"
+#include "Identifier.h"
 
 #include <string>
 //------------------------------------------------------------------------------
 
 namespace AST{
-    struct Slice: public AST{
-        AST* array = 0;
-        AST* slice = 0;
+    struct EnumDefinition: public AST{
+        std::string name;
+        Identifier* members;
 
-        Slice(int line, int filenameIndex);
-       ~Slice();
+        EnumDefinition(int line, int filenameIndex);
+       ~EnumDefinition();
 
         std::string print(int indent = 0) const override;
     };

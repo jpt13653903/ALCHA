@@ -39,11 +39,13 @@ FunctionCall::~FunctionCall()
 }
 //------------------------------------------------------------------------------
 
-std::string FunctionCall::print() const
+std::string FunctionCall::print(int indent) const
 {
     string result;
 
-    result = name->print() + "(";
+    for(int n = 0; n < indent; n++) result += "    ";
+
+    result += name->print() + "(";
 
     bool first = true;
     AST* parameter = parameters;

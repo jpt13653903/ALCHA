@@ -18,29 +18,43 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Slice_h
-#define AST_Slice_h
+#include "NameSpacePush.h"
 //------------------------------------------------------------------------------
 
-#include "AST.h"
-#include "Token.h"
-
-#include <string>
+using std::string;
+using namespace AST;
 //------------------------------------------------------------------------------
 
-namespace AST{
-    struct Slice: public AST{
-        AST* array = 0;
-        AST* slice = 0;
-
-        Slice(int line, int filenameIndex);
-       ~Slice();
-
-        std::string print(int indent = 0) const override;
-    };
+NameSpacePush::NameSpacePush(int line, int filenameIndex):
+    AST(line, filenameIndex, Type::NameSpacePush)
+{
 }
 //------------------------------------------------------------------------------
 
-#endif
+NameSpacePush::~NameSpacePush()
+{
+    if(nameSpace) delete nameSpace;
+    if(body     ) delete body;
+}
+//------------------------------------------------------------------------------
+
+std::string NameSpacePush::print(int indent) const
+{
+    string result;
+
+    for(int n = 0; n < indent; n++) result += "    ";
+
+    result += nameSpace->print();
+    result += ".{\n";
+    auto statement = body;
+    while(statement){
+        result += statement->print(indent+1);
+        result += "\n";
+        statement = statement->next;
+    }
+    result += "}";
+
+    return result;
+}
 //------------------------------------------------------------------------------
 

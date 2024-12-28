@@ -36,11 +36,12 @@ Identifier::~Identifier()
 }
 //------------------------------------------------------------------------------
 
-std::string Identifier::print() const
+std::string Identifier::print(int indent) const
 {
     string result;
 
-    result = name;
+    for(int n = 0; n < indent; n++) result += "    ";
+    result += name;
 
     return result;
 }

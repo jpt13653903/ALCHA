@@ -22,13 +22,22 @@
 #include "Utilities.h"
 //------------------------------------------------------------------------------
 
+#include "AST/AccessDirectionGroup.h"
 #include "AST/Assignment.h"
 #include "AST/AST_String.h"
+#include "AST/ClassDefinition.h"
 #include "AST/Concatenate.h"
+#include "AST/EnumDefinition.h"
 #include "AST/Expression.h"
 #include "AST/FunctionCall.h"
+#include "AST/FunctionDef.h"
 #include "AST/Identifier.h"
+#include "AST/Jump.h"
+#include "AST/Label.h"
 #include "AST/Literal.h"
+#include "AST/NameSpacePush.h"
+#include "AST/OperatorOverload.h"
+#include "AST/ParameterDef.h"
 #include "AST/Slice.h"
 #include "AST/Stringify.h"
 #include "AST/VariableDef.h"
@@ -81,8 +90,8 @@ AST::AST* Parser::expression()
     auto condition = bitwiseOr();
     if(!condition) return 0;
 
-    int line = token.line;
-    Token::Type operation = token.type;
+    int  line = token.line;
+    auto operation = token.type;
     switch(token.type){
         case Token::Type::TernaryIf:{
             getToken();
@@ -140,8 +149,8 @@ AST::AST* Parser::bitwiseOr()
     if(!left) return 0;
 
     while(token.type > Token::Type::EndOfFile){
-        int line = token.line;
-        Token::Type operation = token.type;
+        int  line = token.line;
+        auto operation = token.type;
         switch(token.type){
             case Token::Type::BitOr:
             case Token::Type::BitNor:{
@@ -174,8 +183,8 @@ AST::AST* Parser::bitwiseXor()
     if(!left) return 0;
 
     while(token.type > Token::Type::EndOfFile){
-        int line = token.line;
-        Token::Type operation = token.type;
+        int  line = token.line;
+        auto operation = token.type;
         switch(token.type){
             case Token::Type::BitXor:
             case Token::Type::BitXnor:{
@@ -208,8 +217,8 @@ AST::AST* Parser::bitwiseAnd()
     if(!left) return 0;
 
     while(token.type > Token::Type::EndOfFile){
-        int line = token.line;
-        Token::Type operation = token.type;
+        int  line = token.line;
+        auto operation = token.type;
         switch(token.type){
             case Token::Type::BitAnd:
             case Token::Type::BitNand:{
@@ -242,8 +251,8 @@ AST::AST* Parser::equality()
     if(!left) return 0;
 
     while(token.type > Token::Type::EndOfFile){
-        int line = token.line;
-        Token::Type operation = token.type;
+        int  line = token.line;
+        auto operation = token.type;
         switch(token.type){
             case Token::Type::Equal:
             case Token::Type::NotEqual:{
@@ -276,8 +285,8 @@ AST::AST* Parser::relational()
     if(!left) return 0;
 
     while(token.type > Token::Type::EndOfFile){
-        int line = token.line;
-        Token::Type operation = token.type;
+        int  line = token.line;
+        auto operation = token.type;
         switch(token.type){
             case Token::Type::Less:
             case Token::Type::Greater:
@@ -312,8 +321,8 @@ AST::AST* Parser::shift()
     if(!left) return 0;
 
     while(token.type > Token::Type::EndOfFile){
-        int line = token.line;
-        Token::Type operation = token.type;
+        int  line = token.line;
+        auto operation = token.type;
         switch(token.type){
             case Token::Type::ShiftLeft:
             case Token::Type::ShiftRight:{
@@ -346,8 +355,8 @@ AST::AST* Parser::additive()
     if(!left) return 0;
 
     while(token.type > Token::Type::EndOfFile){
-        int line = token.line;
-        Token::Type operation = token.type;
+        int  line = token.line;
+        auto operation = token.type;
         switch(token.type){
             case Token::Type::Add:
             case Token::Type::Subtract:{
@@ -380,8 +389,8 @@ AST::AST* Parser::multiplicative()
     if(!left) return 0;
 
     while(token.type > Token::Type::EndOfFile){
-        int line = token.line;
-        Token::Type operation = token.type;
+        int  line = token.line;
+        auto operation = token.type;
         switch(token.type){
             case Token::Type::Multiply:
             case Token::Type::Divide:
@@ -415,8 +424,8 @@ AST::AST* Parser::exponential()
     if(!left) return 0;
 
     while(token.type > Token::Type::EndOfFile){
-        int line = token.line;
-        Token::Type operation = token.type;
+        int  line = token.line;
+        auto operation = token.type;
         switch(token.type){
             case Token::Type::Exponential:{
                 getToken();
@@ -447,8 +456,8 @@ AST::AST* Parser::replication()
     auto left = stringification();
     if(!left) return 0;
 
-    int line = token.line;
-    Token::Type operation = token.type;
+    int  line = token.line;
+    auto operation = token.type;
     switch(token.type){
         case Token::Type::Replicate:{
             getToken();
@@ -516,8 +525,8 @@ AST::AST* Parser::stringification()
 // Reduction = [ "&" | "~&" | "|" | "~|" | "^" | "~^" | "!" ] Range;
 AST::AST* Parser::reduction()
 {
-    int line = token.line;
-    Token::Type operation = token.type;
+    int  line = token.line;
+    auto operation = token.type;
     switch(token.type){
         case Token::Type::AndReduce:
         case Token::Type::NandReduce:
@@ -549,8 +558,8 @@ AST::AST* Parser::range()
     auto left = unary();
     if(!left) return 0;
 
-    int line = token.line;
-    Token::Type operation = token.type;
+    int  line = token.line;
+    auto operation = token.type;
     switch(token.type){
         case Token::Type::To:{
             getToken();
@@ -585,8 +594,8 @@ AST::AST* Parser::range()
 // Unary = { "-" | "~" | ":" | "++" | "--" } Postfix;
 AST::AST* Parser::unary()
 {
-    int line = token.line;
-    Token::Type operation = token.type;
+    int  line = token.line;
+    auto operation = token.type;
     switch(token.type){
         case Token::Type::Negate:
         case Token::Type::BitNot:
@@ -618,8 +627,8 @@ AST::AST* Parser::postfix()
     if(!left) return 0;
 
     while(token.type > Token::Type::EndOfFile){
-        int line = token.line;
-        Token::Type operation = token.type;
+        int  line = token.line;
+        auto operation = token.type;
         switch(token.type){
             case Token::Type::Increment:
             case Token::Type::Decrement:
@@ -650,8 +659,8 @@ AST::AST* Parser::accessor()
     if(!left) return 0;
 
     while(token.type > Token::Type::EndOfFile){
-        int line = token.line;
-        Token::Type operation = token.type;
+        int  line = token.line;
+        auto operation = token.type;
         switch(token.type){
             case Token::Type::OpenSquare:{
                 auto result = new AST::Slice(line, astFilenameIndex);
@@ -730,6 +739,7 @@ AST::AST* Parser::castExpression()
                     delete result;
                     return 0;
                 }
+                getToken();
                 return result;
             }
             default:
@@ -751,9 +761,11 @@ AST::AST* Parser::primary()
     switch(token.type){
         case Token::Type::AccessAttribute:{
             auto result = new AST::Expression(line, astFilenameIndex);
+            result->operation = token.type;
             getToken();
             if(token.type != Token::Type::Identifier){
                 printError("Identifier expected");
+                delete result;
                 return 0;
             }
             auto right = new AST::Identifier(line, astFilenameIndex);
@@ -814,6 +826,7 @@ AST::AST* Parser::primary()
                 delete result;
                 return 0;
             }
+            getToken();
             return result;
         }
         default:
@@ -1022,6 +1035,726 @@ AST::AST* Parser::attributeAssignment()
 }
 //------------------------------------------------------------------------------
 
+// Definition = [ "inline" ] ( BaseType | TypeIdentifier ) [ ParameterList ]
+//              [ AttributeList ] ( VariableDefList | FunctionDef | OperatorOverload );
+AST::AST* Parser::definition()
+{
+    isInline = false;
+    if(token.type == Token::Type::Inline){
+        isInline = true;
+        getToken();
+    }
+
+    Token::Type defType;
+    AST::AST* typeIdent  = 0;
+    AST::AST* parameters = 0;
+    AST::AST* attributes = 0;
+
+    switch(token.type){
+        case Token::Type::Pin:
+        case Token::Type::Net:
+        case Token::Type::Void:
+        case Token::Type::Auto:
+        case Token::Type::Byte:
+        case Token::Type::Char:
+        case Token::Type::Num:
+        case Token::Type::Func:
+            defType = token.type;
+            getToken();
+            break;
+
+        case Token::Type::Identifier:
+            defType   = Token::Type::Identifier;
+            typeIdent = typeIdentifier();
+            break;
+
+        default:
+            printError("Unexpected token");
+            return 0;
+    }
+    if(token.type == Token::Type::OpenRound){
+        parameters = parameterList();
+    }
+    if(token.type == Token::Type::OpenAngle){
+        attributes = attributeList();
+    }
+
+    if(token.type == Token::Type::Identifier){
+        return variableDefList(isInline, defType, typeIdent, parameters, attributes);
+
+    }else if(token.type == Token::Type::Operator){
+        return operatorOverload(isInline,
+                                defType,
+                                typeIdent,
+                                parameters,
+                                attributes);
+
+    }else{
+        printError("Identifier expected");
+        if(typeIdent ) delete typeIdent;
+        if(parameters) delete parameters;
+        if(attributes) delete attributes;
+        return 0;
+    }
+    if(typeIdent ) delete typeIdent;
+    if(parameters) delete parameters;
+    if(attributes) delete attributes;
+    return 0;
+}
+//------------------------------------------------------------------------------
+
+// TypeIdentifier = Identifier { "." Identifier };
+AST::AST* Parser::typeIdentifier()
+{
+    if(token.type != Token::Type::Identifier){
+        printError("Identifier expected");
+        return 0;
+    }
+    auto temp = new AST::Identifier(token.line, astFilenameIndex);
+    temp->name = token.data;
+    AST::AST* left = temp;
+    getToken();
+
+    while(token.type > Token::Type::EndOfFile){
+        int  line = token.line;
+        auto operation = token.type;
+        switch(token.type){
+            case Token::Type::AccessMember:{
+                getToken();
+                if(token.type != Token::Type::Identifier){
+                    printError("Invalid type identifier expression");
+                    delete left;
+                    return 0;
+                }
+                auto right = new AST::Identifier(token.line, astFilenameIndex);
+                right->name = token.data;
+                getToken();
+                auto result = new AST::Expression(line, astFilenameIndex);
+                result->operation = operation;
+                result->left      = left;
+                result->right     = right;
+                left = result;
+                break;
+            }
+            default:
+                return left;
+        }
+    }
+    return 0;
+}
+//------------------------------------------------------------------------------
+
+// ClassDefinition = "class" [ AttributeList ] Identifier
+//                   [ "(" [ ParameterDefList ] ")" ]
+//                   [
+//                     ":" TypeIdentifier [ ParameterList ]
+//                   { "," TypeIdentifier [ ParameterList ] }
+//                   ]
+//                   "{" [ Statements ] "}";
+AST::AST* Parser::classDefinition()
+{
+    getToken();
+
+    auto result = new AST::ClassDefinition(token.line, astFilenameIndex);
+    if(token.type == Token::Type::OpenAngle){
+        result->attributes = attributeList();
+    }
+    if(token.type == Token::Type::Identifier){
+        result->identifier = token.data;
+        getToken();
+    }else{
+        printError("Identifier expected");
+        delete result;
+        return 0;
+    }
+    if(token.type == Token::Type::OpenRound){
+        getToken();
+        result->parameters = parameterDefList();
+        if(token.type != Token::Type::CloseRound){
+            printError(") expected");
+            delete result;
+            return 0;
+        }
+        getToken();
+    }
+    if(token.type == Token::Type::Colon){
+        AST::ClassDefinition::Parent* last = 0;
+        do{
+            getToken();
+            auto current = new AST::ClassDefinition::Parent;
+            if(last) last->next      = current;
+            else     result->parents = current;
+            last = current;
+            current->typeIdentifier = typeIdentifier();
+            if(!current->typeIdentifier){
+                printError("Parent class identifier expected");
+                delete result;
+                return 0;
+            }
+            if(token.type == Token::Type::OpenRound){
+                current->parameters = parameterList();
+            }
+        }while(token.type == Token::Type::Comma);
+    }
+
+    if(token.type == Token::Type::OpenCurly){
+        result->body = statementBlock();
+    }else{
+        printError("{ expected");
+        delete result;
+        return 0;
+    }
+    return result;
+}
+//------------------------------------------------------------------------------
+
+// AccessDirectionGroup = ( ( AccessSpecifier [ DirectionSpecifier ] ) |
+//                          ( DirectionSpecifier ) ) StatementBlock;
+AST::AST* Parser::accessDirectionGroup()
+{
+    auto result = new AST::AccessDirectionGroup(token.line, astFilenameIndex);
+
+    switch(token.type){
+        case Token::Type::Public:
+        case Token::Type::Private:
+        case Token::Type::Protected:
+            result->access = token.type;
+            getToken();
+            break;
+
+        default:
+            break;
+    }
+    switch(token.type){
+        case Token::Type::Input:
+        case Token::Type::Output:
+            result->direction = token.type;
+            getToken();
+            break;
+
+        default:
+            break;
+    }
+    result->body = statementBlock();
+    if(!result->body){
+        printError("Statement body expected");
+        delete result;
+        return 0;
+    }
+    return result;
+}
+//------------------------------------------------------------------------------
+
+// VariableDefList  = VariableDef { "," VariableDef } ";";
+AST::AST* Parser::variableDefList(
+    bool         isInline,
+    Token::Type  defType,
+    AST::AST*    typeIdentifier,
+    AST::AST*    parameters,
+    AST::AST*    attributes)
+{
+    bool   isList = false;
+    bool   isVariableDef = false; // Can also be a FunctionDef
+    string identifier;
+
+    AST::AST* result = 0;
+    AST::VariableDef::Definition* last = 0;
+
+    AST::AST* arrayDefs   = 0;
+    AST::AST* initialiser = 0;
+
+    while(token.type > Token::Type::EndOfFile){
+        if(token.type == Token::Type::Identifier){
+            identifier = token.data;
+            getToken();
+        }else{
+            printError("Identifier expected");
+            if(result     ) delete result;
+            if(arrayDefs  ) delete arrayDefs;
+            if(initialiser) delete initialiser;
+            return 0;
+        }
+
+        AST::AST* lastArrayDef = 0;
+        while(token.type == Token::Type::OpenSquare){
+            auto current = arrayDefinition();
+            if(lastArrayDef){
+                lastArrayDef->next = current;
+            }else{
+                if(arrayDefs) delete arrayDefs;
+                arrayDefs = current;
+            }
+            lastArrayDef = current;
+        }
+
+        switch(token.type){
+            case Token::Type::Assign:
+                if(isInline){
+                    printError("Variables cannot be inline");
+                    if(result     ) delete result;
+                    if(arrayDefs  ) delete arrayDefs;
+                    if(initialiser) delete initialiser;
+                    return 0;
+                }
+                isVariableDef = true;
+                getToken();
+                if(initialiser) delete initialiser;
+                initialiser = expression();
+                if(!initialiser){
+                    printError("Expression expected");
+                    if(result     ) delete result;
+                    if(arrayDefs  ) delete arrayDefs;
+                    if(initialiser) delete initialiser;
+                    return 0;
+                }
+                break;
+
+            case Token::Type::Comma:{
+                if(isInline){
+                    printError("Variables cannot be inline");
+                    if(result     ) delete result;
+                    if(arrayDefs  ) delete arrayDefs;
+                    if(initialiser) delete initialiser;
+                    return 0;
+                }
+                isList = true;
+                isVariableDef = true;
+                auto current  = new AST::VariableDef::Definition();
+                current->name        = identifier;
+                current->arrayDefs   = arrayDefs;
+                current->initialiser = initialiser;
+                arrayDefs   = 0;
+                initialiser = 0;
+                if(!result){
+                    result = new AST::VariableDef(token.line, astFilenameIndex);
+                    auto _result = (AST::VariableDef*)result;
+                    _result->defType        = defType;
+                    _result->typeIdentifier = typeIdentifier;
+                    _result->parameters     = parameters;
+                    _result->attributes     = attributes;
+                    _result->defList = current;
+                }else{
+                    last->next = current;
+                }
+                last = current;
+                getToken();
+                break;
+            }
+            case Token::Type::Semicolon:{
+                if(isInline){
+                    printError("Variables cannot be inline");
+                    if(result     ) delete result;
+                    if(arrayDefs  ) delete arrayDefs;
+                    if(initialiser) delete initialiser;
+                    return 0;
+                }
+                auto current = new AST::VariableDef::Definition();
+                current->name        = identifier;
+                current->arrayDefs   = arrayDefs;
+                current->initialiser = initialiser;
+                arrayDefs   = 0;
+                initialiser = 0;
+                if(!result){
+                    result = new AST::VariableDef(token.line, astFilenameIndex);
+                    auto _result = (AST::VariableDef*)result;
+                    _result->defType        = defType;
+                    _result->typeIdentifier = typeIdentifier;
+                    _result->parameters     = parameters;
+                    _result->attributes     = attributes;
+                    _result->defList = current;
+                }else{
+                    last->next = current;
+                }
+                getToken();
+                return result;
+            }
+            case Token::Type::OpenRound:{
+                if(isList){
+                    printError("Unexpected function definition (cannot be part of a list)");
+                    if(result     ) delete result;
+                    if(arrayDefs  ) delete arrayDefs;
+                    if(initialiser) delete initialiser;
+                    return 0;
+                }
+                if(isVariableDef){
+                    printError("Unexpected initialiser before function definition");
+                    if(result     ) delete result;
+                    if(arrayDefs  ) delete arrayDefs;
+                    if(initialiser) delete initialiser;
+                    return 0;
+                }
+                return functionDef(isInline,
+                                   defType,
+                                   typeIdentifier,
+                                   parameters,
+                                   attributes,
+                                   identifier,
+                                   arrayDefs);
+            }
+            default:
+                printError("Unexpected token");
+                if(result     ) delete result;
+                if(arrayDefs  ) delete arrayDefs;
+                if(initialiser) delete initialiser;
+                return 0;
+        }
+    }
+    if(result     ) delete result;
+    if(arrayDefs  ) delete arrayDefs;
+    if(initialiser) delete initialiser;
+    return 0;
+}
+//------------------------------------------------------------------------------
+
+// FunctionDef = ( Identifier { ArrayDefinition } )
+//               "(" [ ParameterDefList ] ")"
+//               "{" [ Statements ] "}" ;
+AST::AST* Parser::functionDef(bool        isInline,
+                              Token::Type returnType,
+                              AST::AST*   typeIdentifier,
+                              AST::AST*   parameters,
+                              AST::AST*   attributes,
+                              string&     identifier,
+                              AST::AST*   arrayDefs)
+{
+    auto result = new AST::FunctionDef(token.line, astFilenameIndex);
+
+    result->returnType.type           = returnType;
+    result->returnType.typeIdentifier = typeIdentifier;
+    result->returnType.parameters     = parameters;
+
+    result->isInline   = isInline;
+    result->attributes = attributes;
+    result->identifier = identifier;
+    result->arrayDefs  = arrayDefs;
+
+    if(token.type != Token::Type::OpenRound){
+        printError("( expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+    result->parameters = parameterDefList();
+    if(token.type != Token::Type::CloseRound){
+        printError(") expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+
+    if(token.type != Token::Type::OpenCurly){
+        printError("{ expected");
+        delete result;
+        return 0;
+    }
+    result->body = statementBlock();
+
+    return result;
+}
+//------------------------------------------------------------------------------
+
+// OperatorOverload = ("operator" Operator)
+//                    "(" [ParameterDefList] ")"
+//                    "{" [Statements] "}" ;
+AST::AST* Parser::operatorOverload(bool        isInline,
+                                   Token::Type returnType,
+                                   AST::AST*   typeIdentifier,
+                                   AST::AST*   parameters,
+                                   AST::AST*   attributes)
+{
+    getToken();
+
+    auto result = new AST::OperatorOverload(token.line, astFilenameIndex);
+
+    result->returnType.type           = returnType;
+    result->returnType.typeIdentifier = typeIdentifier;
+    result->returnType.parameters     = parameters;
+
+    result->isInline   = isInline;
+    result->attributes = attributes;
+
+    switch(token.type){
+        case Token::Type::Elvis:
+        case Token::Type::BitOr:
+        case Token::Type::BitNor:
+        case Token::Type::BitXor:
+        case Token::Type::BitXnor:
+        case Token::Type::BitAnd:
+        case Token::Type::BitNand:
+        case Token::Type::Equal:
+        case Token::Type::NotEqual:
+        case Token::Type::Less:
+        case Token::Type::Greater:
+        case Token::Type::LessEqual:
+        case Token::Type::GreaterEqual:
+        case Token::Type::ShiftLeft:
+        case Token::Type::ShiftRight:
+        case Token::Type::Add:
+        case Token::Type::Subtract:
+        case Token::Type::Multiply:
+        case Token::Type::Divide:
+        case Token::Type::Modulus:
+        case Token::Type::Exponential:
+        case Token::Type::LogicalNot:
+        case Token::Type::Replicate:
+        case Token::Type::Stringify:
+        case Token::Type::To:
+        case Token::Type::BitNot:
+        case Token::Type::RawBits:
+        case Token::Type::Increment:
+        case Token::Type::Decrement:
+        case Token::Type::CastOp:
+        case Token::Type::Assign:
+        case Token::Type::RawAssign:
+        case Token::Type::AppendAssign:
+        case Token::Type::AddAssign:
+        case Token::Type::SubtractAssign:
+        case Token::Type::MultiplyAssign:
+        case Token::Type::DivideAssign:
+        case Token::Type::ExponentialAssign:
+        case Token::Type::ModulusAssign:
+        case Token::Type::AndAssign:
+        case Token::Type::OrAssign:
+        case Token::Type::XorAssign:
+        case Token::Type::ShiftLeftAssign:
+        case Token::Type::ShiftRightAssign:
+        case Token::Type::SequenceConsecutive:
+        case Token::Type::SequenceGoTo:
+        case Token::Type::SequenceNonConsecutive:
+        case Token::Type::AssertImplies:
+        case Token::Type::AssertImpliesNext:
+        case Token::Type::Or:
+        case Token::Type::And:
+        case Token::Type::Intersect:
+            result->operation = token.type;
+            getToken();
+            break;
+
+        default:
+            printError("Overloadable operator expected");
+            delete result;
+            return 0;
+    }
+
+    if(token.type != Token::Type::OpenRound){
+        printError("( expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+    result->parameters = parameterDefList();
+    if(token.type != Token::Type::CloseRound){
+        printError(") expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+
+    if(token.type != Token::Type::OpenCurly){
+        printError("{ expected");
+        delete result;
+        return 0;
+    }
+    result->body = statementBlock();
+
+    return result;
+}
+//------------------------------------------------------------------------------
+
+// ArrayDefinition  = "[" [Expression] "]";
+AST::AST* Parser::arrayDefinition()
+{
+    getToken();
+
+    auto result = expression();
+    if(token.type != Token::Type::CloseSquare){
+        printError("] expected");
+        if(result) delete result;
+        return 0;
+    }
+    getToken();
+    return result;
+}
+//------------------------------------------------------------------------------
+
+// ParameterDefList = ParameterDef {"," ParameterDef};
+AST::AST* Parser::parameterDefList()
+{
+    auto result = parameterDef();
+    if(!result) return 0;
+
+    auto last = result;
+
+    while(token.type == Token::Type::Comma){
+        getToken();
+        auto current = parameterDef();
+        if(!current){
+            printError("Parameter definition expected");
+            delete result;
+            return 0;
+        }
+        last->next = current;
+        last = current;
+    }
+    return result;
+}
+//------------------------------------------------------------------------------
+
+// ParameterDef = [ ( BaseType | TypeIdentifier ) [ ParameterList ] ]
+//                Identifier { "[" "]" } [ Initialiser ];
+AST::AST* Parser::parameterDef()
+{
+    auto result = new AST::ParameterDef(token.line, astFilenameIndex);
+
+    switch(token.type){
+        case Token::Type::Pin:
+        case Token::Type::Net:
+        case Token::Type::Void:
+        case Token::Type::Auto:
+        case Token::Type::Byte:
+        case Token::Type::Char:
+        case Token::Type::Num:
+        case Token::Type::Func:
+            result->defType = token.type;
+            getToken();
+            break;
+
+        case Token::Type::Identifier:
+            result->defType = token.type;
+            result->typeIdentifier = typeIdentifier();
+            if(!result->typeIdentifier){
+                printError("Invalid type identifier expression");
+                delete result;
+                return 0;
+            }
+            break;
+
+        default:
+            result->defType = Token::Type::Unknown;
+            break;
+    }
+    if(result->defType != Token::Type::Unknown &&
+       token.type == Token::Type::OpenRound    ){
+        result->parameters = parameterList();
+    }
+
+    if(result->defType == Token::Type::Identifier &&
+       result->parameters == 0                    &&
+       token.type != Token::Type::Identifier      ){
+        if(result->typeIdentifier->type == AST::AST::Type::Identifier){
+            result->identifier = ((AST::Identifier*)result->typeIdentifier)->name;
+            delete result->typeIdentifier;
+            result->defType = Token::Type::Unknown;
+            result->typeIdentifier = 0;
+        }else{
+            printError("Identifier expected");
+            delete result;
+            return 0;
+        }
+    }else if(token.type == Token::Type::Identifier){
+        result->identifier = token.data;
+        getToken();
+    }else{
+        printError("Identifier expected");
+        delete result;
+        return 0;
+    }
+    while(token.type == Token::Type::OpenSquare){
+        getToken();
+        if(token.type != Token::Type::CloseSquare){
+            printError("] expected");
+            delete result;
+            return 0;
+        }
+        result->arrayDimentions++;
+        getToken();
+    }
+    if(token.type == Token::Type::Assign){
+        getToken();
+        result->initialiser = expression();
+        if(!result->initialiser){
+            printError("Expression expected");
+            delete result;
+            return 0;
+        }
+    }
+    return result;
+}
+//------------------------------------------------------------------------------
+
+// EnumDefinition = "enum" Identifier "{" Identifier {"," Identifier} "}";
+AST::AST* Parser::enumDefinition()
+{
+    getToken();
+
+    auto result = new AST::EnumDefinition(token.line, astFilenameIndex);
+
+    if(token.type == Token::Type::Identifier){
+        result->name = token.data;
+        getToken();
+    }else{
+        printError("Identifier expected");
+        delete result;
+        return 0;
+    }
+    if(token.type != Token::Type::OpenCurly){
+        printError("{ expected");
+        delete result;
+        return 0;
+    }
+    AST::AST* last = 0;
+    do{
+        getToken();
+        if(token.type == Token::Type::Identifier){
+            auto current = new AST::Identifier(token.line, astFilenameIndex);
+            if(last) last->next      = current;
+            else     result->members = current;
+            last = current;
+            current->name = token.data;
+            getToken();
+        }else{
+            printError("Identifier expected");
+            delete result;
+            return 0;
+        }
+    }while(token.type == Token::Type::Comma);
+
+    if(token.type != Token::Type::CloseCurly){
+        printError("} expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+
+    return result;
+}
+//------------------------------------------------------------------------------
+
+AST::AST* Parser::jump()
+{
+    auto result = new AST::Jump(token.line, astFilenameIndex);
+    result->jumpType = token.type;
+    getToken();
+    result->expression = expression();
+
+    if(result->jumpType == Token::Type::GoTo){
+        if(!result->expression ||
+           result->expression->type != AST::AST::Type::Identifier){
+            printError("Label expected");
+            delete result;
+            return 0;
+        }
+    }
+    if(token.type != Token::Type::Semicolon){
+        printError("; expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+    return result;
+}
+//------------------------------------------------------------------------------
+
 AST::AST* Parser::identifierStatement()
 {
     AST::AST* left = accessor();
@@ -1029,21 +1762,58 @@ AST::AST* Parser::identifierStatement()
         printError("Invalid left expression");
         return 0;
     }
+    AST::AST* attributes = 0;
 
     switch(token.type){
-        case Token::Type::Colon:
-            printError("TODO: Label");
-            return 0;
-
+        case Token::Type::Colon:{
+            if(left->type == AST::AST::Type::Identifier){
+                auto result = new AST::Label(token.line, astFilenameIndex);
+                result->name = ((AST::Identifier*)left)->name;
+                delete left;
+                getToken();
+                return result;
+            }else{
+                printError("Label must be an identifier");
+                delete left;
+                return 0;
+            }
+        }
         case Token::Type::OpenAngle:
-        case Token::Type::Identifier:
-            printError("TODO: Definition (using defined type)");
-            return 0;
+            attributes = attributeList();
+        case Token::Type::Identifier:{
+            if(left->type == AST::AST::Type::FunctionCall){
+                auto _left = (AST::FunctionCall*)left;
+                auto result = variableDefList(false,
+                                              Token::Type::Identifier,
+                                              _left->name,
+                                              _left->parameters,
+                                              attributes);
+                _left->name       = 0;
+                _left->parameters = 0;
+                delete left;
+                return result;
+            }else{
+                return variableDefList(false,
+                                       Token::Type::Identifier,
+                                       left,
+                                       0,
+                                       attributes);
+            }
+        }
 
-        case Token::Type::AccessMemberPush:
-            printError("TODO: NameSpacePush");
-            return 0;
-
+        case Token::Type::AccessMemberPush:{
+            auto result = new AST::NameSpacePush(token.line, astFilenameIndex);
+            result->nameSpace = left;
+            getToken();
+            result->body = statements();
+            if(token.type != Token::Type::CloseCurly){
+                printError("} expected");
+                delete result;
+                return 0;
+            }
+            getToken();
+            return result;
+        }
         case Token::Type::Assign:
         case Token::Type::RawAssign:
         case Token::Type::AppendAssign:
@@ -1128,145 +1898,20 @@ AST::AST* Parser::identifierStatement()
 }
 //------------------------------------------------------------------------------
 
-AST::AST* Parser::functionDef(Token::Type type, string& identifier)
+AST::AST* Parser::statementBlock()
 {
-    printError("TODO FunctionDef");
-    return 0;
-}
-//------------------------------------------------------------------------------
-
-AST::AST* Parser::variableDefList(Token::Type type)
-{
-    bool   isList = false;
-    bool   isVariableDef = false; // Can also be a FunctionDef
-    string identifier;
-
-    AST::AST* result  = 0;
-    AST::AST* last    = 0;
-
-    while(token.type > Token::Type::EndOfFile){
-        if(token.type == Token::Type::Identifier){
-            identifier = token.data;
-            getToken();
-        }else{
-            printError("Identifier expected");
-            return 0;
-        }
-
-        while(token.type == Token::Type::OpenSquare){
-            printError("TODO ArrayDefinition");
-            return 0;
-        }
-
-        switch(token.type){
-            case Token::Type::Assign:
-                isVariableDef = true;
-                printError("TODO Initialiser");
-                if(result) delete result;
-                return 0;
-
-            case Token::Type::Comma:{
-                isList = true;
-                isVariableDef = true;
-                auto current = new AST::VariableDef(token.line, astFilenameIndex);
-                current->defType = type;
-                current->name    = identifier;
-                if(last) last->next = current;
-                else     result     = current;
-                last = current;
-                getToken();
-                break;
-            }
-            case Token::Type::Semicolon:{
-                auto current = new AST::VariableDef(token.line, astFilenameIndex);
-                current->defType = type;
-                current->name    = identifier;
-                if(last) last->next = current;
-                else     result     = current;
-                getToken();
-                return result;
-            }
-            case Token::Type::OpenRound:{
-                if(isList){
-                    printError("Unexpected function definition (cannot be part of a list)");
-                    if(result) delete result;
-                    return 0;
-                }
-                if(isVariableDef){
-                    printError("Unexpected initialiser before function definition");
-                    if(result) delete result;
-                    return 0;
-                }
-                auto current = functionDef(type, identifier);
-                if(last) last->next = current;
-                else     result = last = current;
-                last = current;
-                return result;
-            }
-            default:
-                printError("Unexpected token");
-                if(result) delete result;
-                return 0;
-        }
-    }
-    return 0;
-}
-//------------------------------------------------------------------------------
-
-AST::AST* Parser::definition()
-{
-    isInline = false;
-    if(token.type == Token::Type::Inline){
-        isInline = true;
+    if(token.type == Token::Type::OpenCurly){
         getToken();
-    }
-
-    Token::Type type;
-    switch(token.type){
-        case Token::Type::Pin:
-        case Token::Type::Net:
-        case Token::Type::Void:
-        case Token::Type::Auto:
-        case Token::Type::Byte:
-        case Token::Type::Char:
-        case Token::Type::Num:
-        case Token::Type::Func:
-            type = token.type;
-            getToken();
-            break;
-
-        case Token::Type::Identifier:
-            printError("TODO TypeIdentifier-style definitions");
+        auto result = statements();
+        if(token.type != Token::Type::CloseCurly){
+            printError("} expected");
+            if(result) delete result;
             return 0;
-
-        default:
-            printError("Unexpected token");
-            return 0;
+        }
+        getToken();
+        return result;
     }
-
-    if(token.type == Token::Type::OpenRound){
-        printError("TODO ParameterList");
-        return 0;
-    }
-
-    if(token.type == Token::Type::OpenAngle){
-        printError("TODO AttributeList");
-        return 0;
-    }
-
-    if(token.type == Token::Type::Identifier){
-        return variableDefList(type);
-
-    }else if(token.type == Token::Type::Operator){
-        printError("TODO OperatorOverload");
-        return 0;
-
-    }else{
-        printError("Identifier expected");
-        return 0;
-    }
-
-    return 0;
+    return statement();
 }
 //------------------------------------------------------------------------------
 
@@ -1281,11 +1926,8 @@ AST::AST* Parser::statement()
             return 0;
 
         case Token::Type::Identifier:
-            return identifierStatement();
-
         case Token::Type::AccessAttribute:
-            printError("TODO global attribute");
-            return 0;
+            return identifierStatement();
 
         case Token::Type::Inline:
         case Token::Type::Pin:
@@ -1299,12 +1941,10 @@ AST::AST* Parser::statement()
             return definition();
 
         case Token::Type::Class:
-            printError("TODO: ClassDefinition");
-            return 0;
+            return classDefinition();
 
         case Token::Type::Enum:
-            printError("TODO: EnumDefinition");
-            return 0;
+            return enumDefinition();
 
         case Token::Type::Alias:
             printError("TODO: Alias");
@@ -1327,8 +1967,7 @@ AST::AST* Parser::statement()
         case Token::Type::Protected:
         case Token::Type::Input:
         case Token::Type::Output:
-            printError("TODO: AccessDirectionGroup");
-            return 0;
+            return accessDirectionGroup();
 
         case Token::Type::If:
             printError("TODO: IfStatement");
@@ -1357,12 +1996,8 @@ AST::AST* Parser::statement()
         case Token::Type::Return:
         case Token::Type::Break:
         case Token::Type::Continue:
-            printError("TODO: Jump");
-            return 0;
-
         case Token::Type::GoTo:
-            printError("TODO: GoTo");
-            return 0;
+            return jump();
 
         case Token::Type::RTL:
             printError("TODO: RTL");
@@ -1399,10 +2034,8 @@ AST::AST* Parser::statement()
         case Token::Type::EndOfFile:
             return 0;
 
-        default:{
-            printError("Unexpected token");
+        default:
             return 0;
-        }
     }
     return 0;
 }

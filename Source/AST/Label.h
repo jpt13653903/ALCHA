@@ -18,23 +18,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Slice_h
-#define AST_Slice_h
+#ifndef AST_Label_h
+#define AST_Label_h
 //------------------------------------------------------------------------------
 
 #include "AST.h"
-#include "Token.h"
-
 #include <string>
 //------------------------------------------------------------------------------
 
 namespace AST{
-    struct Slice: public AST{
-        AST* array = 0;
-        AST* slice = 0;
+    struct Label: public AST{
+        std::string name;
 
-        Slice(int line, int filenameIndex);
-       ~Slice();
+        Label(int line, int filenameIndex);
+       ~Label();
 
         std::string print(int indent = 0) const override;
     };

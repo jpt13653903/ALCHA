@@ -41,7 +41,7 @@ namespace AST{
         Stringify(int line, int filenameIndex);
        ~Stringify();
 
-        std::string print() const override;
+        std::string print(int indent = 0) const override;
     };
 }
 //------------------------------------------------------------------------------

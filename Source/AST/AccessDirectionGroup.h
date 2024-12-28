@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Slice_h
-#define AST_Slice_h
+#ifndef AST_AccessDirectionGroup_h
+#define AST_AccessDirectionGroup_h
 //------------------------------------------------------------------------------
 
 #include "AST.h"
@@ -29,12 +29,13 @@
 //------------------------------------------------------------------------------
 
 namespace AST{
-    struct Slice: public AST{
-        AST* array = 0;
-        AST* slice = 0;
+    struct AccessDirectionGroup: public AST{
+        Token::Type access    = Token::Type::Unknown;
+        Token::Type direction = Token::Type::Unknown;
+        AST*        body      = 0;
 
-        Slice(int line, int filenameIndex);
-       ~Slice();
+        AccessDirectionGroup(int line, int filenameIndex);
+       ~AccessDirectionGroup();
 
         std::string print(int indent = 0) const override;
     };

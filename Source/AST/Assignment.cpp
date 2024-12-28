@@ -38,11 +38,13 @@ Assignment::~Assignment()
 }
 //------------------------------------------------------------------------------
 
-std::string Assignment::print() const
+std::string Assignment::print(int indent) const
 {
     string result;
 
-    result = target->print();
+    for(int n = 0; n < indent; n++) result += "    ";
+
+    result += target->print();
     switch(operation){
         case Token::Type::Assign:            result += " = ";   break;
         case Token::Type::RawAssign:         result += " := ";  break;

@@ -18,43 +18,38 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "VariableDef.h"
+#include "FunctionDef.h"
 //------------------------------------------------------------------------------
 
 using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-VariableDef::VariableDef(int line, int filenameIndex):
-    AST(line, filenameIndex, Type::VariableDef)
+FunctionDef::FunctionDef(int line, int filenameIndex):
+    AST(line, filenameIndex, Type::FunctionDef)
 {
 }
 //------------------------------------------------------------------------------
 
-VariableDef::~VariableDef()
+FunctionDef::~FunctionDef()
 {
-    if(typeIdentifier) delete typeIdentifier;
-    if(parameters    ) delete parameters;
-    if(attributes    ) delete attributes;
-    if(defList       ) delete defList;
+    if(returnType.parameters) delete returnType.parameters;
+    if(attributes           ) delete attributes;
+    if(arrayDefs            ) delete arrayDefs;
+    if(parameters           ) delete parameters;
+    if(body                 ) delete body;
 }
 //------------------------------------------------------------------------------
 
-VariableDef::Definition::~Definition()
-{
-    if(arrayDefs  ) delete arrayDefs;
-    if(initialiser) delete initialiser;
-    if(next       ) delete next;
-}
-//------------------------------------------------------------------------------
-
-std::string VariableDef::print(int indent) const
+std::string FunctionDef::print(int indent) const
 {
     string result;
 
     for(int n = 0; n < indent; n++) result += "    ";
 
-    switch(defType){
+    if(isInline) result += "inline ";
+
+    switch(returnType.type){
         case Token::Type::Pin:  result += "pin ";  break;
         case Token::Type::Net:  result += "net ";  break;
         case Token::Type::Void: result += "void "; break;
@@ -65,16 +60,20 @@ std::string VariableDef::print(int indent) const
         case Token::Type::Func: result += "func "; break;
 
         case Token::Type::Identifier:
-            if(typeIdentifier) result += typeIdentifier->print() + " ";
-            else               result += "Invalid typeIdentifier ";
+            if(returnType.typeIdentifier)
+                result += returnType.typeIdentifier->print() + " ";
+            else
+                result += "Invalid typeIdentifier ";
             break;
 
-        default: result += "Unknown defType "; break;
+        default:
+            result += "Unknown defType ";
+            break;
     }
-    if(parameters){
+    if(returnType.parameters){
         bool first = true;
         result += "(";
-        auto param = parameters;
+        auto param = returnType.parameters;
         while(param){
             if(!first) result += ", ";
             first = false;
@@ -95,26 +94,31 @@ std::string VariableDef::print(int indent) const
         }
         result += "> ";
     }
+    result += identifier;
+
+    auto arrayDef = arrayDefs;
+    while(arrayDef){
+        result += "[" + arrayDef->print() + "]";
+        arrayDef = arrayDef->next;
+    }
 
     bool first = true;
-    auto def = defList;
-    while(def){
+    result += "(";
+    auto param = parameters;
+    while(param){
         if(!first) result += ", ";
         first = false;
-
-        result += def->name;
-
-        auto arrayDef = def->arrayDefs;
-        while(arrayDef){
-            result += "[" + arrayDef->print() + "]";
-            arrayDef = arrayDef->next;
-        }
-        if(def->initialiser){
-            result += " = ";
-            result += def->initialiser->print();
-        }
-        def = def->next;
+        result += param->print();
+        param = param->next;
     }
+    result += "){\n";
+    auto statement = body;
+    while(statement){
+        result += statement->print(indent+1);
+        result += "\n";
+        statement = statement->next;
+    }
+    result += "}";
 
     return result;
 }

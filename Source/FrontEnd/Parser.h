@@ -70,10 +70,37 @@ class Parser{
         AST::AST* attributeList();
         AST::AST* attributeAssignment();
 
-        AST::AST* identifierStatement();
-        AST::AST* functionDef(Token::Type type, std::string& identifier);
-        AST::AST* variableDefList(Token::Type type);
         AST::AST* definition();
+        AST::AST* typeIdentifier();
+        AST::AST* classDefinition();
+        AST::AST* accessDirectionGroup();
+        AST::AST* variableDefList (bool         isInline,
+                                   Token::Type  defType,
+                                   AST::AST*    typeIdentifier,
+                                   AST::AST*    parameters,
+                                   AST::AST*    attributes);
+        AST::AST* functionDef     (bool         isInline,
+                                   Token::Type  returnType,
+                                   AST::AST*    typeIdentifier,
+                                   AST::AST*    parameters,
+                                   AST::AST*    attributes,
+                                   std::string& identifier,
+                                   AST::AST*    arrayDefs);
+        AST::AST* operatorOverload(bool         isInline,
+                                   Token::Type  returnType,
+                                   AST::AST*    typeIdentifier,
+                                   AST::AST*    parameters,
+                                   AST::AST*    attributes);
+        AST::AST* operatorOverload(Token::Type type, std::string& identifier);
+        AST::AST* arrayDefinition();
+        AST::AST* parameterDefList();
+        AST::AST* parameterDef();
+        AST::AST* enumDefinition();
+
+        AST::AST* jump();
+
+        AST::AST* identifierStatement();
+        AST::AST* statementBlock();
         AST::AST* statement();
         AST::AST* statements();
 
@@ -81,7 +108,7 @@ class Parser{
         Parser();
        ~Parser();
 
-       AST::AST* parse(const char* filename);
+        AST::AST* parse(const char* filename);
 };
 //------------------------------------------------------------------------------
 

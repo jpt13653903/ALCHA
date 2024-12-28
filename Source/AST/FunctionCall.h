@@ -34,7 +34,7 @@ namespace AST{
         FunctionCall(int line, int filenameIndex);
        ~FunctionCall();
 
-        std::string print() const override;
+        std::string print(int indent = 0) const override;
     };
 }
 //------------------------------------------------------------------------------

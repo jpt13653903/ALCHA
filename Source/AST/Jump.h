@@ -18,23 +18,22 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Slice_h
-#define AST_Slice_h
+#ifndef AST_Jump_h
+#define AST_Jump_h
 //------------------------------------------------------------------------------
 
 #include "AST.h"
 #include "Token.h"
-
 #include <string>
 //------------------------------------------------------------------------------
 
 namespace AST{
-    struct Slice: public AST{
-        AST* array = 0;
-        AST* slice = 0;
+    struct Jump: public AST{
+        Token::Type jumpType = Token::Type::Unknown;
+        AST* expression;
 
-        Slice(int line, int filenameIndex);
-       ~Slice();
+        Jump(int line, int filenameIndex);
+       ~Jump();
 
         std::string print(int indent = 0) const override;
     };

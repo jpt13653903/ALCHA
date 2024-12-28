@@ -38,11 +38,11 @@ Slice::~Slice()
 }
 //------------------------------------------------------------------------------
 
-std::string Slice::print() const
+std::string Slice::print(int indent) const
 {
     string result;
 
-    result.clear();
+    for(int n = 0; n < indent; n++) result += "    ";
 
     if(array){
         result += "(";

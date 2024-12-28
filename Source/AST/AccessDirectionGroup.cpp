@@ -18,29 +18,52 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Slice_h
-#define AST_Slice_h
+#include "AccessDirectionGroup.h"
 //------------------------------------------------------------------------------
 
-#include "AST.h"
-#include "Token.h"
-
-#include <string>
+using std::string;
+using namespace AST;
 //------------------------------------------------------------------------------
 
-namespace AST{
-    struct Slice: public AST{
-        AST* array = 0;
-        AST* slice = 0;
-
-        Slice(int line, int filenameIndex);
-       ~Slice();
-
-        std::string print(int indent = 0) const override;
-    };
+AccessDirectionGroup::AccessDirectionGroup(int line, int filenameIndex):
+    AST(line, filenameIndex, Type::AccessDirectionGroup)
+{
 }
 //------------------------------------------------------------------------------
 
-#endif
+AccessDirectionGroup::~AccessDirectionGroup()
+{
+    if(!body      ) delete body;
+}
+//------------------------------------------------------------------------------
+
+std::string AccessDirectionGroup::print(int indent) const
+{
+    string result;
+
+    for(int n = 0; n < indent; n++) result += "    ";
+
+    switch(access){
+        case Token::Type::Public:    result += "public ";    break;
+        case Token::Type::Private:   result += "private ";   break;
+        case Token::Type::Protected: result += "protected "; break;
+        default: break;
+    }
+    switch(direction){
+        case Token::Type::Input:  result += "input ";  break;
+        case Token::Type::Output: result += "output "; break;
+        default: break;
+    }
+    result += "{\n";
+    auto statement = body;
+    while(statement){
+        result += statement->print(indent+1);
+        result += "\n";
+        statement = statement->next;
+    }
+    result += "}";
+
+    return result;
+}
 //------------------------------------------------------------------------------
 

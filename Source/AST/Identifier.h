@@ -33,7 +33,7 @@ namespace AST{
         Identifier(int line, int filenameIndex);
        ~Identifier();
 
-        std::string print() const override;
+        std::string print(int indent = 0) const override;
     };
 }
 //------------------------------------------------------------------------------

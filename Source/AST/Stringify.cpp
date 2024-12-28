@@ -38,11 +38,13 @@ Stringify::~Stringify()
 }
 //------------------------------------------------------------------------------
 
-std::string Stringify::print() const
+std::string Stringify::print(int indent) const
 {
     string result;
 
-    result = "$(";
+    for(int n = 0; n < indent; n++) result += "    ";
+
+    result += "$(";
     if(expression) result += expression->print();
     if(format    ) result += ", " + format->print();
     result += ")";

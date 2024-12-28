@@ -36,11 +36,13 @@ String::~String()
 }
 //------------------------------------------------------------------------------
 
-std::string String::print() const
+std::string String::print(int indent) const
 {
     string result;
 
-    result = '"' + data + '"';
+    for(int n = 0; n < indent; n++) result += "    ";
+
+    result += '"' + data + '"';
 
     return result;
 }

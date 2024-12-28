@@ -37,15 +37,17 @@ Concatenate::~Concatenate()
 }
 //------------------------------------------------------------------------------
 
-std::string Concatenate::print() const
+std::string Concatenate::print(int indent) const
 {
     string result;
 
-    switch(operation){
-        case Token::Type::Concatenate:      result = ":("; break;
-        case Token::Type::ArrayConcatenate: result = ":["; break;
+    for(int n = 0; n < indent; n++) result += "    ";
 
-        default: result = "Unknown concatenate operation "; break;
+    switch(operation){
+        case Token::Type::Concatenate:      result += ":("; break;
+        case Token::Type::ArrayConcatenate: result += ":["; break;
+
+        default: result += "Unknown concatenate operation "; break;
     }
 
     bool first = false;

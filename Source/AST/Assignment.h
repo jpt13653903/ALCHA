@@ -37,7 +37,7 @@ namespace AST{
         Assignment(int line, int filenameIndex);
        ~Assignment();
 
-        std::string print() const override;
+        std::string print(int indent = 0) const override;
     };
 }
 //------------------------------------------------------------------------------

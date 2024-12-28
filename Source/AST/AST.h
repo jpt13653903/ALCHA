@@ -38,25 +38,32 @@ namespace AST{
         AST* next = 0;
 
         enum class Type{
-            Literal,
-            String,
-            Identifier,
-            VariableDef,
-            FunctionDef,
-            OperatorOverload,
-            Expression,
-            Stringify,
+            AccessDirectionGroup,
+            Assignment,
             Concatenate,
-            Slice,
+            ClassDefinition,
+            Expression,
+            EnumDefinition,
             FunctionCall,
-            Assignment
+            FunctionDef,
+            Identifier,
+            Jump,
+            Label,
+            Literal,
+            NameSpacePush,
+            OperatorOverload,
+            ParameterDef,
+            Slice,
+            String,
+            Stringify,
+            VariableDef
         } type;
 
         AST(int line, int filenameIndex, Type type);
         virtual ~AST();
 
         const char* decodeType() const;
-        virtual std::string print() const = 0;
+        virtual std::string print(int indent = 0) const = 0;
     };
 }
 //------------------------------------------------------------------------------

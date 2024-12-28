@@ -39,11 +39,11 @@ Expression::~Expression()
 }
 //------------------------------------------------------------------------------
 
-std::string Expression::print() const
+std::string Expression::print(int indent) const
 {
     string result;
 
-    result.clear();
+    for(int n = 0; n < indent; n++) result += "    ";
 
     if(operation == Token::Type::TernaryIf){
         result += "(";
