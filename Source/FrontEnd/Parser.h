@@ -102,15 +102,17 @@ class Parser{
         AST::AST* import();
         AST::AST* structDefinition();
         AST::AST* groupDefinition();
+        AST::AST* structBody();
         AST::AST* ifStatement();
         AST::AST* forStatement();
-        AST::AST* whileStatement();
-        AST::AST* loopStatement();
-        AST::AST* switchStatement();
+        AST::AST* loopOrSwitchStatement();
         AST::AST* caseStatement();
         AST::AST* jumpStatement();
         AST::AST* clockedConstruct();
         AST::AST* hdlConstruct();
+        AST::AST* hdlParameterList();
+        AST::AST* hdlParameter();
+        AST::AST* hdlBody();
 
         AST::AST* stimulusOrEmulate();
         AST::AST* forkJoin();

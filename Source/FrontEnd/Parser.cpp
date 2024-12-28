@@ -1751,12 +1751,75 @@ AST::AST* Parser::enumDefinition()
 // Alias  = "alias" Identifier "=" Expression ";";
 AST::AST* Parser::alias()
 {
+    auto result = new AST::Alias(token.line, astFilenameIndex);
+
+    getToken();
+
+    if(token.type == Token::Type::Identifier){
+        result->identifier = token.data;
+        getToken();
+    }else{
+        printError("Identifier expected");
+        delete result;
+        return 0;
+    }
+    if(token.type != Token::Type::Assign){
+        printError("= expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+    result->expression = expression();
+    if(!result->expression){
+        printError("Expression expected");
+        delete result;
+        return 0;
+    }
+    if(token.type != Token::Type::Semicolon){
+        printError("; expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+
+    return result;
 }
 //------------------------------------------------------------------------------
 
 // Import = "import" String ["as" Identifier] ";";
 AST::AST* Parser::import()
 {
+    auto result = new AST::Import(token.line, astFilenameIndex);
+
+    getToken();
+
+    if(token.type == Token::Type::String){
+        result->filename = token.data;
+        getToken();
+    }else{
+        printError("filename string expected");
+        delete result;
+        return 0;
+    }
+    if(token.type == Token::Type::As){
+        getToken();
+        if(token.type == Token::Type::Identifier){
+            result->nameSpace = token.data;
+            getToken();
+        }else{
+            printError("Identifier expected");
+            delete result;
+            return 0;
+        }
+    }
+    if(token.type != Token::Type::Semicolon){
+        printError("; expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+
+    return result;
 }
 //------------------------------------------------------------------------------
 
@@ -1765,42 +1828,256 @@ AST::AST* Parser::import()
 //          "}";
 AST::AST* Parser::structDefinition()
 {
+    auto result = new AST::GroupDefinition(token.line, astFilenameIndex);
+    result->groupType = token.type;
+
+    getToken();
+
+    if(token.type == Token::Type::OpenAngle){
+        result->attributes = attributeList();
+    }
+    if(token.type == Token::Type::Identifier){
+        result->identifier = token.data;
+        getToken();
+    }
+    if(token.type == Token::Type::OpenCurly){
+        getToken();
+        result->body = structBody();
+        if(token.type != Token::Type::CloseCurly){
+            printError("} expected");
+            delete result;
+            return 0;
+        }
+        getToken();
+    }else{
+        printError("{ expected");
+        delete result;
+        return 0;
+    }
+    return result;
+}
+//------------------------------------------------------------------------------
+
+AST::AST* Parser::structBody()
+{
+    AST::AST* result  = 0;
+    AST::AST* last    = 0;
+    AST::AST* current = 0;
+
+    while(token.type > Token::Type::EndOfFile){
+        switch(token.type){
+            case Token::Type::Pin:
+            case Token::Type::Net:
+            case Token::Type::Void:
+            case Token::Type::Auto:
+            case Token::Type::Byte:
+            case Token::Type::Char:
+            case Token::Type::Num:
+            case Token::Type::Func:
+                current = definition();
+                break;
+
+            case Token::Type::Identifier:
+                current = identifierStatement();
+                break;
+
+            case Token::Type::Struct:
+                current = structDefinition();
+                break;
+
+            default:
+                return result;
+        }
+        if(last) last->next = current;
+        else     result     = current;
+        last = current;
+        if(!current){
+            delete result;
+            return 0;
+        }
+        while(last->next) last = last->next;
+        if(current->type != AST::AST::Type::VariableDef     &&
+           current->type != AST::AST::Type::GroupDefinition ){
+            printError("Invalid struct member");
+            delete result;
+            return 0;
+        }
+    }
+    return result;
 }
 //------------------------------------------------------------------------------
 
 // Group  = "group"  [AttributeList] [Identifier] "{" [Statements] "}";
 AST::AST* Parser::groupDefinition()
 {
+    auto result = new AST::GroupDefinition(token.line, astFilenameIndex);
+    result->groupType = token.type;
+
+    getToken();
+
+    if(token.type == Token::Type::OpenAngle){
+        result->attributes = attributeList();
+    }
+    if(token.type == Token::Type::Identifier){
+        result->identifier = token.data;
+        getToken();
+    }
+    if(token.type == Token::Type::OpenCurly){
+        result->body = statementBlock();
+    }else{
+        printError("{ expected");
+        delete result;
+        return 0;
+    }
+    return result;
 }
 //------------------------------------------------------------------------------
 
 // IfStatement = "if" "(" Expression ")" StatementBlock [  "else" StatementBlock ];
 AST::AST* Parser::ifStatement()
 {
+    auto result = new AST::ControlStatement(token.line, astFilenameIndex);
+    result->statementType = token.type;
+
+    getToken();
+
+    if(token.type != Token::Type::OpenRound){
+        printError("( expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+
+    result->expression = expression();
+    if(!result->expression){
+        printError("Expression expected");
+        delete result;
+        return 0;
+    }
+    if(token.type != Token::Type::CloseRound){
+        printError(") expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+
+    result->body = statementBlock();
+    if(!result->body){
+        printError("Statement block expected");
+        delete result;
+        return 0;
+    }
+
+    if(token.type == Token::Type::Else){
+        getToken();
+        result->elseBody = statementBlock();
+        if(!result->elseBody){
+            printError("Statement block expected");
+            delete result;
+            return 0;
+        }
+    }
+    return result;
 }
 //------------------------------------------------------------------------------
 
 // For = "for" "(" Identifier "in" Range ")" StatementBlock;
 AST::AST* Parser::forStatement()
 {
+    auto result = new AST::ControlStatement(token.line, astFilenameIndex);
+    result->statementType = token.type;
+
+    getToken();
+
+    if(token.type != Token::Type::OpenRound){
+        printError("( expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+
+    if(token.type != Token::Type::Identifier){
+        printError("Identifier expected");
+        delete result;
+        return 0;
+    }
+    auto expression = new AST::Expression(token.line, astFilenameIndex);
+    expression->operation = Token::Type::In;
+    auto left = new AST::Identifier(token.line, astFilenameIndex);
+    left->name = token.data;
+    expression->left = left;
+    result->expression = expression;
+    getToken();
+
+    if(token.type != Token::Type::In){
+        printError("\"in\" expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+
+    expression->right = range();
+    if(!expression->right){
+        printError("Range expected");
+        delete result;
+        return 0;
+    }
+    if(token.type != Token::Type::CloseRound){
+        printError(") expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+
+    result->body = statementBlock();
+    if(!result->body){
+        printError("Statement block expected");
+        delete result;
+        return 0;
+    }
+    return result;
 }
 //------------------------------------------------------------------------------
 
-// While = "while" "(" Expression ")" StatementBlock );
-AST::AST* Parser::whileStatement()
+// While  = "while"  "(" Expression ")"   StatementBlock ;
+// Loop   = "loop" [ "(" Expression ")" ] StatementBlock ;
+// Switch = "switch" "(" Expression ")"   StatementBlock ;
+AST::AST* Parser::loopOrSwitchStatement()
 {
-}
-//------------------------------------------------------------------------------
+    auto result = new AST::ControlStatement(token.line, astFilenameIndex);
+    result->statementType = token.type;
 
-// Loop = "loop" [ "(" Expression ")" ] StatementBlock );
-AST::AST* Parser::loopStatement()
-{
-}
-//------------------------------------------------------------------------------
+    getToken();
 
-// Switch = "switch" "(" Expression ")"  StatementBlock;
-AST::AST* Parser::switchStatement()
-{
+    if(token.type == Token::Type::OpenRound){
+        getToken();
+
+        result->expression = expression();
+        if(!result->expression){
+            printError("Expression expected");
+            delete result;
+            return 0;
+        }
+        if(token.type != Token::Type::CloseRound){
+            printError(") expected");
+            delete result;
+            return 0;
+        }
+        getToken();
+
+    }else if(result->statementType != Token::Type::Loop){
+        printError("( expected");
+        delete result;
+        return 0;
+    }
+
+    result->body = statementBlock();
+    if(!result->body){
+        printError("Statement block expected");
+        delete result;
+        return 0;
+    }
+    return result;
 }
 //------------------------------------------------------------------------------
 
@@ -1808,6 +2085,39 @@ AST::AST* Parser::switchStatement()
 //      | ( "default"                     StatementBlock );
 AST::AST* Parser::caseStatement()
 {
+    auto result = new AST::ControlStatement(token.line, astFilenameIndex);
+    result->statementType = token.type;
+
+    getToken();
+
+    if(result->statementType == Token::Type::Case){
+        if(token.type != Token::Type::OpenRound){
+            printError("( expected");
+            delete result;
+            return 0;
+        }
+        getToken();
+
+        result->expression = expressionList();
+        if(!result->expression){
+            printError("Expression list expected");
+            delete result;
+            return 0;
+        }
+        if(token.type != Token::Type::CloseRound){
+            printError(") expected");
+            delete result;
+            return 0;
+        }
+        getToken();
+    }
+    result->body = statementBlock();
+    if(!result->body){
+        printError("Statement block expected");
+        delete result;
+        return 0;
+    }
+    return result;
 }
 //------------------------------------------------------------------------------
 
@@ -1841,6 +2151,24 @@ AST::AST* Parser::jumpStatement()
 // FSM = "fsm" [AttributeList] [ParameterList] StatementBlock;
 AST::AST* Parser::clockedConstruct()
 {
+    auto result = new AST::ClockedConstruct(token.line, astFilenameIndex);
+    result->construct = token.type;
+
+    getToken();
+
+    if(token.type == Token::Type::OpenAngle){
+        result->attributes = attributeList();
+    }
+    if(token.type == Token::Type::OpenRound){
+        result->parameters = parameterList();
+    }
+    result->body = statementBlock();
+    if(!result->body){
+        printError("Statement block expected");
+        delete result;
+        return 0;
+    }
+    return result;
 }
 //------------------------------------------------------------------------------
 
@@ -1849,6 +2177,183 @@ AST::AST* Parser::clockedConstruct()
 //             "{" { ( [ DirectionSpecifier ] Definition ) | Stimulus } "}";
 AST::AST* Parser::hdlConstruct()
 {
+    auto result = new AST::HdlConstruct(token.line, astFilenameIndex);
+
+    getToken();
+
+    if(token.type == Token::Type::OpenAngle){
+        result->attributes = attributeList();
+    }
+    if(token.type != Token::Type::OpenRound){
+        printError("( expected");
+        delete result;
+        return 0;
+    }
+    do{
+        getToken();
+        if(token.type != Token::Type::String){
+            printError("Filename string expected");
+            delete result;
+            return 0;
+        }
+        result->filenames.push_back(token.data);
+        getToken();
+    }while(token.type == Token::Type::Comma);
+
+    if(token.type != Token::Type::CloseRound){
+        printError(") expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+
+    if(token.type != Token::Type::Identifier){
+        printError("Identifier expected");
+        delete result;
+        return 0;
+    }
+    result->identifier = token.data;
+    getToken();
+
+    if(token.type == Token::Type::OpenRound){
+        result->parameters = hdlParameterList();
+    }
+    if(token.type == Token::Type::OpenCurly){
+        getToken();
+        result->portDefs = hdlBody();
+        if(token.type != Token::Type::CloseCurly){
+            printError("} expected");
+            delete result;
+            return 0;
+        }
+        getToken();
+    }else{
+        printError("{ expected");
+        delete result;
+        return 0;
+    }
+    return result;
+}
+//------------------------------------------------------------------------------
+
+AST::AST* Parser::hdlParameterList()
+{
+    getToken();
+
+    AST::AST* result = hdlParameter();
+
+    if(result){
+        auto last    = result;
+        auto current = result;
+
+        while(token.type == Token::Type::Comma){
+            getToken();
+            current = hdlParameter();
+            if(!current){
+                printError("Parameter assignment expected");
+                delete result;
+                return 0;
+            }
+            last->next = current;
+            last = current;
+        }
+    }
+    if(token.type != Token::Type::CloseRound){
+        printError(") expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+
+    return result;
+}
+//------------------------------------------------------------------------------
+
+AST::AST* Parser::hdlParameter()
+{
+    if(token.type != Token::Type::Identifier){
+        return 0;
+    }
+    auto result = new AST::Assignment(token.line, astFilenameIndex);
+    auto target = new AST::Identifier(token.line, astFilenameIndex);
+    target->name   = token.data;
+    result->target = target;
+    getToken();
+
+    switch(token.type){
+        case Token::Type::Assign:
+        case Token::Type::RawAssign:{
+            result->operation = token.type;
+            getToken();
+            result->expression = expression();
+            if(!result->expression){
+                printError("Expression expected");
+                delete result;
+                return 0;
+            }
+            return result;
+        }
+        default:
+            printError("Assignment expected");
+            delete result;
+            return 0;
+    }
+    return result;
+}
+//------------------------------------------------------------------------------
+
+AST::AST* Parser::hdlBody()
+{
+    AST::AST* result  = 0;
+    AST::AST* last    = 0;
+    AST::AST* current = 0;
+
+    while(token.type > Token::Type::EndOfFile){
+        switch(token.type){
+            case Token::Type::Input:
+            case Token::Type::Output:
+                current = accessDirectionGroup();
+                break;
+
+            case Token::Type::Pin:
+            case Token::Type::Net:
+            case Token::Type::Void:
+            case Token::Type::Auto:
+            case Token::Type::Byte:
+            case Token::Type::Char:
+            case Token::Type::Num:
+            case Token::Type::Func:
+                current = definition();
+                break;
+
+            case Token::Type::Identifier:
+                current = identifierStatement();
+                break;
+
+            case Token::Type::Stimulus:
+                current = stimulusOrEmulate();
+                break;
+
+            default:
+                return result;
+        }
+        if(last) last->next = current;
+        else     result     = current;
+        last = current;
+        if(!current){
+            delete result;
+            return 0;
+        }
+        while(last->next) last = last->next;
+        if(current->type != AST::AST::Type::AccessDirectionGroup &&
+           current->type != AST::AST::Type::VariableDef          &&
+           current->type != AST::AST::Type::StimulusOrEmulate    ){
+            printError("Invalid HDL body");
+            delete result;
+            return 0;
+        }
+    }
+    return result;
 }
 //------------------------------------------------------------------------------
 
@@ -2294,18 +2799,13 @@ AST::AST* Parser::statement()
             break;
 
         case Token::Type::While:
-            result = whileStatement();
-            break;
-
         case Token::Type::Loop:
-            result = loopStatement();
-            break;
-
         case Token::Type::Switch:
-            result = switchStatement();
+            result = loopOrSwitchStatement();
             break;
 
         case Token::Type::Case:
+        case Token::Type::Default:
             result = caseStatement();
             break;
 

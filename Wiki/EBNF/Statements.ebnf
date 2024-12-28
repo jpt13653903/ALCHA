@@ -22,10 +22,10 @@ IfStatement = "if" "(" Expression ")" StatementBlock ["else" StatementBlock];
 For = "for" "(" Identifier "in" Range ")" StatementBlock;
 
 (* For while loops, Expression must evaluate to a boolean *)
-While = "while" "(" Expression ")" StatementBlock);
+While = "while" "(" Expression ")" StatementBlock;
 
 (* For loop loops, Expression must evaluate to an integer *)
-Loop = "loop" ["(" Expression ")"] StatementBlock);
+Loop = "loop" ["(" Expression ")"] StatementBlock;
 
 (* For case statements, Expression must evaluate to a constant *)
 (* The case is a normal statement so that autogen style code works *)
