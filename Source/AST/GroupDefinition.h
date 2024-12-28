@@ -18,62 +18,27 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_h
-#define AST_h
+#ifndef AST_GroupDefinition_h
+#define AST_GroupDefinition_h
 //------------------------------------------------------------------------------
 
-#include "General.h"
+#include "AST.h"
+#include "Token.h"
 
 #include <string>
-#include <vector>
 //------------------------------------------------------------------------------
 
 namespace AST{
-    extern std::vector<std::string> filenameBuffer;
+    struct GroupDefinition: public AST{
+        Token::Type groupType = Token::Type::Unknown;
+        AST*        attributes = 0;
+        std::string identifier;
+        AST*        body = 0;
 
-    struct AST{
-        int line          = 0;
-        int filenameIndex = 0;
+        GroupDefinition(int line, int filenameIndex);
+       ~GroupDefinition();
 
-        AST* next = 0;
-
-        enum class Type{
-            AccessDirectionGroup,
-            Alias,
-            Assert,
-            Assignment,
-            ClassDefinition,
-            ClockedConstruct,
-            Concatenate,
-            ControlStatement,
-            EnumDefinition,
-            Expression,
-            ForkJoin,
-            FunctionCall,
-            FunctionDef,
-            GroupDefinition,
-            HdlConstruct,
-            Identifier,
-            Import,
-            Jump,
-            Label,
-            Literal,
-            NameSpacePush,
-            OperatorOverload,
-            ParameterDef,
-            Slice,
-            StimulusOrEmulate,
-            String,
-            Stringify,
-            VariableDef,
-            Wait
-        } type;
-
-        AST(int line, int filenameIndex, Type type);
-        virtual ~AST();
-
-        const char* decodeType() const;
-        virtual std::string print(int indent = 0) const = 0;
+        std::string print(int indent = 0) const override;
     };
 }
 //------------------------------------------------------------------------------

@@ -98,7 +98,19 @@ class Parser{
         AST::AST* parameterDef();
         AST::AST* enumDefinition();
 
-        AST::AST* jump();
+        AST::AST* alias();
+        AST::AST* import();
+        AST::AST* structDefinition();
+        AST::AST* groupDefinition();
+        AST::AST* ifStatement();
+        AST::AST* forStatement();
+        AST::AST* whileStatement();
+        AST::AST* loopStatement();
+        AST::AST* switchStatement();
+        AST::AST* caseStatement();
+        AST::AST* jumpStatement();
+        AST::AST* clockedConstruct();
+        AST::AST* hdlConstruct();
 
         AST::AST* stimulusOrEmulate();
         AST::AST* forkJoin();

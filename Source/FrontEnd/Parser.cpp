@@ -23,16 +23,22 @@
 //------------------------------------------------------------------------------
 
 #include "AST/AccessDirectionGroup.h"
+#include "AST/Alias.h"
 #include "AST/Assert.h"
 #include "AST/Assignment.h"
-#include "AST/Concatenate.h"
 #include "AST/ClassDefinition.h"
-#include "AST/Expression.h"
+#include "AST/ClockedConstruct.h"
+#include "AST/Concatenate.h"
+#include "AST/ControlStatement.h"
 #include "AST/EnumDefinition.h"
+#include "AST/Expression.h"
 #include "AST/ForkJoin.h"
 #include "AST/FunctionCall.h"
 #include "AST/FunctionDef.h"
+#include "AST/GroupDefinition.h"
+#include "AST/HdlConstruct.h"
 #include "AST/Identifier.h"
+#include "AST/Import.h"
 #include "AST/Jump.h"
 #include "AST/Label.h"
 #include "AST/Literal.h"
@@ -1742,7 +1748,71 @@ AST::AST* Parser::enumDefinition()
 }
 //------------------------------------------------------------------------------
 
-AST::AST* Parser::jump()
+// Alias  = "alias" Identifier "=" Expression ";";
+AST::AST* Parser::alias()
+{
+}
+//------------------------------------------------------------------------------
+
+// Import = "import" String ["as" Identifier] ";";
+AST::AST* Parser::import()
+{
+}
+//------------------------------------------------------------------------------
+
+// Struct = "struct" [AttributeList] [Identifier] "{"
+//           { Definition | Struct }
+//          "}";
+AST::AST* Parser::structDefinition()
+{
+}
+//------------------------------------------------------------------------------
+
+// Group  = "group"  [AttributeList] [Identifier] "{" [Statements] "}";
+AST::AST* Parser::groupDefinition()
+{
+}
+//------------------------------------------------------------------------------
+
+// IfStatement = "if" "(" Expression ")" StatementBlock [  "else" StatementBlock ];
+AST::AST* Parser::ifStatement()
+{
+}
+//------------------------------------------------------------------------------
+
+// For = "for" "(" Identifier "in" Range ")" StatementBlock;
+AST::AST* Parser::forStatement()
+{
+}
+//------------------------------------------------------------------------------
+
+// While = "while" "(" Expression ")" StatementBlock );
+AST::AST* Parser::whileStatement()
+{
+}
+//------------------------------------------------------------------------------
+
+// Loop = "loop" [ "(" Expression ")" ] StatementBlock );
+AST::AST* Parser::loopStatement()
+{
+}
+//------------------------------------------------------------------------------
+
+// Switch = "switch" "(" Expression ")"  StatementBlock;
+AST::AST* Parser::switchStatement()
+{
+}
+//------------------------------------------------------------------------------
+
+// Case = ( "case" "(" ExpressionList ")" StatementBlock )
+//      | ( "default"                     StatementBlock );
+AST::AST* Parser::caseStatement()
+{
+}
+//------------------------------------------------------------------------------
+
+// Jump = ("return" | "break" | "continue") [Expression] ";";
+AST::AST* Parser::jumpStatement()
 {
     auto result = new AST::Jump(token.line, astFilenameIndex);
     result->jumpType = token.type;
@@ -1764,6 +1834,21 @@ AST::AST* Parser::jump()
     }
     getToken();
     return result;
+}
+//------------------------------------------------------------------------------
+
+// RTL = "rtl" [AttributeList] [ParameterList] StatementBlock;
+// FSM = "fsm" [AttributeList] [ParameterList] StatementBlock;
+AST::AST* Parser::clockedConstruct()
+{
+}
+//------------------------------------------------------------------------------
+
+// HDL = "hdl" [ AttributeList ] "(" [ String { "," String } ] ")" Identifier
+//             [ "(" { Assignment } ")" ]
+//             "{" { ( [ DirectionSpecifier ] Definition ) | Stimulus } "}";
+AST::AST* Parser::hdlConstruct()
+{
 }
 //------------------------------------------------------------------------------
 
@@ -2176,19 +2261,19 @@ AST::AST* Parser::statement()
             break;
 
         case Token::Type::Alias:
-            printError("TODO: Alias");
+            result = alias();
             break;
 
         case Token::Type::Import:
-            printError("TODO: Import");
+            result = import();
             break;
 
         case Token::Type::Struct:
-            printError("TODO: Struct");
+            result = structDefinition();
             break;
 
         case Token::Type::Group:
-            printError("TODO: Group");
+            result = groupDefinition();
             break;
 
         case Token::Type::Public:
@@ -2200,46 +2285,44 @@ AST::AST* Parser::statement()
             break;
 
         case Token::Type::If:
-            printError("TODO: IfStatement");
+            result = ifStatement();
             break;
 
         case Token::Type::For:
+            result = forStatement();
             printError("TODO: For");
             break;
 
         case Token::Type::While:
-            printError("TODO: While");
+            result = whileStatement();
             break;
 
         case Token::Type::Loop:
-            printError("TODO: Loop");
+            result = loopStatement();
             break;
 
         case Token::Type::Switch:
-            printError("TODO: Switch");
+            result = switchStatement();
             break;
 
         case Token::Type::Case:
-            printError("TODO: Case");
+            result = caseStatement();
             break;
 
         case Token::Type::Return:
         case Token::Type::Break:
         case Token::Type::Continue:
         case Token::Type::GoTo:
-            result = jump();
+            result = jumpStatement();
             break;
 
         case Token::Type::RTL:
-            printError("TODO: RTL");
-            break;
-
         case Token::Type::FSM:
-            printError("TODO: FSM");
+            result = clockedConstruct();
             break;
 
         case Token::Type::HDL:
-            printError("TODO: HDL");
+            result = hdlConstruct();
             break;
 
         case Token::Type::Stimulus:

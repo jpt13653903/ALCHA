@@ -57,6 +57,8 @@ std::string Expression::print(int indent) const
     }
 
     switch(operation){
+        case Token::Type::In:               result += " in ";  break;
+
         case Token::Type::TernaryIf:        result += " : ";  break;
         case Token::Type::Elvis:            result += " ?: "; break;
 

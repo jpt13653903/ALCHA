@@ -45,18 +45,24 @@ AST::AST::~AST()
 const char* AST::AST::decodeType() const
 {
     switch(type){
-
         case Type::AccessDirectionGroup: return "AccessDirectionGroup";
+        case Type::Alias:                return "Alias";
         case Type::Assert:               return "Assert";
         case Type::Assignment:           return "Assignment";
-        case Type::Concatenate:          return "Concatenate";
         case Type::ClassDefinition:      return "ClassDefinition";
-        case Type::Expression:           return "Expression";
+        case Type::ClockedConstruct:     return "ClockedConstruct";
+        case Type::Concatenate:          return "Concatenate";
+        case Type::ControlStatement:     return "ControlStatement";
         case Type::EnumDefinition:       return "EnumDefinition";
+        case Type::Expression:           return "Expression";
         case Type::ForkJoin:             return "ForkJoin";
         case Type::FunctionCall:         return "FunctionCall";
         case Type::FunctionDef:          return "FunctionDef";
+        case Type::GroupDefinition:      return "GroupDefinition";
+        case Type::HdlConstruct:         return "HdlConstruct";
         case Type::Identifier:           return "Identifier";
+        case Type::Import:               return "Import";
+        case Type::Jump:                 return "Jump";
         case Type::Label:                return "Label";
         case Type::Literal:              return "Literal";
         case Type::NameSpacePush:        return "NameSpacePush";

@@ -143,6 +143,7 @@ bool testParser()
         "num myFunc(a, b, c = 5 (~5)){\n"
         "    print(((a) * (b)) + (c))\n"
         "}",
+        "myFuct(1 (~1), 2 (~2), 3 (~3))",
 
         "inline num (15 (~15), 7 (~7)) <a = b, c = d> myFunc("
              "a, num b, c = 5 (~5), pin d = 8 (~8), pin (13 (~13), 9 (~9)) e, "

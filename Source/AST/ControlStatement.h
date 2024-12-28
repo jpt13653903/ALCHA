@@ -18,62 +18,27 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_h
-#define AST_h
+#ifndef AST_ControlStatement_h
+#define AST_ControlStatement_h
 //------------------------------------------------------------------------------
 
-#include "General.h"
+#include "AST.h"
+#include "Token.h"
 
 #include <string>
-#include <vector>
 //------------------------------------------------------------------------------
 
 namespace AST{
-    extern std::vector<std::string> filenameBuffer;
+    struct ControlStatement: public AST{
+        Token::Type statementType = Token::Type::Unknown;
+        AST*        expression = 0;
+        AST*        body       = 0;
+        AST*        elseBody   = 0; // If statements
 
-    struct AST{
-        int line          = 0;
-        int filenameIndex = 0;
+        ControlStatement(int line, int filenameIndex);
+       ~ControlStatement();
 
-        AST* next = 0;
-
-        enum class Type{
-            AccessDirectionGroup,
-            Alias,
-            Assert,
-            Assignment,
-            ClassDefinition,
-            ClockedConstruct,
-            Concatenate,
-            ControlStatement,
-            EnumDefinition,
-            Expression,
-            ForkJoin,
-            FunctionCall,
-            FunctionDef,
-            GroupDefinition,
-            HdlConstruct,
-            Identifier,
-            Import,
-            Jump,
-            Label,
-            Literal,
-            NameSpacePush,
-            OperatorOverload,
-            ParameterDef,
-            Slice,
-            StimulusOrEmulate,
-            String,
-            Stringify,
-            VariableDef,
-            Wait
-        } type;
-
-        AST(int line, int filenameIndex, Type type);
-        virtual ~AST();
-
-        const char* decodeType() const;
-        virtual std::string print(int indent = 0) const = 0;
+        std::string print(int indent = 0) const override;
     };
 }
 //------------------------------------------------------------------------------

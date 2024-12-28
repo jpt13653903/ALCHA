@@ -29,6 +29,7 @@ a.b.c.{
 num myFunc(a, b, c = 5){
     print(a*b + c);
 }
+myFuct(1, 2, 3);
 
 inline num(15, 7)<a = b, c = d> myFunc(a, num b, c = 5, pin d = 8, pin(13, 9) e, MyClass myClass, MyClass(123, 456) myClass){
     print(a*b + c);

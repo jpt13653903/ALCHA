@@ -18,66 +18,35 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_h
-#define AST_h
+#include "Import.h"
 //------------------------------------------------------------------------------
 
-#include "General.h"
-
-#include <string>
-#include <vector>
+using std::string;
+using namespace AST;
 //------------------------------------------------------------------------------
 
-namespace AST{
-    extern std::vector<std::string> filenameBuffer;
-
-    struct AST{
-        int line          = 0;
-        int filenameIndex = 0;
-
-        AST* next = 0;
-
-        enum class Type{
-            AccessDirectionGroup,
-            Alias,
-            Assert,
-            Assignment,
-            ClassDefinition,
-            ClockedConstruct,
-            Concatenate,
-            ControlStatement,
-            EnumDefinition,
-            Expression,
-            ForkJoin,
-            FunctionCall,
-            FunctionDef,
-            GroupDefinition,
-            HdlConstruct,
-            Identifier,
-            Import,
-            Jump,
-            Label,
-            Literal,
-            NameSpacePush,
-            OperatorOverload,
-            ParameterDef,
-            Slice,
-            StimulusOrEmulate,
-            String,
-            Stringify,
-            VariableDef,
-            Wait
-        } type;
-
-        AST(int line, int filenameIndex, Type type);
-        virtual ~AST();
-
-        const char* decodeType() const;
-        virtual std::string print(int indent = 0) const = 0;
-    };
+Import::Import(int line, int filenameIndex):
+    AST(line, filenameIndex, Type::Import)
+{
 }
 //------------------------------------------------------------------------------
 
-#endif
+Import::~Import()
+{
+}
+//------------------------------------------------------------------------------
+
+std::string Import::print(int indent) const
+{
+    string result;
+
+    for(int n = 0; n < indent; n++) result += "    ";
+
+    result += "import \"" + filename + "\"";
+
+    if(nameSpace.size()) result += " as " + nameSpace;
+
+    return result;
+}
 //------------------------------------------------------------------------------
 
