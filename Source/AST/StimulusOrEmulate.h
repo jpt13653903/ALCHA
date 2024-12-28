@@ -18,56 +18,28 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_h
-#define AST_h
+#ifndef AST_StimulusOrEmulate_h
+#define AST_StimulusOrEmulate_h
 //------------------------------------------------------------------------------
 
-#include "General.h"
+#include "AST.h"
+#include "Token.h"
 
 #include <string>
-#include <vector>
 //------------------------------------------------------------------------------
 
 namespace AST{
-    extern std::vector<std::string> filenameBuffer;
+    struct StimulusOrEmulate: public AST{
+        Token::Type operation = Token::Type::Unknown;
+        AST*        attributeList = 0;
+        AST*        parameterList = 0;
+        std::string identifier;
+        AST*        body          = 0;
 
-    struct AST{
-        int line          = 0;
-        int filenameIndex = 0;
+        StimulusOrEmulate(int line, int filenameIndex);
+       ~StimulusOrEmulate();
 
-        AST* next = 0;
-
-        enum class Type{
-            AccessDirectionGroup,
-            Assert,
-            Assignment,
-            Concatenate,
-            ClassDefinition,
-            Expression,
-            EnumDefinition,
-            ForkJoin,
-            FunctionCall,
-            FunctionDef,
-            Identifier,
-            Jump,
-            Label,
-            Literal,
-            NameSpacePush,
-            OperatorOverload,
-            ParameterDef,
-            Slice,
-            StimulusOrEmulate,
-            String,
-            Stringify,
-            VariableDef,
-            Wait
-        } type;
-
-        AST(int line, int filenameIndex, Type type);
-        virtual ~AST();
-
-        const char* decodeType() const;
-        virtual std::string print(int indent = 0) const = 0;
+        std::string print(int indent = 0) const override;
     };
 }
 //------------------------------------------------------------------------------

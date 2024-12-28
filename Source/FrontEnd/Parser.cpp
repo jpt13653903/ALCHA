@@ -23,12 +23,13 @@
 //------------------------------------------------------------------------------
 
 #include "AST/AccessDirectionGroup.h"
+#include "AST/Assert.h"
 #include "AST/Assignment.h"
-#include "AST/AST_String.h"
-#include "AST/ClassDefinition.h"
 #include "AST/Concatenate.h"
-#include "AST/EnumDefinition.h"
+#include "AST/ClassDefinition.h"
 #include "AST/Expression.h"
+#include "AST/EnumDefinition.h"
+#include "AST/ForkJoin.h"
 #include "AST/FunctionCall.h"
 #include "AST/FunctionDef.h"
 #include "AST/Identifier.h"
@@ -39,8 +40,11 @@
 #include "AST/OperatorOverload.h"
 #include "AST/ParameterDef.h"
 #include "AST/Slice.h"
+#include "AST/StimulusOrEmulate.h"
+#include "AST/AST_String.h"
 #include "AST/Stringify.h"
 #include "AST/VariableDef.h"
+#include "AST/Wait.h"
 //------------------------------------------------------------------------------
 
 using std::string;
@@ -487,7 +491,8 @@ AST::AST* Parser::stringification()
     int line = token.line;
     switch(token.type){
         case Token::Type::Stringify:{
-            auto expr= reduction();
+            getToken();
+            auto expr = reduction();
             if(!expr){
                 printError("Invalid stringification");
                 return 0;
@@ -497,6 +502,7 @@ AST::AST* Parser::stringification()
             return result;
         }
         case Token::Type::StringifyExpression:{
+            getToken();
             auto result = new AST::Stringify(line, astFilenameIndex);
             result->expression = reduction();
             if(!result->expression){
@@ -513,6 +519,12 @@ AST::AST* Parser::stringification()
                     return 0;
                 }
             }
+            if(token.type != Token::Type::CloseRound){
+                printError(") expected");
+                delete result;
+                return 0;
+            }
+            getToken();
             return result;
         }
         default:
@@ -1755,6 +1767,210 @@ AST::AST* Parser::jump()
 }
 //------------------------------------------------------------------------------
 
+// Stimulus = "stimulus" [ AttributeList ] [ ParameterList ] [ Identifier ]
+//            "{" [ Statements ] "}";
+// Emulate  = "emulate" [ AttributeList ] [ ParameterList ] [ Identifier ]
+//            "{" [ Statements ] "}";
+AST::AST* Parser::stimulusOrEmulate()
+{
+    auto result = new AST::StimulusOrEmulate(token.line, astFilenameIndex);
+    result->operation = token.type;
+
+    getToken();
+
+    if(token.type == Token::Type::OpenAngle){
+        result->attributeList = attributeList();
+    }
+    if(token.type == Token::Type::OpenRound){
+        result->parameterList = parameterList();
+    }
+    if(token.type == Token::Type::Identifier){
+        result->identifier = token.data;
+        getToken();
+    }
+    if(token.type != Token::Type::OpenCurly){
+        printError("{ expected");
+        delete result;
+        return 0;
+    }
+    result->body = statementBlock();
+    return result;
+}
+//------------------------------------------------------------------------------
+
+// ForkJoin = "{" [ Statements ] "}" { ( "||" | "&&" ) "{" [ Statements ] "}" }
+AST::AST* Parser::forkJoin()
+{
+    auto left = statementBlock();
+    if(!left) return 0;
+
+    while(token.type > Token::Type::EndOfFile){
+        int  line = token.line;
+        auto operation = token.type;
+        switch(token.type){
+            case Token::Type::Or:
+            case Token::Type::And:{
+                getToken();
+                if(token.type != Token::Type::OpenCurly){
+                    printError("{ expected");
+                    delete left;
+                    return 0;
+                }
+                auto right = statementBlock();
+                if(!right){
+                    printError("Invalid fork-join expression");
+                    delete left;
+                    return 0;
+                }
+                auto result = new AST::ForkJoin(line, astFilenameIndex);
+                result->operation = operation;
+                result->left      = left;
+                result->right     = right;
+                left = result;
+                break;
+            }
+            default:
+                return left;
+        }
+    }
+    return 0;
+}
+//------------------------------------------------------------------------------
+
+// Wait = ( "wait" "(" Sequence        ")" )
+//      | ( "@("       SensitivityList ")" )
+//      | ( ( "#" | "##" )  Primary ) ;
+AST::AST* Parser::wait()
+{
+    auto result = new AST::Wait(token.line, astFilenameIndex);
+    result->waitType = token.type;
+
+    switch(token.type){
+        case Token::Type::WaitUntil:
+            getToken();
+            if(token.type != Token::Type::OpenRound){
+                printError("( expected");
+                delete result;
+                return 0;
+            }
+            getToken();
+            result->sequence = sequence();
+            if(!result->sequence){
+                printError("Sequence expected");
+                delete result;
+                return 0;
+            }
+            if(token.type != Token::Type::CloseRound){
+                printError(") expected");
+                delete result;
+                return 0;
+            }
+            getToken();
+            return result;
+
+        case Token::Type::WaitOn:
+            getToken();
+            result->sensitivityList = sensitivityList();
+            if(!result->sensitivityList){
+                printError("Sensitivity list expected");
+                delete result;
+                return 0;
+            }
+            if(token.type != Token::Type::CloseRound){
+                printError(") expected");
+                delete result;
+                return 0;
+            }
+            getToken();
+            return result;
+
+        case Token::Type::WaitFor:
+        case Token::Type::WaitCycles:
+            getToken();
+            result->expression = primary();
+            if(!result->expression){
+                printError("Primary expression expected");
+                delete result;
+                return 0;
+            }
+            return result;
+
+        default:
+            break;
+    }
+    return result;
+}
+//------------------------------------------------------------------------------
+
+// SensitivityList = [ "posedge" | "negedge" ] Accessor
+//                   { "," [ "posedge" | "negedge" ] Accessor };
+AST::Wait::SensitivityItem* Parser::sensitivityList()
+{
+    AST::Wait::SensitivityItem* result = 0;
+    AST::Wait::SensitivityItem* last   = 0;
+
+    bool first = true;
+    while(first || token.type == Token::Type::Comma){
+        getToken();
+
+        auto current = new AST::Wait::SensitivityItem;
+        if(last) last->next = current;
+        else     result     = current;
+        last = current;
+
+        switch(token.type){
+            case Token::Type::PosEdge:
+            case Token::Type::NegEdge:
+                current->edge = token.type;
+                getToken();
+                break;
+
+            default:
+                break;
+        }
+        current->item = accessor();
+        if(!current->item){
+            printError("Item expected");
+            delete result;
+            return 0;
+        }
+        first = false;
+    }
+    return result;
+}
+//------------------------------------------------------------------------------
+
+// Assert = "assert" Expression ";" ;
+AST::AST* Parser::assertStatement()
+{
+    auto result = new AST::Assert(token.line, astFilenameIndex);
+
+    getToken();
+
+    result->expression = expression();
+    if(!result->expression){
+        printError("Expression expected");
+        delete result;
+        return 0;
+    }
+    if(token.type != Token::Type::Semicolon){
+        printError("; expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+    return result;
+}
+//------------------------------------------------------------------------------
+
+// Sequence = Expression;
+AST::AST* Parser::sequence()
+{
+    // TODO Put sequence expressions in here, after designing the EBNF
+    return expression();
+}
+//------------------------------------------------------------------------------
+
 AST::AST* Parser::identifierStatement()
 {
     AST::AST* left = accessor();
@@ -1917,17 +2133,27 @@ AST::AST* Parser::statementBlock()
 
 AST::AST* Parser::statement()
 {
+    AST::AST* waitStatement = 0;
+
     switch(token.type){
         case Token::Type::WaitUntil:
         case Token::Type::WaitOn:
         case Token::Type::WaitFor:
         case Token::Type::WaitCycles:
-            printError("TODO Wait");
-            return 0;
+            waitStatement = wait();
+            if(!waitStatement) return 0;
+            break;
 
+        default:
+            break;
+    }
+
+    AST::AST* result = 0;
+    switch(token.type){
         case Token::Type::Identifier:
         case Token::Type::AccessAttribute:
-            return identifierStatement();
+            result = identifierStatement();
+            break;
 
         case Token::Type::Inline:
         case Token::Type::Pin:
@@ -1938,106 +2164,112 @@ AST::AST* Parser::statement()
         case Token::Type::Char:
         case Token::Type::Num:
         case Token::Type::Func:
-            return definition();
+            result = definition();
+            break;
 
         case Token::Type::Class:
-            return classDefinition();
+            result = classDefinition();
+            break;
 
         case Token::Type::Enum:
-            return enumDefinition();
+            result = enumDefinition();
+            break;
 
         case Token::Type::Alias:
             printError("TODO: Alias");
-            return 0;
+            break;
 
         case Token::Type::Import:
             printError("TODO: Import");
-            return 0;
+            break;
 
         case Token::Type::Struct:
             printError("TODO: Struct");
-            return 0;
+            break;
 
         case Token::Type::Group:
             printError("TODO: Group");
-            return 0;
+            break;
 
         case Token::Type::Public:
         case Token::Type::Private:
         case Token::Type::Protected:
         case Token::Type::Input:
         case Token::Type::Output:
-            return accessDirectionGroup();
+            result = accessDirectionGroup();
+            break;
 
         case Token::Type::If:
             printError("TODO: IfStatement");
-            return 0;
+            break;
 
         case Token::Type::For:
             printError("TODO: For");
-            return 0;
+            break;
 
         case Token::Type::While:
             printError("TODO: While");
-            return 0;
+            break;
 
         case Token::Type::Loop:
             printError("TODO: Loop");
-            return 0;
+            break;
 
         case Token::Type::Switch:
             printError("TODO: Switch");
-            return 0;
+            break;
 
         case Token::Type::Case:
             printError("TODO: Case");
-            return 0;
+            break;
 
         case Token::Type::Return:
         case Token::Type::Break:
         case Token::Type::Continue:
         case Token::Type::GoTo:
-            return jump();
+            result = jump();
+            break;
 
         case Token::Type::RTL:
             printError("TODO: RTL");
-            return 0;
+            break;
 
         case Token::Type::FSM:
             printError("TODO: FSM");
-            return 0;
+            break;
 
         case Token::Type::HDL:
             printError("TODO: HDL");
-            return 0;
+            break;
 
         case Token::Type::Stimulus:
-            printError("TODO: Stimulus");
-            return 0;
-
         case Token::Type::Emulate:
-            printError("TODO: Emulate");
-            return 0;
+            result = stimulusOrEmulate();
+            break;
 
         case Token::Type::OpenCurly:
-            printError("TODO: ForkJoin");
-            return 0;
+            result = forkJoin();
+            break;
 
         case Token::Type::Assert:
-            printError("TODO: Assert");
-            return 0;
+            result = assertStatement();
+            break;
 
         case Token::Type::Semicolon:
             printError("TODO: Fence");
-            return 0;
+            break;
 
         case Token::Type::EndOfFile:
-            return 0;
+            break;
 
         default:
-            return 0;
+            break;
     }
-    return 0;
+    if(waitStatement){
+        waitStatement->next = result;
+        return waitStatement;
+    }
+    return result;
 }
 //------------------------------------------------------------------------------
 

@@ -163,3 +163,29 @@ enum colours { red, green, blue }
 A = 'GlobalAttribute;
 
 A.B.C'D.E'F = 9;
+
+stimulus{
+    #10 clk = 1;
+    #10 clk = 2;
+}
+emulate{
+    @(posedge clk, negedge reset){
+        a = b;
+    } || {
+        a = b;
+    } && {
+        a = b;
+    }
+}
+
+##3 c = d;
+@(enable) Q = D;
+
+a = $(whatnot);
+A = $b;
+
+a = $(whatnot, "%d");
+a = $(whatnot, A.B.C);
+A = $b.c.d;
+
+assert a + b == c;

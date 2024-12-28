@@ -272,6 +272,39 @@ bool testParser()
         "A =  ' (GlobalAttribute)",
 
         "(((((A) . (B)) . (C)) ' (D)) . (E)) ' (F) = 9 (~9)",
+
+        "stimulus {\n"
+        "    #10 (~10)\n"
+        "    clk = 1 (~1)\n"
+        "    #10 (~10)\n"
+        "    clk = 2 (~2)\n"
+        "}",
+        "emulate {\n"
+        "    @(posedge clk, negedge reset)\n"
+        "    {\n"
+        "        {\n"
+        "            a = b\n"
+        "        } || {\n"
+        "            a = b\n"
+        "        }\n"
+        "    } && {\n"
+        "        a = b\n"
+        "    }\n"
+        "}",
+
+        "##3 (~3)",
+        "c = d",
+        "@(enable)",
+        "Q = D",
+
+        "a = $(whatnot)",
+        "A = $(b)",
+
+        "a = $(whatnot, \"%d\")",
+        "a = $(whatnot, ((A) . (B)) . (C))",
+        "A = $(((b) . (c)) . (d))",
+
+        "assert ((a) + (b)) == (c)",
         0
     };
     if(!runTest(expected)) return false;

@@ -49,7 +49,7 @@ std::string Jump::print(int indent) const
         case Token::Type::Continue: result += "continue"; break;
         case Token::Type::GoTo:     result += "goto";     break;
 
-        default: result += "Unknown jump type "; break;
+        default: result += "Unknown jump type"; break;
     }
     if(expression) result += " " + expression->print();
 

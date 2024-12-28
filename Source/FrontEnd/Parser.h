@@ -25,6 +25,7 @@
 #include "General.h"
 #include "Scanner.h"
 #include "AST.h"
+#include "AST/Wait.h"
 //------------------------------------------------------------------------------
 
 class Parser{
@@ -98,6 +99,13 @@ class Parser{
         AST::AST* enumDefinition();
 
         AST::AST* jump();
+
+        AST::AST* stimulusOrEmulate();
+        AST::AST* forkJoin();
+        AST::AST* wait();
+        AST::Wait::SensitivityItem* sensitivityList();
+        AST::AST* assertStatement();
+        AST::AST* sequence();
 
         AST::AST* identifierStatement();
         AST::AST* statementBlock();

@@ -45,12 +45,15 @@ AST::AST::~AST()
 const char* AST::AST::decodeType() const
 {
     switch(type){
+
         case Type::AccessDirectionGroup: return "AccessDirectionGroup";
+        case Type::Assert:               return "Assert";
         case Type::Assignment:           return "Assignment";
         case Type::Concatenate:          return "Concatenate";
         case Type::ClassDefinition:      return "ClassDefinition";
         case Type::Expression:           return "Expression";
         case Type::EnumDefinition:       return "EnumDefinition";
+        case Type::ForkJoin:             return "ForkJoin";
         case Type::FunctionCall:         return "FunctionCall";
         case Type::FunctionDef:          return "FunctionDef";
         case Type::Identifier:           return "Identifier";
@@ -60,9 +63,11 @@ const char* AST::AST::decodeType() const
         case Type::OperatorOverload:     return "OperatorOverload";
         case Type::ParameterDef:         return "ParameterDef";
         case Type::Slice:                return "Slice";
+        case Type::StimulusOrEmulate:    return "StimulusOrEmulate";
         case Type::String:               return "String";
         case Type::Stringify:            return "Stringify";
         case Type::VariableDef:          return "VariableDef";
+        case Type::Wait:                 return "Wait";
 
         default: return "Invalid Type Index";
     }

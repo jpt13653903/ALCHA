@@ -18,60 +18,34 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_h
-#define AST_h
+#include "Assert.h"
 //------------------------------------------------------------------------------
 
-#include "General.h"
-
-#include <string>
-#include <vector>
+using std::string;
+using namespace AST;
 //------------------------------------------------------------------------------
 
-namespace AST{
-    extern std::vector<std::string> filenameBuffer;
-
-    struct AST{
-        int line          = 0;
-        int filenameIndex = 0;
-
-        AST* next = 0;
-
-        enum class Type{
-            AccessDirectionGroup,
-            Assert,
-            Assignment,
-            Concatenate,
-            ClassDefinition,
-            Expression,
-            EnumDefinition,
-            ForkJoin,
-            FunctionCall,
-            FunctionDef,
-            Identifier,
-            Jump,
-            Label,
-            Literal,
-            NameSpacePush,
-            OperatorOverload,
-            ParameterDef,
-            Slice,
-            StimulusOrEmulate,
-            String,
-            Stringify,
-            VariableDef,
-            Wait
-        } type;
-
-        AST(int line, int filenameIndex, Type type);
-        virtual ~AST();
-
-        const char* decodeType() const;
-        virtual std::string print(int indent = 0) const = 0;
-    };
+Assert::Assert(int line, int filenameIndex):
+    AST(line, filenameIndex, Type::Assert)
+{
 }
 //------------------------------------------------------------------------------
 
-#endif
+Assert::~Assert()
+{
+    if(expression) delete expression;
+}
+//------------------------------------------------------------------------------
+
+std::string Assert::print(int indent) const
+{
+    string result;
+
+    for(int n = 0; n < indent; n++) result += "    ";
+
+    result += "assert " + expression->print();
+
+    return result;
+}
 //------------------------------------------------------------------------------
 

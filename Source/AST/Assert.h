@@ -18,56 +18,23 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_h
-#define AST_h
+#ifndef AST_Assert_h
+#define AST_Assert_h
 //------------------------------------------------------------------------------
 
-#include "General.h"
-
+#include "AST.h"
+#include "Token.h"
 #include <string>
-#include <vector>
 //------------------------------------------------------------------------------
 
 namespace AST{
-    extern std::vector<std::string> filenameBuffer;
+    struct Assert: public AST{
+        AST* expression;
 
-    struct AST{
-        int line          = 0;
-        int filenameIndex = 0;
+        Assert(int line, int filenameIndex);
+       ~Assert();
 
-        AST* next = 0;
-
-        enum class Type{
-            AccessDirectionGroup,
-            Assert,
-            Assignment,
-            Concatenate,
-            ClassDefinition,
-            Expression,
-            EnumDefinition,
-            ForkJoin,
-            FunctionCall,
-            FunctionDef,
-            Identifier,
-            Jump,
-            Label,
-            Literal,
-            NameSpacePush,
-            OperatorOverload,
-            ParameterDef,
-            Slice,
-            StimulusOrEmulate,
-            String,
-            Stringify,
-            VariableDef,
-            Wait
-        } type;
-
-        AST(int line, int filenameIndex, Type type);
-        virtual ~AST();
-
-        const char* decodeType() const;
-        virtual std::string print(int indent = 0) const = 0;
+        std::string print(int indent = 0) const override;
     };
 }
 //------------------------------------------------------------------------------

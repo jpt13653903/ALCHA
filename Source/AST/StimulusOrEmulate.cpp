@@ -18,48 +18,42 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "ClassDefinition.h"
+#include "StimulusOrEmulate.h"
 //------------------------------------------------------------------------------
 
 using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-ClassDefinition::ClassDefinition(int line, int filenameIndex):
-    AST(line, filenameIndex, Type::ClassDefinition)
+StimulusOrEmulate::StimulusOrEmulate(int line, int filenameIndex):
+    AST(line, filenameIndex, Type::StimulusOrEmulate)
 {
 }
 //------------------------------------------------------------------------------
 
-ClassDefinition::~ClassDefinition()
+StimulusOrEmulate::~StimulusOrEmulate()
 {
-    if(!attributes) delete attributes;
-    if(!parameters) delete parameters;
-    if(!body      ) delete body;
-    if(!parents   ) delete parents;
+    if(!attributeList) delete attributeList;
+    if(!parameterList) delete parameterList;
+    if(!body         ) delete body;
 }
 //------------------------------------------------------------------------------
 
-ClassDefinition::Parent::~Parent()
-{
-    if(!typeIdentifier) delete typeIdentifier;
-    if(!parameters    ) delete parameters;
-    if(!next          ) delete next;
-}
-//------------------------------------------------------------------------------
-
-std::string ClassDefinition::print(int indent) const
+std::string StimulusOrEmulate::print(int indent) const
 {
     string result;
 
     for(int n = 0; n < indent; n++) result += "    ";
 
-    result += "class ";
-
-    if(attributes){
+    switch(operation){
+        case Token::Type::Stimulus: result += "stimulus ";   break;
+        case Token::Type::Emulate:  result += "emulate "; break;
+        default: break;
+    }
+    if(attributeList){
         bool first = true;
-        result += "<";
-        auto attrib = attributes;
+        result += " <";
+        auto attrib = attributeList;
         while(attrib){
             if(!first) result += ", ";
             first = false;
@@ -68,44 +62,20 @@ std::string ClassDefinition::print(int indent) const
         }
         result += "> ";
     }
-    result += identifier;
-
-    if(parameters){
+    if(parameterList){
         bool first = true;
-        result += "(";
-        auto param = parameters;
+        result += " (";
+        auto param = parameterList;
         while(param){
             if(!first) result += ", ";
             first = false;
             result += param->print();
             param   = param->next;
         }
-        result += ")";
+        result += ") ";
     }
+    if(identifier.size()) result += identifier + " ";
 
-    if(parents){
-        bool first = true;
-        result += ": ";
-        auto parent = parents;
-        while(parent){
-            if(!first) result += ", ";
-            first = false;
-            result += parent->typeIdentifier->print();
-            if(parent->parameters){
-                bool first = true;
-                result += "(";
-                auto param = parent->parameters;
-                while(param){
-                    if(!first) result += ", ";
-                    first = false;
-                    result += param->print();
-                    param   = param->next;
-                }
-                result += ")";
-            }
-            parent = parent->next;
-        }
-    }
     result += "{\n";
     auto statement = body;
     while(statement){

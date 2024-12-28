@@ -118,6 +118,7 @@ std::string FunctionDef::print(int indent) const
         result += "\n";
         statement = statement->next;
     }
+    for(int n = 0; n < indent; n++) result += "    ";
     result += "}";
 
     return result;
