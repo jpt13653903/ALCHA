@@ -1,51 +1,50 @@
-Expression     = BitwiseOR      ( [ "?" Cast ":" Cast] | [ "?:" Cast ]);
-BitwiseOR      = BitwiseXOR     {("|"  | "~|")              BitwiseXOR    };
-BitwiseXOR     = BitwiseAND     {("^"  | "~^")              BitwiseAND    };
-BitwiseAND     = Equality       {("&"  | "~&")              Equality      };
-Equality       = Relational     {("==" | "!=")              Relational    };
-Relational     = Shift          {("<"  | ">" | "<=" | ">=") Shift         };
-Shift          = Additive       {("<<" | ">>")              Additive      };
-Additive       = Multiplicative {("+"  | "-" )              Multiplicative};
-Multiplicative = Exponential    {("*"  | "/" | "%")         Exponential   };
-Exponential    = Replication    { "**"                      Replication   };
+Expression     = BitwiseOR      ( [ "?" BitwiseOR ":" BitwiseOR ] | [ "?:" BitwiseOR ] );
+BitwiseOR      = BitwiseXOR     { ( "|"  | "~|" )              BitwiseXOR     };
+BitwiseXOR     = BitwiseAND     { ( "^"  | "~^" )              BitwiseAND     };
+BitwiseAND     = Equality       { ( "&"  | "~&" )              Equality       };
+Equality       = Relational     { ( "==" | "!=" )              Relational     };
+Relational     = Shift          { ( "<"  | ">" | "<=" | ">=" ) Shift          };
+Shift          = Additive       { ( "<<" | ">>" )              Additive       };
+Additive       = Multiplicative { ( "+"  | "-"  )              Multiplicative };
+Multiplicative = Exponential    { ( "*"  | "/" | "%" )         Exponential    };
+Exponential    = Replication    {   "**"                       Replication    };
 
-Replication    = Stringification ["`" Primary];   (* Vector replication  *)
+Replication    = Stringification [ "`" Primary ]; (* Vector replication  *)
 
 (* When used as a function, the second parameter must evaluate to a string *)
-Stringification = ["$"] Reduction
-                |  "$(" Reduction ["," Expression] ")";
+Stringification = [ "$" ] Reduction
+                | "$(" Expression [ "," Expression ] ")";
 
-Reduction = ["&" | "~&" | "|" | "~|" | "^" | "~^" | "!"] Range;
+Reduction = [ "&" | "~&" | "|" | "~|" | "^" | "~^" | "!" ] Range;
 
-Range = Unary [".." Unary [":" Unary]];
+Range = Unary [ ".." Unary [ ":" Unary ] ];
 
-Unary   = {"-" | "~" | ":" | "++" | "--"} Postfix;
+Unary   = { "-" | "~" | ":" | "++" | "--" } Postfix;
 
 Postfix = Accessor { "++" | "--" | "!" };
 
-Accessor = Cast { Array           | (* Slice *)
-                  ParameterList   | (* Function call *)
-                  "."  Identifier | (* Member reference *)
-                  "?." Identifier | (* Safe member reference *)
-                  "'"  Identifier}; (* Factorial *)
+Accessor = Cast { Array           |  (* Slice *)
+                  ParameterList   |  (* Function call *)
+                  "."  Identifier |  (* Member reference *)
+                  "?." Identifier |  (* Safe member reference *)
+                  "'"  Identifier }; (* Attribute reference *)
 
-Cast     = Primary [CastExpr];
-CastExpr = "@" ( Identifier | Literal | ("(" ExpressionList ")") );
+Cast = Primary [ "@" ( Identifier | Literal | ( "(" ExpressionList ")" ) ) ];
 
 (* The "'" prefix chooses the global scope *)
-Primary = (["'"] Identifier) | Literal | "true" | "false"
+Primary = ( [ "'" ] Identifier ) | Literal | "true" | "false"
         | VectorConcat | ArrayConcat | AttributeList | Array | String
-        | ("(" Expression ")");
+        | ( "(" Expression ")" );
 
 (* These perform vector or array concatenation *)
 VectorConcat = ":(" ExpressionList ")";
 ArrayConcat  = ":[" ExpressionList "]";
 
 (* This builds an array (an array of arrays when nested) *)
-Array = "[" [ExpressionList] "]";
+Array = "[" [ ExpressionList ] "]";
 
 ExpressionList = Expression {"," Expression };
-ParameterList  = "(" [Parameter {"," Parameter } ] ")";
-Parameter      = [Identifier ("=" | ":=")] Expression;
+ParameterList  = "(" [ Parameter {"," Parameter } ] ")";
+Parameter      = [ Identifier ( "=" | ":=" ) ] Expression;
 (*----------------------------------------------------------------------------*)
 

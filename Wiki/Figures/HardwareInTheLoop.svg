@@ -2,23 +2,23 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="60.249325mm"
-   height="36.249622mm"
+   width="90.374001mm"
+   height="54.374439mm"
    id="svg2"
    version="1.1"
-   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
    sodipodi:docname="HardwareInTheLoop.svg"
    inkscape:export-filename="C:\JPT\Reutech\S-Band TMR\LaTeX\Digital Processing Design Report\Figures\ADCBlock.png"
    inkscape:export-xdpi="300"
    inkscape:export-ydpi="300"
-   viewBox="0 0 60.249323 36.249623">
+   viewBox="0 0 60.249334 36.249626"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs4">
     <inkscape:path-effect
@@ -34,11 +34,14 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-409"
@@ -52,15 +55,19 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-4"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-0-8"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -74,7 +81,9 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-4-8"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-5"
@@ -88,11 +97,14 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-1"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-40"
@@ -106,15 +118,19 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-9"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-0-2"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -128,11 +144,14 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-4-0"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-8"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -146,7 +165,9 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-0"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-4"
@@ -160,15 +181,19 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-0"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-88"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -182,7 +207,9 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-4094"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -196,11 +223,14 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-53"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-00"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -214,15 +244,19 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-409-7"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-4-0"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-0-8-7"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-4-8-6"
@@ -236,7 +270,9 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -250,11 +286,14 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-5-0"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-1-7"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -268,15 +307,19 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-40-7"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-9-2"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-0-2-4"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-4-0-9"
@@ -290,11 +333,14 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-8-8"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-0-3"
@@ -308,7 +354,9 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -322,15 +370,19 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-4-5"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-0-1"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-88-8"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-4094-0"
@@ -344,7 +396,9 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <pattern
        y="0"
        x="0"
@@ -372,11 +426,14 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-9"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-91"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -390,15 +447,19 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-409-4"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-4-7"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-0-8-8"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-4-8-0"
@@ -412,7 +473,9 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -426,11 +489,14 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-5-8"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-1-5"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -444,15 +510,19 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-40-4"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-9-24"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-0-2-9"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-4-0-5"
@@ -466,11 +536,14 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-8-0"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-0-7"
@@ -484,7 +557,9 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -498,15 +573,19 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-4-2"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-0-7"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-88-9"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-4094-9"
@@ -520,7 +599,9 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -534,11 +615,14 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-3"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-2"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -552,15 +636,19 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-409-3"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-4-1"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-0-8-3"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-4-8-09"
@@ -574,7 +662,9 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -588,11 +678,14 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-5-3"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-1-57"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -606,15 +699,19 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-40-1"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-9-3"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-0-2-8"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-4-0-7"
@@ -628,11 +725,14 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-8-06"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-0-5"
@@ -646,7 +746,9 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -660,15 +762,19 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-4-86"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-0-70"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-88-4"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-4094-5"
@@ -682,7 +788,9 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <pattern
        id="EMFhbasepattern-97"
        patternUnits="userSpaceOnUse"
@@ -710,15 +818,19 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-98"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-80"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-0-9"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-4-4"
@@ -732,7 +844,9 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -746,15 +860,19 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-409-34"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-4-3"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-0-8-33"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-4-8-7"
@@ -768,7 +886,9 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -782,11 +902,14 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-5-30"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-1-2"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -800,15 +923,19 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-40-76"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-9-6"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-0-2-81"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-4-0-6"
@@ -822,11 +949,14 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-8-9"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-0-1"
@@ -840,7 +970,9 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -854,15 +986,19 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-4-5-6"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-0-24"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-88-1"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-4094-90"
@@ -876,7 +1012,9 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -890,11 +1028,14 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-30"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-5"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -908,15 +1049,19 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-409-1"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-4-07"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-0-8-71"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-4-8-2"
@@ -930,7 +1075,9 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -944,11 +1091,14 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-5-83"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-1-6"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -962,15 +1112,19 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-40-44"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-9-1"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-0-2-6"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-4-0-58"
@@ -984,11 +1138,14 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-8-4"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-0-17"
@@ -1002,7 +1159,9 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        fuse_tolerance="0"
        vertical_pattern="false"
@@ -1016,15 +1175,19 @@
        pattern="M 0,0 V 10 L 10,5 Z"
        is_visible="true"
        id="path-effect3014-4-7"
-       effect="skeletal" />
+       effect="skeletal"
+       lpeversion="0"
+       hide_knot="false" />
     <inkscape:path-effect
        is_visible="true"
        id="path-effect3012-0-87"
-       effect="spiro" />
+       effect="spiro"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="spiro"
        id="path-effect3012-88-2"
-       is_visible="true" />
+       is_visible="true"
+       lpeversion="0" />
     <inkscape:path-effect
        effect="skeletal"
        id="path-effect3014-4094-03"
@@ -1038,7 +1201,9 @@
        tang_offset="0"
        prop_units="false"
        vertical_pattern="false"
-       fuse_tolerance="0" />
+       fuse_tolerance="0"
+       lpeversion="0"
+       hide_knot="false" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -1048,17 +1213,17 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8284271"
-     inkscape:cx="192.99866"
-     inkscape:cy="54.251998"
+     inkscape:cx="193.21693"
+     inkscape:cy="54.270446"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer3"
      showgrid="true"
      units="mm"
      inkscape:object-paths="true"
      inkscape:object-nodes="true"
-     inkscape:window-width="1920"
-     inkscape:window-height="1017"
-     inkscape:window-x="1592"
+     inkscape:window-width="2560"
+     inkscape:window-height="1369"
+     inkscape:window-x="1912"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:snap-global="true"
@@ -1075,7 +1240,9 @@
      inkscape:pagecheckerboard="false"
      viewbox-width="326.56"
      viewbox-height="217.704"
-     scale-x="1">
+     scale-x="1"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1">
     <inkscape:grid
        type="xygrid"
        id="grid2985"
@@ -1086,7 +1253,7 @@
        units="mm"
        spacingx="1"
        spacingy="1"
-       originx="-5.874981"
+       originx="-5.8749809"
        originy="-5.8749871" />
   </sodipodi:namedview>
   <metadata
@@ -1097,20 +1264,33 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
      inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Background">
+    <rect
+       style="fill:#ffffff;fill-opacity:0.3;stroke:none;stroke-width:0.264583"
+       id="rect1"
+       width="60.249332"
+       height="36.249626"
+       x="0"
+       y="0" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Blocks"
-     transform="translate(-25.669802,-155.76508)" />
+     transform="translate(-25.669802,-155.76508)"
+     sodipodi:insensitive="true" />
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(253.07016,201.33722)">
+     transform="translate(253.07016,201.33722)"
+     sodipodi:insensitive="true">
     <flowRoot
        xml:space="preserve"
        id="flowRoot4736"
@@ -1121,7 +1301,8 @@
            height="967.55908"
            x="-689.10034"
            y="-316.88272" /></flowRegion><flowPara
-         id="flowPara4742" /></flowRoot>    <flowRoot
+         id="flowPara4742" /></flowRoot>
+    <flowRoot
        xml:space="preserve"
        id="flowRoot4733"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"><flowRegion
@@ -1131,28 +1312,29 @@
            height="64.251968"
            x="313.70081"
            y="211.65355" /></flowRegion><flowPara
-         id="flowPara4739" /></flowRoot>    <rect
+         id="flowPara4739" /></flowRoot>
+    <rect
        y="-199.2122"
        x="-230.9454"
        height="7.9998984"
        width="15.999799"
        id="rect4574-9-6-7-2-1-7-3-5-4-1-8"
-       style="fill:none;stroke:#000000;stroke-width:0.2500281;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+       style="fill:none;stroke:#000000;stroke-width:0.250028;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222222px;line-height:0%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.28221869;"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:0%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282219"
        x="-222.94553"
        y="-196.21225"
        id="text1159-7-20-3-4-9"><tspan
          sodipodi:role="line"
          x="-222.94553"
          y="-196.21225"
-         style="font-size:2.82222222px;line-height:1.25;fill:#000000;fill-opacity:1;stroke-width:0.28221869;"
+         style="font-size:2.82222px;line-height:1.25;fill:#000000;fill-opacity:1;stroke-width:0.282219"
          id="tspan4819-5">Computer</tspan><tspan
          sodipodi:role="line"
          x="-222.94553"
-         y="-192.68451"
-         style="font-size:2.82222222px;line-height:1.25;fill:#000000;fill-opacity:1;stroke-width:0.28221869;"
+         y="-192.68448"
+         style="font-size:2.82222px;line-height:1.25;fill:#000000;fill-opacity:1;stroke-width:0.282219"
          id="tspan4744">Software</tspan></text>
     <rect
        y="-175.21251"
@@ -1160,22 +1342,22 @@
        height="7.9998984"
        width="15.999799"
        id="rect4574-9-6-7-2-1-7-3-5-4-1-8-8"
-       style="fill:none;stroke:#000000;stroke-width:0.2500281;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+       style="fill:none;stroke:#000000;stroke-width:0.250028;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222222px;line-height:0%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.28221869;"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:0%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282219"
        x="-242.94528"
        y="-172.21254"
        id="text1159-7-20-3-4-9-7"><tspan
          sodipodi:role="line"
-         x="-242.55392"
+         x="-242.94528"
          y="-172.21254"
-         style="font-size:2.82222222px;line-height:1.25;fill:#000000;fill-opacity:1;stroke-width:0.28221869;"
+         style="font-size:2.82222px;line-height:1.25;fill:#000000;fill-opacity:1;stroke-width:0.282219"
          id="tspan4744-7">Input </tspan><tspan
          sodipodi:role="line"
          x="-242.94528"
-         y="-168.6848"
-         style="font-size:2.82222222px;line-height:1.25;fill:#000000;fill-opacity:1;stroke-width:0.28221869;"
+         y="-168.68477"
+         style="font-size:2.82222px;line-height:1.25;fill:#000000;fill-opacity:1;stroke-width:0.282219"
          id="tspan4800">Buffer</tspan></text>
     <rect
        y="-175.21251"
@@ -1183,22 +1365,22 @@
        height="7.9998984"
        width="15.999799"
        id="rect4574-9-6-7-2-1-7-3-5-4-1-8-8-7"
-       style="fill:none;stroke:#000000;stroke-width:0.2500281;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+       style="fill:none;stroke:#000000;stroke-width:0.250028;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222222px;line-height:0%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.28221869;"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:0%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282219"
        x="-222.94553"
        y="-172.21254"
        id="text1159-7-20-3-4-9-7-6"><tspan
          sodipodi:role="line"
          x="-222.94553"
          y="-172.21254"
-         style="font-size:2.82222222px;line-height:1.25;fill:#000000;fill-opacity:1;stroke-width:0.28221869;"
+         style="font-size:2.82222px;line-height:1.25;fill:#000000;fill-opacity:1;stroke-width:0.282219"
          id="tspan4744-7-6">Module</tspan><tspan
          sodipodi:role="line"
          x="-222.94553"
-         y="-168.6848"
-         style="font-size:2.82222222px;line-height:1.25;fill:#000000;fill-opacity:1;stroke-width:0.28221869;"
+         y="-168.68477"
+         style="font-size:2.82222px;line-height:1.25;fill:#000000;fill-opacity:1;stroke-width:0.282219"
          id="tspan4796">Under Test</tspan></text>
     <rect
        y="-175.21251"
@@ -1206,25 +1388,25 @@
        height="7.9998984"
        width="15.999799"
        id="rect4574-9-6-7-2-1-7-3-5-4-1-8-8-71"
-       style="fill:none;stroke:#000000;stroke-width:0.2500281;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+       style="fill:none;stroke:#000000;stroke-width:0.250028;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222222px;line-height:0%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.28221869;"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:0%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282219"
        x="-202.94579"
        y="-172.21254"
        id="text1159-7-20-3-4-9-7-4"><tspan
          sodipodi:role="line"
          x="-202.94579"
          y="-172.21254"
-         style="font-size:2.82222222px;line-height:1.25;fill:#000000;fill-opacity:1;stroke-width:0.28221869;"
+         style="font-size:2.82222px;line-height:1.25;fill:#000000;fill-opacity:1;stroke-width:0.282219"
          id="tspan4744-7-4">Output</tspan><tspan
          sodipodi:role="line"
          x="-202.94579"
-         y="-168.6848"
-         style="font-size:2.82222222px;line-height:1.25;fill:#000000;fill-opacity:1;stroke-width:0.28221869;"
+         y="-168.68477"
+         style="font-size:2.82222px;line-height:1.25;fill:#000000;fill-opacity:1;stroke-width:0.282219"
          id="tspan4800-1">Buffer</tspan></text>
     <rect
-       style="fill:none;stroke:#000000;stroke-width:0.2500281;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:none;stroke:#000000;stroke-width:0.250028;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect4838"
        width="15.999799"
        height="7.9998984"
@@ -1234,20 +1416,20 @@
        id="text4844"
        y="-184.21239"
        x="-222.94553"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222222px;line-height:0%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.28221869;"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:0%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.282219"
        xml:space="preserve"><tspan
          id="tspan4842"
-         style="font-size:2.82222222px;line-height:1.25;fill:#000000;fill-opacity:1;stroke-width:0.28221869;"
+         style="font-size:2.82222px;line-height:1.25;fill:#000000;fill-opacity:1;stroke-width:0.282219"
          y="-184.21239"
          x="-222.94553"
          sodipodi:role="line">Logic</tspan><tspan
-         style="font-size:2.82222222px;line-height:1.25;fill:#000000;fill-opacity:1;stroke-width:0.28221869;"
-         y="-180.68465"
+         style="font-size:2.82222px;line-height:1.25;fill:#000000;fill-opacity:1;stroke-width:0.282219"
+         y="-180.68462"
          x="-222.94553"
          sodipodi:role="line"
          id="tspan4856">Analyser</tspan></text>
     <path
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.16999787;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.169998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        d="m -222.27541,-177.21247 -0.67008,-1.99997 -0.67007,1.99997 c 0.67008,-0.79536 0.67008,-0.79536 1.34015,0 z"
        id="path1122-4-57-9-1-73-4"
        inkscape:connector-curvature="0"
@@ -1257,9 +1439,9 @@
        inkscape:connector-curvature="0"
        id="path1120-5-4-7-1-7-2-8"
        d="m -222.94549,-178.21246 v 2.99997"
-       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.16999787;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.169998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     <path
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.16999787;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.169998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        d="m -212.94561,-170.54247 1.99998,-0.67008 -1.99998,-0.67007 c 0.79536,0.67009 0.79536,0.67009 0,1.34015 z"
        id="path1122-4-57-9-1-73-4-6"
        inkscape:connector-curvature="0"
@@ -1269,9 +1451,9 @@
        inkscape:connector-curvature="0"
        id="path1120-5-4-7-1-7-2-8-0"
        d="m -211.94562,-171.21255 h -2.99997"
-       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.16999787;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.169998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     <path
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.16999787;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.169998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        d="m -232.94536,-170.54247 1.99998,-0.67008 -1.99998,-0.67007 c 0.79536,0.67009 0.79536,0.67009 0,1.34015 z"
        id="path1122-4-57-9-1-73-4-6-1"
        inkscape:connector-curvature="0"
@@ -1281,9 +1463,9 @@
        inkscape:connector-curvature="0"
        id="path1120-5-4-7-1-7-2-8-0-7"
        d="m -231.94537,-171.21255 h -2.99996"
-       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.16999787;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.169998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     <path
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.16999787;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.169998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        d="m -222.27541,-189.21232 -0.67008,-1.99997 -0.67007,1.99997 c 0.67008,-0.79536 0.67008,-0.79536 1.34015,0 z"
        id="path1122-4-57-9-1-73-4-9"
        inkscape:connector-curvature="0"
@@ -1293,15 +1475,15 @@
        inkscape:connector-curvature="0"
        id="path1120-5-4-7-1-7-2-8-5"
        d="m -222.94549,-190.2123 v 2.99996"
-       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.16999787;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.169998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     <path
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.16999787;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.169998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        d="m -243.61531,-177.21247 0.67008,1.99998 0.67007,-1.99998 c -0.67008,0.79536 -0.67008,0.79536 -1.34015,0 z"
        id="path1122-4-57-9-1-73-4-0"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccc" />
     <path
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.16999787;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.169998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        d="m -212.94561,-195.88231 -1.99998,0.67007 1.99998,0.67007 c -0.79536,-0.67008 -0.79536,-0.67008 0,-1.34014 z"
        id="path1122-4-57-9-1-73-4-02"
        inkscape:connector-curvature="0"
@@ -1311,9 +1493,9 @@
        inkscape:connector-curvature="0"
        id="path1120-5-4-7-1-7-2-8-57"
        d="m -213.9456,-195.21224 c 10.99986,0 10.99986,7.9999 10.99986,19.99975"
-       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.16999787;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.169998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     <path
-       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.16999787;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.169998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        d="m -230.94539,-195.21224 c -11.99984,0 -11.99984,7.9999 -11.99984,18.99976"
        id="path4946"
        inkscape:connector-curvature="0"

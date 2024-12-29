@@ -50,7 +50,7 @@ struct Token{
             If      , Else   , For, In  , While , Loop ,
             Switch  , Case   , Default  ,
             Import  , As     ,
-            Return  , Break  , Continue , Goto  ,
+            Return  , Break  , Continue , GoTo  ,
             Func    , Inline , Operator ,
             RTL     , FSM    , HDL,
             Stimulus, Emulate, Assert, Wait ,
@@ -112,11 +112,11 @@ struct Token{
             SubtractAssign,
             MultiplyAssign,
             DivideAssign,
+            ExponentialAssign,
             ModulusAssign,
-            XorAssign,
             AndAssign,
             OrAssign,
-            ExponentialAssign,
+            XorAssign,
             ShiftLeftAssign,
             ShiftRightAssign,
 
@@ -133,7 +133,7 @@ struct Token{
             WaitFor,
             WaitCycles,
             SequenceConsecutive,
-            SequenceGoto,
+            SequenceGoTo,
             SequenceNonConsecutive,
             AssertImplies,
             AssertImpliesNext,
@@ -145,6 +145,9 @@ struct Token{
             Identifier,
             Literal,
             String,
+
+            InterpolatedStringPart,
+            InterpolatedStringEnd,
 
         // Aliases .............................................................
             AndReduce   = BitAnd,
@@ -161,15 +164,16 @@ struct Token{
             OpenAngle   = Less,
             CloseAngle  = Greater,
 
-            WaitUntil   = CastOp
+            WaitUntil   = Wait,
+            WaitOn      = CastOp
     } type = Type::Unknown;
 
     int         line  = 0;
     std::string data; // The string contents; otherwise the original token characters
     Number      value;
 
-    const char*  decodeType();
-    std::string& display();
+    const char*  decodeType() const;
+    std::string& print() const;
 };
 //------------------------------------------------------------------------------
 

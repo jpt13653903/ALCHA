@@ -52,6 +52,8 @@ class Scanner{
         byte*       buffer   = 0;
         std::string filename;
 
+        bool inInterpolatedString = false;
+
         bool lineComment  ();
         bool todoComment  ();
         bool blockComment ();

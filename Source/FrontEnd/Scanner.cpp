@@ -30,6 +30,7 @@
 #include <time.h>
 
 using std::string;
+using std::to_string;
 using std::map;
 //------------------------------------------------------------------------------
 
@@ -129,7 +130,7 @@ Scanner::Scanner()
             keywords.insert("return"       , Token::Type::Return  );
             keywords.insert("break"        , Token::Type::Break   );
             keywords.insert("continue"     , Token::Type::Continue);
-            keywords.insert("goto"         , Token::Type::Goto    );
+            keywords.insert("goto"         , Token::Type::GoTo    );
 
             keywords.insert("func"         , Token::Type::Func  );
             keywords.insert("inline"       , Token::Type::Inline);
@@ -227,11 +228,11 @@ Scanner::Scanner()
             operators.insert("-=" , Token::Type::SubtractAssign   );
             operators.insert("*=" , Token::Type::MultiplyAssign   );
             operators.insert("/=" , Token::Type::DivideAssign     );
+            operators.insert("**=", Token::Type::ExponentialAssign);
             operators.insert("%=" , Token::Type::ModulusAssign    );
-            operators.insert("^=" , Token::Type::XorAssign        );
             operators.insert("&=" , Token::Type::AndAssign        );
             operators.insert("|=" , Token::Type::OrAssign         );
-            operators.insert("**=", Token::Type::ExponentialAssign);
+            operators.insert("^=" , Token::Type::XorAssign        );
             operators.insert("<<=", Token::Type::ShiftLeftAssign  );
             operators.insert(">>=", Token::Type::ShiftRightAssign );
 
@@ -250,10 +251,10 @@ Scanner::Scanner()
 
         // Simulation operators
             operators.insert("#"  , Token::Type::WaitFor               );
-            operators.insert("@"  , Token::Type::WaitUntil             );
+            operators.insert("@"  , Token::Type::WaitOn                );
             operators.insert("##" , Token::Type::WaitCycles            );
             operators.insert("[*" , Token::Type::SequenceConsecutive   );
-            operators.insert("[->", Token::Type::SequenceGoto          );
+            operators.insert("[->", Token::Type::SequenceGoTo          );
             operators.insert("[=" , Token::Type::SequenceNonConsecutive);
             operators.insert("|->", Token::Type::AssertImplies         );
             operators.insert("|=>", Token::Type::AssertImpliesNext     );
@@ -472,34 +473,35 @@ bool Scanner::getIdentifier(Token* token)
             token->value = token->line;
             break;
 
-        case Token::Type::Date:
+        case Token::Type::Date:{
             token->type = Token::Type::String;
             token->data.clear();
             time(&_timer);
             _time = localtime(&_timer);
-            token->data += _time->tm_year + 1900;
-            token->data += "-";
-            if(_time->tm_mon < 9) token->data += "0";
-            token->data += _time->tm_mon + 1;
-            token->data += "-";
-            if(_time->tm_mday < 10) token->data += "0";
-            token->data += _time->tm_mday;
+            char s[0x10];
+            #pragma GCC diagnostic push
+                #pragma GCC diagnostic ignored "-Wformat-truncation"
+                snprintf(s, 0x10, "%04d-%02d-%02d",
+                         _time->tm_year+1900, _time->tm_mon+1, _time->tm_mday);
+            #pragma GCC diagnostic pop
+            token->data += s;
             break;
+        }
 
-        case Token::Type::Time:
+        case Token::Type::Time:{
             token->type = Token::Type::String;
             token->data.clear();
             time(&_timer);
             _time = localtime(&_timer);
-            if(_time->tm_hour < 10) token->data += "0";
-            token->data += _time->tm_hour;
-            token->data += ":";
-            if(_time->tm_min < 10) token->data += "0";
-            token->data += _time->tm_min;
-            token->data += ":";
-            if(_time->tm_sec < 10) token->data += "0";
-            token->data += _time->tm_sec;
+            char s[0x10];
+            #pragma GCC diagnostic push
+                #pragma GCC diagnostic ignored "-Wformat-truncation"
+                snprintf(s, 0x10, "%02d:%02d:%02d",
+                         _time->tm_hour, _time->tm_min, _time->tm_sec);
+            #pragma GCC diagnostic pop
+            token->data += s;
             break;
+        }
 
         default:
             break;
@@ -680,14 +682,51 @@ bool Scanner::getLiteral(Token* token)
 
 bool Scanner::getString(Token* token)
 {
+    bool     interpolated = false;
     int      n;
     unsigned digit, utf32;
 
-    if(buffer[index] != '"') return false;
+    if(inInterpolatedString){
+        switch(buffer[index]){
+            case '$':
+                if(buffer[index+1] == '"')
+                    printError("Cannot nest interpolated strings");
+                return false;
 
-    token->type = Token::Type::String;
+            case '"':
+                index++;
+                token->type = Token::Type::String;
+                break;
 
-    index++;
+            case '}':
+                index++;
+                interpolated = true;
+                inInterpolatedString = false;
+                token->type = Token::Type::InterpolatedStringPart;
+                break;
+
+            default:
+                return false;
+        }
+    }else{
+        switch(buffer[index]){
+            case '"':
+                index++;
+                token->type = Token::Type::String;
+                break;
+
+            case '$':
+                if(buffer[index+1] != '"') return false;
+                index += 2;
+                interpolated = true;
+                token->type = Token::Type::InterpolatedStringPart;
+                break;
+
+            default:
+                return false;
+        }
+    }
+
 
     while(buffer[index]){
         if(buffer[index] == '"'){
@@ -695,10 +734,22 @@ bool Scanner::getString(Token* token)
             whiteSpace();
             if(buffer[index] == '"'){ // Concatenate the next string
                 index++;
+                interpolated = false;
+                continue;
+            }else if(buffer[index] == '$' && buffer[index+1] == '"'){
+                index += 2;
+                interpolated = true;
                 continue;
             }else{
+                if(token->type == Token::Type::InterpolatedStringPart)
+                    token->type = Token::Type::InterpolatedStringEnd;
                 return true;
             }
+        }
+        if(interpolated && buffer[index] == '{'){
+            index++;
+            inInterpolatedString = true;
+            return true;
         }
         if(buffer[index] == '\\'){
             index++;
@@ -709,11 +760,14 @@ bool Scanner::getString(Token* token)
                 case 'b' : token->data += '\b'; index++; break;
                 case 'r' : token->data += '\r'; index++; break;
                 case 'f' : token->data += '\f'; index++; break;
+                case 'e' : token->data += '\e'; index++; break;
                 case 'a' : token->data += '\a'; index++; break;
                 case '\\': token->data += '\\'; index++; break;
                 case '?' : token->data += '\?'; index++; break;
                 case '\'': token->data += '\''; index++; break;
                 case '"' : token->data += '\"'; index++; break;
+                case '{' : token->data += '{';  index++; break;
+                case '}' : token->data += '}';  index++; break;
 
                 case '&':{ // HTML character name
                     index++;

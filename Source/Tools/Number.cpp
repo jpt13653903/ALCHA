@@ -592,39 +592,7 @@ double Number::getImag() const
 }
 //------------------------------------------------------------------------------
 
-string& Number::getString(int base) const
-{
-    static string result;
-    result.clear();
-
-    bool   r = mpq_cmp_ui(real, 0, 1);
-    bool   i = mpq_cmp_ui(imag, 0, 1);
-
-    char* sr = mpq_get_str(0, base, real);
-    char* si = mpq_get_str(0, base, imag);
-
-    char* s = new char[strlen(sr) + strlen(si) + 0x100];
-    if(r && i) sprintf(s, "(%s+%sj)", sr, si);
-    else if(i) sprintf(s, "%sj"     , si);
-    else       sprintf(s, "%s"      , sr);
-
-    if(base > 10){
-      for(int n = 0; s[n]; n++){
-        if(s[n] >= 'a' && s[n] <= 'z') s[n] += 'A' - 'a';
-      }
-    }
-    result += s;
-
-    free(sr);
-    free(si);
-
-    delete[] s;
-
-    return result;
-}
-//------------------------------------------------------------------------------
-
-string& Number::display() const
+string& Number::print() const
 {
     static string result;
     result.clear();
@@ -639,9 +607,9 @@ string& Number::display() const
     double di = mpq_get_d(imag);
 
     char* s = new char[strlen(sr) + strlen(si) + 0x100];
-    if(r && i) sprintf(s, "(%s+%sj) (~(%.18g+%.18gj))", sr, si, dr, di);
-    else if(i) sprintf(s, "%sj (~%.18gj)", si, di);
-    else       sprintf(s, "%s (~%.18g)"  , sr, dr);
+    if(r && i) sprintf(s, "(%s+%sj) (~(%.6g+%.6gj))", sr, si, dr, di);
+    else if(i) sprintf(s, "%sj (~%.6gj)", si, di);
+    else       sprintf(s, "%s (~%.6g)"  , sr, dr);
     result += s;
 
     free(sr);

@@ -2,18 +2,18 @@
    gets to the verification features.  The end result will be very
    similar to SystemVerilog. *)
 
-Stimulus = "stimulus" [AttributeList] [ParameterList] [Identifier]
-           "{" {Statements] "}";
-Emulate  = "emulate" [AttributeList] [ParameterList] [Identifier]
-           "{" {Statements] "}";
-ForkJoin = "{" [Statements] "}" {("||" | "&&") "{" [Statements] "}"}
-Wait     = ("wait" "(" Sequence        ")")
-         | ("@("       SensitivityList ")")
-         | (("#" | "##")  Primary) ;
+Stimulus = "stimulus" [ AttributeList ] [ ParameterList ] [ Identifier ]
+           "{" [ Statements ] "}";
+Emulate  = "emulate"  [ AttributeList ] [ ParameterList ] [ Identifier ]
+           "{" [ Statements ] "}";
+ForkJoin = "{" [ Statements ] "}" { ( "||" | "&&" ) "{" [ Statements ] "}" }
+Wait     = ( "wait" "(" Sequence        ")" )
+         | ( "@("       SensitivityList ")" )
+         | ( ( "#" | "##" )  Primary ) ;
 
-SensitivityList = ["posedge" | "negedge"] Expression {"," ["posedge" | "negedge"] Expression };
+SensitivityList = [ "posedge" | "negedge" ] Accessor { "," [ "posedge" | "negedge" ] Accessor };
 
-Assert   = "assert" Expression;
+Assert   = "assert" Expression ";";
 Sequence = Expression; (* TODO: Put sequence expressions in here,
                                 with "Expression" at the leaves of the tree *)
 (*----------------------------------------------------------------------------*)

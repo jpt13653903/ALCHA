@@ -83,7 +83,7 @@ comment */
 }
 
 "This is a string of keywords private pin net
-\n \t \v \b \r \f \a \\ \? \' \" \x0FBC \u2192AB "
+\n \t \v \b \r \f \e \a \\ \? \' \" \xab \x0FBC \u2192AB "
 "\U0001F601EFEFEFE \373016 \&ndash;
 Some more string"
 
@@ -95,4 +95,13 @@ Some more string"
 123_+ 7.94e-6__j___
 9__- 4.27p4___i___
 
+$"I have {x} sheep";
+$"I have {x+b} sheep";
+$"I have {x} sheep and {y} goats"
+" and this part is not interpolated { }"
+$"while this one is the {3}rd string."
+$"and this the {4}th";
+
+$"I have {x+b, "04d"} sheep";
+$"I have {x+b, format} sheep";
 

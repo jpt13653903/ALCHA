@@ -18,9 +18,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Parser.h"
-#include "Engine.h"
-#include "BackEnd.h"
+// #include "Parser.h"
+// #include "Engine.h"
+// #include "BackEnd.h"
+#include "General.h"
 //------------------------------------------------------------------------------
 
 void waitForEnter()
@@ -72,18 +73,18 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    Engine engine;
-    if(!engine.run(argv[1])) return 1;
+    // Engine engine;
+    // if(!engine.run(argv[1])) return 1;
 
-    // Remove path and extension from input filename
-    int n = strlen(argv[1]);
-    while(n > 0 && argv[1][n] != '.') n--;
-    if(n > 0) argv[1][n] = 0;
-    while(n > 0 && argv[1][n] != '\\' && argv[1][n] != '/') n--;
-    if(n > 0) argv[1] += n+1;
+    // // Remove path and extension from input filename
+    // int n = strlen(argv[1]);
+    // while(n > 0 && argv[1][n] != '.') n--;
+    // if(n > 0) argv[1][n] = 0;
+    // while(n > 0 && argv[1][n] != '\\' && argv[1][n] != '/') n--;
+    // if(n > 0) argv[1] += n+1;
 
-    BackEnd backEnd;
-    if(!backEnd.buildAltera(argv[2], argv[1])) return 2;
+    // BackEnd backEnd;
+    // if(!backEnd.buildAltera(argv[2], argv[1])) return 2;
 
     return 0;
 }

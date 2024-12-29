@@ -1,0 +1,400 @@
+// Definitions
+
+ABC:
+
+pin A;
+net A;
+void A;
+auto A;
+byte A;
+char A;
+num A;
+func A;
+ABC A;
+ABC.DEF A, B, C;
+
+pin    (5) A;
+net    (123, 456) A;
+void   (A, B) A;
+auto   (C) A;
+byte   (A.B.C) A;
+char   (A.B'C) A;
+num    (A[B]) A;
+func   (A(B)) A;
+ABC    (7, 9, X=10) A;
+ABC.DEF(7, Y:= 9, X=10) A, B, C;
+
+pin    (5) <A = a, B = b>A;
+net    (123, 456) <A = a, B = b>A;
+void   (A, B) <A = a, B = b>A;
+auto   (C) <A = a, B = b>A;
+byte   (A.B.C) <A = a, B = b>A;
+char   (A.B'C) <A = a, B = b>A;
+num    (A[B]) <A = a, B = b>A;
+func   (A(B)) <A = a, B = b>A;
+ABC    (7, 9, X=10) <A = a, B = b>A;
+ABC.DEF(7, Y:= 9, X=10) <A = a, B = b>A, B, C;
+//------------------------------------------------------------------------------
+
+// Class Definition
+
+class MyClass{
+    D = A;
+    E = B;
+    F = C;
+}
+
+class MyClass(num D, pin E, byte F){
+    D = A;
+    E = B;
+    F = C;
+}
+
+class <A=3, B=1, C=7> MyClass(num D, pin E, byte F){
+    D = A;
+    E = B;
+    F = C;
+}
+
+class MyClass(num D, pin E, byte F): ParentClass1(A, B, C), ParentClass2(A, B, C){
+    D = A;
+    E = B;
+    F = C;
+}
+
+class <A=3, B=1, C=7> MyClass(num D, pin E, byte F): ParentClass1(A, B, C){
+    D = A;
+    E = B;
+    F = C;
+}
+
+class <A=3, B=1, C=7> MyClass(num D, pin E, byte F): ParentClass1(A, B, C), ParentClass2(A, B, C){
+    D = A;
+    E = B;
+    F = C;
+}
+//------------------------------------------------------------------------------
+
+// Function Definition
+
+auto ABC[5](num A, pin B[], net C){
+    A = 3;
+    B = 5;
+}
+auto ABC(num A, pin(8) B, net(3, 15) C = 5){
+    A = 3;
+    B = 5;
+}
+void ABC(A, B, C){
+    A = 3;
+    B = 5;
+}
+inline void ABC(A, B, C){
+    A = 3;
+    B = 5;
+}
+//------------------------------------------------------------------------------
+
+// Enum Definition
+
+enum ABC { A }
+enum ABC { A, B, C }
+//------------------------------------------------------------------------------
+
+// Alias, Import, Struct, Group and AccessDirectionGroup
+
+alias A = B.C * D;
+import "../whatnot/thingy";
+import "../whatnot/thingy" as whatnot;
+struct<A = 3, B = 7> ABC{
+    pin(15, 8) A;
+    net(17) B, C;
+    struct BCD{
+        pin(15, 8) A;
+        net(17) B, C;
+    }
+    num X;
+}
+struct<A = 3, B = 7>{
+    pin(15, 8) A;
+    net(17) B, C;
+    struct{
+        pin(15, 8) A;
+        net(17) B, C;
+    }
+    num X;
+}
+group<A = 3, B = 7> ABC{
+    pin(15, 8) A;
+    net(17) B, C;
+    group<C = 8, E = 5> BCD{
+        pin(15, 8) A;
+        net(17) B, C;
+    }
+    num X;
+}
+group<voltage = 3.3, capacitance = 10e-12,
+      external_min_delay = 500e-12, external_max_delay = 1e-9> SD{
+    pin   <location = "AB6"                   > CLK;
+    pin   <location = "W8"                    > CMD;
+    pin(4)<location = ["U7", "T7", "V8", "T8"]> DAT;
+}
+//------------------------------------------------------------------------------
+
+// Arrays and Initialisers
+
+pin A[7][8] := [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+num A=4, B=7, C=1;
+//------------------------------------------------------------------------------
+
+// Control Statements
+
+if (A == B) C = D;
+else        E = F;
+
+if      (A == B) C = D;
+else if (A == B) E = F;
+else if (A == B) G = H;
+else if (A == B) I = J;
+else if (A == B) K = L;
+else if (A == B) M = N;
+else             O = P;
+
+if (A == B) {
+    C = D;
+} else {
+    E = F;
+}
+
+if      (A == B) C = D;
+
+if      (A == B) C = D;
+else if (A == B) E = F;
+else if (A == B) G = H;
+else if (A == B) I = J;
+else if (A == B) K = L;
+else if (A == B) M = N;
+
+if (A == B) {
+    C = D;
+}
+
+for (A in 1..6) X++;
+for (A in G) X++;
+while (A < 7) X++;
+loop(7) X++;
+loop X++;
+
+enum STATE {Idle, Writing, Done, Others}
+STATE State;
+
+switch(State){
+    case(Idle){
+        // Do some stuff
+        State = Writing;
+    }
+    case(Writing){
+        // Do some stuff
+        State = Done;
+    }
+    case(Done){
+        // Do some stuff
+        State = Idle;
+    }
+    default{
+        // Do some stuff
+        print("The Default State");
+    }
+}
+
+return;
+break;
+continue;
+return 5;
+break 6;
+continue 7;
+
+goto Label;
+//------------------------------------------------------------------------------
+
+// Constructs
+
+rtl<A = 3, B = "Hello">(Clk, Reset){
+    A = 5;
+    B = C + 3;
+}
+rtl<A = 3, B = "Hello">{
+    A = 5;
+    B = C + 3;
+}
+rtl(Clk, Reset){
+    A = 5;
+    B = C + 3;
+}
+rtl(Clk){
+    A = 5;
+    B = C + 3;
+}
+rtl{
+    A = 5;
+    B = C + 3;
+}
+
+fsm<A = 3, B = "Hello">(Clk, Reset){
+    A = 5;
+    B = C + 3;
+}
+fsm<A = 3, B = "Hello">{
+    A = 5;
+    B = C + 3;
+}
+fsm(Clk, Reset){
+    A = 5;
+    B = C + 3;
+}
+fsm{
+    A = 5;
+    B = C + 3;
+}
+
+hdl<A = 3, B = "Hello">("whatnot.v", "thingy.vhd") ABC(
+    A = 3;
+    B = 5;
+){
+    input  pin     Clk;
+    input  pin     Reset;
+
+    output pin(16) Data;
+
+    pin(16, 5) AnotherPin;
+}
+//------------------------------------------------------------------------------
+
+// Verification
+
+stimulus <A = 3, B = 5>(1, 2, 3) ABC {
+    A = 3;
+    B = 5;
+}
+stimulus <A = 3, B = 5> ABC {
+    A = 3;
+    B = 5;
+}
+stimulus (1, 2, 3) ABC {
+    A = 3;
+    B = 5;
+}
+stimulus <A = 3, B = 5>(1, 2, 3) {
+    A = 3;
+    B = 5;
+}
+stimulus <A = 3, B = 5>(1, 2, 3) ABC {
+    A = 3;
+    B = 5;
+}
+
+emulate <A = 3, B = 5>(1, 2, 3) ABC {
+    A = 3;
+    B = 5;
+}
+emulate <A = 3, B = 5> ABC {
+    A = 3;
+    B = 5;
+}
+emulate (1, 2, 3) ABC {
+    A = 3;
+    B = 5;
+}
+emulate <A = 3, B = 5>(1, 2, 3) {
+    A = 3;
+    B = 5;
+}
+emulate <A = 3, B = 5>(1, 2, 3) ABC {
+    A = 3;
+    B = 5;
+}
+
+{
+    A = 3;
+    B = 5;
+} || {
+    X++;
+    Y--;
+}
+{
+    A = 3;
+    B = 5;
+} && {
+    X++;
+    Y--;
+}
+
+stimulus(1e-9){
+    A = 5;
+    #5 B = 7;
+    @(posedge Clk);
+    @(Clk, Reset);
+    @(posedge Clk, negedge Reset);
+    wait(A == 7);
+    loop #7 C++;
+}
+
+assert A == B;
+//------------------------------------------------------------------------------
+
+// Operator Overloading
+
+num operator?:  (A, B){ return A; }
+num operator|   (A, B){ return A; }
+num operator~|  (A, B){ return A; }
+num operator^   (A, B){ return A; }
+num operator~^  (A, B){ return A; }
+num operator&   (A, B){ return A; }
+num operator~&  (A, B){ return A; }
+num operator==  (A, B){ return A; }
+num operator!=  (A, B){ return A; }
+num operator<   (A, B){ return A; }
+num operator>   (A, B){ return A; }
+num operator<=  (A, B){ return A; }
+num operator>=  (A, B){ return A; }
+num operator<<  (A, B){ return A; }
+num operator>>  (A, B){ return A; }
+num operator+   (A, B){ return A; }
+num operator-   (A, B){ return A; }
+num operator*   (A, B){ return A; }
+num operator/   (A, B){ return A; }
+num operator%   (A, B){ return A; }
+num operator**  (A, B){ return A; }
+num operator!   (A, B){ return A; }
+num operator`   (A, B){ return A; }
+num operator$   (A, B){ return A; }
+num operator..  (A, B){ return A; }
+num operator~   (A, B){ return A; }
+num operator:   (A, B){ return A; }
+num operator++  (A, B){ return A; }
+num operator--  (A, B){ return A; }
+num operator@   (A, B){ return A; }
+num operator=   (A, B){ return A; }
+num operator:=  (A, B){ return A; }
+num operator~=  (A, B){ return A; }
+num operator+=  (A, B){ return A; }
+num operator-=  (A, B){ return A; }
+num operator*=  (A, B){ return A; }
+num operator/=  (A, B){ return A; }
+num operator**= (A, B){ return A; }
+num operator%=  (A, B){ return A; }
+num operator&=  (A, B){ return A; }
+num operator|=  (A, B){ return A; }
+num operator^=  (A, B){ return A; }
+num operator<<= (A, B){ return A; }
+num operator>>= (A, B){ return A; }
+num operator[*  (A, B){ return A; }
+num operator[-> (A, B){ return A; }
+num operator[=  (A, B){ return A; }
+num operator|-> (A, B){ return A; }
+num operator|=> (A, B){ return A; }
+num operator||  (A, B){ return A; }
+num operator&&  (A, B){ return A; }
+num operator&&& (A, B){ return A; }
+//------------------------------------------------------------------------------
+

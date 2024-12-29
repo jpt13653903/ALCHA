@@ -40,11 +40,11 @@ else
 endif
 #-------------------------------------------------------------------------------
 
-Includes += -I$(Source)/Tools
-Includes += -I$(Source)/DataStructures
+Includes += -I$(Source)
+Includes += -I$(Source)/AST
 Includes += -I$(Source)/FrontEnd
-Includes += -I$(Source)/Engine
-Includes += -I$(Source)/BackEnd
+Includes += -I$(Source)/Tools
+Includes += -I$(Source)/Symbols
 Includes += -I$(Toolbox)/Cpp
 Includes += -I$(Toolbox)/Test
 #-------------------------------------------------------------------------------
@@ -67,17 +67,22 @@ ifeq ($(OS), Windows_NT)
 endif
 #-------------------------------------------------------------------------------
 
-testSource   = $(shell find * -iname "*.cpp")
+testSource   = $(shell find * -iname "test*.cpp")
 testBinaries = $(testSource:%.cpp=bin/%$(ext))
 #-------------------------------------------------------------------------------
 
-.PHONY: clean all
+.PHONY: clean all FORCE
 .SECONDARY:
 
 all: $(testBinaries)
 
 test: all
 	bin/testScanner
+	bin/testParser
+	bin/testInterpreter
+
+test%: bin/test%$(ext) FORCE
+	$<
 
 clean:
 	- rm -rf bin/test*
@@ -93,7 +98,7 @@ testScannerObjects += $(ObjectPath)/Toolbox/FileWrapper.o
 testScannerObjects += $(ObjectPath)/Toolbox/UTF_Converter.o
 testScannerObjects += $(ObjectPath)/Source/FrontEnd/Scanner.o
 testScannerObjects += $(ObjectPath)/Source/FrontEnd/Token.o
-testScannerObjects += $(ObjectPath)/Source/DataStructures/TokenTree.o
+testScannerObjects += $(ObjectPath)/Source/FrontEnd/TokenTree.o
 testScannerObjects += $(ObjectPath)/Source/Tools/Number.o
 testScannerObjects += $(ObjectPath)/Source/Tools/Utilities.o
 
@@ -103,11 +108,37 @@ bin/testScanner$(ext): $(testScannerObjects) $(Resources) $(Headers)
 #-------------------------------------------------------------------------------
 
 testParserObjects += $(ObjectPath)/Tests/testParser.o
+
+testParserSource  += $(shell find $(Source)/AST            -iname "*.cpp")
+testParserSource  += $(shell find $(Source)/FrontEnd       -iname "*.cpp")
+testParserSource  += $(shell find $(Source)/Symbols        -iname "*.cpp")
+testParserSource  += $(shell find $(Source)/Tools          -iname "*.cpp")
+testParserObjects += $(testParserSource:$(Source)/%.cpp=$(ObjectPath)/Source/%.o)
+
 testParserObjects += $(ObjectPath)/Toolbox/General.o
+testParserObjects += $(ObjectPath)/Toolbox/FileWrapper.o
+testParserObjects += $(ObjectPath)/Toolbox/UTF_Converter.o
 
 bin/testParser$(ext): $(testParserObjects) $(Resources) $(Headers)
 	mkdir -p bin
 	$(CXX) $(Options) $(testParserObjects) $(Resources) -s $(LibInclude) $(Libraries) -o $@
+#-------------------------------------------------------------------------------
+
+testInterpreterObjects += $(ObjectPath)/Tests/testInterpreter.o
+
+testInterpreterSource  += $(shell find $(Source)/AST            -iname "*.cpp")
+testInterpreterSource  += $(shell find $(Source)/FrontEnd       -iname "*.cpp")
+testInterpreterSource  += $(shell find $(Source)/Symbols        -iname "*.cpp")
+testInterpreterSource  += $(shell find $(Source)/Tools          -iname "*.cpp")
+testInterpreterObjects += $(testInterpreterSource:$(Source)/%.cpp=$(ObjectPath)/Source/%.o)
+
+testInterpreterObjects += $(ObjectPath)/Toolbox/General.o
+testInterpreterObjects += $(ObjectPath)/Toolbox/FileWrapper.o
+testInterpreterObjects += $(ObjectPath)/Toolbox/UTF_Converter.o
+
+bin/testInterpreter$(ext): $(testInterpreterObjects) $(Resources) $(Headers)
+	mkdir -p bin
+	$(CXX) $(Options) $(testInterpreterObjects) $(Resources) -s $(LibInclude) $(Libraries) -o $@
 #-------------------------------------------------------------------------------
 
 # Objects

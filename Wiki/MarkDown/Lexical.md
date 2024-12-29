@@ -1,9 +1,9 @@
 # ALCHA
 
 <img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
-The ALCHA project, including the language grammar and, by extension, this 
-wiki, is under development.  This wiki serves as a documentation of the 
-project goals and aspirations, which are inherently unstable and subject to 
+The ALCHA project, including the language grammar and, by extension, this
+wiki, is under development.  This wiki serves as a documentation of the
+project goals and aspirations, which are inherently unstable and subject to
 change without notice.
 
 --------------------------------------------------------------------------------
@@ -36,9 +36,9 @@ change without notice.
 
 # Lexical
 
-The scanner reads UTF-8 formatted files.  The UTF-8 formatting is retained, 
-even though the input stream is searched for Unicode space and newline 
-characters.  At this stage, white-space and comments are ignored, adjacent 
+The scanner reads UTF-8 formatted files.  The UTF-8 formatting is retained,
+even though the input stream is searched for Unicode space and newline
+characters.  At this stage, white-space and comments are ignored, adjacent
 strings are concatenated and escape sequences within strings are
 evaluated.  The lexical EBNF is available [here](../EBNF/Scanner.ebnf).
 
@@ -46,7 +46,7 @@ evaluated.  The lexical EBNF is available [here](../EBNF/Scanner.ebnf).
 
 ALCHA literals are all stored as infinite-precision rational numbers (by means of the [GNU MP library](https://gmplib.org/)). An imaginary literal can be specified by using either a `j` or `i` postfix.  Literals can be binary (`0b` prefix), octal (`0o` prefix), hexadecimal (`0x` prefix) or decimal (no prefix).  Literals may contain an optional decimal or binary exponent, by means of a `e` or `p` postfix, respectively.  All literals can be cast to a fixed-point format by means of the `@` operator.  Within numerical literals, the underscore character (`_`) is ignored.  Character literals are string literals with only one character.  Below are some examples:
 
-```C++
+```alcha
   123.456           // decimal constant
   123.456@(16, 128) // Decimal constant cast to 16 bits with full-scale range [0, 128)
   0b101.0101        // Binary constant

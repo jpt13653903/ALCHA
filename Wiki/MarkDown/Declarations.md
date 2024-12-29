@@ -1,9 +1,9 @@
 # ALCHA
 
 <img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
-The ALCHA project, including the language grammar and, by extension, this 
-wiki, is under development.  This wiki serves as a documentation of the 
-project goals and aspirations, which are inherently unstable and subject to 
+The ALCHA project, including the language grammar and, by extension, this
+wiki, is under development.  This wiki serves as a documentation of the
+project goals and aspirations, which are inherently unstable and subject to
 change without notice.
 
 --------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ change without notice.
 
 Nets relate to physical wires and / or registers on the FPGA.  They are specified by means of the `net` keyword.  If no format is specified, a net is a single-bit unsigned integer, which also represents a boolean.  The format is specified by means of optional instantiation parameters.  Some examples are shown below:
 
-```C++
+```alcha
   net          a; // Single-bit unsigned integer
   net(8)       b; // 8-bit unsigned integer
   net(7, -128) c; // 8-bit signed integer
@@ -70,7 +70,7 @@ Signed nets have one more bit than specified in the format.  This is a convenien
 
 All nets, pins and variables can take an optional initialiser, as illustrated below:
 
-```C++
+```alcha
     net(8   ) a  = 7;       // The binary value "0000 0111"
     net(8, 4) pi = 355/113; // The binary value "1100 1001"
 ```
@@ -94,7 +94,7 @@ Attribute            | Default | Description
 
 As indicated in the table above, net attributes can be used to specify external peripheral timing requirements.  These timing attributes are specified as if there are no PCB or trace delays.  When the net is connected to a pin, the trace delays and pin capacitance specified by the pin attributes are used in conjunction with the net timing attributes to calculate the appropriate external timing constraints.  An example is provided below:
 
-```C++
+```alcha
   // PCB trace delays in the pin definitions:
   pin(4)<voltage = 3.3, capacitance = 10e-12,
          external_min_delay = 500e-12, external_max_delay = 1e-9,
@@ -122,7 +122,7 @@ ALCHA does not support high-impedance nets directly.  Pins can be set to high-im
 
 Pins in ALCHA are specified by means of the `pin` keyword.  Pins can have various attributes.  A short example is presented below:
 
-```C++
+```alcha
   pin<frequency = 50e6, voltage = 2.5, location = "H12"> Clock;
   pin<                  voltage = 1.2, location = "P11"> Key;
   pin<                  voltage = 2.5, location = "F7" > LED;
@@ -134,7 +134,7 @@ When, at the time of circuit synthesis, the `enable` net is undefined, the compi
 
 When the developer assigns directly to the pin name, the expression is actually assigned to the `driver` net.  When the pin is read, the `pad` net is read.  This is sometimes problematic, as illustrated in the following example:
 
-```C++
+```alcha
   // Define I2C bus pins (initialisers assign to the driver net)
   pin S_Clk  = 1;
   pin S_Data = 0;
@@ -160,7 +160,7 @@ When the developer assigns directly to the pin name, the expression is actually 
 
 When ignoring the first (wrong) assignment, the code above is equivalent to the following Verilog:
 
-```Verilog
+```verilog
   module TopLevel(
     output S_Clk,
     inout  S_Data,
@@ -197,7 +197,7 @@ Attribute     | Default    | Description
 
 When specifying pin locations for bit-vectors or pin arrays, the `location` attribute contains a comma-separated list of pins.  Pin locations are specified most-significant bit first, as follows:
 
-```C++
+```alcha
   // Assign H9 to LED(7), H8 to LED(6), ..., L7 to LED(0)
   pin(8)<location = ["H9", "H8", "B6", "A5", "E9", "D8", "K6", "L7"]> LED;
 ```
@@ -206,7 +206,7 @@ Pin arrays are handled in similar fashion.  The first (0-index) pin location(s) 
 
 The same location can be assigned to different pin objects.  This is useful when the physical board can have different functions on the same pin, such as a choice between single-ended or LVDS.  This is illustrated below:
 
-```C++
+```alcha
   pin(4) <
     standard    = "LVDS",
     termination =  true,
@@ -223,7 +223,7 @@ The same location can be assigned to different pin objects.  This is useful when
 
 Often there are attributes that applies to many objects.  In this case, the definitions can be grouped.  All child definitions inherit the attributes of the group.  When a child definition includes an attribute that is already defined in the group, the child definition takes precedence.  Below is an example of a named group for pin definitions.
 
-```C++
+```alcha
   group<voltage = 3.3, capacitance = 10e-12,
         external_min_delay = 500e-12, external_max_delay = 1e-9> SD{
     pin   <location = "AB6"                   > CLK;
@@ -234,7 +234,7 @@ Often there are attributes that applies to many objects.  In this case, the defi
 
 In this case, the pins that are actually defined are `SD.CLK`, `SD.CMD` and `SD.DAT`.  The group can also be anonymous, as given below. In this case, each pin is a child of the parent group object (global, in this case).
 
-```C++
+```alcha
   group <voltage = 3.3, frequency = 50e6>{
     pin<location = "R20"> CLOCK_B5B;
     pin<location = "N20"> CLOCK_B6A;
@@ -249,7 +249,7 @@ ALCHA structures are "packed", which makes it possible to treat the structure as
 
 Structures are defined by means of the `struct` keyword, as follows:
 
-```C++
+```alcha
   struct double{
     net     Sign;
     net(11) Exponent;
@@ -262,7 +262,7 @@ These structures follow the same rules as SystemVerilog structures, i.e. they ar
 ## Enumerations
 
 An enumeration type can be defined by means of the `enum` keyword, as illustrated below.
-```C++
+```alcha
   enum STATE {Idle, Writing, Done, Others}
   STATE State;
 
@@ -289,7 +289,7 @@ An enumeration type can be defined by means of the `enum` keyword, as illustrate
 
 By default, the numerical constants associated with the enumeration start at 0 for the first element and increase by 1 for each element.  The user can, however, assign arbitrary constants to the enumeration members.  Ordinarily, enumerations are equivalent to the non-synthesisable type `num`. The enumeration can, however, be used to define a synthesisable enumeration, as shown below.
 
-```C++
+```alcha
   enum STATE {Idle, Writing, Done, Others}
   pin(STATE) PinState; // Pin enumeration
   net(STATE) SigState; // Net enumeration
@@ -301,7 +301,7 @@ In this case, the number of bits, or width, of the net (or pin array) is the num
 
 A variable declared as an enumeration can only take values from that enumeration.  If the LHS of an assignment is an enumeration instance, the compiler pushes that enumeration onto the name-space stack.  If an enumeration is used outside a variable of that type, the values of the enumeration can be referenced through its type.  It is illegal to assign anything else to an enumeration type. It is legal to compare an enumeration to other types, however.  The code below shows various examples of legal and illegal statements.
 
-```C++
+```alcha
   enum Enum{A, B, C}
 
   num  a;

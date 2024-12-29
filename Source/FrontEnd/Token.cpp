@@ -23,7 +23,7 @@
 #include "General.h"
 //------------------------------------------------------------------------------
 
-const char* Token::decodeType()
+const char* Token::decodeType() const
 {
     switch(type){
             case Type::Unknown:                return "Unknown";
@@ -83,7 +83,7 @@ const char* Token::decodeType()
             case Type::Return:                 return "Return";
             case Type::Break:                  return "Break";
             case Type::Continue:               return "Continue";
-            case Type::Goto:                   return "Goto";
+            case Type::GoTo:                   return "GoTo";
 
             case Type::Func:                   return "Func";
             case Type::Inline:                 return "Inline";
@@ -178,7 +178,7 @@ const char* Token::decodeType()
             case Type::WaitFor:                return "WaitFor";
             case Type::WaitCycles:             return "WaitCycles";
             case Type::SequenceConsecutive:    return "SequenceConsecutive";
-            case Type::SequenceGoto:           return "SequenceGoto";
+            case Type::SequenceGoTo:           return "SequenceGoTo";
             case Type::SequenceNonConsecutive: return "SequenceNonConsecutive";
             case Type::AssertImplies:          return "AssertImplies";
             case Type::AssertImpliesNext:      return "AssertImpliesNext";
@@ -191,13 +191,16 @@ const char* Token::decodeType()
             case Type::Literal:                return "Literal";
             case Type::String:                 return "String";
 
+            case Type::InterpolatedStringPart: return "InterpolatedStringPart";
+            case Type::InterpolatedStringEnd:  return "InterpolatedStringEnd";
+
         // Invalid .............................................................
             default:                           return "Invalid Type Index";
     }
 }
 //------------------------------------------------------------------------------
 
-std::string& Token::display()
+std::string& Token::print() const
 {
     static std::string result;
     char _string[0x100];
@@ -208,7 +211,7 @@ std::string& Token::display()
              ANSI_FG_BRIGHT_BLACK "Line = "  ANSI_RESET "%5d "
              ANSI_FG_BRIGHT_BLACK "Data = "  ANSI_RESET "%-40s "
              ANSI_FG_BRIGHT_BLACK "Value = " ANSI_RESET "%s",
-             decodeType(), line, data.c_str(), value.display().c_str());
+             decodeType(), line, data.c_str(), value.print().c_str());
 
     result = _string;
     return result;

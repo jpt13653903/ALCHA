@@ -39,11 +39,11 @@ else
 endif
 #-------------------------------------------------------------------------------
 
-Includes += -ITools
-Includes += -IDataStructures
+Includes += -I.
+Includes += -IAST
 Includes += -IFrontEnd
-Includes += -IEngine
-Includes += -IBackEnd
+Includes += -ITools
+Includes += -ISymbols
 Includes += -I$(Toolbox)
 #-------------------------------------------------------------------------------
 

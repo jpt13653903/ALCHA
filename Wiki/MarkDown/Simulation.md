@@ -1,9 +1,9 @@
 # ALCHA
 
 <img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
-The ALCHA project, including the language grammar and, by extension, this 
-wiki, is under development.  This wiki serves as a documentation of the 
-project goals and aspirations, which are inherently unstable and subject to 
+The ALCHA project, including the language grammar and, by extension, this
+wiki, is under development.  This wiki serves as a documentation of the
+project goals and aspirations, which are inherently unstable and subject to
 change without notice.
 
 --------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ It is possible, in ALCHA, to include the unit test in the same source file as th
 
 In order to perform a unit test, the module under test must have its inputs stimulated by test signals.  The code below shows the basics of an ALCHA `stimulus` construct, which is comparable to the body of a Verilog `initial` block.  The delay operators (`#`, `##` and `@`) mean the same thing in both languages.  There is no equivalent to a Verilog `always` block, because the same thing can achieved by using a loop.
 
-```C++
+```alcha
   group<waveform = "green">{
     net(8) A = 0, B = 0, C = 0;
   }
@@ -93,7 +93,7 @@ Stimulus constructs can be defined anywhere, including class and function bodies
 
 It is often useful to split stimulus execution into multiple threads without using a completely separate `stimulus` block.  Verilog implements this concept by means of the `fork`-`join` construct.  The code below shows the ALCHA syntax of the same structure.  The Verilog `disable` statement can be implemented by means of a `break` statement in ALCHA.
 
-```C++
+```alcha
   stimulus(1e-9){
     // fork ... join_all
     { /* The first  fork */ } &&
@@ -129,7 +129,7 @@ Emulation also has another use.  It is often, if not always, faster to emulate a
 
 It has the same syntax and semantics as the `stimulus` construct, but allows the user to overwrite synthesised nets with simulated signals.  The `stimulus` construct can only assign to nets that have constant-expressions assigned to them (the constant-expression is taken as the value at the start of simulation).  The `emulate` construct can assign to any net, thereby overwriting the RTL behaviour.
 
-```C++
+```alcha
   class FFT{
     net(31, -1) Input   [256];
     net(31, -1) Output_I[256];
@@ -165,7 +165,7 @@ The user can make use of conditional compilation to switch between the emulated 
 
 The same construct can be used to emulated imported HDL.  The ALCHA simulator does not support the simulation of external VHDL or Verilog code, so the user must include an emulator in those modules that must be included in the simulation.  The code below shows an example of how to emulate an Altera ROM block.
 
-```C++
+```alcha
   hdl() altsyncram(
     num  widthad_a  = 12,
     num  width_a    = 16,
@@ -212,7 +212,7 @@ One of the more powerful methods of verification, provided by SystemVerilog, is 
 
 The simplest way to write an assertion is to include it in a `stimulus` construct.  It checks the state of the system at that point in the simulation, by means of a semicolon-separated list of boolean expressions.  The code below provides an example.
 
-```C++
+```alcha
   net(8) Adder(net(8) A, net(8) B, net C){
     :(C, Adder) = A + B;
   }
@@ -230,7 +230,7 @@ The simplest way to write an assertion is to include it in a `stimulus` construc
 
 Another option is to write the assertions outside the stimulus construct.  Assertion statements of this form would typically take the form shown below.  The `|->` operator is used to specify rules of the form: ``when the left-hand-side is true, then the right-hand-side must also hold true''.
 
-```C++
+```alcha
   assert{
     a == 0x00 && b == 0x00 |-> y == 0x00 && c == 0;
     a == 0xFF && b == 0x01 |-> y == 0x00 && c == 1;
@@ -244,7 +244,7 @@ Another option is to write the assertions outside the stimulus construct.  Asser
 
 SystemVerilog sequences can be compared to regular expressions.  The verification tool matches the given sequence expression against the simulated waveforms.  A hand-shake transaction might be specified as shown in below.  As with SystemVerilog, the signals are sampled one simulation time-step before the clock edge being tested, thereby ensuring that the system state is consistent with a hardware implementation.
 
-```C++
+```alcha
   // A simple sequence:
   sequence Handshake{
     Go ##[1..5] Busy ##[1.. 10] !Go ##[1..100] !Busy;
@@ -291,7 +291,7 @@ Code and functional coverage reports can be used to determine dead code and insu
 
 For code coverage, the simulation process logs a counter on every statement in the source code, and reports the number of times each statement was executed during simulation.  This also includes branch coverage, that tests that every possible branch of `if` and `case` statements have been tested.  ALCHA enables this by means of an attribute, as shown below.
 
-```C++
+```alcha
   group<code_coverage = true>{
     !! All the code that should be tested for coverage goes here
   }
@@ -311,7 +311,7 @@ For functional coverage, the process logs a counter for every functionality that
 
 As an example, consider the case of a simplified floating-point operation.  Each input operand, as well as the output, can fall into one of six categories: NAN, -&infin;, <0, 0, >0, &infin;.  This means that there are 6<sup>3</sup>&nbsp;(216) possible combinations of functionality.  The code below shows the ALCHA syntax for specifying functional coverage.
 
-```C++
+```alcha
   // Instances of the Float class
   Float() A;
   Float() B;

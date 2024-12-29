@@ -1,0 +1,198 @@
+num a;
+num b;
+num c, d;
+
+a = 3;
+b = 5;
+print(a + b);
+
+a++;
+a();
+a--;
+a <<= a*b + c*d;
+
+a = a+++ ++b;
+a = a ? b : c;
+a = x | x ~| x ^ x ~^ x & x ~& x == x != x < x > x <= x >= x << x >> x + x - x * x / x % x ** x ` x;
+a = x ` x ** x % x / x * x - x + x >> x << x >= x <= x > x < x != x == x ~& x & x ~^ x ^ x ~| x | x;
+a[5][6][7..9, 8, 1..10:2] = b.c.d.e'attribute;
+
+MyLabel:
+
+a.b.c.{
+    num a, b, c;
+    num a, b, c;
+    num a, b, c;
+    num a, b, c;
+}
+
+num myFunc(a, b, c = 5){
+    print(a*b + c);
+}
+myFuct(1, 2, 3);
+
+inline num(15, 7)<a = b, c = d> myFunc(a, num b, c = 5, pin d = 8, pin(13, 9) e, MyClass myClass, MyClass(123, 456) myClass){
+    print(a*b + c);
+}
+
+MyClass          myClass;
+MyClass()        myClass;
+MyClass(A)       myClass;
+MyClass(A, B)    myClass;
+MyClass(A, B, C) myClass;
+
+MyClass          <a = b> myClass;
+MyClass()        <a = b> myClass;
+MyClass(A)       <a = b> myClass;
+MyClass(A, B)    <a = b> myClass;
+MyClass(A, B, C) <a = b> myClass;
+
+MyClass          <a = b, c = d> myClass;
+MyClass()        <a = b, c = d> myClass;
+MyClass(A)       <a = b, c = d> myClass;
+MyClass(A, B)    <a = b, c = d> myClass;
+MyClass(A, B, C) <a = b, c = d> myClass;
+
+MyClass(a+d*c, b-e) <a = (b**2), c = (d/r), t = (g > 5)> myClass;
+
+// ClassDefinition = "class" [ AttributeList ] Identifier
+//                   [ "(" [ ParameterDefList ] ")" ]
+//                   [
+//                     ":" TypeIdentifier [ ParameterList ]
+//                     { "," TypeIdentifier [ ParameterList ] }
+//                   ]
+//                   "{" [ Statements ] "}";
+class MyClass{
+    print("Hello");
+}
+class <a = b, c = d> MyClass{
+    print("Hello");
+}
+class <a = b, c = d> MyClass(a, b, c = 123){
+    print("Hello");
+}
+class MyClass: A{
+    num a;
+}
+class MyClass: A, B{
+    num a;
+}
+class MyClass: A(a, b+c*d), B{
+    num a;
+}
+class MyClass: A(a, b+c*d), B(){
+    num a;
+}
+
+public    num a;
+private   num a;
+protected num a;
+
+public    input num a;
+private   input num a;
+protected input num a;
+
+public    output num a;
+private   output num a;
+protected output num a;
+
+input  num a;
+output num a;
+
+public input{
+    num a;
+    num b;
+}
+
+num operator?:  (A, B){ return A; }
+num operator|   (A, B){ return A; }
+num operator~|  (A, B){ return A; }
+num operator^   (A, B){ return A; }
+num operator~^  (A, B){ return A; }
+num operator&   (A, B){ return A; }
+num operator~&  (A, B){ return A; }
+num operator==  (A, B){ return A; }
+num operator!=  (A, B){ return A; }
+num operator<   (A, B){ return A; }
+num operator>   (A, B){ return A; }
+num operator<=  (A, B){ return A; }
+num operator>=  (A, B){ return A; }
+num operator<<  (A, B){ return A; }
+num operator>>  (A, B){ return A; }
+num operator+   (A, B){ return A; }
+num operator-   (A, B){ return A; }
+num operator*   (A, B){ return A; }
+num operator/   (A, B){ return A; }
+num operator%   (A, B){ return A; }
+num operator**  (A, B){ return A; }
+num operator!   (A, B){ return A; }
+num operator`   (A, B){ return A; }
+num operator$   (A, B){ return A; }
+num operator..  (A, B){ return A; }
+num operator~   (A, B){ return A; }
+num operator:   (A, B){ return A; }
+num operator++  (A, B){ return A; }
+num operator--  (A, B){ return A; }
+num operator@   (A, B){ return A; }
+num operator=   (A, B){ return A; }
+num operator:=  (A, B){ return A; }
+num operator~=  (A, B){ return A; }
+num operator+=  (A, B){ return A; }
+num operator-=  (A, B){ return A; }
+num operator*=  (A, B){ return A; }
+num operator/=  (A, B){ return A; }
+num operator**= (A, B){ return A; }
+num operator%=  (A, B){ return A; }
+num operator&=  (A, B){ return A; }
+num operator|=  (A, B){ return A; }
+num operator^=  (A, B){ return A; }
+num operator<<= (A, B){ return A; }
+num operator>>= (A, B){ return A; }
+num operator[*  (A, B){ return A; }
+num operator[-> (A, B){ return A; }
+num operator[=  (A, B){ return A; }
+num operator|-> (A, B){ return A; }
+num operator|=> (A, B){ return A; }
+num operator||  (A, B){ return A; }
+num operator&&  (A, B){ return A; }
+num operator&&& (A, B){ return A; }
+
+enum colours { red }
+enum colours { red, green, blue }
+
+'GlobalAttribute = 5;
+A = 'GlobalAttribute;
+
+A.B.C'D.E'F = 9;
+
+stimulus{
+    #10 clk = 1;
+    #10 clk = 2;
+}
+emulate{
+    @(posedge clk, negedge reset){
+        a = b;
+    } || {
+        a = b;
+    } && {
+        a = b;
+    }
+}
+
+##3 c = d;
+@(enable) Q = D;
+
+a = $(whatnot);
+A = $b;
+
+a = $(whatnot, "%d");
+a = $(whatnot, A.B.C);
+A = $b.c.d;
+
+assert a + b == c;
+
+a = $"I have {x} sheep";
+a = $"I have {x+b} sheep";
+a = $"I have {x+b, "04d"} sheep";
+a = $"I have {x+b, format} sheep";
+

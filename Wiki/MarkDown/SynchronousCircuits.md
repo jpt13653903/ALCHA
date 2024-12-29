@@ -1,9 +1,9 @@
 # ALCHA
 
 <img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
-The ALCHA project, including the language grammar and, by extension, this 
-wiki, is under development.  This wiki serves as a documentation of the 
-project goals and aspirations, which are inherently unstable and subject to 
+The ALCHA project, including the language grammar and, by extension, this
+wiki, is under development.  This wiki serves as a documentation of the
+project goals and aspirations, which are inherently unstable and subject to
 change without notice.
 
 --------------------------------------------------------------------------------
@@ -43,7 +43,7 @@ change without notice.
 
 A clock in ALCHA is any synthesisable node with a `frequency` attribute.  In order to generate a clock by means of a PLL, use the `hdl` construct to instantiate the appropriate mega-function.  Some examples of clock definitions are presented below:
 
-```C++
+```alcha
   // An input pin
   pin<frequency = 100e6> ClkPin;
 
@@ -82,7 +82,7 @@ A clock in ALCHA is any synthesisable node with a `frequency` attribute.  In ord
 
 ALCHA further supports clock-enable type clocks, which are generally used for lower frequency circuits that must be synchronised to a higher frequency clock domain.  The clock enable net must also carry the `frequency` attribute, so that the compiler knows how to set up the associated multi-cycle timing requirements.
 
-```C++
+```alcha
   net(14) ClkCounter;
 
   net<frequency = 100e6> Clk;
@@ -105,7 +105,7 @@ Most modern FPGAs contain dedicated high-fanout, low-skew clock tree networks.  
 
 All clocks (including clock pins) have a `frequency` member (of type `num`) that can be used by scripts to calculate clock-frequency dependent parameters.  A button denouncer might, for instance, be defined as follows:
 
-```C++
+```alcha
   net Debouncer(net Clk, net Input){
     num Count = Clk'frequency * 20e-3 - 1; // 20 ms dead-time
     num N     = ceil(log2(Count));
@@ -129,7 +129,7 @@ All clocks (including clock pins) have a `frequency` member (of type `num`) that
 
 Most HDL designers are familiar with RTL design.  In ALCHA, the `rtl` construct can be used to describe RTL logic.  It takes one parameter: the clock, which must be a synthesisable type with a frequency attribute.  All statements within an `rtl` construct are non-blocking.  Below is an example:
 
-```C++
+```alcha
   pin<frequency = 50e6> Clk;
   pin                   Reset;
 
@@ -149,7 +149,7 @@ Most HDL designers are familiar with RTL design.  In ALCHA, the `rtl` construct 
 
 The equivalent Verlog of the above ALCHA is:
 
-```Verilog
+```verilog
   reg       A, B;
   reg [26:0]Count;
 
@@ -171,7 +171,7 @@ ALCHA provides a concise FSM description syntax by means of the `fsm` construct.
 
 Each statement within an `fsm` construct that ends in a comma (`,`), is considered to be in the same state, or cycle, as the next statement.  A semicolon (`;`) ends a cycle (or state).  All statements are considered non-blocking.  A simple example is provided below:
 
-```C++
+```alcha
   pin<frequency = 50e6> Clk;
   pin                   Reset;
 
@@ -192,7 +192,7 @@ Each statement within an `fsm` construct that ends in a comma (`,`), is consider
 
 This state machine has two states and translates to the following Verilog:
 
-```Verilog
+```verilog
   reg[7:0] A, B, C;
 
   reg tReset;
@@ -231,7 +231,7 @@ The ALCHA `if` and `while` statements follow the same syntax as in C.  The state
 
 The `for` loop is used to iterate through elements in an array, as follows:
 
-```C++
+```alcha
   net( 8) x;
   net(10) A;
 
@@ -244,7 +244,7 @@ The `for` loop is used to iterate through elements in an array, as follows:
 
 This translates to:
 
-```Verilog
+```verilog
   reg [7:0]x;
   reg [9:0]A;
   reg      State;

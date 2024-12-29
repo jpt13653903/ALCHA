@@ -1,0 +1,2491 @@
+net DelayedReset(net Clk, net Reset, num Delay_ms){
+  num Delay_cycles = round(Clk'frequency * (Delay_ms*1e-3));
+  num N = ceil(log2(Delay_cycles));
+
+  net(N) Count = 0;
+  result = 1;
+
+  rtl(Clk, Reset){
+    if(Count != Delay_cycles) Count++;
+    else result = 0;
+  }
+}
+//------------------------------------------------------------------------------
+
+// Output_MHz expects an array of num
+class PLL_CycloneV(net Clk, net Reset, Output_MHz){
+  private{
+    num N = Output_MHz'length;
+    num OutputFreq[17];
+
+    for(n in 0..16){
+      if(n < N) OutputFreq[n] = Output_MHz[n];
+      else      OutputFreq[n] = 0;
+    }
+
+    hdl() altera_pll (
+      fractional_vco_multiplier = "false";
+      reference_clock_frequency = :[$(Clk'frequency / 1e6), " MHz"];
+      operation_mode            = "direct";
+      number_of_clocks          = N;
+      output_clock_frequency0   = :[$(OutputFreq[0]), " MHz"];
+      phase_shift0              = "0 ps";
+      duty_cycle0               = 50;
+      output_clock_frequency1   = :[$(OutputFreq[1]), " MHz"];
+      phase_shift1              = "0 ps";
+      duty_cycle1               = 50;
+      output_clock_frequency2   = :[$(OutputFreq[2]), " MHz"];
+      phase_shift2              = "0 ps";
+      duty_cycle2               = 50;
+      output_clock_frequency3   = :[$(OutputFreq[3]), " MHz"];
+      phase_shift3              = "0 ps";
+      duty_cycle3               = 50;
+      output_clock_frequency4   = :[$(OutputFreq[4]), " MHz"];
+      phase_shift4              = "0 ps";
+      duty_cycle4               = 50;
+      output_clock_frequency5   = :[$(OutputFreq[5]), " MHz"];
+      phase_shift5              = "0 ps";
+      duty_cycle5               = 50;
+      output_clock_frequency6   = :[$(OutputFreq[6]), " MHz"];
+      phase_shift6              = "0 ps";
+      duty_cycle6               = 50;
+      output_clock_frequency7   = :[$(OutputFreq[7]), " MHz"];
+      phase_shift7              = "0 ps";
+      duty_cycle7               = 50;
+      output_clock_frequency8   = :[$(OutputFreq[8]), " MHz"];
+      phase_shift8              = "0 ps";
+      duty_cycle8               = 50;
+      output_clock_frequency9   = :[$(OutputFreq[9]), " MHz"];
+      phase_shift9              = "0 ps";
+      duty_cycle9               = 50;
+      output_clock_frequency10  = :[$(OutputFreq[10]), " MHz"];
+      phase_shift10             = "0 ps";
+      duty_cycle10              = 50;
+      output_clock_frequency11  = :[$(OutputFreq[11]), " MHz"];
+      phase_shift11             = "0 ps";
+      duty_cycle11              = 50;
+      output_clock_frequency12  = :[$(OutputFreq[12]), " MHz"];
+      phase_shift12             = "0 ps";
+      duty_cycle12              = 50;
+      output_clock_frequency13  = :[$(OutputFreq[13]), " MHz"];
+      phase_shift13             = "0 ps";
+      duty_cycle13              = 50;
+      output_clock_frequency14  = :[$(OutputFreq[14]), " MHz"];
+      phase_shift14             = "0 ps";
+      duty_cycle14              = 50;
+      output_clock_frequency15  = :[$(OutputFreq[15]), " MHz"];
+      phase_shift15             = "0 ps";
+      duty_cycle15              = 50;
+      output_clock_frequency16  = :[$(OutputFreq[16]), " MHz"];
+      phase_shift16             = "0 ps";
+      duty_cycle16              = 50;
+      output_clock_frequency17  = :[$(OutputFreq[17]), " MHz"];
+      phase_shift17             = "0 ps";
+      duty_cycle17              = 50;
+      pll_type                  = "General";
+      pll_subtype               = "General";
+    ){
+      net    refclk = Clk;
+      net    rst    = Reset;
+      net    fbclk  = 0;
+      net(N) outclk;
+      net    locked;
+      net    fboutclk;
+    }
+    altera_pll() PLL;
+  }
+
+  public{
+    net Locked = PLL.locked;
+    net Output[N];
+
+    for(n in 0..(N-1)){
+      Output[n]'frequency = Output_MHz * 1e6;
+      Output[n] = PLL.outclk[n];
+    }
+  }
+}
+
+class WhatchDog(net Clk, net Kick, num Timeout_ms, bool EdgeSensitive = false){
+  private{
+    num Timeout_Cycles = round(Clk'frequency * (Timeout_ms*1e-3));
+    num N = ceil(log2(Delay_cycles));
+
+    net(N) Count = Timeout_Cycles-1;
+
+    if(EdgeSensitive){
+      net(2) KickEdge;
+      rtl(Clk) KickEdge = :(KickEdge[0], Kick);
+      net Reset = (KickEdge == 0b01);
+    }else{
+      net Reset = Kick;
+    }
+  }
+  output net Error = 0;
+
+  rtl(Clk, Reset){
+    if(Count) Count--;
+    else      Error = 1;
+  }
+}
+//------------------------------------------------------------------------------
+
+class I2C(net Clk, net Reset, num Baud_kHz = 50){
+  input  net Quiet = 0;
+  output net Error = 0;
+  //----------------------------------------------------------------------------
+
+  private{ // Baud Counter
+    num Baud_Cycles = round(Clk'frequency / (Baud_kHz*3));
+    num Baud_N      = ceil(log2(Baud_Cycles));
+    net(Baud_N) Baud_Count;
+
+    rtl(Clk){
+      if(Baud_Count) Baud_Count--;
+      else           Baud_Count = Baud_Cycles-1;
+    }
+    net Baud_Trigger = ~|Baud_Count;
+
+    net ClkIn , ClkOut  = 1;
+    net DataIn, DataOut = 1;
+  }
+  //----------------------------------------------------------------------------
+
+  void ConnectBus(pin Clock, pin Data){
+    Clock.enable |= ~ClkOut;
+    Data .enable |= ~DataOut;
+    rtl(Clk){
+      ClkIn  = Clock.pad;
+      DataIn = Data .pad;
+    }
+  }
+  //----------------------------------------------------------------------------
+
+  net(8) Transaction(
+    net(8) TxData,
+    bool   Start = false,
+    bool   R_nW  = false,
+    bool   Ack   = true,
+    bool   Stop  = false
+  ){
+    net(8) Data;
+
+    // If ClkIn != ClkOut it means that the slave is clock-stretching
+    fsm(Clk, Reset, Baud_Trigger & (ClkIn == ClkOut) & !Quiet){
+      // Start / Restart
+      Data = TxData;
+      if(Start | ClkOut){
+        if(!ClkOut & !DataOut) DataOut = 1;
+        if(!ClkOut &  DataOut) ClkOut  = 1;
+        if( ClkOut &  DataOut) DataOut = 0;
+        if( ClkOut & !DataOut) ClkOut  = 0;
+      }
+
+      // Transfer Data
+      for(n in 0..7){
+        if(R_nW) DataOut = 1;
+        else     DataOut = Data[7];
+        ClkOut = 1;
+        ClkOut = 0, Data = :(Data[6..0], DataIn);
+      }
+
+      // Ack
+      if(R_nW){
+        result  = Data, DataOut = !Ack;
+        ClkOut  = 1;
+        ClkOut  = 0;
+      }else{
+        DataOut = 1;
+        ClkOut  = 1;
+        if(DataIn != Ack){
+          Error = 1,
+          return;
+        }else{
+          ClkOut = 0,
+          Error  = 0;
+        }
+      }
+
+      // Stop
+      if(Stop){
+        if( ClkOut &  DataOut) ClkOut  = 0;
+        if(!ClkOut &  DataOut) DataOut = 0;
+        if(!ClkOut & !DataOut) ClkOut  = 1;
+        if( ClkOut & !DataOut) DataOut = 1;
+      }
+    }
+  }
+}
+//------------------------------------------------------------------------------
+
+!! To be implemented
+
+// AddDebug(Input.SoP);
+// AddDebug(Input.EoP);
+// AddDebug(Input.Valid);
+// AddDebug(result.Ready);
+
+import "../Memory/FullDualPortRAM";
+//------------------------------------------------------------------------------
+
+class FFT(net Clk, net Reset, num NumPoints){
+  assert(2**round(log2(NumPoints)) == NumPoints);
+
+  private{
+    DualPortROM    (Clk, Reset, 36, NumPoints) TwiddleFactors;
+    FullDualPortRAM(Clk, Reset, 80, NumPoints) Buffer;
+
+    !! Other private declarations
+  }
+  //----------------------------------------------------------------------------
+
+  IQ_Stream Run(Input, bool ComplexInput){
+    result = IQ_Stream(31, -1);
+    result.I'overflow = "clip";
+    result.Q'overflow = "clip";
+
+    num BufferFullScale;
+    if(ComplexInput) BufferFullScale = Input.I   'fullscale * NumPoints;
+    else             BufferFullScale = Input.Data'fullscale * NumPoints;
+
+    struct ComplexData{
+      net(39, BufferFullScale) I, Q;
+    }
+    ComplexData Buffer_WrData_A, Buffer_WrData_B;
+    ComplexData Buffer_RdData_A, Buffer_RdData_B;
+
+    Buffer.WrData_A := :(Buffer_WrData_A.I, Buffer_WrData_A.Q);
+    Buffer.WrData_B := :(Buffer_WrData_B.I, Buffer_WrData_B.Q);
+    :(Buffer_RdData_A.I, Buffer_RdData_A.Q) := Buffer.RdData_A;
+    :(Buffer_RdData_B.I, Buffer_RdData_B.Q) := Buffer.RdData_B;
+
+    !! Scale the input data with NumPoints and
+    !! zero-pad as required
+
+    !! Run the engine with each butterfly scaled by 0.5
+    !! i.e. WrData = (Even + Twiddle*Odd) / 2
+
+    !! Stream the output in bit-reversed order
+    !! For real input data, only stream out the first half of the result
+  }
+}
+//------------------------------------------------------------------------------
+
+DataStream operator| (DataStream Input, FFT Engine){
+  AddDebug(Input.SoP);
+  AddDebug(Input.EoP);
+  AddDebug(Input.Valid);
+  AddDebug(result.Ready);
+  return Engine.Run(Input, false);
+}
+//------------------------------------------------------------------------------
+
+IQ_Stream operator| (IQ_Stream Input, FFT Engine){
+  AddDebug(Input.SoP);
+  AddDebug(Input.EoP);
+  AddDebug(Input.Valid);
+  AddDebug(result.Ready);
+  return Engine.Run(Input, true);
+}
+//------------------------------------------------------------------------------
+
+import "../Memory/DualPortRAM";
+//------------------------------------------------------------------------------
+
+class FIFO(net Clk, net Reset, num Length){
+  DataStream Run(Input){
+    num Width = Input.Data'width;
+
+    DualPortRAM(Clk, Reset, Width+2, Length) RAM;
+
+    // Create new stream instance for the output
+    result = DataStream(Width, -1);
+
+    RAM.WrAddress = 0;
+    RAM.WrData   := :(Input.SoP, Input.EoP, Input.Data);
+    RAM.WrEnable  = Input.Valid;
+
+    RAM.RdEnable  = Output.Ready;
+    RAM.RdAddress = 0;
+
+    rtl(Clk, Reset){ // Input
+      if(Input.Valid) RAM.WrAddress++;
+    }
+
+    net Valid = 0; // Takes care of the RAM read latency
+    num(RAM.RdAddress'width) NumItems = RAM.WrAddress - RAM.RdAddress;
+
+    rtl(Clk, Reset, result.Ready){ // Output
+      :(result.SoP, result.EoP, result.Data) := RAM.RdData;
+      result.Valid = Valid;
+
+      if(NumItems != 0){
+        Valid = 1;
+        RAM.RdAddress++;
+      }else{
+        Valid = 0;
+      }
+    }
+  }
+}
+//------------------------------------------------------------------------------
+
+DataStream operator| (Input, FIFO Queue){
+  AddDebug(Input.SoP);
+  AddDebug(Input.EoP);
+  AddDebug(Input.Valid);
+  AddDebug(result.Ready);
+  return Queue.Run(Input);
+}
+//------------------------------------------------------------------------------
+
+import "SinCos";
+//------------------------------------------------------------------------------
+
+class NCO(net Clk, net Reset){
+  input  net(32, -Clk'frequency/2) Frequency;
+  output net(18, -1) Sin, Cos;
+
+  private net(32, -pi) Phase = 0;
+  rtl(Clk, Reset) Phase := :Phase + :Frequency;
+
+  SinCos(Clk, Phase, Sin, Cos);
+}
+//------------------------------------------------------------------------------
+
+void SinCos(
+  net Clk,
+  net(20, -pi) Angle,    // Input
+  net(18, -1 ) Sin, Cos, // Output
+  num N = 20             // Number of iterations
+){
+  num K = product(cos(atan(2**(0 .. (N-1)))));
+  num n;
+  net(21, -2   ) x[N+1], y[N+1];
+  net(21, -2*pi) a[N+1], A[N+1];
+
+  rtl(Clk){
+    switch(Angle[20, 19]){ // Init in the correct quadrant
+      case(0b00){x[0] =  K; y[0] =  0; a[0] =   0  ;}
+      case(0b01){x[0] =  0; y[0] =  K; a[0] =  pi/2;}
+      case(0b10){x[0] = -K; y[0] =  0; a[0] = -pi  ;}
+      case(0b11){x[0] =  0; y[0] = -K; a[0] = -pi/2;}
+    }
+    A[0] = Angle;
+    for(n in 0..(N-1)){ // Iterate N times, pipelined
+      if(A[n] >= a[n]){
+        x[n+1] = x[n] - (y[n] / 2**n);
+        y[n+1] = y[n] + (x[n] / 2**n);
+        a[n+1] = a[n] + atan(2**(-n));
+      }else{
+        x[n+1] = x[n] + (y[n] / 2**n);
+        y[n+1] = y[n] - (x[n] / 2**n);
+        a[n+1] = a[n] - atan(2**(-n));
+      }
+      A[n+1] = A[n];
+    }
+  }
+  group<overflow = "clip">{ // Clip instead of overflow
+    Sin = y[N];
+    Cos = x[N];
+  }
+}
+//------------------------------------------------------------------------------
+
+class DataStream(num Width, num Fullscale = -1){
+  net                   SoP;
+  net                   EoP;
+  net(Width, Fullscale) Data;
+  net                   Valid = 0;
+  net                   Ready = 1;
+}
+//------------------------------------------------------------------------------
+
+class IQ_Stream(num Width, num Fullscale = -1){
+  net                   SoP;
+  net                   EoP;
+  net(Width, Fullscale) I;
+  net(Width, Fullscale) Q;
+  net                   Valid = 0;
+  net                   Ready = 1;
+}
+//------------------------------------------------------------------------------
+
+!! To be implemented
+
+// AddDebug(Input.SoP);
+// AddDebug(Input.EoP);
+// AddDebug(Input.Valid);
+// AddDebug(result.Ready);
+
+import "../Memory/DualPortROM";
+//------------------------------------------------------------------------------
+
+class Window(net Clk, net Reset, num Length, string Function){
+  DualPortROM(Clk, Reset, 18, Length) ROM;
+
+  private{
+    num n[Length] = 0..(Length-1);
+
+    switch(Function){
+      case("Hann"){
+        ROM.Initial = (sin(pi*n/Length))**2;
+      }
+      case("Hamming"){
+        num a = 25/46;
+        ROM.Initial = a - (1-a)*cos(2*pi*n/Length);
+      }
+      !! Other windows
+      default{ // Rectangular
+        ROM.Initial = 1;
+      }
+    }
+    //--------------------------------------------------------------------------
+
+    num Sum = 0;
+    for(c in ROM.Initial) Sum += c;
+    ROM.Initial /= Sum;
+
+    num Max = 1e-24;
+    for(c in ROM.Initial){ if(Max < c) Max = c; }
+
+    num Fullscale = 1;
+    while(Fullscale > Max) Fullscale /= 2;
+    while(Fullscale < Max) Fullscale *= 2;
+
+    ROM.Initial = round(ROM.Initial * ((1p18-1) / Fullscale));
+    net(Width, Fullscale) Coefficient := ROM.Data_A;
+  }
+  //----------------------------------------------------------------------------
+
+  auto Run(Input, bool Complex){
+    net WaitForROM = 1;
+    net Ready      = !WaitForROM;
+
+    if(Complex) result = IQ_Stream (Input.Width + 18, -Fullscale);
+    else        result = DataStream(Input.Width + 18, -Fullscale);
+
+    Input.Ready     =  result.Ready & Ready;
+    ROM.ClkEnable_A = (result.Ready & Input.Valid) | WaitForROM;
+
+    rtl(Clk, Reset, result.Ready){
+      if(Ready){
+        result.SoP   = Input.SoP;
+        result.EoP   = Input.EoP;
+        result.Valid = Input.Valid;
+        if(Complex){
+          result.I    = Input.I    * Coefficient;
+          result.Q    = Input.Q    * Coefficient;
+        }else{
+          result.Data = Input.Data * Coefficient;
+        }
+      }
+      if(WaitForROM){
+        ROM.Address_A++;
+        WaitForROM = 0;
+      }else{
+        if(Input.Valid){
+          if(Input.EoP){
+            ROM.Address_A = 0;
+            WaitForROM    = 1;
+          }else{
+            ROM.Address_A++;
+          }
+        }
+      }
+    }
+  }
+}
+//------------------------------------------------------------------------------
+
+DataStream operator| (DataStream Input, Window Instance){
+  AddDebug(Input.SoP);
+  AddDebug(Input.EoP);
+  AddDebug(Input.Valid);
+  AddDebug(result.Ready);
+  return Instance.Run(Input, false);
+}
+//------------------------------------------------------------------------------
+
+IQ_Stream operator| (IQ_Stream Input, Window Instance){
+  AddDebug(Input.SoP);
+  AddDebug(Input.EoP);
+  AddDebug(Input.Valid);
+  AddDebug(result.Ready);
+  return Instance.Run(Input, true);
+}
+//------------------------------------------------------------------------------
+
+class AvalonInterface(num Width, num Depth, num MaxBurstCount = 1){
+  num AddressWidth    = ceil(log2(Depth));
+  num NumBytes        = ceil(Width/8);
+  num BurstCountWidth = ceil(log2(MaxBurstCount + 1));
+
+  net(AddressWidth)    Address;
+  net(NumBytes)        ByteEnable  = 2**NumBytes - 1;
+  net(BurstCountWidth) BurstCount  = 1;
+  net                  WaitRequest = 1;
+
+  net(Width)           WriteData;
+  net                  Write = 0;
+
+  net                  Read = 0;
+  net(Width)           ReadData;
+  net                  ReadValid = 0;
+}
+//------------------------------------------------------------------------------
+
+import "Library/Interfaces/AvalonInterface";
+//------------------------------------------------------------------------------
+
+class AvalonMaster(net Clock, net Reset, num Width, num Depth): AvalonInterface(Width, Depth){
+  'BaseAddress = 0;
+  //----------------------------------------------------------------------------
+
+  private{
+    num Used                  = 0;
+    net ReadingWaitRequest    = 0;
+    net InterfacesWaitRequest = 0;
+  }
+  //----------------------------------------------------------------------------
+
+  ReadData    = 0;
+  WaitRequest = ReadingWaitRequest | InterfacesWaitRequest;
+  //----------------------------------------------------------------------------
+
+  void Attach(AvalonInterface Interface){
+    assert(Interface.Width == Width);
+    assert(Interface.Depth <  Depth - Used);
+
+    Interface.Address      = Address - Used;
+    Interface.ByteEnable   = ByteEnable;
+    InterfacesWaitRequest |= Interface.WaitRequest;
+
+    net AddressValid = (Address >= Used)
+                     & (Address < (Used + Interface.Depth));
+
+    Interface.WriteData = WriteData;
+    Interface.Write     = AddressValid & Write & !WaitRequest;
+
+    Interface.Read = AddressValid & Read & !WaitRequest;
+    ReadData      |= Interface.ReadValid ? Interface.ReadData : 0;
+    ReadValid     |= Interface.ReadValid;
+
+    Interface'BaseAddress = 'BaseAddress + Used*(Width/8);
+    Used += Interface.Depth;
+  }
+  //--------------------------------------------------------------------------
+
+  rtl(Clock, Reset){
+    if     (Read & !WaitRequest) ReadingWaitRequest = 1;
+    else if(ReadValid)           ReadingWaitRequest = 0;
+  }
+}
+//------------------------------------------------------------------------------
+
+import "Library/Interfaces/AvalonInterface";
+//------------------------------------------------------------------------------
+
+class AvalonSlave(net Clock, net Reset, num Width, num Depth, num MaxBurstCount = 1):
+      AvalonInterface(Width, Depth, MaxBurstCount){
+
+  void Attach(Master){
+    !! Add the master to the list of masters
+  }
+
+  void finally(){
+    !! Finalise the arbitration circuit
+
+    // Arbitration is performed based on the Read and Write strobes, as well
+    // as the burst count.  The other modules' WaitRequest line is pulled high
+    // when there is another master busy on the bus.
+  }
+}
+//------------------------------------------------------------------------------
+
+class RegistersDecoder(Bus): AvalonInterface(32, 0x1000){
+  Bus.Attach(this);
+  //----------------------------------------------------------------------------
+
+  private{
+    'RdRegisters   = [];
+    'WrRegisters   = [];
+    'LiveRegisters = [];
+    num Count = 0;
+  }
+  //----------------------------------------------------------------------------
+
+  public{
+    // Register direction as seen by the controller
+    void ReadOnly(Register){
+      Register'Address = Count++;
+      'RdRegisters.append(Register);
+    }
+    void Writeable(Register){
+      Register'Address = Count++;
+      'WrRegisters.append(Register);
+    }
+    void Live(RdRegister, WrRegister, WrStrobe){
+      RdRegister'Address = Count;
+      WrRegister'Address = Count;
+      WrStrobe  'Address = Count;
+      'LiveRegisters.append(< Read   = RdRegister,
+                              Write  = WrRegister,
+                              Strobe = WrStrobe >);
+      Count++;
+    }
+    //--------------------------------------------------------------------------
+
+    net(32) Resize(x){
+      result := x; // Raw-assign the bits
+      num N = x'width;
+      if((x'fullscale < 0) & (N < 31)) // Sign-extend
+        result(31..(N+1)) := (x(N))`(31-N);
+    }
+    //--------------------------------------------------------------------------
+
+    void GenerateRegs(){
+      rtl(Bus.Clock, Bus.Reset){
+        WaitRequest = 0;
+
+        switch(Address){
+          for(Register in 'RdRegisters){
+            case(Register'Address) ReadData = Resize(Register);
+          }
+          for(Register in 'WrRegisters){
+            case(Register'Address) ReadData = Resize(Register);
+          }
+          for(Register in 'LiveRegisters){
+            case(Register'Read'Address) ReadData = Resize(Register'Read);
+          }
+        }
+        ReadValid = Read;
+
+        if(Write){
+          switch(Address){
+            for(Register in 'WrRegisters){
+              case(Register'Address) Register := WriteData;
+            }
+            for(Register in 'LiveRegisters){
+              case(Register'Write'Address) Register'Write := WriteData;
+            }
+          }
+          for(Register in 'LiveRegisters){
+            Register'Strobe = ((Address == Register'Strobe'Address) & Write);
+          }
+        }
+      }
+    }
+    //--------------------------------------------------------------------------
+
+    void GenerateCpp(string Filename){
+      !! Generate the C++ source and header files
+      !! Base the structure on the Register'identifier attribute, which is the
+      !! full name of the object (including the full name-space path)
+    }
+    //--------------------------------------------------------------------------
+
+    void GenerateLaTeX(string Filename){
+      !! Generate the LaTeX documentation files
+    }
+    //--------------------------------------------------------------------------
+
+    string CppFilename   = "";
+    string LaTeXFilename = "";
+
+    void finally(){
+      GenerateRegs();
+      if(CppFilename  'length) GenerateCpp  (CppFilename  );
+      if(LaTeXFilename'langth) GenerateLaTeX(LaTeXFilename);
+    }
+  }
+}
+//------------------------------------------------------------------------------
+
+class DualPortRAM(net Clk, net Reset, num Width, num Depth){
+  private{
+    string RamBlockType;
+    switch('target_series){
+      case("MAX 10"   ) RamBlockType = "M9K";
+      case("Cyclone V") RamBlockType = "M10K";
+      case("Arria 10" ) RamBlockType = "M20K";
+      default           assert(false);
+    }
+    num AddressWidth = ceil(log2(Depth));
+
+    hdl() altsyncram (
+      address_aclr_b                     = "NONE";
+      address_reg_b                      = "CLOCK1";
+      clock_enable_input_a               = "NORMAL",
+      clock_enable_input_b               = "NORMAL";
+      clock_enable_output_a              = "BYPASS";
+      clock_enable_output_b              = "BYPASS";
+      indata_reg_b                       = "CLOCK1";
+      intended_device_family             = 'target_series;
+      lpm_type                           = "altsyncram";
+      maximum_depth                      = 1024;
+      numwords_a                         = Depth;
+      numwords_b                         = Depth;
+      operation_mode                     = "DUAL_PORT";
+      outdata_aclr_b                     = "NONE";
+      outdata_reg_b                      = "UNREGISTERED";
+      power_up_uninitialized             = "FALSE";
+      ram_block_type                     = RamBlockType;
+      read_during_write_mode_mixed_ports = "DONT_CARE";
+      widthad_a                          = AddressWidth;
+      widthad_b                          = AddressWidth;
+      width_a                            = Width;
+      width_b                            = Width;
+      width_byteena_a                    = 1;
+      width_byteena_b                    = 1;
+    ){
+      net               clock0   = Clk;
+      net               clocken0 = 1;
+      net(AddressWidth) address_a;
+      net(Width       ) data_a;
+      net               wren_a;
+
+      net               clock1   = Clk;
+      net               clocken1;
+      net(AddressWidth) address_b;
+      net(Width       ) q_b;
+    };
+    altsyncram() RAM;
+  }
+  //----------------------------------------------------------------------------
+
+  public{
+    input  net(AddressWidth) WrAddress;
+    input  net(Width       ) WrData;
+    input  net               WrEnable;
+
+    input  net(AddressWidth) RdAddress;
+    input  net               RdEnable = 1;
+    output net(Width       ) RdData;
+
+    RAM.address_a = WrAddress;
+    RAM.data_a    = WrData;
+    RAM.wren_a    = WrEnable;
+
+    RAM.clocken1  = RdEnable;
+    RAM.address_b = RdAddress;
+    RdData        = RAM.q_b;
+  }
+}
+//------------------------------------------------------------------------------
+
+class DualPortROM(net Clk, net Reset, num Width, num Depth){
+  public num Initial[Depth];
+  //----------------------------------------------------------------------------
+
+  private{
+    string RamBlockType;
+    switch('target_series){
+      case("MAX 10"   ) RamBlockType = "M9K";
+      case("Cyclone V") RamBlockType = "M10K";
+      case("Arria 10" ) RamBlockType = "M20K";
+      default           assert(false);
+    }
+    num AddressWidth = ceil(log2(Depth));
+
+    // Generate filename using attributes to get the instance name of the class
+    MIF_File = :[this'identifier, ".mif"];
+
+    hdl() altsyncram (
+      address_aclr_b                     = "NONE";
+      address_reg_b                      = "CLOCK1";
+      clock_enable_input_a               = "NORMAL";
+      clock_enable_input_b               = "NORMAL";
+      clock_enable_output_a              = "BYPASS";
+      clock_enable_output_b              = "BYPASS";
+      indata_reg_b                       = "CLOCK1";
+      init_file                          = MIF_File;
+      intended_device_family             = 'target_series;
+      lpm_type                           = "altsyncram";
+      maximum_depth                      = 1024;
+      numwords_a                         = Depth;
+      numwords_b                         = Depth;
+      operation_mode                     = "BIDIR_DUAL_PORT";
+      outdata_aclr_a                     = "NONE";
+      outdata_aclr_b                     = "NONE";
+      outdata_reg_a                      = "UNREGISTERED";
+      outdata_reg_b                      = "UNREGISTERED";
+      power_up_uninitialized             = "FALSE";
+      ram_block_type                     = RamBlockType;
+      read_during_write_mode_mixed_ports = "DONT_CARE";
+      widthad_a                          = AddressWidth;
+      widthad_b                          = AddressWidth;
+      width_a                            = Width;
+      width_b                            = Width;
+      width_byteena_a                    = 1;
+      width_byteena_b                    = 1;
+      wrcontrol_wraddress_reg_b          = "CLOCK1";
+    ){
+      net               clock0 = Clk;
+      net               clocken0;
+      net(AddressWidth) address_a;
+      net(Width       ) q_a;
+
+      net               clock1 = Clk;
+      net               clocken1;
+      net(AddressWidth) address_b;
+      net(Width       ) q_b;
+    };
+    altsyncram() ROM;
+  }
+  //----------------------------------------------------------------------------
+
+  public{
+    input  net               ClkEnable_A = 1;
+    input  net(AddressWidth) Address_A   = 0;
+    output net(Width)        Data_A;
+
+    input  net               ClkEnable_B = 1;
+    input  net(AddressWidth) Address_B   = 0;
+    output net(Width)        Data_B;
+
+    ROM.clocken0  = ClkEnable_A;
+    ROM.address_a = Address_A;
+    Data_A       := ROM.q_a;
+
+    ROM.clocken1  = ClkEnable_B;
+    ROM.address_b = Address_B;
+    Data_B       := ROM.q_b;
+  }
+
+  void finally(){
+    char Buffer[] = :[
+      "-- Autogenerated by DualPortROM.alc\n",
+      "\n",
+      "WIDTH=", $(Width), ";\n",
+      "DEPTH=", $(Depth), ";\n",
+      "\n",
+      "ADDRESS_RADIX=HEX;\n",
+      "DATA_RADIX=HEX;\n",
+      "\n",
+      "CONTENT BEGIN\n"
+    ];
+
+    num n = 0;
+    for(Value in Initial){
+      Buffer.append(:["  ", $(n, "04X"), ": ", $(Value, "08X"), ";\n"]);
+      n++;
+    }
+    Buffer.append("END;\n");
+
+    textwrite(MIF_File, Buffer);
+  }
+}
+//------------------------------------------------------------------------------
+
+class DualPortRAM(net Clk, net Reset, num Width, num Depth){
+  private{
+    string RamBlockType;
+    switch('target_series){
+      case("MAX 10"   ) RamBlockType = "M9K";
+      case("Cyclone V") RamBlockType = "M10K";
+      case("Arria 10" ) RamBlockType = "M20K";
+      default           assert(false);
+    }
+    num AddressWidth = ceil(log2(Depth));
+
+    hdl() altsyncram (
+      address_aclr_b                     = "NONE";
+      address_reg_b                      = "CLOCK1";
+      clock_enable_input_a               = "NORMAL",
+      clock_enable_input_b               = "NORMAL";
+      clock_enable_output_a              = "BYPASS";
+      clock_enable_output_b              = "BYPASS";
+      indata_reg_b                       = "CLOCK1";
+      intended_device_family             = 'target_series;
+      lpm_type                           = "altsyncram";
+      maximum_depth                      = 1024;
+      numwords_a                         = Depth;
+      numwords_b                         = Depth;
+      operation_mode                     = "BIDIR_DUAL_PORT";
+      outdata_aclr_a                     = "NONE";
+      outdata_aclr_b                     = "NONE";
+      outdata_reg_a                      = "UNREGISTERED";
+      outdata_reg_b                      = "UNREGISTERED";
+      power_up_uninitialized             = "FALSE";
+      ram_block_type                     = RamBlockType;
+      read_during_write_mode_mixed_ports = "DONT_CARE";
+      read_during_write_mode_port_a      = "NEW_DATA_NO_NBE_READ",
+      read_during_write_mode_port_b      = "NEW_DATA_NO_NBE_READ",
+      widthad_a                          = AddressWidth;
+      widthad_b                          = AddressWidth;
+      width_a                            = Width;
+      width_b                            = Width;
+      width_byteena_a                    = 1;
+      width_byteena_b                    = 1;
+      wrcontrol_wraddress_reg_b          = "CLOCK1";
+    ){
+      net               clock0 = Clk;
+      net               clocken0;
+      net(AddressWidth) address_a;
+      net(Width       ) data_a;
+      net               wren_a;
+      net(Width       ) q_a;
+
+      net               clock1 = Clk;
+      net               clocken1;
+      net(AddressWidth) address_b;
+      net(Width       ) data_b;
+      net               wren_b;
+      net(Width       ) q_b;
+    };
+    altsyncram() RAM;
+  }
+  //----------------------------------------------------------------------------
+
+  public{
+    input  net               ClkEnable_A;
+    input  net(AddressWidth) Address_A;
+    input  net(Width       ) WrData_A;
+    input  net               WrEnable_A;
+    output net(Width       ) RdData_A;
+
+    input  net               ClkEnable_B;
+    input  net(AddressWidth) Address_B;
+    input  net(Width       ) WrData_B;
+    input  net               WrEnable_B;
+    output net(Width       ) RdData_B;
+
+    RAM.clocken0  = ClkEnable_A;
+    RAM.address_a = Address_A;
+    RAM.data_a    = WrData_A;
+    RAM.wren_a    = WrEnable_A;
+    RdData_A      = RAM.q_a;
+
+    RAM.clocken1  = ClkEnable_B;
+    RAM.address_b = Address_B;
+    RAM.data_b    = WrData_B;
+    RAM.wren_b    = WrEnable_B;
+    RdData_B      = RAM.q_b;
+  }
+}
+//------------------------------------------------------------------------------
+
+class FirmwareVersion(num Major, num Minor){
+  private num HexToNum(string S){
+    result = 0;
+    for(s in S){
+      if     (s >= "0" & s <= "9") result = (0x10*result) | ((s - "0")     );
+      else if(s >= "a" & s <= "f") result = (0x10*result) | ((s - "a") + 10);
+      else if(s >= "A" & s <= "F") result = (0x10*result) | ((s - "A") + 10);
+      // Simply ignore invalid characters
+    }
+  }
+
+  output{
+    net(32) Version = (Major << 16) | Minor;
+    // net(32) Date    = HexToNum(__DATE__);
+    // net(28) Time    = HexToNum(__TIME__);
+    net(32) Date    = HexToNum("2024-12-29");
+    net(28) Time    = HexToNum("16:58:22");
+    net(32) GitHash = HexToNum(shell("git rev-parse --short=8 HEAD"));
+  }
+}
+//------------------------------------------------------------------------------
+
+class MutEx(net Clk, net Reset){
+  'Modules = [];
+  //----------------------------------------------------------------------------
+
+  void Add(Module){
+    'Modules.append(Module);
+  }
+  //----------------------------------------------------------------------------
+
+  void finally(){
+    num N = 'Modules'length;
+    assert(N > 0);
+
+    net(N) Request;
+    net(N) Grant  = 0;
+    net(N) Device = 1;
+
+    rtl(Clk, Reset){
+      if(Request & Device){
+        Grant  = Device;
+      }else{
+        Grant  = 0;
+        Device = :(Device[N-2..0], Device[N-1]);
+      }
+    }
+
+    // Cannot assign directly, because one is an array of objects
+    // and the other a vector of bits
+    for(n in 0..(N-1)){
+      Request[n] = 'Modules[n].MutEx.Request;
+      'Modules[n].MutEx.Grant = Grant[n];
+    }
+  }
+}
+//------------------------------------------------------------------------------
+
+class ADS7056(net Clk, net Reset){
+  // Maximum SPI clock is 60 MHz, and gives a 2.5 MSps sampling rate
+  assert(Clk'frequency <= 120e6);
+  //----------------------------------------------------------------------------
+
+  private{
+    net nCS  = 1;
+    net SClk = 0;
+    net Data;
+
+    net(14) Shift;
+    net( 6) Count = 0;
+  }
+  //----------------------------------------------------------------------------
+
+  output group Output{
+    net(14) Data;
+    net     Valid = 0;
+  }
+  //----------------------------------------------------------------------------
+
+  void ConnectPins(pin nCS, pin SClk, pin SDO){
+    nCS  = this.nCS;
+    SClk = this.SClk;
+    Data = SDO;
+
+    SClk'create_generated_clock = <divide_by = 2, source = Clk>;
+
+    // The state machine takes care of the actual sample and hold timing, so
+    // this just needs to make sure it's not ridiculously out of place.  The
+    // constraints below ensures that the signals change within a 5 μs window,
+    // 3 ns after the clock edge.
+    nCS'set_output_delay'max +=  0e-9; // Setup
+    nCS'set_output_delay'min += -3e-9; // Hold
+
+    // The actual IC delay is 2.5 to 10 ns, but the state machine ensures that
+    // the data is sampled just before making SClk high.
+    SDO'set_input_delay'min +=  2.5e-9;
+    SDO'set_input_delay'max += 10.0e-9;
+
+    SDO'set_multicycle_path'to    = Clk;
+    SDO'set_multicycle_path'setup = 2;
+    SDO'set_multicycle_path'hold  = 1;
+  }
+  //----------------------------------------------------------------------------
+
+  rtl(Clk, Reset){
+    if(Count == 47) Count = 0;
+    else            Count++;
+
+    switch(Count){
+      case(0    ) nCS  = 0;
+      case(1..36) SClk = ~SClk;
+      case(37   ) nCS  = 1;
+      default     SClk = 0; // Reset in case something went wrong
+    }
+
+    if(SClk == 0) Shift = :(Shift[12..0], Data);
+
+    if(Count == 32){
+      Output.Data  = Shift;
+      Output.Valid = 1;
+    }else{
+      Output.Valid = 0;
+    }
+  }
+}
+//------------------------------------------------------------------------------
+
+import "Library/Comms/I2C/I2C";
+//------------------------------------------------------------------------------
+
+class LTC2991(net Clk, net Reset, net(3) Address, num Baud_kHz = 50):
+      I2C(Clk, Reset, Baud_kHz){
+  input net( 5) Enable  = 0b11111; // Register  01
+  input net(32) Control = 0;       // Registers 09..06
+
+  enum TYPE{ Voltage, Differential, Temperature }
+  void SetType(num Channel, TYPE Type){
+    assert(Channel >= 0 & Channel < 4);
+
+    switch(Type){
+      case(Voltage     ) Control[(4*Channel+3)..(4*Channel)] = 0;
+      case(Differential) Control[(4*Channel+3)..(4*Channel)] = 1;
+      case(Temperature ) Control[(4*Channel+3)..(4*Channel)] = 2;
+    }
+  }
+
+  output net(-15) Vcc;
+  output net(-15) V[8];
+  output net(-15) InternalTemp;
+
+  group MutEx{
+    output net Request;
+    input  net Grant = Request; // Default behaviour without a MutEx lock
+  }
+
+  void MakeRegisters(Registers){
+    Registers.ReadOnly(Error);
+    // Enable and Control registers are generally hard-coded
+
+    Registers.ReadOnly(Vcc);
+    for(n in 0..7) Registers.ReadOnly(V[n]);
+    Registers.ReadOnly(InternalTemp);
+  }
+
+  fsm(Clk, Reset){
+    !! Implement using the Transaction function in I2C base class
+  }
+}
+//------------------------------------------------------------------------------
+class AD9915(net Clk, net Reset, num Baud_kHz = 1000){
+  public{ // Registers
+    input  net(32) ipFreqLowerLimit = 0;
+    input  net(32) ipFreqUpperLimit = 0;
+    input  net(32) ipStepUp         = 0;
+    input  net(32) ipStepDown       = 0;
+    input  net(16) ipSlopeUp        = 1;
+    input  net(16) ipSlopeDown      = 1;
+
+    // Control interface
+    input  net     ipUpdate  = 0;
+    output net     opBusy    = 1;
+    input  net     ipTrigger = 0;
+  }
+  //----------------------------------------------------------------------------
+
+  private{ // Change detection copies
+    net(32) FreqLowerLimit = ~ipFreqLowerLimit;
+    net(32) FreqUpperLimit = ~ipFreqUpperLimit;
+    net(32) StepUp         = ~ipStepUp;
+    net(32) StepDown       = ~ipStepDown;
+    net(16) SlopeUp        = ~ipSlopeUp;
+    net(16) SlopeDown      = ~ipSlopeDown;
+  }
+  //----------------------------------------------------------------------------
+
+  private{ // Local nets of the device pins
+    net opSClk       = 0;
+    net opnCS        = 0;
+    net opSDIO       = 0;
+    net opSyncIO     = 0;
+    net opIO_Update  = 0;
+
+    net opDR_Control = 0;
+    net opDR_Hold    = 0;
+    net ipDR_Over    = 1;
+  }
+
+  void ConnectSPI(pin SClk, pin nCS, pin SDIO, pin SyncIO, pin IO_Update){
+    SClk      = opSClk;
+    nCS       = opnCS;
+    SDIO      = opSDIO;
+    SyncIO    = opSyncIO;
+    IO_Update = opIO_Update;
+
+    !! Assign the device-specific timing parameters
+  }
+
+  void ConnectDR(pin Control, pin Hold, pin Over){
+    Control   = opDR_Control;
+    Hold      = opDR_Hold;
+    ipDR_Over = Over;
+
+    !! Assign the device-specific timing parameters
+  }
+  //----------------------------------------------------------------------------
+
+  private net RegsChanged;
+
+  private void Send_SPI(net(8) Address, net(32) Value){
+    net(40) Data;
+    opSDIO = Data[39];
+
+    fsm{
+      RegsChanged = true,
+      Data        = :(Address, Value),
+      opSyncIO    = 1;
+      opSyncIO    = 0;
+
+      loop(40){
+        opSClk = 1;
+        opSClk = 0, Data <<= 1;
+      }
+    }
+  }
+  //----------------------------------------------------------------------------
+
+  private void Init(){
+    fsm{
+      Send_SPI(0x00, 0x0001_000A); // Soft reset
+      Send_SPI(0x01, 0x0008_2900); // Enable DRG Over output and digital ramp
+
+      Send_SPI(0x03, 0x0105_2120); // DAC Calibrate
+      opIO_Update = 1;
+      opIO_Update = 0, loop(1p15);
+
+      Send_SPI(0x03, 0x0005_2120); // Clear DAC Calibrate
+    }
+  }
+  //----------------------------------------------------------------------------
+
+  private void UpdateRegisters(){
+    fsm{
+      if(ipFreqLowerLimit != FreqLowerLimit){
+        FreqLowerLimit = ipFreqLowerLimit,
+        Send_SPI(0x04, ipFreqLowerLimit);
+      }else;
+
+      if(ipFreqUpperLimit != FreqUpperLimit){
+        FreqUpperLimit = ipFreqUpperLimit,
+        Send_SPI(0x05, ipFreqUpperLimit);
+      }else;
+
+      if(ipStepUp != StepUp){
+        StepUp = ipStepUp,
+        Send_SPI(0x06, ipStepUp);
+      }else;
+
+      if(ipStepDown != StepDown){
+        StepDown = ipStepDown,
+        Send_SPI(0x07, ipStepDown);
+      }else;
+
+      if((ipSlopeUp != SlopeUp) | (ipSlopeDown != SlopeDown)){
+        SlopeUp   = ipSlopeUp,
+        SlopeDown = ipSlopeDown,
+        Send_SPI(0x08, :(ipSlopeDown, ipSlopeUp));
+      }else;
+
+      if(RegsChanged){
+        opIO_Update = 1;
+        opIO_Update = 0,
+        RegsChanged = false;
+      }else;
+    }
+  }
+  //----------------------------------------------------------------------------
+
+  fsm(Clk, Reset){
+    Init();
+    UpdateRegisters();
+
+    loop{
+      if(opBusy){
+        while(ipUpdate);
+        opBusy = 0;
+      }
+      while(~ipUpdate);
+
+      opBusy = 1,
+      UpdateRegisters();
+    }
+  }
+  //----------------------------------------------------------------------------
+
+  rtl(Clk, Reset){
+    Trigger = :(Trigger[0], ipTrigger);
+    DR_Over = :(DR_Over[0], ipDR_Over);
+    //------------------------------------------------------------------------
+
+    if(DR_Over == 0b01){
+      if(Trigger[0]) opDR_Control = ~opDR_Control; // Continuous operation
+      else           opDR_Control = 0;             // Return to idle
+
+    }else if((DR_Over[0] == 1) & (Trigger == 0b01)){
+      opDR_Control = ~opDR_Control // Prevent dead-lock
+                   & ~opBusy;      // Ignore trigger when reg update busy
+    }
+  }
+}
+//------------------------------------------------------------------------------
+
+class ADF4159(net Clk, net Reset, num Baud_kHz = 1000){
+  public{ // Registers
+    // Tuning parameters
+    net(  4) CP_CurrentSetting = 7;
+
+    // Output frequency select
+    net( 12) Integer           = 0;
+    net( 25) Fraction          = 0;
+    net      RampOn            = 0;
+
+    // Ramp up control
+    net(-15) DeviationWord_0   = 0;
+    net(  4) DeviationOffset_0 = 0;
+    net( 20) StepWord_0        = 0;
+
+    // Ramp down control
+    net(-15) DeviationWord_1   = 0;
+    net(  4) DeviationOffset_1 = 0;
+    net( 20) StepWord_1        = 0;
+
+    // Other
+    net      UseRefMul2        = 0;
+    net(  5) RefCounter        = 1;
+    net      UseRefDiv2        = 1;
+
+    net( 12) Clk1Divider       = 1;
+    net( 12) Clk2Divider_0     = 2;
+    net( 12) Clk2Divider_1     = 2;
+
+    // Control interface
+    input  net     Update;
+    output net     Busy = 1;
+    input  net     Trigger;
+
+    // Constants we generally don't want to change...
+    input  net(  4) MuxOutControl      = 0xF;
+    input  net      PhaseAdjust        = 0;
+    input  net( 12) PhaseValue         = 0;
+    input  net      CSR_Enable         = 0;
+    input  net      Prescaler          = 0;
+    input  net(  3) NegBleedCurrent    = 4;
+    input  net      NegBleedEnable     = 0;
+    input  net      LossOfLock         = 0;
+    input  net      NSel               = 0;
+    input  net      SD_Reset           = 0;
+    input  net(  2) RampMode           = 3;
+    input  net      PSK                = 0;
+    input  net      FSK                = 0;
+    input  net      LDP                = 1;
+    input  net      PDPolarity         = 0;
+    input  net      PowerDown          = 0;
+    input  net      CP_ThreeState      = 0;
+    input  net      CounterReset       = 0;
+    input  net      LE_Select          = 0;
+    input  net(  5) SD_ModulatorMode   = 0;
+    input  net(  5) RampStatus         = 3;
+    input  net(  2) ClkDivMode         = 3;
+    input  net      TxDataInvert       = 0;
+    input  net      TxDataRampClk      = 0;
+    input  net      ParabolicRamp      = 0;
+    input  net(  2) Interrupt          = 0;
+    input  net      FSK_Ramp           = 0;
+    input  net      DualRamp           = 0;
+    input  net      TxDataTriggerDelay = 0;
+    input  net      TriDelay           = 0;
+    input  net      SingleFullTriangle = 1;
+    input  net      TxDataTrigger      = 1;
+    input  net      FastRamp           = 1;
+    input  net      RampDelayFastLock  = 0;
+    input  net      RampDelay          = 0;
+    input  net      DelClkSel          = 0;
+    input  net      DelStartEn         = 0;
+    input  net( 12) DelayStartWord     = 0;
+  }
+  //----------------------------------------------------------------------------
+
+  private{ // Local nets of the device pins
+    net SPI_Clk = 0;
+    net SPI_Data;
+    net SPI_LE  = 1;
+  }
+
+  void ConnectPins(pin SClk, pin Data, pin LE, pin TxData){
+    SClk   = SPI_Clk;
+    Data   = SPI_Data;
+    LE     = SPI_LE;
+    TxData = Trigger & RampOn;
+
+    !! Assign the device-specific timing parameters
+  }
+  //----------------------------------------------------------------------------
+
+  private{ // Convenience variables
+    num  RefFreq         = 0;
+    num  PfdFreq         = 0;
+    num  StartFreq       = 10e9;
+    bool FeedbackVcoDiv2 = true;
+
+    bool UseRefMul2 = false;
+    bool UseRefDiv2 = false;
+  }
+  //----------------------------------------------------------------------------
+
+  void SetStart(num StartFreq){
+    assert(RefFreq > 0); // Check that SetRefFreq() was called first
+    this.StartFreq = StartFreq;
+
+    num Frequency = FeedbackVcoDiv2
+                  ? round(0x1p24 * StartFreq / PfdFreq)
+                  : round(0x1p25 * StartFreq / PfdFreq);
+
+    Integer  = Frequency >> 25;
+    Fraction = Frequency & 0x01FFFFFF;
+  }
+  //----------------------------------------------------------------------------
+
+  private void SetRamp(bool Up, num Bandwidth, num Time){
+    assert(RefFreq > 0); // Check that SetRefFreq() was called first
+
+        Clk1Divider     = 1;
+    num Clk2Divider     = 2;
+    num StepWord        = 0;
+    num DeviationOffset = 0;
+    num DeviationWord   = 0;
+
+    Clk2Divider = PfdFreq / ((1p20 - 1) / Time);
+    if(Clk2Divider < 2) Clk2Divider = 2;
+    assert(Clk2Divider < 1p12);
+
+    StepWord = round((PfdFreq / Clk2Divider) * Time);
+    assert(StepWord < 1p20);
+
+    DeviationOffset = 0;
+    DeviationWord   = round((Bandwidth / StepWord) /
+                            (PfdFreq   / 1p25    ) /
+                            (2**DeviationOffset  ));
+
+    while(abs(DeviationWord) >= 1p15){
+      DeviationOffset++;
+      DeviationWord /= 2;
+    }
+    assert(DeviationOffset < 1p4);
+
+    if(Up){
+      Clk2Divider_0     = Clk2Divider;
+      StepWord_0        = StepWord;
+      DeviationOffset_0 = DeviationOffset;
+      DeviationWord_0   = DeviationWord;
+    }else{
+      Clk2Divider_1     = Clk2Divider;
+      StepWord_1        = StepWord;
+      DeviationOffset_1 = DeviationOffset;
+      DeviationWord_1   = DeviationWord;
+    }
+  }
+  void SetRamp(num Bandwidth, num UpTime, num DownTime){
+    SetRamp(true , Bandwidth, UpTime  );
+    SetRamp(false, Bandwidth, DownTime);
+  }
+  //----------------------------------------------------------------------------
+
+  // NOTE: Set this before using SetStart or SetRamp
+  void SetRefFreq(num RefFreq, bool FeedbackVcoDiv2 = true){
+    this.RefFreq         = RefFreq;
+    this.FeedbackVcoDiv2 = FeedbackVcoDiv2;
+
+    UseRefMul2 = false;
+    UseRefDiv2 = false;
+    PfdFreq    = RefFreq;
+
+    if(RefFreq > 110e6){
+      UseRefDiv2 = true;
+      PfdFreq  /= 2;
+    }
+    if(RefFreq < 55e6){
+      UseRefMul2 = true;
+      PfdFreq  *= 2;
+    }
+    num RefDiv = 1;
+    while(RefDiv < 32 & PfdFreq > 110e6){
+      RefDiv++;
+      PfdFreq /= 2;
+    }
+    RefCounter = RefDiv;
+    SetStart(StartFreq);
+  }
+  //----------------------------------------------------------------------------
+
+  private{ // Parameters to device Registers mapping
+    net(32) R0   = :(RampOn,
+                     MuxOutControl,
+                     Integer,
+                     Fraction[24..13],
+                     0@3);
+
+    net(32) R1   = :(0@3,
+                     PhaseAdjust,
+                     Fraction[12..0],
+                     PhaseValue,
+                     1@3);
+
+    net(32) R2   = :(0@3,
+                     CSR_Enable,
+                     CP_CurrentSetting,
+                     0@1,
+                     Prescaler,
+                     UseRefDiv2,
+                     UseRefMul2,
+                     RefCounter,
+                     Clk1Divider,
+                     2@3);
+
+    net(32) R3   = :(0@7,
+                     NegBleedCurrent,
+                     NegBleedEnable,
+                     1@4,
+                     LossOfLock,
+                     NSel,
+                     SD_Reset,
+                     0@2,
+                     RampMode,
+                     PSK,
+                     FSK,
+                     LDP,
+                     PDPolarity,
+                     PowerDown,
+                     CP_ThreeState,
+                     CounterReset,
+                     3@3);
+
+    net(32) R4_0 = :(LE_Select,
+                     SD_ModulatorMode,
+                     RampStatus,
+                     ClkDivMode,
+                     Clk2Divider_0,
+                     0@1,
+                     0@3,
+                     4@3);
+
+    net(32) R4_1 = :(LE_Select,
+                     SD_ModulatorMode,
+                     RampStatus,
+                     ClkDivMode,
+                     Clk2Divider_1,
+                     1@1,
+                     0@3,
+                     4@3);
+
+    net(32) R5_0 = :(0@1,
+                     TxDataInvert,
+                     TxDataRampClk,
+                     ParabolicRamp,
+                     Interrupt,
+                     FSK_Ramp,
+                     DualRamp,
+                     0@1,
+                     DeviationOffset_0,
+                     DeviationWord_0,
+                     5@3);
+
+    net(32) R5_1 = :(0@1,
+                     TxDataInvert,
+                     TxDataRampClk,
+                     ParabolicRamp,
+                     Interrupt,
+                     FSK_Ramp,
+                     DualRamp,
+                     1@1,
+                     DeviationOffset_1,
+                     DeviationWord_1,
+                     5@3);
+
+    net(32) R6_0 = :(0@9,
+                     StepWord_0,
+                     6@3);
+
+    net(32) R6_1 = :(1@9,
+                     StepWord_1,
+                     6@3);
+
+    net(32) R7   = :(0@8,
+                     TxDataTriggerDelay,
+                     TriDelay,
+                     SingleFullTriangle,
+                     TxDataTrigger,
+                     FastRamp,
+                     RampDelayFastLock,
+                     RampDelay,
+                     DelClkSel,
+                     DelStartEn,
+                     DelayStartWord,
+                     7@3);
+  }
+  //----------------------------------------------------------------------------
+
+  private{ // Baud Counter
+    num Baud_Cycles = round(Clk'frequency / (Baud_kHz*2));
+    num Baud_N      = ceil(log2(Baud_Cycles));
+    net(Baud_N) Baud_Count;
+
+    rtl(Clk){
+      if(Baud_Count) Baud_Count--;
+      else           Baud_Count = Baud_Cycles-1;
+    }
+    net Baud_Trigger = ~|Baud_Count;
+  }
+  //----------------------------------------------------------------------------
+
+  private void SendSPI(net(32) Register){
+    net(32) Data;
+    SPI_Data = Data[31];
+
+    fsm{
+      Data   = Register,
+      SPI_LE = 0;
+
+      loop(32){
+        SPI_Clk = 1;
+        SPI_Clk = 0, Data <<= 1;
+      }
+
+      SPI_LE = 1;
+    }
+  }
+  //----------------------------------------------------------------------------
+
+  fsm(Clk, Reset, Baud_Trigger){
+    loop{
+      Busy = 0,
+      while(!Update);
+      ;
+
+      Busy = 1,
+      SendSPI(R7);
+      SendSPI(R6_1);
+      SendSPI(R6_0);
+      SendSPI(R5_1);
+      SendSPI(R5_0);
+      SendSPI(R4_1);
+      SendSPI(R4_0);
+      SendSPI(R3);
+      SendSPI(R2);
+      SendSPI(R1);
+      SendSPI(R0);
+
+      while(Update);
+    }
+  }
+}
+//------------------------------------------------------------------------------
+
+'target_vendor = "Altera";
+'target_series = "Cyclone V";
+'target_device = "5CSEMA4U23C6N";
+'target_board  = "DE0-Nano-SoC rev C1";
+
+'standard = "3.3V";
+//------------------------------------------------------------------------------
+
+group<frequency = 50e6>{
+  input pin<location = "V11", clock_group = "ClockGroup1"> Clock1;
+  input pin<location = "Y13", clock_group = "ClockGroup2"> Clock2;
+  input pin<location = "E11", clock_group = "ClockGroup1"> Clock3;
+}
+//------------------------------------------------------------------------------
+
+input  pin(4) <location = [ "H5", "H6", "L9", "L10" ]> Switches;  // Positive
+input  pin(2) <location = [ "AH16", "AH17"          ]> Keys;      // Negative
+output pin(8) <location = [ "AA23", "Y16", "AE26", "AF26",
+                            "V15" , "V16", "AA24", "W15" ]> LEDs; // Positive
+//------------------------------------------------------------------------------
+
+pin(36) <location = [ [ "AE12", "AF11", "AE11", "AD12", "AF10", "AD11",
+                        "AE9" , "AD10", "AE8" , "AF9" , "AF6" , "AE7" ,
+                        "T11" , "T13" , "AE4" , "AF5" , "AG6" , "AF4" ,
+                        "AH2" , "AH3" , "AG5" , "AH4" , "AH6" , "AH5" ,
+                        "T12" , "T8"  , "U11" , "Y5"  , "Y4"  , "W8"  ,
+                        "AB4" , "Y8"  , "AF8" , "W12" , "AF7" , "V12" ],
+                      [ "AC22", "AA18", "AE23", "AD23", "AH18", "AG21",
+                        "AH21", "AH19", "AH22", "AF22", "AD20", "AE24",
+                        "AE20", "AD19", "AF18", "AE19", "AG23", "AH23",
+                        "AF25", "AG24", "AA19", "AH26", "AG18", "AC23",
+                        "AF20", "AG19", "AG20", "AF21", "AE22", "AF23",
+                        "AH24", "AG26", "AH27", "AA15", "AG28", "Y15" ] ]> GPIO[2];
+//------------------------------------------------------------------------------
+
+group Arduino{
+  input pin     <location = "AH7"> nReset;
+        pin(16) <location = [ "AG11", "AH9" , "AH12", "AH11",
+                              "AG16", "AF15", "AE15", "AF17",
+                              "AH8" , "AG8" , "U13" , "U14" ,
+                              "AG9" , "AG10", "AF13", "AG13" ]> IO;
+}
+//------------------------------------------------------------------------------
+
+group ADC{
+  output pin <location = "U9" > ConvStart;
+  output pin <location = "V10"> Clock;
+  output pin <location = "AC4"> DataIn;
+  input  pin <location = "AD4"> DataOut;
+}
+//------------------------------------------------------------------------------
+
+group HPS{
+  group <frequency = 25e6>{
+    input pin <location = "E20"> Clock1;
+    input pin <location = "D20"> Clock2;
+  }
+  //----------------------------------------------------------------------------
+
+  input  pin <location = "J18", hps_gpio = "GPIO54", register_bit = 25> Key;
+  output pin <location = "A20", hps_gpio = "GPIO53", register_bit = 24> LED;
+  //----------------------------------------------------------------------------
+
+  group Ethernet{
+    group Tx{
+      output pin    <location =   "J15"                       > Clock;
+      output pin(4) <location = [ "D17", "A15", "J14", "A16" ]> Data;
+      output pin    <location =   "A12"                       > Enable;
+    }
+    group Rx{
+      input pin    <location =   "J12"                      > Clock;
+      input pin(4) <location = [ "A9", "C15", "A11", "A14" ]> Data;
+      input pin    <location =   "J13"                      > Valid;
+    }
+    output pin <location = "B14"> nReset;
+           pin <location = "E16"> MDIO;
+    output pin <location = "A13"> MDC;
+    input  pin <location = "B14"> nInterrupt;
+  }
+  //----------------------------------------------------------------------------
+
+  group UART{
+    input  pin <location = "A22"> Rx;
+    output pin <location = "B21"> Tx;
+    input  pin <location = "C6" > nConvUSB;
+  }
+  //----------------------------------------------------------------------------
+
+  group<standard = "SSTL-15 Class I"> DDR3{
+    group<output_termination = "SERIES 50 OHM WITH CALIBRATION">{
+      group<input_termination = "PARALLEL 50 OHM WITH CALIBRATION">{
+        pin(32) <location = [ "AA27", "Y27" , "T24", "R24",
+                              "W26" , "AA28", "R25", "R26",
+                              "V27" , "R27" , "N27", "N26",
+                              "U28" , "T28" , "N25", "N24",
+                              "N28" , "M28" , "M26", "M27",
+                              "J28" , "J27" , "L25", "K25",
+                              "F28" , "G27" , "K26", "J26",
+                              "D27" , "E28" , "J24", "J25" ]> Data;
+        pin(4) <location = [ "U19-T20", "T19-T18", "R19-R18", "R17-R16" ],
+                standard = "Differential 1.5-V SSTL Class I"> DataStrobe;
+      }
+      pin( 4) <location = [ "AB28", "W28" , "P28", "G28" ]> DataMask;
+    }
+    group<output_termination = "SERIES 50 OHM WITHOUT CALIBRATION">{
+      pin(15) <location = [ "G23" , "C24" , "D24", "B24",
+                            "A24" , "F25" , "F26", "B26",
+                            "C26" , "J20" , "J21", "D26",
+                            "E26" , "B28" , "C28"        ]> Address;
+      pin( 3) <location = [ "G25" , "H25" , "A27"        ]> Bank;
+
+      pin <location = "N21-N20", standard = "Differential 1.5-V SSTL Class I"> Clock;
+      pin <location = "A26"> nColumnAddressStrobe;
+      pin <location = "L28">  ClockEnable;
+      pin <location = "L21"> nChipSelect;
+      pin <location = "D28">  OnDieTermination;
+      pin <location = "A25"> nRowAddressStrobe;
+      pin <location = "V28"> nReset;
+      pin <location = "E25"> nWriteEnable;
+    }
+    pin <location = "D25"> RZQ;
+  }
+  //----------------------------------------------------------------------------
+
+  group SD{
+    output pin    <location =   "B8"                      > Clock;
+    output pin    <location =   "D14"                     > Command;
+           pin(4) <location = [ "B9", "B11", "B6", "C13" ]> Data;
+  }
+  //----------------------------------------------------------------------------
+
+  group USB{
+    input  pin    <location =   "G4", frequency = 60e6   > ClockOut;
+           pin    <location =   "H12"                    > Reset;
+           pin(8) <location = [ "F4", "C7", "D4", "C8",
+                                "C4", "C9", "F5", "C10" ]> Data;
+    input  pin    <location =   "E5"                     > Direction;
+    input  pin    <location =   "D5"                     > Next;
+    output pin    <location =   "C5"                     > Step;
+  }
+  //----------------------------------------------------------------------------
+
+  group I2C{
+    pin <location = "C18"> Clock;
+    pin <location = "A19"> Data;
+  }
+  //----------------------------------------------------------------------------
+
+  group<i2c_address = [ 0xA6, 0xA7 ], i2c_bus = I2C> G_Sensor{
+    input pin <location = "A17"> Interrupt;
+  }
+  //----------------------------------------------------------------------------
+
+  group LTC{
+    pin <location = "H13"> GPIO;
+    group I2C{
+      pin <location = "B21"> Clock;
+      pin <location = "A21"> Data;
+    }
+    group SPI{
+      output pin <location = "C19"> Clock;
+      input  pin <location = "B19"> MISO;
+      output pin <location = "B16"> MOSI;
+      output pin <location = "C16"> SlaveSelect;
+    }
+  }
+}
+//------------------------------------------------------------------------------
+
+class TriggerDelay(net Clock, net Reset, net Trigger){
+  input  net     Enable = 1;
+  input  net(32) Delay  = 1e-6 * Clock'frequency; // Default to 1 μs
+  input  net(32) Length = 1; // Default to 1 clock cycle
+  output net     Output = 0;
+  //----------------------------------------------------------------------------
+
+  private{
+    net(32) DelayCount  = 0;
+    net(32) LengthCount = 0;
+    net     Trigger_1;
+  }
+  //----------------------------------------------------------------------------
+
+  rtl(Clock, Reset){
+    Trigger_1 = Trigger;
+    if( :(Trigger_1, Trigger) == 0b01) DelayCount = Delay;
+    else if(DelayCount > 0)            DelayCount--;
+
+    if(Output){
+      if(LengthCount == 1) Output = 0;
+      LengthCount--;
+
+    }else if(DelayCount == 1){
+      Output      = Enable;
+      LengthCount = Length;
+    }
+  }
+  AddDebug(Output);
+}
+//------------------------------------------------------------------------------
+
+class TriggerGen(net Clock, net Reset){
+  net(32) Period = 1e-3 * Clock'frequency; // Default to 1 ms
+
+  net     Output = 0;
+  net(32) Count  = 0;
+
+  rtl(Clock, Reset){
+    if(Count >= Period){
+      Count  = 1;
+      Output = 1;
+    }else{
+      Count++;
+      Output = 0;
+    }
+  }
+  AddDebug(Ouptut);
+}
+//------------------------------------------------------------------------------
+
+num DebugCounter = 0;
+void AddDebug(net Signal){
+  Debug[DebugCounter] = Signal;
+  print(:["Debug[", $(DebugCounter), "] <= ", Signal'full_instance_name, "\n"]);
+  DebugCounter++;
+}
+//------------------------------------------------------------------------------
+
+import "Platform/Platform";
+//------------------------------------------------------------------------------
+
+import "SubSystems/SystemController";
+//------------------------------------------------------------------------------
+
+import "Library/Interfaces/RegistersDecoder";
+RegistersDecoder(SystemController.LightWeightBus) Registers;
+
+Registers.CppFilename   = "../Software/Registers/Registers";
+Registers.LaTeXFilename = "../Documentation/Registers";
+//------------------------------------------------------------------------------
+
+import "Library/Misc/FirmwareVersion";
+FirmwareVersion(1,0) Firmware;
+
+Registers.ReadOnly(Firmware.Version);
+Registers.ReadOnly(Firmware.Date   );
+Registers.ReadOnly(Firmware.Time   );
+Registers.ReadOnly(Firmware.GitHash);
+//------------------------------------------------------------------------------
+
+import "SubSystems/MasterTrigger";
+//------------------------------------------------------------------------------
+
+import "SubSystems/HardwareControl" as Hardware;
+//------------------------------------------------------------------------------
+
+import "SubSystems/WaveformGenerator" as Waveform;
+//------------------------------------------------------------------------------
+
+import "SubSystems/ReceiverAbstraction" as Receiver;
+//------------------------------------------------------------------------------
+
+import "SubSystems/RadarProcessor" as Processor;
+//------------------------------------------------------------------------------
+
+import "Library/Platforms/DE0-Nano-SoC" as DE0;
+//------------------------------------------------------------------------------
+
+alias HPS_Pins  = DE0.HPS;
+alias LEDs      = DE0.LEDs;
+alias DipSwitch = DE0.Switches;
+//------------------------------------------------------------------------------
+
+group Synth{ // AD9915
+  group SPI{
+    alias SClk      = DE0.Arduino.IO[0];
+    alias nCS       = DE0.Arduino.IO[1];
+    alias SDIO      = DE0.Arduino.IO[2];
+    alias SyncIO    = DE0.Arduino.IO[3];
+    alias IO_Update = DE0.Arduino.IO[4];
+  }
+  alias DR_Control = DE0.Arduino.IO[ 9];
+  alias DR_Hold    = DE0.Arduino.IO[10];
+  alias DR_Over    = DE0.Arduino.IO[11];
+}
+//------------------------------------------------------------------------------
+
+group ADC{ // ADS7056
+  alias nCS  = DE0.Arduino.IO[5];
+  alias SClk = DE0.Arduino.IO[6];
+  alias Data = DE0.Arduino.IO[7];
+
+  SClk'frequency = 60e6;
+
+  nCS'set_output_delay'clock       = SClk;
+  nCS'set_output_delay'delay       = 0e-3; // Source-synchronous
+  nCS'set_output_delay'uncertainty = 50e-12;
+
+  Data'set_input_delay'clock       = SClk;
+  Data'set_input_delay'delay       = 100e-3 / 2e8;
+  Data'set_input_delay'uncertainty = 50e-12;
+}
+//------------------------------------------------------------------------------
+
+alias TxEnable = DE0.Arduino.IO[8];
+//------------------------------------------------------------------------------
+
+net(36) Debug;
+DE0.GPIO[0] = Debug;
+//------------------------------------------------------------------------------
+
+group I2C{ // LTC2991
+  alias SClk = DE0.Arduino.IO[15];
+  alias Data = DE0.Arduino.IO[14];
+
+  SClk'pullup = true;
+  SClk.driver = 0;
+  SClk.enable = 0;
+
+  Data'pullup = true;
+  Data.driver = 0;
+  Data.enable = 0;
+}
+//------------------------------------------------------------------------------
+
+net ResetKey = ~DE0.Keys[0];
+//------------------------------------------------------------------------------
+
+import "Library/Clocking_and_Reset/PLL_CycloneV";
+
+PLL_CycloneV(DE0.Clock1, ResetKey, [120, 2.5]) PLL;
+alias DspClock     = PLL.Output[0];
+alias ControlClock = PLL.Output[1];
+//------------------------------------------------------------------------------
+
+import "Library/Clocking_and_Reset/DelayedReset";
+
+net HPS_Reset      = DelayedReset(ControlClock, ResetKey | ~PLL.Locked, 1);
+net HPS_FPGA_Reset = 0; // Assigned by SystemController
+net MasterReset    = DelayedReset(ControlClock, HPS_FPGA_Reset | ResetKey | ~PLL.Locked, 100);
+//------------------------------------------------------------------------------
+
+alias Buffer = SystemController.StreamBuffer;
+//------------------------------------------------------------------------------
+
+net(Buffer.Address'width) WrAddress = 0;
+net(Buffer.Address'width) RdAddress = 0;
+
+Registers.ReadOnly (WrAddress);
+Registers.Writeable(RdAddress);
+//------------------------------------------------------------------------------
+
+Buffer.Address = 0;
+
+fsm(DspClock, MasterReset){
+  loop{
+    loop{ // Synchronise to SoP
+      if(Buffer.Write) Buffer.Address++,
+      else             WrAddress = Buffer.Address,
+
+      Buffer.WriteData := :(Packet.Data, 0@2), // Extend to 16-bit
+
+      if(Packet.Valid & Packet.SoP){
+        Buffer.Write = 1,
+        break;
+      }else{
+        Buffer.Write = 0;
+      }
+    }
+
+    loop{ // Write the packet
+      Buffer.WriteData := :(Packet.Data, 0@2), // Extend to 16-bit
+      Buffer.Write      = Packet.Valid,
+      if(Packet.Valid){
+        Buffer.Address++,
+        if(Packet.EoP) break;
+      }
+      ;
+    }
+  }
+}
+//------------------------------------------------------------------------------
+
+// Stuff like BIM and BIT, RF switches, etc.
+
+import "Library/Misc/MutEx";
+import "Library/Timing/TriggerDelay";
+import "Library/Peripherals/ADC_and_BIM/LTC2991";
+//------------------------------------------------------------------------------
+
+MutEx(ControlClock, MasterReset) I2C_MutEx;
+//------------------------------------------------------------------------------
+
+LTC2991(ControlClock, MasterReset, 0b000) TxBIM;
+
+TxBIM.SetType(0, LTC2991.TYPE.Voltage);
+TxBIM.SetType(1, LTC2991.TYPE.Voltage);
+TxBIM.SetType(2, LTC2991.TYPE.Voltage);
+TxBIM.SetType(3, LTC2991.TYPE.Temperature);
+
+TxBIM.Quiet = !TxEnable;
+TxBIM.MakeRegisters(Registers);
+TxBIM.ConnectBus(I2C.SClk, I2C.Data);
+
+I2C_MutEx.Add(TxBIM);
+//------------------------------------------------------------------------------
+
+LTC2991(ControlClock, MasterReset, 0b001) RxBIM;
+
+RxBIM.SetType(0, LTC2991.TYPE.Voltage);
+RxBIM.SetType(1, LTC2991.TYPE.Differential);
+RxBIM.SetType(2, LTC2991.TYPE.Voltage);
+RxBIM.SetType(3, LTC2991.TYPE.Temperature);
+
+RxBIM.Quiet = !TxEnable;
+RxBIM.MakeRegisters(Registers);
+RxBIM.ConnectBus(I2C.SClk, I2C.Data);
+
+I2C_MutEx.Add(RxBIM);
+//------------------------------------------------------------------------------
+
+TriggerDelay(ControlClock, MasterReset, MasterTrigger) TriggerDelay_PA;
+
+Registers.Writeable(TriggerDelay_PA.Enable);
+Registers.Writeable(TriggerDelay_PA.Delay );
+Registers.Writeable(TriggerDelay_PA.Length);
+
+TxEnable = TriggerDelay_PA.Output;
+//------------------------------------------------------------------------------
+
+import "Library/Timing/TriggerGen";
+//------------------------------------------------------------------------------
+
+TriggerGen(ControlClock, MasterTrigger) MasterTriggerGen;
+Registers.Writable(MasterTriggerGen.Period);
+alias MasterTrigger = MasterTriggerGen.Output;
+//------------------------------------------------------------------------------
+
+import "Library/DSP/Streams";
+import "Library/DSP/FIFO";
+import "Library/DSP/Window";
+import "Library/DSP/FFT";
+import "Library/DSP/Transpose";
+import "Library/DSP/AlphaFilter";
+//------------------------------------------------------------------------------
+
+FIFO       (DspClock, MasterReset, 8192                ) Queue;
+Window     (DspClock, MasterReset, 2500, 16, 32, "Hann") RangeWindow;
+FFT        (DspClock, MasterReset, 4096                ) RangeFFT;
+Transpose  (DspClock, MasterReset, 2048, 128           ) CornerTurn;
+Window     (DspClock, MasterReset,  128, 32, 32, "Hann") DopplerWindow;
+FFT        (DspClock, MasterReset,  128                ) DopplerFFT;
+AlphaFilter(DspClock, MasterReset,  128, 2048          ) Filter;
+//------------------------------------------------------------------------------
+
+Registers.ReadOnly (Queue.NumItems);
+Registers.Writeable(Filter.Alpha);
+Registers.ReadOnly (Filter.WrAddress);
+//------------------------------------------------------------------------------
+
+// The Alpha Filter does not produce an output stream
+DSP = Receiver.Packet | Queue | RangeWindow | RangeFFT
+    | CornerTurn | DopplerWindow | DopplerFFT | Filter;
+//------------------------------------------------------------------------------
+
+import "Library/Timing/TriggerDelay";
+import "Library/Peripherals/ADC_and_BIM/ADS7056";
+//------------------------------------------------------------------------------
+
+ADS7056(DspClock, MasterReset) ADC;
+//------------------------------------------------------------------------------
+
+TriggerDelay(ControlClock, MasterReset, MasterTrigger) PacketTrigger;
+
+Registers.Writeable(PacketTrigger.Enable);
+Registers.Writeable(PacketTrigger.Delay );
+Registers.Writeable(PacketTrigger.Length);
+
+net PacketTrigger_DSP;
+rtl(DspClock) PacketTrigger_DSP = PacketTrigger.Output;
+//------------------------------------------------------------------------------
+
+group Packet{
+  net         SoP;
+  net         EoP;
+  net(13, -1) Data;
+  net         Valid = 0;
+}
+
+AddDebug(Packet.SoP);
+AddDebug(Packet.EoP);
+AddDebug(Packet.Valid);
+
+private net(12) n;
+private num     N = 2500;
+
+fsm(DspClock, MasterReset){
+  loop{
+    n = 0,
+    Packet.Valid = 0,
+    while(!PacketTrigger_DSP);
+    ;
+
+    while(n < N){
+      Packet.SoP    = (n == 0),
+      Packet.EoP    = (n == N-1),
+      Packet.Data  := :(~ADC.Output.Data(13), ADC.Output.Data(12..0)),
+      Packet.Valid  = ADC.Output.Valid,
+      if(ADC.Output.Valid) n++,
+      ;
+    }
+  }
+}
+//------------------------------------------------------------------------------
+
+import "DebugStreamer" as DebugStreamer;
+//------------------------------------------------------------------------------
+
+import "Library/Interfaces/AvalonMaster";
+import "Library/Interfaces/AvalonSlave";
+//------------------------------------------------------------------------------
+
+class SystemController_Class{
+  private{ // SoC System Instance
+    hdl("../HDL/SoC_System/SoC_System.qsys") SoC_System_HDL(){
+      output net      hps_clk_out_clk;
+      output net      hps_reset_out_reset;
+
+      input  net      hps_cold_reset_req_reset_n;
+      input  net      hps_warm_reset_req_reset_n;
+      input  net      hps_debug_reset_req_reset_n;
+
+      output net      hps_io_hps_io_emac1_inst_TX_CLK;
+      output net      hps_io_hps_io_emac1_inst_TXD0;
+      output net      hps_io_hps_io_emac1_inst_TXD1;
+      output net      hps_io_hps_io_emac1_inst_TXD2;
+      output net      hps_io_hps_io_emac1_inst_TXD3;
+      input  net      hps_io_hps_io_emac1_inst_RXD0;
+             net      hps_io_hps_io_emac1_inst_MDIO;
+      output net      hps_io_hps_io_emac1_inst_MDC;
+      input  net      hps_io_hps_io_emac1_inst_RX_CTL;
+      output net      hps_io_hps_io_emac1_inst_TX_CTL;
+      input  net      hps_io_hps_io_emac1_inst_RX_CLK;
+      input  net      hps_io_hps_io_emac1_inst_RXD1;
+      input  net      hps_io_hps_io_emac1_inst_RXD2;
+      input  net      hps_io_hps_io_emac1_inst_RXD3;
+
+             net      hps_io_hps_io_sdio_inst_CMD;
+             net      hps_io_hps_io_sdio_inst_D0;
+             net      hps_io_hps_io_sdio_inst_D1;
+      output net      hps_io_hps_io_sdio_inst_CLK;
+             net      hps_io_hps_io_sdio_inst_D2;
+             net      hps_io_hps_io_sdio_inst_D3;
+
+             net      hps_io_hps_io_usb1_inst_D0;
+             net      hps_io_hps_io_usb1_inst_D1;
+             net      hps_io_hps_io_usb1_inst_D2;
+             net      hps_io_hps_io_usb1_inst_D3;
+             net      hps_io_hps_io_usb1_inst_D4;
+             net      hps_io_hps_io_usb1_inst_D5;
+             net      hps_io_hps_io_usb1_inst_D6;
+             net      hps_io_hps_io_usb1_inst_D7;
+      input  net      hps_io_hps_io_usb1_inst_CLK;
+      output net      hps_io_hps_io_usb1_inst_STP;
+      input  net      hps_io_hps_io_usb1_inst_DIR;
+      input  net      hps_io_hps_io_usb1_inst_NXT;
+
+      output net      hps_io_hps_io_spim1_inst_CLK;
+      output net      hps_io_hps_io_spim1_inst_MOSI;
+      input  net      hps_io_hps_io_spim1_inst_MISO;
+      output net      hps_io_hps_io_spim1_inst_SS0;
+
+      input  net      hps_io_hps_io_uart0_inst_RX;
+      output net      hps_io_hps_io_uart0_inst_TX;
+
+             net      hps_io_hps_io_i2c0_inst_SDA;
+             net      hps_io_hps_io_i2c0_inst_SCL;
+
+             net      hps_io_hps_io_i2c1_inst_SDA;
+             net      hps_io_hps_io_i2c1_inst_SCL;
+
+             net      hps_io_hps_io_gpio_inst_GPIO09;
+             net      hps_io_hps_io_gpio_inst_GPIO35;
+             net      hps_io_hps_io_gpio_inst_GPIO40;
+             net      hps_io_hps_io_gpio_inst_GPIO53;
+             net      hps_io_hps_io_gpio_inst_GPIO54;
+             net      hps_io_hps_io_gpio_inst_GPIO61;
+
+      output net( 15) memory_mem_a;
+      output net(  3) memory_mem_ba;
+      output net      memory_mem_ck;
+      output net      memory_mem_ck_n;
+      output net      memory_mem_cke;
+      output net      memory_mem_cs_n;
+      output net      memory_mem_ras_n;
+      output net      memory_mem_cas_n;
+      output net      memory_mem_we_n;
+      output net      memory_mem_reset_n;
+             net( 32) memory_mem_dq;
+             net(  4) memory_mem_dqs;
+             net(  4) memory_mem_dqs_n;
+      output net      memory_mem_odt;
+      output net(  4) memory_mem_dm;
+      input  net      memory_oct_rzqin;
+
+      input  net      light_weight_bus_clk_clk;
+      input  net      light_weight_bus_reset_reset;
+      output net( 12) light_weight_bus_address;
+      output net(  4) light_weight_bus_byteenable;
+      output net(  1) light_weight_bus_burstcount;
+      input  net      light_weight_bus_waitrequest;
+      output net( 32) light_weight_bus_writedata;
+      output net      light_weight_bus_write;
+      output net      light_weight_bus_read;
+      input  net( 32) light_weight_bus_readdata;
+      input  net      light_weight_bus_readdatavalid;
+      output net      light_weight_bus_debugaccess;
+
+      input  net( 27) sdram_address;
+      input  net( 32) sdram_byteenable;
+      input  net(  8) sdram_burstcount;
+      output net      sdram_waitrequest;
+      input  net(256) sdram_writedata;
+      input  net      sdram_write;
+      input  net      sdram_read;
+      output net(256) sdram_readdata;
+      output net      sdram_readdatavalid;
+
+      input  net      streambuffer_clk_clk;
+      input  net      streambuffer_clken;
+      input  net      streambuffer_reset_reset;
+      input  net      streambuffer_chipselect;
+      input  net( 13) streambuffer_address;
+      input  net(  2) streambuffer_byteenable;
+      input  net( 16) streambuffer_writedata;
+      input  net      streambuffer_write;
+      output net( 16) streambuffer_readdata;
+    }
+    SoC_System_HDL() SoC_System;
+  }
+  //----------------------------------------------------------------------------
+
+  private{ // HPS Pins
+    HPS_Pins.Ethernet.Tx.Clock  .hdl_map(SoC_System.hps_io_hps_io_emac1_inst_TX_CLK);
+    HPS_Pins.Ethernet.Tx.Enable .hdl_map(SoC_System.hps_io_hps_io_emac1_inst_TX_CTL);
+    HPS_Pins.Ethernet.Tx.Data[0].hdl_map(SoC_System.hps_io_hps_io_emac1_inst_TXD0  );
+    HPS_Pins.Ethernet.Tx.Data[1].hdl_map(SoC_System.hps_io_hps_io_emac1_inst_TXD1  );
+    HPS_Pins.Ethernet.Tx.Data[2].hdl_map(SoC_System.hps_io_hps_io_emac1_inst_TXD2  );
+    HPS_Pins.Ethernet.Tx.Data[3].hdl_map(SoC_System.hps_io_hps_io_emac1_inst_TXD3  );
+
+    HPS_Pins.Ethernet.Rx.Clock  .hdl_map(SoC_System.hps_io_hps_io_emac1_inst_RX_CLK);
+    HPS_Pins.Ethernet.Rx.Valid  .hdl_map(SoC_System.hps_io_hps_io_emac1_inst_RX_CTL);
+    HPS_Pins.Ethernet.Rx.Data[0].hdl_map(SoC_System.hps_io_hps_io_emac1_inst_RXD0  );
+    HPS_Pins.Ethernet.Rx.Data[1].hdl_map(SoC_System.hps_io_hps_io_emac1_inst_RXD1  );
+    HPS_Pins.Ethernet.Rx.Data[2].hdl_map(SoC_System.hps_io_hps_io_emac1_inst_RXD2  );
+    HPS_Pins.Ethernet.Rx.Data[3].hdl_map(SoC_System.hps_io_hps_io_emac1_inst_RXD3  );
+
+    HPS_Pins.Ethernet.MDC       .hdl_map(SoC_System.hps_io_hps_io_emac1_inst_MDC   );
+    HPS_Pins.Ethernet.MDIO      .hdl_map(SoC_System.hps_io_hps_io_emac1_inst_MDIO  );
+
+    HPS_Pins.Ethernet.nInterrupt.hdl_map(SoC_System.hps_io_hps_io_gpio_inst_GPIO35 );
+    //--------------------------------------------------------------------------
+
+    HPS_Pins.SD.Clock  .hdl_map(SoC_System.hps_io_hps_io_sdio_inst_CLK);
+    HPS_Pins.SD.Command.hdl_map(SoC_System.hps_io_hps_io_sdio_inst_CMD);
+    HPS_Pins.SD.Data[0].hdl_map(SoC_System.hps_io_hps_io_sdio_inst_D0 );
+    HPS_Pins.SD.Data[1].hdl_map(SoC_System.hps_io_hps_io_sdio_inst_D1 );
+    HPS_Pins.SD.Data[2].hdl_map(SoC_System.hps_io_hps_io_sdio_inst_D2 );
+    HPS_Pins.SD.Data[3].hdl_map(SoC_System.hps_io_hps_io_sdio_inst_D3 );
+    //--------------------------------------------------------------------------
+
+    HPS_Pins.USB.Data[0]  .hdl_map(SoC_System.hps_io_hps_io_usb1_inst_D0 );
+    HPS_Pins.USB.Data[1]  .hdl_map(SoC_System.hps_io_hps_io_usb1_inst_D1 );
+    HPS_Pins.USB.Data[2]  .hdl_map(SoC_System.hps_io_hps_io_usb1_inst_D2 );
+    HPS_Pins.USB.Data[3]  .hdl_map(SoC_System.hps_io_hps_io_usb1_inst_D3 );
+    HPS_Pins.USB.Data[4]  .hdl_map(SoC_System.hps_io_hps_io_usb1_inst_D4 );
+    HPS_Pins.USB.Data[5]  .hdl_map(SoC_System.hps_io_hps_io_usb1_inst_D5 );
+    HPS_Pins.USB.Data[6]  .hdl_map(SoC_System.hps_io_hps_io_usb1_inst_D6 );
+    HPS_Pins.USB.Data[7]  .hdl_map(SoC_System.hps_io_hps_io_usb1_inst_D7 );
+    HPS_Pins.USB.ClockOut .hdl_map(SoC_System.hps_io_hps_io_usb1_inst_CLK);
+    HPS_Pins.USB.Step     .hdl_map(SoC_System.hps_io_hps_io_usb1_inst_STP);
+    HPS_Pins.USB.Direction.hdl_map(SoC_System.hps_io_hps_io_usb1_inst_DIR);
+    HPS_Pins.USB.Next     .hdl_map(SoC_System.hps_io_hps_io_usb1_inst_NXT);
+    //--------------------------------------------------------------------------
+
+    HPS_Pins.LTC.GPIO           .hdl_map(SoC_System.hps_io_hps_io_gpio_inst_GPIO40);
+
+    HPS_Pins.LTC.I2C.Clock      .hdl_map(SoC_System.hps_io_hps_io_i2c1_inst_SCL);
+    HPS_Pins.LTC.I2C.Data       .hdl_map(SoC_System.hps_io_hps_io_i2c1_inst_SDA);
+
+    HPS_Pins.LTC.SPI.Clock      .hdl_map(SoC_System.hps_io_hps_io_spim1_inst_CLK );
+    HPS_Pins.LTC.SPI.MOSI       .hdl_map(SoC_System.hps_io_hps_io_spim1_inst_MOSI);
+    HPS_Pins.LTC.SPI.MISO       .hdl_map(SoC_System.hps_io_hps_io_spim1_inst_MISO);
+    HPS_Pins.LTC.SPI.SlaveSelect.hdl_map(SoC_System.hps_io_hps_io_spim1_inst_SS0 );
+    //--------------------------------------------------------------------------
+
+    HPS_Pins.UART.Rx      .hdl_map(SoC_System.hps_io_hps_io_uart0_inst_RX);
+    HPS_Pins.UART.Tx      .hdl_map(SoC_System.hps_io_hps_io_uart0_inst_TX);
+    HPS_Pins.UART.nConvUSB.hdl_map(SoC_System.hps_io_hps_io_gpio_inst_GPIO09);
+    //--------------------------------------------------------------------------
+
+    HPS_Pins.I2C.Clock.hdl_map(SoC_System.hps_io_hps_io_i2c0_inst_SCL);
+    HPS_Pins.I2C.Data .hdl_map(SoC_System.hps_io_hps_io_i2c0_inst_SDA);
+    //--------------------------------------------------------------------------
+
+    HPS_Pins.LED               .hdl_map(SoC_System.hps_io_hps_io_gpio_inst_GPIO53);
+    HPS_Pins.Key               .hdl_map(SoC_System.hps_io_hps_io_gpio_inst_GPIO54);
+    HPS_Pins.G_Sensor.Interrupt.hdl_map(SoC_System.hps_io_hps_io_gpio_inst_GPIO61);
+    //--------------------------------------------------------------------------
+
+    HPS_Pins.DDR3.nReset              .hdl_map(SoC_System.memory_mem_reset_n);
+    HPS_Pins.DDR3.Clock               .hdl_map(SoC_System.memory_mem_ck,
+                                               SoC_System.memory_mem_ck_n   );
+    HPS_Pins.DDR3.ClockEnable         .hdl_map(SoC_System.memory_mem_cke    );
+    HPS_Pins.DDR3.nChipSelect         .hdl_map(SoC_System.memory_mem_cs_n   );
+    HPS_Pins.DDR3.Bank                .hdl_map(SoC_System.memory_mem_ba     );
+    HPS_Pins.DDR3.Address             .hdl_map(SoC_System.memory_mem_a      );
+    HPS_Pins.DDR3.DataMask            .hdl_map(SoC_System.memory_mem_dm     );
+    HPS_Pins.DDR3.nRowAddressStrobe   .hdl_map(SoC_System.memory_mem_ras_n  );
+    HPS_Pins.DDR3.nColumnAddressStrobe.hdl_map(SoC_System.memory_mem_cas_n  );
+    HPS_Pins.DDR3.nWriteEnable        .hdl_map(SoC_System.memory_mem_we_n   );
+    HPS_Pins.DDR3.Data                .hdl_map(SoC_System.memory_mem_dq     );
+    HPS_Pins.DDR3.DataStrobe          .hdl_map(SoC_System.memory_mem_dqs,
+                                               SoC_System.memory_mem_dqs_n  );
+    HPS_Pins.DDR3.OnDieTermination    .hdl_map(SoC_System.memory_mem_odt    );
+    HPS_Pins.DDR3.RZQ                 .hdl_map(SoC_System.memory_oct_rzqin  );
+  }
+  //----------------------------------------------------------------------------
+
+  public{ // Public Interfaces
+    SoC_System.hps_cold_reset_req_reset_n  = !HPS_Reset;
+    SoC_System.hps_warm_reset_req_reset_n  = !HPS_Reset;
+    SoC_System.hps_debug_reset_req_reset_n = !HPS_Reset;
+
+    HPS_FPGA_Reset = SoC_System.hps_reset_out_reset;
+    //--------------------------------------------------------------------------
+
+    AvalonMaster(ControllerClock, MasterReset, 32, 0x10000) LightWeightBus;
+    LightWeightBus'BaseAddress = 0xC000_0000;
+
+    SoC_System.light_weight_bus_clk_clk       = ControllerClock;
+    SoC_System.light_weight_bus_reset_reset   = MasterReset;
+
+    LightWeightBus.Address                    = SoC_System.light_weight_bus_address;
+    LightWeightBus.ByteEnable                 = SoC_System.light_weight_bus_byteenable;
+    SoC_System.light_weight_bus_waitrequest   = LightWeightBus.WaitRequest;
+
+    LightWeightBus.WriteData                  = SoC_System.light_weight_bus_writedata;
+    LightWeightBus.Write                      = SoC_System.light_weight_bus_write;
+
+    LightWeightBus.Read                       = SoC_System.light_weight_bus_read;
+    SoC_System.light_weight_bus_readdata      = LightWeightBus.ReadData;
+    SoC_System.light_weight_bus_readdatavalid = LightWeightBus.ReadValid;
+    //--------------------------------------------------------------------------
+
+    AvalonSlave(SoC_System.hps_clk_out_clk,
+                SoC_System.hps_reset_out_reset,
+                256, 0x_200_0000, 128) SDRAM;
+
+    SDRAM.Clock'frequency = 100e6;
+
+    SoC_System.sdram_address    = SDRAM.Address;
+    SoC_System.sdram_byteenable = SDRAM.ByteEnable;
+    SoC_System.sdram_burstcount = SDRAM.BurstCount;
+    SDRAM.WaitRequest           = SoC_System.sdram_waitrequest;
+
+    SoC_System.sdram_writedata  = SDRAM.WriteData;
+    SoC_System.sdram_write      = SDRAM.Write;
+
+    SoC_System.sdram_read       = SDRAM.Read;
+    SDRAM.ReadData              = SoC_System.sdram_readdata;
+    SDRAM.ReadValid             = SoC_System.sdram_readdatavalid;
+    //--------------------------------------------------------------------------
+
+    AvalonInterface(16, 1p13) StreamBuffer;
+    StreamBuffer'BaseAddress = 0xFF20_0000;
+
+    SoC_System.streambuffer_clk_clk     = DspClock;
+    SoC_System.streambuffer_clken       = 1;
+    SoC_System.streambuffer_reset_reset = MasterReset;
+    SoC_System.streambuffer_chipselect  = 1;
+
+    SoC_System.streambuffer_address     = StreamBuffer.Address;
+    SoC_System.streambuffer_byteenable  = 0b11;
+
+    SoC_System.streambuffer_writedata   = StreamBuffer.WriteData;
+    SoC_System.streambuffer_write       = StreamBuffer.Write;
+
+    StreamBuffer.ReadData  = SoC_System.streambuffer_readdata;
+    StreamBuffer.ReadValid = 1;
+  }
+}
+SystemController_Class() SystemController;
+//------------------------------------------------------------------------------
+
+import "Library/Timing/TriggerDelay";
+import "Library/Peripherals/Synth_and_DDS/AD9915";
+//------------------------------------------------------------------------------
+
+TriggerDelay(ControlClock, MasterReset, MasterTrigger) SynthTrigger;
+
+Registers.Writeable(SynthTrigger.Enable);
+Registers.Writeable(SynthTrigger.Delay );
+Registers.Writeable(SynthTrigger.Length);
+//------------------------------------------------------------------------------
+
+AD9915(ControlClock, MasterReset) SynthInst;
+
+Registers.Writeable(SynthInst.ipUpdate);
+Registers.ReadOnly (SynthInst.opBusy);
+
+// 9 GHz LO
+SynthInst.ipFreqLowerLimit = round(500e6 * (1p32/2.5e9));
+SynthInst.ipFreqUpperLimit = round(650e6 * (1p32/2.5e9));
+
+// 150 MHz; 1 ms up; 50 μs down
+SynthInst.ipStepUp   = round(150e6 / ( 1e-3*2.5e9/24) * (1p32/2.5e9));
+SynthInst.ipStepDown = round(150e6 / (50e-6*2.5e9/24) * (1p32/2.5e9));
+
+Registers.Writeable(SynthInst.ipFreqLowerLimit);
+Registers.Writeable(SynthInst.ipFreqUpperLimit);
+Registers.Writeable(SynthInst.ipStepUp);
+Registers.Writeable(SynthInst.ipStepDown);
+
+SynthInst.Trigger = SynthTrigger.Output;
+
+SynthInst.ConnectSPI(
+  SClk      = Synth.SPI.SClk,
+  nCS       = Synth.SPI.nCS,
+  SDIO      = Synth.SPI.SDIO,
+  SyncIO    = Synth.SPI.SyncIO,
+  IP_Update = Synth.SPI.IO_Update
+);
+
+SynthInst.ConnectDR(
+  Control = Synth.DR_Control,
+  Hold    = Synth.DR_Hold,
+  Over    = Synth.DR_Over
+);
+//------------------------------------------------------------------------------
+

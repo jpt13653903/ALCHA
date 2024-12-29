@@ -1,9 +1,9 @@
 # ALCHA
 
 <img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
-The ALCHA project, including the language grammar and, by extension, this 
-wiki, is under development.  This wiki serves as a documentation of the 
-project goals and aspirations, which are inherently unstable and subject to 
+The ALCHA project, including the language grammar and, by extension, this
+wiki, is under development.  This wiki serves as a documentation of the
+project goals and aspirations, which are inherently unstable and subject to
 change without notice.
 
 --------------------------------------------------------------------------------
@@ -39,7 +39,7 @@ The intended target (simulation, Altera project, Xilinx project, etc.) is a feat
 
 In order to make the code target independent, compile-time scripting can be used to implement conditional compilation.  The code could, for instance, contain a header similar to the code below:
 
-```C++
+```alcha
   group target{
     type     = "Project";
     vendor   = "Altera";
@@ -51,7 +51,7 @@ In order to make the code target independent, compile-time scripting can be used
 
 This header creates a namespace `target`, which contains various string objects.  This can then be used later in the code for conditional compilation, as follows:
 
-```C++
+```alcha
   if(target.type == "Simulation"){
     // Some simulation-specific code
   }else if(target.vendor == "Altera"){
@@ -71,7 +71,7 @@ Conceptually, ALCHA processes the source as a whole. It is convenient, however, 
 
 The `import` statement is used to import a child module into a parent module. There are two forms, as shown below.  The first form imports the contents of "UART.alc" into the same name-space as the parent module, as if the file contents appeared in place of the `import` statement.  The second form imports the contents of "Ethernet.alc" into the "Eth" name-space.  It is illegal to import two modules into the same name within the same module.  In both forms, the imported modules have direct access to objects in the parent module name-space.
 
-```Python
+```python
   import "UART"
   import "Ethernet" as Eth
 ```
@@ -80,7 +80,7 @@ This name-space model allows the developer to define an environment in a parent 
 
 Specifying the class instance, or name-space, can become tedious.  Instead, the developer can temporarily push a name-space onto the scope stack by means of a special syntax, as shown below. The `A.{` construct pushes the `A` name-space onto the stack, whereas the `B.{` construct pushes the `B` name-space. The closing curly braces pop the name-spaces from the stack.
 
-```C++
+```alcha
   class S1{net(8) r, g, b, a;}
   class S2{net(8) x, y, z, w;}
   S1 A;

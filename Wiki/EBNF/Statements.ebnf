@@ -1,58 +1,58 @@
-StatementBlock = Statement | ("{" [Statements] "}");
+StatementBlock = Statement | ( "{" [ Statements ] "}" );
 
 Alias  = "alias" Identifier "=" Expression ";";
-Import = "import" String ["as" Identifier] ";";
-Struct = "struct" [AttributeList] [Identifier] "{"
+Import = "import" String [ "as" Identifier ] ";";
+Struct = "struct" [ AttributeList ] [ Identifier ] "{"
           { Definition | Struct }
          "}";
-Group  = "group"  [AttributeList] [Identifier] "{" [Statements] "}";
+Group  = "group"  [ AttributeList ] [ Identifier ] "{" [ Statements ] "}";
 
 (* The result from "Postfix" or "Concatenation" is checked for syntactic
    validity before use as a name-space, class name or assignment target. *)
-FunctionCallStatement = FunctionCall ("," | ";");
-NamespacePush         = Accessor ".{" [Statements] "}";
-Assignment            = (Accessor AssignmentOperator Expression ("," | ";"))
-                      | (Accessor ("++" | "--") ("," | ";"));
+FunctionCallStatement = FunctionCall ( "," | ";" );
+NamespacePush         = Accessor ".{" [ Statements ] "}";
+Assignment            = ( Accessor AssignmentOperator Expression ( "," | ";" ) )
+                      | ( Accessor ( "++" | "--") ( "," | ";" ) );
 
 AssignmentOperator = "="  | ":=" | "~=" | "+="  | "-="  | "*="  | "/="  | "**="
                    | "%=" | "&=" | "|=" | "^=" | "<<=" | ">>=" ;
 
-IfStatement = "if" "(" Expression ")" StatementBlock ["else" StatementBlock];
+IfStatement = "if" "(" Expression ")" StatementBlock [ "else" StatementBlock ];
 
 For = "for" "(" Identifier "in" Range ")" StatementBlock;
 
 (* For while loops, Expression must evaluate to a boolean *)
-While = "while" "(" Expression ")" StatementBlock);
+While = "while" "(" Expression ")" StatementBlock;
 
 (* For loop loops, Expression must evaluate to an integer *)
-Loop = "loop" ["(" Expression ")"] StatementBlock);
+Loop = "loop" [ "(" Expression ")" ] StatementBlock;
 
 (* For case statements, Expression must evaluate to a constant *)
 (* The case is a normal statement so that autogen style code works *)
-Switch = "switch" "(" Expression ")"  StatementBlock;
-Case = ("case" "(" ExpressionList ")" StatementBlock)
-     | ("default"                     StatementBlock);
+Switch = "switch" "(" Expression     ")" StatementBlock;
+Case = ( "case"   "(" ExpressionList ")" StatementBlock )
+     | ( "default"                       StatementBlock );
 
 (* For "break" and "continue", the expression indicates the number of levels,
    which is 1 by default. *)
-Jump = ("return" | "break" | "continue") [Expression] ";";
+Jump = ( "return" | "break" | "continue") [ Expression ] ";";
 GoTo = "goto" Identifier ";";
 
 (* The first parameter must evaluate to a clock net.  If the RTL is inside
    a function, all parameters are inherited from the calling state machine. *)
-RTL = "rtl" [AttributeList] [ParameterList] StatementBlock;
+RTL = "rtl" [ AttributeList ] [ ParameterList ] StatementBlock;
 
 (* The first parameter must evaluate to a clock net and the second parameter
    to a reset net.  If the FSM is inside a function, the parameters are
    inherited from the calling state machine. *)
-FSM = "fsm" [AttributeList] [ParameterList] StatementBlock;
+FSM = "fsm" [ AttributeList ] [ ParameterList ] StatementBlock;
 
 (* The strings form a list of file names to include in the project, the
    Assignments form a list of HDL parameter assignments and the Definitions
    are port definitions. *)
 (* The "Assignment" is obtained through "Other" *)
-HDL = "hdl" [AttributeList] "(" [String {"," String}] ")" Identifier
-            ["(" {Assignment           } ")"]
-             "{" {([DirectionSpecifier] Definition) | Stimulus} "}";
+HDL = "hdl" [ AttributeList ] "(" [ String { "," String } ] ")" Identifier
+            [ "(" { Assignment } ")" ]
+            "{" { ( [ DirectionSpecifier ] Definition ) | Stimulus } "}";
 (*----------------------------------------------------------------------------*)
 
