@@ -13,7 +13,7 @@ Replication    = Stringification [ "`" Primary ]; (* Vector replication  *)
 
 (* When used as a function, the second parameter must evaluate to a string *)
 Stringification = [ "$" ] Reduction
-                | "$(" Reduction [ "," Expression ] ")";
+                | "$(" Expression [ "," Expression ] ")";
 
 Reduction = [ "&" | "~&" | "|" | "~|" | "^" | "~^" | "!" ] Range;
 

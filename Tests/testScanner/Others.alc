@@ -102,3 +102,6 @@ $"I have {x} sheep and {y} goats"
 $"while this one is the {3}rd string."
 $"and this the {4}th";
 
+$"I have {x+b, "04d"} sheep";
+$"I have {x+b, format} sheep";
+

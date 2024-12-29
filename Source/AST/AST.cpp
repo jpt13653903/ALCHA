@@ -62,6 +62,7 @@ const char* AST::AST::decodeType() const
         case Type::HdlConstruct:         return "HdlConstruct";
         case Type::Identifier:           return "Identifier";
         case Type::Import:               return "Import";
+        case Type::InterpolatedString:   return "InterpolatedString";
         case Type::Jump:                 return "Jump";
         case Type::Label:                return "Label";
         case Type::Literal:              return "Literal";

@@ -64,6 +64,7 @@ class Parser{
         AST::AST* primary();
         AST::AST* concatenate();
         AST::AST* array();
+        AST::AST* interpolatedString();
 
         AST::AST* expressionList();
         AST::AST* parameterList();

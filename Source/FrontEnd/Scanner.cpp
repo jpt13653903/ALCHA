@@ -681,16 +681,27 @@ bool Scanner::getString(Token* token)
     unsigned digit, utf32;
 
     if(inInterpolatedString){
-        if(buffer[index] == '"'){
-            printError("Unmatched braces in interpolated string");
-            return false;
-        }
-        if(buffer[index] != '}') return false;
-        index++;
-        interpolated = true;
-        inInterpolatedString = false;
-        token->type = Token::Type::InterpolatedStringPart;
+        switch(buffer[index]){
+            case '$':
+                if(buffer[index+1] == '"')
+                    printError("Cannot nest interpolated strings");
+                return false;
 
+            case '"':
+                index++;
+                token->type = Token::Type::String;
+                break;
+
+            case '}':
+                index++;
+                interpolated = true;
+                inInterpolatedString = false;
+                token->type = Token::Type::InterpolatedStringPart;
+                break;
+
+            default:
+                return false;
+        }
     }else{
         switch(buffer[index]){
             case '"':

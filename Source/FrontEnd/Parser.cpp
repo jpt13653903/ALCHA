@@ -39,6 +39,7 @@
 #include "AST/HdlConstruct.h"
 #include "AST/Identifier.h"
 #include "AST/Import.h"
+#include "AST/InterpolatedString.h"
 #include "AST/Jump.h"
 #include "AST/Label.h"
 #include "AST/Literal.h"
@@ -491,7 +492,7 @@ AST::AST* Parser::replication()
 //------------------------------------------------------------------------------
 
 // Stringification = [ "$" ] Reduction
-//                 | "$(" Reduction [ "," Expression ] ")";
+//                 | "$(" Expression [ "," Expression ] ")";
 AST::AST* Parser::stringification()
 {
     int line = token.line;
@@ -510,7 +511,7 @@ AST::AST* Parser::stringification()
         case Token::Type::StringifyExpression:{
             getToken();
             auto result = new AST::Stringify(line, astFilenameIndex);
-            result->expression = reduction();
+            result->expression = expression();
             if(!result->expression){
                 printError("Invalid stringification expression");
                 delete result;
@@ -817,21 +818,25 @@ AST::AST* Parser::primary()
             return result;
         }
         case Token::Type::Concatenate:
-        case Token::Type::ArrayConcatenate:{
+        case Token::Type::ArrayConcatenate:
             return concatenate();
-        }
-        case Token::Type::OpenAngle:{
+
+        case Token::Type::OpenAngle:
             return attributeList();
-        }
-        case Token::Type::OpenSquare:{
+
+        case Token::Type::OpenSquare:
             return array();
-        }
-        case Token::Type::String:{
+
+        case Token::Type::String:
+        case Token::Type::InterpolatedStringEnd:{
             auto result = new AST::String(line, astFilenameIndex);
             result->data = token.data;
             getToken();
             return result;
         }
+        case Token::Type::InterpolatedStringPart:
+            return interpolatedString();
+
         case Token::Type::OpenRound:{
             getToken();
             auto result = expression();
@@ -894,6 +899,61 @@ AST::AST* Parser::array()
     }
     getToken();
     return result;
+}
+//------------------------------------------------------------------------------
+
+AST::AST* Parser::interpolatedString()
+{
+    auto result = new AST::InterpolatedString(token.line, astFilenameIndex);
+    AST::AST* last = 0;
+
+    while(token.type > Token::Type::EndOfFile){
+        switch(token.type){
+            case Token::Type::InterpolatedStringPart:{
+                auto current = new AST::String(token.line, astFilenameIndex);
+                if(last) last->next = current;
+                else     result->sequence = current;
+                last = current;
+                current->data = token.data;
+                getToken();
+                break;
+            }
+            case Token::Type::InterpolatedStringEnd:{
+                auto current = new AST::String(token.line, astFilenameIndex);
+                if(last) last->next = current;
+                else     result->sequence = current;
+                last = current;
+                current->data = token.data;
+                getToken();
+                return result;
+            }
+            default:{
+                auto current = new AST::Stringify(token.line, astFilenameIndex);
+                if(last) last->next = current;
+                else     result->sequence = current;
+                last = current;
+                current->expression = expression();
+                if(!current->expression){
+                    printError("Invalid stringification expression");
+                    delete result;
+                    return 0;
+                }
+                if(token.type == Token::Type::Comma){
+                    getToken();
+                    current->format = expression();
+                    if(!current->format){
+                        printError("Invalid stringification format");
+                        delete result;
+                        return 0;
+                    }
+                }
+                break;
+            }
+        }
+    }
+    printError("Invalid interpolated string");
+    delete result;
+    return 0;
 }
 //------------------------------------------------------------------------------
 

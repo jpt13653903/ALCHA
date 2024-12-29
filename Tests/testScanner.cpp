@@ -478,7 +478,25 @@ bool testOthers()
         { 103, Token::Type::InterpolatedStringEnd,  0, "th" },
         { 103, Token::Type::Semicolon,              0, ";"  },
 
-        { 103, Token::Type::EndOfFile, 0, "" },
+        { 105, Token::Type::InterpolatedStringPart, 0, "I have " },
+        { 105, Token::Type::Identifier,             0, "x"       },
+        { 105, Token::Type::Add,                    0, "+"       },
+        { 105, Token::Type::Identifier,             0, "b"       },
+        { 105, Token::Type::Comma,                  0, ","       },
+        { 105, Token::Type::String,                 0, "04d"     },
+        { 105, Token::Type::InterpolatedStringEnd,  0, " sheep"  },
+        { 105, Token::Type::Semicolon,              0, ";"       },
+
+        { 106, Token::Type::InterpolatedStringPart, 0, "I have " },
+        { 106, Token::Type::Identifier,             0, "x"       },
+        { 106, Token::Type::Add,                    0, "+"       },
+        { 106, Token::Type::Identifier,             0, "b"       },
+        { 106, Token::Type::Comma,                  0, ","       },
+        { 106, Token::Type::Identifier,             0, "format"  },
+        { 106, Token::Type::InterpolatedStringEnd,  0, " sheep"  },
+        { 106, Token::Type::Semicolon,              0, ";"       },
+
+        { 106, Token::Type::EndOfFile, 0, "" },
     };
     runTest(expected);
 

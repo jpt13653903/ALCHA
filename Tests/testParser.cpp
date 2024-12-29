@@ -306,6 +306,10 @@ bool testParser()
         "A = $(((b) . (c)) . (d))",
 
         "assert ((a) + (b)) == (c)",
+        "a = $\"I have {x} sheep\"",
+        "a = $\"I have {(x) + (b)} sheep\"",
+        "a = $\"I have {(x) + (b), \"04d\"} sheep\"",
+        "a = $\"I have {(x) + (b), format} sheep\"",
         0
     };
     if(!runTest(expected)) return false;
