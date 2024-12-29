@@ -479,8 +479,11 @@ bool Scanner::getIdentifier(Token* token)
             time(&_timer);
             _time = localtime(&_timer);
             char s[0x10];
-            snprintf(s, 0x10, "%04d-%02d-%02d",
-                     _time->tm_year+1900, _time->tm_mon+1, _time->tm_mday);
+            #pragma GCC diagnostic push
+                #pragma GCC diagnostic ignored "-Wformat-truncation"
+                snprintf(s, 0x10, "%04d-%02d-%02d",
+                         _time->tm_year+1900, _time->tm_mon+1, _time->tm_mday);
+            #pragma GCC diagnostic pop
             token->data += s;
             break;
         }
@@ -491,8 +494,11 @@ bool Scanner::getIdentifier(Token* token)
             time(&_timer);
             _time = localtime(&_timer);
             char s[0x10];
-            snprintf(s, 0x10, "%02d:%02d:%02d",
-                     _time->tm_hour, _time->tm_min, _time->tm_sec);
+            #pragma GCC diagnostic push
+                #pragma GCC diagnostic ignored "-Wformat-truncation"
+                snprintf(s, 0x10, "%02d:%02d:%02d",
+                         _time->tm_hour, _time->tm_min, _time->tm_sec);
+            #pragma GCC diagnostic pop
             token->data += s;
             break;
         }
