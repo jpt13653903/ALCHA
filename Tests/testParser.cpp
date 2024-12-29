@@ -105,9 +105,9 @@ bool runTest(const char** expected)
                    ANSI_FG_BRIGHT_RED "    Got: %s\n"
                    ANSI_RESET,
                    node->print().c_str());
-            // return false;
+            return false;
         }else{
-            if(!test(n, node, expected[n])); // return false;
+            if(!test(n, node, expected[n])) return false;
             n++;
         }
         node = node->next;
@@ -387,8 +387,19 @@ bool testModules()
         "enum ABC { A, B, C }",
 
         "alias A = ((B) . (C)) * (D)",
+
         "import \"../whatnot/thingy\"",
         "import \"../whatnot/thingy\" as whatnot",
+
+        "import $\"../{whatnot}/thingy\"",
+        "import $\"../{whatnot}/thingy\" as whatnot",
+
+        "import $(filename)",
+        "import $(filename) as whatnot",
+
+        "import $(filename)",
+        "import $(filename) as whatnot",
+
         "struct <A = 3 (~3), B = 7 (~7)> ABC {\n"
         "    pin (15 (~15), 8 (~8)) A\n"
         "    net (17 (~17)) B, C\n"

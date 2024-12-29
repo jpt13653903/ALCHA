@@ -1864,13 +1864,28 @@ AST::AST* Parser::import()
 
     getToken();
 
-    if(token.type == Token::Type::String){
-        result->filename = token.data;
-        getToken();
-    }else{
-        printError("filename string expected");
-        delete result;
-        return 0;
+    switch(token.type){
+        case Token::Type::Stringify:
+        case Token::Type::StringifyExpression:
+            result->filename = stringification();
+            break;
+
+        case Token::Type::String:
+        case Token::Type::InterpolatedStringEnd:{
+            auto filename = new AST::String(token.line, astFilenameIndex);
+            filename->data = token.data;
+            result->filename = filename;
+            getToken();
+            break;
+        }
+        case Token::Type::InterpolatedStringPart:
+            result->filename = interpolatedString();
+            break;
+
+        default:
+            printError("filename string (or interpolated string) expected");
+            delete result;
+            return 0;
     }
     if(token.type == Token::Type::As){
         getToken();

@@ -104,8 +104,19 @@ enum ABC { A, B, C }
 // Alias, Import, Struct, Group and AccessDirectionGroup
 
 alias A = B.C * D;
+
 import "../whatnot/thingy";
 import "../whatnot/thingy" as whatnot;
+
+import $"../{whatnot}/thingy";
+import $"../{whatnot}/thingy" as whatnot;
+
+import $filename;
+import $filename as whatnot;
+
+import $(filename);
+import $(filename) as whatnot;
+
 struct<A = 3, B = 7> ABC{
     pin(15, 8) A;
     net(17) B, C;

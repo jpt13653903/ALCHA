@@ -33,6 +33,7 @@ Import::Import(int line, int filenameIndex):
 
 Import::~Import()
 {
+    if(filename) delete filename;
 }
 //------------------------------------------------------------------------------
 
@@ -42,7 +43,7 @@ std::string Import::print(int indent) const
 
     for(int n = 0; n < indent; n++) result += "    ";
 
-    result += "import \"" + filename + "\"";
+    result += "import " + filename->print();
 
     if(nameSpace.size()) result += " as " + nameSpace;
 
