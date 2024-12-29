@@ -25,8 +25,6 @@
 #include <string>
 using std::string;
 
-AST::AST*    ast = 0;
-Parser*      parser;
 Interpreter* interpreter;
 //------------------------------------------------------------------------------
 
@@ -39,8 +37,8 @@ bool startTest(const char* name)
     filename += name;
     filename += ".alc";
 
-    if(ast) delete ast;
-    ast = parser->parse(filename.c_str());
+    Parser parser;
+    auto ast = parser.parse(filename.c_str());
 
     if(!ast){
         error("Cannot parse file %s", filename.c_str());
@@ -48,9 +46,10 @@ bool startTest(const char* name)
     }
     if(!interpreter->run(ast)){
         error("Cannot interpret AST of file %s", filename.c_str());
+        delete ast;
         return false;
     }
-
+    delete ast;
     return true;
 }
 //------------------------------------------------------------------------------
@@ -128,9 +127,6 @@ bool testInterpreter()
 
 int main(int argc, const char** argv)
 {
-    Parser _parser;
-    parser = &_parser;
-
     Interpreter _interpreter;
     interpreter = &_interpreter;
 
@@ -140,12 +136,10 @@ int main(int argc, const char** argv)
     if(!testInterpreter()) goto MainError;
 
     endTest("All OK");
-    if(ast) delete ast;
     return 0;
 
     MainError:
         printf(ANSI_FG_BRIGHT_RED "There were errors\n\n" ANSI_RESET);
-        if(ast) delete ast;
         return -1;
 }
 //------------------------------------------------------------------------------

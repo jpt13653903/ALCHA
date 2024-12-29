@@ -25,7 +25,6 @@
 using std::string;
 
 AST::AST* ast = 0;
-Parser*   parser;
 //------------------------------------------------------------------------------
 
 bool startTest(const char* name)
@@ -38,7 +37,9 @@ bool startTest(const char* name)
     filename += ".alc";
 
     if(ast) delete ast;
-    ast = parser->parse(filename.c_str());
+
+    Parser parser;
+    ast = parser.parse(filename.c_str());
 
     if(!ast){
         error("Cannot parse file %s", filename.c_str());
@@ -3513,9 +3514,6 @@ bool testAlchaCaseStudyCombined()
 
 int main(int argc, const char** argv)
 {
-    Parser _parser;
-    parser = &_parser;
-
     setupTerminal();
 
     printf("\n");
