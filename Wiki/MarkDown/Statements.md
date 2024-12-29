@@ -1,9 +1,9 @@
 # ALCHA
 
 <img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
-The ALCHA project, including the language grammar and, by extension, this 
-wiki, is under development.  This wiki serves as a documentation of the 
-project goals and aspirations, which are inherently unstable and subject to 
+The ALCHA project, including the language grammar and, by extension, this
+wiki, is under development.  This wiki serves as a documentation of the
+project goals and aspirations, which are inherently unstable and subject to
 change without notice.
 
 --------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ change without notice.
 
 If statement syntax is presented below:
 
-```C++
+```alcha
   if(A){
     // if A is non-zero, do this
   }else{
@@ -60,7 +60,7 @@ If the condition is purely scripting (i.e. it does not contain any synthesisable
 
 Switch-statement syntax is presented below:
 
-```C++
+```alcha
   switch(A){
     case(B, C, D){
       // if A is equal to B, C or D, do this
@@ -82,7 +82,7 @@ ALCHA does not infer latches.  Modern FPGAs do not have latches, so it makes lit
 
 The while-loop syntax is presented below.  The body of the loop is evaluated for as long as `A` is not zero.  For combinational circuits and pure RTL, the value of `A` must be known at compile-time.  Within a finite state machine (FSM) structure, `A` can be a synthesisable expression.
 
-```C++
+```alcha
   while(A){
     // while A is non-zero, do this
   }
@@ -92,7 +92,7 @@ The while-loop syntax is presented below.  The body of the loop is evaluated for
 
 The for-loop syntax is presented below.  `A` must evaluate to an array.  For every element of the array, `x` becomes a reference to that element and the loop is evaluated.
 
-```C++
+```alcha
   for(x in A){
     // for every element of array A, set x to that element and do this
   }
@@ -100,7 +100,7 @@ The for-loop syntax is presented below.  `A` must evaluate to an array.  For eve
 
 The loop is evaluated in the same order as the elements of the array, not in parallel.  When the elements of `A` is a synthesisable type, and the loop occurs during a combinational statement, the result could potentially be a parallel combinational circuit.  During compilation, however, the loop is still evaluated sequentially, following normal combinational-statement blocking assignment rules.  This is illustrated below:
 
-```C++
+```alcha
   net(8) A, B;
 
   // Counts the number of bits of A that are high and assigns the answer to B
@@ -112,7 +112,7 @@ The loop is evaluated in the same order as the elements of the array, not in par
 
 The loop-loop syntax is presented below:
 
-```C++
+```alcha
   loop(N){
     // Do this N times
   }
@@ -125,7 +125,7 @@ The evaluation of loops in FSM structures depend on the use of commas or semicol
 
 A loop loop can therefore be used to implement a "wait" state, as follows:
 
-```C++
+```alcha
   net LED = 0;
 
   fsm(Clk, Reset){
@@ -138,7 +138,7 @@ A loop loop can therefore be used to implement a "wait" state, as follows:
 
 This is equivalent to the following Verilog:
 
-```Verilog
+```verilog
   reg       LED;
   reg [14:0]Count;
 
@@ -161,7 +161,7 @@ This is equivalent to the following Verilog:
 
 The `return` statement returns from a function.  If the function was called combinationally, the return statement simply ends evaluation of the rest of the function body (thereby not synthesising the rest of the circuit).  If the return statement occurs within a clocked structure, the clocked structure goes into an idle state, either waiting for the next call (if it was called from a state machine) or halting until the next system reset (if it was called combinationally).
 
-```C++
+```alcha
   num Func(A, B){
     return A+B; // Equivalent to "Func = A+B; return;"
   }
@@ -176,7 +176,7 @@ The `return` statement returns from a function.  If the function was called comb
 
 The `break` and `continue` keywords are used to jump out of, or within, loops.  Both of these take an optional integer expression argument to indicate the number of loop levels.  For instance:
 
-```C++
+```alcha
   loop{
     for(j in 1..100){
       while(Busy){
@@ -199,7 +199,7 @@ The `break` and `continue` keywords are used to jump out of, or within, loops.  
 
 It is often the case where the same expression is used many times, yet cannot be simply assigned to a variable.  In this case, it is convenient to define an alias for the expression, as follows:
 
-```C++
+```alcha
   alias C   = Namespace.ClassInstance;
   alias M   = SomeClass.Member;
   alias Clk = SYS_GLOBAL_CLK;
@@ -213,7 +213,7 @@ It is often the case where the same expression is used many times, yet cannot be
 
 It is important to note, however, that the alias is evaluated first, before used in the target expression.  The following two lines are equivalent:
 
-```C++
+```alcha
   alias sum = A + B; X = Y * sum;
   X = Y * (A + B);
 ```

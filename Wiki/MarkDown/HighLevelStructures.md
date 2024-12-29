@@ -1,9 +1,9 @@
 # ALCHA
 
 <img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
-The ALCHA project, including the language grammar and, by extension, this 
-wiki, is under development.  This wiki serves as a documentation of the 
-project goals and aspirations, which are inherently unstable and subject to 
+The ALCHA project, including the language grammar and, by extension, this
+wiki, is under development.  This wiki serves as a documentation of the
+project goals and aspirations, which are inherently unstable and subject to
 change without notice.
 
 --------------------------------------------------------------------------------
@@ -38,7 +38,7 @@ An FPGA project often makes use of FPGA features that are not directly supported
 
 Megafunctions and other external HDL modules can be imported into the ALCHA project by means of the `hdl` construct, as illustrated below.  Imported HDL modules are not included in simulation.
 
-```C++
+```alcha
   hdl("Library/RS232.v", "Library/RS232_Rx.v", "Library/RS232_Tx.v") RS232_V(
     CountBits =  5; // Parameters
     Count0_5  =  8;
@@ -82,8 +82,8 @@ Megafunctions and other external HDL modules can be imported into the ALCHA proj
 
 Whether the nets defined in the body of the construct describe input, output or bidirectional ports is inferred from their use.  The compiler keeps track of expressions involving that net.  If it occurs only on the left-hand side of assignments, it is an input port.  If it occurs only on the right-hand side of assignments, it is an output port.  If it occurs on both sides, it is bidirectional.  An example of assigning I2C pins to an HDL module is presented below:
 
-```C++
-  hld("Library/LTC2991.v") LTC2991_Driver(){
+```alcha
+  hdl("Library/LTC2991.v") LTC2991_Driver(){
     // Various other ports...
 
     net I2C_Clk;

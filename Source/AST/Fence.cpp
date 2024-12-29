@@ -18,28 +18,31 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Slice_h
-#define AST_Slice_h
+#include "Fence.h"
 //------------------------------------------------------------------------------
 
-#include "AST.h"
-
-#include <string>
+using std::string;
+using namespace AST;
 //------------------------------------------------------------------------------
 
-namespace AST{
-    struct Slice: public AST{
-        AST* array = 0;
-        AST* slice = 0;
-
-        Slice(int line, int filenameIndex);
-       ~Slice();
-
-        std::string print(int indent = 0) const override;
-    };
+Fence::Fence(int line, int filenameIndex):
+    AST(line, filenameIndex, Type::Fence)
+{
 }
 //------------------------------------------------------------------------------
 
-#endif
+Fence::~Fence()
+{
+}
+//------------------------------------------------------------------------------
+
+std::string Fence::print(int indent) const
+{
+    string result;
+
+    for(int n = 0; n < indent; n++) result += "    ";
+
+    return result + "fence";
+}
 //------------------------------------------------------------------------------
 

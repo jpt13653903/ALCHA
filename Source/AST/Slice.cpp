@@ -47,20 +47,9 @@ std::string Slice::print(int indent) const
     if(array){
         result += "(";
         result += array->print();
-        result += ")[";
+        result += ")";
     }
-
-    bool first = true;
-    AST* element = slice;
-    while(element){
-        if(!first) result += ", ";
-        first = false;
-
-        result += element->print();
-
-        element = element->next;
-    }
-    result += "]";
+    if(slice) result += slice->print();
 
     return result;
 }

@@ -1,0 +1,25 @@
+// Literals
+
+X = 123.456;
+X = 0b101.0101;
+X = 0o123.456;
+X = 0xABC.DEF;
+X = 0b0101.0101;
+X = 0o0123.456;
+X = 0x0ABC.DEF;
+X = 0b_101.0101;
+X = 0o_123.456;
+X = 0x_ABC.DEF;
+X = 123_456_e7;
+X = 123_456_p7;
+X = 0x123_ABC_p7;
+X = 8.9j;
+X = "A";
+X = "ABC";
+X = "ABC\nlkjh\rklkjh\123hi\&Rrightarrow;\xab\uabcdefg\Uabcdef1234567";
+X = $"I have {x} sheep";
+X = $"I have {x+y} sheep";
+X = $"I have {x+y, "03x"} sheep";
+X = $"I have {x+y, format} sheep";
+//------------------------------------------------------------------------------
+

@@ -47,6 +47,7 @@ const char* AST::AST::decodeType() const
     switch(type){
         case Type::AccessDirectionGroup: return "AccessDirectionGroup";
         case Type::Alias:                return "Alias";
+        case Type::Array:                return "Array";
         case Type::Assert:               return "Assert";
         case Type::Assignment:           return "Assignment";
         case Type::ClassDefinition:      return "ClassDefinition";
@@ -55,6 +56,7 @@ const char* AST::AST::decodeType() const
         case Type::ControlStatement:     return "ControlStatement";
         case Type::EnumDefinition:       return "EnumDefinition";
         case Type::Expression:           return "Expression";
+        case Type::Fence:                return "Fence";
         case Type::ForkJoin:             return "ForkJoin";
         case Type::FunctionCall:         return "FunctionCall";
         case Type::FunctionDef:          return "FunctionDef";

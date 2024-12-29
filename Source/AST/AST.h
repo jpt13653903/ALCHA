@@ -40,6 +40,7 @@ namespace AST{
         enum class Type{
             AccessDirectionGroup,
             Alias,
+            Array,
             Assert,
             Assignment,
             ClassDefinition,
@@ -48,6 +49,7 @@ namespace AST{
             ControlStatement,
             EnumDefinition,
             Expression,
+            Fence,
             ForkJoin,
             FunctionCall,
             FunctionDef,

@@ -18,28 +18,43 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Slice_h
-#define AST_Slice_h
+#include "Array.h"
 //------------------------------------------------------------------------------
 
-#include "AST.h"
-
-#include <string>
+using std::string;
+using namespace AST;
 //------------------------------------------------------------------------------
 
-namespace AST{
-    struct Slice: public AST{
-        AST* array = 0;
-        AST* slice = 0;
-
-        Slice(int line, int filenameIndex);
-       ~Slice();
-
-        std::string print(int indent = 0) const override;
-    };
+Array::Array(int line, int filenameIndex):
+    AST(line, filenameIndex, Type::Array)
+{
 }
 //------------------------------------------------------------------------------
 
-#endif
+Array::~Array()
+{
+    if(members) delete members;
+}
+//------------------------------------------------------------------------------
+
+std::string Array::print(int indent) const
+{
+    string result;
+
+    for(int n = 0; n < indent; n++) result += "    ";
+
+    bool first = true;
+    result += "[ ";
+    auto member = members;
+    while(member){
+        if(!first) result += ", ";
+        first   = false;
+        result += member->print(indent);
+        member  = member->next;
+    }
+    result += " ]";
+
+    return result;
+}
 //------------------------------------------------------------------------------
 

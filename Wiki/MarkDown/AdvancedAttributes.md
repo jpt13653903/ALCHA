@@ -1,9 +1,9 @@
 # ALCHA
 
 <img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
-The ALCHA project, including the language grammar and, by extension, this 
-wiki, is under development.  This wiki serves as a documentation of the 
-project goals and aspirations, which are inherently unstable and subject to 
+The ALCHA project, including the language grammar and, by extension, this
+wiki, is under development.  This wiki serves as a documentation of the
+project goals and aspirations, which are inherently unstable and subject to
 change without notice.
 
 --------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ In large designs, it is often useful to specify the physical location of each en
 
 The ALCHA equivalent of this is shown below, which is significantly less verbose.  The region is defined by means of an origin coordinate, width and height.  The origin is on the bottom-left of the bounding box.  If no coordinate is specified, the compiler sets the `LL_STATE` property to `FLOATING`.  If no width or height is specified, the compiler sets the `LL_AUTO_SIZE` property to `ON`.  The name of the region is chosen, by the compiler, based on the name of the object the attribute is assigned to.
 
-```C++
+```alcha
   DPS(/* Parameters */)<region = "X44, Y145, W40, H5"> MyDSP;
 ```
 
@@ -75,7 +75,7 @@ Xilinx Vivado and Altera Quartus both allow the user to break large designs into
 
 ALCHA attributes can be used to perform this partitioning, thereby making it easier to move modules from one partition to another.  Any module or net can be placed within a design partition, which is referenced by name.  The code below shows an example where the `DFE` and `DataPacker` modules are placed in the same partition, and the `DSP` module in another.  The `DFE` and `DataPacker` modules uses the fitter netlist, whereas the `DSP` module uses the synthesis netlist.
 
-```C++
+```alcha
   // Define a default -- also applies to the "Top" partition
   'partition_type = "Fitter";
 
@@ -107,7 +107,7 @@ Where overflow and rounding are concerned, assignment behaviour follows the attr
 
 The concept is illustrated below.  The rounding operation includes an addition, which might overflow.  If the target width is not enough to store the carry bit, the compiler uses the current "overflow" mode to handle the situation.
 
-```C++
+```alcha
   net(8, 16) A, B;
   net(8,  1) C, D;
   net(8,  4) X = 0.11; // binary "00.000111"
@@ -123,7 +123,7 @@ The concept is illustrated below.  The rounding operation includes an addition, 
 
 The Verilog equivalent of the above is:
 
-```Verilog
+```verilog
   wire [ 3:-4] A, B;
   wire [-1:-8] C, D;
   wire [ 1:-6] X = 8'b00_000111;

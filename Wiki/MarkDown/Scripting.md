@@ -1,9 +1,9 @@
 # ALCHA
 
 <img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
-The ALCHA project, including the language grammar and, by extension, this 
-wiki, is under development.  This wiki serves as a documentation of the 
-project goals and aspirations, which are inherently unstable and subject to 
+The ALCHA project, including the language grammar and, by extension, this
+wiki, is under development.  This wiki serves as a documentation of the
+project goals and aspirations, which are inherently unstable and subject to
 change without notice.
 
 --------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ Like [Migen](https://github.com/m-labs/migen), ALCHA supports algorithmic code g
 
 The user can, for example, use a scripting `for` loop to generate a `switch`-statement based look-up table, as illustrated in the code below.  The scripting interpreter will duplicate the part of the AST containing the `case` and assignment, updating the constants during each iteration.  The same feature can be used to implement conditional compilation.
 
-```C++
+```alcha
   net( 5) x;
   net(32) y;
   num     n;
@@ -97,7 +97,7 @@ Fast Fourier transforms (FFTs) are implemented by means of the [FFTW library](ht
 
 ALCHA supports two types of file access: binary and text-based.  Binary files make use of the `byte` base type, whereas text files make use of the `char` base type.  A `byte` is an 8-bit one-to-one mapping to the physical file bytes.  A `char` is a UTF-32 representation of a UTF-8 encoded file.  The code below shows an example of how file I/O is used in ALCHA.
 
-```C++
+```alcha
   byte Data[] = read("MyDataFile.dat");
   char Log [] = "";  // An array of UTF-32 characters
 
@@ -128,15 +128,16 @@ The core ALCHA language does not have functions to read specific file formats, s
 
 While reading and writing text-based files, it is often required to convert between numerical variables (of type `num`) and strings.  The functions presented below can be used for this purpose:
 
-Function  | Description
---------  | -----------
-`$x`      | Converts variable `x` to a string.
-`$(x, S)` | Converts expression `x` to a string.  The base and other parameters are controlled by means of the optional format string `S`, which takes a C `printf`-style format string.
-`eval(S)` | Converts a string `S` to a number.  The scripting interpreter makes use of the same expression engine used in [Engineering Calculator](https://sourceforge.net/p/alwaysontopcalc/wiki).
+Function        | Description
+--------        | -----------
+`$x`            | Converts variable `x` to a string.
+`$(x, S)`       | Converts expression `x` to a string.  The base and other parameters are controlled by means of the optional format string `S`, which takes a C `printf`-style format string.
+`eval(S)`       | Converts a string `S` to a number.  The scripting interpreter makes use of the same expression engine used in [Engineering Calculator](https://sourceforge.net/p/alwaysontopcalc/wiki).
+`$"..{x, S}.."` | Interpolated string.  Equivalent to `".." + $(x, S) + ".."`.
 
 It is similarly useful to be able to convert `byte` arrays to `num` types, and vice versa.  A `byte` array can be assigned directly to a `num` type, and vice versa, in which case the array is evaluated in big Endian order (so that the assignments are compatible with packed structures).  The code below shows some examples.
 
-```C++
+```alcha
   byte b[4] = [1, 2, 3, 4]; // b[0] = 1; b[1] = 2; ...
   num  n;
 
@@ -154,7 +155,7 @@ It is similarly useful to be able to convert `byte` arrays to `num` types, and v
 
 Scriping arrays can be declared as dynamic by specifying empty square brackets.  The array size is adjusted depending on the assignment.  While building the contents of a text file, for instance, the code might look as follows:
 
-```C++
+```alcha
   char Buffer[] = "";
   // Some code...
   Buffer ~= "Header\n";
@@ -173,7 +174,7 @@ ALCHA scripting is not sufficient for all scenarios of circuit parametrisation. 
 
 External commands can be called by means of the `shell` function.  It returns the error code of the function called.  The `shell` function is a blocking call, so that the external tool can finish before the ALCHA script interpreter continues.  The code below shows an example.
 
-```C++
+```alcha
   !! Dynamically build the register addresses here
 
   textwrite("RegDefs.h", RegDefs);

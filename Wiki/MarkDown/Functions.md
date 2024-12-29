@@ -1,9 +1,9 @@
 # ALCHA
 
 <img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
-The ALCHA project, including the language grammar and, by extension, this 
-wiki, is under development.  This wiki serves as a documentation of the 
-project goals and aspirations, which are inherently unstable and subject to 
+The ALCHA project, including the language grammar and, by extension, this
+wiki, is under development.  This wiki serves as a documentation of the
+project goals and aspirations, which are inherently unstable and subject to
 change without notice.
 
 --------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ The parameter types do not need to be defined in the function, but can be inferr
 
 Functions in ALCHA are defined in similar fashion as C, as illustrated in the example below.
 
-```C++
+```alcha
   net(8) Add(net(8) A, net(8) B){
     Add = A + B;
   }
@@ -56,7 +56,7 @@ Functions in ALCHA are defined in similar fashion as C, as illustrated in the ex
 
 Functions also support default parameters and named parameter assignment, as illustrated below:
 
-```C++
+```alcha
   auto MyFunction(A, B, C = 7, D = 2){
     // Function body
   }
@@ -66,7 +66,7 @@ Functions also support default parameters and named parameter assignment, as ill
 
 Combinational functions can be called from anywhere, including the bodies of clocked structures.  Functions can also be called in vectorised form, which is especially useful when combined with array slicing.  The adder above can be called as follows:
 
-```C++
+```alcha
   net(8) x[4], y[4], z[4];
   z = Add(x, y);
 
@@ -79,7 +79,7 @@ Combinational functions can be called from anywhere, including the bodies of clo
 
 Arrays and scalars can be mixed in the call, as follows:
 
-```C++
+```alcha
   net(8) x, y[4], z[4];
   z = Add(x, y);
 
@@ -92,7 +92,7 @@ Arrays and scalars can be mixed in the call, as follows:
 
 If the function takes an array as a parameter, the same rules apply.  The function can be called with a higher-dimension array, as follows:
 
-```C++
+```alcha
   net(18) Dot(A[], B[]){
     Dot  = A[1] * B[1];
     Dot += A[2] * B[2];
@@ -106,7 +106,7 @@ If the function takes an array as a parameter, the same rules apply.  The functi
 
 To return an array, the function name should be defined as an array, as follows:
 
-```C++
+```alcha
   net(16, -8) Mult[4][4](A[][], B[][]){
     int i, j, k;
     for(i in 0..3){
@@ -150,7 +150,7 @@ When calling a function from an RTL structure, the same rules apply as for calli
 
 In order to illustrate the use of functions within state machines, here follows an example of a simple SPI interface in ALCHA, as well as its equivalent Verilog:
 
-```C++
+```alcha
   pin<frequency = 50e6> Clk;
 
   pin Reset;
@@ -197,7 +197,7 @@ In order to illustrate the use of functions within state machines, here follows 
 
 Which is equivalent to:
 
-```Verilog
+```verilog
   module SPI_Send(
     input       Clk,
     input       Reset,

@@ -1,9 +1,9 @@
 # ALCHA
 
 <img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
-The ALCHA project, including the language grammar and, by extension, this 
-wiki, is under development.  This wiki serves as a documentation of the 
-project goals and aspirations, which are inherently unstable and subject to 
+The ALCHA project, including the language grammar and, by extension, this
+wiki, is under development.  This wiki serves as a documentation of the
+project goals and aspirations, which are inherently unstable and subject to
 change without notice.
 
 --------------------------------------------------------------------------------
@@ -55,7 +55,7 @@ ALCHA classes can have member functions.  These behave the same as any other ALC
 
 A variable defined with a class type is actually a reference to that class.  Calling the class, as if it is a function, executes the constructor and returns a reference to a new instance of that class.  The class instance is automatically destroyed when no more references to it exists (similar to Python).  This mechanism enables expressions such as:
 
-```C++
+```alcha
   class vec4(x, y, z, w){
     num dot(vec4 V){
       dot = V.x*x + V.y*y + V.z*z + V.w*w;
@@ -69,7 +69,7 @@ A variable defined with a class type is actually a reference to that class.  Cal
 
 When calling a function, the function name becomes a reference to the target variable, and the parameters are references to the input parameters.  This can be used to define abstractions of streaming processors, for instance.  An example of how a digital signal processing chain might be implemented is presented below:
 
-```C++
+```alcha
   class STREAM(num Width = 8){
     net(Width) Data;
     net        Valid;
@@ -107,7 +107,7 @@ When calling a function, the function name becomes a reference to the target var
 
 ALCHA classes support multiple inheritance.  The parent classes are specified by means of a comma-separated list after a colon.  The ADC class used in the example above might, for instance, be defined as follows:
 
-```C++
+```alcha
   group<standard = "CMOS", voltage = "2.5 V"> ADC{
     group Data{
       pin    <location = "B7"> Clock = 0; // From FPGA to ADC
@@ -152,7 +152,7 @@ If there are more than one candidate function, the compiler issues an error.  Th
 
 Whenever a class is instantiated, the instance can be assigned various attributes (in similar fashion to pins and nets).  A typical attribute that might be assigned is the `location`, which indicates where on the FPGA the class instance should be placed.  The exact details of this has not been finalised yet, but it is envisioned that the developer can define a rectangle in normalised coordinates, similar to the example below:
 
-```C++
+```alcha
   class SomeModule{
     // Some members
   }

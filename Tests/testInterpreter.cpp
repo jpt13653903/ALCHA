@@ -137,7 +137,7 @@ int main(int argc, const char** argv)
     setupTerminal();
 
     printf("\n");
-    if(!testParser() ) goto MainError;
+    if(!testParser()) goto MainError;
 
     endTest("All OK");
     if(ast) delete ast;

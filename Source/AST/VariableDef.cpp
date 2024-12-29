@@ -110,7 +110,12 @@ std::string VariableDef::print(int indent) const
             arrayDef = arrayDef->next;
         }
         if(def->initialiser){
-            result += " = ";
+            switch(def->initType){
+                case Token::Type::Assign:    result += " = ";  break;
+                case Token::Type::RawAssign: result += " := "; break;
+
+                default: result += " Invalid initialiser type "; break;
+            }
             result += def->initialiser->print();
         }
         def = def->next;

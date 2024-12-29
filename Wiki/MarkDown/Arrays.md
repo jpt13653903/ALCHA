@@ -1,9 +1,9 @@
 # ALCHA
 
 <img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
-The ALCHA project, including the language grammar and, by extension, this 
-wiki, is under development.  This wiki serves as a documentation of the 
-project goals and aspirations, which are inherently unstable and subject to 
+The ALCHA project, including the language grammar and, by extension, this
+wiki, is under development.  This wiki serves as a documentation of the
+project goals and aspirations, which are inherently unstable and subject to
 change without notice.
 
 --------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ ALCHA supports fixed-length arrays for synthesisable types, and variable-length 
 
 Each new dimension is defined by means of a positive integer in square brackets, representing the number of elements in that dimension.  An example is presented below:
 
-```C++
+```alcha
   net(8) A[16];      // A 16-element array of 8-bit unsigned integers
   net(8) B[3][4][5]; // A 3-dimensional array of 8-bit unsigned integers
 ```
@@ -52,7 +52,7 @@ Array elements can be addressed by means of slices.  The bits are modelled as th
 
 Any bit-slice removes the fixed-point format.  The result of a bit-slice is always an unsigned integer with as many bits as in the slice.  Some examples are presented below:
 
-```C++
+```alcha
   net(16, 8) A[16];
   A[5]            // Element 5 of A (the 6th element).
   A[][15->13]     // All the elements of A, but only the integer bits
@@ -65,7 +65,7 @@ Any bit-slice removes the fixed-point format.  The result of a bit-slice is alwa
 
 The indices can also be specified by means of a number array, as follows:
 
-```C++
+```alcha
   net(8) A[16];
   num    B[5] = [4, 2, 7, 1, 12];
   A[B]        // Elements 4, 2, 7, 1 and 12 of A, in that order
@@ -76,7 +76,7 @@ The indices can also be specified by means of a number array, as follows:
 
 Array literals are useful for vectorised operations.  There are many forms, which are illustrated in the example below:
 
-```C++
+```alcha
   [0, 1, 2, 3]    // 4-element array
   [0..3]          // Same as above
   [0..4:2]        // The elements 0, 2 and 4
@@ -88,7 +88,7 @@ Array literals are useful for vectorised operations.  There are many forms, whic
 
 Array slices can be used in vectorised statements.  Vectorised operations apply the operation to each element of the array as if it was specified separately for each element.  This works for scalar functions as well.  Below are some examples:
 
-```C++
+```alcha
   auto Add(A, B){
     return A + B;
   }

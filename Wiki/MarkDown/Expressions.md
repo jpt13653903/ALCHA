@@ -1,9 +1,9 @@
 # ALCHA
 
 <img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
-The ALCHA project, including the language grammar and, by extension, this 
-wiki, is under development.  This wiki serves as a documentation of the 
-project goals and aspirations, which are inherently unstable and subject to 
+The ALCHA project, including the language grammar and, by extension, this
+wiki, is under development.  This wiki serves as a documentation of the
+project goals and aspirations, which are inherently unstable and subject to
 change without notice.
 
 --------------------------------------------------------------------------------
@@ -150,7 +150,7 @@ Defining an attribute puts it in the current namespace.  Accessing a namespace r
 
 When describing FPGA firmware it is often necessary to use a net before a value is assigned.  This could occur when using parametrised classes, or clocked structures with external combinational feedback.  The code below provides two examples:
 
-```C++
+```alcha
   class Adder(N){ // Parametrisation is presented in the scripting section
     net(N) A, B;
     net(N) Y;
@@ -170,7 +170,7 @@ When describing FPGA firmware it is often necessary to use a net before a value 
 
 The Verilog equivalent of the above is:
 
-```Verilog
+```verilog
   module Adder #(parameter N)(
     input  [N-1:0]A,
     input  [N-1:0]B,
@@ -189,7 +189,7 @@ The Verilog equivalent of the above is:
 
 And here is another example:
 
-```C++
+```alcha
   net(8) Counter;
   UserClk = (Counter == 125); // "Counter" has no value yet
   rtl(CPUClock){

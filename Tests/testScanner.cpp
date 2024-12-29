@@ -53,6 +53,29 @@ bool startTest(const char* name)
 }
 //------------------------------------------------------------------------------
 
+inline char to_string(int i)
+{
+    return "0123456789abcdef"[i];
+}
+//------------------------------------------------------------------------------
+
+string expand(const string& s)
+{
+    string result;
+    for(auto c: s){
+        if(c == '\e' || c >= 0x20){
+            result += c;
+        }else{
+            unsigned u = (unsigned char)c;
+            result += "\\x";
+            result += to_string(u / 16);
+            result += to_string(u % 16);
+        }
+    }
+    return result;
+}
+//------------------------------------------------------------------------------
+
 void printError(Token& token, int line, Token::Type type, Number value, const char* data)
 {
     string got = token.print();
@@ -66,8 +89,8 @@ void printError(Token& token, int line, Token::Type type, Number value, const ch
            ANSI_FG_GREEN      "    Expected: %s\n"
            ANSI_FG_BRIGHT_RED "    Got:      %s\n"
            ANSI_RESET,
-           expected.c_str(),
-           got.c_str());
+           expand(expected).c_str(),
+           expand(got).c_str());
 }
 //------------------------------------------------------------------------------
 
@@ -278,7 +301,7 @@ bool testOperators()
         { 113, Token::Type::Intersect,              0, "&&&" },
         { 113, Token::Type::EndOfFile,              0, ""    }
     };
-    runTest(expected);
+    if(!runTest(expected)) return false;
 
     endTest();
     return true;
@@ -438,8 +461,12 @@ bool testOthers()
 
         {  85, Token::Type::String, 0,
            "This is a string of keywords private pin net\n"
-           "\n \t \v \b \r \f \a \\ \? \' \" "
-           "\x0F""BC \xE2\x86\x92""AB \xF0\x9F\x98\x81""EFEFEFE \xF0\x9F\x98\x8E "
+           "\n \t \v \b \r \f \e \a \\ \? \' \" "
+           "\xc2\xab"
+           " \x0F"
+           "BC \xE2\x86\x92"
+           "AB \xF0\x9F\x98\x81"
+           "EFEFEFE \xF0\x9F\x98\x8E "
            "\xE2\x80\x93\n"
            "Some more string" },
 
@@ -498,7 +525,7 @@ bool testOthers()
 
         { 106, Token::Type::EndOfFile, 0, "" },
     };
-    runTest(expected);
+    if(!runTest(expected)) return false;
 
     endTest();
     return true;
@@ -512,9 +539,9 @@ int main(int argc, const char** argv)
     setupTerminal();
 
     printf("\n");
-    if(!testKeywords() ) goto MainError;
+    if(!testKeywords ()) goto MainError;
     if(!testOperators()) goto MainError;
-    if(!testOthers()   ) goto MainError;
+    if(!testOthers   ()) goto MainError;
 
     printf(ANSI_FG_GREEN "\nAll OK\n" ANSI_FG_BRIGHT_BLACK
            "----------------------------------------"

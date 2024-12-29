@@ -83,7 +83,7 @@ comment */
 }
 
 "This is a string of keywords private pin net
-\n \t \v \b \r \f \a \\ \? \' \" \x0FBC \u2192AB "
+\n \t \v \b \r \f \e \a \\ \? \' \" \xab \x0FBC \u2192AB "
 "\U0001F601EFEFEFE \373016 \&ndash;
 Some more string"
 

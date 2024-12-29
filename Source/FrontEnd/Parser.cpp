@@ -24,6 +24,7 @@
 
 #include "AST/AccessDirectionGroup.h"
 #include "AST/Alias.h"
+#include "AST/Array.h"
 #include "AST/Assert.h"
 #include "AST/Assignment.h"
 #include "AST/ClassDefinition.h"
@@ -32,6 +33,7 @@
 #include "AST/ControlStatement.h"
 #include "AST/EnumDefinition.h"
 #include "AST/Expression.h"
+#include "AST/Fence.h"
 #include "AST/ForkJoin.h"
 #include "AST/FunctionCall.h"
 #include "AST/FunctionDef.h"
@@ -556,6 +558,7 @@ AST::AST* Parser::reduction()
         case Token::Type::LogicalNot:{
             auto result = new AST::Expression(line, astFilenameIndex);
             result->operation = operation;
+            getToken();
             result->right = range();
             if(!result->right){
                 printError("Invalid reduction expression");
@@ -891,10 +894,13 @@ AST::AST* Parser::concatenate()
 // Array = "[" [ ExpressionList ] "]";
 AST::AST* Parser::array()
 {
+    auto result = new AST::Array(token.line, astFilenameIndex);
+
     getToken();
-    auto result = expressionList();
+    result->members = expressionList();
     if(token.type != Token::Type::CloseSquare){
         printError("] expected");
+        delete result;
         return 0;
     }
     getToken();
@@ -1332,7 +1338,6 @@ AST::AST* Parser::variableDefList(
     AST::AST*    attributes)
 {
     bool   isList = false;
-    bool   isVariableDef = false; // Can also be a FunctionDef
     string identifier;
 
     AST::AST* result = 0;
@@ -1340,6 +1345,7 @@ AST::AST* Parser::variableDefList(
 
     AST::AST* arrayDefs   = 0;
     AST::AST* initialiser = 0;
+    auto      initType    = Token::Type::Unknown;
 
     while(token.type > Token::Type::EndOfFile){
         if(token.type == Token::Type::Identifier){
@@ -1352,7 +1358,6 @@ AST::AST* Parser::variableDefList(
             if(initialiser) delete initialiser;
             return 0;
         }
-
         AST::AST* lastArrayDef = 0;
         while(token.type == Token::Type::OpenSquare){
             auto current = arrayDefinition();
@@ -1364,9 +1369,10 @@ AST::AST* Parser::variableDefList(
             }
             lastArrayDef = current;
         }
-
         switch(token.type){
             case Token::Type::Assign:
+            case Token::Type::RawAssign:
+                initType = token.type;
                 if(isInline){
                     printError("Variables cannot be inline");
                     if(result     ) delete result;
@@ -1374,7 +1380,6 @@ AST::AST* Parser::variableDefList(
                     if(initialiser) delete initialiser;
                     return 0;
                 }
-                isVariableDef = true;
                 getToken();
                 if(initialiser) delete initialiser;
                 initialiser = expression();
@@ -1387,6 +1392,26 @@ AST::AST* Parser::variableDefList(
                 }
                 break;
 
+            case Token::Type::OpenRound:
+                if(isList){
+                    printError("Unexpected function definition (cannot be part of a list)");
+                    if(result     ) delete result;
+                    if(arrayDefs  ) delete arrayDefs;
+                    if(initialiser) delete initialiser;
+                    return 0;
+                }
+                return functionDef(isInline,
+                                   defType,
+                                   typeIdentifier,
+                                   parameters,
+                                   attributes,
+                                   identifier,
+                                   arrayDefs);
+
+            default:
+                break;
+        }
+        switch(token.type){
             case Token::Type::Comma:{
                 if(isInline){
                     printError("Variables cannot be inline");
@@ -1396,13 +1421,14 @@ AST::AST* Parser::variableDefList(
                     return 0;
                 }
                 isList = true;
-                isVariableDef = true;
                 auto current  = new AST::VariableDef::Definition();
                 current->name        = identifier;
                 current->arrayDefs   = arrayDefs;
+                current->initType    = initType;
                 current->initialiser = initialiser;
                 arrayDefs   = 0;
                 initialiser = 0;
+                initType    = Token::Type::Unknown;
                 if(!result){
                     result = new AST::VariableDef(token.line, astFilenameIndex);
                     auto _result = (AST::VariableDef*)result;
@@ -1429,9 +1455,11 @@ AST::AST* Parser::variableDefList(
                 auto current = new AST::VariableDef::Definition();
                 current->name        = identifier;
                 current->arrayDefs   = arrayDefs;
+                current->initType    = initType;
                 current->initialiser = initialiser;
                 arrayDefs   = 0;
                 initialiser = 0;
+                initType = Token::Type::Unknown;
                 if(!result){
                     result = new AST::VariableDef(token.line, astFilenameIndex);
                     auto _result = (AST::VariableDef*)result;
@@ -1445,29 +1473,6 @@ AST::AST* Parser::variableDefList(
                 }
                 getToken();
                 return result;
-            }
-            case Token::Type::OpenRound:{
-                if(isList){
-                    printError("Unexpected function definition (cannot be part of a list)");
-                    if(result     ) delete result;
-                    if(arrayDefs  ) delete arrayDefs;
-                    if(initialiser) delete initialiser;
-                    return 0;
-                }
-                if(isVariableDef){
-                    printError("Unexpected initialiser before function definition");
-                    if(result     ) delete result;
-                    if(arrayDefs  ) delete arrayDefs;
-                    if(initialiser) delete initialiser;
-                    return 0;
-                }
-                return functionDef(isInline,
-                                   defType,
-                                   typeIdentifier,
-                                   parameters,
-                                   attributes,
-                                   identifier,
-                                   arrayDefs);
             }
             default:
                 printError("Unexpected token");
@@ -1663,16 +1668,18 @@ AST::AST* Parser::parameterDefList()
 
     auto last = result;
 
+    bool first = true;
     while(token.type == Token::Type::Comma){
         getToken();
         auto current = parameterDef();
         if(!current){
-            printError("Parameter definition expected");
+            if(!first) printError("Parameter definition expected");
             delete result;
             return 0;
         }
         last->next = current;
-        last = current;
+        last  = current;
+        first = false;
     }
     return result;
 }
@@ -1684,6 +1691,7 @@ AST::AST* Parser::parameterDef()
 {
     auto result = new AST::ParameterDef(token.line, astFilenameIndex);
 
+    bool foundStuff = false;
     switch(token.type){
         case Token::Type::Pin:
         case Token::Type::Net:
@@ -1693,11 +1701,13 @@ AST::AST* Parser::parameterDef()
         case Token::Type::Char:
         case Token::Type::Num:
         case Token::Type::Func:
+            foundStuff = true;
             result->defType = token.type;
             getToken();
             break;
 
         case Token::Type::Identifier:
+            foundStuff = true;
             result->defType = token.type;
             result->typeIdentifier = typeIdentifier();
             if(!result->typeIdentifier){
@@ -1713,6 +1723,7 @@ AST::AST* Parser::parameterDef()
     }
     if(result->defType != Token::Type::Unknown &&
        token.type == Token::Type::OpenRound    ){
+        foundStuff = true;
         result->parameters = parameterList();
     }
 
@@ -1733,7 +1744,7 @@ AST::AST* Parser::parameterDef()
         result->identifier = token.data;
         getToken();
     }else{
-        printError("Identifier expected");
+        if(foundStuff) printError("Identifier expected");
         delete result;
         return 0;
     }
@@ -2306,14 +2317,10 @@ AST::AST* Parser::hdlParameterList()
         auto last    = result;
         auto current = result;
 
-        while(token.type == Token::Type::Comma){
+        while(token.type > Token::Type::EndOfFile){
             getToken();
             current = hdlParameter();
-            if(!current){
-                printError("Parameter assignment expected");
-                delete result;
-                return 0;
-            }
+            if(!current) break;
             last->next = current;
             last = current;
         }
@@ -2358,6 +2365,12 @@ AST::AST* Parser::hdlParameter()
             delete result;
             return 0;
     }
+    if(token.type != Token::Type::Semicolon){
+        printError("; expected");
+        delete result;
+        return 0;
+    }
+    getToken();
     return result;
 }
 //------------------------------------------------------------------------------
@@ -2855,7 +2868,6 @@ AST::AST* Parser::statement()
 
         case Token::Type::For:
             result = forStatement();
-            printError("TODO: For");
             break;
 
         case Token::Type::While:
@@ -2899,7 +2911,8 @@ AST::AST* Parser::statement()
             break;
 
         case Token::Type::Semicolon:
-            printError("TODO: Fence");
+            result = new AST::Fence(token.line, astFilenameIndex);
+            getToken();
             break;
 
         case Token::Type::EndOfFile:

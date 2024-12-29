@@ -37,8 +37,9 @@ namespace AST{
 
         struct Definition{
             std::string name;
-            AST* arrayDefs   = 0;
-            AST* initialiser = 0;
+            AST*        arrayDefs   = 0;
+            Token::Type initType    = Token::Type::Unknown;
+            AST*        initialiser = 0;
             Definition* next = 0;
 
             ~Definition();

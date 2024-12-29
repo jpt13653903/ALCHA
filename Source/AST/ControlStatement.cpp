@@ -46,12 +46,13 @@ std::string ControlStatement::print(int indent) const
     for(int n = 0; n < indent; n++) result += "    ";
 
     switch(statementType){
-        case Token::Type::If:     result += "if ";     break;
-        case Token::Type::For:    result += "for ";    break;
-        case Token::Type::While:  result += "while ";  break;
-        case Token::Type::Loop:   result += "loop ";   break;
-        case Token::Type::Switch: result += "switch "; break;
-        case Token::Type::Case:   result += "case ";   break;
+        case Token::Type::If:      result += "if ";     break;
+        case Token::Type::For:     result += "for ";    break;
+        case Token::Type::While:   result += "while ";  break;
+        case Token::Type::Loop:    result += "loop ";   break;
+        case Token::Type::Switch:  result += "switch "; break;
+        case Token::Type::Case:    result += "case ";   break;
+        case Token::Type::Default: result += "default ";   break;
         default: result += "Unknown control statement ";
     }
 
