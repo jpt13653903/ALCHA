@@ -1,4 +1,4 @@
-Expression     = BitwiseOR      ( [ "?" Cast ":" Cast ] | [ "?:" Cast ] );
+Expression     = BitwiseOR      ( [ "?" BitwiseOR ":" BitwiseOR ] | [ "?:" BitwiseOR ] );
 BitwiseOR      = BitwiseXOR     { ( "|"  | "~|" )              BitwiseXOR     };
 BitwiseXOR     = BitwiseAND     { ( "^"  | "~^" )              BitwiseAND     };
 BitwiseAND     = Equality       { ( "&"  | "~&" )              Equality       };

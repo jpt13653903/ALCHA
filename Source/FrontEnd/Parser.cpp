@@ -108,7 +108,7 @@ AST::AST* Parser::expression()
     switch(token.type){
         case Token::Type::TernaryIf:{
             getToken();
-            auto truePart = castExpression();
+            auto truePart = bitwiseOr();
             if(!truePart){
                 printError("Invalid true part in ternary expression");
                 delete condition;
@@ -120,7 +120,7 @@ AST::AST* Parser::expression()
                 return 0;
             }
             getToken();
-            auto falsePart = castExpression();
+            auto falsePart = bitwiseOr();
             if(!falsePart){
                 printError("Invalid false part in ternary expression");
                 delete condition;
@@ -136,7 +136,7 @@ AST::AST* Parser::expression()
         }
         case Token::Type::Elvis:{
             getToken();
-            auto falsePart = castExpression();
+            auto falsePart = bitwiseOr();
             if(!falsePart){
                 printError("Invalid false part in elvis expression");
                 delete condition;
@@ -2033,20 +2033,10 @@ AST::AST* Parser::ifStatement()
     getToken();
 
     result->body = statementBlock();
-    if(!result->body){
-        printError("Statement block expected");
-        delete result;
-        return 0;
-    }
 
     if(token.type == Token::Type::Else){
         getToken();
         result->elseBody = statementBlock();
-        if(!result->elseBody){
-            printError("Statement block expected");
-            delete result;
-            return 0;
-        }
     }
     return result;
 }
@@ -2101,11 +2091,6 @@ AST::AST* Parser::forStatement()
     getToken();
 
     result->body = statementBlock();
-    if(!result->body){
-        printError("Statement block expected");
-        delete result;
-        return 0;
-    }
     return result;
 }
 //------------------------------------------------------------------------------
@@ -2143,11 +2128,6 @@ AST::AST* Parser::loopOrSwitchStatement()
     }
 
     result->body = statementBlock();
-    if(!result->body){
-        printError("Statement block expected");
-        delete result;
-        return 0;
-    }
     return result;
 }
 //------------------------------------------------------------------------------
@@ -2183,11 +2163,6 @@ AST::AST* Parser::caseStatement()
         getToken();
     }
     result->body = statementBlock();
-    if(!result->body){
-        printError("Statement block expected");
-        delete result;
-        return 0;
-    }
     return result;
 }
 //------------------------------------------------------------------------------
@@ -2234,11 +2209,6 @@ AST::AST* Parser::clockedConstruct()
         result->parameters = parameterList();
     }
     result->body = statementBlock();
-    if(!result->body){
-        printError("Statement block expected");
-        delete result;
-        return 0;
-    }
     return result;
 }
 //------------------------------------------------------------------------------
@@ -2260,15 +2230,19 @@ AST::AST* Parser::hdlConstruct()
         delete result;
         return 0;
     }
+    bool first = true;
     do{
         getToken();
-        if(token.type != Token::Type::String){
+        if(token.type == Token::Type::String){
+            result->filenames.push_back(token.data);
+            getToken();
+
+        }else if(!first){
             printError("Filename string expected");
             delete result;
             return 0;
         }
-        result->filenames.push_back(token.data);
-        getToken();
+        first = false;
     }while(token.type == Token::Type::Comma);
 
     if(token.type != Token::Type::CloseRound){
@@ -2657,28 +2631,52 @@ AST::AST* Parser::identifierStatement()
                 return 0;
             }
         }
+
         case Token::Type::OpenAngle:
             attributes = attributeList();
-        case Token::Type::Identifier:{
-            if(left->type == AST::AST::Type::FunctionCall){
-                auto _left = (AST::FunctionCall*)left;
-                auto result = variableDefList(false,
-                                              Token::Type::Identifier,
-                                              _left->name,
-                                              _left->parameters,
-                                              attributes);
-                _left->name       = 0;
-                _left->parameters = 0;
-                delete left;
-                return result;
+        case Token::Type::Operator:
+        case Token::Type::Identifier:
+            if(token.type == Token::Type::Operator){
+                if(left->type == AST::AST::Type::FunctionCall){
+                    auto _left = (AST::FunctionCall*)left;
+                    auto result = operatorOverload(false,
+                                                   Token::Type::Identifier,
+                                                   _left->name,
+                                                   _left->parameters,
+                                                   attributes);
+                    _left->name       = 0;
+                    _left->parameters = 0;
+                    delete left;
+                    return result;
+
+                }else{
+                    return operatorOverload(false,
+                                            Token::Type::Identifier,
+                                            left,
+                                            0,
+                                            attributes);
+                }
             }else{
-                return variableDefList(false,
-                                       Token::Type::Identifier,
-                                       left,
-                                       0,
-                                       attributes);
+                if(left->type == AST::AST::Type::FunctionCall){
+                    auto _left = (AST::FunctionCall*)left;
+                    auto result = variableDefList(false,
+                                                  Token::Type::Identifier,
+                                                  _left->name,
+                                                  _left->parameters,
+                                                  attributes);
+                    _left->name       = 0;
+                    _left->parameters = 0;
+                    delete left;
+                    return result;
+
+                }else{
+                    return variableDefList(false,
+                                           Token::Type::Identifier,
+                                           left,
+                                           0,
+                                           attributes);
+                }
             }
-        }
 
         case Token::Type::AccessMemberPush:{
             auto result = new AST::NameSpacePush(token.line, astFilenameIndex);
@@ -2790,7 +2788,13 @@ AST::AST* Parser::statementBlock()
         getToken();
         return result;
     }
-    return statement();
+    auto result = statement();
+    if(!result){
+        printError("Statement block expected");
+        if(result) delete result;
+        return 0;
+    }
+    return result;
 }
 //------------------------------------------------------------------------------
 
@@ -2815,6 +2819,9 @@ AST::AST* Parser::statement()
     switch(token.type){
         case Token::Type::Identifier:
         case Token::Type::AccessAttribute:
+        case Token::Type::Concatenate:
+        case Token::Type::ArrayConcatenate:
+        case Token::Type::OpenSquare:
             result = identifierStatement();
             break;
 
