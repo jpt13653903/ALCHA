@@ -5,6 +5,9 @@ A New Programming Language for FPGA Projects &ndash; **currently in pre-alpha**.
 ALCHA aims to reduce FPGA project develop time by means of automation and abstraction,
 but without loosing the low-level control that HDLs, such as Verilog, provide.
 
+Development is happening in the [develop](https://github.com/jpt13653903/ALCHA/tree/develop)
+branch, so it's best to track it instead of master.  The latest stuff is in feature branches.
+
 ## Features
 
 - Compile to complete vendor-specific project from largely vendor-neutral source
