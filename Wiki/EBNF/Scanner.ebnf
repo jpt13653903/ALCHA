@@ -17,13 +17,13 @@ H = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
   | "a" | "b" | "c" | "d" | "e" | "f" | "A" | "B" | "C" | "D" | "E" | "F";
 
 NonDigit = ?"a".."z"? | ?"A".."Z"? | "_"
-         | (? Any Unicode >= U+80 ? -Space -Newline);
+         | ( ? Any Unicode >= U+80 ? -Space -Newline );
 (*----------------------------------------------------------------------------*)
 
-LineComment   = "//" {? Any byte sequence ? -Newline} Newline;
-ToDoComment   = "!!" {? Any byte sequence ? -Newline} Newline;
-BlockComment  = "/*" {? Any byte sequence ? -"*/"} "*/";
-NestedComment = "/+" {NestedComment | (? Any byte sequence ? -"+/")} "+/";
+LineComment   = "//" { ? Any byte sequence ? -Newline } Newline;
+ToDoComment   = "!!" { ? Any byte sequence ? -Newline } Newline;
+BlockComment  = "/*" { ? Any byte sequence ? -"*/" } "*/";
+NestedComment = "/+" { NestedComment | ( ? Any byte sequence ? -"+/" ) } "+/";
 (*----------------------------------------------------------------------------*)
 
 Token      = String | Literal | Keyword | Identifier | Operator;
@@ -60,24 +60,29 @@ Operator   = "++" | "--" | "'"  | ".."  | ":"   | "."   | ".{"
            | "@"  | "#"  | "##" | "[*"  | "[->" | "[="  | "|->" | "|=>"
            | "||" | "&&" | "&&&" ;
 
-Literal        = Binary | Octal | Hexadecimal | Decimal [Exponent] ["i" | "j"];
+Literal        = Binary | Octal | Hexadecimal | Decimal [ Exponent] [ "i" | "j" ] ;
 
-Identifier     = (NonDigit {D | NonDigit}) -Keyword;
+Identifier     = ( NonDigit { D | NonDigit } ) -Keyword;
 
-String         = (  '"' {(Byte -'"' -"\")      | EscapeSequence                        } '"' [String] )
-               | ( '$"' {(Byte -'"' -"\" -"{") | EscapeSequence | ( "{" Expression "}")} '"' [String] );
+String         = (  '"' { ( Byte -'"' -"\") | EscapeSequence } '"' [ String ] )
+               | InterpolatedString;
+
+(* Interpolated strings cannot be nested *)
+(* The second expression must evaluate to a format string *)
+InterpolatedString = ( '$"' { ( Byte -'"' -"\" -"{" ) | EscapeSequence |
+                     ( "{" Expression [ "," Expression ] "}" ) } '"' [ String ] );
 
 EscapeSequence = "\n" | "\t" | "\v" | "\b" | "\r" | "\f"
                | "\e" | "\a" | "\\" | "\?" | "\'" | '\"' | "\{" | "\}"
-               | ("\x" H H) | ("\u" H H H H) | ("\U" H H H H H H H H)
-               | ("\" O {O})
-               | ("\&" ? Any of the HTML-5 character names ? ";");
+               | ( "\x" H H) | ( "\u" H H H H) | ( "\U" H H H H H H H H)
+               | ( "\" O { O } )
+               | ( "\&" ? Any of the HTML-5 character names ? ";" ) ;
 
-Binary      = "0b" ((B | "_") {B | "_"} ["." (B | "_") {B | "_"}]);
-Octal       = "0o" ((O | "_") {O | "_"} ["." (O | "_") {O | "_"}]);
-Decimal     =        D        {D | "_"} ["." (D | "_") {D | "_"}] ;
-Hexadecimal = "0x" ((H | "_") {H | "_"} ["." (H | "_") {H | "_"}]);
+Binary      = "0b" ( ( B | "_") { B | "_"} [ "." ( B | "_") { B | "_" } ] );
+Octal       = "0o" ( ( O | "_") { O | "_"} [ "." ( O | "_") { O | "_" } ] );
+Decimal     =          D        { D | "_"} [ "." ( D | "_") { D | "_" } ]  ;
+Hexadecimal = "0x" ( ( H | "_") { H | "_"} [ "." ( H | "_") { H | "_" } ] );
 
-Exponent    = ("p" | "P" | "e" | "E") ["-" | "+"] D {D};
+Exponent    = ( "p" | "P" | "e" | "E") [ "-" | "+"] D { D } ;
 (*----------------------------------------------------------------------------*)
 

@@ -1,31 +1,31 @@
-Module = [Statements];
+Module = [ Statements ];
 
 (* Wait statements only valid within Stimulus and Emulate blocks *)
-Statements = Statement {Statement};
-Statement  = [Wait]
-             (Label | Definition | ClassDefinition | EnumDefinition
+Statements = Statement { Statement };
+Statement  = [ Wait ]
+             ( Label | Definition | ClassDefinition | EnumDefinition
            | Alias | Import | Struct | Group | AccessDirectionGroup
            | IfStatement | For | While  | Loop | Switch | Case | Jump | GoTo
            | FunctionCallStatement | NamespacePush | Assignment
            | RTL | FSM | HDL
-           | Stimulus | Emulate | ForkJoin | Assert | ";");
+           | Stimulus | Emulate | ForkJoin | Assert | ";" );
 
 Label  = Identifier ":"; (* Only useful within an fsm construct *)
 
 (* Inline only applies to function definitions *)
-Definition = ["inline"] ( BaseType | TypeIdentifier ) [ParameterList]
-             [AttributeList] (VariableDefList | FunctionDef | OperatorOverload);
+Definition = [ "inline" ] ( BaseType | TypeIdentifier ) [ ParameterList ]
+             [ AttributeList ] ( VariableDefList | FunctionDef | OperatorOverload );
 
-ClassDefinition = "class" [AttributeList] Identifier
-                  ["(" [ParameterDefList] ")"]
+ClassDefinition = "class" [ AttributeList ] Identifier
+                  [ "(" [ ParameterDefList ] ")" ]
                   [
-                    ":" TypeIdentifier [ParameterList]
-                   {"," TypeIdentifier [ParameterList]}
+                    ":" TypeIdentifier [ ParameterList ]
+                    { "," TypeIdentifier [ ParameterList ] }
                   ]
-                  "{" [Statements] "}";
+                  "{" [ Statements ] "}";
 
 (* Only useful within a class body *)
-AccessDirectionGroup = ( ( AccessSpecifier [DirectionSpecifier] ) |
+AccessDirectionGroup = ( ( AccessSpecifier [ DirectionSpecifier ] ) |
                          ( DirectionSpecifier ) ) StatementBlock;
 AccessSpecifier    = "public" | "private" | "protected";
 DirectionSpecifier = "input" | "output";
@@ -35,27 +35,27 @@ BaseType = "pin"  | "net"          (* Synthesisable types *)
          | "byte" | "char" | "num" (* Scripting types     *)
          | "func" ;                (* Function pointer    *)
 
-VariableDefList  = VariableDef {"," VariableDef} ";";
-VariableDef      = Identifier {ArrayDefinition} [Initialiser];
-FunctionDef      = (Identifier {ArrayDefinition})
-                   "(" [ParameterDefList] ")"
-                   "{" [Statements] "}" ;
-OperatorOverload = ("operator" Operator)
-                   "(" [ParameterDefList] ")"
-                   "{" [Statements] "}" ;
+VariableDefList  = VariableDef { "," VariableDef } ";";
+VariableDef      = Identifier { ArrayDefinition } [ Initialiser ];
+FunctionDef      = ( Identifier { ArrayDefinition } )
+                   "(" [ ParameterDefList ] ")"
+                   "{" [ Statements ] "}" ;
+OperatorOverload = ( "operator" Operator )
+                   "(" [ ParameterDefList ] ")"
+                   "{" [ Statements ] "}" ;
 
-ArrayDefinition  = "[" [Expression] "]";
-Initialiser      = ("=" | ":=") Expression;
+ArrayDefinition  = "[" [ Expression ] "]";
+Initialiser      = ( "=" | ":=" ) Expression;
 
-ParameterDefList = ParameterDef {"," ParameterDef};
-ParameterDef     = [(BaseType | TypeIdentifier) [ParameterList]]
-                   Identifier {"[" "]"} [Initialiser];
+ParameterDefList = ParameterDef { "," ParameterDef };
+ParameterDef     = [ ( BaseType | TypeIdentifier ) [ ParameterList ] ]
+                   Identifier { "[" "]" } [ Initialiser ];
 
-AttributeList       = "<" AttributeAssignment {"," AttributeAssignment} ">";
+AttributeList       = "<" AttributeAssignment { "," AttributeAssignment } ">";
 AttributeAssignment = Identifier "=" Primary;
 
-EnumDefinition = "enum" Identifier "{" Identifier {"," Identifier} "}";
+EnumDefinition = "enum" Identifier "{" Identifier { "," Identifier } "}";
 
-TypeIdentifier = Identifier {"." Identifier}; (* NameSpace.TypeName *)
+TypeIdentifier = Identifier { "." Identifier }; (* NameSpace.TypeName *)
 (*----------------------------------------------------------------------------*)
 
