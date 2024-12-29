@@ -146,6 +146,9 @@ struct Token{
             Literal,
             String,
 
+            InterpolatedStringPart,
+            InterpolatedStringEnd,
+
         // Aliases .............................................................
             AndReduce   = BitAnd,
             NandReduce  = BitNand,

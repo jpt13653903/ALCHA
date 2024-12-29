@@ -676,14 +676,40 @@ bool Scanner::getLiteral(Token* token)
 
 bool Scanner::getString(Token* token)
 {
+    bool     interpolated = false;
     int      n;
     unsigned digit, utf32;
 
-    if(buffer[index] != '"') return false;
+    if(inInterpolatedString){
+        if(buffer[index] == '"'){
+            printError("Unmatched braces in interpolated string");
+            return false;
+        }
+        if(buffer[index] != '}') return false;
+        index++;
+        interpolated = true;
+        inInterpolatedString = false;
+        token->type = Token::Type::InterpolatedStringPart;
 
-    token->type = Token::Type::String;
+    }else{
+        switch(buffer[index]){
+            case '"':
+                index++;
+                token->type = Token::Type::String;
+                break;
 
-    index++;
+            case '$':
+                if(buffer[index+1] != '"') return false;
+                index += 2;
+                interpolated = true;
+                token->type = Token::Type::InterpolatedStringPart;
+                break;
+
+            default:
+                return false;
+        }
+    }
+
 
     while(buffer[index]){
         if(buffer[index] == '"'){
@@ -691,10 +717,22 @@ bool Scanner::getString(Token* token)
             whiteSpace();
             if(buffer[index] == '"'){ // Concatenate the next string
                 index++;
+                interpolated = false;
+                continue;
+            }else if(buffer[index] == '$' && buffer[index+1] == '"'){
+                index += 2;
+                interpolated = true;
                 continue;
             }else{
+                if(token->type == Token::Type::InterpolatedStringPart)
+                    token->type = Token::Type::InterpolatedStringEnd;
                 return true;
             }
+        }
+        if(interpolated && buffer[index] == '{'){
+            index++;
+            inInterpolatedString = true;
+            return true;
         }
         if(buffer[index] == '\\'){
             index++;
@@ -705,11 +743,14 @@ bool Scanner::getString(Token* token)
                 case 'b' : token->data += '\b'; index++; break;
                 case 'r' : token->data += '\r'; index++; break;
                 case 'f' : token->data += '\f'; index++; break;
+                case 'e' : token->data += '\e'; index++; break;
                 case 'a' : token->data += '\a'; index++; break;
                 case '\\': token->data += '\\'; index++; break;
                 case '?' : token->data += '\?'; index++; break;
                 case '\'': token->data += '\''; index++; break;
                 case '"' : token->data += '\"'; index++; break;
+                case '{' : token->data += '{';  index++; break;
+                case '}' : token->data += '}';  index++; break;
 
                 case '&':{ // HTML character name
                     index++;

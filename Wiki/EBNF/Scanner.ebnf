@@ -64,10 +64,11 @@ Literal        = Binary | Octal | Hexadecimal | Decimal [Exponent] ["i" | "j"];
 
 Identifier     = (NonDigit {D | NonDigit}) -Keyword;
 
-String         = '"' {(Byte -'"' -"\") | EscapeSequence} '"' [String];
+String         = (  '"' {(Byte -'"' -"\")      | EscapeSequence                        } '"' [String] )
+               | ( '$"' {(Byte -'"' -"\" -"{") | EscapeSequence | ( "{" Expression "}")} '"' [String] );
 
 EscapeSequence = "\n" | "\t" | "\v" | "\b" | "\r" | "\f"
-               | "\a" | "\\" | "\?" | "\'" | '\"'
+               | "\e" | "\a" | "\\" | "\?" | "\'" | '\"' | "\{" | "\}"
                | ("\x" H H) | ("\u" H H H H) | ("\U" H H H H H H H H)
                | ("\" O {O})
                | ("\&" ? Any of the HTML-5 character names ? ";");

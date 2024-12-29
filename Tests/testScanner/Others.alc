@@ -95,4 +95,10 @@ Some more string"
 123_+ 7.94e-6__j___
 9__- 4.27p4___i___
 
+$"I have {x} sheep";
+$"I have {x+b} sheep";
+$"I have {x} sheep and {y} goats"
+" and this part is not interpolated { }"
+$"while this one is the {3}rd string."
+$"and this the {4}th";
 

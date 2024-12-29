@@ -191,6 +191,9 @@ const char* Token::decodeType() const
             case Type::Literal:                return "Literal";
             case Type::String:                 return "String";
 
+            case Type::InterpolatedStringPart: return "InterpolatedStringPart";
+            case Type::InterpolatedStringEnd:  return "InterpolatedStringEnd";
+
         // Invalid .............................................................
             default:                           return "Invalid Type Index";
     }
