@@ -37,14 +37,16 @@ When cloning the repository, remember to also clone the sub-modules.
 1. Change directory to the project folder.
 1. Run `make`
 
-## Running Test Cases
+## Running Tests
 
-To run the test cases, change directory into the `Source` folder, then run `make test????`.  Replace the question-marks with the appropriate subfolder in the `TestCases` folder.
+To run the automated tests, run `make test` from the root folder.
 
-The functional test-cases at the moment are:
+You can also run specific tests from within the [`Tests`](https://github.com/jpt13653903/ALCHA/tree/develop/Tests) folder:
 
-- `make testButtonsToLEDs`: a minimal test-case used to test that the logic of the implemented architecture is working.
-- `make testCombinational`: A more thorough test of combination circuits (and various scripting structures).
+- `make test`: Run all the tests
+- `make testScanner`: Run and test the scanner
+- `make testParser`: Run and test the parser
+- `make testInterpreter`: Run and test the interpreter
 
 ## More Information
 
