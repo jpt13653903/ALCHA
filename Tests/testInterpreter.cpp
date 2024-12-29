@@ -106,14 +106,14 @@ void endTest(const char* message = "PASS")
 }
 //------------------------------------------------------------------------------
 
-bool testParser()
+bool testInterpreter()
 {
-    if(!startTest("Parser")) return false;
+    if(!startTest("Interpreter")) return false;
 
     const char* expected[] = {
-        "a", "0 (~0)",
-        "b", "0 (~0)",
-        "c", "0 (~0)",
+        "a", "3 (~3)",
+        "b", "5 (~5)",
+        "c", "123456789123456789/1000000000 (~1.23457e+08)",
         "d", "0 (~0)",
         0, 0
     };
@@ -137,7 +137,7 @@ int main(int argc, const char** argv)
     setupTerminal();
 
     printf("\n");
-    if(!testParser()) goto MainError;
+    if(!testInterpreter()) goto MainError;
 
     endTest("All OK");
     if(ast) delete ast;

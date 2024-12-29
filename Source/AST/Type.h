@@ -18,22 +18,44 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Symbols_Num_h
-#define Symbols_Num_h
+#ifndef AST_Type_h
+#define AST_Type_h
 //------------------------------------------------------------------------------
 
-#include "Symbol.h"
-#include "Number.h"
-//------------------------------------------------------------------------------
-
-namespace Symbols{
-    struct Num: public Symbol{
-        Number value;
-
-        Num();
-       ~Num();
-
-        std::string& print() const override;
+namespace AST{
+    enum class Type{
+        AccessDirectionGroup,
+        Alias,
+        Array,
+        Assert,
+        Assignment,
+        ClassDefinition,
+        ClockedConstruct,
+        Concatenate,
+        ControlStatement,
+        EnumDefinition,
+        Expression,
+        Fence,
+        ForkJoin,
+        FunctionCall,
+        FunctionDef,
+        GroupDefinition,
+        HdlConstruct,
+        Identifier,
+        Import,
+        InterpolatedString,
+        Jump,
+        Label,
+        Literal,
+        NameSpacePush,
+        OperatorOverload,
+        ParameterDef,
+        Slice,
+        StimulusOrEmulate,
+        String,
+        Stringify,
+        VariableDef,
+        Wait
     };
 }
 //------------------------------------------------------------------------------

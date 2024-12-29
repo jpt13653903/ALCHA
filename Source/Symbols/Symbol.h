@@ -18,35 +18,30 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Symbol_h
-#define Symbol_h
+#ifndef Symbols_Symbol_h
+#define Symbols_Symbol_h
 //------------------------------------------------------------------------------
 
 #include "General.h"
+#include "Type.h"
 
 #include <string>
 #include <map>
 //------------------------------------------------------------------------------
 
 namespace Symbols{
-    class Symbol{
-        protected: // Types
-            enum class Type{
-                NameSpace,
-                Num
-            } type;
 
-        protected: // Properties
-            std::map<std::string, Symbol*> attributes;
+    struct Symbol{
+        Type type;
+        std::map<std::string, Symbol*> attributes;
 
-            Symbol* parent;
+        Symbol* parent;
 
-        public:
-            Symbol(Type type);
-            virtual ~Symbol();
+        Symbol(Type type);
+        virtual ~Symbol();
 
-            const char* decodeType() const;
-            virtual std::string& print() const = 0;
+        const char* decodeType() const;
+        virtual std::string& print() const = 0;
     };
 }
 //------------------------------------------------------------------------------

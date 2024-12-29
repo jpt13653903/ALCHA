@@ -18,22 +18,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Symbols_Num_h
-#define Symbols_Num_h
-//------------------------------------------------------------------------------
-
-#include "Symbol.h"
-#include "Number.h"
+#ifndef Symbols_Type_h
+#define Symbols_Type_h
 //------------------------------------------------------------------------------
 
 namespace Symbols{
-    struct Num: public Symbol{
-        Number value;
-
-        Num();
-       ~Num();
-
-        std::string& print() const override;
+    enum class Type{
+        NameSpace,
+        Num
     };
 }
 //------------------------------------------------------------------------------

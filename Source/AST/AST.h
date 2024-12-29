@@ -18,11 +18,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_h
-#define AST_h
+#ifndef AST_AST_h
+#define AST_AST_h
 //------------------------------------------------------------------------------
 
 #include "General.h"
+#include "Type.h"
 
 #include <string>
 #include <vector>
@@ -32,45 +33,12 @@ namespace AST{
     extern std::vector<std::string> filenameBuffer;
 
     struct AST{
+        Type type;
+
         int line          = 0;
         int filenameIndex = 0;
 
         AST* next = 0;
-
-        enum class Type{
-            AccessDirectionGroup,
-            Alias,
-            Array,
-            Assert,
-            Assignment,
-            ClassDefinition,
-            ClockedConstruct,
-            Concatenate,
-            ControlStatement,
-            EnumDefinition,
-            Expression,
-            Fence,
-            ForkJoin,
-            FunctionCall,
-            FunctionDef,
-            GroupDefinition,
-            HdlConstruct,
-            Identifier,
-            Import,
-            InterpolatedString,
-            Jump,
-            Label,
-            Literal,
-            NameSpacePush,
-            OperatorOverload,
-            ParameterDef,
-            Slice,
-            StimulusOrEmulate,
-            String,
-            Stringify,
-            VariableDef,
-            Wait
-        } type;
 
         AST(int line, int filenameIndex, Type type);
         virtual ~AST();

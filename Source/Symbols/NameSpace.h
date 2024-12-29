@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Symbol_NameSpace_h
-#define Symbol_NameSpace_h
+#ifndef Symbols_NameSpace_h
+#define Symbols_NameSpace_h
 //------------------------------------------------------------------------------
 
 #include "Symbol.h"

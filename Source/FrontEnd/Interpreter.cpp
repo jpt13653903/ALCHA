@@ -20,19 +20,8 @@
 
 #include "Interpreter.h"
 #include "Utilities.h"
-//------------------------------------------------------------------------------
 
-#include "AST.h"
-#include "AST_String.h"
-#include "Assignment.h"
-#include "Expression.h"
-#include "FunctionCall.h"
-#include "Identifier.h"
-#include "Literal.h"
-#include "VariableDef.h"
-//------------------------------------------------------------------------------
-
-#include "Symbols/Num.h"
+#include <time.h>
 //------------------------------------------------------------------------------
 
 using std::string;
@@ -48,76 +37,85 @@ Interpreter::~Interpreter()
 }
 //------------------------------------------------------------------------------
 
-void Interpreter::printError(const char* message)
+void Interpreter::printError(AST::AST* node, const char* message)
 {
+    if(error) return;
     error = true;
-    ::printError(ast->line, AST::filenameBuffer[ast->filenameIndex], message);
+
+    if(!node) return;
+
+    ::printError(node->line, AST::filenameBuffer[node->filenameIndex], message);
+    if(node) printf(
+        ANSI_FG_CYAN "  node: " ANSI_FG_BRIGHT_MAGENTA "%s\n"
+        ANSI_RESET   "%s\n",
+        node->decodeType(),
+        node->print(1).c_str()
+    );
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::variableDef()
+bool Interpreter::variableDef(AST::VariableDef* node)
 {
-    auto ast = (AST::VariableDef*)this->ast;
-    auto def = ast->defList;
+    auto def = node->defList;
     while(def){
         if(!def->name.size()){
-            printError("Definition with no name");
+            printError(node, "Definition with no name");
             return false;
         }
         if(global.symbols.contains(def->name)){
             string s = def->name + " already exists in the current namespace";
-            printError(s.c_str());
+            printError(node, s.c_str());
             return false;
         }
 
-        switch(ast->defType){
+        switch(node->defType){
             case Token::Type::Pin:
-                printError("TODO Pin Definition");
+                printError(node, "TODO Pin Definition");
                 return false;
 
             case Token::Type::Net:
-                printError("TODO Net Definition");
+                printError(node, "TODO Net Definition");
                 return false;
 
             case Token::Type::Void:
-                printError("TODO Void Definition");
+                printError(node, "TODO Void Definition");
                 return false;
 
             case Token::Type::Auto:
-                printError("TODO Auto Definition");
+                printError(node, "TODO Auto Definition");
                 return false;
 
             case Token::Type::Byte:
-                printError("TODO Byte Definition");
+                printError(node, "TODO Byte Definition");
                 return false;
 
             case Token::Type::Char:
-                printError("TODO Char Definition");
+                printError(node, "TODO Char Definition");
                 return false;
 
             case Token::Type::Num:
                 global.symbols[def->name] = new Symbols::Num;
-                if(ast->parameters){
-                    printError("TODO Definition with parameters");
+                if(node->parameters){
+                    printError(node, "TODO Definition with parameters");
                 }
-                if(ast->attributes){
-                    printError("TODO Definition with attributes");
+                if(node->attributes){
+                    printError(node, "TODO Definition with attributes");
                 }
                 if(def->initialiser){
-                    printError("TODO Definition with initialiser");
+                    printError(node, "TODO Definition with initialiser");
                 }
                 break;
 
             case Token::Type::Func:
-                printError("TODO Func Definition");
+                printError(node, "TODO Func Definition");
                 return false;
 
             case Token::Type::Identifier:
-                printError("TODO TypeIdentifier Definition");
+                printError(node, "TODO TypeIdentifier Definition");
                 return false;
 
             default:
-                printError("Unknown type in variable definition");
+                printError(node, "Unknown type in variable definition");
                 return false;
         }
         def = def->next;
@@ -126,41 +124,443 @@ bool Interpreter::variableDef()
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::functionDef()
+bool Interpreter::functionDef(AST::FunctionDef* node)
 {
     return true;
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::operatorOverload()
+bool Interpreter::operatorOverload(AST::OperatorOverload* node)
 {
     return true;
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::assignment()
+Number Interpreter::evaluate(AST::AST* node)
 {
-    return true;
+    switch(node->type){
+        case AST::Type::Literal:    return evaluate((AST::Literal   *)node);
+        case AST::Type::Expression: return evaluate((AST::Expression*)node);
+        case AST::Type::Identifier: return evaluate((AST::Identifier*)node);
+        default:
+            printError(node, "Unsupported node type for evaluation");
+            return 0;
+    }
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::functionCall()
+Number Interpreter::evaluate(AST::Literal* literal)
 {
-    auto ast = (AST::FunctionCall*)this->ast;
-    if(ast->name->type == AST::AST::Type::Identifier &&
-       ((AST::Identifier*)ast->name)->name == "print"){
-        if(ast->parameters){
-            if(ast->parameters->type == AST::AST::Type::String){
-                printf(ANSI_FG_BRIGHT_BLACK "String: " ANSI_RESET "%s\n",
-                       ((AST::String*)ast->parameters)->data.c_str());
-            }
-            else if(ast->parameters->type == AST::AST::Type::Literal){
-                printf(ANSI_FG_BRIGHT_BLACK "Literal: " ANSI_RESET "%s\n",
-                       ((AST::Literal*)ast->parameters)->value.print().c_str());
-            }
-        }else{
-            printf("\n");
+    return literal->value;
+}
+//------------------------------------------------------------------------------
+
+Number Interpreter::evaluate(AST::Expression* expression)
+{
+    Number result;
+
+    if(expression->left && expression->right){
+        switch(expression->operation){
+            case Token::Type::BitOr:
+                printError(expression, "TODO: BitOr");
+                break;
+
+            case Token::Type::BitNor:
+                printError(expression, "TODO: BitNor");
+                break;
+
+            case Token::Type::BitXor:
+                printError(expression, "TODO: BitXor");
+                break;
+
+            case Token::Type::BitXnor:
+                printError(expression, "TODO: BitXnor");
+                break;
+
+            case Token::Type::BitAnd:
+                printError(expression, "TODO: BitAnd");
+                break;
+
+            case Token::Type::BitNand:
+                printError(expression, "TODO: BitNand");
+                break;
+
+            case Token::Type::Equal:
+                printError(expression, "TODO: Equal");
+                break;
+
+            case Token::Type::NotEqual:
+                printError(expression, "TODO: NotEqual");
+                break;
+
+            case Token::Type::Less:
+                printError(expression, "TODO: Less");
+                break;
+
+            case Token::Type::Greater:
+                printError(expression, "TODO: Greater");
+                break;
+
+            case Token::Type::LessEqual:
+                printError(expression, "TODO: LessEqual");
+                break;
+
+            case Token::Type::GreaterEqual:
+                printError(expression, "TODO: GreaterEqual");
+                break;
+
+            case Token::Type::ShiftLeft:
+                printError(expression, "TODO: ShiftLeft");
+                break;
+
+            case Token::Type::ShiftRight:
+                printError(expression, "TODO: ShiftRight");
+                break;
+
+            case Token::Type::Add:
+                result = evaluate(expression->left);
+                result.add(evaluate(expression->right));
+                return result;
+
+            case Token::Type::Subtract:
+                printError(expression, "TODO: Subtract");
+                break;
+
+            case Token::Type::Multiply:
+                result = evaluate(expression->left);
+                result.mul(evaluate(expression->right));
+                return result;
+
+            case Token::Type::Divide:
+                printError(expression, "TODO: Divide");
+                break;
+
+            case Token::Type::Modulus:
+                printError(expression, "TODO: Modulus");
+                break;
+
+            case Token::Type::Exponential:
+                printError(expression, "TODO: Exponential");
+                break;
+
+            case Token::Type::Factorial:
+                printError(expression, "TODO: Factorial");
+                break;
+
+            default:
+                printError(expression, "TODO: Unsupported expression operation");
+                return 0;
         }
+    }else if(expression->left){
+        switch(expression->operation){
+            case Token::Type::Increment:
+                printError(expression, "TODO: Increment");
+                break;
+
+            case Token::Type::Decrement:
+                printError(expression, "TODO: Decrement");
+                break;
+
+            case Token::Type::Factorial:
+                printError(expression, "TODO: Factorial");
+                break;
+
+            default:
+                printError(expression, "TODO: Unsupported expression operation");
+                return 0;
+        }
+    }else if(expression->right){
+        switch(expression->operation){
+            case Token::Type::AndReduce:
+                printError(expression, "TODO: AndReduce");
+                break;
+
+            case Token::Type::NandReduce:
+                printError(expression, "TODO: NandReduce");
+                break;
+
+            case Token::Type::OrReduce:
+                printError(expression, "TODO: OrReduce");
+                break;
+
+            case Token::Type::NorReduce:
+                printError(expression, "TODO: NorReduce");
+                break;
+
+            case Token::Type::XorReduce:
+                printError(expression, "TODO: XorReduce");
+                break;
+
+            case Token::Type::XnorReduce:
+                printError(expression, "TODO: XnorReduce");
+                break;
+
+            case Token::Type::LogicalNot:
+                printError(expression, "TODO: LogicalNot");
+                break;
+
+            default:
+                printError(expression, "TODO: Unsupported expression operation");
+                return 0;
+        }
+    }else{
+        printError(expression, "Expression has no operands");
+        return 0;
+    }
+    return 0;
+}
+//------------------------------------------------------------------------------
+
+tm* Interpreter::time()
+{
+    time_t timer;
+    ::time(&timer);
+    return localtime(&timer);
+}
+//------------------------------------------------------------------------------
+
+Number Interpreter::evaluate(AST::Identifier* expression)
+{
+    auto symbol = global.symbols.find(expression->name);
+    if(symbol == global.symbols.end()){
+        Number result;
+        if(expression->name == "pi" || expression->name == "π"){
+            result.set_pi();
+        }else if(expression->name == "e"){
+            result.set_e();
+        }else if(expression->name == "i"){
+            result.set_i();
+        }else if(expression->name == "j"){
+            result.set_i();
+        }else if(expression->name == "__YEAR__"){
+            result = time()->tm_year+1900;
+        }else if(expression->name == "__MONTH__"){
+            result = time()->tm_mon+1;
+        }else if(expression->name == "__DAY__"){
+            result = time()->tm_mday;
+        }else if(expression->name == "__HOUR__"){
+            result = time()->tm_hour;
+        }else if(expression->name == "__MINUTE__"){
+            result = time()->tm_min;
+        }else if(expression->name == "__SECOND__"){
+            result = time()->tm_sec;
+        }else if(expression->name == "__WEEKDAY__"){
+            result = ((time()->tm_wday+6) % 7) + 1;
+        }else if(expression->name == "__YEARDAY__"){
+            result = time()->tm_yday+1;
+        }else{
+            printError(expression, "Undefined symbol");
+        }
+        return result;
+    }
+    auto object = symbol->second;
+    switch(object->type){
+        case Symbols::Type::Num:
+            return ((Symbols::Num*)object)->value;
+
+        default:
+            printError(expression, "Unsupported symbol type for evaluation");
+            return 0;
+    }
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::assign(AST::AST* target, AST::AST* expression)
+{
+    switch(target->type){
+        case AST::Type::Identifier: return assign((AST::Identifier*)target, expression);
+
+        default:
+            printError(target, "Unsupported assignment target type");
+            return false;
+    }
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::assign(AST::Identifier* target, AST::AST* expression)
+{
+    auto symbol = global.symbols.find(target->name);
+    if(symbol == global.symbols.end()){
+        printError(target, "Undefined symbol");
+        return false;
+    }
+    auto object = symbol->second;
+    switch(object->type){
+        case Symbols::Type::Num: return assign((Symbols::Num*)object, expression);
+
+        default:
+            printError(target, "Unsupported assignment target type");
+            return false;
+    }
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::assign(Symbols::Num* target, AST::AST* expression)
+{
+    target->value = evaluate(expression);
+    return !error;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::assignment(AST::Assignment* node)
+{
+    return assign(node->target, node->expression);
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::print(AST::AST* node)
+{
+    switch(node->type){
+        case AST::Type::Literal:    return print((AST::Literal   *)node);
+        case AST::Type::String:     return print((AST::String    *)node);
+        case AST::Type::Expression: return print((AST::Expression*)node);
+        case AST::Type::Identifier: return print((AST::Identifier*)node);
+
+        default:
+            printError(node, "Unsupported node type for printing");
+            return false;
+    }
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::print(AST::Literal* node)
+{
+    printf(ANSI_FG_BRIGHT_BLACK "Literal:\n    " ANSI_RESET "%s\n",
+           evaluate(node).print().c_str());
+    return true;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::print(AST::String* node)
+{
+    printf(ANSI_FG_BRIGHT_BLACK "String:\n    " ANSI_RESET "%s\n",
+           node->print().c_str());
+    return true;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::print(AST::Expression* node)
+{
+    printf(ANSI_FG_BRIGHT_BLACK "%s:\n    " ANSI_RESET "%s\n",
+           node->print().c_str(),
+           evaluate(node).print().c_str());
+    return true;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::print(AST::Identifier* node)
+{
+    printf(ANSI_FG_BRIGHT_BLACK "%s:\n    " ANSI_RESET "%s\n",
+           node->print().c_str(),
+           evaluate(node).print().c_str());
+    return true;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::functionCall(AST::FunctionCall* node)
+{
+    if(node->name->type == AST::Type::Identifier &&
+       ((AST::Identifier*)node->name)->name == "print"){
+        if(node->parameters) print(node->parameters);
+        else                 printf("\n");
+    }
+    return true;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::globalSpace(AST::AST* node)
+{
+    while(node){
+        switch(node->type){
+            case AST::Type::Label:
+                printError(node, "TODO: Label");
+                break;
+
+            case AST::Type::VariableDef:
+                if(!variableDef((AST::VariableDef*)node)) return false;
+                break;
+
+            case AST::Type::FunctionDef:
+                if(!functionDef((AST::FunctionDef*)node)) return false;
+                break;
+
+            case AST::Type::OperatorOverload:
+                if(!operatorOverload((AST::OperatorOverload*)node)) return false;
+                break;
+
+            case AST::Type::ClassDefinition:
+                printError(node, "TODO: ClassDefinition");
+                break;
+
+            case AST::Type::EnumDefinition:
+                printError(node, "TODO: EnumDefinition");
+                break;
+
+            case AST::Type::Alias:
+                printError(node, "TODO: Alias");
+                break;
+
+            case AST::Type::Import:
+                printError(node, "TODO: Import");
+                break;
+
+            case AST::Type::GroupDefinition:
+                printError(node, "TODO: GroupDefinition");
+                break;
+
+            case AST::Type::AccessDirectionGroup:
+                printError(node, "TODO: AccessDirectionGroup");
+                break;
+
+            case AST::Type::ControlStatement:
+                printError(node, "TODO: ControlStatement");
+                break;
+
+            case AST::Type::Jump:
+                printError(node, "TODO: Jump");
+                break;
+
+            case AST::Type::FunctionCall:
+                if(!functionCall((AST::FunctionCall*)node)) return false;
+                break;
+
+            case AST::Type::NameSpacePush:
+                printError(node, "TODO: NameSpacePush");
+                break;
+
+            case AST::Type::Assignment:
+                if(!assignment((AST::Assignment*)node)) return false;
+                break;
+
+            case AST::Type::ClockedConstruct:
+                printError(node, "TODO: ClockedConstruct");
+                break;
+
+            case AST::Type::HdlConstruct:
+                printError(node, "TODO: HdlConstruct");
+                break;
+
+            case AST::Type::StimulusOrEmulate:
+                printError(node, "TODO: StimulusOrEmulate");
+                break;
+
+            case AST::Type::ForkJoin:
+                printError(node, "TODO: ForkJoin");
+                break;
+
+            case AST::Type::Assert:
+                printError(node, "TODO: Assert");
+                break;
+
+            case AST::Type::Fence:
+                printError(node, "TODO: Fence");
+                break;
+
+            default:
+                printError(node, "Unexpected node type");
+                return false;
+        }
+        node = node->next;
     }
     return true;
 }
@@ -168,36 +568,7 @@ bool Interpreter::functionCall()
 
 bool Interpreter::run(AST::AST* ast)
 {
-    this->ast = ast;
-
-    while(this->ast){
-        switch(this->ast->type){
-            case AST::AST::Type::VariableDef:
-                if(!variableDef()) return false;
-                break;
-
-            case AST::AST::Type::FunctionDef:
-                if(!functionDef()) return false;
-                break;
-
-            case AST::AST::Type::OperatorOverload:
-                if(!operatorOverload()) return false;
-                break;
-
-            case AST::AST::Type::Assignment:
-                if(!assignment()) return false;
-                break;
-
-            case AST::AST::Type::FunctionCall:
-                if(!functionCall()) return false;
-                break;
-
-            default:
-                printError("Unknown AST type");
-                return false;
-        }
-        this->ast = this->ast->next;
-    }
+    if(!globalSpace(ast)) return false;
 
     if(error) return false;
     return true;

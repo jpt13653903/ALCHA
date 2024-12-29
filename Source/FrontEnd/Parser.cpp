@@ -1029,7 +1029,7 @@ AST::AST* Parser::parameter()
 
     if(token.type == Token::Type::Assign ||
        token.type == Token::Type::RawAssign){
-        if(expr->type != AST::AST::Type::Identifier){
+        if(expr->type != AST::Type::Identifier){
             printError("Parameter should be an identifier");
             delete expr;
             return 0;
@@ -1730,7 +1730,7 @@ AST::AST* Parser::parameterDef()
     if(result->defType == Token::Type::Identifier &&
        result->parameters == 0                    &&
        token.type != Token::Type::Identifier      ){
-        if(result->typeIdentifier->type == AST::AST::Type::Identifier){
+        if(result->typeIdentifier->type == AST::Type::Identifier){
             result->identifier = ((AST::Identifier*)result->typeIdentifier)->name;
             delete result->typeIdentifier;
             result->defType = Token::Type::Unknown;
@@ -1967,8 +1967,8 @@ AST::AST* Parser::structBody()
             return 0;
         }
         while(last->next) last = last->next;
-        if(current->type != AST::AST::Type::VariableDef     &&
-           current->type != AST::AST::Type::GroupDefinition ){
+        if(current->type != AST::Type::VariableDef     &&
+           current->type != AST::Type::GroupDefinition ){
             printError("Invalid struct member");
             delete result;
             return 0;
@@ -2177,7 +2177,7 @@ AST::AST* Parser::jumpStatement()
 
     if(result->jumpType == Token::Type::GoTo){
         if(!result->expression ||
-           result->expression->type != AST::AST::Type::Identifier){
+           result->expression->type != AST::Type::Identifier){
             printError("Label expected");
             delete result;
             return 0;
@@ -2392,9 +2392,9 @@ AST::AST* Parser::hdlBody()
             return 0;
         }
         while(last->next) last = last->next;
-        if(current->type != AST::AST::Type::AccessDirectionGroup &&
-           current->type != AST::AST::Type::VariableDef          &&
-           current->type != AST::AST::Type::StimulusOrEmulate    ){
+        if(current->type != AST::Type::AccessDirectionGroup &&
+           current->type != AST::Type::VariableDef          &&
+           current->type != AST::Type::StimulusOrEmulate    ){
             printError("Invalid HDL body");
             delete result;
             return 0;
@@ -2619,7 +2619,7 @@ AST::AST* Parser::identifierStatement()
 
     switch(token.type){
         case Token::Type::Colon:{
-            if(left->type == AST::AST::Type::Identifier){
+            if(left->type == AST::Type::Identifier){
                 auto result = new AST::Label(token.line, astFilenameIndex);
                 result->name = ((AST::Identifier*)left)->name;
                 delete left;
@@ -2637,7 +2637,7 @@ AST::AST* Parser::identifierStatement()
         case Token::Type::Operator:
         case Token::Type::Identifier:
             if(token.type == Token::Type::Operator){
-                if(left->type == AST::AST::Type::FunctionCall){
+                if(left->type == AST::Type::FunctionCall){
                     auto _left = (AST::FunctionCall*)left;
                     auto result = operatorOverload(false,
                                                    Token::Type::Identifier,
@@ -2657,7 +2657,7 @@ AST::AST* Parser::identifierStatement()
                                             attributes);
                 }
             }else{
-                if(left->type == AST::AST::Type::FunctionCall){
+                if(left->type == AST::Type::FunctionCall){
                     auto _left = (AST::FunctionCall*)left;
                     auto result = variableDefList(false,
                                                   Token::Type::Identifier,
@@ -2749,7 +2749,7 @@ AST::AST* Parser::identifierStatement()
             return result;
         }
         case Token::Type::Comma:
-            if(left->type != AST::AST::Type::FunctionCall){
+            if(left->type != AST::Type::FunctionCall){
                 printError("Unexpected ,");
                 delete left;
                 return 0;
@@ -2758,7 +2758,7 @@ AST::AST* Parser::identifierStatement()
             return left;
 
         case Token::Type::Semicolon:{
-            if(left->type != AST::AST::Type::FunctionCall){
+            if(left->type != AST::Type::FunctionCall){
                 printError("Unexpected ;");
                 delete left;
                 return 0;
