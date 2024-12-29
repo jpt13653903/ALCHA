@@ -93,8 +93,9 @@ bool Interpreter::variableDef(AST::VariableDef* node)
                 printError(node, "TODO Char Definition");
                 return false;
 
-            case Token::Type::Num:
-                global.symbols[def->name] = new Symbols::Num;
+            case Token::Type::Num:{
+                auto symbol = new Symbols::Num;
+                global.symbols[def->name] = symbol;
                 if(node->parameters){
                     printError(node, "TODO Definition with parameters");
                 }
@@ -102,9 +103,10 @@ bool Interpreter::variableDef(AST::VariableDef* node)
                     printError(node, "TODO Definition with attributes");
                 }
                 if(def->initialiser){
-                    printError(node, "TODO Definition with initialiser");
+                    symbol->value = evaluate(def->initialiser);
                 }
                 break;
+            }
 
             case Token::Type::Func:
                 printError(node, "TODO Func Definition");
@@ -232,8 +234,9 @@ Number Interpreter::evaluate(AST::Expression* expression)
                 return result;
 
             case Token::Type::Divide:
-                printError(expression, "TODO: Divide");
-                break;
+                result = evaluate(expression->left);
+                result.div(evaluate(expression->right));
+                return result;
 
             case Token::Type::Modulus:
                 printError(expression, "TODO: Modulus");
