@@ -42,7 +42,6 @@ endif
 
 Includes += -I$(Source)
 Includes += -I$(Source)/AST
-Includes += -I$(Source)/DataStructures
 Includes += -I$(Source)/FrontEnd
 Includes += -I$(Source)/Tools
 Includes += -I$(Source)/Symbols
@@ -99,7 +98,7 @@ testScannerObjects += $(ObjectPath)/Toolbox/FileWrapper.o
 testScannerObjects += $(ObjectPath)/Toolbox/UTF_Converter.o
 testScannerObjects += $(ObjectPath)/Source/FrontEnd/Scanner.o
 testScannerObjects += $(ObjectPath)/Source/FrontEnd/Token.o
-testScannerObjects += $(ObjectPath)/Source/DataStructures/TokenTree.o
+testScannerObjects += $(ObjectPath)/Source/FrontEnd/TokenTree.o
 testScannerObjects += $(ObjectPath)/Source/Tools/Number.o
 testScannerObjects += $(ObjectPath)/Source/Tools/Utilities.o
 
@@ -111,7 +110,6 @@ bin/testScanner$(ext): $(testScannerObjects) $(Resources) $(Headers)
 testParserObjects += $(ObjectPath)/Tests/testParser.o
 
 testParserSource  += $(shell find $(Source)/AST            -iname "*.cpp")
-testParserSource  += $(shell find $(Source)/DataStructures -iname "*.cpp")
 testParserSource  += $(shell find $(Source)/FrontEnd       -iname "*.cpp")
 testParserSource  += $(shell find $(Source)/Symbols        -iname "*.cpp")
 testParserSource  += $(shell find $(Source)/Tools          -iname "*.cpp")
@@ -129,7 +127,6 @@ bin/testParser$(ext): $(testParserObjects) $(Resources) $(Headers)
 testInterpreterObjects += $(ObjectPath)/Tests/testInterpreter.o
 
 testInterpreterSource  += $(shell find $(Source)/AST            -iname "*.cpp")
-testInterpreterSource  += $(shell find $(Source)/DataStructures -iname "*.cpp")
 testInterpreterSource  += $(shell find $(Source)/FrontEnd       -iname "*.cpp")
 testInterpreterSource  += $(shell find $(Source)/Symbols        -iname "*.cpp")
 testInterpreterSource  += $(shell find $(Source)/Tools          -iname "*.cpp")

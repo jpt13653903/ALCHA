@@ -41,7 +41,6 @@ endif
 
 Includes += -I.
 Includes += -IAST
-Includes += -IDataStructures
 Includes += -IFrontEnd
 Includes += -ITools
 Includes += -ISymbols
