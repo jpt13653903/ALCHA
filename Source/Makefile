@@ -75,10 +75,10 @@ endif
 .PHONY: clean all
 .SECONDARY:
 
-all: ../bin/ALCHA$(ext)
+all: ../bin/alcha$(ext)
 
 clean:
-	- rm -rf ../bin/ALCHA$(ext)
+	- rm -rf ../bin/alcha$(ext)
 	- rm -rf $(ObjectPath)
 	- rm FrontEnd/CharacterNames.h
 #-------------------------------------------------------------------------------

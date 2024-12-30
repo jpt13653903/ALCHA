@@ -55,8 +55,8 @@ void printUsage()
         "You should have received a copy of the GNU General Public License\n"
         "along with this program.  If not, see <http://www.gnu.org/licenses/>\n"
         "\n"
-        "Usage: ALCHA main_source.alc output_folder\n"
-        "Example: ALCHA main.alc \"My Project Output\"\n"
+        "Usage: alcha main_source.alc output_folder\n"
+        "Example: alcha main.alc \"My Project Output\"\n"
         "\n",
         MAJOR_VERSION, MINOR_VERSION // These are defined in the Makefile
     );
