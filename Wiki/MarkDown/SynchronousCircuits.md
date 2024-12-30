@@ -47,40 +47,40 @@ instantiate the appropriate mega-function.  Some examples of clock definitions
 are presented below:
 
 ```alcha
-  // An input pin
-  pin<frequency = 100e6> ClkPin;
+    // An input pin
+    pin<frequency = 100e6> ClkPin;
 
-  // An RTL circuit
-  net<frequency = 50e6> Clk_50;
-  rtl(ClkPin) Clk_50 = ~Clk_50;
+    // An RTL circuit
+    net<frequency = 50e6> Clk_50;
+    rtl(ClkPin) Clk_50 = ~Clk_50;
 
-  // A combinational circuit
-  net<frequency = 100e6> Clk_LowPower = ClkPin & (~Sleep);
+    // A combinational circuit
+    net<frequency = 100e6> Clk_LowPower = ClkPin & (~Sleep);
 
-  // A phase-locked loop megafunction
-  hdl() altera_pll(
-    reference_clock_frequency = "100 MHz";
+    // A phase-locked loop megafunction
+    hdl() altera_pll(
+        reference_clock_frequency = "100 MHz";
 
-    number_of_clocks          = 1;
-    operation_mode            = "direct";
+        number_of_clocks          = 1;
+        operation_mode            = "direct";
 
-    output_clock_frequency0   = "250 MHz";
-    duty_cycle0               = 50;
-    phase_shift0              = "0 ps";
+        output_clock_frequency0   = "250 MHz";
+        duty_cycle0               = 50;
+        phase_shift0              = "0 ps";
 
-    pll_type                  = "General";
-    pll_subtype               = "General";
-    fractional_vco_multiplier = "false";
-  ){
-    net refclk = ClkPin;
-    net rst    = GlobalReset;
-    net locked;
-    net fbclk  = 0;
-    net fboutclk;
+        pll_type                  = "General";
+        pll_subtype               = "General";
+        fractional_vco_multiplier = "false";
+    ){
+        net refclk = ClkPin;
+        net rst    = GlobalReset;
+        net locked;
+        net fbclk  = 0;
+        net fboutclk;
 
-    net<frequency = 250e6> outclk;
-  }
-  altera_pll() PLL_250; // Use "PLL_250.outclk" as the clock
+        net<frequency = 250e6> outclk;
+    }
+    altera_pll() PLL_250; // Use "PLL_250.outclk" as the clock
 ```
 
 ALCHA further supports clock-enable type clocks, which are generally used for
@@ -90,18 +90,18 @@ that the compiler knows how to set up the associated multi-cycle timing
 requirements.
 
 ```alcha
-  net(14) ClkCounter;
+    net(14) ClkCounter;
 
-  net<frequency = 100e6> Clk;
-  net<frequency = 9600 > ClkEnable = ~|ClkCounter;
+    net<frequency = 100e6> Clk;
+    net<frequency = 9600 > ClkEnable = ~|ClkCounter;
 
-  rtl(Clk){
-    if(ClkCounter) ClkCounter--;
-    else           ClkCounter = (Clk'frequency / ClkEnable'frequency)- 1;
-  }
-  rtl(Clk, Reset, ClkEnable){
-    // The RS-232 controller code goes here.
-  }
+    rtl(Clk){
+        if(ClkCounter) ClkCounter--;
+        else           ClkCounter = (Clk'frequency / ClkEnable'frequency)- 1;
+    }
+    rtl(Clk, Reset, ClkEnable){
+        // The RS-232 controller code goes here.
+    }
 ```
 
 ### Global Clock Networks
@@ -119,23 +119,23 @@ that can be used by scripts to calculate clock-frequency dependent parameters.
 A button denouncer might, for instance, be defined as follows:
 
 ```alcha
-  net Debouncer(net Clk, net Input){
-    num Count = Clk'frequency * 20e-3 - 1; // 20 ms dead-time
-    num N     = ceil(log2(Count));
+    net Debouncer(net Clk, net Input){
+        num Count = Clk'frequency * 20e-3 - 1; // 20 ms dead-time
+        num N     = ceil(log2(Count));
 
-    net(N) Counter;
+        net(N) Counter;
 
-    rtl(Clk){
-      if(&Counter){
-        if(Debouncer != Input){
-          Debouncer = Input;
-          Counter   = 0;
+        rtl(Clk){
+            if(&Counter){
+                if(Debouncer != Input){
+                    Debouncer = Input;
+                    Counter   = 0;
+                }
+            }else{
+                Counter++;
+            }
         }
-      }else{
-        Counter++;
-      }
     }
-  }
 ```
 
 ## Register Transfer Level
@@ -146,39 +146,39 @@ clock, which must be a synthesisable type with a frequency attribute.  All
 statements within an `rtl` construct are non-blocking.  Below is an example:
 
 ```alcha
-  pin<frequency = 50e6> Clk;
-  pin                   Reset;
+    pin<frequency = 50e6> Clk;
+    pin                   Reset;
 
-  net A, B;
+    net A, B;
 
-  net(27) Count = 0; // Initialiser => reset value
+    net(27) Count = 0; // Initialiser => reset value
 
-  rtl(Clk, Reset){
-    Count++;
+    rtl(Clk, Reset){
+        Count++;
 
-    if(&Count){
-      A = B;
-      B = A;
+        if(&Count){
+            A = B;
+            B = A;
+        }
     }
-  }
 ```
 
 The equivalent Verlog of the above ALCHA is:
 
 ```verilog
-  reg       A, B;
-  reg [26:0]Count;
+    reg       A, B;
+    reg [26:0]Count;
 
-  always @(posedge Clk) begin
-    if(Reset) Count <= 0;
-    else      Count <= Count + 1'b1;
+    always @(posedge Clk) begin
+        if(Reset) Count <= 0;
+        else      Count <= Count + 1'b1;
 
-    // No initialiser on A or B, so not part of the reset circuit
-    if(&Count) begin
-      A <= B;
-      B <= A;
+        // No initialiser on A or B, so not part of the reset circuit
+        if(&Count) begin
+            A <= B;
+            B <= A;
+        end
     end
-  end
 ```
 
 ## Finite State Machines
@@ -194,57 +194,57 @@ semicolon (`;`) ends a cycle (or state).  All statements are considered
 non-blocking.  A simple example is provided below:
 
 ```alcha
-  pin<frequency = 50e6> Clk;
-  pin                   Reset;
+    pin<frequency = 50e6> Clk;
+    pin                   Reset;
 
-  net(8) A, B, C;
+    net(8) A, B, C;
 
-  B = 123;
+    B = 123;
 
-  fsm(Clk, Reset){
-    loop{
-      A = B + C, B = C - A;
+    fsm(Clk, Reset){
+        loop{
+            A = B + C, B = C - A;
 
-      if(A < B) C++,
-      else      C--,
-      ;
+            if(A < B) C++,
+            else      C--,
+            ;
+        }
     }
-  }
 ```
 
 This state machine has two states and translates to the following Verilog:
 
 ```verilog
-  reg[7:0] A, B, C;
+    reg[7:0] A, B, C;
 
-  reg tReset;
-  reg State;
+    reg tReset;
+    reg State;
 
-  always @(posedge Clk) begin
-    tReset <= Reset
+    always @(posedge Clk) begin
+        tReset <= Reset
 
-    if(tReset) begin
-      B     <= 8'd123;
-      State <= 0;
+        if(tReset) begin
+            B     <= 8'd123;
+            State <= 0;
 
-    end else begin
-      case(State)
-        1'b0: begin
-          A     <= B + C;
-          B     <= C - A;
-          State <= 1'b1;
+        end else begin
+            case(State)
+                1'b0: begin
+                    A     <= B + C;
+                    B     <= C - A;
+                    State <= 1'b1;
+                end
+
+                1'b1: begin
+                    if(A < B) C <= C + 1'b1;
+                    else      C <= C - 1'b1;
+                    State <= 1'b0;
+                end
+
+                default:;
+            endcase
         end
-
-        1'b1: begin
-          if(A < B) C <= C + 1'b1;
-          else      C <= C - 1'b1;
-          State <= 1'b0;
-        end
-
-        default:;
-      endcase
     end
-  end
 ```
 
 All reset signals are localised to the state machine.  All signals that enter
@@ -257,42 +257,42 @@ state (or cycle) boundaries are controlled by means of semicolons (`;`).
 The `for` loop is used to iterate through elements in an array, as follows:
 
 ```alcha
-  net( 8) x;
-  net(10) A;
+    net( 8) x;
+    net(10) A;
 
-  fsm(Clk){
-    for(x in 0..200){
-      A = 3 * x + 7;
+    fsm(Clk){
+        for(x in 0..200){
+            A = 3 * x + 7;
+        }
     }
-  }
 ```
 
 This translates to:
 
 ```verilog
-  reg [7:0]x;
-  reg [9:0]A;
-  reg      State;
+    reg [7:0]x;
+    reg [9:0]A;
+    reg      State;
 
-  always @(posedge Clk) begin
-    tReset <= Reset;
+    always @(posedge Clk) begin
+        tReset <= Reset;
 
-    if(tReset) begin
-      x     <= 0;
-      State <= 0;
+        if(tReset) begin
+            x     <= 0;
+            State <= 0;
 
-    end else begin
-      case(State)
-        1'b0: begin
-          A <= 2'd3 * x + 3'd7;
-          x <= x + 1'b1;
-          if(x == 8'd200) State <= 1'b1;
+        end else begin
+            case(State)
+                1'b0: begin
+                    A <= 2'd3 * x + 3'd7;
+                    x <= x + 1'b1;
+                    if(x == 8'd200) State <= 1'b1;
+                end
+
+                default:;
+            endcase
         end
-
-        default:;
-      endcase
     end
-  end
 ```
 
 The `loop` loop is used to repeat something.  Without a parameter, a `loop`

@@ -229,7 +229,7 @@ import "../Memory/FullDualPortRAM";
 //------------------------------------------------------------------------------
 
 class FFT(net Clk, net Reset, num NumPoints){
-  assert(2**round(log2(NumPoints)) == NumPoints);
+  assert 2**round(log2(NumPoints)) == NumPoints;
 
   private{
     DualPortROM    (Clk, Reset, 36, NumPoints) TwiddleFactors;
@@ -554,8 +554,8 @@ class AvalonMaster(net Clock, net Reset, num Width, num Depth): AvalonInterface(
   //----------------------------------------------------------------------------
 
   void Attach(AvalonInterface Interface){
-    assert(Interface.Width == Width);
-    assert(Interface.Depth <  Depth - Used);
+    assert Interface.Width == Width;
+    assert Interface.Depth <  Depth - Used;
 
     Interface.Address      = Address - Used;
     Interface.ByteEnable   = ByteEnable;
@@ -640,7 +640,7 @@ class RegistersDecoder(Bus): AvalonInterface(32, 0x1000){
       result := x; // Raw-assign the bits
       num N = x'width;
       if((x'fullscale < 0) & (N < 31)) // Sign-extend
-        result(31..(N+1)) := (x(N))`(31-N);
+        result[31..(N+1)] := (x(N))`(31-N);
     }
     //--------------------------------------------------------------------------
 
@@ -709,7 +709,7 @@ class DualPortRAM(net Clk, net Reset, num Width, num Depth){
       case("MAX 10"   ) RamBlockType = "M9K";
       case("Cyclone V") RamBlockType = "M10K";
       case("Arria 10" ) RamBlockType = "M20K";
-      default           assert(false);
+      default           assert false;
     }
     num AddressWidth = ceil(log2(Depth));
 
@@ -784,7 +784,7 @@ class DualPortROM(net Clk, net Reset, num Width, num Depth){
       case("MAX 10"   ) RamBlockType = "M9K";
       case("Cyclone V") RamBlockType = "M10K";
       case("Arria 10" ) RamBlockType = "M20K";
-      default           assert(false);
+      default           assert false ;
     }
     num AddressWidth = ceil(log2(Depth));
 
@@ -885,7 +885,7 @@ class DualPortRAM(net Clk, net Reset, num Width, num Depth){
       case("MAX 10"   ) RamBlockType = "M9K";
       case("Cyclone V") RamBlockType = "M10K";
       case("Arria 10" ) RamBlockType = "M20K";
-      default           assert(false);
+      default           assert false;
     }
     num AddressWidth = ceil(log2(Depth));
 
@@ -999,7 +999,7 @@ class MutEx(net Clk, net Reset){
 
   void finally(){
     num N = 'Modules'length;
-    assert(N > 0);
+    assert N > 0;
 
     net(N) Request;
     net(N) Grant  = 0;
@@ -1026,7 +1026,7 @@ class MutEx(net Clk, net Reset){
 
 class ADS7056(net Clk, net Reset){
   // Maximum SPI clock is 60 MHz, and gives a 2.5 MSps sampling rate
-  assert(Clk'frequency <= 120e6);
+  assert Clk'frequency <= 120e6;
   //----------------------------------------------------------------------------
 
   private{
@@ -1103,7 +1103,7 @@ class LTC2991(net Clk, net Reset, net(3) Address, num Baud_kHz = 50):
 
   enum TYPE{ Voltage, Differential, Temperature }
   void SetType(num Channel, TYPE Type){
-    assert(Channel >= 0 & Channel < 4);
+    assert Channel >= 0 & Channel < 4;
 
     switch(Type){
       case(Voltage     ) Control[(4*Channel+3)..(4*Channel)] = 0;
@@ -1401,7 +1401,7 @@ class ADF4159(net Clk, net Reset, num Baud_kHz = 1000){
   //----------------------------------------------------------------------------
 
   void SetStart(num StartFreq){
-    assert(RefFreq > 0); // Check that SetRefFreq() was called first
+    assert RefFreq > 0; // Check that SetRefFreq() was called first
     this.StartFreq = StartFreq;
 
     num Frequency = FeedbackVcoDiv2
@@ -1414,7 +1414,7 @@ class ADF4159(net Clk, net Reset, num Baud_kHz = 1000){
   //----------------------------------------------------------------------------
 
   private void SetRamp(bool Up, num Bandwidth, num Time){
-    assert(RefFreq > 0); // Check that SetRefFreq() was called first
+    assert RefFreq > 0; // Check that SetRefFreq() was called first
 
         Clk1Divider     = 1;
     num Clk2Divider     = 2;
@@ -1424,10 +1424,10 @@ class ADF4159(net Clk, net Reset, num Baud_kHz = 1000){
 
     Clk2Divider = PfdFreq / ((1p20 - 1) / Time);
     if(Clk2Divider < 2) Clk2Divider = 2;
-    assert(Clk2Divider < 1p12);
+    assert Clk2Divider < 1p12;
 
     StepWord = round((PfdFreq / Clk2Divider) * Time);
-    assert(StepWord < 1p20);
+    assert StepWord < 1p20;
 
     DeviationOffset = 0;
     DeviationWord   = round((Bandwidth / StepWord) /
@@ -1438,7 +1438,7 @@ class ADF4159(net Clk, net Reset, num Baud_kHz = 1000){
       DeviationOffset++;
       DeviationWord /= 2;
     }
-    assert(DeviationOffset < 1p4);
+    assert DeviationOffset < 1p4;
 
     if(Up){
       Clk2Divider_0     = Clk2Divider;

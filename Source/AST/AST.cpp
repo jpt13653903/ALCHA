@@ -54,6 +54,7 @@ const char* AST::AST::decodeType() const
         case Type::ClockedConstruct:     return "ClockedConstruct";
         case Type::Concatenate:          return "Concatenate";
         case Type::ControlStatement:     return "ControlStatement";
+        case Type::CycleDelay:           return "CycleDelay";
         case Type::EnumDefinition:       return "EnumDefinition";
         case Type::Expression:           return "Expression";
         case Type::Fence:                return "Fence";
@@ -71,6 +72,8 @@ const char* AST::AST::decodeType() const
         case Type::NameSpacePush:        return "NameSpacePush";
         case Type::OperatorOverload:     return "OperatorOverload";
         case Type::ParameterDef:         return "ParameterDef";
+        case Type::Repetition:           return "Repetition";
+        case Type::SequenceDef:          return "SequenceDef";
         case Type::Slice:                return "Slice";
         case Type::StimulusOrEmulate:    return "StimulusOrEmulate";
         case Type::String:               return "String";

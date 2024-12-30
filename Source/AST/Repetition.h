@@ -18,22 +18,24 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Jump_h
-#define AST_Jump_h
+#ifndef AST_Repetition_h
+#define AST_Repetition_h
 //------------------------------------------------------------------------------
 
 #include "AST.h"
 #include "Token.h"
+
 #include <string>
 //------------------------------------------------------------------------------
 
 namespace AST{
-    struct Jump: public AST{
-        Token::Type jumpType = Token::Type::Unknown;
-        AST* expression = 0;
+    struct Repetition: public AST{
+        Token::Type operation = Token::Type::Unknown;
+        AST* sequence = 0;
+        AST* range    = 0;
 
-        Jump(int line, int filenameIndex);
-       ~Jump();
+        Repetition(int line, int filenameIndex);
+       ~Repetition();
 
         std::string print(int indent = 0) const override;
     };

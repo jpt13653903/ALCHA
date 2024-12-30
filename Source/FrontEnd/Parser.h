@@ -119,8 +119,17 @@ class Parser{
         AST::AST* forkJoin();
         AST::AST* wait();
         AST::Wait::SensitivityItem* sensitivityList();
+
+        AST::AST* sequenceDef();
+        AST::AST* assertion();
+        AST::AST* assertBlock();
         AST::AST* assertStatement();
+        AST::AST* assertIf();
         AST::AST* sequence();
+        AST::AST* matchOr();
+        AST::AST* matchAnd();
+        AST::AST* cycleDelay();
+        AST::AST* repetition();
 
         AST::AST* identifierStatement();
         AST::AST* statementBlock();

@@ -45,45 +45,45 @@ project by means of the `hdl` construct, as illustrated below.  Imported HDL
 modules are not included in simulation.
 
 ```alcha
-  hdl("Library/RS232.v", "Library/RS232_Rx.v", "Library/RS232_Tx.v") RS232_V(
-    CountBits =  5; // Parameters
-    Count0_5  =  8;
-    Count1    = 17;
-    Count1_5  = 25;
-  ){
-    net    nReset;
-    net    Clk;
+    hdl("Library/RS232.v", "Library/RS232_Rx.v", "Library/RS232_Tx.v") RS232_V(
+        CountBits =  5; // Parameters
+        Count0_5  =  8;
+        Count1    = 17;
+        Count1_5  = 25;
+    ){
+        net    nReset;
+        net    Clk;
 
-    net(8) TxData;
-    net    Send;
-    net    Busy;
+        net(8) TxData;
+        net    Send;
+        net    Busy;
 
-    net    DataReady;
-    net(8) RxData;
-    net    Ack;
+        net    DataReady;
+        net(8) RxData;
+        net    Ack;
 
-    net    Tx;
-    net    Rx;
-  }
+        net    Tx;
+        net    Rx;
+    }
 
-  class RS232(net Clock, net Reset, num BAUD): RS232_V(
-    ceil(log2(round(Clock'frequency / BAUD * 1.5))),
-    round(Clock'frequency / BAUD / 2),
-    round(Clock'frequency / BAUD),
-    round(Clock'frequency / BAUD * 1.5)
-  ){
-    nReset = ~Reset;
-    Clk    =  Clock;
-  }
+    class RS232(net Clock, net Reset, num BAUD): RS232_V(
+        ceil(log2(round(Clock'frequency / BAUD * 1.5))),
+        round(Clock'frequency / BAUD / 2),
+        round(Clock'frequency / BAUD),
+        round(Clock'frequency / BAUD * 1.5)
+    ){
+        nReset = ~Reset;
+        Clk    =  Clock;
+    }
 
-  pin<frequency = 50e6> Clk;
-  pin                   Reset;
-  pin                   RS232_Tx;
-  pin                   RS232_Rx;
+    pin<frequency = 50e6> Clk;
+    pin                   Reset;
+    pin                   RS232_Tx;
+    pin                   RS232_Rx;
 
-  RS232(Clk, Reset, 9600) MyUART;
-  RS232_Tx  = MyUART.Tx;
-  MyUART.Rx = RS232_Rx;
+    RS232(Clk, Reset, 9600) MyUART;
+    RS232_Tx  = MyUART.Tx;
+    MyUART.Rx = RS232_Rx;
 ```
 
 Whether the nets defined in the body of the construct describe input, output
@@ -97,23 +97,23 @@ function, which performs the same function as the port-mapping syntax in
 VHDL and Verilog.
 
 ```alcha
-  hdl("Library/LTC2991.v") LTC2991_Driver(){
-    // Various other ports...
+    hdl("Library/LTC2991.v") LTC2991_Driver(){
+        // Various other ports...
 
-    net I2C_Clk;
-    net I2C_Data;
+        net I2C_Clk;
+        net I2C_Data;
 
-    net error;
-  }
+        net error;
+    }
 
-  pin LTC2991_Clk;
-  pin LTC2991_Data;
-  pin LTC2991_Error;
+    pin LTC2991_Clk;
+    pin LTC2991_Data;
+    pin LTC2991_Error;
 
-  LTC2991_Driver() LTC2991_Driver_Inst;
-  LTC2991_Driver_Inst.I2C_Clk = LTC2991_Clk;
-  LTC2991_Data.hdl_map(LTC2991_Driver_Inst.I2C_Data);
-  LTC2991_Error = LTC2991_Driver_Inst.error;
+    LTC2991_Driver() LTC2991_Driver_Inst;
+    LTC2991_Driver_Inst.I2C_Clk = LTC2991_Clk;
+    LTC2991_Data.hdl_map(LTC2991_Driver_Inst.I2C_Data);
+    LTC2991_Error = LTC2991_Driver_Inst.error;
 ```
 
 --------------------------------------------------------------------------------

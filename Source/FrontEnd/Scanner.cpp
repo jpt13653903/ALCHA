@@ -142,6 +142,7 @@ Scanner::Scanner()
 
             keywords.insert("stimulus"     , Token::Type::Stimulus);
             keywords.insert("emulate"      , Token::Type::Emulate );
+            keywords.insert("sequence"     , Token::Type::Sequence);
             keywords.insert("assert"       , Token::Type::Assert  );
             keywords.insert("wait"         , Token::Type::Wait    );
 
@@ -250,17 +251,17 @@ Scanner::Scanner()
             operators.insert(";"  , Token::Type::Semicolon  );
 
         // Simulation operators
-            operators.insert("#"  , Token::Type::WaitFor               );
-            operators.insert("@"  , Token::Type::WaitOn                );
-            operators.insert("##" , Token::Type::WaitCycles            );
-            operators.insert("[*" , Token::Type::SequenceConsecutive   );
-            operators.insert("[->", Token::Type::SequenceGoTo          );
-            operators.insert("[=" , Token::Type::SequenceNonConsecutive);
-            operators.insert("|->", Token::Type::AssertImplies         );
-            operators.insert("|=>", Token::Type::AssertImpliesNext     );
-            operators.insert("||" , Token::Type::Or                    );
-            operators.insert("&&" , Token::Type::And                   );
-            operators.insert("&&&", Token::Type::Intersect             );
+            operators.insert("#"  , Token::Type::WaitFor                 );
+            operators.insert("@"  , Token::Type::WaitOn                  );
+            operators.insert("##" , Token::Type::WaitCycles              );
+            operators.insert("[*" , Token::Type::RepetitionConsecutive   );
+            operators.insert("[->", Token::Type::RepetitionGoTo          );
+            operators.insert("[=" , Token::Type::RepetitionNonConsecutive);
+            operators.insert("|->", Token::Type::AssertImplies           );
+            operators.insert("|=>", Token::Type::AssertImpliesNext       );
+            operators.insert("||" , Token::Type::Or                      );
+            operators.insert("&&" , Token::Type::And                     );
+            operators.insert("&&&", Token::Type::Intersect               );
 
         spaces   .balance();
         keywords .balance();

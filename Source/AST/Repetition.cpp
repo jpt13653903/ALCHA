@@ -18,53 +18,42 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Concatenate.h"
+#include "Repetition.h"
 //------------------------------------------------------------------------------
 
 using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-Concatenate::Concatenate(int line, int filenameIndex):
-    AST(line, filenameIndex, Type::Concatenate)
+Repetition::Repetition(int line, int filenameIndex):
+    AST(line, filenameIndex, Type::Repetition)
 {
 }
 //------------------------------------------------------------------------------
 
-Concatenate::~Concatenate()
+Repetition::~Repetition()
 {
-    if(members) delete members;
+    if(sequence) delete sequence;
+    if(range   ) delete range;
 }
 //------------------------------------------------------------------------------
 
-std::string Concatenate::print(int indent) const
+std::string Repetition::print(int indent) const
 {
     string result;
 
     for(int n = 0; n < indent; n++) result += "    ";
 
-    switch(operation){
-        case Token::Type::Concatenate:      result += ":( "; break;
-        case Token::Type::ArrayConcatenate: result += ":[ "; break;
-
-        default: result += "Unknown concatenate operation "; break;
-    }
-
-    bool first = true;
-    AST* member = members;
-    while(member){
-        if(!first) result += ", ";
-        first   = false;
-        result += member->print();
-        member  = member->next;
-    }
+    result += "(" + sequence->print() + ")";
 
     switch(operation){
-        case Token::Type::Concatenate:      result += " )"; break;
-        case Token::Type::ArrayConcatenate: result += " ]"; break;
+        case Token::Type::RepetitionConsecutive:    result += " [*";  break;
+        case Token::Type::RepetitionGoTo:           result += " [->"; break;
+        case Token::Type::RepetitionNonConsecutive: result += " [=";  break;
 
-        default: result += "Unknown concatenate operation "; break;
+        default: result += "Unknown repetition operation "; break;
     }
+    result += "(" + range->print() + ") ]";
 
     return result;
 }

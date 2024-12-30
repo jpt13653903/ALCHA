@@ -3,18 +3,33 @@
    similar to SystemVerilog. *)
 
 Stimulus = "stimulus" [ AttributeList ] [ ParameterList ] [ Identifier ]
-           "{" [ Statements ] "}";
+           "{" { Statement } "}";
 Emulate  = "emulate"  [ AttributeList ] [ ParameterList ] [ Identifier ]
-           "{" [ Statements ] "}";
-ForkJoin = "{" [ Statements ] "}" { ( "||" | "&&" ) "{" [ Statements ] "}" }
+           "{" { Statement } "}";
+ForkJoin = "{" { Statement } "}" { ( "||" | "&&" ) "{" { Statement } "}" }
 Wait     = ( "wait" "(" Sequence        ")" )
          | ( "@("       SensitivityList ")" )
          | ( ( "#" | "##" )  Primary ) ;
 
 SensitivityList = [ "posedge" | "negedge" ] Accessor { "," [ "posedge" | "negedge" ] Accessor };
 
-Assert   = "assert" Expression ";";
-Sequence = Expression; (* TODO: Put sequence expressions in here,
-                                with "Expression" at the leaves of the tree *)
+(* The sequence is in a block to allow for future features like local variables *)
+SequenceDef = "sequence" Identifier "{" Sequence ";" "}"
+
+(* If a "(" follows the "assert" keyword, it has to be a parameter list *)
+Assert = "assert" [ ParameterList ] AssertBlock;
+
+AssertBlock = AssertStatement | ( "{" { AssertStatement } "}" );
+AssertStatement = AssertIf | ( Sequence ";" );
+
+AssertIf = "if" "(" Expression ")" AssertBlock [ "else" AssertBlock ];
+
+Sequence   = MatchOr    [ ( "|->" | "|=>" )         Sequence   ];
+MatchOr    = MatchAnd   {   "||"                    MatchAnd   };
+MatchAnd   = CycleDelay { ( "&&"  | "&&&" )         CycleDelay };
+CycleDelay = Repetition { ( "#"   | "##"  ) Primary Repetition };
+Repetition = Expression [ ( "[*"  | "[->" | "[=" )  Range "]"  ];
 (*----------------------------------------------------------------------------*)
+
+
 

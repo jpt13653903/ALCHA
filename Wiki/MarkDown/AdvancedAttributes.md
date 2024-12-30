@@ -71,7 +71,7 @@ coordinate is specified, the compiler sets the `LL_STATE` property to
 compiler, based on the name of the object the attribute is assigned to.
 
 ```alcha
-  DPS(/* Parameters */)<region = "X44, Y145, W40, H5"> MyDSP;
+    DPS(/* Parameters */)<region = "X44, Y145, W40, H5"> MyDSP;
 ```
 
 ## Partition Assignments
@@ -100,15 +100,15 @@ the same partition, and the `DSP` module in another.  The `DFE` and
 the synthesis netlist.
 
 ```alcha
-  // Define a default -- also applies to the "Top" partition
-  'partition_type = "Fitter";
+    // Define a default -- also applies to the "Top" partition
+    'partition_type = "Fitter";
 
-  DFE()<partition = "DFE_Packer"> MyDFE;
+    DFE()<partition = "DFE_Packer"> MyDFE;
 
-  // This one has a type other than the defualt
-  DSP()<partition = "DSP", partition_type = "Synthesis"> MyDSP;
+    // This one has a type other than the defualt
+    DSP()<partition = "DSP", partition_type = "Synthesis"> MyDSP;
 
-  DataPacker()<partition = "DFE_Packer"> MyDataPacker;
+    DataPacker()<partition = "DFE_Packer"> MyDataPacker;
 ```
 
 ## Compiler Behaviour
@@ -153,43 +153,43 @@ the carry bit, the compiler uses the current "overflow" mode to handle the
 situation.
 
 ```alcha
-  net(8, 16) A, B;
-  net(8,  1) C, D;
-  net(8,  4) X = 0.11; // binary "00.000111"
+    net(8, 16) A, B;
+    net(8,  1) C, D;
+    net(8,  4) X = 0.11; // binary "00.000111"
 
-  A'rounding = "nearest";
-  // B is using default "truncate" rounding
+    A'rounding = "nearest";
+    // B is using default "truncate" rounding
 
-  C'overflow = "clip";
-  // D is using the default "wrap" overflow
+    C'overflow = "clip";
+    // D is using the default "wrap" overflow
 
-  A = X; B = X; C = X; D = X;
+    A = X; B = X; C = X; D = X;
 ```
 
 The Verilog equivalent of the above is:
 
 ```verilog
-  wire [ 3:-4] A, B;
-  wire [-1:-8] C, D;
-  wire [ 1:-6] X = 8'b00_000111;
+    wire [ 3:-4] A, B;
+    wire [-1:-8] C, D;
+    wire [ 1:-6] X = 8'b00_000111;
 
-  // Round to nearest:
-  assign A = {2'd0, X[1:-4]} + X[-5];
-  // Truncate:
-  assign B = {2'd0, X[1:-4]};
+    // Round to nearest:
+    assign A = {2'd0, X[1:-4]} + X[-5];
+    // Truncate:
+    assign B = {2'd0, X[1:-4]};
 
-  always @(*) begin // Clipping circuit
-    if(X[1]) begin
-      if(&X[0:-1]) C = {X[-1:-6], 2'd0};
-      else         C = 8'h80;
-    end else begin
-      if(|X[0:-1]) C = 8'h3F;
-      else         C = {X[-1:-6], 2'd0};
+    always @(*) begin // Clipping circuit
+        if(X[1]) begin
+            if(&X[0:-1]) C = {X[-1:-6], 2'd0};
+            else         C = 8'h80;
+        end else begin
+            if(|X[0:-1]) C = 8'h3F;
+            else         C = {X[-1:-6], 2'd0};
+        end
     end
-  end
 
-  // Stripping the most significant bits
-  assign D = {X[-1:-6], 2'd0};
+    // Stripping the most significant bits
+    assign D = {X[-1:-6], 2'd0};
 ```
 
 --------------------------------------------------------------------------------

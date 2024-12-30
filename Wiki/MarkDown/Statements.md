@@ -47,11 +47,11 @@ change without notice.
 If statement syntax is presented below:
 
 ```alcha
-  if(A){
-    // if A is non-zero, do this
-  }else{
-    // otherwise do this
-  }
+    if(A){
+        // if A is non-zero, do this
+    }else{
+        // otherwise do this
+    }
 ```
 
 If the condition is purely scripting (i.e. it does not contain any
@@ -63,17 +63,17 @@ compilation (the `#if` ... `#else` ... `#endif` construct of the C preprocessor)
 Switch-statement syntax is presented below:
 
 ```alcha
-  switch(A){
-    case(B, C, D){
-      // if A is equal to B, C or D, do this
+    switch(A){
+        case(B, C, D){
+            // if A is equal to B, C or D, do this
+        }
+        case(E){
+            // if A is equal to E, do this
+        }
+        default{
+            // otherwise do this
+        }
     }
-    case(E){
-      // if A is equal to E, do this
-    }
-    default{
-      // otherwise do this
-    }
-  }
 ```
 
 The expressions in the `case` statements (`B`, `C`, `D` and `E` in the above
@@ -93,31 +93,31 @@ The example below auto-generates the large case statements often encountered
 with register decoding:
 
 ```alcha
-  switch(Address){
-    for(Register in 'RdRegisters){
-      case(Register'Address) ReadData := Register;
-    }
-    for(Register in 'WrRegisters){
-      case(Register'Address) ReadData := Register;
-    }
-    for(Register in 'LiveRegisters){
-      case(Register'Read'Address) ReadData := Register'Read;
-    }
-  }
-
-  if(WriteEnable){
     switch(Address){
-      for(Register in 'WrRegisters){
-        case(Register'Address) Register := WriteData;
-      }
-      for(Register in 'LiveRegisters){
-        case(Register'Write'Address) Register'Write := WriteData;
-      }
+        for(Register in 'RdRegisters){
+            case(Register'Address) ReadData := Register;
+        }
+        for(Register in 'WrRegisters){
+            case(Register'Address) ReadData := Register;
+        }
+        for(Register in 'LiveRegisters){
+            case(Register'Read'Address) ReadData := Register'Read;
+        }
     }
-    for(Register in 'LiveRegisters){
-      Register'Strobe = ((Address == Register'Strobe'Address) & Write);
+
+    if(WriteEnable){
+        switch(Address){
+            for(Register in 'WrRegisters){
+                case(Register'Address) Register := WriteData;
+            }
+            for(Register in 'LiveRegisters){
+                case(Register'Write'Address) Register'Write := WriteData;
+            }
+        }
+        for(Register in 'LiveRegisters){
+            Register'Strobe = ((Address == Register'Strobe'Address) & Write);
+        }
     }
-  }
 ```
 
 ### while
@@ -128,9 +128,9 @@ value of `A` must be known at compile-time.  Within a finite state machine
 (FSM) structure, `A` can be a synthesisable expression.
 
 ```alcha
-  while(A){
-    // while A is non-zero, do this
-  }
+    while(A){
+        // while A is non-zero, do this
+    }
 ```
 
 ### for
@@ -140,9 +140,9 @@ every element of the array, `x` becomes a reference to that element and the
 loop is evaluated.
 
 ```alcha
-  for(x in A){
-    // for every element of array A, set x to that element and do this
-  }
+    for(x in A){
+        // for every element of array A, set x to that element and do this
+    }
 ```
 
 The loop is evaluated in the same order as the elements of the array, not in
@@ -153,11 +153,11 @@ still evaluated sequentially, following normal combinational-statement
 blocking assignment rules.  This is illustrated below:
 
 ```alcha
-  net(8) A, B;
+    net(8) A, B;
 
-  // Counts the number of bits of A that are high and assigns the answer to B
-  B = 0;
-  for(x in 0..7) B += A[x];
+    // Counts the number of bits of A that are high and assigns the answer to B
+    B = 0;
+    for(x in 0..7) B += A[x];
 ```
 
 ### loop
@@ -165,12 +165,12 @@ blocking assignment rules.  This is illustrated below:
 The loop-loop syntax is presented below:
 
 ```alcha
-  loop(N){
-    // Do this N times
-  }
-  loop{
-    // Do this forever
-  }
+    loop(N){
+        // Do this N times
+    }
+    loop{
+        // Do this forever
+    }
 ```
 
 The evaluation of loops in FSM structures depend on the use of commas or
@@ -183,35 +183,35 @@ clock-cycle at a time.
 A loop loop can therefore be used to implement a "wait" state, as follows:
 
 ```alcha
-  net LED = 0;
+    net LED = 0;
 
-  fsm(Clk, Reset){
-    loop{ // Main loop (do this forever)
-      LED = ~LED,   // Toggle the LED and
-      loop(20_000); // Go to the next state 20 000 times
+    fsm(Clk, Reset){
+        loop{ // Main loop (do this forever)
+            LED = ~LED,   // Toggle the LED and
+            loop(20_000); // Go to the next state 20 000 times
+        }
     }
-  }
 ```
 
 This is equivalent to the following Verilog:
 
 ```verilog
-  reg       LED;
-  reg [14:0]Count;
+    reg       LED;
+    reg [14:0]Count;
 
-  always @(posedge Clk) begin
-    if(Reset) begin
-      LED   <= 0;
-      Count <= 15'd_20_000;
+    always @(posedge Clk) begin
+        if(Reset) begin
+            LED   <= 0;
+            Count <= 15'd_20_000;
 
-    end else if(Count == 15'd_20_000) begin
-      LED   <= ~LED;
-      Count <= 15'd1;
+        end else if(Count == 15'd_20_000) begin
+            LED   <= ~LED;
+            Count <= 15'd1;
 
-    end else begin
-      Count <= Count + 1'b1;
+        end else begin
+            Count <= Count + 1'b1;
+        end
     end
-  end
 ```
 
 ### return
@@ -225,14 +225,14 @@ state machine) or halting until the next system reset (if it was called
 combinationally).
 
 ```alcha
-  num Func(A, B){
-    return A+B; // Equivalent to "Func = A+B; return;"
-  }
-  void Proc(A, B){
-    // Do some stuff
-    if(whatever) return; // return early
-    // do some more stuff
-  }
+    num Func(A, B){
+        return A+B; // Equivalent to "Func = A+B; return;"
+    }
+    void Proc(A, B){
+        // Do some stuff
+        if(whatever) return; // return early
+        // do some more stuff
+    }
 ```
 
 ### break and continue
@@ -242,22 +242,22 @@ loops.  Both of these take an optional integer expression argument to indicate
 the number of loop levels.  For instance:
 
 ```alcha
-  loop{
-    for(j in 1..100){
-      while(Busy){
-        if(Timeout) break 3; // Continues at "Error code"
-        continue;            // skips the rest of this loop body
-                             // and does the next iteration of this loop
+    loop{
+        for(j in 1..100){
+            while(Busy){
+                if(Timeout) break 3; // Continues at "Error code"
+                continue;            // skips the rest of this loop body
+                                     // and does the next iteration of this loop
 
-        continue 2; // skips the rest of the loop body of this and the "for"
-                    // loop and does the next iteration of the "for" loop
+                continue 2; // skips the rest of the loop body of this and the "for"
+                            // loop and does the next iteration of the "for" loop
 
-        break;      // Breaks out of the "while" loop and does the rest of
-                    // the "for" loop body;
-      }
+                break;      // Breaks out of the "while" loop and does the rest of
+                            // the "for" loop body;
+            }
+        }
     }
-  }
-  // Error code
+    // Error code
 ```
 
 ## Alias
@@ -267,23 +267,23 @@ be simply assigned to a variable.  In this case, it is convenient to define an
 alias for the expression, as follows:
 
 ```alcha
-  alias C   = Namespace.ClassInstance;
-  alias M   = SomeClass.Member;
-  alias Clk = SYS_GLOBAL_CLK;
+    alias C   = Namespace.ClassInstance;
+    alias M   = SomeClass.Member;
+    alias Clk = SYS_GLOBAL_CLK;
 
-  C.Member = 3;
-  M = 5;
-  fsm(Clk){
-    // Some statements...
-  }
+    C.Member = 3;
+    M = 5;
+    fsm(Clk){
+        // Some statements...
+    }
 ```
 
 It is important to note, however, that the alias is evaluated first, before
 used in the target expression.  The following two lines are equivalent:
 
 ```alcha
-  alias sum = A + B; X = Y * sum;
-  X = Y * (A + B);
+    alias sum = A + B; X = Y * sum;
+    X = Y * (A + B);
 ```
 
 --------------------------------------------------------------------------------

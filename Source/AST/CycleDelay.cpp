@@ -18,52 +18,55 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Concatenate.h"
+#include "CycleDelay.h"
 //------------------------------------------------------------------------------
 
 using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-Concatenate::Concatenate(int line, int filenameIndex):
-    AST(line, filenameIndex, Type::Concatenate)
+CycleDelay::CycleDelay(int line, int filenameIndex):
+    AST(line, filenameIndex, Type::CycleDelay)
 {
 }
 //------------------------------------------------------------------------------
 
-Concatenate::~Concatenate()
+CycleDelay::~CycleDelay()
 {
-    if(members) delete members;
+    if(left ) delete left;
+    if(right) delete right;
+    if(delay) delete delay;
 }
 //------------------------------------------------------------------------------
 
-std::string Concatenate::print(int indent) const
+std::string CycleDelay::print(int indent) const
 {
     string result;
 
     for(int n = 0; n < indent; n++) result += "    ";
 
-    switch(operation){
-        case Token::Type::Concatenate:      result += ":( "; break;
-        case Token::Type::ArrayConcatenate: result += ":[ "; break;
-
-        default: result += "Unknown concatenate operation "; break;
-    }
-
-    bool first = true;
-    AST* member = members;
-    while(member){
-        if(!first) result += ", ";
-        first   = false;
-        result += member->print();
-        member  = member->next;
+    if(left){
+        result += "(";
+        result += left->print();
+        result += ")";
     }
 
     switch(operation){
-        case Token::Type::Concatenate:      result += " )"; break;
-        case Token::Type::ArrayConcatenate: result += " ]"; break;
+        case Token::Type::WaitFor:    result += " #";  break;
+        case Token::Type::WaitCycles: result += " ##"; break;
 
-        default: result += "Unknown concatenate operation "; break;
+        default: result += "Unknown cycle-delay operation "; break;
+    }
+
+    if(delay){
+        result += "(";
+        result += delay->print();
+        result += ") ";
+    }
+    if(right){
+        result += "(";
+        result += right->print();
+        result += ")";
     }
 
     return result;

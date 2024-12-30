@@ -1,16 +1,16 @@
-StatementBlock = Statement | ( "{" [ Statements ] "}" );
+StatementBlock = Statement | ( "{" { Statement } "}" );
 
 Alias  = "alias" Identifier "=" Expression ";";
 Import = "import" String [ "as" Identifier ] ";";
 Struct = "struct" [ AttributeList ] [ Identifier ] "{"
           { Definition | Struct }
          "}";
-Group  = "group"  [ AttributeList ] [ Identifier ] "{" [ Statements ] "}";
+Group  = "group"  [ AttributeList ] [ Identifier ] "{" { Statement } "}";
 
 (* The result from "Postfix" or "Concatenation" is checked for syntactic
    validity before use as a name-space, class name or assignment target. *)
 FunctionCallStatement = FunctionCall ( "," | ";" );
-NamespacePush         = Accessor ".{" [ Statements ] "}";
+NamespacePush         = Accessor ".{" { Statement } "}";
 Assignment            = ( Accessor AssignmentOperator Expression ( "," | ";" ) )
                       | ( Accessor ( "++" | "--") ( "," | ";" ) );
 

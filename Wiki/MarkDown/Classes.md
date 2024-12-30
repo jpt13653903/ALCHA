@@ -72,15 +72,15 @@ automatically destroyed when no more references to it exists (similar to
 Python).  This mechanism enables expressions such as:
 
 ```alcha
-  class vec4(x, y, z, w){
-    num dot(vec4 V){
-      dot = V.x*x + V.y*y + V.z*z + V.w*w;
-    }
-  };
-  vec4(1, 2, 3, 4) A;
-  num B = A.dot(vec4(9, 8, 7, 6));
+    class vec4(x, y, z, w){
+        num dot(vec4 V){
+            dot = V.x*x + V.y*y + V.z*z + V.w*w;
+        }
+    };
+    vec4(1, 2, 3, 4) A;
+    num B = A.dot(vec4(9, 8, 7, 6));
 
-  num C = vec4(1, 2, 3, 4).dot(vec4(9, 8, 7, 6));
+    num C = vec4(1, 2, 3, 4).dot(vec4(9, 8, 7, 6));
 ```
 
 ## Abstract Signal Types
@@ -92,37 +92,37 @@ example of how a digital signal processing chain might be implemented is
 presented below:
 
 ```alcha
-  class STREAM(num Width = 8){
-    net(Width) Data;
-    net        Valid;
-    net        Ready;
-  }
-
-  STREAM Filter(STREAM Input){
-    // Creates a new stream object which has double the width of the input.
-    Filter = STREAM(Input.Data'width * 2);
-
-    Input.Ready = Filter.Ready; // Implements back pressure
-
-    rtl(Clk){ // Uses global clock
-      if(Filter.Ready & Input.Valid){
-        // Implement the body of the filter here, controlling the
-        // output data and valid fields as required.
-      }
+    class STREAM(num Width = 8){
+        net(Width) Data;
+        net        Valid;
+        net        Ready;
     }
-  }
 
-  STREAM Decimate(STREAM Input, num N = 128){
-    // Similarly defined as the filter above
-  }
+    STREAM Filter(STREAM Input){
+        // Creates a new stream object which has double the width of the input.
+        Filter = STREAM(Input.Data'width * 2);
 
-  STREAM FFT(STREAM Input){
-    // Implements a streaming FFT
-  }
+        Input.Ready = Filter.Ready; // Implements back pressure
 
-  // Hook up the chain:
-  ADC()  Input;
-  STREAM Output = FFT(Decimate(Filter(Input)));
+        rtl(Clk){ // Uses global clock
+            if(Filter.Ready & Input.Valid){
+                // Implement the body of the filter here, controlling the
+                // output data and valid fields as required.
+            }
+        }
+    }
+
+    STREAM Decimate(STREAM Input, num N = 128){
+        // Similarly defined as the filter above
+    }
+
+    STREAM FFT(STREAM Input){
+        // Implements a streaming FFT
+    }
+
+    // Hook up the chain:
+    ADC()  Input;
+    STREAM Output = FFT(Decimate(Filter(Input)));
 ```
 
 ## Inheritance
@@ -132,36 +132,36 @@ by means of a comma-separated list after a colon.  The ADC class used in the
 example above might, for instance, be defined as follows:
 
 ```alcha
-  group<standard = "CMOS", voltage = "2.5 V"> ADC{
-    group Data{
-      pin    <location = "B7"> Clock = 0; // From FPGA to ADC
-      pin(14)<location = ["A8", "C9", "E17", "D11", "G3", "C14", "B16",
-                          "B4", "H2", "A25", "E19", "F7", "G21", "A11"]> Data;
-    }
-    group SPI{
-      pin<location = "K7"> Clock = 1; // These initialisers are reset conditions
-      pin<location = "L2"> Data  = 1;
-      pin<location = "N9"> Latch = 1;
-    }
-  }
-
-  class ADC(): STREAM(14){ // Inherits from the STREAM class
-    void SetRegister(Address, Data){
-      fsm(GlobalClock, GlobalReset){
-        // A state-machine that implements the ADC's SPI interface.
-
-        // This state-machine can be called externally to the ADC class as
-        // well as from within.
-      }
+    group<standard = "CMOS", voltage = "2.5 V"> ADC{
+        group Data{
+            pin    <location = "B7"> Clock = 0; // From FPGA to ADC
+            pin(14)<location = ["A8", "C9", "E17", "D11", "G3", "C14", "B16",
+                                "B4", "H2", "A25", "E19", "F7", "G21", "A11"]> Data;
+        }
+        group SPI{
+            pin<location = "K7"> Clock = 1; // These initialisers are reset conditions
+            pin<location = "L2"> Data  = 1;
+            pin<location = "N9"> Latch = 1;
+        }
     }
 
-    fsm(GlobalClock, GlobalReset){
-      // The state machine used to set up the ADC and receive data.
+    class ADC(): STREAM(14){ // Inherits from the STREAM class
+        void SetRegister(Address, Data){
+            fsm(GlobalClock, GlobalReset){
+                // A state-machine that implements the ADC's SPI interface.
 
-      // This state machine calls the above SetRegister function in order to
-      // set the various ADC registers to default values.
+                // This state-machine can be called externally to the ADC class as
+                // well as from within.
+            }
+        }
+
+        fsm(GlobalClock, GlobalReset){
+            // The state machine used to set up the ADC and receive data.
+
+            // This state machine calls the above SetRegister function in order to
+            // set the various ADC registers to default values.
+        }
     }
-  }
 ```
 
 ## Polymorphism
@@ -191,10 +191,10 @@ finalised yet, but it is envisioned that the developer can define a rectangle
 in normalised coordinates, similar to the example below:
 
 ```alcha
-  class SomeModule{
-    // Some members
-  }
-  SomeModule()<region = "X44, Y145, W40, H5"> TheInstance;
+    class SomeModule{
+        // Some members
+    }
+    SomeModule()<region = "X44, Y145, W40, H5"> TheInstance;
 ```
 
 ## The `finally` function

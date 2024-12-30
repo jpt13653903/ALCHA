@@ -175,51 +175,51 @@ clocked structures with external combinational feedback.  The code below
 provides two examples:
 
 ```alcha
-  class Adder(N){ // Parametrisation is presented in the scripting section
-    net(N) A, B;
-    net(N) Y;
-    Y = A + B;
-  }
-  Adder(8) MyAdder; // Creates an instance of an 8-bit adder and assigns the
-                    // object to the MyAdder reference.  At this point, "Y" is
-                    // a reference to the expression "Y = A + B", but "A" and "B"
-                    // are null references.
-  net(8) x, y, z;
-  MyAdder.{ // Pushes the name-space "MyAdder" onto the name-space stack
-    A = x; // Assign the expression "x" to the reference "A"
-    B = y; // Assign the expression "y" to the reference "B"
-    z = Y; // Assign the expression "Y" to the reference "z"
-  }
+    class Adder(N){ // Parametrisation is presented in the scripting section
+        net(N) A, B;
+        net(N) Y;
+        Y = A + B;
+    }
+    Adder(8) MyAdder; // Creates an instance of an 8-bit adder and assigns the
+                      // object to the MyAdder reference.  At this point, "Y" is
+                      // a reference to the expression "Y = A + B", but "A" and "B"
+                      // are null references.
+    net(8) x, y, z;
+    MyAdder.{ // Pushes the name-space "MyAdder" onto the name-space stack
+        A = x; // Assign the expression "x" to the reference "A"
+        B = y; // Assign the expression "y" to the reference "B"
+        z = Y; // Assign the expression "Y" to the reference "z"
+    }
 ```
 
 The Verilog equivalent of the above is:
 
 ```verilog
-  module Adder #(parameter N)(
-    input  [N-1:0]A,
-    input  [N-1:0]B,
-    output [N-1:0]Y
-  );
-    assign Y = A + B;
-  endmodule
+    module Adder #(parameter N)(
+        input  [N-1:0]A,
+        input  [N-1:0]B,
+        output [N-1:0]Y
+    );
+        assign Y = A + B;
+    endmodule
 
-  module TopLevel;
-    wire [7:0]x;
-    wire [7:0]y;
+    module TopLevel;
+        wire [7:0]x;
+        wire [7:0]y;
 
-    Adder #(8) MyAdder(x, y, z);
-  endmodule
+        Adder #(8) MyAdder(x, y, z);
+    endmodule
 ```
 
 And here is another example:
 
 ```alcha
-  net(8) Counter;
-  UserClk = (Counter == 125); // "Counter" has no value yet
-  rtl(CPUClock){
-    if(UserClk) Counter = 0;
-    else        Counter++;
-  }
+    net(8) Counter;
+    UserClk = (Counter == 125); // "Counter" has no value yet
+    rtl(CPUClock){
+        if(UserClk) Counter = 0;
+        else        Counter++;
+    }
 ```
 
 ALCHA is intended for describing hardware, so the defined `net` types

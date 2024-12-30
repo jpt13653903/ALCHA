@@ -58,15 +58,15 @@ The scripting interpreter will duplicate the part of the AST containing the
 feature can be used to implement conditional compilation.
 
 ```alcha
-  net( 5) x;
-  net(32) y;
-  num     n;
+    net( 5) x;
+    net(32) y;
+    num     n;
 
-  switch(x){
-    for(n in 0..31){
-      case(n) y = (2**32-1) >> (31-n);
+    switch(x){
+        for(n in 0..31){
+            case(n) y = (2**32-1) >> (31-n);
+        }
     }
-  }
 ```
 
 ## Mathematical Functions
@@ -116,14 +116,14 @@ bytes.  A `char` is a UTF-32 representation of a UTF-8 encoded file.  The code
 below shows an example of how file I/O is used in ALCHA.
 
 ```alcha
-  byte Data[] = read("MyDataFile.dat");
-  char Log [] = "";  // An array of UTF-32 characters
+    byte Data[] = read("MyDataFile.dat");
+    char Log [] = "";  // An array of UTF-32 characters
 
-  byte data;
-  for(data in Data){
-    !! Do some stuff, possibly appending to the Log array
-  }
-  textwrite("MyLogFile.log", Log); // Writes the log to file, in UTF-8 format.
+    byte data;
+    for(data in Data){
+        !! Do some stuff, possibly appending to the Log array
+    }
+    textwrite("MyLogFile.log", Log); // Writes the log to file, in UTF-8 format.
 ```
 
 The `read` function acts as if it reads the entire file into the array
@@ -166,7 +166,7 @@ Function        | Description
 `$x`            | Converts variable `x` to a string.
 `$(x, S)`       | Converts expression `x` to a string.  The base and other parameters are controlled by means of the optional format string `S`, which takes a C `printf`-style format string.
 `eval(S)`       | Converts a string `S` to a number.  The scripting interpreter makes use of the same expression engine used in [Engineering Calculator][EngCalc].
-`$"..{x, S}.."` | Interpolated string.  Equivalent to `".." + $(x, S) + ".."`.
+`$"..{x, S}.."` | Interpolated string.  Equivalent to `:["..", $(x, S), ".."]`.
 
 It is similarly useful to be able to convert `byte` arrays to `num` types, and
 vice versa.  A `byte` array can be assigned directly to a `num` type, and vice
@@ -175,17 +175,17 @@ assignments are compatible with packed structures).  The code below shows some
 examples.
 
 ```alcha
-  byte b[4] = [1, 2, 3, 4]; // b[0] = 1; b[1] = 2; ...
-  num  n;
+    byte b[4] = [1, 2, 3, 4]; // b[0] = 1; b[1] = 2; ...
+    num  n;
 
-  n = b;      // assigns 0x01020304 to n
-  n = b[0..3] // assigns 0x01020304 to n
-  n = b[3..0] // assigns 0x04030201 to n
-  n = b[3, 1] // assigns 0x00000402 to n
+    n = b;      // assigns 0x01020304 to n
+    n = b[0..3] // assigns 0x01020304 to n
+    n = b[3..0] // assigns 0x04030201 to n
+    n = b[3, 1] // assigns 0x00000402 to n
 
-  n       = 0x05060708;
-  b       = n; // assigns b[0] = 5; b[1] = 6; ...
-  b[3..0] = n; // assigns b[3] = 5; b[2] = 6; ...
+    n       = 0x05060708;
+    b       = n; // assigns b[0] = 5; b[1] = 6; ...
+    b[3..0] = n; // assigns b[3] = 5; b[2] = 6; ...
 ```
 
 ## Dynamic Arrays
@@ -196,16 +196,16 @@ building the contents of a text file, for instance, the code might look as
 follows:
 
 ```alcha
-  char Buffer[] = "";
-  // Some code...
-  Buffer ~= "Header\n";
-  // Some more code...
-  Buffer ~= "Some Body...\n";
-  // Some more code...
-  Buffer ~= "Some Body...\n";
-  // Some more code...
-  Buffer ~= "Some Body...\n";
-  textwrite("My Log Buffer.log", Buffer);
+    char Buffer[] = "";
+    // Some code...
+    Buffer ~= "Header\n";
+    // Some more code...
+    Buffer ~= "Some Body...\n";
+    // Some more code...
+    Buffer ~= "Some Body...\n";
+    // Some more code...
+    Buffer ~= "Some Body...\n";
+    textwrite("My Log Buffer.log", Buffer);
 ```
 
 ## Shell Commands
@@ -222,13 +222,13 @@ call, so that the external tool can finish before the ALCHA script interpreter
 continues.  The code below shows an example.
 
 ```alcha
-  !! Dynamically build the register addresses here
+    !! Dynamically build the register addresses here
 
-  textwrite("RegDefs.h", RegDefs);
-  if(shell("gcc main.c -o bin/MyCPU")) error("Cannot compile MyCPU");
-  byte MyCPU[] = read("bin/MyCPU");
+    textwrite("RegDefs.h", RegDefs);
+    if(shell("gcc main.c -o bin/MyCPU")) error("Cannot compile MyCPU");
+    byte MyCPU[] = read("bin/MyCPU");
 
-  !! Initialise the CPU ROM here
+    !! Initialise the CPU ROM here
 ```
 
 Another use for this mechanism is to call an external scripting tool to plot

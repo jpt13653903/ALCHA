@@ -29,7 +29,8 @@
 
 namespace AST{
     struct Assert: public AST{
-        AST* expression;
+        AST* parameters = 0;
+        AST* body       = 0;
 
         Assert(int line, int filenameIndex);
        ~Assert();

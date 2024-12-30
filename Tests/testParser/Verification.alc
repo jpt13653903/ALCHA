@@ -1,0 +1,61 @@
+// Sequences
+
+a = b + c + d + e;
+
+wait(a ##1 b ##2 c ##3 d ##50 1);
+
+assert a ##[1..4] b;
+
+assert s1 ##2 s2;
+
+assert s1 ##2 s2 [*4 ] ##5 s3;
+assert s1 ##2 s2 [->4] ##5 s3;
+assert s1 ##2 s2 [=4 ] ##5 s3;
+
+assert s1 ##2 s2 [* 4..8] ##5 s3;
+assert s1 ##2 s2 [->4..8] ##5 s3;
+assert s1 ##2 s2 [= 4..8] ##5 s3;
+
+assert s1 [*2..3];
+//------------------------------------------------------------------------------
+
+// Assert Blocks
+
+net(8) Adder(net(8) A, net(8) B, net C){
+  :(C, Adder) = A + B;
+}
+net    c;
+net(8) a, b, y = Adder(a, b, c);
+
+stimulus(1e-9){
+    #1 a = 0x00; b = 0x00; assert{y == 0x00; c == 0; }
+    #1 a = 0xFF; b = 0x01; assert{y == 0x00; c == 1; }
+    #1 a = 0x01; b = 0xFF; assert{y == 0x00; c == 1; }
+    #1 a = 0xFF; b = 0xFF; assert{y == 0xFE; c == 1; }
+    #1 a = 0x7F; b = 0x80; assert{y == 0xFF; c == 0; }
+}
+
+assert{
+    a == 0x00 && b == 0x00 |-> y == 0x00 && c == 0;
+    a == 0xFF && b == 0x01 |-> y == 0x00 && c == 1;
+    a == 0x01 && b == 0xFF |-> y == 0x00 && c == 1;
+    a == 0xFF && b == 0xFF |-> y == 0xFE && c == 1;
+    a == 0x7F && b == 0x80 |-> y == 0xFF && c == 0;
+}
+
+// A simple sequence:
+sequence Handshake{
+    Go ##[1..5] Busy ##[1.. 10] !Go ##[1..100] !Busy;
+}
+
+// A sequence-based assert:
+assert(1e-9, Clk){
+    if(~Reset){
+             Go      |->  Handshake;
+        rose(Go  )   |-> !Busy;
+        fell(Busy)   |-> !Go;
+        (Go & !Busy) |=>  stable(Data);
+    }
+}
+//------------------------------------------------------------------------------
+

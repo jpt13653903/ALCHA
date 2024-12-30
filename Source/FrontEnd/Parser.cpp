@@ -31,6 +31,7 @@
 #include "AST/ClockedConstruct.h"
 #include "AST/Concatenate.h"
 #include "AST/ControlStatement.h"
+#include "AST/CycleDelay.h"
 #include "AST/EnumDefinition.h"
 #include "AST/Expression.h"
 #include "AST/Fence.h"
@@ -48,6 +49,8 @@
 #include "AST/NameSpacePush.h"
 #include "AST/OperatorOverload.h"
 #include "AST/ParameterDef.h"
+#include "AST/Repetition.h"
+#include "AST/SequenceDef.h"
 #include "AST/Slice.h"
 #include "AST/StimulusOrEmulate.h"
 #include "AST/AST_String.h"
@@ -161,7 +164,7 @@ AST::AST* Parser::bitwiseOr()
     auto left = bitwiseXor();
     if(!left) return 0;
 
-    while(token.type > Token::Type::EndOfFile){
+    while(!error && token.type > Token::Type::EndOfFile){
         int  line = token.line;
         auto operation = token.type;
         switch(token.type){
@@ -195,7 +198,7 @@ AST::AST* Parser::bitwiseXor()
     auto left = bitwiseAnd();
     if(!left) return 0;
 
-    while(token.type > Token::Type::EndOfFile){
+    while(!error && token.type > Token::Type::EndOfFile){
         int  line = token.line;
         auto operation = token.type;
         switch(token.type){
@@ -229,7 +232,7 @@ AST::AST* Parser::bitwiseAnd()
     auto left = equality();
     if(!left) return 0;
 
-    while(token.type > Token::Type::EndOfFile){
+    while(!error && token.type > Token::Type::EndOfFile){
         int  line = token.line;
         auto operation = token.type;
         switch(token.type){
@@ -263,7 +266,7 @@ AST::AST* Parser::equality()
     auto left = relational();
     if(!left) return 0;
 
-    while(token.type > Token::Type::EndOfFile){
+    while(!error && token.type > Token::Type::EndOfFile){
         int  line = token.line;
         auto operation = token.type;
         switch(token.type){
@@ -297,7 +300,7 @@ AST::AST* Parser::relational()
     auto left = shift();
     if(!left) return 0;
 
-    while(token.type > Token::Type::EndOfFile){
+    while(!error && token.type > Token::Type::EndOfFile){
         int  line = token.line;
         auto operation = token.type;
         switch(token.type){
@@ -333,7 +336,7 @@ AST::AST* Parser::shift()
     auto left = additive();
     if(!left) return 0;
 
-    while(token.type > Token::Type::EndOfFile){
+    while(!error && token.type > Token::Type::EndOfFile){
         int  line = token.line;
         auto operation = token.type;
         switch(token.type){
@@ -367,7 +370,7 @@ AST::AST* Parser::additive()
     auto left = multiplicative();
     if(!left) return 0;
 
-    while(token.type > Token::Type::EndOfFile){
+    while(!error && token.type > Token::Type::EndOfFile){
         int  line = token.line;
         auto operation = token.type;
         switch(token.type){
@@ -401,7 +404,7 @@ AST::AST* Parser::multiplicative()
     auto left = exponential();
     if(!left) return 0;
 
-    while(token.type > Token::Type::EndOfFile){
+    while(!error && token.type > Token::Type::EndOfFile){
         int  line = token.line;
         auto operation = token.type;
         switch(token.type){
@@ -436,7 +439,7 @@ AST::AST* Parser::exponential()
     auto left = replication();
     if(!left) return 0;
 
-    while(token.type > Token::Type::EndOfFile){
+    while(!error && token.type > Token::Type::EndOfFile){
         int  line = token.line;
         auto operation = token.type;
         switch(token.type){
@@ -648,7 +651,7 @@ AST::AST* Parser::postfix()
     auto left = accessor();
     if(!left) return 0;
 
-    while(token.type > Token::Type::EndOfFile){
+    while(!error && token.type > Token::Type::EndOfFile){
         int  line = token.line;
         auto operation = token.type;
         switch(token.type){
@@ -680,7 +683,7 @@ AST::AST* Parser::accessor()
     auto left = castExpression();
     if(!left) return 0;
 
-    while(token.type > Token::Type::EndOfFile){
+    while(!error && token.type > Token::Type::EndOfFile){
         int  line = token.line;
         auto operation = token.type;
         switch(token.type){
@@ -913,7 +916,7 @@ AST::AST* Parser::interpolatedString()
     auto result = new AST::InterpolatedString(token.line, astFilenameIndex);
     AST::AST* last = 0;
 
-    while(token.type > Token::Type::EndOfFile){
+    while(!error && token.type > Token::Type::EndOfFile){
         switch(token.type){
             case Token::Type::InterpolatedStringPart:{
                 auto current = new AST::String(token.line, astFilenameIndex);
@@ -972,7 +975,7 @@ AST::AST* Parser::expressionList()
         auto last    = result;
         auto current = result;
 
-        while(token.type == Token::Type::Comma){
+        while(!error && token.type == Token::Type::Comma){
             getToken();
             current = expression();
             if(!current){
@@ -999,7 +1002,7 @@ AST::AST* Parser::parameterList()
         auto last    = result;
         auto current = result;
 
-        while(token.type == Token::Type::Comma){
+        while(!error && token.type == Token::Type::Comma){
             getToken();
             current = parameter();
             if(!current){
@@ -1065,7 +1068,7 @@ AST::AST* Parser::attributeList()
     auto last    = result;
     auto current = result;
 
-    while(token.type == Token::Type::Comma){
+    while(!error && token.type == Token::Type::Comma){
         getToken();
         current = attributeAssignment();
         if(!current){
@@ -1199,7 +1202,7 @@ AST::AST* Parser::typeIdentifier()
     AST::AST* left = temp;
     getToken();
 
-    while(token.type > Token::Type::EndOfFile){
+    while(!error && token.type > Token::Type::EndOfFile){
         int  line = token.line;
         auto operation = token.type;
         switch(token.type){
@@ -1278,7 +1281,7 @@ AST::AST* Parser::classDefinition()
             if(token.type == Token::Type::OpenRound){
                 current->parameters = parameterList();
             }
-        }while(token.type == Token::Type::Comma);
+        }while(!error && token.type == Token::Type::Comma);
     }
 
     if(token.type == Token::Type::OpenCurly){
@@ -1347,7 +1350,7 @@ AST::AST* Parser::variableDefList(
     AST::AST* initialiser = 0;
     auto      initType    = Token::Type::Unknown;
 
-    while(token.type > Token::Type::EndOfFile){
+    while(!error && token.type > Token::Type::EndOfFile){
         if(token.type == Token::Type::Identifier){
             identifier = token.data;
             getToken();
@@ -1359,7 +1362,7 @@ AST::AST* Parser::variableDefList(
             return 0;
         }
         AST::AST* lastArrayDef = 0;
-        while(token.type == Token::Type::OpenSquare){
+        while(!error && token.type == Token::Type::OpenSquare){
             auto current = arrayDefinition();
             if(lastArrayDef){
                 lastArrayDef->next = current;
@@ -1601,9 +1604,9 @@ AST::AST* Parser::operatorOverload(bool        isInline,
         case Token::Type::XorAssign:
         case Token::Type::ShiftLeftAssign:
         case Token::Type::ShiftRightAssign:
-        case Token::Type::SequenceConsecutive:
-        case Token::Type::SequenceGoTo:
-        case Token::Type::SequenceNonConsecutive:
+        case Token::Type::RepetitionConsecutive:
+        case Token::Type::RepetitionGoTo:
+        case Token::Type::RepetitionNonConsecutive:
         case Token::Type::AssertImplies:
         case Token::Type::AssertImpliesNext:
         case Token::Type::Or:
@@ -1669,7 +1672,7 @@ AST::AST* Parser::parameterDefList()
     auto last = result;
 
     bool first = true;
-    while(token.type == Token::Type::Comma){
+    while(!error && token.type == Token::Type::Comma){
         getToken();
         auto current = parameterDef();
         if(!current){
@@ -1748,7 +1751,7 @@ AST::AST* Parser::parameterDef()
         delete result;
         return 0;
     }
-    while(token.type == Token::Type::OpenSquare){
+    while(!error && token.type == Token::Type::OpenSquare){
         getToken();
         if(token.type != Token::Type::CloseSquare){
             printError("] expected");
@@ -1806,7 +1809,7 @@ AST::AST* Parser::enumDefinition()
             delete result;
             return 0;
         }
-    }while(token.type == Token::Type::Comma);
+    }while(!error && token.type == Token::Type::Comma);
 
     if(token.type != Token::Type::CloseCurly){
         printError("} expected");
@@ -1950,7 +1953,7 @@ AST::AST* Parser::structBody()
     AST::AST* last    = 0;
     AST::AST* current = 0;
 
-    while(token.type > Token::Type::EndOfFile){
+    while(!error && token.type > Token::Type::EndOfFile){
         switch(token.type){
             case Token::Type::Pin:
             case Token::Type::Net:
@@ -2258,7 +2261,7 @@ AST::AST* Parser::hdlConstruct()
             return 0;
         }
         first = false;
-    }while(token.type == Token::Type::Comma);
+    }while(!error && token.type == Token::Type::Comma);
 
     if(token.type != Token::Type::CloseRound){
         printError(") expected");
@@ -2306,7 +2309,7 @@ AST::AST* Parser::hdlParameterList()
         auto last    = result;
         auto current = result;
 
-        while(token.type > Token::Type::EndOfFile){
+        while(!error && token.type > Token::Type::EndOfFile){
             getToken();
             current = hdlParameter();
             if(!current) break;
@@ -2370,7 +2373,7 @@ AST::AST* Parser::hdlBody()
     AST::AST* last    = 0;
     AST::AST* current = 0;
 
-    while(token.type > Token::Type::EndOfFile){
+    while(!error && token.type > Token::Type::EndOfFile){
         switch(token.type){
             case Token::Type::Input:
             case Token::Type::Output:
@@ -2456,7 +2459,7 @@ AST::AST* Parser::forkJoin()
     auto left = statementBlock();
     if(!left) return 0;
 
-    while(token.type > Token::Type::EndOfFile){
+    while(!error && token.type > Token::Type::EndOfFile){
         int  line = token.line;
         auto operation = token.type;
         switch(token.type){
@@ -2562,7 +2565,7 @@ AST::Wait::SensitivityItem* Parser::sensitivityList()
     AST::Wait::SensitivityItem* last   = 0;
 
     bool first = true;
-    while(first || token.type == Token::Type::Comma){
+    while(!error && (first || token.type == Token::Type::Comma)){
         getToken();
 
         auto current = new AST::Wait::SensitivityItem;
@@ -2592,16 +2595,31 @@ AST::Wait::SensitivityItem* Parser::sensitivityList()
 }
 //------------------------------------------------------------------------------
 
-// Assert = "assert" Expression ";" ;
-AST::AST* Parser::assertStatement()
+// SequenceDef = "sequence" Identifier "{" Sequence ";" "}"
+AST::AST* Parser::sequenceDef()
 {
-    auto result = new AST::Assert(token.line, astFilenameIndex);
+    auto result = new AST::SequenceDef(token.line, astFilenameIndex);
 
     getToken();
 
-    result->expression = expression();
-    if(!result->expression){
-        printError("Expression expected");
+    if(token.type == Token::Type::Identifier){
+        result->name = token.data;
+        getToken();
+    }else{
+        printError("Identifier expected");
+        delete result;
+        return 0;
+    }
+    if(token.type != Token::Type::OpenCurly){
+        printError("{ expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+
+    result->sequence = sequence();
+    if(!result->sequence){
+        printError("Sequence expected");
         delete result;
         return 0;
     }
@@ -2611,15 +2629,299 @@ AST::AST* Parser::assertStatement()
         return 0;
     }
     getToken();
+    if(token.type != Token::Type::CloseCurly){
+        printError("} expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+
     return result;
 }
 //------------------------------------------------------------------------------
 
-// Sequence = Expression;
+// Assert = "assert" [ ParameterList ] AssertBlock;
+AST::AST* Parser::assertion()
+{
+    auto result = new AST::Assert(token.line, astFilenameIndex);
+
+    getToken();
+
+    if(token.type == Token::Type::OpenRound){
+        result->parameters = parameterList();
+    }
+    result->body = assertBlock();
+    return result;
+}
+//------------------------------------------------------------------------------
+
+// AssertBlock = AssertStatement | ( "{" { AssertStatement } "}" );
+AST::AST* Parser::assertBlock()
+{
+    AST::AST* result = 0;
+    AST::AST* last   = 0;
+
+    if(token.type == Token::Type::OpenCurly){
+        getToken();
+        auto current = assertStatement();
+        while(!error && current){
+            if(last) last->next = current;
+            else     result     = current;
+            last = current;
+            current = assertStatement();
+        }
+        if(token.type != Token::Type::CloseCurly){
+            printError("} expected");
+            if(result) delete result;
+            return 0;
+        }
+        getToken();
+        return result;
+    }
+    result = assertStatement();
+    if(!result){
+        printError("Assert statement block expected");
+        if(result) delete result;
+        return 0;
+    }
+    return result;
+}
+//------------------------------------------------------------------------------
+
+// AssertStatement = AssertIf | ( Sequence ";" );
+AST::AST* Parser::assertStatement()
+{
+    switch(token.type){
+        case Token::Type::If:
+            return assertIf();
+
+        default:
+            auto result = sequence();
+            if(result){
+                if(token.type != Token::Type::Semicolon){
+                    printError("; expected");
+                    delete result;
+                    return 0;
+                }
+                getToken();
+            }
+            return result;
+    }
+}
+//------------------------------------------------------------------------------
+
+// AssertIf = "if" "(" Expression ")" AssertBlock [ "else" AssertBlock ];
+AST::AST* Parser::assertIf()
+{
+    auto result = new AST::ControlStatement(token.line, astFilenameIndex);
+    result->statementType = token.type;
+
+    getToken();
+
+    if(token.type != Token::Type::OpenRound){
+        printError("( expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+
+    result->expression = expression();
+    if(!result->expression){
+        printError("Expression expected");
+        delete result;
+        return 0;
+    }
+    if(token.type != Token::Type::CloseRound){
+        printError(") expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+
+    result->body = assertBlock();
+
+    if(token.type == Token::Type::Else){
+        getToken();
+        result->elseBody = assertBlock();
+    }
+    return result;
+}
+//------------------------------------------------------------------------------
+
+// Sequence = MatchOr [ ( "|->" | "|=>" ) Sequence ];
 AST::AST* Parser::sequence()
 {
-    // TODO Put sequence expressions in here, after designing the EBNF
-    return expression();
+    auto left = matchOr();
+    if(!left) return 0;
+
+    int  line = token.line;
+    auto operation = token.type;
+    switch(token.type){
+        case Token::Type::AssertImplies:
+        case Token::Type::AssertImpliesNext:{
+            getToken();
+            auto right = sequence();
+            if(!right){
+                printError("Invalid implication expression");
+                delete left;
+                return 0;
+            }
+            auto result = new AST::Expression(line, astFilenameIndex);
+            result->operation = operation;
+            result->left      = left;
+            result->right     = right;
+            return result;
+        }
+        default:
+            return left;
+    }
+    return 0;
+}
+//------------------------------------------------------------------------------
+
+// MatchOr = MatchAnd { "||" MatchAnd };
+AST::AST* Parser::matchOr()
+{
+    auto left = matchAnd();
+    if(!left) return 0;
+
+    while(!error && token.type > Token::Type::EndOfFile){
+        int  line = token.line;
+        auto operation = token.type;
+        switch(token.type){
+            case Token::Type::Or:{
+                getToken();
+                auto right = matchAnd();
+                if(!right){
+                    printError("Invalid implication expression");
+                    delete left;
+                    return 0;
+                }
+                auto result = new AST::Expression(line, astFilenameIndex);
+                result->operation = operation;
+                result->left      = left;
+                result->right     = right;
+                left = result;
+                break;
+            }
+            default:
+                return left;
+        }
+    }
+    return 0;
+}
+//------------------------------------------------------------------------------
+
+// MatchAnd = CycleDelay { ( "&&" | "&&&" ) CycleDelay };
+AST::AST* Parser::matchAnd()
+{
+    auto left = cycleDelay();
+    if(!left) return 0;
+
+    while(!error && token.type > Token::Type::EndOfFile){
+        int  line = token.line;
+        auto operation = token.type;
+        switch(token.type){
+            case Token::Type::And:
+            case Token::Type::Intersect:{
+                getToken();
+                auto right = cycleDelay();
+                if(!right){
+                    printError("Invalid implication expression");
+                    delete left;
+                    return 0;
+                }
+                auto result = new AST::Expression(line, astFilenameIndex);
+                result->operation = operation;
+                result->left      = left;
+                result->right     = right;
+                left = result;
+                break;
+            }
+            default:
+                return left;
+        }
+    }
+    return 0;
+}
+//------------------------------------------------------------------------------
+
+// CycleDelay = Repetition { ( "#" | "##" ) Primary Repetition };
+AST::AST* Parser::cycleDelay()
+{
+    auto left = repetition();
+    if(!left) return 0;
+
+    while(!error && token.type > Token::Type::EndOfFile){
+        int  line = token.line;
+        auto operation = token.type;
+        switch(token.type){
+            case Token::Type::WaitFor:
+            case Token::Type::WaitCycles:{
+                getToken();
+                auto delay = primary();
+                if(!delay){
+                    printError("Delay expression expected");
+                    delete left;
+                    return 0;
+                }
+                auto right = repetition();
+                if(!right){
+                    printError("Invalid implication expression");
+                    delete delay;
+                    delete left;
+                    return 0;
+                }
+                auto result = new AST::CycleDelay(line, astFilenameIndex);
+                result->operation = operation;
+                result->left      = left;
+                result->right     = right;
+                result->delay     = delay;
+                left = result;
+                break;
+            }
+            default:
+                return left;
+        }
+    }
+    return 0;
+}
+//------------------------------------------------------------------------------
+
+// Repetition = Expression [ ( "[*" | "[->" | "[=" ) Range "]" ];
+AST::AST* Parser::repetition()
+{
+    auto sequence = expression();
+    if(!sequence) return 0;
+
+    int  line = token.line;
+    auto operation = token.type;
+    switch(token.type){
+        case Token::Type::RepetitionConsecutive:
+        case Token::Type::RepetitionGoTo:
+        case Token::Type::RepetitionNonConsecutive:{
+            getToken();
+            auto result = new AST::Repetition(line, astFilenameIndex);
+            result->operation = operation;
+            result->sequence  = sequence;
+            result->range     = range();
+            if(!result->range){
+                printError("Invalid repetition expression");
+                delete result;
+                return 0;
+            }
+            if(token.type != Token::Type::CloseSquare){
+                printError("] expected");
+                delete result;
+                return 0;
+            }
+            getToken();
+            return result;
+        }
+        default:
+            return sequence;
+    }
+    return 0;
 }
 //------------------------------------------------------------------------------
 
@@ -2928,8 +3230,12 @@ AST::AST* Parser::statement()
             result = forkJoin();
             break;
 
+        case Token::Type::Sequence:
+            result = sequenceDef();
+            break;
+
         case Token::Type::Assert:
-            result = assertStatement();
+            result = assertion();
             break;
 
         case Token::Type::Semicolon:
@@ -2961,11 +3267,11 @@ AST::AST* Parser::statements()
     if(!current) return 0;
     result = last = current;
 
-    // Definition can return a list, so run to the end
+    // statemenst can be lists due to the optional "wait" node
     while(last->next) last = last->next;
 
     current = statement();
-    while(current){
+    while(!error && current){
         last->next = current;
         last = current;
         while(last->next) last = last->next;

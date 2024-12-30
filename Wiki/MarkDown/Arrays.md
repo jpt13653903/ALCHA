@@ -46,8 +46,8 @@ brackets, representing the number of elements in that dimension.  An example
 is presented below:
 
 ```alcha
-  net(8) A[16];      // A 16-element array of 8-bit unsigned integers
-  net(8) B[3][4][5]; // A 3-dimensional array of 8-bit unsigned integers
+    net(8) A[16];      // A 16-element array of 8-bit unsigned integers
+    net(8) B[3][4][5]; // A 3-dimensional array of 8-bit unsigned integers
 ```
 
 ## Slices
@@ -62,23 +62,23 @@ always an unsigned integer with as many bits as in the slice.  Some examples
 are presented below:
 
 ```alcha
-  net(16, 8) A[16];
-  A[5]            // Element 5 of A (the 6th element).
-  A[][15->13]     // All the elements of A, but only the integer bits
-  A[3,7,2][12..0] // Elements 3, 7 and 2 of A (in that order), and only the fraction bits
-  A[0..15:3]      // Every third element of A (0, 3, 6, 9, 12 and 15)
+    net(16, 8) A[16];
+    A[5]            // Element 5 of A (the 6th element).
+    A[][15->13]     // All the elements of A, but only the integer bits
+    A[3,7,2][12..0] // Elements 3, 7 and 2 of A (in that order), and only the fraction bits
+    A[0..15:3]      // Every third element of A (0, 3, 6, 9, 12 and 15)
 
-  A[5,3,7][6,7,2] // Bits 6, 7 and 2 (in that order) of elements 5, 3 and 7 (in that order)
-                  // The result is a 3-element array of 3-bit integers
+    A[5,3,7][6,7,2] // Bits 6, 7 and 2 (in that order) of elements 5, 3 and 7 (in that order)
+                    // The result is a 3-element array of 3-bit integers
 ```
 
 The indices can also be specified by means of a number array, as follows:
 
 ```alcha
-  net(8) A[16];
-  num    B[5] = [4, 2, 7, 1, 12];
-  A[B]        // Elements 4, 2, 7, 1 and 12 of A, in that order
-  A[B, 0..15] // Elements 4, 2, 7, 1, 12 and 0 to 15 of A
+    net(8) A[16];
+    num    B[5] = [4, 2, 7, 1, 12];
+    A[B]        // Elements 4, 2, 7, 1 and 12 of A, in that order
+    A[B, 0..15] // Elements 4, 2, 7, 1, 12 and 0 to 15 of A
 ```
 
 ## Array Literals and Concatenation
@@ -87,11 +87,11 @@ Array literals are useful for vectorised operations.  There are many forms,
 which are illustrated in the example below:
 
 ```alcha
-  [0, 1, 2, 3]    // 4-element array
-  [0..3]          // Same as above
-  [0..4:2]        // The elements 0, 2 and 4
-  [3..0]          // The elements 3, 2, 1 and 0
-  [0..3, 4..0:-2] // The elements 0, 1, 2, 3, 4, 2 and 0
+    [0, 1, 2, 3]    // 4-element array
+    [0..3]          // Same as above
+    [0..4:2]        // The elements 0, 2 and 4
+    [3..0]          // The elements 3, 2, 1 and 0
+    [0..3, 4..0:-2] // The elements 0, 1, 2, 3, 4, 2 and 0
 ```
 
 ## Vectorised Statements
@@ -102,23 +102,23 @@ separately for each element.  This works for scalar functions as well.  Below
 are some examples:
 
 ```alcha
-  auto Add(A, B){
-    return A + B;
-  }
+    auto Add(A, B){
+        return A + B;
+    }
 
-  net(8) A[16], B[16], Y[16];
-  Y = A + B;     // Perform an element-wise addition
-  Y = Add(A, B); // Equivalent to the addition above
+    net(8) A[16], B[16], Y[16];
+    Y = A + B;     // Perform an element-wise addition
+    Y = Add(A, B); // Equivalent to the addition above
 
-  Y[0..15] = A[15..0] + B[0..15:2, 1..15:2];
-  // Equivalent to:
-  Y[ 0] = A[15] + B[ 0];
-  Y[ 1] = A[14] + B[ 2];
-  Y[ 2] = A[13] + B[ 4];
-  ...
-  Y[13] = A[ 2] + B[11];
-  Y[14] = A[ 1] + B[13];
-  Y[15] = A[ 0] + B[15];
+    Y[0..15] = A[15..0] + B[0..15:2, 1..15:2];
+    // Equivalent to:
+    Y[ 0] = A[15] + B[ 0];
+    Y[ 1] = A[14] + B[ 2];
+    Y[ 2] = A[13] + B[ 4];
+    ...
+    Y[13] = A[ 2] + B[11];
+    Y[14] = A[ 1] + B[13];
+    Y[15] = A[ 0] + B[15];
 ```
 
 When an array is used as the condition of an `if` statement or `while` loop,

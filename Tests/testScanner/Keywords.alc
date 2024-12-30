@@ -53,6 +53,7 @@ hdl
 
 stimulus
 emulate
+sequence
 assert
 wait
 

@@ -1,14 +1,13 @@
-Module = [ Statements ];
+Module = { Statement };
 
 (* Wait statements only valid within Stimulus and Emulate blocks *)
-Statements = Statement { Statement };
 Statement  = [ Wait ]
              ( Label | Definition | ClassDefinition | EnumDefinition
            | Alias | Import | Struct | Group | AccessDirectionGroup
            | IfStatement | For | While  | Loop | Switch | Case | Jump | GoTo
            | FunctionCallStatement | NamespacePush | Assignment
            | RTL | FSM | HDL
-           | Stimulus | Emulate | ForkJoin | Assert | ";" );
+           | Stimulus | Emulate | ForkJoin | SequenceDef | Assert | ";" );
 
 Label  = Identifier ":"; (* Only useful within an fsm construct *)
 
@@ -22,7 +21,7 @@ ClassDefinition = "class" [ AttributeList ] Identifier
                     ":" TypeIdentifier [ ParameterList ]
                     { "," TypeIdentifier [ ParameterList ] }
                   ]
-                  "{" [ Statements ] "}";
+                  "{" { Statement } "}";
 
 (* Only useful within a class body *)
 AccessDirectionGroup = ( ( AccessSpecifier [ DirectionSpecifier ] ) |
@@ -39,10 +38,10 @@ VariableDefList  = VariableDef { "," VariableDef } ";";
 VariableDef      = Identifier { ArrayDefinition } [ Initialiser ];
 FunctionDef      = ( Identifier { ArrayDefinition } )
                    "(" [ ParameterDefList ] ")"
-                   "{" [ Statements ] "}" ;
+                   "{" { Statement } "}" ;
 OperatorOverload = ( "operator" Operator )
                    "(" [ ParameterDefList ] ")"
-                   "{" [ Statements ] "}" ;
+                   "{" { Statement } "}" ;
 
 ArrayDefinition  = "[" [ Expression ] "]";
 Initialiser      = ( "=" | ":=" ) Expression;

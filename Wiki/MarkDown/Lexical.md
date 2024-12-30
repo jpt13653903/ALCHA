@@ -55,19 +55,19 @@ the underscore character (`_`) is ignored.  Character literals are string
 literals with only one character.  Below are some examples:
 
 ```alcha
-  123.456           // decimal constant
-  123.456@(16, 128) // Decimal constant cast to 16 bits with full-scale range [0, 128)
-  0b101.0101        // Binary constant
-  0o123.456         // Octal constant
-  0xABC.DEF         // Hexadecimal constant
-  123_456_e7        // Decimal constant with decimal exponent (10^7)
-  123_456_p7        // Decimal constant with binary exponent (2^7)
-  0x123_ABC_p7      // Hexadecimal constant with binary exponent (2^7)
-  7.3 + 8.9j        // Decimal complex constant
-  "A"               // Unicode character constant
-  "ABC"             // Unicode string literal (character array)
-  $"a{b}c"          // Interpolated string
-  $"a{b, "04d"}c"   // Interpolated string with formatting
+    123.456           // decimal constant
+    123.456@(16, 128) // Decimal constant cast to 16 bits with full-scale range [0, 128)
+    0b101.0101        // Binary constant
+    0o123.456         // Octal constant
+    0xABC.DEF         // Hexadecimal constant
+    123_456_e7        // Decimal constant with decimal exponent (10^7)
+    123_456_p7        // Decimal constant with binary exponent (2^7)
+    0x123_ABC_p7      // Hexadecimal constant with binary exponent (2^7)
+    7.3 + 8.9j        // Decimal complex constant
+    "A"               // Unicode character constant
+    "ABC"             // Unicode string literal (character array)
+    $"a{b}c"          // Interpolated string
+    $"a{b, "04d"}c"   // Interpolated string with formatting
 ```
 
 Imaginary and complex numbers are useful when using compile-time scripting to

@@ -44,13 +44,13 @@ used to implement conditional compilation.  The code could, for instance,
 contain a header similar to the code below:
 
 ```alcha
-  group target{
-    type     = "Project";
-    vendor   = "Altera";
-    series   = "Cyclone V GX";
-    device   = "5CGXFC5C6F27C7N";
-    board    = "Cyclone V GX Starter Kit";
-  }
+    group target{
+        type     = "Project";
+        vendor   = "Altera";
+        series   = "Cyclone V GX";
+        device   = "5CGXFC5C6F27C7N";
+        board    = "Cyclone V GX Starter Kit";
+    }
 ```
 
 This header creates a namespace `target`, which contains various string
@@ -58,13 +58,13 @@ objects.  This can then be used later in the code for conditional compilation,
 as follows:
 
 ```alcha
-  if(target.type == "Simulation"){
-    // Some simulation-specific code
-  }else if(target.vendor == "Altera"){
-    // Some Altera-specific code
-  }else if(target.vendor == "Xilinx"){
-    // Some Xilinx-specific code
-  }
+    if(target.type == "Simulation"){
+        // Some simulation-specific code
+    }else if(target.vendor == "Altera"){
+        // Some Altera-specific code
+    }else if(target.vendor == "Xilinx"){
+        // Some Xilinx-specific code
+    }
 ```
 
 In order to promote portability, the string objects and values should be
@@ -89,8 +89,8 @@ import two modules into the same name within the same module.  In both forms,
 the imported modules have direct access to objects in the parent module name-space.
 
 ```alcha
-  import "UART";
-  import "Ethernet" as Eth;
+    import "UART";
+    import "Ethernet" as Eth;
 ```
 
 This name-space model allows the developer to define an environment in a
@@ -108,20 +108,20 @@ name-space onto the stack, whereas the `B.{` construct pushes the `B`
 name-space. The closing curly braces pop the name-spaces from the stack.
 
 ```alcha
-  class S1{net(8) r, g, b, a;}
-  class S2{net(8) x, y, z, w;}
-  S1 A;
-  S2 B;
+    class S1{net(8) r, g, b, a;}
+    class S2{net(8) x, y, z, w;}
+    S1 A;
+    S2 B;
 
-  // Instead of saying:
-  :[A.r, A.g, A.b, A.a] = :[B.x, B.y, B.z, B.w] + 1234;
+    // Instead of saying:
+    :[A.r, A.g, A.b, A.a] = :[B.x, B.y, B.z, B.w] + 1234;
 
-  // Say:
-  A.{
-    B.{
-      :[r,g,b,a] = :[x,y,z,w] + 1234;
+    // Say:
+    A.{
+        B.{
+            :[r,g,b,a] = :[x,y,z,w] + 1234;
+        }
     }
-  }
 ```
 
 When referring to a symbol, the search progresses as follows:

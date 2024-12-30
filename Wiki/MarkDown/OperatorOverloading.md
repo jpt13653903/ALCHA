@@ -35,15 +35,15 @@ Operator overloading is done similar to C++, i.e. the `operator` keyword.
 Some examples include:
 
 ```alcha
-  myStruct operator+(myStruct a, num b){ // binary operator
-      !! The addition algorithm
-  }
-  num operator&(myStruct a){             // prefix unary operator
-      !! The and-reduce algorithm
-  }
-  num operator!(myStruct a, _){          // postfix unary operator
-      !! The factorial algorithm
-  }
+    myStruct operator+(myStruct a, num b){ // binary operator
+        !! The addition algorithm
+    }
+    num operator&(myStruct a){             // prefix unary operator
+        !! The and-reduce algorithm
+    }
+    num operator!(myStruct a, _){          // postfix unary operator
+        !! The factorial algorithm
+    }
 ```
 
 --------------------------------------------------------------------------------

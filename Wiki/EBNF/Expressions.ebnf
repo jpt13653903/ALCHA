@@ -34,7 +34,7 @@ Cast = Primary [ "@" ( Identifier | Literal | ( "(" ExpressionList ")" ) ) ];
 (* The "'" prefix chooses the global scope *)
 Primary = ( [ "'" ] Identifier ) | Literal | "true" | "false"
         | VectorConcat | ArrayConcat | AttributeList | Array | String
-        | ( "(" Expression ")" );
+        | ( "(" ( Expression ) ")" );
 
 (* These perform vector or array concatenation *)
 VectorConcat = ":(" ExpressionList ")";

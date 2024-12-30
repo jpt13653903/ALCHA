@@ -18,53 +18,42 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Concatenate.h"
+#include "SequenceDef.h"
 //------------------------------------------------------------------------------
 
 using std::string;
 using namespace AST;
 //------------------------------------------------------------------------------
 
-Concatenate::Concatenate(int line, int filenameIndex):
-    AST(line, filenameIndex, Type::Concatenate)
+SequenceDef::SequenceDef(int line, int filenameIndex):
+    AST(line, filenameIndex, Type::SequenceDef)
 {
 }
 //------------------------------------------------------------------------------
 
-Concatenate::~Concatenate()
+SequenceDef::~SequenceDef()
 {
-    if(members) delete members;
+    if(!sequence) delete sequence;
 }
 //------------------------------------------------------------------------------
 
-std::string Concatenate::print(int indent) const
+std::string SequenceDef::print(int indent) const
 {
     string result;
 
     for(int n = 0; n < indent; n++) result += "    ";
 
-    switch(operation){
-        case Token::Type::Concatenate:      result += ":( "; break;
-        case Token::Type::ArrayConcatenate: result += ":[ "; break;
+    result += "sequence " + name;
 
-        default: result += "Unknown concatenate operation "; break;
+    result += " {\n";
+    auto item = sequence;
+    while(item){
+        result += item->print(indent+1);
+        result += "\n";
+        item = item->next;
     }
-
-    bool first = true;
-    AST* member = members;
-    while(member){
-        if(!first) result += ", ";
-        first   = false;
-        result += member->print();
-        member  = member->next;
-    }
-
-    switch(operation){
-        case Token::Type::Concatenate:      result += " )"; break;
-        case Token::Type::ArrayConcatenate: result += " ]"; break;
-
-        default: result += "Unknown concatenate operation "; break;
-    }
+    for(int n = 0; n < indent; n++) result += "    ";
+    result += "}";
 
     return result;
 }

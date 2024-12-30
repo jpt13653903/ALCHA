@@ -53,7 +53,7 @@ struct Token{
             Return  , Break  , Continue , GoTo  ,
             Func    , Inline , Operator ,
             RTL     , FSM    , HDL,
-            Stimulus, Emulate, Assert, Wait ,
+            Stimulus, Emulate, Sequence, Assert, Wait ,
             PosEdge , NegEdge,
 
         // Operators ...........................................................
@@ -132,9 +132,9 @@ struct Token{
 
             WaitFor,
             WaitCycles,
-            SequenceConsecutive,
-            SequenceGoTo,
-            SequenceNonConsecutive,
+            RepetitionConsecutive,
+            RepetitionGoTo,
+            RepetitionNonConsecutive,
             AssertImplies,
             AssertImpliesNext,
             Or,
