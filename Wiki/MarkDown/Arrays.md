@@ -35,11 +35,15 @@ change without notice.
 
 # Arrays
 
-ALCHA supports fixed-length arrays for synthesisable types, and variable-length arrays for scripting types.  Multiple-dimensional arrays are defined in terms of "arrays of arrays".
+ALCHA supports fixed-length arrays for synthesisable types, and
+variable-length arrays for scripting types.  Multiple-dimensional arrays are
+defined in terms of "arrays of arrays".
 
 ## Defining Arrays
 
-Each new dimension is defined by means of a positive integer in square brackets, representing the number of elements in that dimension.  An example is presented below:
+Each new dimension is defined by means of a positive integer in square
+brackets, representing the number of elements in that dimension.  An example
+is presented below:
 
 ```alcha
   net(8) A[16];      // A 16-element array of 8-bit unsigned integers
@@ -48,9 +52,14 @@ Each new dimension is defined by means of a positive integer in square brackets,
 
 ## Slices
 
-Array elements can be addressed by means of slices.  The bits are modelled as the deepest dimension.  The element indices are zero-based, i.e. index&nbsp;0 is the least significant bit of a bit-vector, or the first element in an array.  An empty slice ("`[]`") can be used to indicate "all elements".
+Array elements can be addressed by means of slices.  The bits are modelled as
+the deepest dimension.  The element indices are zero-based, i.e. index&nbsp;0
+is the least significant bit of a bit-vector, or the first element in an
+array.  An empty slice ("`[]`") can be used to indicate "all elements".
 
-Any bit-slice removes the fixed-point format.  The result of a bit-slice is always an unsigned integer with as many bits as in the slice.  Some examples are presented below:
+Any bit-slice removes the fixed-point format.  The result of a bit-slice is
+always an unsigned integer with as many bits as in the slice.  Some examples
+are presented below:
 
 ```alcha
   net(16, 8) A[16];
@@ -74,7 +83,8 @@ The indices can also be specified by means of a number array, as follows:
 
 ## Array Literals and Concatenation
 
-Array literals are useful for vectorised operations.  There are many forms, which are illustrated in the example below:
+Array literals are useful for vectorised operations.  There are many forms,
+which are illustrated in the example below:
 
 ```alcha
   [0, 1, 2, 3]    // 4-element array
@@ -86,7 +96,10 @@ Array literals are useful for vectorised operations.  There are many forms, whic
 
 ## Vectorised Statements
 
-Array slices can be used in vectorised statements.  Vectorised operations apply the operation to each element of the array as if it was specified separately for each element.  This works for scalar functions as well.  Below are some examples:
+Array slices can be used in vectorised statements.  Vectorised operations
+apply the operation to each element of the array as if it was specified
+separately for each element.  This works for scalar functions as well.  Below
+are some examples:
 
 ```alcha
   auto Add(A, B){
@@ -108,9 +121,14 @@ Array slices can be used in vectorised statements.  Vectorised operations apply 
   Y[15] = A[ 0] + B[15];
 ```
 
-When an array is used as the condition of an `if` statement or `while` loop, the array is AND-reduced.  This allows a concise means by which to compare all elements in an array (or string).  Any other intention must be written explicitly in terms of a loop structure.
+When an array is used as the condition of an `if` statement or `while` loop,
+the array is AND-reduced.  This allows a concise means by which to compare all
+elements in an array (or string).  Any other intention must be written
+explicitly in terms of a loop structure.
 
-When a scalar is involved in a vectorised operation, the scalar is repeated for every instance of the operation.  This can be used, for instance, to assign a scalar to every element of an array.
+When a scalar is involved in a vectorised operation, the scalar is repeated
+for every instance of the operation.  This can be used, for instance, to
+assign a scalar to every element of an array.
 
 --------------------------------------------------------------------------------
 

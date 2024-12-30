@@ -54,7 +54,9 @@ If statement syntax is presented below:
   }
 ```
 
-If the condition is purely scripting (i.e. it does not contain any synthesisable variables), the if-statement is equivalent to conditional compilation (the `#if` ... `#else` ... `#endif` construct of the C preprocessor).
+If the condition is purely scripting (i.e. it does not contain any
+synthesisable variables), the if-statement is equivalent to conditional
+compilation (the `#if` ... `#else` ... `#endif` construct of the C preprocessor).
 
 ### switch
 
@@ -74,13 +76,56 @@ Switch-statement syntax is presented below:
   }
 ```
 
-The expressions in the `case` statements (`B`, `C`, `D` and `E` in the above example) must evaluate to unique values.  During the scripting stage of compilation, these can be dynamic (because the values are known during compile-time).  During the synthesis stage, the expressions must evaluate to constants.
+The expressions in the `case` statements (`B`, `C`, `D` and `E` in the above
+example) must evaluate to unique values.  During the scripting stage of
+compilation, these can be dynamic (because the values are known during
+compile-time).  During the synthesis stage, the expressions must evaluate to
+constants.
 
-ALCHA does not infer latches.  Modern FPGAs do not have latches, so it makes little sense to implement a language structure that does.  Within combinational circuits, ALCHA assigns "don't care" to any net not assigned a value in all possible evaluations of `if`- or `switch`-statements.  Within clocked structures, the net keeps it's previous value unless explicitly assigned.
+ALCHA does not infer latches.  Modern FPGAs do not have latches, so it makes
+little sense to implement a language structure that does.  Within
+combinational circuits, ALCHA assigns "don't care" to any net not assigned a
+value in all possible evaluations of `if`- or `switch`-statements.  Within
+clocked structures, the net keeps it's previous value unless explicitly assigned.
+
+Case statements can be scripted, giving the code an auto-generated feel.
+The example below auto-generates the large case statements often encountered
+with register decoding:
+
+```alcha
+  switch(Address){
+    for(Register in 'RdRegisters){
+      case(Register'Address) ReadData := Register;
+    }
+    for(Register in 'WrRegisters){
+      case(Register'Address) ReadData := Register;
+    }
+    for(Register in 'LiveRegisters){
+      case(Register'Read'Address) ReadData := Register'Read;
+    }
+  }
+
+  if(WriteEnable){
+    switch(Address){
+      for(Register in 'WrRegisters){
+        case(Register'Address) Register := WriteData;
+      }
+      for(Register in 'LiveRegisters){
+        case(Register'Write'Address) Register'Write := WriteData;
+      }
+    }
+    for(Register in 'LiveRegisters){
+      Register'Strobe = ((Address == Register'Strobe'Address) & Write);
+    }
+  }
+```
 
 ### while
 
-The while-loop syntax is presented below.  The body of the loop is evaluated for as long as `A` is not zero.  For combinational circuits and pure RTL, the value of `A` must be known at compile-time.  Within a finite state machine (FSM) structure, `A` can be a synthesisable expression.
+The while-loop syntax is presented below.  The body of the loop is evaluated
+for as long as `A` is not zero.  For combinational circuits and pure RTL, the
+value of `A` must be known at compile-time.  Within a finite state machine
+(FSM) structure, `A` can be a synthesisable expression.
 
 ```alcha
   while(A){
@@ -90,7 +135,9 @@ The while-loop syntax is presented below.  The body of the loop is evaluated for
 
 ### for
 
-The for-loop syntax is presented below.  `A` must evaluate to an array.  For every element of the array, `x` becomes a reference to that element and the loop is evaluated.
+The for-loop syntax is presented below.  `A` must evaluate to an array.  For
+every element of the array, `x` becomes a reference to that element and the
+loop is evaluated.
 
 ```alcha
   for(x in A){
@@ -98,7 +145,12 @@ The for-loop syntax is presented below.  `A` must evaluate to an array.  For eve
   }
 ```
 
-The loop is evaluated in the same order as the elements of the array, not in parallel.  When the elements of `A` is a synthesisable type, and the loop occurs during a combinational statement, the result could potentially be a parallel combinational circuit.  During compilation, however, the loop is still evaluated sequentially, following normal combinational-statement blocking assignment rules.  This is illustrated below:
+The loop is evaluated in the same order as the elements of the array, not in
+parallel.  When the elements of `A` is a synthesisable type, and the loop
+occurs during a combinational statement, the result could potentially be a
+parallel combinational circuit.  During compilation, however, the loop is
+still evaluated sequentially, following normal combinational-statement
+blocking assignment rules.  This is illustrated below:
 
 ```alcha
   net(8) A, B;
@@ -121,7 +173,12 @@ The loop-loop syntax is presented below:
   }
 ```
 
-The evaluation of loops in FSM structures depend on the use of commas or semicolons.  If the statement within the loop body ends in a comma, the loop is effectively unrolled into the state in which it is declared.  If, on the other hand, the statement within the loop body ends in a semicolon (thereby telling the compiler to go to the next state), the loop is evaluated one clock-cycle at a time.
+The evaluation of loops in FSM structures depend on the use of commas or
+semicolons.  If the statement within the loop body ends in a comma, the loop
+is effectively unrolled into the state in which it is declared.  If, on the
+other hand, the statement within the loop body ends in a semicolon (thereby
+telling the compiler to go to the next state), the loop is evaluated one
+clock-cycle at a time.
 
 A loop loop can therefore be used to implement a "wait" state, as follows:
 
@@ -159,7 +216,13 @@ This is equivalent to the following Verilog:
 
 ### return
 
-The `return` statement returns from a function.  If the function was called combinationally, the return statement simply ends evaluation of the rest of the function body (thereby not synthesising the rest of the circuit).  If the return statement occurs within a clocked structure, the clocked structure goes into an idle state, either waiting for the next call (if it was called from a state machine) or halting until the next system reset (if it was called combinationally).
+The `return` statement returns from a function.  If the function was called
+combinationally, the return statement simply ends evaluation of the rest of
+the function body (thereby not synthesising the rest of the circuit).  If the
+return statement occurs within a clocked structure, the clocked structure goes
+into an idle state, either waiting for the next call (if it was called from a
+state machine) or halting until the next system reset (if it was called
+combinationally).
 
 ```alcha
   num Func(A, B){
@@ -174,7 +237,9 @@ The `return` statement returns from a function.  If the function was called comb
 
 ### break and continue
 
-The `break` and `continue` keywords are used to jump out of, or within, loops.  Both of these take an optional integer expression argument to indicate the number of loop levels.  For instance:
+The `break` and `continue` keywords are used to jump out of, or within,
+loops.  Both of these take an optional integer expression argument to indicate
+the number of loop levels.  For instance:
 
 ```alcha
   loop{
@@ -197,7 +262,9 @@ The `break` and `continue` keywords are used to jump out of, or within, loops.  
 
 ## Alias
 
-It is often the case where the same expression is used many times, yet cannot be simply assigned to a variable.  In this case, it is convenient to define an alias for the expression, as follows:
+It is often the case where the same expression is used many times, yet cannot
+be simply assigned to a variable.  In this case, it is convenient to define an
+alias for the expression, as follows:
 
 ```alcha
   alias C   = Namespace.ClassInstance;
@@ -211,7 +278,8 @@ It is often the case where the same expression is used many times, yet cannot be
   }
 ```
 
-It is important to note, however, that the alias is evaluated first, before used in the target expression.  The following two lines are equivalent:
+It is important to note, however, that the alias is evaluated first, before
+used in the target expression.  The following two lines are equivalent:
 
 ```alcha
   alias sum = A + B; X = Y * sum;

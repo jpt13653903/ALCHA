@@ -36,15 +36,25 @@ change without notice.
 
 # Functions
 
-ALCHA provides a procedural programming model for combinational circuits, state machines and scripting.  There are various categories of functions, resulting in different calling conventions.
+ALCHA provides a procedural programming model for combinational circuits,
+state machines and scripting.  There are various categories of functions,
+resulting in different calling conventions.
 
-The function name is used as a reference to the target net (or variable) for the return value.  This has implications for functions that contain clocked structures, as the state machine (or RTL) has control over the value of the target net, even though the function has not returned yet.
+The function name is used as a reference to the target net (or variable) for
+the return value.  This has implications for functions that contain clocked
+structures, as the state machine (or RTL) has control over the value of the
+target net, even though the function has not returned yet.
 
-The parameter types do not need to be defined in the function, but can be inferred from the input parameters when the function is called (this is also known as duck-typing).  When the types are specified, the parameter types form part of the function name, so that many functions of the same name, but different parameter types, can be defined.
+The parameter types do not need to be defined in the function, but can be
+inferred from the input parameters when the function is called (this is also
+known as duck-typing).  When the types are specified, the parameter types form
+part of the function name, so that many functions of the same name, but
+different parameter types, can be defined.
 
 ## Combinational Functions
 
-Functions in ALCHA are defined in similar fashion as C, as illustrated in the example below.
+Functions in ALCHA are defined in similar fashion as C, as illustrated in the
+example below.
 
 ```alcha
   net(8) Add(net(8) A, net(8) B){
@@ -54,7 +64,8 @@ Functions in ALCHA are defined in similar fashion as C, as illustrated in the ex
   z = Add(x, y);
 ```
 
-Functions also support default parameters and named parameter assignment, as illustrated below:
+Functions also support default parameters and named parameter assignment, as
+illustrated below:
 
 ```alcha
   auto MyFunction(A, B, C = 7, D = 2){
@@ -64,7 +75,10 @@ Functions also support default parameters and named parameter assignment, as ill
   net(8) X = MyFunction(B = 2, A = 8, D = 4); // C defaults to 7
 ```
 
-Combinational functions can be called from anywhere, including the bodies of clocked structures.  Functions can also be called in vectorised form, which is especially useful when combined with array slicing.  The adder above can be called as follows:
+Combinational functions can be called from anywhere, including the bodies of
+clocked structures.  Functions can also be called in vectorised form, which is
+especially useful when combined with array slicing.  The adder above can be
+called as follows:
 
 ```alcha
   net(8) x[4], y[4], z[4];
@@ -90,7 +104,8 @@ Arrays and scalars can be mixed in the call, as follows:
   z[3] = Add(x, y[3]);
 ```
 
-If the function takes an array as a parameter, the same rules apply.  The function can be called with a higher-dimension array, as follows:
+If the function takes an array as a parameter, the same rules apply.
+The function can be called with a higher-dimension array, as follows:
 
 ```alcha
   net(18) Dot(A[], B[]){
@@ -120,35 +135,66 @@ To return an array, the function name should be defined as an array, as follows:
   }
 ```
 
-The loops above are discussed in greater detail in the Scripting section.  Such combinational loops should be used with care, as very little code can result in very large circuits.
+The loops above are discussed in greater detail in the Scripting section.
+Such combinational loops should be used with care, as very little code can
+result in very large circuits.
 
 ## Clocked Functions
 
-Clocked functions contain optional combinational code, as well as an embedded state machine or RTL.  The embedded clocked structure's clock and reset can, potentially, be different to that of the calling clocked structure.  These could either be global signals, or passed through a function parameter.
+Clocked functions contain optional combinational code, as well as an embedded
+state machine or RTL.  The embedded clocked structure's clock and reset can,
+potentially, be different to that of the calling clocked structure.  These
+could either be global signals, or passed through a function parameter.
 
-The function body is implemented as few times as possible, typically in a sub-module.  If many different states call the same function, the function body is implemented only once.  It is possible to call the same function many times from the same state, in which case the function is implemented multiple times.
+The function body is implemented as few times as possible, typically in a
+sub-module.  If many different states call the same function, the function
+body is implemented only once.  It is possible to call the same function many
+times from the same state, in which case the function is implemented multiple
+times.
 
-The call is controlled through hand-shaking signals.  The resulting function module has implicit `Go` (input) and `Busy` (output) signals.  These are handled by the compiler and hidden from the developer.  When multiple different functions are called from the same state, the state machine must wait for all the functions to finish (i.e. make their `Busy` lines low) before continuing to the next state.
+The call is controlled through hand-shaking signals.  The resulting function
+module has implicit `Go` (input) and `Busy` (output) signals.  These are
+handled by the compiler and hidden from the developer.  When multiple
+different functions are called from the same state, the state machine must
+wait for all the functions to finish (i.e. make their `Busy` lines low) before
+continuing to the next state.
 
-The combinational code of the function body, as well as the function reset code, is evaluated during the calling state.  The `Go` line is also pulled high during that state.
+The combinational code of the function body, as well as the function reset
+code, is evaluated during the calling state.  The `Go` line is also pulled
+high during that state.
 
-The handshaking signals are handled differently when the function and calling structure reside within the same clock-domain, or when there is a clock-domain crossing required.  When there is a clock-domain crossing, the calling state machine waits for the `Busy` to go high before releasing the `Go` signal.  The function waits for the `Go` to go low before releasing the `Busy` signal.  These hand-shaking signals are properly clock-domain crossed when required.
+The handshaking signals are handled differently when the function and calling
+structure reside within the same clock-domain, or when there is a clock-domain
+crossing required.  When there is a clock-domain crossing, the calling state
+machine waits for the `Busy` to go high before releasing the `Go` signal.
+The function waits for the `Go` to go low before releasing the `Busy` signal.
+These hand-shaking signals are properly clock-domain crossed when required.
 
-When there are no clock-domain crossing required, the calling state machine pulses the `Go` signal for a single cycle instead of following the full hand-shaking algorithm described above.  This is a timing optimisation.
+When there are no clock-domain crossing required, the calling state machine
+pulses the `Go` signal for a single cycle instead of following the full
+hand-shaking algorithm described above.  This is a timing optimisation.
 
-The `Busy` signal further acts as a clock-enable signal of the function body.  The output signals of the function keep their state until the next call.
+The `Busy` signal further acts as a clock-enable signal of the function body.
+The output signals of the function keep their state until the next call.
 
 ## RTL Functions
 
-RTL structures do not have the concept of an instruction sequence.  In order to return from a function that contains an RTL structure, a `return` statement must exist somewhere in the RTL body, which releases the `Busy` signal and halts execution of the RTL structure.
+RTL structures do not have the concept of an instruction sequence.  In order
+to return from a function that contains an RTL structure, a `return` statement
+must exist somewhere in the RTL body, which releases the `Busy` signal and
+halts execution of the RTL structure.
 
-Furthermore, RTL structures do not support the handshaking algorithm described above.  The developer must implement them manually.
+Furthermore, RTL structures do not support the handshaking algorithm described
+above.  The developer must implement them manually.
 
-When calling a function from an RTL structure, the same rules apply as for calling them from combinational logic.
+When calling a function from an RTL structure, the same rules apply as for
+calling them from combinational logic.
 
 ## Example
 
-In order to illustrate the use of functions within state machines, here follows an example of a simple SPI interface in ALCHA, as well as its equivalent Verilog:
+In order to illustrate the use of functions within state machines, here
+follows an example of a simple SPI interface in ALCHA, as well as its
+equivalent Verilog:
 
 ```alcha
   pin<frequency = 50e6> Clk;
@@ -378,11 +424,17 @@ Which is equivalent to:
   //----------------------------------------------------------------------------
 ```
 
-The hand-shaking has been simplified because the two clocked structures are in the same clock domain.  This Verilog code has been hand-written in order to show the details of the ALCHA calling convention.  Compiler-generated code might look very different, but is equivalent in functionality.
+The hand-shaking has been simplified because the two clocked structures are in
+the same clock domain.  This Verilog code has been hand-written in order to
+show the details of the ALCHA calling convention.  Compiler-generated code
+might look very different, but is equivalent in functionality.
 
 ## Calling Clocked Functions from Combinational Circuits
 
-It is possible to call a clocked function from a combinational circuit.  It that case, the function body is evaluated as if it occurred in place of the function call, with the signal being assigned to appearing in place of the function name.
+It is possible to call a clocked function from a combinational circuit.  It
+that case, the function body is evaluated as if it occurred in place of the
+function call, with the signal being assigned to appearing in place of the
+function name.
 
 --------------------------------------------------------------------------------
 

@@ -2,8 +2,9 @@
 
 A New Programming Language for FPGA Projects &ndash; **currently in pre-alpha**.
 
-ALCHA aims to reduce FPGA project develop time by means of automation and abstraction,
-but without loosing the low-level control that HDLs, such as Verilog, provide.
+ALCHA aims to reduce FPGA project develop time by means of automation and
+abstraction, but without loosing the low-level control that HDLs,
+such as Verilog, provide.
 
 ## Features
 
@@ -15,14 +16,21 @@ but without loosing the low-level control that HDLs, such as Verilog, provide.
 - Automated timing-requirement generation
 - Bit- and timing-accurate circuit description
 
+## Syntax Highlighting
+
+The following syntax highlighting options are available:
+
+- Legacy (and unmaintained) [vim syntax script][vim_syntax]
+- [Tree-sitter grammar][tree-sitter] (intended for Neovim)
+
 ## How to Build
 
 When cloning the repository, remember to also clone the sub-modules.
 
 ### Windows
 
-1. Install [TDM GCC MinGW 64-bit](https://jmeubank.github.io/tdm-gcc/) version 10.3.0 or newer.
-1. Open a POSIX-like terminal (such as [git bash](https://git-scm.com/)).
+1. Install [TDM GCC MinGW 64-bit][MinGW] version 10.3.0 or newer.
+1. Open a POSIX-like terminal (such as [git bash][gitBash]).
 1. Change directory to the project folder.
 1. Run `mingw32-make`
 
@@ -30,7 +38,8 @@ When cloning the repository, remember to also clone the sub-modules.
 
 1. Install a C++20 capable version of GCC.
 1. Open a bash (or sh) terminal.
-1. Install the development versions of `libgmp`, `libmpfr` and `libfftw3`.  On Ubuntu, this can be achieved with:
+1. Install the development versions of `libgmp`, `libmpfr` and `libfftw3`.
+   On Ubuntu, this can be achieved with:
     - `sudo apt-get install libgmp-dev`
     - `sudo apt-get install libmpfr-dev`
     - `sudo apt-get install libfftw3-dev`
@@ -41,7 +50,7 @@ When cloning the repository, remember to also clone the sub-modules.
 
 To run the automated tests, run `make test` from the root folder.
 
-You can also run specific tests from within the [`Tests`](https://github.com/jpt13653903/ALCHA/tree/develop/Tests) folder:
+You can also run specific tests from within the [`Tests`][Tests] folder:
 
 - `make test`: Run all the tests
 - `make testScanner`: Run and test the scanner
@@ -50,7 +59,17 @@ You can also run specific tests from within the [`Tests`](https://github.com/jpt
 
 ## More Information
 
-Alcha was the subject of [a PhD thesis](http://hdl.handle.net/11427/37117).
+Alcha was the subject of [a PhD thesis][PhD].
 
-See the [Wiki](https://sourceforge.net/p/alcha/wiki) for more information.
+See the [Wiki] for more information.
+
+--------------------------------------------------------------------------------
+
+[MinGW]:       https://jmeubank.github.io/tdm-gcc
+[gitBash]:     https://git-scm.com
+[PhD]:         http://hdl.handle.net/11427/37117
+[Wiki]:        https://sourceforge.net/p/alcha/wiki
+[Tests]:       https://github.com/jpt13653903/ALCHA/tree/develop/Tests
+[vim_syntax]:  https://github.com/jpt13653903/ALCHA/blob/6c6c2cd/Syntax%20Highlighting/Vim/alcha.vim
+[tree-sitter]: https://github.com/jpt13653903/tree-sitter-alcha
 

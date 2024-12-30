@@ -52,7 +52,11 @@ change without notice.
 
 ### Definition
 
-Nets relate to physical wires and / or registers on the FPGA.  They are specified by means of the `net` keyword.  If no format is specified, a net is a single-bit unsigned integer, which also represents a boolean.  The format is specified by means of optional instantiation parameters.  Some examples are shown below:
+Nets relate to physical wires and / or registers on the FPGA.  They are
+specified by means of the `net` keyword.  If no format is specified, a net is
+a single-bit unsigned integer, which also represents a boolean.  The format is
+specified by means of optional instantiation parameters.  Some examples are
+shown below:
 
 ```alcha
   net          a; // Single-bit unsigned integer
@@ -64,7 +68,9 @@ Nets relate to physical wires and / or registers on the FPGA.  They are specifie
   net(4, -4)   e; // 5-bit signed fixed-point in the range [-4, 4)
 ```
 
-Signed nets have one more bit than specified in the format.  This is a convenient convention for fixed-point digital signal processing, but can be confusing.
+Signed nets have one more bit than specified in the format.  This is a
+convenient convention for fixed-point digital signal processing, but can be
+confusing.
 
 ### Initialisers
 
@@ -77,7 +83,12 @@ All nets, pins and variables can take an optional initialiser, as illustrated be
 
 ### Attributes
 
-Nets take optional attributes, which are summarised in the table below.  External IC parameters and PCB trance parameters are split into separate attributes so that they can be specified at different points in the design.  The PCB trace parameters might be specified with the pin definition, for instance, while the external IC parameters are specified in the abstraction module that controls that IC.
+Nets take optional attributes, which are summarised in the table below.
+External IC parameters and PCB trance parameters are split into separate
+attributes so that they can be specified at different points in the design.
+The PCB trace parameters might be specified with the pin definition, for
+instance, while the external IC parameters are specified in the abstraction
+module that controls that IC.
 
 Attribute            | Default | Description
 ---------            | ------- | -----------
@@ -92,7 +103,12 @@ Attribute            | Default | Description
 
 ### Timing Constraints
 
-As indicated in the table above, net attributes can be used to specify external peripheral timing requirements.  These timing attributes are specified as if there are no PCB or trace delays.  When the net is connected to a pin, the trace delays and pin capacitance specified by the pin attributes are used in conjunction with the net timing attributes to calculate the appropriate external timing constraints.  An example is provided below:
+As indicated in the table above, net attributes can be used to specify
+external peripheral timing requirements.  These timing attributes are
+specified as if there are no PCB or trace delays.  When the net is connected
+to a pin, the trace delays and pin capacitance specified by the pin attributes
+are used in conjunction with the net timing attributes to calculate the
+appropriate external timing constraints.  An example is provided below:
 
 ```alcha
   // PCB trace delays in the pin definitions:
@@ -110,17 +126,24 @@ As indicated in the table above, net attributes can be used to specify external 
   SD_DAT.enable  = DataEnable;
 ```
 
-External delays are always referenced to a clock, even if the external delay is purely combinational.  This is so that the timing constraints are compatible with the Synopsis Design Constraints format, which is the industry-preferred standard.
+External delays are always referenced to a clock, even if the external delay
+is purely combinational.  This is so that the timing constraints are
+compatible with the Synopsis Design Constraints format, which is the
+industry-preferred standard.
 
 ### Bus Connections
 
-ALCHA does not support high-impedance nets directly.  Pins can be set to high-impedance by disabling the driver (see the Pins section for details).  In order to emulate a bus that has a set of tri-state drivers, the nets should be gated through AND gates and then combined through an OR gate to drive the bus.
+ALCHA does not support high-impedance nets directly.  Pins can be set to
+high-impedance by disabling the driver (see the Pins section for details).  In
+order to emulate a bus that has a set of tri-state drivers, the nets should be
+gated through AND gates and then combined through an OR gate to drive the bus.
 
 ## Pins
 
 ### Definition
 
-Pins in ALCHA are specified by means of the `pin` keyword.  Pins can have various attributes.  A short example is presented below:
+Pins in ALCHA are specified by means of the `pin` keyword.  Pins can have
+various attributes.  A short example is presented below:
 
 ```alcha
   pin<frequency = 50e6, voltage = 2.5, location = "H12"> Clock;
@@ -128,11 +151,20 @@ Pins in ALCHA are specified by means of the `pin` keyword.  Pins can have variou
   pin<                  voltage = 2.5, location = "F7" > LED;
 ```
 
-A pin is a structured object that consists of three nets: the `pad` (physical FPGA pin), the `driver` (input to the pin buffer) and the `enable` (driver enable).  In order to set a pin to output, the driver must be enabled by assigning a constant high to the `enable` net.  Bidirectional pins are created by assigning an expression to the `enable` net.
+A pin is a structured object that consists of three nets: the `pad` (physical
+FPGA pin), the `driver` (input to the pin buffer) and the `enable` (driver
+enable).  In order to set a pin to output, the driver must be enabled by
+assigning a constant high to the `enable` net.  Bidirectional pins are created
+by assigning an expression to the `enable` net.
 
-When, at the time of circuit synthesis, the `enable` net is undefined, the compiler infers the direction of the pin.  If there is an expression assigned to the `driver` net, the pin is an output and the driver is enabled.  If the `driver` net is also undefined, the pin is an input.
+When, at the time of circuit synthesis, the `enable` net is undefined, the
+compiler infers the direction of the pin.  If there is an expression assigned
+to the `driver` net, the pin is an output and the driver is enabled.  If the
+`driver` net is also undefined, the pin is an input.
 
-When the developer assigns directly to the pin name, the expression is actually assigned to the `driver` net.  When the pin is read, the `pad` net is read.  This is sometimes problematic, as illustrated in the following example:
+When the developer assigns directly to the pin name, the expression is
+actually assigned to the `driver` net.  When the pin is read, the `pad` net is
+read.  This is sometimes problematic, as illustrated in the following example:
 
 ```alcha
   // Define I2C bus pins (initialisers assign to the driver net)
@@ -158,7 +190,8 @@ When the developer assigns directly to the pin name, the expression is actually 
   pin LED = S_Data; // Equivalent to LED.driver = S_Data.pad
 ```
 
-When ignoring the first (wrong) assignment, the code above is equivalent to the following Verilog:
+When ignoring the first (wrong) assignment, the code above is equivalent to
+the following Verilog:
 
 ```verilog
   module TopLevel(
@@ -176,7 +209,8 @@ When ignoring the first (wrong) assignment, the code above is equivalent to the 
   assign LED = S_Data;
 ```
 
-Typically, the compiler will remove the and-with-one and or-with-zero.  It is kept here to show the relationship between the ALCHA and Verilog more clearly.
+Typically, the compiler will remove the and-with-one and or-with-zero.  It is
+kept here to show the relationship between the ALCHA and Verilog more clearly.
 
 ### Attributes
 
@@ -195,16 +229,22 @@ Attribute     | Default    | Description
 
 ### Pin Vectors
 
-When specifying pin locations for bit-vectors or pin arrays, the `location` attribute contains a comma-separated list of pins.  Pin locations are specified most-significant bit first, as follows:
+When specifying pin locations for bit-vectors or pin arrays, the `location`
+attribute contains a comma-separated list of pins.  Pin locations are
+specified most-significant bit first, as follows:
 
 ```alcha
   // Assign H9 to LED(7), H8 to LED(6), ..., L7 to LED(0)
   pin(8)<location = ["H9", "H8", "B6", "A5", "E9", "D8", "K6", "L7"]> LED;
 ```
 
-Pin arrays are handled in similar fashion.  The first (0-index) pin location(s) are specified first, then the next (1-index), etc.  All the locations are comma-separated.
+Pin arrays are handled in similar fashion.  The first (0-index) pin
+location(s) are specified first, then the next (1-index), etc.  All the
+locations are comma-separated.
 
-The same location can be assigned to different pin objects.  This is useful when the physical board can have different functions on the same pin, such as a choice between single-ended or LVDS.  This is illustrated below:
+The same location can be assigned to different pin objects.  This is useful
+when the physical board can have different functions on the same pin, such as
+a choice between single-ended or LVDS.  This is illustrated below:
 
 ```alcha
   pin(4) <
@@ -221,7 +261,11 @@ The same location can be assigned to different pin objects.  This is useful when
 
 ## Groups
 
-Often there are attributes that applies to many objects.  In this case, the definitions can be grouped.  All child definitions inherit the attributes of the group.  When a child definition includes an attribute that is already defined in the group, the child definition takes precedence.  Below is an example of a named group for pin definitions.
+Often there are attributes that applies to many objects.  In this case, the
+definitions can be grouped.  All child definitions inherit the attributes of
+the group.  When a child definition includes an attribute that is already
+defined in the group, the child definition takes precedence.  Below is an
+example of a named group for pin definitions.
 
 ```alcha
   group<voltage = 3.3, capacitance = 10e-12,
@@ -232,7 +276,9 @@ Often there are attributes that applies to many objects.  In this case, the defi
   }
 ```
 
-In this case, the pins that are actually defined are `SD.CLK`, `SD.CMD` and `SD.DAT`.  The group can also be anonymous, as given below. In this case, each pin is a child of the parent group object (global, in this case).
+In this case, the pins that are actually defined are `SD.CLK`, `SD.CMD` and
+`SD.DAT`.  The group can also be anonymous, as given below. In this case, each
+pin is a child of the parent group object (global, in this case).
 
 ```alcha
   group <voltage = 3.3, frequency = 50e6>{
@@ -245,7 +291,11 @@ Nets, class instances, derived clocks, etc. can be grouped in similar fashion.
 
 ## Structures
 
-ALCHA structures are "packed", which makes it possible to treat the structure as if it is a bit-vector.  It is therefore possible, for example, to assign a multi-member structure to the input port of a RAM block and then assign the output of the RAM block to a different instance of the same structure.  The user does not need to use concatenation in the process.
+ALCHA structures are "packed", which makes it possible to treat the structure
+as if it is a bit-vector.  It is therefore possible, for example, to assign a
+multi-member structure to the input port of a RAM block and then assign the
+output of the RAM block to a different instance of the same structure.  The
+user does not need to use concatenation in the process.
 
 Structures are defined by means of the `struct` keyword, as follows:
 
@@ -257,7 +307,9 @@ Structures are defined by means of the `struct` keyword, as follows:
   }
 ```
 
-These structures follow the same rules as SystemVerilog structures, i.e. they are specified from most-significant to least-significant bit.  An instance of a structure can be used in as if it is a bit-vector.
+These structures follow the same rules as SystemVerilog structures, i.e. they
+are specified from most-significant to least-significant bit.  An instance of
+a structure can be used in as if it is a bit-vector.
 
 ## Enumerations
 
@@ -287,7 +339,12 @@ An enumeration type can be defined by means of the `enum` keyword, as illustrate
 
 ### Base Type and Encoding
 
-By default, the numerical constants associated with the enumeration start at 0 for the first element and increase by 1 for each element.  The user can, however, assign arbitrary constants to the enumeration members.  Ordinarily, enumerations are equivalent to the non-synthesisable type `num`. The enumeration can, however, be used to define a synthesisable enumeration, as shown below.
+By default, the numerical constants associated with the enumeration start at 0
+for the first element and increase by 1 for each element.  The user can,
+however, assign arbitrary constants to the enumeration members.  Ordinarily,
+enumerations are equivalent to the non-synthesisable type `num`. The
+enumeration can, however, be used to define a synthesisable enumeration, as
+shown below.
 
 ```alcha
   enum STATE {Idle, Writing, Done, Others}
@@ -295,11 +352,20 @@ By default, the numerical constants associated with the enumeration start at 0 f
   net(STATE) SigState; // Net enumeration
 ```
 
-In this case, the number of bits, or width, of the net (or pin array) is the number of bits required to uniquely identify each enumeration value.  In the above example, this is 2&nbsp;bits.  If the enumeration was declared with the `encoding = "one-hot"` attribute, the vectors would be 4~bits wide.
+In this case, the number of bits, or width, of the net (or pin array) is the
+number of bits required to uniquely identify each enumeration value.  In the
+above example, this is 2&nbsp;bits.  If the enumeration was declared with the
+`encoding = "one-hot"` attribute, the vectors would be 4~bits wide.
 
 ### ALCHA Enumeration Semantics
 
-A variable declared as an enumeration can only take values from that enumeration.  If the LHS of an assignment is an enumeration instance, the compiler pushes that enumeration onto the name-space stack.  If an enumeration is used outside a variable of that type, the values of the enumeration can be referenced through its type.  It is illegal to assign anything else to an enumeration type. It is legal to compare an enumeration to other types, however.  The code below shows various examples of legal and illegal statements.
+A variable declared as an enumeration can only take values from that
+enumeration.  If the LHS of an assignment is an enumeration instance, the
+compiler pushes that enumeration onto the name-space stack.  If an enumeration
+is used outside a variable of that type, the values of the enumeration can be
+referenced through its type.  It is illegal to assign anything else to an
+enumeration type. It is legal to compare an enumeration to other types,
+however.  The code below shows various examples of legal and illegal statements.
 
 ```alcha
   enum Enum{A, B, C}
@@ -328,7 +394,9 @@ Keyword | Description
 `char`  | 32-bit Unicode character typically used for text file I/O
 `num`   | Infinite precision, rational, signed complex numbers (see [GNU MP](https://gmplib.org/) and [GNU MPFR](http://www.mpfr.org/))
 
-When a floating-point is assigned to a `num` type, the same precision as the floating-point is used to determine the size of the components of the rational number.
+When a floating-point is assigned to a `num` type, the same precision as the
+floating-point is used to determine the size of the components of the rational
+number.
 
 More on scripting in the [Scripting Section](p/alcha/wiki/Scripting)
 

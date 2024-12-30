@@ -41,7 +41,10 @@ change without notice.
 
 ### Definition
 
-A clock in ALCHA is any synthesisable node with a `frequency` attribute.  In order to generate a clock by means of a PLL, use the `hdl` construct to instantiate the appropriate mega-function.  Some examples of clock definitions are presented below:
+A clock in ALCHA is any synthesisable node with a `frequency` attribute.  In
+order to generate a clock by means of a PLL, use the `hdl` construct to
+instantiate the appropriate mega-function.  Some examples of clock definitions
+are presented below:
 
 ```alcha
   // An input pin
@@ -80,7 +83,11 @@ A clock in ALCHA is any synthesisable node with a `frequency` attribute.  In ord
   altera_pll() PLL_250; // Use "PLL_250.outclk" as the clock
 ```
 
-ALCHA further supports clock-enable type clocks, which are generally used for lower frequency circuits that must be synchronised to a higher frequency clock domain.  The clock enable net must also carry the `frequency` attribute, so that the compiler knows how to set up the associated multi-cycle timing requirements.
+ALCHA further supports clock-enable type clocks, which are generally used for
+lower frequency circuits that must be synchronised to a higher frequency clock
+domain.  The clock enable net must also carry the `frequency` attribute, so
+that the compiler knows how to set up the associated multi-cycle timing
+requirements.
 
 ```alcha
   net(14) ClkCounter;
@@ -99,11 +106,17 @@ ALCHA further supports clock-enable type clocks, which are generally used for lo
 
 ### Global Clock Networks
 
-Most modern FPGAs contain dedicated high-fanout, low-skew clock tree networks.  ALCHA automatically assigns clocks to the available clock networks.  If there are more clocks defined than clock networks available, the higher-frequency clocks take priority.  This automated global clock network assignment can be bypassed by explicitly specifying the `global = true` attribute.
+Most modern FPGAs contain dedicated high-fanout, low-skew clock tree
+networks.  ALCHA automatically assigns clocks to the available clock
+networks.  If there are more clocks defined than clock networks available, the
+higher-frequency clocks take priority.  This automated global clock network
+assignment can be bypassed by explicitly specifying the `global = true` attribute.
 
 ### Built-in Properties
 
-All clocks (including clock pins) have a `frequency` member (of type `num`) that can be used by scripts to calculate clock-frequency dependent parameters.  A button denouncer might, for instance, be defined as follows:
+All clocks (including clock pins) have a `frequency` member (of type `num`)
+that can be used by scripts to calculate clock-frequency dependent parameters.
+A button denouncer might, for instance, be defined as follows:
 
 ```alcha
   net Debouncer(net Clk, net Input){
@@ -127,7 +140,10 @@ All clocks (including clock pins) have a `frequency` member (of type `num`) that
 
 ## Register Transfer Level
 
-Most HDL designers are familiar with RTL design.  In ALCHA, the `rtl` construct can be used to describe RTL logic.  It takes one parameter: the clock, which must be a synthesisable type with a frequency attribute.  All statements within an `rtl` construct are non-blocking.  Below is an example:
+Most HDL designers are familiar with RTL design.  In ALCHA, the `rtl`
+construct can be used to describe RTL logic.  It takes one parameter: the
+clock, which must be a synthesisable type with a frequency attribute.  All
+statements within an `rtl` construct are non-blocking.  Below is an example:
 
 ```alcha
   pin<frequency = 50e6> Clk;
@@ -167,9 +183,15 @@ The equivalent Verlog of the above ALCHA is:
 
 ## Finite State Machines
 
-ALCHA provides a concise FSM description syntax by means of the `fsm` construct.  It takes two parameters: the clock and the reset.  The reset is optional: if a reset signal is not specified, an auto-generated power-on reset signal is used.
+ALCHA provides a concise FSM description syntax by means of the `fsm`
+construct.  It takes two parameters: the clock and the reset.  The reset is
+optional: if a reset signal is not specified, an auto-generated power-on reset
+signal is used.
 
-Each statement within an `fsm` construct that ends in a comma (`,`), is considered to be in the same state, or cycle, as the next statement.  A semicolon (`;`) ends a cycle (or state).  All statements are considered non-blocking.  A simple example is provided below:
+Each statement within an `fsm` construct that ends in a comma (`,`), is
+considered to be in the same state, or cycle, as the next statement.  A
+semicolon (`;`) ends a cycle (or state).  All statements are considered
+non-blocking.  A simple example is provided below:
 
 ```alcha
   pin<frequency = 50e6> Clk;
@@ -225,9 +247,12 @@ This state machine has two states and translates to the following Verilog:
   end
 ```
 
-All reset signals are localised to the state machine.  All signals that enter the `fsm` construct with a value (that must evaluate to a run-time constant) are reset to that value.
+All reset signals are localised to the state machine.  All signals that enter
+the `fsm` construct with a value (that must evaluate to a run-time constant)
+are reset to that value.
 
-The ALCHA `if` and `while` statements follow the same syntax as in C.  The state (or cycle) boundaries are controlled by means of semicolons (`;`).
+The ALCHA `if` and `while` statements follow the same syntax as in C.  The
+state (or cycle) boundaries are controlled by means of semicolons (`;`).
 
 The `for` loop is used to iterate through elements in an array, as follows:
 
@@ -270,7 +295,9 @@ This translates to:
   end
 ```
 
-The `loop` loop is used to repeat something.  Without a parameter, a `loop` loop will run forever (or until a `break` statement is encountered).  With a parameter, the `loop(N)` loop will run for `N` iterations.
+The `loop` loop is used to repeat something.  Without a parameter, a `loop`
+loop will run forever (or until a `break` statement is encountered).  With a
+parameter, the `loop(N)` loop will run for `N` iterations.
 
 --------------------------------------------------------------------------------
 
