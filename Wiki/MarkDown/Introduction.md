@@ -1,9 +1,9 @@
 # ALCHA
 
 <img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
-The ALCHA project, including the language grammar and, by extension, this 
-wiki, is under development.  This wiki serves as a documentation of the 
-project goals and aspirations, which are inherently unstable and subject to 
+The ALCHA project, including the language grammar and, by extension, this
+wiki, is under development.  This wiki serves as a documentation of the
+project goals and aspirations, which are inherently unstable and subject to
 change without notice.
 
 --------------------------------------------------------------------------------
@@ -38,39 +38,58 @@ change without notice.
 
 # Introduction
 
-ALCHA (architectural level computational hardware abstraction) is a command-line tool to generate vendor-specific FPGA projects from largely vendor-neutral text-based source code.  The image below provides a rough overview of the intended tool-chain.
+ALCHA (architectural level computational hardware abstraction) is a
+command-line tool to generate vendor-specific FPGA projects from largely
+vendor-neutral text-based source code.  The image below provides a rough
+overview of the intended tool-chain.
 
 ![Concept Block Diagram](../Figures/ConceptBlock.svg)
 
-ALCHA is aimed at unifying the various aspects of FPGA firmware design (RTL design, finite state machines, timing and design constraints, as well as scripting) into a single language.
+ALCHA is aimed at unifying the various aspects of FPGA firmware design (RTL
+design, finite state machines, timing and design constraints, as well as
+scripting) into a single language.
 
-ALCHA is designed to be as portable, concise and expressive as possible, without the loss of low-level control. It provides a development platform that promises reduced development time and maintenance effort.
+ALCHA is designed to be as portable, concise and expressive as possible,
+without the loss of low-level control. It provides a development platform that
+promises reduced development time and maintenance effort.
 
 ## Automated Optimisation
 
-The ALCHA compiler applies various optimisations before project synthesis, most of which are related to finite state machine resource usage. The details of this is outside the scope of this wiki. One notable optimisation, however, is automated multi-cycle analysis.
+The ALCHA compiler applies various optimisations before project synthesis,
+most of which are related to finite state machine resource usage. The details
+of this is outside the scope of this wiki. One notable optimisation, however,
+is automated multi-cycle analysis.
 
-Unless specified otherwise, the circuit synthesis process assumes that all register-to-register paths have to have a delay of less than one clock period. This is not true for all paths in a typical state-machine. It is likely that a particular signal path have multiple clock-cycles in which to pass through the combinational cloud, thereby requiring less stringent timing constraints than the synthesis tool initially assumes.
+Unless specified otherwise, the circuit synthesis process assumes that all
+register-to-register paths have to have a delay of less than one clock period.
+This is not true for all paths in a typical state-machine. It is likely that a
+particular signal path have multiple clock-cycles in which to pass through the
+combinational cloud, thereby requiring less stringent timing constraints than
+the synthesis tool initially assumes.
 
-Manually specifying multi-cycle paths is a labour-intensive and tedious process. ALCHA performs this task automatically whenever the design is compiled, thereby generating code that is easier to synthesise, resulting in reduced compilation times.
+Manually specifying multi-cycle paths is a labour-intensive and tedious
+process. ALCHA performs this task automatically whenever the design is
+compiled, thereby generating code that is easier to synthesise, resulting in
+reduced compilation times.
 
 ## Source
 
-The source is available from the [git repository](https://sourceforge.net/p/alcha/code) and [GitHub](https://github.com/jpt13653903/ALCHA).
+The source is available from [SourceForge] and [GitHub].
 
 ## References
 
 ### Similar Projects
 
-- [Synflow Cx](http://cx-lang.org/)
-- [SpinalHDL](http://spinalhdl.github.io/SpinalDoc/)
+- [Synflow Cx](https://synflow.gitlab.io/docs/)
+- [SpinalHDL](https://spinalhdl.github.io/SpinalDoc-RTD/master/index.html)
 - [CHISEL](https://chisel.eecs.berkeley.edu/)
 - [Migen](https://github.com/m-labs/migen)
 - [MyHDL](http://www.myhdl.org/)
 
 ### Acknowledgements
 
-Many of the ideas of ALCHA are borrowed from other existing languages.  These include, among others:
+Many of the ideas of ALCHA are borrowed from other existing languages.
+These include, among others:
 
 - [C++](https://isocpp.org/)
 - [D](http://dlang.org/)
@@ -158,4 +177,7 @@ Many of the ideas of ALCHA are borrowed from other existing languages.  These in
   Transactions on Computer-Aided Design of Integrated Circuits and Systems, IEEE, December 2014, Volume 33, Number 12, Pages&nbsp;1832&nbsp;&ndash;&nbsp;1845
 
 --------------------------------------------------------------------------------
+
+[SourceForge]: https://sourceforge.net/p/alcha/code
+[GitHub]:      https://github.com/jpt13653903/ALCHA
 

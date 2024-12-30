@@ -34,13 +34,25 @@ change without notice.
 
 # Expressions
 
-Combinational statements in ALCHA are evaluated in order.  In terms of HDL, the statements are considered blocking.
+Combinational statements in ALCHA are evaluated in order.  In terms of HDL,
+the statements are considered blocking.
 
-Assignments come in two flavours.  Normal assignments use the `=` operator and take the fixed-point format into account, whereas raw assignments use the `:=` operator and assigns the raw bits only.
+Assignments come in two flavours.  Normal assignments use the `=` operator and
+take the fixed-point format into account, whereas raw assignments use the
+`:=` operator and assigns the raw bits only.
 
-During normal assignment, the source is type-cast to the target type before assignment.  If the target does not have sufficient bits to store the source, the source is truncated.  When most-significant bits are removed, the compiler issues a warning.  When least-significant bits are removed, no warning is issued.  It is up to the developer to ensure that correct rounding is applied, if required.
+During normal assignment, the source is type-cast to the target type before
+assignment.  If the target does not have sufficient bits to store the source,
+the source is truncated.  When most-significant bits are removed, the compiler
+issues a warning.  When least-significant bits are removed, no warning is
+issued.  It is up to the developer to ensure that correct rounding is applied,
+if required.
 
-In order to prevent accidental variable creation through typos, all variables, nets, etc. must be defined before use.  It is useful, however, to be able to define a variable based on the type of the first expression assigned to it.  It that case, define it with `auto` type.  Once defined in such a manner, that variable cannot change its type, and redefining it is illegal.
+In order to prevent accidental variable creation through typos, all variables,
+nets, etc. must be defined before use.  It is useful, however, to be able to
+define a variable based on the type of the first expression assigned to it.
+It that case, define it with `auto` type.  Once defined in such a manner, that
+variable cannot change its type, and redefining it is illegal.
 
 ## Operators
 
@@ -136,19 +148,31 @@ Assignment | `A   = B`       | Normal assign (automatically casts to the target 
 &nbsp;     | `A <<= B`       | Shift left and assign (normal assign)
 &nbsp;     | `A >>= B`       | Shift right and assign (normal assign)
 
-The unary, arithmetic, shift and relational operators take the fixed-point format of the operands into account, whereas the other operators do not.  Arithmetic operators result in a fixed-point number which is of such a format that no bits are lost in the calculation.  Other operators result in an unsigned integer, regardless of input format.
+The unary, arithmetic, shift and relational operators take the fixed-point
+format of the operands into account, whereas the other operators do not.
+Arithmetic operators result in a fixed-point number which is of such a format
+that no bits are lost in the calculation.  Other operators result in an
+unsigned integer, regardless of input format.
 
 The target of an assignment can be an array, array slice or concatenation.
 
-The usual flow-control structures (`if`, `for`, `while`, etc.) are supported.  More detail is provided later.
+The usual flow-control structures (`if`, `for`, `while`, etc.) are supported.
+More detail is provided later.
 
 ## Global Attribute Definition and Access
 
-Defining an attribute puts it in the current namespace.  Accessing a namespace runs the hierarchy from the current namespace toward the root of the namespace tree, which is the global attribute.  The current namespace attributes therefore shadow the global attributes.  In addition, global attributes are read-only from within a namespace.
+Defining an attribute puts it in the current namespace.  Accessing a namespace
+runs the hierarchy from the current namespace toward the root of the namespace
+tree, which is the global attribute.  The current namespace attributes
+therefore shadow the global attributes.  In addition, global attributes are
+read-only from within a namespace.
 
 ## Net use Before Assignment
 
-When describing FPGA firmware it is often necessary to use a net before a value is assigned.  This could occur when using parametrised classes, or clocked structures with external combinational feedback.  The code below provides two examples:
+When describing FPGA firmware it is often necessary to use a net before a
+value is assigned.  This could occur when using parametrised classes, or
+clocked structures with external combinational feedback.  The code below
+provides two examples:
 
 ```alcha
   class Adder(N){ // Parametrisation is presented in the scripting section
@@ -198,13 +222,19 @@ And here is another example:
   }
 ```
 
-ALCHA is intended for describing hardware, so the defined `net` types represent physical hardware nets.  When using that net in an assignment, the ALCHA user is making connections, making a copy from one RAM location to another.  This paradigm allows for use-before-assign type code.
+ALCHA is intended for describing hardware, so the defined `net` types
+represent physical hardware nets.  When using that net in an assignment, the
+ALCHA user is making connections, making a copy from one RAM location to
+another.  This paradigm allows for use-before-assign type code.
 
-ALCHA does, however, allow circular assignments.  These are performed by using the following algorithm:
+ALCHA does, however, allow circular assignments.  These are performed by using
+the following algorithm:
 
 1. Evaluate the right-hand-side (RHS) expression to produce an expression tree
-1. Inspect the left-hand-side (LHS) and the expression tree to determine whether or not the statement is circular
-1. If it is circular, update the expression tree to use the current expression assigned to the LHS net, instead of the net itself
+1. Inspect the left-hand-side (LHS) and the expression tree to determine
+   whether or not the statement is circular
+1. If it is circular, update the expression tree to use the current expression
+   assigned to the LHS net, instead of the net itself
 1. Assign the expression tree to the LHS net
 1. Perform garbage collection on any resulting dangling circuits
 

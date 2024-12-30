@@ -44,7 +44,15 @@ evaluated.  The lexical EBNF is available [here](../EBNF/Scanner.ebnf).
 
 ## Literals
 
-ALCHA literals are all stored as infinite-precision rational numbers (by means of the [GNU MP library](https://gmplib.org/)). An imaginary literal can be specified by using either a `j` or `i` postfix.  Literals can be binary (`0b` prefix), octal (`0o` prefix), hexadecimal (`0x` prefix) or decimal (no prefix).  Literals may contain an optional decimal or binary exponent, by means of a `e` or `p` postfix, respectively.  All literals can be cast to a fixed-point format by means of the `@` operator.  Within numerical literals, the underscore character (`_`) is ignored.  Character literals are string literals with only one character.  Below are some examples:
+ALCHA literals are all stored as infinite-precision rational numbers (by means
+of the [GNU MP library](https://gmplib.org/)). An imaginary literal can be
+specified by using either a `j` or `i` postfix.  Literals can be binary
+(`0b` prefix), octal (`0o` prefix), hexadecimal (`0x` prefix) or decimal
+(no prefix).  Literals may contain an optional decimal or binary exponent, by
+means of a `e` or `p` postfix, respectively.  All literals can be cast to a
+fixed-point format by means of the `@` operator.  Within numerical literals,
+the underscore character (`_`) is ignored.  Character literals are string
+literals with only one character.  Below are some examples:
 
 ```alcha
   123.456           // decimal constant
@@ -58,11 +66,17 @@ ALCHA literals are all stored as infinite-precision rational numbers (by means o
   7.3 + 8.9j        // Decimal complex constant
   "A"               // Unicode character constant
   "ABC"             // Unicode string literal (character array)
+  $"a{b}c"          // Interpolated string
+  $"a{b, "04d"}c"   // Interpolated string with formatting
 ```
 
-Imaginary and complex numbers are useful when using compile-time scripting to initialise FIR filter constants, among other uses.
+Imaginary and complex numbers are useful when using compile-time scripting to
+initialise FIR filter constants, among other uses.
 
-Unicode characters can be used directly within strings, such as `"`&ohm;`"` and `"`&alpha;&beta;&gamma;`"`.  Certain non-printable characters can be used by means of escaping.  ALCHA escape sequences are similar to D escape sequences.  The following table provides a summary:
+Unicode characters can be used directly within strings, such as `"`&ohm;`"`
+and `"`&alpha;&beta;&gamma;`"`.  Certain non-printable characters can be used
+by means of escaping.  ALCHA escape sequences are similar to D escape
+sequences.  The following table provides a summary:
 
 Sequence     | Character
 --------     | ---------
@@ -73,6 +87,7 @@ Sequence     | Character
 `\r`         | Carriage return (`U+0D`)
 `\t`         | Horizontal tab (`U+09`)
 `\v`         | Vertical tab (`U+0B`)
+`\e`         | Escape (`U+1B`)
 `\\`         | Backslash (`U+5C`)
 `\'`         | Single quotation mark (`U+27`)
 `\"`         | Double quotation mark (`U+22`)
@@ -81,19 +96,24 @@ Sequence     | Character
 `\xHH`       | 2-digit hexadecimal Unicode
 `\uHHHH`     | 4-digit hexadecimal Unicode
 `\UHHHHHHHH` | 8-digit hexadecimal Unicode
-`\&nnnn;`    | Named character, where `nnnn` is any of the [HTML-5 character names](https://w3.org/TR/html5/syntax.html#named-character-references)
+`\&nnnn;`    | Named character, where `nnnn` is any of the [HTML-5 character names][HTML5_names]
 
 ## Identifiers
 
-Non-digits in ALCHA are defined as the '`_`' character, as well as any character in the ranges '`a`' to '`z`', '`A`' to '`Z`' and any Unicode character above `U+7F`, as long as it is not a white-space or newline character.
+Non-digits in ALCHA are defined as the '`_`' character, as well as any
+character in the ranges '`a`' to '`z`', '`A`' to '`Z`' and any Unicode
+character above `U+7F`, as long as it is not a white-space or
+newline character.
 
 Digits in ALCHA are defined as any character in the range '`0`' to '`9`'.
 
-Identifiers start with a non-digit, which may then be followed with any digit or non-digit.
+Identifiers start with a non-digit, which may then be followed with any digit
+or non-digit.
 
 ## Predefined Constants
 
-The following constants are predefined with double precision.  They can be redefined by the developer, following the scoping rules.
+The following constants are predefined with double precision.  They can be
+redefined by the developer, following the scoping rules.
 
 Symbol                  | Description                  | Value
 ------                  | -----------                  | -----
@@ -123,9 +143,17 @@ Keyword         | Description
 `__FUNCTION__`  | A string constant containing the current function name.  If not in a function, "Global" is returned.
 `__NAMESPACE__` | A string constant containing the current name-space.  If not in a name-space, "Global" is returned.
 
-## Syntax Highlighting Scripts
+## Syntax Highlighting
 
-Syntax highlighting scripts are available from [the repository](https://sourceforge.net/p/alcha/code/ci/master/tree/Syntax%20Highlighting).
+The following syntax highlighting options are available:
+
+- Legacy (and unmaintained) [vim syntax script][vim_syntax]
+- [Tree-sitter grammar][tree-sitter] (intended for Neovim)
 
 --------------------------------------------------------------------------------
+
+[HTML5_names]: https://w3.org/TR/html5/syntax.html#named-character-references
+[vim_syntax]:  https://github.com/jpt13653903/ALCHA/blob/6c6c2cd/Syntax%20Highlighting/Vim/alcha.vim
+[tree-sitter]: https://github.com/jpt13653903/tree-sitter-alcha
+
 

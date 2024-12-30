@@ -38,7 +38,10 @@ change without notice.
 
 ## Logic Regions
 
-In large designs, it is often useful to specify the physical location of each entity.  This reduces the solution space of the place-and-route problem, thereby reducing the compilation time.  In an Altera project, this is done as shown below.
+In large designs, it is often useful to specify the physical location of each
+entity.  This reduces the solution space of the place-and-route problem,
+thereby reducing the compilation time.  In an Altera project, this is done as
+shown below.
 
 ```tcl
   set_global_assignment -name LL_WIDTH 40        -section_id MyDSP
@@ -59,7 +62,13 @@ In large designs, it is often useful to specify the physical location of each en
                           -section_id MyDSP
 ```
 
-The ALCHA equivalent of this is shown below, which is significantly less verbose.  The region is defined by means of an origin coordinate, width and height.  The origin is on the bottom-left of the bounding box.  If no coordinate is specified, the compiler sets the `LL_STATE` property to `FLOATING`.  If no width or height is specified, the compiler sets the `LL_AUTO_SIZE` property to `ON`.  The name of the region is chosen, by the compiler, based on the name of the object the attribute is assigned to.
+The ALCHA equivalent of this is shown below, which is significantly less
+verbose.  The region is defined by means of an origin coordinate, width and
+height.  The origin is on the bottom-left of the bounding box.  If no
+coordinate is specified, the compiler sets the `LL_STATE` property to
+`FLOATING`.  If no width or height is specified, the compiler sets the
+`LL_AUTO_SIZE` property to `ON`.  The name of the region is chosen, by the
+compiler, based on the name of the object the attribute is assigned to.
 
 ```alcha
   DPS(/* Parameters */)<region = "X44, Y145, W40, H5"> MyDSP;
@@ -67,13 +76,28 @@ The ALCHA equivalent of this is shown below, which is significantly less verbose
 
 ## Partition Assignments
 
-Xilinx Vivado and Altera Quartus both allow the user to break large designs into partitions.  The vendor compiler only recompiles a partition if the source files that describe the contents of that partition have changed, which reduces compilation time.  Partitions come in one of three flavours, depending of what stage of compilation is being re-used:
+Xilinx Vivado and Altera Quartus both allow the user to break large designs
+into partitions.  The vendor compiler only recompiles a partition if the
+source files that describe the contents of that partition have changed, which
+reduces compilation time.  Partitions come in one of three flavours, depending
+of what stage of compilation is being re-used:
 
-- **Source:**  The partition is always compiled from the source files &ndash; nothing is reused.
-- **Synthesis:** The synthesis net-list is reused from a previous compile, and the place-and-route stage is processed again.
-- **Fitter:** The placed and routed result from the previous compile is reused.  This saves significant compilation time, but sometimes makes it more difficult to optimally place the components of other partitions.
+- **Source:**    The partition is always compiled from the source files &ndash;
+                 nothing is reused.
+- **Synthesis:** The synthesis net-list is reused from a previous compile, and
+                 the place-and-route stage is processed again.
+- **Fitter:**    The placed and routed result from the previous compile is
+                 reused.  This saves significant compilation time, but
+                 sometimes makes it more difficult to optimally place the
+                 components of other partitions.
 
-ALCHA attributes can be used to perform this partitioning, thereby making it easier to move modules from one partition to another.  Any module or net can be placed within a design partition, which is referenced by name.  The code below shows an example where the `DFE` and `DataPacker` modules are placed in the same partition, and the `DSP` module in another.  The `DFE` and `DataPacker` modules uses the fitter netlist, whereas the `DSP` module uses the synthesis netlist.
+ALCHA attributes can be used to perform this partitioning, thereby making it
+easier to move modules from one partition to another.  Any module or net can
+be placed within a design partition, which is referenced by name.  The code
+below shows an example where the `DFE` and `DataPacker` modules are placed in
+the same partition, and the `DSP` module in another.  The `DFE` and
+`DataPacker` modules uses the fitter netlist, whereas the `DSP` module uses
+the synthesis netlist.
 
 ```alcha
   // Define a default -- also applies to the "Top" partition
@@ -89,23 +113,44 @@ ALCHA attributes can be used to perform this partitioning, thereby making it eas
 
 ## Compiler Behaviour
 
-In addition to specifying various aspects of design constraints, ALCHA attributes can also be used to locally modify compiler behaviour.
+In addition to specifying various aspects of design constraints, ALCHA
+attributes can also be used to locally modify compiler behaviour.
 
 ### Encoding Strategy
 
-The ALCHA grammar does not allow the user so specify the encoding strategy employed by enumerations and state machines.  The default encoding for enumerations is binary (i.e. start at zero and continue counting for each member).  The default encoding for FSMs are compiler-specific, because state machine encoding can be optimised [in various ways](http://users.etech.haw-hamburg.de/users/schubert/dsy/Notes/DigSys6.pdf).  This behaviour can be modified by means of the `encoding` attribute.  Valid encodings include "binary", "Gray", "Johnson" and "one-hot".
+The ALCHA grammar does not allow the user so specify the encoding strategy
+employed by enumerations and state machines.  The default encoding for
+enumerations is binary (i.e. start at zero and continue counting for each
+member).  The default encoding for FSMs are compiler-specific, because state
+machine encoding can be optimised [in various ways][Shubert].  This behaviour
+can be modified by means of the `encoding` attribute.  Valid encodings include
+"binary", "Gray", "Johnson" and "one-hot".
 
 ### Overflow and Rounding
 
-By default ALCHA expressions follow the same truncation, overflow and rounding rules as Verilog does.  Large vectors are assigned to shorter vectors by stripping the most-significant end, rounding is achieved through truncation and there are no checks for overflow conditions.
+By default ALCHA expressions follow the same truncation, overflow and rounding
+rules as Verilog does.  Large vectors are assigned to shorter vectors by
+stripping the most-significant end, rounding is achieved through truncation
+and there are no checks for overflow conditions.
 
-If this behaviour must be changed for the current application, the user of traditional HDL must manually implement the rounding, clipping and sanity-check circuits.  In ALCHA, the user have the option to either implement it manually, or make use of attributes to locally modify the compiler behaviour.
+If this behaviour must be changed for the current application, the user of
+traditional HDL must manually implement the rounding, clipping and
+sanity-check circuits.  In ALCHA, the user have the option to either implement
+it manually, or make use of attributes to locally modify the compiler behaviour.
 
-The "rounding" attribute can take one of two values: "truncate" and "nearest".  The "overflow" attribute can take one of two values: "wrap" and "clip".
+The "rounding" attribute can take one of two values: "truncate" and
+"nearest".  The "overflow" attribute can take one of two values:
+"wrap" and "clip".
 
-Where overflow and rounding are concerned, assignment behaviour follows the attribute of the target net, and type-casting behaviour follow the attribute of the current scope.  Without type-casting, expressions are evaluated, as far as possible, without bit-loss.
+Where overflow and rounding are concerned, assignment behaviour follows the
+attribute of the target net, and type-casting behaviour follow the attribute
+of the current scope.  Without type-casting, expressions are evaluated, as far
+as possible, without bit-loss.
 
-The concept is illustrated below.  The rounding operation includes an addition, which might overflow.  If the target width is not enough to store the carry bit, the compiler uses the current "overflow" mode to handle the situation.
+The concept is illustrated below.  The rounding operation includes an
+addition, which might overflow.  If the target width is not enough to store
+the carry bit, the compiler uses the current "overflow" mode to handle the
+situation.
 
 ```alcha
   net(8, 16) A, B;
@@ -149,3 +194,4 @@ The Verilog equivalent of the above is:
 
 --------------------------------------------------------------------------------
 
+[Shubert]: http://users.etech.haw-hamburg.de/users/schubert/dsy/Notes/DigSys6.pdf

@@ -34,9 +34,15 @@ change without notice.
 
 ## Megafunctions and External HDL Modules
 
-An FPGA project often makes use of FPGA features that are not directly supported by ALCHA.  Such features might include, among others, PCI-Express interfaces, DDR memory interfaces and embedded processors.  These are called "megafunctions", after the Altera nomenclature.  Megafunctions are both vendor and device specific.
+An FPGA project often makes use of FPGA features that are not directly
+supported by ALCHA.  Such features might include, among others, PCI-Express
+interfaces, DDR memory interfaces and embedded processors.  These are called
+"megafunctions", after the Altera nomenclature.  Megafunctions are both vendor
+and device specific.
 
-Megafunctions and other external HDL modules can be imported into the ALCHA project by means of the `hdl` construct, as illustrated below.  Imported HDL modules are not included in simulation.
+Megafunctions and other external HDL modules can be imported into the ALCHA
+project by means of the `hdl` construct, as illustrated below.  Imported HDL
+modules are not included in simulation.
 
 ```alcha
   hdl("Library/RS232.v", "Library/RS232_Rx.v", "Library/RS232_Tx.v") RS232_V(
@@ -80,7 +86,15 @@ Megafunctions and other external HDL modules can be imported into the ALCHA proj
   MyUART.Rx = RS232_Rx;
 ```
 
-Whether the nets defined in the body of the construct describe input, output or bidirectional ports is inferred from their use.  The compiler keeps track of expressions involving that net.  If it occurs only on the left-hand side of assignments, it is an input port.  If it occurs only on the right-hand side of assignments, it is an output port.  If it occurs on both sides, it is bidirectional.  An example of assigning I2C pins to an HDL module is presented below:
+Whether the nets defined in the body of the construct describe input, output
+or bidirectional ports is inferred from their use.  The compiler keeps track
+of expressions involving that net.  If it occurs only on the left-hand side of
+assignments, it is an input port.  If it occurs only on the right-hand side of
+assignments, it is an output port.
+
+Bidirectional port mapping can be done by means of the `hdl_map` built-in
+function, which performs the same function as the port-mapping syntax in
+VHDL and Verilog.
 
 ```alcha
   hdl("Library/LTC2991.v") LTC2991_Driver(){
@@ -88,15 +102,18 @@ Whether the nets defined in the body of the construct describe input, output or 
 
     net I2C_Clk;
     net I2C_Data;
+
+    net error;
   }
 
   pin LTC2991_Clk;
   pin LTC2991_Data;
+  pin LTC2991_Error;
 
-  LTC2991_Driver LTC2991_Driver_Inst = LTC2991_Driver();
-  LTC2991_Clk  = LTC2991_Driver_Inst.I2C_Clk;
-  LTC2991_Data = LTC2991_Driver_Inst.I2C_Data;
-  LTC2991_Driver_Inst.I2C_Data = LTC2991_Data;
+  LTC2991_Driver() LTC2991_Driver_Inst;
+  LTC2991_Driver_Inst.I2C_Clk = LTC2991_Clk;
+  LTC2991_Data.hdl_map(LTC2991_Driver_Inst.I2C_Data);
+  LTC2991_Error = LTC2991_Driver_Inst.error;
 ```
 
 --------------------------------------------------------------------------------
