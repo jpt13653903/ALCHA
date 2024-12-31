@@ -321,7 +321,7 @@ bool testOthers()
     Number m = n; m.div(1000000000); m.div(10000000000);
     value[1] = m;
 
-    n.add(m);
+    n += m;
     for(int e = 0; e < 50; e++) n.div(10);
     value[2] = n;
 
@@ -360,13 +360,13 @@ bool testOthers()
         {  26, Token::Type::Colon,        0, ":"          },
         {  27, Token::Type::Identifier,   0, "ABC"        },
 
-        {  29, Token::Type::Literal, Number(158422625, 1000), "0b1001_1010_1011_0101_1010_1000p-6" },
-        {  30, Token::Type::Literal, Number(158422625, 1000), "0x___9____A____B____5____A____8p-6" },
+        {  29, Token::Type::Literal, Number(158422625) / 1000, "0b1001_1010_1011_0101_1010_1000p-6" },
+        {  30, Token::Type::Literal, Number(158422625) / 1000, "0x___9____A____B____5____A____8p-6" },
 
         {  32, Token::Type::Literal, (double)0x09a935fe50, "0x09A935Fe50" },
         {  33, Token::Type::Literal, 27264, "0b011010101p7" },
 
-        {  35, Token::Type::Literal, Number(123456, 1000), "123.456" },
+        {  35, Token::Type::Literal, Number(123456) / 1000, "123.456" },
         {  35, Token::Type::CastOp,     0, "@"  },
         {  35, Token::Type::OpenRound,  0, "("  },
         {  35, Token::Type::Literal,   16, "16" },
@@ -379,12 +379,12 @@ bool testOthers()
         {  36, Token::Type::CastOp,        0, "@"         },
         {  36, Token::Type::Literal,      24, "24"        },
 
-        {  37, Token::Type::Literal, Number(0x3774F, 128), "0o673517p-7" },
+        {  37, Token::Type::Literal, Number(0x3774F) / 128, "0o673517p-7" },
 
-        {  39, Token::Type::Literal, Number(0x09A935F, 0x10000),    "0x09A.935F"      },
-        {  40, Token::Type::Literal, Number(0xD5, 0x20),            "0b0110.10101"    },
-        {  42, Token::Type::Literal, Number(0x09A935F, 0x10000000), "0x09A.935Fp-12"  },
-        {  43, Token::Type::Literal, Number(0x354),                 "0b0110.10101p+7" },
+        {  39, Token::Type::Literal, Number(0x09A935F) / 0x10000,    "0x09A.935F"      },
+        {  40, Token::Type::Literal, Number(0xD5) / 0x20,            "0b0110.10101"    },
+        {  42, Token::Type::Literal, Number(0x09A935F) / 0x10000000, "0x09A.935Fp-12"  },
+        {  43, Token::Type::Literal, Number(0x354),                  "0b0110.10101p+7" },
 
         {  45, Token::Type::Identifier, 0, "Or"        },
         {  45, Token::Type::Identifier, 0, "different" },
@@ -392,7 +392,7 @@ bool testOthers()
         {  45, Token::Type::Identifier, 0, "numbers"   },
         {  45, Token::Type::Colon,      0, ":"         },
         {  46, Token::Type::Negate,     0, "-"         },
-        {  46, Token::Type::Literal,    Number(0x1BA827CE, 0x10000), "0x1B_A8.27_CE" },
+        {  46, Token::Type::Literal,    Number(0x1BA827CE) / 0x10000, "0x1B_A8.27_CE" },
         {  46, Token::Type::CastOp,     0, "@"         },
         {  46, Token::Type::OpenRound,  0, "("         },
         {  46, Token::Type::Literal,   16, "16"        },

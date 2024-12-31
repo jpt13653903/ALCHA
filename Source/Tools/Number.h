@@ -37,30 +37,38 @@
 
 class Number{
     private:
+        bool  moved = false;
         mpq_t real;
         mpq_t imag;
 
+        void round(mpq_t n) const;
+        std::string print(const mpq_t n, bool imag = false) const;
+
     public:
         Number();
-        Number(int           i);
-        Number(unsigned      u);
-        Number(double        d);
-        Number(bool          b);
+        Number(int      i);
+        Number(unsigned u);
+        Number(bool     b);
+        Number(double   r, double i = 0);
+
         Number(const Number& n);
-        Number(int num, int denum);
+        Number(Number&& n);
        ~Number();
 
-        void set(mpz_t numerator, mpz_t denominator);
+        void setNumDenom(mpz_t numerator, mpz_t denominator);
+
         void set_e (); // First 43 terms of the series e = sum(1/n!)
         void set_pi(); // 100th fraction approximation
         void set_i ();
 
         // Operators
+        void set(double r, double i = 0);
         void operator=  (int           i);
         void operator=  (unsigned      u);
         void operator=  (double        d);
         void operator=  (bool          b);
         void operator=  (const Number& n);
+        void operator=  (Number&&      n);
 
         bool operator== (int           i) const;
         bool operator== (unsigned      u) const;
@@ -97,17 +105,33 @@ class Number{
         bool operator>= (double        d) const;
         bool operator>= (const Number& n) const;
 
-        void add(double r, double i = 0);
-        void add(const Number& n);
+        void   add(double r, double i = 0);
+        void   operator+= (const Number& n);
+        Number operator+  (int           i) const;
+        Number operator+  (unsigned      u) const;
+        Number operator+  (double        d) const;
+        Number operator+  (const Number& n) const;
 
-        void sub(double r, double i = 0);
-        void sub(const Number& n);
+        void   sub(double r, double i = 0);
+        void   operator-= (const Number& n);
+        Number operator-  (int           i) const;
+        Number operator-  (unsigned      u) const;
+        Number operator-  (double        d) const;
+        Number operator-  (const Number& n) const;
 
-        void mul(double r, double i = 0);
-        void mul(const Number& n);
+        void   mul(double r, double i = 0);
+        void   operator*= (const Number& n);
+        Number operator*  (int           i) const;
+        Number operator*  (unsigned      u) const;
+        Number operator*  (double        d) const;
+        Number operator*  (const Number& n) const;
 
-        void div(double r, double i = 0);
-        void div(const Number& n);
+        void   div(double r, double i = 0);
+        void   operator/= (const Number& n);
+        Number operator/  (int           i) const;
+        Number operator/  (unsigned      u) const;
+        Number operator/  (double        d) const;
+        Number operator/  (const Number& n) const;
 
         void binScale(int n); // *= 2^n
 
@@ -116,10 +140,7 @@ class Number{
         bool isInt () const; // imag == 0 && real.denominator == 1
         bool isReal() const; // imag == 0
 
-        double getReal() const;
-        double getImag() const;
-
-        std::string& print() const;
+        std::string print() const;
 };
 //------------------------------------------------------------------------------
 

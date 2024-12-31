@@ -220,22 +220,19 @@ Number Interpreter::evaluate(AST::Expression* expression)
                 break;
 
             case Token::Type::Add:
-                result = evaluate(expression->left);
-                result.add(evaluate(expression->right));
+                result = evaluate(expression->left) + evaluate(expression->right);
                 return result;
 
             case Token::Type::Subtract:
-                printError(expression, "TODO: Subtract");
+                result = evaluate(expression->left) - evaluate(expression->right);
                 break;
 
             case Token::Type::Multiply:
-                result = evaluate(expression->left);
-                result.mul(evaluate(expression->right));
+                result = evaluate(expression->left) * evaluate(expression->right);
                 return result;
 
             case Token::Type::Divide:
-                result = evaluate(expression->left);
-                result.div(evaluate(expression->right));
+                result = evaluate(expression->left) / evaluate(expression->right);
                 return result;
 
             case Token::Type::Modulus:

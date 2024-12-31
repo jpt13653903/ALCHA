@@ -632,7 +632,7 @@ bool Scanner::getNumber(Token* token, unsigned base)
     if(sign) mpz_mul(den, den, exp);
     else     mpz_mul(num, num, exp);
 
-    token->value.set(num, den);
+    token->value.setNumDenom(num, den);
 
     if(buffer[index] == 'i' || buffer[index] == 'j'){
         token->data += buffer[index++];

@@ -31,64 +31,54 @@ Number::Number()
 }
 //------------------------------------------------------------------------------
 
-Number::Number(int i)
+Number::Number(int i): Number()
 {
-    mpq_init(real);
-    mpq_init(imag);
     operator= (i);
 }
 //------------------------------------------------------------------------------
 
-Number::Number(unsigned u)
+Number::Number(unsigned u): Number()
 {
-    mpq_init(real);
-    mpq_init(imag);
     operator= (u);
 }
 //------------------------------------------------------------------------------
 
-Number::Number(double d)
+Number::Number(bool b): Number()
 {
-    mpq_init(real);
-    mpq_init(imag);
-    operator= (d);
-}
-//------------------------------------------------------------------------------
-
-Number::Number(bool b)
-{
-    mpq_init(real);
-    mpq_init(imag);
     operator= (b);
 }
 //------------------------------------------------------------------------------
 
-Number::Number(const Number& n)
+Number::Number(double r, double i): Number()
 {
-    mpq_init(real);
-    mpq_init(imag);
+    set(r, i);
+}
+//------------------------------------------------------------------------------
+
+Number::Number(const Number& n): Number()
+{
     operator= (n);
 }
 //------------------------------------------------------------------------------
 
-Number::Number(int num, int denum)
+Number::Number(Number&& n)
 {
-    mpq_init(real);
-    mpq_init(imag);
-    mpq_set_si(real, num, denum);
-    mpq_canonicalize(real);
-    mpq_set_ui(imag, 0, 1);
+    real[0] = n.real[0];
+    imag[0] = n.imag[0];
+    n.moved = true;
 }
 //------------------------------------------------------------------------------
 
 Number::~Number()
 {
-    mpq_clear(real);
-    mpq_clear(imag);
+    if(!moved){
+        mpq_clear(real);
+        mpq_clear(imag);
+    }
 }
 //------------------------------------------------------------------------------
 
-void Number::set(mpz_t numerator, mpz_t denominator)
+void Number::setNumDenom(mpz_t numerator, mpz_t denominator)
 {
     mpz_set(mpq_numref(real), numerator  );
     mpz_set(mpq_denref(real), denominator);
@@ -140,6 +130,13 @@ void Number::set_i()
 }
 //------------------------------------------------------------------------------
 
+void Number::set(double r, double i)
+{
+    mpq_set_d(real, r);
+    mpq_set_d(imag, i);
+}
+//------------------------------------------------------------------------------
+
 void Number::operator= (int i)
 {
     mpq_set_si(real, i, 1);
@@ -171,6 +168,14 @@ void Number::operator= (const Number& n)
 {
     mpq_set(real, n.real);
     mpq_set(imag, n.imag);
+}
+//------------------------------------------------------------------------------
+
+void Number::operator= (Number&& n)
+{
+    real[0] = n.real[0];
+    imag[0] = n.imag[0];
+    n.moved = true;
 }
 //------------------------------------------------------------------------------
 
@@ -266,7 +271,6 @@ bool Number::operator< (double d) const
 }
 //------------------------------------------------------------------------------
 
-#include "General.h"
 bool Number::operator< (const Number& n) const
 {
     int result = mpq_cmp(real, n.real);
@@ -363,10 +367,42 @@ void Number::add(double r, double i)
 }
 //------------------------------------------------------------------------------
 
-void Number::add(const Number& n)
+void Number::operator+= (const Number& n)
 {
     mpq_add(real, real, n.real);
     mpq_add(imag, imag, n.imag);
+}
+//------------------------------------------------------------------------------
+
+Number Number::operator+ (int i) const
+{
+    Number result(*this);
+    result += i;
+    return result;
+}
+//------------------------------------------------------------------------------
+
+Number Number::operator+ (unsigned u) const
+{
+    Number result(*this);
+    result += u;
+    return result;
+}
+//------------------------------------------------------------------------------
+
+Number Number::operator+ (double d) const
+{
+    Number result(*this);
+    result += d;
+    return result;
+}
+//------------------------------------------------------------------------------
+
+Number Number::operator+ (const Number& n) const
+{
+    Number result(*this);
+    result += n;
+    return result;
 }
 //------------------------------------------------------------------------------
 
@@ -385,43 +421,52 @@ void Number::sub(double r, double i)
 }
 //------------------------------------------------------------------------------
 
-void Number::sub(const Number& n)
+void Number::operator-= (const Number& n)
 {
     mpq_sub(real, real, n.real);
     mpq_sub(imag, imag, n.imag);
 }
 //------------------------------------------------------------------------------
 
-void Number::mul(double r, double i)
+Number Number::operator- (int i) const
 {
-    mpq_t a, b, c, d;
-
-    mpq_init(a);
-    mpq_init(b);
-    mpq_init(c);
-    mpq_init(d);
-
-    mpq_set  (a, real);
-    mpq_set  (b, imag);
-    mpq_set_d(c, r   );
-    mpq_set_d(d, i   );
-
-    mpq_mul(real, a, c);
-    mpq_mul(imag, b, d);
-    mpq_sub(real, real, imag);
-
-    mpq_mul(imag, a, d);
-    mpq_mul(a   , b, c);
-    mpq_add(imag, imag, a);
-
-    mpq_clear(a);
-    mpq_clear(b);
-    mpq_clear(c);
-    mpq_clear(d);
+    Number result(*this);
+    result -= i;
+    return result;
 }
 //------------------------------------------------------------------------------
 
-void Number::mul(const Number& n)
+Number Number::operator- (unsigned u) const
+{
+    Number result(*this);
+    result -= u;
+    return result;
+}
+//------------------------------------------------------------------------------
+
+Number Number::operator- (double d) const
+{
+    Number result(*this);
+    result -= d;
+    return result;
+}
+//------------------------------------------------------------------------------
+
+Number Number::operator- (const Number& n) const
+{
+    Number result(*this);
+    result -= n;
+    return result;
+}
+//------------------------------------------------------------------------------
+
+void Number::mul(double r, double i)
+{
+    *this *= Number(r, i);
+}
+//------------------------------------------------------------------------------
+
+void Number::operator*= (const Number& n)
 {
     mpq_t a, b;
 
@@ -444,42 +489,45 @@ void Number::mul(const Number& n)
 }
 //------------------------------------------------------------------------------
 
-void Number::div(double r, double i)
+Number Number::operator* (int i) const
 {
-    mpq_t a, b, c, d;
-
-    mpq_init(a);
-    mpq_init(b);
-    mpq_init(c);
-    mpq_init(d);
-
-    mpq_set  (a, real);
-    mpq_set  (b, imag);
-    mpq_set_d(c, r   );
-    mpq_set_d(d, i   );
-
-    mpq_mul(real, a, c);
-    mpq_mul(imag, b, d);
-    mpq_add(real, real, imag);
-
-    mpq_mul(imag, b, c);
-    mpq_mul(a   , a, d);
-    mpq_sub(imag, imag, a);
-
-    mpq_mul(c, c, c);
-    mpq_mul(d, d, d);
-    mpq_add(c, c, d);
-    mpq_div(real, real, c);
-    mpq_div(imag, imag, c);
-
-    mpq_clear(a);
-    mpq_clear(b);
-    mpq_clear(c);
-    mpq_clear(d);
+    Number result(*this);
+    result *= i;
+    return result;
 }
 //------------------------------------------------------------------------------
 
-void Number::div(const Number& n)
+Number Number::operator* (unsigned u) const
+{
+    Number result(*this);
+    result *= u;
+    return result;
+}
+//------------------------------------------------------------------------------
+
+Number Number::operator* (double d) const
+{
+    Number result(*this);
+    result *= d;
+    return result;
+}
+//------------------------------------------------------------------------------
+
+Number Number::operator* (const Number& n) const
+{
+    Number result(*this);
+    result *= n;
+    return result;
+}
+//------------------------------------------------------------------------------
+
+void Number::div(double r, double i)
+{
+    *this /= Number(r, i);
+}
+//------------------------------------------------------------------------------
+
+void Number::operator/= (const Number& n)
 {
     mpq_t a, b, c, d;
 
@@ -514,6 +562,38 @@ void Number::div(const Number& n)
 }
 //------------------------------------------------------------------------------
 
+Number Number::operator/ (int i) const
+{
+    Number result(*this);
+    result /= i;
+    return result;
+}
+//------------------------------------------------------------------------------
+
+Number Number::operator/ (unsigned u) const
+{
+    Number result(*this);
+    result /= u;
+    return result;
+}
+//------------------------------------------------------------------------------
+
+Number Number::operator/ (double d) const
+{
+    Number result(*this);
+    result /= d;
+    return result;
+}
+//------------------------------------------------------------------------------
+
+Number Number::operator/ (const Number& n) const
+{
+    Number result(*this);
+    result /= n;
+    return result;
+}
+//------------------------------------------------------------------------------
+
 void Number::binScale(int n)
 {
     if(n > 0){
@@ -526,45 +606,22 @@ void Number::binScale(int n)
 }
 //------------------------------------------------------------------------------
 
+void Number::round(mpq_t n) const
+{
+    if(mpz_cmp_ui(mpq_denref(n), 1)){
+      mpz_mul_ui(mpq_numref(n), mpq_numref(n), 2);
+      mpz_add   (mpq_numref(n), mpq_numref(n), mpq_denref(n));
+      mpz_mul_ui(mpq_denref(n), mpq_denref(n), 2);
+      mpz_fdiv_q(mpq_numref(n), mpq_numref(n), mpq_denref(n));
+      mpz_set_ui(mpq_denref(n), 1);
+    }
+}
+//------------------------------------------------------------------------------
+
 void Number::round()
 {
-    mpz_t n, d;
-
-    mpz_init(n);
-    mpz_init(d);
-
-    mpq_get_num(n, real);
-    mpq_get_den(d, real);
-
-    if(mpz_cmp_ui(d, 1)){
-      mpz_mul_ui(n, n, 2);
-      mpz_add   (n, n, d);
-      mpz_mul_ui(d, d, 2);
-      mpz_fdiv_q(n, n, d);
-      mpz_set_ui(d, 1);
-
-      mpq_set_num(real, n);
-      mpq_set_den(real, d);
-    }
-
-    if(mpq_cmp_ui(imag, 0, 1)){
-      mpq_get_num(n, imag);
-      mpq_get_den(d, imag);
-
-      if(mpz_cmp_ui(d, 1)){
-        mpz_mul_ui(n, n, 2);
-        mpz_add   (n, n, d);
-        mpz_mul_ui(d, d, 2);
-        mpz_fdiv_q(n, n, d);
-        mpz_set_ui(d, 1);
-
-        mpq_set_num(imag, n);
-        mpq_set_den(imag, d);
-      }
-    }
-
-    mpz_clear(n);
-    mpz_clear(d);
+    round(real);
+    round(imag);
 }
 //------------------------------------------------------------------------------
 
@@ -580,42 +637,42 @@ bool Number::isReal() const
 }
 //------------------------------------------------------------------------------
 
-double Number::getReal() const
+string Number::print(const mpq_t n, bool imag) const
 {
-    return mpq_get_d(real);
+    string result;
+
+    char* temp = mpq_get_str(0, 10, n);
+    result = temp;
+    free(temp);
+
+    if(imag) result += "j";
+
+    char approx[0x100];
+    if(imag) snprintf(approx, 0x100, "%.6gj", mpq_get_d(n));
+    else     snprintf(approx, 0x100, "%.6g",  mpq_get_d(n));
+
+    if(mpz_cmp_ui(mpq_denref(n), 1) && result != approx){
+        result += " (~";
+        result += approx;
+        result += ")";
+    }
+    return result;
 }
 //------------------------------------------------------------------------------
 
-double Number::getImag() const
+string Number::print() const
 {
-    return mpq_get_d(imag);
-}
-//------------------------------------------------------------------------------
+    string result;
 
-string& Number::print() const
-{
-    static string result;
-    result.clear();
+    bool isReal = mpq_cmp_ui(real, 0, 1);
+    bool isImag = mpq_cmp_ui(imag, 0, 1);
 
-    bool   r = mpq_cmp_ui(real, 0, 1);
-    bool   i = mpq_cmp_ui(imag, 0, 1);
-
-    char* sr = mpq_get_str(0, 10, real);
-    char* si = mpq_get_str(0, 10, imag);
-
-    double dr = mpq_get_d(real);
-    double di = mpq_get_d(imag);
-
-    char* s = new char[strlen(sr) + strlen(si) + 0x100];
-    if(r && i) sprintf(s, "(%s+%sj) (~(%.6g+%.6gj))", sr, si, dr, di);
-    else if(i) sprintf(s, "%sj (~%.6gj)", si, di);
-    else       sprintf(s, "%s (~%.6g)"  , sr, dr);
-    result += s;
-
-    free(sr);
-    free(si);
-
-    delete[] s;
+    if(isReal && isImag)
+        result = print(real) + " + " + print(imag, true);
+    else if(isImag)
+        result = print(imag, true);
+    else
+        result = print(real);
 
     return result;
 }
