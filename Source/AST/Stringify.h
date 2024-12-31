@@ -23,7 +23,6 @@
 //------------------------------------------------------------------------------
 
 #include "AST.h"
-#include "Token.h"
 
 #include <string>
 //------------------------------------------------------------------------------
@@ -32,11 +31,6 @@ namespace AST{
     struct Stringify: public AST{
         AST* expression = 0;
         AST* format     = 0;
-
-        union{
-            AST* condition;    // Used for ternary statements
-            AST* stepSize = 0; // Used for range statements
-        };
 
         Stringify(int line, int filenameIndex);
        ~Stringify();

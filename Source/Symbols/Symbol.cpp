@@ -34,8 +34,8 @@ Symbol::Symbol(Type type)
 
 Symbol::~Symbol()
 {
-    for(auto attrib: attributes){
-        if(attrib.second) delete(attrib.second);
+    for(auto& [name, attrib]: attributes){
+        if(attrib) delete(attrib);
     }
 }
 //------------------------------------------------------------------------------

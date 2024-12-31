@@ -62,7 +62,7 @@ inline char to_string(int i)
 string expand(const string& s)
 {
     string result;
-    for(auto c: s){
+    for(auto& c: s){
         if(c == '\e' || c >= 0x20){
             result += c;
         }else{
