@@ -16,6 +16,7 @@ change without notice.
 - [Modules](Modules.md#modules)
   - [Target Independence](#target-independence)
   - [Import and Name-space](#import-and-name-space)
+  - [Name-space stack](#name-space-stack)
 - [Declarations](Declarations.md)
 - [Expressions](Expressions.md)
 - [Statements](Statements.md)
@@ -93,6 +94,11 @@ the imported modules have direct access to objects in the parent module name-spa
     import "Ethernet" as Eth;
 ```
 
+The path is searched in two steps:
+
+1. The path of the current file
+1. The path of the top-level module
+
 This name-space model allows the developer to define an environment in a
 parent module. This environment is visible to all child modules, without the
 need of ports or parameter passing. The target and pin definitions are
@@ -100,6 +106,12 @@ examples of where this is useful.  As another example, the developer might,
 for instance, define a `Round` function, which is used by child modules
 whenever signals must be rounded. The rounding behaviour of the design can
 then be changed by simply modifying the behaviour of this `Round` function.
+
+Imported modules must be syntactically complete, meaning that the contents of
+the imported source file must parse to a self-standing AST from the root of
+the EBNF.
+
+## Name-space stack
 
 Specifying the class instance, or name-space, can become tedious.  Instead,
 the developer can temporarily push a name-space onto the scope stack by means
