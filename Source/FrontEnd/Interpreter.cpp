@@ -148,17 +148,39 @@ bool Interpreter::import(AST::Import* node)
         return false;
     }
 
-    fs::path path = fs::path(AST::filenameBuffer[node->filenameIndex]).parent_path();
-    fs::path filename = path / (((AST::String*)node->filename)->data + ".alc");
+    fs::path filename = ((AST::String*)node->filename)->data + ".alc";
 
-    if(!fs::exists(filename))
-        filename = ((AST::String*)node->filename)->data + ".alc";
+    // If the path is absolute, use it directly
+    if(filename.is_absolute()){
+        if(!fs::exists(filename)){
+            string msg = "Cannot find file ";
+            msg += filename.string();
+            printError(node, msg.c_str());
+            return false;
+        }
+    }else{
+        // otherwise, use the same path as the current file
+        fs::path path = fs::path(AST::filenameBuffer[node->filenameIndex]).parent_path();
+        filename = path / (((AST::String*)node->filename)->data + ".alc");
 
-    if(!fs::exists(filename)){
-        string msg = "Cannot find file ";
-        msg += filename.string();
-        printError(node, msg.c_str());
-        return false;
+        // otherwise, use the path of the top-level module
+        if(!fs::exists(filename)){
+            path = fs::path(AST::filenameBuffer[0]).parent_path();
+            filename = path / (((AST::String*)node->filename)->data + ".alc");
+
+            // otherwise, use the current working directory
+            if(!fs::exists(filename)){
+                filename = ((AST::String*)node->filename)->data + ".alc";
+
+                // otherwise, error
+                if(!fs::exists(filename)){
+                    string msg = "Cannot find file ";
+                    msg += filename.string();
+                    printError(node, msg.c_str());
+                    return false;
+                }
+            }
+        }
     }
 
     Parser parser;

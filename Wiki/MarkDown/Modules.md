@@ -94,10 +94,12 @@ the imported modules have direct access to objects in the parent module name-spa
     import "Ethernet" as Eth;
 ```
 
-The path is searched in two steps:
+The path is searched as follows:
 
-1. The path of the current file
-1. The path of the top-level module
+- If the path is absolute, use it directly
+- If the path is relative, search the path of the current file
+- If that fails, search the path of the top-level module
+- If that fails, search the current working directory
 
 This name-space model allows the developer to define an environment in a
 parent module. This environment is visible to all child modules, without the
