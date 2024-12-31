@@ -70,34 +70,34 @@ class Interpreter{
         bool error = false;
 
     private: // Helper functions
-        tm* time();
+        const tm* time() const;
 
     private: // Interpreter Functions
-        void printError(AST::AST* node, const char* message);
+        void printError(const AST::AST* node, const char* message);
 
-        bool print(AST::AST*        node);
-        bool print(AST::Literal*    node);
-        bool print(AST::String*     node);
-        bool print(AST::Expression* node);
-        bool print(AST::Identifier* node);
+        bool print(const AST::AST*        node);
+        bool print(const AST::Literal*    node);
+        bool print(const AST::String*     node);
+        bool print(const AST::Expression* node);
+        bool print(const AST::Identifier* node);
 
-        bool assign(AST::AST*        target, AST::AST* expression);
-        bool assign(AST::Identifier* target, AST::AST* expression);
-        bool assign(Symbols::Num*    target, AST::AST* expression);
+        bool assign(const AST::AST*        target, const AST::AST* expression);
+        bool assign(const AST::Identifier* target, const AST::AST* expression);
+        bool assign(      Symbols::Num*    target, const AST::AST* expression);
 
-        Number evaluate(AST::AST*        expression);
-        Number evaluate(AST::Literal*    expression);
-        Number evaluate(AST::Expression* expression);
-        Number evaluate(AST::Identifier* expression);
+        Number evaluate(const AST::AST*        expression);
+        Number evaluate(const AST::Literal*    expression);
+        Number evaluate(const AST::Expression* expression);
+        Number evaluate(const AST::Identifier* expression);
 
-        bool variableDef     (AST::VariableDef*      node);
-        bool functionDef     (AST::FunctionDef*      node);
-        bool operatorOverload(AST::OperatorOverload* node);
-        bool import          (AST::Import*           node);
-        bool assignment      (AST::Assignment*       node);
-        bool functionCall    (AST::FunctionCall*     node);
+        bool variableDef     (const AST::VariableDef*      node);
+        bool functionDef     (const AST::FunctionDef*      node);
+        bool operatorOverload(const AST::OperatorOverload* node);
+        bool import          (const AST::Import*           node);
+        bool assignment      (const AST::Assignment*       node);
+        bool functionCall    (const AST::FunctionCall*     node);
 
-        bool globalSpace(AST::AST* node);
+        bool globalSpace(const AST::AST* node);
 
     public: // Testable structures
         Symbols::NameSpace global;
@@ -106,7 +106,7 @@ class Interpreter{
         Interpreter();
        ~Interpreter();
 
-       bool run(AST::AST* ast);
+       bool run(const AST::AST* ast);
 };
 //------------------------------------------------------------------------------
 

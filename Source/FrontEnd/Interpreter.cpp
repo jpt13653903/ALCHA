@@ -40,7 +40,7 @@ Interpreter::~Interpreter()
 }
 //------------------------------------------------------------------------------
 
-void Interpreter::printError(AST::AST* node, const char* message)
+void Interpreter::printError(const AST::AST* node, const char* message)
 {
     if(error) return;
     error = true;
@@ -57,7 +57,7 @@ void Interpreter::printError(AST::AST* node, const char* message)
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::variableDef(AST::VariableDef* node)
+bool Interpreter::variableDef(const AST::VariableDef* node)
 {
     auto def = node->defList;
     while(def){
@@ -129,19 +129,19 @@ bool Interpreter::variableDef(AST::VariableDef* node)
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::functionDef(AST::FunctionDef* node)
+bool Interpreter::functionDef(const AST::FunctionDef* node)
 {
     return true;
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::operatorOverload(AST::OperatorOverload* node)
+bool Interpreter::operatorOverload(const AST::OperatorOverload* node)
 {
     return true;
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::import(AST::Import* node)
+bool Interpreter::import(const AST::Import* node)
 {
     if(node->filename->type != AST::Type::String){
         printError(node, "TODO: Imports by interpolated string");
@@ -204,7 +204,7 @@ bool Interpreter::import(AST::Import* node)
 }
 //------------------------------------------------------------------------------
 
-Number Interpreter::evaluate(AST::AST* node)
+Number Interpreter::evaluate(const AST::AST* node)
 {
     switch(node->type){
         case AST::Type::Literal:    return evaluate((AST::Literal   *)node);
@@ -217,13 +217,13 @@ Number Interpreter::evaluate(AST::AST* node)
 }
 //------------------------------------------------------------------------------
 
-Number Interpreter::evaluate(AST::Literal* literal)
+Number Interpreter::evaluate(const AST::Literal* literal)
 {
     return literal->value;
 }
 //------------------------------------------------------------------------------
 
-Number Interpreter::evaluate(AST::Expression* expression)
+Number Interpreter::evaluate(const AST::Expression* expression)
 {
     Number result;
 
@@ -377,7 +377,7 @@ Number Interpreter::evaluate(AST::Expression* expression)
 }
 //------------------------------------------------------------------------------
 
-tm* Interpreter::time()
+const tm* Interpreter::time() const
 {
     time_t timer;
     ::time(&timer);
@@ -385,7 +385,7 @@ tm* Interpreter::time()
 }
 //------------------------------------------------------------------------------
 
-Number Interpreter::evaluate(AST::Identifier* expression)
+Number Interpreter::evaluate(const AST::Identifier* expression)
 {
     auto symbol = global.symbols.find(expression->name);
     if(symbol == global.symbols.end()){
@@ -431,7 +431,7 @@ Number Interpreter::evaluate(AST::Identifier* expression)
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::assign(AST::AST* target, AST::AST* expression)
+bool Interpreter::assign(const AST::AST* target, const AST::AST* expression)
 {
     switch(target->type){
         case AST::Type::Identifier: return assign((AST::Identifier*)target, expression);
@@ -443,7 +443,7 @@ bool Interpreter::assign(AST::AST* target, AST::AST* expression)
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::assign(AST::Identifier* target, AST::AST* expression)
+bool Interpreter::assign(const AST::Identifier* target, const AST::AST* expression)
 {
     auto symbol = global.symbols.find(target->name);
     if(symbol == global.symbols.end()){
@@ -461,20 +461,20 @@ bool Interpreter::assign(AST::Identifier* target, AST::AST* expression)
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::assign(Symbols::Num* target, AST::AST* expression)
+bool Interpreter::assign(Symbols::Num* target, const AST::AST* expression)
 {
     target->value = evaluate(expression);
     return !error;
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::assignment(AST::Assignment* node)
+bool Interpreter::assignment(const AST::Assignment* node)
 {
     return assign(node->target, node->expression);
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::print(AST::AST* node)
+bool Interpreter::print(const AST::AST* node)
 {
     switch(node->type){
         case AST::Type::Literal:    return print((AST::Literal   *)node);
@@ -489,7 +489,7 @@ bool Interpreter::print(AST::AST* node)
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::print(AST::Literal* node)
+bool Interpreter::print(const AST::Literal* node)
 {
     printf(ANSI_FG_BRIGHT_BLACK "Literal:\n    " ANSI_RESET "%s\n",
            evaluate(node).print().c_str());
@@ -497,7 +497,7 @@ bool Interpreter::print(AST::Literal* node)
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::print(AST::String* node)
+bool Interpreter::print(const AST::String* node)
 {
     printf(ANSI_FG_BRIGHT_BLACK "String:\n    " ANSI_RESET "%s\n",
            node->print().c_str());
@@ -505,7 +505,7 @@ bool Interpreter::print(AST::String* node)
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::print(AST::Expression* node)
+bool Interpreter::print(const AST::Expression* node)
 {
     printf(ANSI_FG_BRIGHT_BLACK "%s:\n    " ANSI_RESET "%s\n",
            node->print().c_str(),
@@ -514,7 +514,7 @@ bool Interpreter::print(AST::Expression* node)
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::print(AST::Identifier* node)
+bool Interpreter::print(const AST::Identifier* node)
 {
     printf(ANSI_FG_BRIGHT_BLACK "%s:\n    " ANSI_RESET "%s\n",
            node->print().c_str(),
@@ -523,7 +523,7 @@ bool Interpreter::print(AST::Identifier* node)
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::functionCall(AST::FunctionCall* node)
+bool Interpreter::functionCall(const AST::FunctionCall* node)
 {
     if(node->name->type == AST::Type::Identifier &&
        ((AST::Identifier*)node->name)->name == "print"){
@@ -534,11 +534,16 @@ bool Interpreter::functionCall(AST::FunctionCall* node)
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::globalSpace(AST::AST* node)
+bool Interpreter::globalSpace(const AST::AST* node)
 {
     while(node){
         switch(node->type){
             case AST::Type::Label:
+                // NOTE: To implement, simply store a pointer to this node in
+                //       the AST.  The GoTo is guaranteed to be file-local, so
+                //       a GoTo will simply jump to this node by pointer.
+                // WARN: But -- How to handle forward jumps?  Maybe perform
+                //       a forward search if the label is not defined?
                 printError(node, "TODO: Label");
                 break;
 
@@ -583,6 +588,9 @@ bool Interpreter::globalSpace(AST::AST* node)
                 break;
 
             case AST::Type::Jump:
+                // NOTE: Goto labels must be file-local.  A goto should not
+                //       jump to a node pointer of a different AST.  To check
+                //       this, make sure that the filenameIndex's are the same.
                 printError(node, "TODO: Jump");
                 break;
 
@@ -632,7 +640,7 @@ bool Interpreter::globalSpace(AST::AST* node)
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::run(AST::AST* ast)
+bool Interpreter::run(const AST::AST* ast)
 {
     if(!globalSpace(ast)) return false;
 
