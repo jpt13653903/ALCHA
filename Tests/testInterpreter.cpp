@@ -30,7 +30,7 @@ Interpreter* interpreter;
 
 bool startTest(const char* name)
 {
-    printf(ANSI_FG_CYAN "Starting test: " ANSI_RESET "%s...\n", name); \
+    printf(ANSI_FG_CYAN "Starting test: " ANSI_RESET "%s...\n", name);
 
     string filename;
     filename  = "testInterpreter/";
@@ -110,10 +110,14 @@ bool testInterpreter()
     if(!startTest("Interpreter")) return false;
 
     const char* expected[] = {
-        "a", "3",
-        "b", "5",
-        "c", "123456789123456789/1000000000 (~1.23457e+08)",
-        "d", "123456789723456789/200000000 (~6.17284e+08)",
+        "a",  "3",
+        "b",  "5",
+        "c",  "123456789123456789/1000000000 (~1.23457e+08)",
+        "d",  "123456789723456789/200000000 (~6.17284e+08)",
+        "x",  "123",
+        "pi", "22/7 (~3.14286)",
+
+        "imported", "123",
         0, 0
     };
     if(!runTest(expected)) return false;

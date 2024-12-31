@@ -93,6 +93,7 @@ class Interpreter{
         bool variableDef     (AST::VariableDef*      node);
         bool functionDef     (AST::FunctionDef*      node);
         bool operatorOverload(AST::OperatorOverload* node);
+        bool import          (AST::Import*           node);
         bool assignment      (AST::Assignment*       node);
         bool functionCall    (AST::FunctionCall*     node);
 

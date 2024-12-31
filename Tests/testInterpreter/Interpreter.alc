@@ -33,6 +33,7 @@ print(__YEARDAY__);
 num pi = 22/7;
 print(pi);
 
-// import "test_import.alc";
-// print(imported);
+import "test_import";
+num x = imported;
+print(x);
 

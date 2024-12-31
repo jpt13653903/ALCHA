@@ -20,11 +20,14 @@
 
 #include "Interpreter.h"
 #include "Utilities.h"
+#include "Parser.h"
 
 #include <time.h>
+#include <filesystem>
 //------------------------------------------------------------------------------
 
 using std::string;
+namespace fs = std::filesystem;
 //------------------------------------------------------------------------------
 
 Interpreter::Interpreter()
@@ -134,6 +137,47 @@ bool Interpreter::functionDef(AST::FunctionDef* node)
 
 bool Interpreter::operatorOverload(AST::OperatorOverload* node)
 {
+    return true;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::import(AST::Import* node)
+{
+    if(node->filename->type != AST::Type::String){
+        printError(node, "TODO: Imports by interpolated string");
+        return false;
+    }
+
+    fs::path path = fs::path(AST::filenameBuffer[node->filenameIndex]).parent_path();
+    fs::path filename = path / (((AST::String*)node->filename)->data + ".alc");
+
+    if(!fs::exists(filename))
+        filename = ((AST::String*)node->filename)->data + ".alc";
+
+    if(!fs::exists(filename)){
+        string msg = "Cannot find file ";
+        msg += filename.string();
+        printError(node, msg.c_str());
+        return false;
+    }
+
+    Parser parser;
+    auto ast = parser.parse(filename.string().c_str());
+
+    if(!ast){
+        string msg = "Cannot parse file ";
+        msg += filename.string();
+        printError(node, msg.c_str());
+        return false;
+    }
+    if(!run(ast)){
+        string msg = "Cannot interpret AST of file ";
+        msg += filename.string();
+        printError(node, msg.c_str());
+        delete ast;
+        return false;
+    }
+    delete ast;
     return true;
 }
 //------------------------------------------------------------------------------
@@ -501,7 +545,7 @@ bool Interpreter::globalSpace(AST::AST* node)
                 break;
 
             case AST::Type::Import:
-                printError(node, "TODO: Import");
+                if(!import((AST::Import*)node)) return false;
                 break;
 
             case AST::Type::GroupDefinition:
