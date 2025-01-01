@@ -1,7 +1,5 @@
 // Definitions
 
-ABC:
-
 pin A;
 net A;
 void A;
@@ -99,13 +97,29 @@ inline void ABC(A, B, C){
 
 enum ABC { A }
 enum ABC { A, B, C }
+
+enum ABC { A = 0b00, B = 0b01, C = 0b11, D = 0b10 }
+enum ABC { A = 0b0001, B = 0b0010, C = 0b0100, D = 0b1000 }
+
+enum <encoding = "Johnson"> ABC { A, B, C }
 //------------------------------------------------------------------------------
 
 // Alias, Import, Struct, Group and AccessDirectionGroup
 
 alias A = B.C * D;
+
 import "../whatnot/thingy";
 import "../whatnot/thingy" as whatnot;
+
+import $"../{whatnot}/thingy";
+import $"../{whatnot}/thingy" as whatnot;
+
+import $filename;
+import $filename as whatnot;
+
+import $(filename);
+import $(filename) as whatnot;
+
 struct<A = 3, B = 7> ABC{
     pin(15, 8) A;
     net(17) B, C;
@@ -213,13 +227,11 @@ continue;
 return 5;
 break 6;
 continue 7;
-
-goto Label;
 //------------------------------------------------------------------------------
 
 // Constructs
 
-rtl<A = 3, B = "Hello">(Clk, Reset){
+rtl(Clk, Reset) <A = 3, B = "Hello">{
     A = 5;
     B = C + 3;
 }
@@ -240,7 +252,7 @@ rtl{
     B = C + 3;
 }
 
-fsm<A = 3, B = "Hello">(Clk, Reset){
+fsm(Clk, Reset) <A = 3, B = "Hello">{
     A = 5;
     B = C + 3;
 }
@@ -257,7 +269,7 @@ fsm{
     B = C + 3;
 }
 
-hdl<A = 3, B = "Hello">("whatnot.v", "thingy.vhd") ABC(
+hdl("whatnot.v", "thingy.vhd") <A = 3, B = "Hello"> ABC(
     A = 3;
     B = 5;
 ){
@@ -272,7 +284,7 @@ hdl<A = 3, B = "Hello">("whatnot.v", "thingy.vhd") ABC(
 
 // Verification
 
-stimulus <A = 3, B = 5>(1, 2, 3) ABC {
+stimulus(1, 2, 3) <A = 3, B = 5> ABC {
     A = 3;
     B = 5;
 }
@@ -284,16 +296,16 @@ stimulus (1, 2, 3) ABC {
     A = 3;
     B = 5;
 }
-stimulus <A = 3, B = 5>(1, 2, 3) {
+stimulus(1, 2, 3) <A = 3, B = 5> {
     A = 3;
     B = 5;
 }
-stimulus <A = 3, B = 5>(1, 2, 3) ABC {
+stimulus(1, 2, 3) <A = 3, B = 5> ABC {
     A = 3;
     B = 5;
 }
 
-emulate <A = 3, B = 5>(1, 2, 3) ABC {
+emulate(1, 2, 3) <A = 3, B = 5> ABC {
     A = 3;
     B = 5;
 }
@@ -305,11 +317,11 @@ emulate (1, 2, 3) ABC {
     A = 3;
     B = 5;
 }
-emulate <A = 3, B = 5>(1, 2, 3) {
+emulate(1, 2, 3) <A = 3, B = 5> {
     A = 3;
     B = 5;
 }
-emulate <A = 3, B = 5>(1, 2, 3) ABC {
+emulate(1, 2, 3) <A = 3, B = 5> ABC {
     A = 3;
     B = 5;
 }

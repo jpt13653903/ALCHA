@@ -22,25 +22,81 @@
 #define Interpreter_h
 //------------------------------------------------------------------------------
 
-#include "AST.h"
-#include "NameSpace.h"
+#include "Number.h"
+//------------------------------------------------------------------------------
+
+#include "AST/AccessDirectionGroup.h"
+#include "AST/Alias.h"
+#include "AST/Array.h"
+#include "AST/Assert.h"
+#include "AST/Assignment.h"
+#include "AST/ClassDefinition.h"
+#include "AST/ClockedConstruct.h"
+#include "AST/Concatenate.h"
+#include "AST/ControlStatement.h"
+#include "AST/EnumDefinition.h"
+#include "AST/Expression.h"
+#include "AST/Fence.h"
+#include "AST/ForkJoin.h"
+#include "AST/FunctionCall.h"
+#include "AST/FunctionDef.h"
+#include "AST/GroupDefinition.h"
+#include "AST/HdlConstruct.h"
+#include "AST/Identifier.h"
+#include "AST/Import.h"
+#include "AST/InterpolatedString.h"
+#include "AST/Jump.h"
+#include "AST/Literal.h"
+#include "AST/NameSpacePush.h"
+#include "AST/OperatorOverload.h"
+#include "AST/ParameterDef.h"
+#include "AST/Slice.h"
+#include "AST/StimulusOrEmulate.h"
+#include "AST/AST_String.h"
+#include "AST/Stringify.h"
+#include "AST/VariableDef.h"
+#include "AST/Wait.h"
+//------------------------------------------------------------------------------
+
+#include "Symbols/Num.h"
+#include "Symbols/NameSpace.h"
 //------------------------------------------------------------------------------
 
 class Interpreter{
     private: // Local Objects
-        AST::AST* ast;
 
     private: // Interpreter State
         bool error = false;
 
-    private: // Interpreter Functions
-        void printError(const char* message);
+    private: // Helper functions
+        const tm* time() const;
 
-        bool variableDef();
-        bool functionDef();
-        bool operatorOverload();
-        bool assignment();
-        bool functionCall();
+    private: // Interpreter Functions
+        void printError(const AST::AST* node, const char* message);
+
+        bool print(const AST::AST*        node);
+        bool print(const AST::Literal*    node);
+        bool print(const AST::String*     node);
+        bool print(const AST::Expression* node);
+        bool print(const AST::Identifier* node);
+
+        bool assign(const AST::AST*        target, const AST::AST* expression);
+        bool assign(const AST::Identifier* target, const AST::AST* expression);
+        bool assign(      Symbols::Num*    target, const AST::AST* expression);
+
+        Number evaluate(const AST::AST*        expression);
+        Number evaluate(const AST::Literal*    expression);
+        Number evaluate(const AST::Expression* expression);
+        Number evaluate(const AST::Identifier* expression);
+
+        bool variableDef     (const AST::VariableDef*      node);
+        bool functionDef     (const AST::FunctionDef*      node);
+        bool operatorOverload(const AST::OperatorOverload* node);
+        bool import          (const AST::Import*           node);
+        bool assignment      (const AST::Assignment*       node);
+        bool functionCall    (const AST::FunctionCall*     node);
+
+        bool globalSpace(const AST::AST* node);
 
     public: // Testable structures
         Symbols::NameSpace global;
@@ -49,7 +105,7 @@ class Interpreter{
         Interpreter();
        ~Interpreter();
 
-       bool run(AST::AST* ast);
+       bool run(const AST::AST* ast);
 };
 //------------------------------------------------------------------------------
 

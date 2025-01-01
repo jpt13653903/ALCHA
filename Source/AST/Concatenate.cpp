@@ -44,28 +44,26 @@ std::string Concatenate::print(int indent) const
     for(int n = 0; n < indent; n++) result += "    ";
 
     switch(operation){
-        case Token::Type::Concatenate:      result += ":("; break;
-        case Token::Type::ArrayConcatenate: result += ":["; break;
+        case Token::Type::Concatenate:      result += ":( "; break;
+        case Token::Type::ArrayConcatenate: result += ":[ "; break;
 
         default: result += "Unknown concatenate operation "; break;
     }
 
-    bool first = false;
+    bool first = true;
     AST* member = members;
     while(member){
         if(!first) result += ", ";
-        first = false;
-
+        first   = false;
         result += member->print();
-
-        member = member->next;
+        member  = member->next;
     }
 
     switch(operation){
-        case Token::Type::Concatenate:      result = ")"; break;
-        case Token::Type::ArrayConcatenate: result = "]"; break;
+        case Token::Type::Concatenate:      result += " )"; break;
+        case Token::Type::ArrayConcatenate: result += " ]"; break;
 
-        default: result = "Unknown concatenate operation "; break;
+        default: result += "Unknown concatenate operation "; break;
     }
 
     return result;

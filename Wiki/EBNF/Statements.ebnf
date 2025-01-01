@@ -1,16 +1,16 @@
-StatementBlock = Statement | ( "{" [ Statements ] "}" );
+StatementBlock = Statement | ( "{" { Statement } "}" );
 
 Alias  = "alias" Identifier "=" Expression ";";
 Import = "import" String [ "as" Identifier ] ";";
 Struct = "struct" [ AttributeList ] [ Identifier ] "{"
           { Definition | Struct }
          "}";
-Group  = "group"  [ AttributeList ] [ Identifier ] "{" [ Statements ] "}";
+Group  = "group"  [ AttributeList ] [ Identifier ] "{" { Statement } "}";
 
 (* The result from "Postfix" or "Concatenation" is checked for syntactic
    validity before use as a name-space, class name or assignment target. *)
 FunctionCallStatement = FunctionCall ( "," | ";" );
-NamespacePush         = Accessor ".{" [ Statements ] "}";
+NamespacePush         = Accessor ".{" { Statement } "}";
 Assignment            = ( Accessor AssignmentOperator Expression ( "," | ";" ) )
                       | ( Accessor ( "++" | "--") ( "," | ";" ) );
 
@@ -36,22 +36,21 @@ Case = ( "case"   "(" ExpressionList ")" StatementBlock )
 (* For "break" and "continue", the expression indicates the number of levels,
    which is 1 by default. *)
 Jump = ( "return" | "break" | "continue") [ Expression ] ";";
-GoTo = "goto" Identifier ";";
 
 (* The first parameter must evaluate to a clock net.  If the RTL is inside
    a function, all parameters are inherited from the calling state machine. *)
-RTL = "rtl" [ AttributeList ] [ ParameterList ] StatementBlock;
+RTL = "rtl" [ ParameterList ] [ AttributeList ] StatementBlock;
 
 (* The first parameter must evaluate to a clock net and the second parameter
    to a reset net.  If the FSM is inside a function, the parameters are
    inherited from the calling state machine. *)
-FSM = "fsm" [ AttributeList ] [ ParameterList ] StatementBlock;
+FSM = "fsm" [ ParameterList ] [ AttributeList ] StatementBlock;
 
 (* The strings form a list of file names to include in the project, the
    Assignments form a list of HDL parameter assignments and the Definitions
    are port definitions. *)
 (* The "Assignment" is obtained through "Other" *)
-HDL = "hdl" [ AttributeList ] "(" [ String { "," String } ] ")" Identifier
+HDL = "hdl" "(" [ String { "," String } ] ")" [ AttributeList ] Identifier
             [ "(" { Assignment } ")" ]
             "{" { ( [ DirectionSpecifier ] Definition ) | Stimulus } "}";
 (*----------------------------------------------------------------------------*)

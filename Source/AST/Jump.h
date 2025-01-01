@@ -30,7 +30,7 @@
 namespace AST{
     struct Jump: public AST{
         Token::Type jumpType = Token::Type::Unknown;
-        AST* expression;
+        AST* expression = 0;
 
         Jump(int line, int filenameIndex);
        ~Jump();

@@ -11,7 +11,7 @@ change without notice.
 ## Table of Contents
 
 - [Introduction](Introduction.md)
-- [Lexical](Lexical.md#lexical)
+- [Lexical](#lexical)
   - [Literals](#literals)
   - [Identifiers](#identifiers)
   - [Predefined Constants](#predefined-constants)
@@ -26,7 +26,6 @@ change without notice.
 - [Functions](Functions.md)
 - [Synchronous Circuits](SynchronousCircuits.md)
 - [Classes](Classes.md)
-- [Operator Overloading](OperatorOverloading.md)
 - [Scripting Features](Scripting.md)
 - [Advanced Attributes](AdvancedAttributes.md)
 - [High-level Structures](HighLevelStructures.md)
@@ -51,23 +50,23 @@ specified by using either a `j` or `i` postfix.  Literals can be binary
 (no prefix).  Literals may contain an optional decimal or binary exponent, by
 means of a `e` or `p` postfix, respectively.  All literals can be cast to a
 fixed-point format by means of the `@` operator.  Within numerical literals,
-the underscore character (`_`) is ignored.  Character literals are string
-literals with only one character.  Below are some examples:
+the `_` character is ignored.  Character literals are string literals with
+only one character.  Below are some examples:
 
 ```alcha
-  123.456           // decimal constant
-  123.456@(16, 128) // Decimal constant cast to 16 bits with full-scale range [0, 128)
-  0b101.0101        // Binary constant
-  0o123.456         // Octal constant
-  0xABC.DEF         // Hexadecimal constant
-  123_456_e7        // Decimal constant with decimal exponent (10^7)
-  123_456_p7        // Decimal constant with binary exponent (2^7)
-  0x123_ABC_p7      // Hexadecimal constant with binary exponent (2^7)
-  7.3 + 8.9j        // Decimal complex constant
-  "A"               // Unicode character constant
-  "ABC"             // Unicode string literal (character array)
-  $"a{b}c"          // Interpolated string
-  $"a{b, "04d"}c"   // Interpolated string with formatting
+    123.456           // decimal constant
+    123.456@(16, 128) // Decimal constant cast to 16 bits with full-scale range [0, 128)
+    0b101.0101        // Binary constant
+    0o123.456         // Octal constant
+    0xABC.DEF         // Hexadecimal constant
+    123_456_e7        // Decimal constant with decimal exponent (10^7)
+    123_456_p7        // Decimal constant with binary exponent (2^7)
+    0x123_ABC_p7      // Hexadecimal constant with binary exponent (2^7)
+    7.3 + 8.9j        // Decimal complex constant
+    "A"               // Unicode character constant
+    "ABC"             // Unicode string literal (character array)
+    $"a{b}c"          // Interpolated string
+    $"a{b, "04d"}c"   // Interpolated string with formatting
 ```
 
 Imaginary and complex numbers are useful when using compile-time scripting to
@@ -92,6 +91,8 @@ Sequence     | Character
 `\'`         | Single quotation mark (`U+27`)
 `\"`         | Double quotation mark (`U+22`)
 `\?`         | Question mark (`U+3F`)
+`\{`         | Open curly brace (`U+7B`)
+`\}`         | Close curly brace (`U+7D`)
 `\nnn`       | up to 11-digit octal Unicode
 `\xHH`       | 2-digit hexadecimal Unicode
 `\uHHHH`     | 4-digit hexadecimal Unicode
@@ -100,15 +101,29 @@ Sequence     | Character
 
 ## Identifiers
 
-Non-digits in ALCHA are defined as the '`_`' character, as well as any
-character in the ranges '`a`' to '`z`', '`A`' to '`Z`' and any Unicode
-character above `U+7F`, as long as it is not a white-space or
-newline character.
+Non-digits in ALCHA are defined as the `_` character, as well as any character
+in the ranges `a` to `z`, `A` to `Z` and any Unicode character above `U+7F`,
+as long as it is not a white-space or newline character.
 
-Digits in ALCHA are defined as any character in the range '`0`' to '`9`'.
+Digits in ALCHA are defined as any character in the range `0` to `9`.
 
 Identifiers start with a non-digit, which may then be followed with any digit
-or non-digit.
+or non-digit.  Valid identifiers include:
+
+```alcha
+    MyClass
+    myInstance
+    _my_local
+    ξένηΜεταβλητή
+    адәныҟатәиАԥсахга
+    внешняяПеременная
+    متغيرأجنبي
+    ตัวแปรต่างประเทศ
+    משתנהזר
+    विदेशीचर
+    外部变量
+    외국변수
+```
 
 ## Predefined Constants
 
@@ -117,7 +132,7 @@ redefined by the developer, following the scoping rules.
 
 Symbol                  | Description                  | Value
 ------                  | -----------                  | -----
-`pi` or &pi; (`U+0C30`) | &pi;                         | 3.141 592 653 ...
+`pi` or &pi; (`U+03C0`) | &pi;                         | 3.141 592 653 ...
 `e`                     | Natural base                 | 2.718 281 828 ...
 `i` or `j`              | Imaginary constant           | &radic;(-1)
 `__YEAR__`              | The current year             | Compile-time dependent

@@ -18,8 +18,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Symbol_Num_h
-#define Symbol_Num_h
+#ifndef Symbols_Num_h
+#define Symbols_Num_h
 //------------------------------------------------------------------------------
 
 #include "Symbol.h"

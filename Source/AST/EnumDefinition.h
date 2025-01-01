@@ -31,7 +31,16 @@
 namespace AST{
     struct EnumDefinition: public AST{
         std::string name;
-        Identifier* members;
+
+        AST* attributes = 0;
+
+        struct Member{
+            std::string name;
+            AST*        initialiser = 0;
+            Member*     next        = 0;
+
+            ~Member();
+        }* members;
 
         EnumDefinition(int line, int filenameIndex);
        ~EnumDefinition();

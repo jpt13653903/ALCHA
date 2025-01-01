@@ -23,14 +23,13 @@
 //------------------------------------------------------------------------------
 
 #include "AST.h"
-#include "Token.h"
 
 #include <string>
 //------------------------------------------------------------------------------
 
 namespace AST{
     struct Import: public AST{
-        std::string filename;
+        AST*        filename = 0;
         std::string nameSpace;
 
         Import(int line, int filenameIndex);

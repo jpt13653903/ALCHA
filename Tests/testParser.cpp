@@ -25,7 +25,6 @@
 using std::string;
 
 AST::AST* ast = 0;
-Parser*   parser;
 //------------------------------------------------------------------------------
 
 bool startTest(const char* name)
@@ -38,7 +37,9 @@ bool startTest(const char* name)
     filename += ".alc";
 
     if(ast) delete ast;
-    ast = parser->parse(filename.c_str());
+
+    Parser parser;
+    ast = parser.parse(filename.c_str());
 
     if(!ast){
         error("Cannot parse file %s", filename.c_str());
@@ -104,9 +105,9 @@ bool runTest(const char** expected)
                    ANSI_FG_BRIGHT_RED "    Got: %s\n"
                    ANSI_RESET,
                    node->print().c_str());
-            // return false;
+            return false;
         }else{
-            if(!test(n, node, expected[n])); // return false;
+            if(!test(n, node, expected[n])) return false;
             n++;
         }
         node = node->next;
@@ -146,9 +147,9 @@ bool testLiterals()
         "X = 85/16 (~5.3125)",
         "X = 21399/256 (~83.5898)",
         "X = 11259375/4096 (~2748.87)",
-        "X = 1234560000000 (~1.23456e+12)",
-        "X = 15802368 (~1.58024e+07)",
-        "X = 152919552 (~1.5292e+08)",
+        "X = 1234560000000",
+        "X = 15802368",
+        "X = 152919552",
         "X = 89/10j (~8.9j)",
         "X = \"A\"",
         "X = \"ABC\"",
@@ -177,7 +178,6 @@ bool testIdentifiers()
     if(!startTest("Identifiers")) return false;
 
     const char* expected[] = {
-
         "X = variable",
         "X = anotherVariable",
         "X = autoVariable",
@@ -197,7 +197,7 @@ bool testIdentifiers()
         "X = __WEEKDAY__",
         "X = __YEARDAY__",
         "X = \"testParser/Identifiers.alc\"",
-        "X = 30 (~30)",
+        "X = 30",
         "X = __CLASS__",
         "X = __FUNCTION__",
         "X = __NAMESPACE__",
@@ -249,8 +249,8 @@ bool testExpressions()
         "X =  ^ (A)",
         "X =  ~^ (A)",
         "X =  ! (A)",
-        "X = (1 (~1)) .. (6 (~6))",
-        "X = (1 (~1)) .. (6 (~6)):(3 (~3))",
+        "X = (1) .. (6)",
+        "X = (1) .. (6):(3)",
         "X = (A) .. (B)",
         "X = (A) .. (B):(C)",
         "X =  - (A)",
@@ -267,21 +267,21 @@ bool testExpressions()
         "X = (A) -- ",
         "X = (A) ! ",
         "X = (A) @ (B)",
-        "X = (A) @ (123 (~123))",
+        "X = (A) @ (123)",
         "X = (A) @ (A)",
         "X = A",
         "X =  ' (A)",
-        "X = 123 (~123)",
-        "X = 1 (~1)",
-        "X = 0 (~0)",
-        "X = )",
-        "X = ]",
+        "X = 123",
+        "X = 1",
+        "X = 0",
+        "X = :( A, B, C )",
+        "X = :[ A, B, C ]",
         "X = [ A, B, C ]",
         "X = \"Hello There\"",
         "X = (A) + (B)",
 
         "X = ((A) + ((B) * (C))) - (D)",
-        "X = ( & (A)) + ((D) @ (6 (~6)))",
+        "X = ( & (A)) + ((D) @ (6))",
         "X = (((A) . (B)) . (C)) ' (E)",
         "X = ((A) . (B)) . (C)(E, F, G)",
         "X = A(B = C, D := E)",
@@ -300,7 +300,6 @@ bool testModules()
     if(!startTest("Modules")) return false;
 
     const char* expected[] = {
-        "ABC:",
         "pin A",
         "net A",
         "void A",
@@ -312,27 +311,27 @@ bool testModules()
         "ABC A",
         "(ABC) . (DEF) A, B, C",
 
-        "pin (5 (~5)) A",
-        "net (123 (~123), 456 (~456)) A",
+        "pin (5) A",
+        "net (123, 456) A",
         "void (A, B) A",
         "auto (C) A",
         "byte (((A) . (B)) . (C)) A",
         "char (((A) . (B)) ' (C)) A",
         "num ((A)[ B ]) A",
         "func (A(B)) A",
-        "ABC (7 (~7), 9 (~9), X = 10 (~10)) A",
-        "(ABC) . (DEF) (7 (~7), Y := 9 (~9), X = 10 (~10)) A, B, C",
+        "ABC (7, 9, X = 10) A",
+        "(ABC) . (DEF) (7, Y := 9, X = 10) A, B, C",
 
-        "pin (5 (~5)) <A = a, B = b> A",
-        "net (123 (~123), 456 (~456)) <A = a, B = b> A",
+        "pin (5) <A = a, B = b> A",
+        "net (123, 456) <A = a, B = b> A",
         "void (A, B) <A = a, B = b> A",
         "auto (C) <A = a, B = b> A",
         "byte (((A) . (B)) . (C)) <A = a, B = b> A",
         "char (((A) . (B)) ' (C)) <A = a, B = b> A",
         "num ((A)[ B ]) <A = a, B = b> A",
         "func (A(B)) <A = a, B = b> A",
-        "ABC (7 (~7), 9 (~9), X = 10 (~10)) <A = a, B = b> A",
-        "(ABC) . (DEF) (7 (~7), Y := 9 (~9), X = 10 (~10)) <A = a, B = b> A, B, C",
+        "ABC (7, 9, X = 10) <A = a, B = b> A",
+        "(ABC) . (DEF) (7, Y := 9, X = 10) <A = a, B = b> A, B, C",
 
         "class MyClass{\n"
         "    D = A\n"
@@ -344,7 +343,7 @@ bool testModules()
         "    E = B\n"
         "    F = C\n"
         "}",
-        "class <A = 3 (~3), B = 1 (~1), C = 7 (~7)> MyClass(num D, pin E, byte F){\n"
+        "class <A = 3, B = 1, C = 7> MyClass(num D, pin E, byte F){\n"
         "    D = A\n"
         "    E = B\n"
         "    F = C\n"
@@ -354,75 +353,91 @@ bool testModules()
         "    E = B\n"
         "    F = C\n"
         "}",
-        "class <A = 3 (~3), B = 1 (~1), C = 7 (~7)> MyClass(num D, pin E, byte F): ParentClass1(A, B, C){\n"
+        "class <A = 3, B = 1, C = 7> MyClass(num D, pin E, byte F): ParentClass1(A, B, C){\n"
         "    D = A\n"
         "    E = B\n"
         "    F = C\n"
         "}",
-        "class <A = 3 (~3), B = 1 (~1), C = 7 (~7)> MyClass(num D, pin E, byte F): ParentClass1(A, B, C), ParentClass2(A, B, C){\n"
+        "class <A = 3, B = 1, C = 7> MyClass(num D, pin E, byte F): ParentClass1(A, B, C), ParentClass2(A, B, C){\n"
         "    D = A\n"
         "    E = B\n"
         "    F = C\n"
         "}",
 
-        "auto ABC[5 (~5)](num A, pin B[], net C){\n"
-        "    A = 3 (~3)\n"
-        "    B = 5 (~5)\n"
+        "auto ABC[5](num A, pin B[], net C){\n"
+        "    A = 3\n"
+        "    B = 5\n"
         "}",
-        "auto ABC(num A, pin (8 (~8)) B, net (3 (~3), 15 (~15)) C = 5 (~5)){\n"
-        "    A = 3 (~3)\n"
-        "    B = 5 (~5)\n"
+        "auto ABC(num A, pin (8) B, net (3, 15) C = 5){\n"
+        "    A = 3\n"
+        "    B = 5\n"
         "}",
         "void ABC(A, B, C){\n"
-        "    A = 3 (~3)\n"
-        "    B = 5 (~5)\n"
+        "    A = 3\n"
+        "    B = 5\n"
         "}",
         "inline void ABC(A, B, C){\n"
-        "    A = 3 (~3)\n"
-        "    B = 5 (~5)\n"
+        "    A = 3\n"
+        "    B = 5\n"
         "}",
 
         "enum ABC { A }",
         "enum ABC { A, B, C }",
 
+        "enum ABC { A = 0, B = 1, C = 3, D = 2 }",
+        "enum ABC { A = 1, B = 2, C = 4, D = 8 }",
+
+        "enum <encoding = \"Johnson\"> ABC { A, B, C }",
+
         "alias A = ((B) . (C)) * (D)",
+
         "import \"../whatnot/thingy\"",
         "import \"../whatnot/thingy\" as whatnot",
-        "struct <A = 3 (~3), B = 7 (~7)> ABC {\n"
-        "    pin (15 (~15), 8 (~8)) A\n"
-        "    net (17 (~17)) B, C\n"
+
+        "import $\"../{whatnot}/thingy\"",
+        "import $\"../{whatnot}/thingy\" as whatnot",
+
+        "import $(filename)",
+        "import $(filename) as whatnot",
+
+        "import $(filename)",
+        "import $(filename) as whatnot",
+
+        "struct <A = 3, B = 7> ABC {\n"
+        "    pin (15, 8) A\n"
+        "    net (17) B, C\n"
         "    struct BCD {\n"
-        "        pin (15 (~15), 8 (~8)) A\n"
-        "        net (17 (~17)) B, C\n"
+        "        pin (15, 8) A\n"
+        "        net (17) B, C\n"
         "    }\n"
         "    num X\n"
         "}",
-        "struct <A = 3 (~3), B = 7 (~7)> {\n"
-        "    pin (15 (~15), 8 (~8)) A\n"
-        "    net (17 (~17)) B, C\n"
+        "struct <A = 3, B = 7> {\n"
+        "    pin (15, 8) A\n"
+        "    net (17) B, C\n"
         "    struct {\n"
-        "        pin (15 (~15), 8 (~8)) A\n"
-        "        net (17 (~17)) B, C\n"
+        "        pin (15, 8) A\n"
+        "        net (17) B, C\n"
         "    }\n"
         "    num X\n"
         "}",
-        "group <A = 3 (~3), B = 7 (~7)> ABC {\n"
-        "    pin (15 (~15), 8 (~8)) A\n"
-        "    net (17 (~17)) B, C\n"
-        "    group <C = 8 (~8), E = 5 (~5)> BCD {\n"
-        "        pin (15 (~15), 8 (~8)) A\n"
-        "        net (17 (~17)) B, C\n"
+        "group <A = 3, B = 7> ABC {\n"
+        "    pin (15, 8) A\n"
+        "    net (17) B, C\n"
+        "    group <C = 8, E = 5> BCD {\n"
+        "        pin (15, 8) A\n"
+        "        net (17) B, C\n"
         "    }\n"
         "    num X\n"
         "}",
         "group <voltage = 33/10 (~3.3), capacitance = 1/100000000000 (~1e-11), external_min_delay = 1/2000000000 (~5e-10), external_max_delay = 1/1000000000 (~1e-09)> SD {\n"
         "    pin <location = \"AB6\"> CLK\n"
         "    pin <location = \"W8\"> CMD\n"
-        "    pin (4 (~4)) <location = [ \"U7\", \"T7\", \"V8\", \"T8\" ]> DAT\n"
+        "    pin (4) <location = [ \"U7\", \"T7\", \"V8\", \"T8\" ]> DAT\n"
         "}",
 
-        "pin A[7 (~7)][8 (~8)] := [ [ 1 (~1), 2 (~2), 3 (~3) ], [ 4 (~4), 5 (~5), 6 (~6) ], [ 7 (~7), 8 (~8), 9 (~9) ] ]",
-        "num A = 4 (~4), B = 7 (~7), C = 1 (~1)",
+        "pin A[7][8] := [ [ 1, 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9 ] ]",
+        "num A = 4, B = 7, C = 1",
 
         "if ((A) == (B)) {\n"
         "    C = D\n"
@@ -488,16 +503,16 @@ bool testModules()
         "if ((A) == (B)) {\n"
         "    C = D\n"
         "}",
-        "for ((A) in ((1 (~1)) .. (6 (~6)))) {\n"
+        "for ((A) in ((1) .. (6))) {\n"
         "    X++\n"
         "}",
         "for ((A) in (G)) {\n"
         "    X++\n"
         "}",
-        "while ((A) < (7 (~7))) {\n"
+        "while ((A) < (7)) {\n"
         "    X++\n"
         "}",
-        "loop (7 (~7)) {\n"
+        "loop (7) {\n"
         "    X++\n"
         "}",
         "loop {\n"
@@ -522,50 +537,49 @@ bool testModules()
         "return",
         "break",
         "continue",
-        "return 5 (~5)",
-        "break 6 (~6)",
-        "continue 7 (~7)",
-        "goto Label",
+        "return 5",
+        "break 6",
+        "continue 7",
 
-        "rtl <A = 3 (~3), B = \"Hello\"> (Clk, Reset){\n"
-        "    A = 5 (~5)\n"
-        "    B = (C) + (3 (~3))\n"
+        "rtl (Clk, Reset) <A = 3, B = \"Hello\"> {\n"
+        "    A = 5\n"
+        "    B = (C) + (3)\n"
         "}",
-        "rtl <A = 3 (~3), B = \"Hello\"> {\n"
-        "    A = 5 (~5)\n"
-        "    B = (C) + (3 (~3))\n"
+        "rtl <A = 3, B = \"Hello\"> {\n"
+        "    A = 5\n"
+        "    B = (C) + (3)\n"
         "}",
-        "rtl (Clk, Reset){\n"
-        "    A = 5 (~5)\n"
-        "    B = (C) + (3 (~3))\n"
+        "rtl (Clk, Reset) {\n"
+        "    A = 5\n"
+        "    B = (C) + (3)\n"
         "}",
-        "rtl (Clk){\n"
-        "    A = 5 (~5)\n"
-        "    B = (C) + (3 (~3))\n"
+        "rtl (Clk) {\n"
+        "    A = 5\n"
+        "    B = (C) + (3)\n"
         "}",
         "rtl {\n"
-        "    A = 5 (~5)\n"
-        "    B = (C) + (3 (~3))\n"
+        "    A = 5\n"
+        "    B = (C) + (3)\n"
         "}",
-        "fsm <A = 3 (~3), B = \"Hello\"> (Clk, Reset){\n"
-        "    A = 5 (~5)\n"
-        "    B = (C) + (3 (~3))\n"
+        "fsm (Clk, Reset) <A = 3, B = \"Hello\"> {\n"
+        "    A = 5\n"
+        "    B = (C) + (3)\n"
         "}",
-        "fsm <A = 3 (~3), B = \"Hello\"> {\n"
-        "    A = 5 (~5)\n"
-        "    B = (C) + (3 (~3))\n"
+        "fsm <A = 3, B = \"Hello\"> {\n"
+        "    A = 5\n"
+        "    B = (C) + (3)\n"
         "}",
-        "fsm (Clk, Reset){\n"
-        "    A = 5 (~5)\n"
-        "    B = (C) + (3 (~3))\n"
+        "fsm (Clk, Reset) {\n"
+        "    A = 5\n"
+        "    B = (C) + (3)\n"
         "}",
         "fsm {\n"
-        "    A = 5 (~5)\n"
-        "    B = (C) + (3 (~3))\n"
+        "    A = 5\n"
+        "    B = (C) + (3)\n"
         "}",
-        "hdl <A = 3 (~3), B = \"Hello\"> ABC(\n"
-        "    A = 3 (~3)\n"
-        "    B = 5 (~5)\n"
+        "hdl <A = 3, B = \"Hello\"> ABC(\n"
+        "    A = 3\n"
+        "    B = 5\n"
         "){\n"
         "    input {\n"
         "        pin Clk\n"
@@ -574,83 +588,85 @@ bool testModules()
         "        pin Reset\n"
         "    }\n"
         "    output {\n"
-        "        pin (16 (~16)) Data\n"
+        "        pin (16) Data\n"
         "    }\n"
-        "    pin (16 (~16), 5 (~5)) AnotherPin\n"
+        "    pin (16, 5) AnotherPin\n"
         "}",
 
-        "stimulus  <A = 3 (~3), B = 5 (~5)>  (1 (~1), 2 (~2), 3 (~3)) ABC {\n"
-        "    A = 3 (~3)\n"
-        "    B = 5 (~5)\n"
+        "stimulus (1, 2, 3) <A = 3, B = 5> ABC {\n"
+        "    A = 3\n"
+        "    B = 5\n"
         "}",
-        "stimulus  <A = 3 (~3), B = 5 (~5)> ABC {\n"
-        "    A = 3 (~3)\n"
-        "    B = 5 (~5)\n"
+        "stimulus <A = 3, B = 5> ABC {\n"
+        "    A = 3\n"
+        "    B = 5\n"
         "}",
-        "stimulus  (1 (~1), 2 (~2), 3 (~3)) ABC {\n"
-        "    A = 3 (~3)\n"
-        "    B = 5 (~5)\n"
+        "stimulus (1, 2, 3) ABC {\n"
+        "    A = 3\n"
+        "    B = 5\n"
         "}",
-        "stimulus  <A = 3 (~3), B = 5 (~5)>  (1 (~1), 2 (~2), 3 (~3)) {\n"
-        "    A = 3 (~3)\n"
-        "    B = 5 (~5)\n"
+        "stimulus (1, 2, 3) <A = 3, B = 5> {\n"
+        "    A = 3\n"
+        "    B = 5\n"
         "}",
-        "stimulus  <A = 3 (~3), B = 5 (~5)>  (1 (~1), 2 (~2), 3 (~3)) ABC {\n"
-        "    A = 3 (~3)\n"
-        "    B = 5 (~5)\n"
+        "stimulus (1, 2, 3) <A = 3, B = 5> ABC {\n"
+        "    A = 3\n"
+        "    B = 5\n"
         "}",
-        "emulate  <A = 3 (~3), B = 5 (~5)>  (1 (~1), 2 (~2), 3 (~3)) ABC {\n"
-        "    A = 3 (~3)\n"
-        "    B = 5 (~5)\n"
+        "emulate (1, 2, 3) <A = 3, B = 5> ABC {\n"
+        "    A = 3\n"
+        "    B = 5\n"
         "}",
-        "emulate  <A = 3 (~3), B = 5 (~5)> ABC {\n"
-        "    A = 3 (~3)\n"
-        "    B = 5 (~5)\n"
+        "emulate <A = 3, B = 5> ABC {\n"
+        "    A = 3\n"
+        "    B = 5\n"
         "}",
-        "emulate  (1 (~1), 2 (~2), 3 (~3)) ABC {\n"
-        "    A = 3 (~3)\n"
-        "    B = 5 (~5)\n"
+        "emulate (1, 2, 3) ABC {\n"
+        "    A = 3\n"
+        "    B = 5\n"
         "}",
-        "emulate  <A = 3 (~3), B = 5 (~5)>  (1 (~1), 2 (~2), 3 (~3)) {\n"
-        "    A = 3 (~3)\n"
-        "    B = 5 (~5)\n"
+        "emulate (1, 2, 3) <A = 3, B = 5> {\n"
+        "    A = 3\n"
+        "    B = 5\n"
         "}",
-        "emulate  <A = 3 (~3), B = 5 (~5)>  (1 (~1), 2 (~2), 3 (~3)) ABC {\n"
-        "    A = 3 (~3)\n"
-        "    B = 5 (~5)\n"
+        "emulate (1, 2, 3) <A = 3, B = 5> ABC {\n"
+        "    A = 3\n"
+        "    B = 5\n"
         "}",
         "{\n"
-        "    A = 3 (~3)\n"
-        "    B = 5 (~5)\n"
+        "    A = 3\n"
+        "    B = 5\n"
         "} || {\n"
         "    X++\n"
         "    Y--\n"
         "}",
         "{\n"
-        "    A = 3 (~3)\n"
-        "    B = 5 (~5)\n"
+        "    A = 3\n"
+        "    B = 5\n"
         "} && {\n"
         "    X++\n"
         "    Y--\n"
         "}",
-        "stimulus  (1/1000000000 (~1e-09)) {\n"
-        "    A = 5 (~5)\n"
-        "    #5 (~5)\n"
-        "    B = 7 (~7)\n"
+        "stimulus (1/1000000000 (~1e-09)) {\n"
+        "    A = 5\n"
+        "    #5\n"
+        "    B = 7\n"
         "    @(posedge Clk)\n"
         "    fence\n"
         "    @(Clk, Reset)\n"
         "    fence\n"
         "    @(posedge Clk, negedge Reset)\n"
         "    fence\n"
-        "    wait ((A) == (7 (~7)))\n"
+        "    wait ((A) == (7))\n"
         "    fence\n"
         "    loop {\n"
-        "        #7 (~7)\n"
+        "        #7\n"
         "        C++\n"
         "    }\n"
         "}",
-        "assert (A) == (B)",
+        "assert {\n"
+        "    (A) == (B)\n"
+        "}",
 
         "num operator?: (A, B){\n"
         "    return A\n"
@@ -822,14 +838,14 @@ bool testAutogen()
     if(!startTest("Autogen")) return false;
 
     const char* expected[] = {
-        "class RegistersDecoder(Bus): AvalonInterface(32 (~32), 4096 (~4096)){\n"
+        "class RegistersDecoder(Bus): AvalonInterface(32, 4096){\n"
         "    (Bus) . (Attach)(this)\n"
 
         "    private {\n"
         "         ' (RdRegisters) = [  ]\n"
         "         ' (WrRegisters) = [  ]\n"
         "         ' (LiveRegisters) = [  ]\n"
-        "        num Count = 0 (~0)\n"
+        "        num Count = 0\n"
         "    }\n"
 
         "    public {\n"
@@ -849,17 +865,17 @@ bool testAutogen()
         "            Count++\n"
         "        }\n"
 
-        "        net (32 (~32)) Resize(x){\n"
+        "        net (32) Resize(x){\n"
         "            result := x\n"
         "            num N = (x) ' (width)\n"
-        "            if ((((x) ' (fullscale)) < (0 (~0))) & ((N) < (31 (~31)))) {\n"
-        "                result((31 (~31)) .. ((N) + (1 (~1)))) := (x(N)) ` ((31 (~31)) - (N))\n"
+        "            if ((((x) ' (fullscale)) < (0)) & ((N) < (31))) {\n"
+        "                result((31) .. ((N) + (1))) := (x(N)) ` ((31) - (N))\n"
         "            }\n"
         "        }\n"
 
         "        void GenerateRegs(){\n"
-        "            rtl ((Bus) . (Clock), (Bus) . (Reset)){\n"
-        "                WaitRequest = 0 (~0)\n"
+        "            rtl ((Bus) . (Clock), (Bus) . (Reset)) {\n"
+        "                WaitRequest = 0\n"
         "                switch (Address) {\n"
         "                    for ((Register) in ( ' (RdRegisters))) {\n"
         "                        case ((Register) ' (Address)) {\n"
@@ -928,6 +944,137 @@ bool testAutogen()
 }
 //------------------------------------------------------------------------------
 
+bool testVerification()
+{
+    if(!startTest("Verification")) return false;
+
+    const char* expected[] = {
+        "a = (((b) + (c)) + (d)) + (e)",
+        "wait (((((a) ##(1) (b)) ##(2) (c)) ##(3) (d)) ##(50) (1))",
+        "fence",
+        "assert {\n"
+        "    (a) ##([ (1) .. (4) ]) (b)\n"
+        "}",
+        "assert {\n"
+        "    (s1) ##(2) (s2)\n"
+        "}",
+        "assert {\n"
+        "    ((s1) ##(2) ((s2) [*(4) ])) ##(5) (s3)\n"
+        "}",
+        "assert {\n"
+        "    ((s1) ##(2) ((s2) [->(4) ])) ##(5) (s3)\n"
+        "}",
+        "assert {\n"
+        "    ((s1) ##(2) ((s2) [=(4) ])) ##(5) (s3)\n"
+        "}",
+        "assert {\n"
+        "    ((s1) ##(2) ((s2) [*((4) .. (8)) ])) ##(5) (s3)\n"
+        "}",
+        "assert {\n"
+        "    ((s1) ##(2) ((s2) [->((4) .. (8)) ])) ##(5) (s3)\n"
+        "}",
+        "assert {\n"
+        "    ((s1) ##(2) ((s2) [=((4) .. (8)) ])) ##(5) (s3)\n"
+        "}",
+        "assert {\n"
+        "    (s1) [*((2) .. (3)) ]\n"
+        "}",
+        "net (8) Adder(net (8) A, net (8) B, net C){\n"
+        "    :( C, Adder ) = (A) + (B)\n"
+        "}",
+        "net c",
+        "net (8) a, b, y = Adder(a, b, c)",
+        "stimulus (1/1000000000 (~1e-09)) {\n"
+        "    #1\n"
+        "    a = 0\n"
+        "    b = 0\n"
+        "    assert {\n"
+        "        (y) == (0)\n"
+        "        (c) == (0)\n"
+        "    }\n"
+        "    #1\n"
+        "    a = 255\n"
+        "    b = 1\n"
+        "    assert {\n"
+        "        (y) == (0)\n"
+        "        (c) == (1)\n"
+        "    }\n"
+        "    #1\n"
+        "    a = 1\n"
+        "    b = 255\n"
+        "    assert {\n"
+        "        (y) == (0)\n"
+        "        (c) == (1)\n"
+        "    }\n"
+        "    #1\n"
+        "    a = 255\n"
+        "    b = 255\n"
+        "    assert {\n"
+        "        (y) == (254)\n"
+        "        (c) == (1)\n"
+        "    }\n"
+        "    #1\n"
+        "    a = 127\n"
+        "    b = 128\n"
+        "    assert {\n"
+        "        (y) == (255)\n"
+        "        (c) == (0)\n"
+        "    }\n"
+        "}",
+        "assert {\n"
+        "    (((a) == (0)) && ((b) == (0))) |-> (((y) == (0)) && ((c) == (0)))\n"
+        "    (((a) == (255)) && ((b) == (1))) |-> (((y) == (0)) && ((c) == (1)))\n"
+        "    (((a) == (1)) && ((b) == (255))) |-> (((y) == (0)) && ((c) == (1)))\n"
+        "    (((a) == (255)) && ((b) == (255))) |-> (((y) == (254)) && ((c) == (1)))\n"
+        "    (((a) == (127)) && ((b) == (128))) |-> (((y) == (255)) && ((c) == (0)))\n"
+        "}",
+        "sequence Handshake {\n"
+        "    (((Go) ##([ (1) .. (5) ]) (Busy)) ##([ (1) .. (10) ]) ( ! (Go))) ##([ (1) .. (100) ]) ( ! (Busy))\n"
+        "}",
+        "assert (1/1000000000 (~1e-09), Clk){\n"
+        "    if ( ~ (Reset)) {\n"
+        "        (Go) |-> (Handshake)\n"
+        "        (rose(Go)) |-> ( ! (Busy))\n"
+        "        (fell(Busy)) |-> ( ! (Go))\n"
+        "        ((Go) & ( ! (Busy))) |=> (stable(Data))\n"
+        "    }\n"
+        "}",
+
+        "coverbins FloatingPointFunctions(x){\n"
+        "    NAN = (((x) . (exponent)) == (255)) & (((x) . (fraction)) > (0))\n"
+        "    NegInfty = ((((x) . (sign)) == (1)) & (((x) . (exponent)) == (255))) & (((x) . (fraction)) == (0))\n"
+        "    Negative = ((((x) . (sign)) == (1)) & (((x) . (exponent)) > (0))) & (((x) . (exponent)) < (255))\n"
+        "    Zero = (((x) . (exponent)) == (0)) & (((x) . (fraction)) == (0))\n"
+        "    Positive = ((((x) . (sign)) == (0)) & (((x) . (exponent)) > (0))) & (((x) . (exponent)) < (255))\n"
+        "    PosInfty = ((((x) . (sign)) == (0)) & (((x) . (exponent)) == (255))) & (((x) . (fraction)) == (0))\n"
+        "}",
+
+        "covergroup (Clk) MyDivCoverage{\n"
+        "    FloatingPointFunctions(Clk)\n"
+        "    FloatingPointFunctions(Clk)\n"
+        "    FloatingPointFunctions(Clk)\n"
+        "}",
+
+        "coverbins HandshakeFunctions(go, busy){\n"
+        "    Go = (rose(go)) |-> ( ~ (busy))\n"
+        "    Done = (fell(busy)) |-> ( ~ (go))\n"
+        "}",
+
+        "covergroup (Clk) MyHandshakeCoverage{\n"
+        "    ((Library) . (Component)) . (HandshakeFunctions)(Clk)\n"
+        "    ((Library) . (Component)) . (HandshakeFunctions)(Clk)\n"
+        "    ((Library) . (Component)) . (HandshakeFunctions)(Clk)\n"
+        "}",
+
+        0
+    };
+    if(!runTest(expected)) return false;
+
+    endTest();
+    return true;
+}
+//------------------------------------------------------------------------------
+
 bool testParser()
 {
     if(!startTest("Parser")) return false;
@@ -937,8 +1084,8 @@ bool testParser()
         "num b",
         "num c, d",
 
-        "a = 3 (~3)",
-        "b = 5 (~5)",
+        "a = 3",
+        "b = 5",
         "print((a) + (b))",
 
         "a++",
@@ -950,9 +1097,7 @@ bool testParser()
         "a = (a) ? (b) : (c)",
         "a = ((x) | (x)) ~| (((x) ^ (x)) ~^ (((x) & (x)) ~& (((x) == (x)) != (((((x) < (x)) > (x)) <= (x)) >= (((x) << (x)) >> (((x) + (x)) - ((((x) * (x)) / (x)) % ((x) ** ((x) ` (x))))))))))",
         "a = (((((((((((((((((((((x) ` (x)) ** (x)) % (x)) / (x)) * (x)) - (x)) + (x)) >> (x)) << (x)) >= (x)) <= (x)) > (x)) < (x)) != (x)) == (x)) ~& (x)) & (x)) ~^ (x)) ^ (x)) ~| (x)) | (x)",
-        "(((a)[ 5 (~5) ])[ 6 (~6) ])[ (7 (~7)) .. (9 (~9)), 8 (~8), (1 (~1)) .. (10 (~10)):(2 (~2)) ] = ((((b) . (c)) . (d)) . (e)) ' (attribute)",
-
-        "MyLabel:",
+        "(((a)[ 5 ])[ 6 ])[ (7) .. (9), 8, (1) .. (10):(2) ] = ((((b) . (c)) . (d)) . (e)) ' (attribute)",
 
         "((a) . (b)) . (c).{\n"
         "    num a, b, c\n"
@@ -961,14 +1106,14 @@ bool testParser()
         "    num a, b, c\n"
         "}",
 
-        "num myFunc(a, b, c = 5 (~5)){\n"
+        "num myFunc(a, b, c = 5){\n"
         "    print(((a) * (b)) + (c))\n"
         "}",
-        "myFuct(1 (~1), 2 (~2), 3 (~3))",
+        "myFuct(1, 2, 3)",
 
-        "inline num (15 (~15), 7 (~7)) <a = b, c = d> myFunc("
-             "a, num b, c = 5 (~5), pin d = 8 (~8), pin (13 (~13), 9 (~9)) e, "
-             "MyClass myClass, MyClass (123 (~123), 456 (~456)) myClass){\n"
+        "inline num (15, 7) <a = b, c = d> myFunc("
+             "a, num b, c = 5, pin d = 8, pin (13, 9) e, "
+             "MyClass myClass, MyClass (123, 456) myClass){\n"
         "    print(((a) * (b)) + (c))\n"
         "}",
 
@@ -990,7 +1135,7 @@ bool testParser()
         "MyClass (A, B) <a = b, c = d> myClass",
         "MyClass (A, B, C) <a = b, c = d> myClass",
 
-        "MyClass ((a) + ((d) * (c)), (b) - (e)) <a = (b) ** (2 (~2)), c = (d) / (r), t = (g) > (5 (~5))> myClass",
+        "MyClass ((a) + ((d) * (c)), (b) - (e)) <a = (b) ** (2), c = (d) / (r), t = (g) > (5)> myClass",
 
         "class MyClass{\n"
         "    print(\"Hello\")\n"
@@ -998,7 +1143,7 @@ bool testParser()
         "class <a = b, c = d> MyClass{\n"
         "    print(\"Hello\")\n"
         "}",
-        "class <a = b, c = d> MyClass(a, b, c = 123 (~123)){\n"
+        "class <a = b, c = d> MyClass(a, b, c = 123){\n"
         "    print(\"Hello\")\n"
         "}",
         "class MyClass: A{\n"
@@ -1090,16 +1235,16 @@ bool testParser()
         "enum colours { red }",
         "enum colours { red, green, blue }",
 
-        " ' (GlobalAttribute) = 5 (~5)",
+        " ' (GlobalAttribute) = 5",
         "A =  ' (GlobalAttribute)",
 
-        "(((((A) . (B)) . (C)) ' (D)) . (E)) ' (F) = 9 (~9)",
+        "(((((A) . (B)) . (C)) ' (D)) . (E)) ' (F) = 9",
 
         "stimulus {\n"
-        "    #10 (~10)\n"
-        "    clk = 1 (~1)\n"
-        "    #10 (~10)\n"
-        "    clk = 2 (~2)\n"
+        "    #10\n"
+        "    clk = 1\n"
+        "    #10\n"
+        "    clk = 2\n"
         "}",
         "emulate {\n"
         "    @(posedge clk, negedge reset)\n"
@@ -1114,7 +1259,7 @@ bool testParser()
         "    }\n"
         "}",
 
-        "##3 (~3)",
+        "##3",
         "c = d",
         "@(enable)",
         "Q = D",
@@ -1126,7 +1271,9 @@ bool testParser()
         "a = $(whatnot, ((A) . (B)) . (C))",
         "A = $(((b) . (c)) . (d))",
 
-        "assert ((a) + (b)) == (c)",
+        "assert {\n"
+        "    ((a) + (b)) == (c)\n"
+        "}",
         "a = $\"I have {x} sheep\"",
         "a = $\"I have {(x) + (b)} sheep\"",
         "a = $\"I have {(x) + (b), \"04d\"} sheep\"",
@@ -1148,92 +1295,93 @@ bool testAlchaCaseStudyCombined()
         "net DelayedReset(net Clk, net Reset, num Delay_ms){\n"
         "    num Delay_cycles = round(((Clk) ' (frequency)) * ((Delay_ms) * (1/1000 (~0.001))))\n"
         "    num N = ceil(log2(Delay_cycles))\n"
-        "    net (N) Count = 0 (~0)\n"
-        "    result = 1 (~1)\n"
-        "    rtl (Clk, Reset){\n"
+        "    net (N) Count = 0\n"
+        "    result = 1\n"
+        "    rtl (Clk, Reset) {\n"
         "        if ((Count) != (Delay_cycles)) {\n"
         "            Count++\n"
         "        } else {\n"
-        "            result = 0 (~0)\n"
+        "            result = 0\n"
         "        }\n"
         "    }\n"
         "}",
+
         "class PLL_CycloneV(net Clk, net Reset, Output_MHz){\n"
         "    private {\n"
         "        num N = (Output_MHz) ' (length)\n"
-        "        num OutputFreq[17 (~17)]\n"
-        "        for ((n) in ((0 (~0)) .. (16 (~16)))) {\n"
+        "        num OutputFreq[17]\n"
+        "        for ((n) in ((0) .. (16))) {\n"
         "            if ((n) < (N)) {\n"
         "                (OutputFreq)[ n ] = (Output_MHz)[ n ]\n"
         "            } else {\n"
-        "                (OutputFreq)[ n ] = 0 (~0)\n"
+        "                (OutputFreq)[ n ] = 0\n"
         "            }\n"
         "        }\n"
         "        hdl altera_pll(\n"
         "            fractional_vco_multiplier = \"false\"\n"
-        "            reference_clock_frequency = ]\n"
+        "            reference_clock_frequency = :[ $(((Clk) ' (frequency)) / (1000000)), \" MHz\" ]\n"
         "            operation_mode = \"direct\"\n"
         "            number_of_clocks = N\n"
-        "            output_clock_frequency0 = ]\n"
+        "            output_clock_frequency0 = :[ $((OutputFreq)[ 0 ]), \" MHz\" ]\n"
         "            phase_shift0 = \"0 ps\"\n"
-        "            duty_cycle0 = 50 (~50)\n"
-        "            output_clock_frequency1 = ]\n"
+        "            duty_cycle0 = 50\n"
+        "            output_clock_frequency1 = :[ $((OutputFreq)[ 1 ]), \" MHz\" ]\n"
         "            phase_shift1 = \"0 ps\"\n"
-        "            duty_cycle1 = 50 (~50)\n"
-        "            output_clock_frequency2 = ]\n"
+        "            duty_cycle1 = 50\n"
+        "            output_clock_frequency2 = :[ $((OutputFreq)[ 2 ]), \" MHz\" ]\n"
         "            phase_shift2 = \"0 ps\"\n"
-        "            duty_cycle2 = 50 (~50)\n"
-        "            output_clock_frequency3 = ]\n"
+        "            duty_cycle2 = 50\n"
+        "            output_clock_frequency3 = :[ $((OutputFreq)[ 3 ]), \" MHz\" ]\n"
         "            phase_shift3 = \"0 ps\"\n"
-        "            duty_cycle3 = 50 (~50)\n"
-        "            output_clock_frequency4 = ]\n"
+        "            duty_cycle3 = 50\n"
+        "            output_clock_frequency4 = :[ $((OutputFreq)[ 4 ]), \" MHz\" ]\n"
         "            phase_shift4 = \"0 ps\"\n"
-        "            duty_cycle4 = 50 (~50)\n"
-        "            output_clock_frequency5 = ]\n"
+        "            duty_cycle4 = 50\n"
+        "            output_clock_frequency5 = :[ $((OutputFreq)[ 5 ]), \" MHz\" ]\n"
         "            phase_shift5 = \"0 ps\"\n"
-        "            duty_cycle5 = 50 (~50)\n"
-        "            output_clock_frequency6 = ]\n"
+        "            duty_cycle5 = 50\n"
+        "            output_clock_frequency6 = :[ $((OutputFreq)[ 6 ]), \" MHz\" ]\n"
         "            phase_shift6 = \"0 ps\"\n"
-        "            duty_cycle6 = 50 (~50)\n"
-        "            output_clock_frequency7 = ]\n"
+        "            duty_cycle6 = 50\n"
+        "            output_clock_frequency7 = :[ $((OutputFreq)[ 7 ]), \" MHz\" ]\n"
         "            phase_shift7 = \"0 ps\"\n"
-        "            duty_cycle7 = 50 (~50)\n"
-        "            output_clock_frequency8 = ]\n"
+        "            duty_cycle7 = 50\n"
+        "            output_clock_frequency8 = :[ $((OutputFreq)[ 8 ]), \" MHz\" ]\n"
         "            phase_shift8 = \"0 ps\"\n"
-        "            duty_cycle8 = 50 (~50)\n"
-        "            output_clock_frequency9 = ]\n"
+        "            duty_cycle8 = 50\n"
+        "            output_clock_frequency9 = :[ $((OutputFreq)[ 9 ]), \" MHz\" ]\n"
         "            phase_shift9 = \"0 ps\"\n"
-        "            duty_cycle9 = 50 (~50)\n"
-        "            output_clock_frequency10 = ]\n"
+        "            duty_cycle9 = 50\n"
+        "            output_clock_frequency10 = :[ $((OutputFreq)[ 10 ]), \" MHz\" ]\n"
         "            phase_shift10 = \"0 ps\"\n"
-        "            duty_cycle10 = 50 (~50)\n"
-        "            output_clock_frequency11 = ]\n"
+        "            duty_cycle10 = 50\n"
+        "            output_clock_frequency11 = :[ $((OutputFreq)[ 11 ]), \" MHz\" ]\n"
         "            phase_shift11 = \"0 ps\"\n"
-        "            duty_cycle11 = 50 (~50)\n"
-        "            output_clock_frequency12 = ]\n"
+        "            duty_cycle11 = 50\n"
+        "            output_clock_frequency12 = :[ $((OutputFreq)[ 12 ]), \" MHz\" ]\n"
         "            phase_shift12 = \"0 ps\"\n"
-        "            duty_cycle12 = 50 (~50)\n"
-        "            output_clock_frequency13 = ]\n"
+        "            duty_cycle12 = 50\n"
+        "            output_clock_frequency13 = :[ $((OutputFreq)[ 13 ]), \" MHz\" ]\n"
         "            phase_shift13 = \"0 ps\"\n"
-        "            duty_cycle13 = 50 (~50)\n"
-        "            output_clock_frequency14 = ]\n"
+        "            duty_cycle13 = 50\n"
+        "            output_clock_frequency14 = :[ $((OutputFreq)[ 14 ]), \" MHz\" ]\n"
         "            phase_shift14 = \"0 ps\"\n"
-        "            duty_cycle14 = 50 (~50)\n"
-        "            output_clock_frequency15 = ]\n"
+        "            duty_cycle14 = 50\n"
+        "            output_clock_frequency15 = :[ $((OutputFreq)[ 15 ]), \" MHz\" ]\n"
         "            phase_shift15 = \"0 ps\"\n"
-        "            duty_cycle15 = 50 (~50)\n"
-        "            output_clock_frequency16 = ]\n"
+        "            duty_cycle15 = 50\n"
+        "            output_clock_frequency16 = :[ $((OutputFreq)[ 16 ]), \" MHz\" ]\n"
         "            phase_shift16 = \"0 ps\"\n"
-        "            duty_cycle16 = 50 (~50)\n"
-        "            output_clock_frequency17 = ]\n"
+        "            duty_cycle16 = 50\n"
+        "            output_clock_frequency17 = :[ $((OutputFreq)[ 17 ]), \" MHz\" ]\n"
         "            phase_shift17 = \"0 ps\"\n"
-        "            duty_cycle17 = 50 (~50)\n"
+        "            duty_cycle17 = 50\n"
         "            pll_type = \"General\"\n"
         "            pll_subtype = \"General\"\n"
         "        ){\n"
         "            net refclk = Clk\n"
         "            net rst = Reset\n"
-        "            net fbclk = 0 (~0)\n"
+        "            net fbclk = 0\n"
         "            net (N) outclk\n"
         "            net locked\n"
         "            net fboutclk\n"
@@ -1243,138 +1391,144 @@ bool testAlchaCaseStudyCombined()
         "    public {\n"
         "        net Locked = (PLL) . (locked)\n"
         "        net Output[N]\n"
-        "        for ((n) in ((0 (~0)) .. ((N) - (1 (~1))))) {\n"
-        "            ((Output)[ n ]) ' (frequency) = (Output_MHz) * (1000000 (~1e+06))\n"
+        "        for ((n) in ((0) .. ((N) - (1)))) {\n"
+        "            ((Output)[ n ]) ' (frequency) = (Output_MHz) * (1000000)\n"
         "            (Output)[ n ] = ((PLL) . (outclk))[ n ]\n"
         "        }\n"
         "    }\n"
         "}",
-        "class WhatchDog(net Clk, net Kick, num Timeout_ms, bool EdgeSensitive = 0 (~0)){\n"
+
+        "class WhatchDog(net Clk, net Kick, num Timeout_ms, bool EdgeSensitive = 0){\n"
         "    private {\n"
         "        num Timeout_Cycles = round(((Clk) ' (frequency)) * ((Timeout_ms) * (1/1000 (~0.001))))\n"
         "        num N = ceil(log2(Delay_cycles))\n"
-        "        net (N) Count = (Timeout_Cycles) - (1 (~1))\n"
+        "        net (N) Count = (Timeout_Cycles) - (1)\n"
         "        if (EdgeSensitive) {\n"
-        "            net (2 (~2)) KickEdge\n"
-        "            rtl (Clk){\n"
-        "                KickEdge = )\n"
+        "            net (2) KickEdge\n"
+        "            rtl (Clk) {\n"
+        "                KickEdge = :( (KickEdge)[ 0 ], Kick )\n"
         "            }\n"
-        "            net Reset = (KickEdge) == (1 (~1))\n"
+        "            net Reset = (KickEdge) == (1)\n"
         "        } else {\n"
         "            net Reset = Kick\n"
         "        }\n"
         "    }\n"
         "    output {\n"
-        "        net Error = 0 (~0)\n"
+        "        net Error = 0\n"
         "    }\n"
-        "    rtl (Clk, Reset){\n"
+        "    rtl (Clk, Reset) {\n"
         "        if (Count) {\n"
         "            Count--\n"
         "        } else {\n"
-        "            Error = 1 (~1)\n"
+        "            Error = 1\n"
         "        }\n"
         "    }\n"
         "}",
-        "class I2C(net Clk, net Reset, num Baud_kHz = 50 (~50)){\n"
+
+        "class I2C(net Clk, net Reset, num Baud_kHz = 50){\n"
         "    input {\n"
-        "        net Quiet = 0 (~0)\n"
+        "        net Quiet = 0\n"
         "    }\n"
         "    output {\n"
-        "        net Error = 0 (~0)\n"
+        "        net Error = 0\n"
         "    }\n"
         "    private {\n"
-        "        num Baud_Cycles = round(((Clk) ' (frequency)) / ((Baud_kHz) * (3 (~3))))\n"
+        "        num Baud_Cycles = round(((Clk) ' (frequency)) / ((Baud_kHz) * (3)))\n"
         "        num Baud_N = ceil(log2(Baud_Cycles))\n"
         "        net (Baud_N) Baud_Count\n"
-        "        rtl (Clk){\n"
+        "        rtl (Clk) {\n"
         "            if (Baud_Count) {\n"
         "                Baud_Count--\n"
         "            } else {\n"
-        "                Baud_Count = (Baud_Cycles) - (1 (~1))\n"
+        "                Baud_Count = (Baud_Cycles) - (1)\n"
         "            }\n"
         "        }\n"
         "        net Baud_Trigger =  ~| (Baud_Count)\n"
-        "        net ClkIn, ClkOut = 1 (~1)\n"
-        "        net DataIn, DataOut = 1 (~1)\n"
+        "        net ClkIn, ClkOut = 1\n"
+        "        net DataIn, DataOut = 1\n"
         "    }\n"
         "    void ConnectBus(pin Clock, pin Data){\n"
         "        (Clock) . (enable) |=  ~ (ClkOut)\n"
         "        (Data) . (enable) |=  ~ (DataOut)\n"
-        "        rtl (Clk){\n"
+        "        rtl (Clk) {\n"
         "            ClkIn = (Clock) . (pad)\n"
         "            DataIn = (Data) . (pad)\n"
         "        }\n"
         "    }\n"
-        "    net (8 (~8)) Transaction(net (8 (~8)) TxData, bool Start = 0 (~0), bool R_nW = 0 (~0), bool Ack = 1 (~1), bool Stop = 0 (~0)){\n"
-        "        net (8 (~8)) Data\n"
-        "        fsm (Clk, Reset, ((Baud_Trigger) & ((ClkIn) == (ClkOut))) & ( ! (Quiet))){\n"
+        "    net (8) Transaction(net (8) TxData, bool Start = 0, bool R_nW = 0, bool Ack = 1, bool Stop = 0){\n"
+        "        net (8) Data\n"
+        "        fsm (Clk, Reset, ((Baud_Trigger) & ((ClkIn) == (ClkOut))) & ( ! (Quiet))) {\n"
         "            Data = TxData\n"
         "            if ((Start) | (ClkOut)) {\n"
         "                if (( ! (ClkOut)) & ( ! (DataOut))) {\n"
-        "                    DataOut = 1 (~1)\n"
+        "                    DataOut = 1\n"
         "                }\n"
         "                if (( ! (ClkOut)) & (DataOut)) {\n"
-        "                    ClkOut = 1 (~1)\n"
+        "                    ClkOut = 1\n"
         "                }\n"
         "                if ((ClkOut) & (DataOut)) {\n"
-        "                    DataOut = 0 (~0)\n"
+        "                    DataOut = 0\n"
         "                }\n"
         "                if ((ClkOut) & ( ! (DataOut))) {\n"
-        "                    ClkOut = 0 (~0)\n"
+        "                    ClkOut = 0\n"
         "                }\n"
         "            }\n"
-        "            for ((n) in ((0 (~0)) .. (7 (~7)))) {\n"
+        "            for ((n) in ((0) .. (7))) {\n"
         "                if (R_nW) {\n"
-        "                    DataOut = 1 (~1)\n"
+        "                    DataOut = 1\n"
         "                } else {\n"
-        "                    DataOut = (Data)[ 7 (~7) ]\n"
+        "                    DataOut = (Data)[ 7 ]\n"
         "                }\n"
-        "                ClkOut = 1 (~1)\n"
-        "                ClkOut = 0 (~0)\n"
-        "                Data = )\n"
+        "                ClkOut = 1\n"
+        "                ClkOut = 0\n"
+        "                Data = :( (Data)[ (6) .. (0) ], DataIn )\n"
         "            }\n"
         "            if (R_nW) {\n"
         "                result = Data\n"
         "                DataOut =  ! (Ack)\n"
-        "                ClkOut = 1 (~1)\n"
-        "                ClkOut = 0 (~0)\n"
+        "                ClkOut = 1\n"
+        "                ClkOut = 0\n"
         "            } else {\n"
-        "                DataOut = 1 (~1)\n"
-        "                ClkOut = 1 (~1)\n"
+        "                DataOut = 1\n"
+        "                ClkOut = 1\n"
         "                if ((DataIn) != (Ack)) {\n"
-        "                    Error = 1 (~1)\n"
+        "                    Error = 1\n"
         "                    return\n"
         "                } else {\n"
-        "                    ClkOut = 0 (~0)\n"
-        "                    Error = 0 (~0)\n"
+        "                    ClkOut = 0\n"
+        "                    Error = 0\n"
         "                }\n"
         "            }\n"
         "            if (Stop) {\n"
         "                if ((ClkOut) & (DataOut)) {\n"
-        "                    ClkOut = 0 (~0)\n"
+        "                    ClkOut = 0\n"
         "                }\n"
         "                if (( ! (ClkOut)) & (DataOut)) {\n"
-        "                    DataOut = 0 (~0)\n"
+        "                    DataOut = 0\n"
         "                }\n"
         "                if (( ! (ClkOut)) & ( ! (DataOut))) {\n"
-        "                    ClkOut = 1 (~1)\n"
+        "                    ClkOut = 1\n"
         "                }\n"
         "                if ((ClkOut) & ( ! (DataOut))) {\n"
-        "                    DataOut = 1 (~1)\n"
+        "                    DataOut = 1\n"
         "                }\n"
         "            }\n"
         "        }\n"
         "    }\n"
         "}",
+
         "import \"../Memory/FullDualPortRAM\"",
+
         "class FFT(net Clk, net Reset, num NumPoints){\n"
-        "    assert ((2 (~2)) ** (round(log2(NumPoints)))) == (NumPoints)\n"
+        "    assert {\n"
+        "        ((2) ** (round(log2(NumPoints)))) == (NumPoints)\n"
+        "    }\n"
         "    private {\n"
-        "        DualPortROM (Clk, Reset, 36 (~36), NumPoints) TwiddleFactors\n"
-        "        FullDualPortRAM (Clk, Reset, 80 (~80), NumPoints) Buffer\n"
+        "        DualPortROM (Clk, Reset, 36, NumPoints) TwiddleFactors\n"
+        "        FullDualPortRAM (Clk, Reset, 80, NumPoints) Buffer\n"
         "    }\n"
         "    IQ_Stream Run(Input, bool ComplexInput){\n"
-        "        result = IQ_Stream(31 (~31),  - (1 (~1)))\n"
+        "        result = IQ_Stream(31,  - (1))\n"
         "        ((result) . (I)) ' (overflow) = \"clip\"\n"
         "        ((result) . (Q)) ' (overflow) = \"clip\"\n"
         "        num BufferFullScale\n"
@@ -1384,60 +1538,65 @@ bool testAlchaCaseStudyCombined()
         "            BufferFullScale = (((Input) . (Data)) ' (fullscale)) * (NumPoints)\n"
         "        }\n"
         "        struct ComplexData {\n"
-        "            net (39 (~39), BufferFullScale) I, Q\n"
+        "            net (39, BufferFullScale) I, Q\n"
         "        }\n"
         "        ComplexData Buffer_WrData_A, Buffer_WrData_B\n"
         "        ComplexData Buffer_RdData_A, Buffer_RdData_B\n"
-        "        (Buffer) . (WrData_A) := )\n"
-        "        (Buffer) . (WrData_B) := )\n"
-        "        ) := (Buffer) . (RdData_A)\n"
-        "        ) := (Buffer) . (RdData_B)\n"
+        "        (Buffer) . (WrData_A) := :( (Buffer_WrData_A) . (I), (Buffer_WrData_A) . (Q) )\n"
+        "        (Buffer) . (WrData_B) := :( (Buffer_WrData_B) . (I), (Buffer_WrData_B) . (Q) )\n"
+        "        :( (Buffer_RdData_A) . (I), (Buffer_RdData_A) . (Q) ) := (Buffer) . (RdData_A)\n"
+        "        :( (Buffer_RdData_B) . (I), (Buffer_RdData_B) . (Q) ) := (Buffer) . (RdData_B)\n"
         "    }\n"
         "}",
+
         "DataStream operator| (DataStream Input, FFT Engine){\n"
         "    AddDebug((Input) . (SoP))\n"
         "    AddDebug((Input) . (EoP))\n"
         "    AddDebug((Input) . (Valid))\n"
         "    AddDebug((result) . (Ready))\n"
-        "    return (Engine) . (Run)(Input, 0 (~0))\n"
+        "    return (Engine) . (Run)(Input, 0)\n"
         "}",
+
         "IQ_Stream operator| (IQ_Stream Input, FFT Engine){\n"
         "    AddDebug((Input) . (SoP))\n"
         "    AddDebug((Input) . (EoP))\n"
         "    AddDebug((Input) . (Valid))\n"
         "    AddDebug((result) . (Ready))\n"
-        "    return (Engine) . (Run)(Input, 1 (~1))\n"
+        "    return (Engine) . (Run)(Input, 1)\n"
         "}",
+
         "import \"../Memory/DualPortRAM\"",
+
         "class FIFO(net Clk, net Reset, num Length){\n"
         "    DataStream Run(Input){\n"
         "        num Width = ((Input) . (Data)) ' (width)\n"
-        "        DualPortRAM (Clk, Reset, (Width) + (2 (~2)), Length) RAM\n"
-        "        result = DataStream(Width,  - (1 (~1)))\n"
-        "        (RAM) . (WrAddress) = 0 (~0)\n"
-        "        (RAM) . (WrData) := )\n"
+        "        DualPortRAM (Clk, Reset, (Width) + (2), Length) RAM\n"
+        "        result = DataStream(Width,  - (1))\n"
+        "        (RAM) . (WrAddress) = 0\n"
+        "        (RAM) . (WrData) := :( (Input) . (SoP), (Input) . (EoP), (Input) . (Data) )\n"
         "        (RAM) . (WrEnable) = (Input) . (Valid)\n"
         "        (RAM) . (RdEnable) = (Output) . (Ready)\n"
-        "        (RAM) . (RdAddress) = 0 (~0)\n"
-        "        rtl (Clk, Reset){\n"
+        "        (RAM) . (RdAddress) = 0\n"
+        "        rtl (Clk, Reset) {\n"
         "            if ((Input) . (Valid)) {\n"
         "                (RAM) . (WrAddress)++\n"
         "            }\n"
         "        }\n"
-        "        net Valid = 0 (~0)\n"
+        "        net Valid = 0\n"
         "        num (((RAM) . (RdAddress)) ' (width)) NumItems = ((RAM) . (WrAddress)) - ((RAM) . (RdAddress))\n"
-        "        rtl (Clk, Reset, (result) . (Ready)){\n"
-        "            ) := (RAM) . (RdData)\n"
+        "        rtl (Clk, Reset, (result) . (Ready)) {\n"
+        "            :( (result) . (SoP), (result) . (EoP), (result) . (Data) ) := (RAM) . (RdData)\n"
         "            (result) . (Valid) = Valid\n"
-        "            if ((NumItems) != (0 (~0))) {\n"
-        "                Valid = 1 (~1)\n"
+        "            if ((NumItems) != (0)) {\n"
+        "                Valid = 1\n"
         "                (RAM) . (RdAddress)++\n"
         "            } else {\n"
-        "                Valid = 0 (~0)\n"
+        "                Valid = 0\n"
         "            }\n"
         "        }\n"
         "    }\n"
         "}",
+
         "DataStream operator| (Input, FIFO Queue){\n"
         "    AddDebug((Input) . (SoP))\n"
         "    AddDebug((Input) . (EoP))\n"
@@ -1445,62 +1604,64 @@ bool testAlchaCaseStudyCombined()
         "    AddDebug((result) . (Ready))\n"
         "    return (Queue) . (Run)(Input)\n"
         "}",
+
         "import \"SinCos\"",
         "class NCO(net Clk, net Reset){\n"
         "    input {\n"
-        "        net (32 (~32), ( - ((Clk) ' (frequency))) / (2 (~2))) Frequency\n"
+        "        net (32, ( - ((Clk) ' (frequency))) / (2)) Frequency\n"
         "    }\n"
         "    output {\n"
-        "        net (18 (~18),  - (1 (~1))) Sin, Cos\n"
+        "        net (18,  - (1)) Sin, Cos\n"
         "    }\n"
         "    private {\n"
-        "        net (32 (~32),  - (pi)) Phase = 0 (~0)\n"
+        "        net (32,  - (pi)) Phase = 0\n"
         "    }\n"
-        "    rtl (Clk, Reset){\n"
+        "    rtl (Clk, Reset) {\n"
         "        Phase := ( : (Phase)) + ( : (Frequency))\n"
         "    }\n"
         "    SinCos(Clk, Phase, Sin, Cos)\n"
         "}",
-        "void SinCos(net Clk, net (20 (~20),  - (pi)) Angle, net (18 (~18),  - (1 (~1))) Sin, Cos, num N = 20 (~20)){\n"
-        "    num K = product(cos(atan((2 (~2)) ** ((0 (~0)) .. ((N) - (1 (~1)))))))\n"
+
+        "void SinCos(net Clk, net (20,  - (pi)) Angle, net (18,  - (1)) Sin, Cos, num N = 20){\n"
+        "    num K = product(cos(atan((2) ** ((0) .. ((N) - (1))))))\n"
         "    num n\n"
-        "    net (21 (~21),  - (2 (~2))) x[(N) + (1 (~1))], y[(N) + (1 (~1))]\n"
-        "    net (21 (~21), ( - (2 (~2))) * (pi)) a[(N) + (1 (~1))], A[(N) + (1 (~1))]\n"
-        "    rtl (Clk){\n"
-        "        switch ((Angle)[ 20 (~20), 19 (~19) ]) {\n"
-        "            case (0 (~0)) {\n"
-        "                (x)[ 0 (~0) ] = K\n"
-        "                (y)[ 0 (~0) ] = 0 (~0)\n"
-        "                (a)[ 0 (~0) ] = 0 (~0)\n"
+        "    net (21,  - (2)) x[(N) + (1)], y[(N) + (1)]\n"
+        "    net (21, ( - (2)) * (pi)) a[(N) + (1)], A[(N) + (1)]\n"
+        "    rtl (Clk) {\n"
+        "        switch ((Angle)[ 20, 19 ]) {\n"
+        "            case (0) {\n"
+        "                (x)[ 0 ] = K\n"
+        "                (y)[ 0 ] = 0\n"
+        "                (a)[ 0 ] = 0\n"
         "            }\n"
-        "            case (1 (~1)) {\n"
-        "                (x)[ 0 (~0) ] = 0 (~0)\n"
-        "                (y)[ 0 (~0) ] = K\n"
-        "                (a)[ 0 (~0) ] = (pi) / (2 (~2))\n"
+        "            case (1) {\n"
+        "                (x)[ 0 ] = 0\n"
+        "                (y)[ 0 ] = K\n"
+        "                (a)[ 0 ] = (pi) / (2)\n"
         "            }\n"
-        "            case (2 (~2)) {\n"
-        "                (x)[ 0 (~0) ] =  - (K)\n"
-        "                (y)[ 0 (~0) ] = 0 (~0)\n"
-        "                (a)[ 0 (~0) ] =  - (pi)\n"
+        "            case (2) {\n"
+        "                (x)[ 0 ] =  - (K)\n"
+        "                (y)[ 0 ] = 0\n"
+        "                (a)[ 0 ] =  - (pi)\n"
         "            }\n"
-        "            case (3 (~3)) {\n"
-        "                (x)[ 0 (~0) ] = 0 (~0)\n"
-        "                (y)[ 0 (~0) ] =  - (K)\n"
-        "                (a)[ 0 (~0) ] = ( - (pi)) / (2 (~2))\n"
+        "            case (3) {\n"
+        "                (x)[ 0 ] = 0\n"
+        "                (y)[ 0 ] =  - (K)\n"
+        "                (a)[ 0 ] = ( - (pi)) / (2)\n"
         "            }\n"
         "        }\n"
-        "        (A)[ 0 (~0) ] = Angle\n"
-        "        for ((n) in ((0 (~0)) .. ((N) - (1 (~1))))) {\n"
+        "        (A)[ 0 ] = Angle\n"
+        "        for ((n) in ((0) .. ((N) - (1)))) {\n"
         "            if (((A)[ n ]) >= ((a)[ n ])) {\n"
-        "                (x)[ (n) + (1 (~1)) ] = ((x)[ n ]) - (((y)[ n ]) / ((2 (~2)) ** (n)))\n"
-        "                (y)[ (n) + (1 (~1)) ] = ((y)[ n ]) + (((x)[ n ]) / ((2 (~2)) ** (n)))\n"
-        "                (a)[ (n) + (1 (~1)) ] = ((a)[ n ]) + (atan((2 (~2)) ** ( - (n))))\n"
+        "                (x)[ (n) + (1) ] = ((x)[ n ]) - (((y)[ n ]) / ((2) ** (n)))\n"
+        "                (y)[ (n) + (1) ] = ((y)[ n ]) + (((x)[ n ]) / ((2) ** (n)))\n"
+        "                (a)[ (n) + (1) ] = ((a)[ n ]) + (atan((2) ** ( - (n))))\n"
         "            } else {\n"
-        "                (x)[ (n) + (1 (~1)) ] = ((x)[ n ]) + (((y)[ n ]) / ((2 (~2)) ** (n)))\n"
-        "                (y)[ (n) + (1 (~1)) ] = ((y)[ n ]) - (((x)[ n ]) / ((2 (~2)) ** (n)))\n"
-        "                (a)[ (n) + (1 (~1)) ] = ((a)[ n ]) - (atan((2 (~2)) ** ( - (n))))\n"
+        "                (x)[ (n) + (1) ] = ((x)[ n ]) + (((y)[ n ]) / ((2) ** (n)))\n"
+        "                (y)[ (n) + (1) ] = ((y)[ n ]) - (((x)[ n ]) / ((2) ** (n)))\n"
+        "                (a)[ (n) + (1) ] = ((a)[ n ]) - (atan((2) ** ( - (n))))\n"
         "            }\n"
-        "            (A)[ (n) + (1 (~1)) ] = (A)[ n ]\n"
+        "            (A)[ (n) + (1) ] = (A)[ n ]\n"
         "        }\n"
         "    }\n"
         "    group <overflow = \"clip\"> {\n"
@@ -1508,39 +1669,42 @@ bool testAlchaCaseStudyCombined()
         "        Cos = (x)[ N ]\n"
         "    }\n"
         "}",
-        "class DataStream(num Width, num Fullscale =  - (1 (~1))){\n"
+
+        "class DataStream(num Width, num Fullscale =  - (1)){\n"
         "    net SoP\n"
         "    net EoP\n"
         "    net (Width, Fullscale) Data\n"
-        "    net Valid = 0 (~0)\n"
-        "    net Ready = 1 (~1)\n"
+        "    net Valid = 0\n"
+        "    net Ready = 1\n"
         "}",
-        "class IQ_Stream(num Width, num Fullscale =  - (1 (~1))){\n"
+
+        "class IQ_Stream(num Width, num Fullscale =  - (1)){\n"
         "    net SoP\n"
         "    net EoP\n"
         "    net (Width, Fullscale) I\n"
         "    net (Width, Fullscale) Q\n"
-        "    net Valid = 0 (~0)\n"
-        "    net Ready = 1 (~1)\n"
+        "    net Valid = 0\n"
+        "    net Ready = 1\n"
         "}",
+
         "import \"../Memory/DualPortROM\"",
         "class Window(net Clk, net Reset, num Length, string Function){\n"
-        "    DualPortROM (Clk, Reset, 18 (~18), Length) ROM\n"
+        "    DualPortROM (Clk, Reset, 18, Length) ROM\n"
         "    private {\n"
-        "        num n[Length] = (0 (~0)) .. ((Length) - (1 (~1)))\n"
+        "        num n[Length] = (0) .. ((Length) - (1))\n"
         "        switch (Function) {\n"
         "            case (\"Hann\") {\n"
-        "                (ROM) . (Initial) = (sin(((pi) * (n)) / (Length))) ** (2 (~2))\n"
+        "                (ROM) . (Initial) = (sin(((pi) * (n)) / (Length))) ** (2)\n"
         "            }\n"
         "            case (\"Hamming\") {\n"
-        "                num a = (25 (~25)) / (46 (~46))\n"
-        "                (ROM) . (Initial) = (a) - (((1 (~1)) - (a)) * (cos((((2 (~2)) * (pi)) * (n)) / (Length))))\n"
+        "                num a = (25) / (46)\n"
+        "                (ROM) . (Initial) = (a) - (((1) - (a)) * (cos((((2) * (pi)) * (n)) / (Length))))\n"
         "            }\n"
         "            default {\n"
-        "                (ROM) . (Initial) = 1 (~1)\n"
+        "                (ROM) . (Initial) = 1\n"
         "            }\n"
         "        }\n"
-        "        num Sum = 0 (~0)\n"
+        "        num Sum = 0\n"
         "        for ((c) in ((ROM) . (Initial))) {\n"
         "            Sum += c\n"
         "        }\n"
@@ -1551,27 +1715,27 @@ bool testAlchaCaseStudyCombined()
         "                Max = c\n"
         "            }\n"
         "        }\n"
-        "        num Fullscale = 1 (~1)\n"
+        "        num Fullscale = 1\n"
         "        while ((Fullscale) > (Max)) {\n"
-        "            Fullscale /= 2 (~2)\n"
+        "            Fullscale /= 2\n"
         "        }\n"
         "        while ((Fullscale) < (Max)) {\n"
-        "            Fullscale *= 2 (~2)\n"
+        "            Fullscale *= 2\n"
         "        }\n"
-        "        (ROM) . (Initial) = round(((ROM) . (Initial)) * (((262144 (~262144)) - (1 (~1))) / (Fullscale)))\n"
+        "        (ROM) . (Initial) = round(((ROM) . (Initial)) * (((262144) - (1)) / (Fullscale)))\n"
         "        net (Width, Fullscale) Coefficient := (ROM) . (Data_A)\n"
         "    }\n"
         "    auto Run(Input, bool Complex){\n"
-        "        net WaitForROM = 1 (~1)\n"
+        "        net WaitForROM = 1\n"
         "        net Ready =  ! (WaitForROM)\n"
         "        if (Complex) {\n"
-        "            result = IQ_Stream(((Input) . (Width)) + (18 (~18)),  - (Fullscale))\n"
+        "            result = IQ_Stream(((Input) . (Width)) + (18),  - (Fullscale))\n"
         "        } else {\n"
-        "            result = DataStream(((Input) . (Width)) + (18 (~18)),  - (Fullscale))\n"
+        "            result = DataStream(((Input) . (Width)) + (18),  - (Fullscale))\n"
         "        }\n"
         "        (Input) . (Ready) = ((result) . (Ready)) & (Ready)\n"
         "        (ROM) . (ClkEnable_A) = (((result) . (Ready)) & ((Input) . (Valid))) | (WaitForROM)\n"
-        "        rtl (Clk, Reset, (result) . (Ready)){\n"
+        "        rtl (Clk, Reset, (result) . (Ready)) {\n"
         "            if (Ready) {\n"
         "                (result) . (SoP) = (Input) . (SoP)\n"
         "                (result) . (EoP) = (Input) . (EoP)\n"
@@ -1585,12 +1749,12 @@ bool testAlchaCaseStudyCombined()
         "            }\n"
         "            if (WaitForROM) {\n"
         "                (ROM) . (Address_A)++\n"
-        "                WaitForROM = 0 (~0)\n"
+        "                WaitForROM = 0\n"
         "            } else {\n"
         "                if ((Input) . (Valid)) {\n"
         "                    if ((Input) . (EoP)) {\n"
-        "                        (ROM) . (Address_A) = 0 (~0)\n"
-        "                        WaitForROM = 1 (~1)\n"
+        "                        (ROM) . (Address_A) = 0\n"
+        "                        WaitForROM = 1\n"
         "                    } else {\n"
         "                        (ROM) . (Address_A)++\n"
         "                    }\n"
@@ -1599,47 +1763,56 @@ bool testAlchaCaseStudyCombined()
         "        }\n"
         "    }\n"
         "}",
+
         "DataStream operator| (DataStream Input, Window Instance){\n"
         "    AddDebug((Input) . (SoP))\n"
         "    AddDebug((Input) . (EoP))\n"
         "    AddDebug((Input) . (Valid))\n"
         "    AddDebug((result) . (Ready))\n"
-        "    return (Instance) . (Run)(Input, 0 (~0))\n"
+        "    return (Instance) . (Run)(Input, 0)\n"
         "}",
+
         "IQ_Stream operator| (IQ_Stream Input, Window Instance){\n"
         "    AddDebug((Input) . (SoP))\n"
         "    AddDebug((Input) . (EoP))\n"
         "    AddDebug((Input) . (Valid))\n"
         "    AddDebug((result) . (Ready))\n"
-        "    return (Instance) . (Run)(Input, 1 (~1))\n"
+        "    return (Instance) . (Run)(Input, 1)\n"
         "}",
-        "class AvalonInterface(num Width, num Depth, num MaxBurstCount = 1 (~1)){\n"
+
+        "class AvalonInterface(num Width, num Depth, num MaxBurstCount = 1){\n"
         "    num AddressWidth = ceil(log2(Depth))\n"
-        "    num NumBytes = ceil((Width) / (8 (~8)))\n"
-        "    num BurstCountWidth = ceil(log2((MaxBurstCount) + (1 (~1))))\n"
+        "    num NumBytes = ceil((Width) / (8))\n"
+        "    num BurstCountWidth = ceil(log2((MaxBurstCount) + (1)))\n"
         "    net (AddressWidth) Address\n"
-        "    net (NumBytes) ByteEnable = ((2 (~2)) ** (NumBytes)) - (1 (~1))\n"
-        "    net (BurstCountWidth) BurstCount = 1 (~1)\n"
-        "    net WaitRequest = 1 (~1)\n"
+        "    net (NumBytes) ByteEnable = ((2) ** (NumBytes)) - (1)\n"
+        "    net (BurstCountWidth) BurstCount = 1\n"
+        "    net WaitRequest = 1\n"
         "    net (Width) WriteData\n"
-        "    net Write = 0 (~0)\n"
-        "    net Read = 0 (~0)\n"
+        "    net Write = 0\n"
+        "    net Read = 0\n"
         "    net (Width) ReadData\n"
-        "    net ReadValid = 0 (~0)\n"
+        "    net ReadValid = 0\n"
         "}",
+
         "import \"Library/Interfaces/AvalonInterface\"",
+
         "class AvalonMaster(net Clock, net Reset, num Width, num Depth): AvalonInterface(Width, Depth){\n"
-        "     ' (BaseAddress) = 0 (~0)\n"
+        "     ' (BaseAddress) = 0\n"
         "    private {\n"
-        "        num Used = 0 (~0)\n"
-        "        net ReadingWaitRequest = 0 (~0)\n"
-        "        net InterfacesWaitRequest = 0 (~0)\n"
+        "        num Used = 0\n"
+        "        net ReadingWaitRequest = 0\n"
+        "        net InterfacesWaitRequest = 0\n"
         "    }\n"
-        "    ReadData = 0 (~0)\n"
+        "    ReadData = 0\n"
         "    WaitRequest = (ReadingWaitRequest) | (InterfacesWaitRequest)\n"
         "    void Attach(AvalonInterface Interface){\n"
-        "        assert ((Interface) . (Width)) == (Width)\n"
-        "        assert ((Interface) . (Depth)) < ((Depth) - (Used))\n"
+        "        assert {\n"
+        "            ((Interface) . (Width)) == (Width)\n"
+        "        }\n"
+        "        assert {\n"
+        "            ((Interface) . (Depth)) < ((Depth) - (Used))\n"
+        "        }\n"
         "        (Interface) . (Address) = (Address) - (Used)\n"
         "        (Interface) . (ByteEnable) = ByteEnable\n"
         "        InterfacesWaitRequest |= (Interface) . (WaitRequest)\n"
@@ -1647,35 +1820,37 @@ bool testAlchaCaseStudyCombined()
         "        (Interface) . (WriteData) = WriteData\n"
         "        (Interface) . (Write) = ((AddressValid) & (Write)) & ( ! (WaitRequest))\n"
         "        (Interface) . (Read) = ((AddressValid) & (Read)) & ( ! (WaitRequest))\n"
-        "        ReadData |= ((Interface) . (ReadValid)) ? ((Interface) . (ReadData)) : (0 (~0))\n"
+        "        ReadData |= ((Interface) . (ReadValid)) ? ((Interface) . (ReadData)) : (0)\n"
         "        ReadValid |= (Interface) . (ReadValid)\n"
-        "        (Interface) ' (BaseAddress) = ( ' (BaseAddress)) + ((Used) * ((Width) / (8 (~8))))\n"
+        "        (Interface) ' (BaseAddress) = ( ' (BaseAddress)) + ((Used) * ((Width) / (8)))\n"
         "        Used += (Interface) . (Depth)\n"
         "    }\n"
-        "    rtl (Clock, Reset){\n"
+        "    rtl (Clock, Reset) {\n"
         "        if ((Read) & ( ! (WaitRequest))) {\n"
-        "            ReadingWaitRequest = 1 (~1)\n"
+        "            ReadingWaitRequest = 1\n"
         "        } else {\n"
         "            if (ReadValid) {\n"
-        "                ReadingWaitRequest = 0 (~0)\n"
+        "                ReadingWaitRequest = 0\n"
         "            }\n"
         "        }\n"
         "    }\n"
         "}",
+
         "import \"Library/Interfaces/AvalonInterface\"",
-        "class AvalonSlave(net Clock, net Reset, num Width, num Depth, num MaxBurstCount = 1 (~1)): AvalonInterface(Width, Depth, MaxBurstCount){\n"
+        "class AvalonSlave(net Clock, net Reset, num Width, num Depth, num MaxBurstCount = 1): AvalonInterface(Width, Depth, MaxBurstCount){\n"
         "    void Attach(Master){\n"
         "    }\n"
         "    void finally(){\n"
         "    }\n"
         "}",
-        "class RegistersDecoder(Bus): AvalonInterface(32 (~32), 4096 (~4096)){\n"
+
+        "class RegistersDecoder(Bus): AvalonInterface(32, 4096){\n"
         "    (Bus) . (Attach)(this)\n"
         "    private {\n"
         "         ' (RdRegisters) = [  ]\n"
         "         ' (WrRegisters) = [  ]\n"
         "         ' (LiveRegisters) = [  ]\n"
-        "        num Count = 0 (~0)\n"
+        "        num Count = 0\n"
         "    }\n"
         "    public {\n"
         "        void ReadOnly(Register){\n"
@@ -1693,16 +1868,16 @@ bool testAlchaCaseStudyCombined()
         "            ( ' (LiveRegisters)) . (append)(Read = RdRegister, Write = WrRegister, Strobe = WrStrobe)\n"
         "            Count++\n"
         "        }\n"
-        "        net (32 (~32)) Resize(x){\n"
+        "        net (32) Resize(x){\n"
         "            result := x\n"
         "            num N = (x) ' (width)\n"
-        "            if ((((x) ' (fullscale)) < (0 (~0))) & ((N) < (31 (~31)))) {\n"
-        "                result((31 (~31)) .. ((N) + (1 (~1)))) := (x(N)) ` ((31 (~31)) - (N))\n"
+        "            if ((((x) ' (fullscale)) < (0)) & ((N) < (31))) {\n"
+        "                (result)[ (31) .. ((N) + (1)) ] := (x(N)) ` ((31) - (N))\n"
         "            }\n"
         "        }\n"
         "        void GenerateRegs(){\n"
-        "            rtl ((Bus) . (Clock), (Bus) . (Reset)){\n"
-        "                WaitRequest = 0 (~0)\n"
+        "            rtl ((Bus) . (Clock), (Bus) . (Reset)) {\n"
+        "                WaitRequest = 0\n"
         "                switch (Address) {\n"
         "                    for ((Register) in ( ' (RdRegisters))) {\n"
         "                        case ((Register) ' (Address)) {\n"
@@ -1757,10 +1932,11 @@ bool testAlchaCaseStudyCombined()
         "        }\n"
         "    }\n"
         "}",
+
         "class DualPortRAM(net Clk, net Reset, num Width, num Depth){\n"
         "    private {\n"
         "        string RamBlockType\n"
-        "        switch ( ' (target_series)) {\n"
+        "        switch (( ' (target)) ' (series)) {\n"
         "            case (\"MAX 10\") {\n"
         "                RamBlockType = \"M9K\"\n"
         "            }\n"
@@ -1771,7 +1947,9 @@ bool testAlchaCaseStudyCombined()
         "                RamBlockType = \"M20K\"\n"
         "            }\n"
         "            default {\n"
-        "                assert 0 (~0)\n"
+        "                assert {\n"
+        "                    0\n"
+        "                }\n"
         "            }\n"
         "        }\n"
         "        num AddressWidth = ceil(log2(Depth))\n"
@@ -1783,9 +1961,9 @@ bool testAlchaCaseStudyCombined()
         "            clock_enable_output_a = \"BYPASS\"\n"
         "            clock_enable_output_b = \"BYPASS\"\n"
         "            indata_reg_b = \"CLOCK1\"\n"
-        "            intended_device_family =  ' (target_series)\n"
+        "            intended_device_family = ( ' (target)) ' (series)\n"
         "            lpm_type = \"altsyncram\"\n"
-        "            maximum_depth = 1024 (~1024)\n"
+        "            maximum_depth = 1024\n"
         "            numwords_a = Depth\n"
         "            numwords_b = Depth\n"
         "            operation_mode = \"DUAL_PORT\"\n"
@@ -1798,11 +1976,11 @@ bool testAlchaCaseStudyCombined()
         "            widthad_b = AddressWidth\n"
         "            width_a = Width\n"
         "            width_b = Width\n"
-        "            width_byteena_a = 1 (~1)\n"
-        "            width_byteena_b = 1 (~1)\n"
+        "            width_byteena_a = 1\n"
+        "            width_byteena_b = 1\n"
         "        ){\n"
         "            net clock0 = Clk\n"
-        "            net clocken0 = 1 (~1)\n"
+        "            net clocken0 = 1\n"
         "            net (AddressWidth) address_a\n"
         "            net (Width) data_a\n"
         "            net wren_a\n"
@@ -1828,7 +2006,7 @@ bool testAlchaCaseStudyCombined()
         "            net (AddressWidth) RdAddress\n"
         "        }\n"
         "        input {\n"
-        "            net RdEnable = 1 (~1)\n"
+        "            net RdEnable = 1\n"
         "        }\n"
         "        output {\n"
         "            net (Width) RdData\n"
@@ -1841,13 +2019,14 @@ bool testAlchaCaseStudyCombined()
         "        RdData = (RAM) . (q_b)\n"
         "    }\n"
         "}",
+
         "class DualPortROM(net Clk, net Reset, num Width, num Depth){\n"
         "    public {\n"
         "        num Initial[Depth]\n"
         "    }\n"
         "    private {\n"
         "        string RamBlockType\n"
-        "        switch ( ' (target_series)) {\n"
+        "        switch (( ' (target)) ' (series)) {\n"
         "            case (\"MAX 10\") {\n"
         "                RamBlockType = \"M9K\"\n"
         "            }\n"
@@ -1858,11 +2037,13 @@ bool testAlchaCaseStudyCombined()
         "                RamBlockType = \"M20K\"\n"
         "            }\n"
         "            default {\n"
-        "                assert 0 (~0)\n"
+        "                assert {\n"
+        "                    0\n"
+        "                }\n"
         "            }\n"
         "        }\n"
         "        num AddressWidth = ceil(log2(Depth))\n"
-        "        MIF_File = ]\n"
+        "        MIF_File = :[ (this) ' (identifier), \".mif\" ]\n"
         "        hdl altsyncram(\n"
         "            address_aclr_b = \"NONE\"\n"
         "            address_reg_b = \"CLOCK1\"\n"
@@ -1872,9 +2053,9 @@ bool testAlchaCaseStudyCombined()
         "            clock_enable_output_b = \"BYPASS\"\n"
         "            indata_reg_b = \"CLOCK1\"\n"
         "            init_file = MIF_File\n"
-        "            intended_device_family =  ' (target_series)\n"
+        "            intended_device_family = ( ' (target)) ' (series)\n"
         "            lpm_type = \"altsyncram\"\n"
-        "            maximum_depth = 1024 (~1024)\n"
+        "            maximum_depth = 1024\n"
         "            numwords_a = Depth\n"
         "            numwords_b = Depth\n"
         "            operation_mode = \"BIDIR_DUAL_PORT\"\n"
@@ -1889,8 +2070,8 @@ bool testAlchaCaseStudyCombined()
         "            widthad_b = AddressWidth\n"
         "            width_a = Width\n"
         "            width_b = Width\n"
-        "            width_byteena_a = 1 (~1)\n"
-        "            width_byteena_b = 1 (~1)\n"
+        "            width_byteena_a = 1\n"
+        "            width_byteena_b = 1\n"
         "            wrcontrol_wraddress_reg_b = \"CLOCK1\"\n"
         "        ){\n"
         "            net clock0 = Clk\n"
@@ -1907,19 +2088,19 @@ bool testAlchaCaseStudyCombined()
         "    }\n"
         "    public {\n"
         "        input {\n"
-        "            net ClkEnable_A = 1 (~1)\n"
+        "            net ClkEnable_A = 1\n"
         "        }\n"
         "        input {\n"
-        "            net (AddressWidth) Address_A = 0 (~0)\n"
+        "            net (AddressWidth) Address_A = 0\n"
         "        }\n"
         "        output {\n"
         "            net (Width) Data_A\n"
         "        }\n"
         "        input {\n"
-        "            net ClkEnable_B = 1 (~1)\n"
+        "            net ClkEnable_B = 1\n"
         "        }\n"
         "        input {\n"
-        "            net (AddressWidth) Address_B = 0 (~0)\n"
+        "            net (AddressWidth) Address_B = 0\n"
         "        }\n"
         "        output {\n"
         "            net (Width) Data_B\n"
@@ -1932,10 +2113,20 @@ bool testAlchaCaseStudyCombined()
         "        Data_B := (ROM) . (q_b)\n"
         "    }\n"
         "    void finally(){\n"
-        "        char Buffer = ]\n"
-        "        num n = 0 (~0)\n"
+        "        char Buffer = :[ \"-- Autogenerated by DualPortROM.alc\n"
+                                 "\", \"\n"
+                                 "\", \"WIDTH=\", $(Width), \";\n"
+                                 "\", \"DEPTH=\", $(Depth), \";\n"
+                                 "\", \"\n"
+                                 "\", \"ADDRESS_RADIX=HEX;\n"
+                                 "\", \"DATA_RADIX=HEX;\n"
+                                 "\", \"\n"
+                                 "\", \"CONTENT BEGIN\n"
+                                 "\" ]\n"
+        "        num n = 0\n"
         "        for ((Value) in (Initial)) {\n"
-        "            (Buffer) . (append)(])\n"
+        "            (Buffer) . (append)(:[ \"  \", $(n, \"04X\"), \": \", $(Value, \"08X\"), \";\n"
+        "\" ])\n"
         "            n++\n"
         "        }\n"
         "        (Buffer) . (append)(\"END;\n"
@@ -1943,10 +2134,11 @@ bool testAlchaCaseStudyCombined()
         "        textwrite(MIF_File, Buffer)\n"
         "    }\n"
         "}",
+
         "class DualPortRAM(net Clk, net Reset, num Width, num Depth){\n"
         "    private {\n"
         "        string RamBlockType\n"
-        "        switch ( ' (target_series)) {\n"
+        "        switch (( ' (target)) ' (series)) {\n"
         "            case (\"MAX 10\") {\n"
         "                RamBlockType = \"M9K\"\n"
         "            }\n"
@@ -1957,7 +2149,9 @@ bool testAlchaCaseStudyCombined()
         "                RamBlockType = \"M20K\"\n"
         "            }\n"
         "            default {\n"
-        "                assert 0 (~0)\n"
+        "                assert {\n"
+        "                    0\n"
+        "                }\n"
         "            }\n"
         "        }\n"
         "        num AddressWidth = ceil(log2(Depth))\n"
@@ -1969,9 +2163,9 @@ bool testAlchaCaseStudyCombined()
         "            clock_enable_output_a = \"BYPASS\"\n"
         "            clock_enable_output_b = \"BYPASS\"\n"
         "            indata_reg_b = \"CLOCK1\"\n"
-        "            intended_device_family =  ' (target_series)\n"
+        "            intended_device_family = ( ' (target)) ' (series)\n"
         "            lpm_type = \"altsyncram\"\n"
-        "            maximum_depth = 1024 (~1024)\n"
+        "            maximum_depth = 1024\n"
         "            numwords_a = Depth\n"
         "            numwords_b = Depth\n"
         "            operation_mode = \"BIDIR_DUAL_PORT\"\n"
@@ -1988,8 +2182,8 @@ bool testAlchaCaseStudyCombined()
         "            widthad_b = AddressWidth\n"
         "            width_a = Width\n"
         "            width_b = Width\n"
-        "            width_byteena_a = 1 (~1)\n"
-        "            width_byteena_b = 1 (~1)\n"
+        "            width_byteena_a = 1\n"
+        "            width_byteena_b = 1\n"
         "            wrcontrol_wraddress_reg_b = \"CLOCK1\"\n"
         "        ){\n"
         "            net clock0 = Clk\n"
@@ -2051,19 +2245,20 @@ bool testAlchaCaseStudyCombined()
         "        RdData_B = (RAM) . (q_b)\n"
         "    }\n"
         "}",
+
         "class FirmwareVersion(num Major, num Minor){\n"
         "    private {\n"
         "        num HexToNum(string S){\n"
-        "            result = 0 (~0)\n"
+        "            result = 0\n"
         "            for ((s) in (S)) {\n"
         "                if (((s) >= (\"0\")) & ((s) <= (\"9\"))) {\n"
-        "                    result = ((16 (~16)) * (result)) | ((s) - (\"0\"))\n"
+        "                    result = ((16) * (result)) | ((s) - (\"0\"))\n"
         "                } else {\n"
         "                    if (((s) >= (\"a\")) & ((s) <= (\"f\"))) {\n"
-        "                        result = ((16 (~16)) * (result)) | (((s) - (\"a\")) + (10 (~10)))\n"
+        "                        result = ((16) * (result)) | (((s) - (\"a\")) + (10))\n"
         "                    } else {\n"
         "                        if (((s) >= (\"A\")) & ((s) <= (\"F\"))) {\n"
-        "                            result = ((16 (~16)) * (result)) | (((s) - (\"A\")) + (10 (~10)))\n"
+        "                            result = ((16) * (result)) | (((s) - (\"A\")) + (10))\n"
         "                        }\n"
         "                    }\n"
         "                }\n"
@@ -2071,12 +2266,13 @@ bool testAlchaCaseStudyCombined()
         "        }\n"
         "    }\n"
         "    output {\n"
-        "        net (32 (~32)) Version = ((Major) << (16 (~16))) | (Minor)\n"
-        "        net (32 (~32)) Date = HexToNum(\"2024-12-29\")\n"
-        "        net (28 (~28)) Time = HexToNum(\"16:58:22\")\n"
-        "        net (32 (~32)) GitHash = HexToNum(shell(\"git rev-parse --short=8 HEAD\"))\n"
+        "        net (32) Version = ((Major) << (16)) | (Minor)\n"
+        "        net (32) Date = HexToNum(\"2024-12-29\")\n"
+        "        net (28) Time = HexToNum(\"16:58:22\")\n"
+        "        net (32) GitHash = HexToNum(shell(\"git rev-parse --short=8 HEAD\"))\n"
         "    }\n"
         "}",
+
         "class MutEx(net Clk, net Reset){\n"
         "     ' (Modules) = [  ]\n"
         "    void Add(Module){\n"
@@ -2084,114 +2280,123 @@ bool testAlchaCaseStudyCombined()
         "    }\n"
         "    void finally(){\n"
         "        num N = ( ' (Modules)) ' (length)\n"
-        "        assert (N) > (0 (~0))\n"
+        "        assert {\n"
+        "            (N) > (0)\n"
+        "        }\n"
         "        net (N) Request\n"
-        "        net (N) Grant = 0 (~0)\n"
-        "        net (N) Device = 1 (~1)\n"
-        "        rtl (Clk, Reset){\n"
+        "        net (N) Grant = 0\n"
+        "        net (N) Device = 1\n"
+        "        rtl (Clk, Reset) {\n"
         "            if ((Request) & (Device)) {\n"
         "                Grant = Device\n"
         "            } else {\n"
-        "                Grant = 0 (~0)\n"
-        "                Device = )\n"
+        "                Grant = 0\n"
+        "                Device = :( (Device)[ (N) - ((2) .. (0)) ], (Device)[ (N) - (1) ] )\n"
         "            }\n"
         "        }\n"
-        "        for ((n) in ((0 (~0)) .. ((N) - (1 (~1))))) {\n"
+        "        for ((n) in ((0) .. ((N) - (1)))) {\n"
         "            (Request)[ n ] = ((( ' (Modules))[ n ]) . (MutEx)) . (Request)\n"
         "            ((( ' (Modules))[ n ]) . (MutEx)) . (Grant) = (Grant)[ n ]\n"
         "        }\n"
         "    }\n"
         "}",
+
         "class ADS7056(net Clk, net Reset){\n"
-        "    assert ((Clk) ' (frequency)) <= (120000000 (~1.2e+08))\n"
+        "    assert {\n"
+        "        ((Clk) ' (frequency)) <= (120000000)\n"
+        "    }\n"
         "    private {\n"
-        "        net nCS = 1 (~1)\n"
-        "        net SClk = 0 (~0)\n"
+        "        net nCS = 1\n"
+        "        net SClk = 0\n"
         "        net Data\n"
-        "        net (14 (~14)) Shift\n"
-        "        net (6 (~6)) Count = 0 (~0)\n"
+        "        net (14) Shift\n"
+        "        net (6) Count = 0\n"
         "    }\n"
         "    output {\n"
         "        group Output {\n"
-        "            net (14 (~14)) Data\n"
-        "            net Valid = 0 (~0)\n"
+        "            net (14) Data\n"
+        "            net Valid = 0\n"
         "        }\n"
         "    }\n"
         "    void ConnectPins(pin nCS, pin SClk, pin SDO){\n"
         "        nCS = (this) . (nCS)\n"
         "        SClk = (this) . (SClk)\n"
         "        Data = SDO\n"
-        "        (SClk) ' (create_generated_clock) = divide_by = 2 (~2)\n"
-        "        ((nCS) ' (set_output_delay)) ' (max) += 0 (~0)\n"
+        "        (SClk) ' (create_generated_clock) = divide_by = 2\n"
+        "        ((nCS) ' (set_output_delay)) ' (max) += 0\n"
         "        ((nCS) ' (set_output_delay)) ' (min) +=  - (3/1000000000 (~3e-09))\n"
         "        ((SDO) ' (set_input_delay)) ' (min) += 1/400000000 (~2.5e-09)\n"
         "        ((SDO) ' (set_input_delay)) ' (max) += 1/100000000 (~1e-08)\n"
         "        ((SDO) ' (set_multicycle_path)) ' (to) = Clk\n"
-        "        ((SDO) ' (set_multicycle_path)) ' (setup) = 2 (~2)\n"
-        "        ((SDO) ' (set_multicycle_path)) ' (hold) = 1 (~1)\n"
+        "        ((SDO) ' (set_multicycle_path)) ' (setup) = 2\n"
+        "        ((SDO) ' (set_multicycle_path)) ' (hold) = 1\n"
         "    }\n"
-        "    rtl (Clk, Reset){\n"
-        "        if ((Count) == (47 (~47))) {\n"
-        "            Count = 0 (~0)\n"
+        "    rtl (Clk, Reset) {\n"
+        "        if ((Count) == (47)) {\n"
+        "            Count = 0\n"
         "        } else {\n"
         "            Count++\n"
         "        }\n"
         "        switch (Count) {\n"
-        "            case (0 (~0)) {\n"
-        "                nCS = 0 (~0)\n"
+        "            case (0) {\n"
+        "                nCS = 0\n"
         "            }\n"
-        "            case ((1 (~1)) .. (36 (~36))) {\n"
+        "            case ((1) .. (36)) {\n"
         "                SClk =  ~ (SClk)\n"
         "            }\n"
-        "            case (37 (~37)) {\n"
-        "                nCS = 1 (~1)\n"
+        "            case (37) {\n"
+        "                nCS = 1\n"
         "            }\n"
         "            default {\n"
-        "                SClk = 0 (~0)\n"
+        "                SClk = 0\n"
         "            }\n"
         "        }\n"
-        "        if ((SClk) == (0 (~0))) {\n"
-        "            Shift = )\n"
+        "        if ((SClk) == (0)) {\n"
+        "            Shift = :( (Shift)[ (12) .. (0) ], Data )\n"
         "        }\n"
-        "        if ((Count) == (32 (~32))) {\n"
+        "        if ((Count) == (32)) {\n"
         "            (Output) . (Data) = Shift\n"
-        "            (Output) . (Valid) = 1 (~1)\n"
+        "            (Output) . (Valid) = 1\n"
         "        } else {\n"
-        "            (Output) . (Valid) = 0 (~0)\n"
+        "            (Output) . (Valid) = 0\n"
         "        }\n"
         "    }\n"
         "}",
+
         "import \"Library/Comms/I2C/I2C\"",
-        "class LTC2991(net Clk, net Reset, net (3 (~3)) Address, num Baud_kHz = 50 (~50)): I2C(Clk, Reset, Baud_kHz){\n"
+
+        "class LTC2991(net Clk, net Reset, net (3) Address, num Baud_kHz = 50): I2C(Clk, Reset, Baud_kHz){\n"
         "    input {\n"
-        "        net (5 (~5)) Enable = 31 (~31)\n"
+        "        net (5) Enable = 31\n"
         "    }\n"
         "    input {\n"
-        "        net (32 (~32)) Control = 0 (~0)\n"
+        "        net (32) Control = 0\n"
         "    }\n"
         "    enum TYPE { Voltage, Differential, Temperature }\n"
         "    void SetType(num Channel, TYPE Type){\n"
-        "        assert ((Channel) >= (0 (~0))) & ((Channel) < (4 (~4)))\n"
+        "        assert {\n"
+        "            ((Channel) >= (0)) & ((Channel) < (4))\n"
+        "        }\n"
         "        switch (Type) {\n"
         "            case (Voltage) {\n"
-        "                (Control)[ (((4 (~4)) * (Channel)) + (3 (~3))) .. ((4 (~4)) * (Channel)) ] = 0 (~0)\n"
+        "                (Control)[ (((4) * (Channel)) + (3)) .. ((4) * (Channel)) ] = 0\n"
         "            }\n"
         "            case (Differential) {\n"
-        "                (Control)[ (((4 (~4)) * (Channel)) + (3 (~3))) .. ((4 (~4)) * (Channel)) ] = 1 (~1)\n"
+        "                (Control)[ (((4) * (Channel)) + (3)) .. ((4) * (Channel)) ] = 1\n"
         "            }\n"
         "            case (Temperature) {\n"
-        "                (Control)[ (((4 (~4)) * (Channel)) + (3 (~3))) .. ((4 (~4)) * (Channel)) ] = 2 (~2)\n"
+        "                (Control)[ (((4) * (Channel)) + (3)) .. ((4) * (Channel)) ] = 2\n"
         "            }\n"
         "        }\n"
         "    }\n"
         "    output {\n"
-        "        net ( - (15 (~15))) Vcc\n"
+        "        net ( - (15)) Vcc\n"
         "    }\n"
         "    output {\n"
-        "        net ( - (15 (~15))) V[8 (~8)]\n"
+        "        net ( - (15)) V[8]\n"
         "    }\n"
         "    output {\n"
-        "        net ( - (15 (~15))) InternalTemp\n"
+        "        net ( - (15)) InternalTemp\n"
         "    }\n"
         "    group MutEx {\n"
         "        output {\n"
@@ -2204,61 +2409,62 @@ bool testAlchaCaseStudyCombined()
         "    void MakeRegisters(Registers){\n"
         "        (Registers) . (ReadOnly)(Error)\n"
         "        (Registers) . (ReadOnly)(Vcc)\n"
-        "        for ((n) in ((0 (~0)) .. (7 (~7)))) {\n"
+        "        for ((n) in ((0) .. (7))) {\n"
         "            (Registers) . (ReadOnly)((V)[ n ])\n"
         "        }\n"
         "        (Registers) . (ReadOnly)(InternalTemp)\n"
         "    }\n"
-        "    fsm (Clk, Reset){\n"
+        "    fsm (Clk, Reset) {\n"
         "    }\n"
         "}",
-        "class AD9915(net Clk, net Reset, num Baud_kHz = 1000 (~1000)){\n"
+
+        "class AD9915(net Clk, net Reset, num Baud_kHz = 1000){\n"
         "    public {\n"
         "        input {\n"
-        "            net (32 (~32)) ipFreqLowerLimit = 0 (~0)\n"
+        "            net (32) ipFreqLowerLimit = 0\n"
         "        }\n"
         "        input {\n"
-        "            net (32 (~32)) ipFreqUpperLimit = 0 (~0)\n"
+        "            net (32) ipFreqUpperLimit = 0\n"
         "        }\n"
         "        input {\n"
-        "            net (32 (~32)) ipStepUp = 0 (~0)\n"
+        "            net (32) ipStepUp = 0\n"
         "        }\n"
         "        input {\n"
-        "            net (32 (~32)) ipStepDown = 0 (~0)\n"
+        "            net (32) ipStepDown = 0\n"
         "        }\n"
         "        input {\n"
-        "            net (16 (~16)) ipSlopeUp = 1 (~1)\n"
+        "            net (16) ipSlopeUp = 1\n"
         "        }\n"
         "        input {\n"
-        "            net (16 (~16)) ipSlopeDown = 1 (~1)\n"
+        "            net (16) ipSlopeDown = 1\n"
         "        }\n"
         "        input {\n"
-        "            net ipUpdate = 0 (~0)\n"
+        "            net ipUpdate = 0\n"
         "        }\n"
         "        output {\n"
-        "            net opBusy = 1 (~1)\n"
+        "            net opBusy = 1\n"
         "        }\n"
         "        input {\n"
-        "            net ipTrigger = 0 (~0)\n"
+        "            net ipTrigger = 0\n"
         "        }\n"
         "    }\n"
         "    private {\n"
-        "        net (32 (~32)) FreqLowerLimit =  ~ (ipFreqLowerLimit)\n"
-        "        net (32 (~32)) FreqUpperLimit =  ~ (ipFreqUpperLimit)\n"
-        "        net (32 (~32)) StepUp =  ~ (ipStepUp)\n"
-        "        net (32 (~32)) StepDown =  ~ (ipStepDown)\n"
-        "        net (16 (~16)) SlopeUp =  ~ (ipSlopeUp)\n"
-        "        net (16 (~16)) SlopeDown =  ~ (ipSlopeDown)\n"
+        "        net (32) FreqLowerLimit =  ~ (ipFreqLowerLimit)\n"
+        "        net (32) FreqUpperLimit =  ~ (ipFreqUpperLimit)\n"
+        "        net (32) StepUp =  ~ (ipStepUp)\n"
+        "        net (32) StepDown =  ~ (ipStepDown)\n"
+        "        net (16) SlopeUp =  ~ (ipSlopeUp)\n"
+        "        net (16) SlopeDown =  ~ (ipSlopeDown)\n"
         "    }\n"
         "    private {\n"
-        "        net opSClk = 0 (~0)\n"
-        "        net opnCS = 0 (~0)\n"
-        "        net opSDIO = 0 (~0)\n"
-        "        net opSyncIO = 0 (~0)\n"
-        "        net opIO_Update = 0 (~0)\n"
-        "        net opDR_Control = 0 (~0)\n"
-        "        net opDR_Hold = 0 (~0)\n"
-        "        net ipDR_Over = 1 (~1)\n"
+        "        net opSClk = 0\n"
+        "        net opnCS = 0\n"
+        "        net opSDIO = 0\n"
+        "        net opSyncIO = 0\n"
+        "        net opIO_Update = 0\n"
+        "        net opDR_Control = 0\n"
+        "        net opDR_Hold = 0\n"
+        "        net ipDR_Over = 1\n"
         "    }\n"
         "    void ConnectSPI(pin SClk, pin nCS, pin SDIO, pin SyncIO, pin IO_Update){\n"
         "        SClk = opSClk\n"
@@ -2276,18 +2482,18 @@ bool testAlchaCaseStudyCombined()
         "        net RegsChanged\n"
         "    }\n"
         "    private {\n"
-        "        void Send_SPI(net (8 (~8)) Address, net (32 (~32)) Value){\n"
-        "            net (40 (~40)) Data\n"
-        "            opSDIO = (Data)[ 39 (~39) ]\n"
+        "        void Send_SPI(net (8) Address, net (32) Value){\n"
+        "            net (40) Data\n"
+        "            opSDIO = (Data)[ 39 ]\n"
         "            fsm {\n"
-        "                RegsChanged = 1 (~1)\n"
-        "                Data = )\n"
-        "                opSyncIO = 1 (~1)\n"
-        "                opSyncIO = 0 (~0)\n"
-        "                loop (40 (~40)) {\n"
-        "                    opSClk = 1 (~1)\n"
-        "                    opSClk = 0 (~0)\n"
-        "                    Data <<= 1 (~1)\n"
+        "                RegsChanged = 1\n"
+        "                Data = :( Address, Value )\n"
+        "                opSyncIO = 1\n"
+        "                opSyncIO = 0\n"
+        "                loop (40) {\n"
+        "                    opSClk = 1\n"
+        "                    opSClk = 0\n"
+        "                    Data <<= 1\n"
         "                }\n"
         "            }\n"
         "        }\n"
@@ -2295,15 +2501,15 @@ bool testAlchaCaseStudyCombined()
         "    private {\n"
         "        void Init(){\n"
         "            fsm {\n"
-        "                Send_SPI(0 (~0), 65546 (~65546))\n"
-        "                Send_SPI(1 (~1), 534784 (~534784))\n"
-        "                Send_SPI(3 (~3), 17113376 (~1.71134e+07))\n"
-        "                opIO_Update = 1 (~1)\n"
-        "                opIO_Update = 0 (~0)\n"
-        "                loop (32768 (~32768)) {\n"
+        "                Send_SPI(0, 65546)\n"
+        "                Send_SPI(1, 534784)\n"
+        "                Send_SPI(3, 17113376)\n"
+        "                opIO_Update = 1\n"
+        "                opIO_Update = 0\n"
+        "                loop (32768) {\n"
         "                    fence\n"
         "                }\n"
-        "                Send_SPI(3 (~3), 336160 (~336160))\n"
+        "                Send_SPI(3, 336160)\n"
         "            }\n"
         "        }\n"
         "    }\n"
@@ -2312,46 +2518,46 @@ bool testAlchaCaseStudyCombined()
         "            fsm {\n"
         "                if ((ipFreqLowerLimit) != (FreqLowerLimit)) {\n"
         "                    FreqLowerLimit = ipFreqLowerLimit\n"
-        "                    Send_SPI(4 (~4), ipFreqLowerLimit)\n"
+        "                    Send_SPI(4, ipFreqLowerLimit)\n"
         "                } else {\n"
         "                    fence\n"
         "                }\n"
         "                if ((ipFreqUpperLimit) != (FreqUpperLimit)) {\n"
         "                    FreqUpperLimit = ipFreqUpperLimit\n"
-        "                    Send_SPI(5 (~5), ipFreqUpperLimit)\n"
+        "                    Send_SPI(5, ipFreqUpperLimit)\n"
         "                } else {\n"
         "                    fence\n"
         "                }\n"
         "                if ((ipStepUp) != (StepUp)) {\n"
         "                    StepUp = ipStepUp\n"
-        "                    Send_SPI(6 (~6), ipStepUp)\n"
+        "                    Send_SPI(6, ipStepUp)\n"
         "                } else {\n"
         "                    fence\n"
         "                }\n"
         "                if ((ipStepDown) != (StepDown)) {\n"
         "                    StepDown = ipStepDown\n"
-        "                    Send_SPI(7 (~7), ipStepDown)\n"
+        "                    Send_SPI(7, ipStepDown)\n"
         "                } else {\n"
         "                    fence\n"
         "                }\n"
         "                if (((ipSlopeUp) != (SlopeUp)) | ((ipSlopeDown) != (SlopeDown))) {\n"
         "                    SlopeUp = ipSlopeUp\n"
         "                    SlopeDown = ipSlopeDown\n"
-        "                    Send_SPI(8 (~8), ))\n"
+        "                    Send_SPI(8, :( ipSlopeDown, ipSlopeUp ))\n"
         "                } else {\n"
         "                    fence\n"
         "                }\n"
         "                if (RegsChanged) {\n"
-        "                    opIO_Update = 1 (~1)\n"
-        "                    opIO_Update = 0 (~0)\n"
-        "                    RegsChanged = 0 (~0)\n"
+        "                    opIO_Update = 1\n"
+        "                    opIO_Update = 0\n"
+        "                    RegsChanged = 0\n"
         "                } else {\n"
         "                    fence\n"
         "                }\n"
         "            }\n"
         "        }\n"
         "    }\n"
-        "    fsm (Clk, Reset){\n"
+        "    fsm (Clk, Reset) {\n"
         "        Init()\n"
         "        UpdateRegisters()\n"
         "        loop {\n"
@@ -2359,177 +2565,178 @@ bool testAlchaCaseStudyCombined()
         "                while (ipUpdate) {\n"
         "                    fence\n"
         "                }\n"
-        "                opBusy = 0 (~0)\n"
+        "                opBusy = 0\n"
         "            }\n"
         "            while ( ~ (ipUpdate)) {\n"
         "                fence\n"
         "            }\n"
-        "            opBusy = 1 (~1)\n"
+        "            opBusy = 1\n"
         "            UpdateRegisters()\n"
         "        }\n"
         "    }\n"
-        "    rtl (Clk, Reset){\n"
-        "        Trigger = )\n"
-        "        DR_Over = )\n"
-        "        if ((DR_Over) == (1 (~1))) {\n"
-        "            if ((Trigger)[ 0 (~0) ]) {\n"
+        "    rtl (Clk, Reset) {\n"
+        "        Trigger = :( (Trigger)[ 0 ], ipTrigger )\n"
+        "        DR_Over = :( (DR_Over)[ 0 ], ipDR_Over )\n"
+        "        if ((DR_Over) == (1)) {\n"
+        "            if ((Trigger)[ 0 ]) {\n"
         "                opDR_Control =  ~ (opDR_Control)\n"
         "            } else {\n"
-        "                opDR_Control = 0 (~0)\n"
+        "                opDR_Control = 0\n"
         "            }\n"
         "        } else {\n"
-        "            if ((((DR_Over)[ 0 (~0) ]) == (1 (~1))) & ((Trigger) == (1 (~1)))) {\n"
+        "            if ((((DR_Over)[ 0 ]) == (1)) & ((Trigger) == (1))) {\n"
         "                opDR_Control = ( ~ (opDR_Control)) & ( ~ (opBusy))\n"
         "            }\n"
         "        }\n"
         "    }\n"
         "}",
-        "class ADF4159(net Clk, net Reset, num Baud_kHz = 1000 (~1000)){\n"
+
+        "class ADF4159(net Clk, net Reset, num Baud_kHz = 1000){\n"
         "    public {\n"
-        "        net (4 (~4)) CP_CurrentSetting = 7 (~7)\n"
-        "        net (12 (~12)) Integer = 0 (~0)\n"
-        "        net (25 (~25)) Fraction = 0 (~0)\n"
-        "        net RampOn = 0 (~0)\n"
-        "        net ( - (15 (~15))) DeviationWord_0 = 0 (~0)\n"
-        "        net (4 (~4)) DeviationOffset_0 = 0 (~0)\n"
-        "        net (20 (~20)) StepWord_0 = 0 (~0)\n"
-        "        net ( - (15 (~15))) DeviationWord_1 = 0 (~0)\n"
-        "        net (4 (~4)) DeviationOffset_1 = 0 (~0)\n"
-        "        net (20 (~20)) StepWord_1 = 0 (~0)\n"
-        "        net UseRefMul2 = 0 (~0)\n"
-        "        net (5 (~5)) RefCounter = 1 (~1)\n"
-        "        net UseRefDiv2 = 1 (~1)\n"
-        "        net (12 (~12)) Clk1Divider = 1 (~1)\n"
-        "        net (12 (~12)) Clk2Divider_0 = 2 (~2)\n"
-        "        net (12 (~12)) Clk2Divider_1 = 2 (~2)\n"
+        "        net (4) CP_CurrentSetting = 7\n"
+        "        net (12) Integer = 0\n"
+        "        net (25) Fraction = 0\n"
+        "        net RampOn = 0\n"
+        "        net ( - (15)) DeviationWord_0 = 0\n"
+        "        net (4) DeviationOffset_0 = 0\n"
+        "        net (20) StepWord_0 = 0\n"
+        "        net ( - (15)) DeviationWord_1 = 0\n"
+        "        net (4) DeviationOffset_1 = 0\n"
+        "        net (20) StepWord_1 = 0\n"
+        "        net UseRefMul2 = 0\n"
+        "        net (5) RefCounter = 1\n"
+        "        net UseRefDiv2 = 1\n"
+        "        net (12) Clk1Divider = 1\n"
+        "        net (12) Clk2Divider_0 = 2\n"
+        "        net (12) Clk2Divider_1 = 2\n"
         "        input {\n"
         "            net Update\n"
         "        }\n"
         "        output {\n"
-        "            net Busy = 1 (~1)\n"
+        "            net Busy = 1\n"
         "        }\n"
         "        input {\n"
         "            net Trigger\n"
         "        }\n"
         "        input {\n"
-        "            net (4 (~4)) MuxOutControl = 15 (~15)\n"
+        "            net (4) MuxOutControl = 15\n"
         "        }\n"
         "        input {\n"
-        "            net PhaseAdjust = 0 (~0)\n"
+        "            net PhaseAdjust = 0\n"
         "        }\n"
         "        input {\n"
-        "            net (12 (~12)) PhaseValue = 0 (~0)\n"
+        "            net (12) PhaseValue = 0\n"
         "        }\n"
         "        input {\n"
-        "            net CSR_Enable = 0 (~0)\n"
+        "            net CSR_Enable = 0\n"
         "        }\n"
         "        input {\n"
-        "            net Prescaler = 0 (~0)\n"
+        "            net Prescaler = 0\n"
         "        }\n"
         "        input {\n"
-        "            net (3 (~3)) NegBleedCurrent = 4 (~4)\n"
+        "            net (3) NegBleedCurrent = 4\n"
         "        }\n"
         "        input {\n"
-        "            net NegBleedEnable = 0 (~0)\n"
+        "            net NegBleedEnable = 0\n"
         "        }\n"
         "        input {\n"
-        "            net LossOfLock = 0 (~0)\n"
+        "            net LossOfLock = 0\n"
         "        }\n"
         "        input {\n"
-        "            net NSel = 0 (~0)\n"
+        "            net NSel = 0\n"
         "        }\n"
         "        input {\n"
-        "            net SD_Reset = 0 (~0)\n"
+        "            net SD_Reset = 0\n"
         "        }\n"
         "        input {\n"
-        "            net (2 (~2)) RampMode = 3 (~3)\n"
+        "            net (2) RampMode = 3\n"
         "        }\n"
         "        input {\n"
-        "            net PSK = 0 (~0)\n"
+        "            net PSK = 0\n"
         "        }\n"
         "        input {\n"
-        "            net FSK = 0 (~0)\n"
+        "            net FSK = 0\n"
         "        }\n"
         "        input {\n"
-        "            net LDP = 1 (~1)\n"
+        "            net LDP = 1\n"
         "        }\n"
         "        input {\n"
-        "            net PDPolarity = 0 (~0)\n"
+        "            net PDPolarity = 0\n"
         "        }\n"
         "        input {\n"
-        "            net PowerDown = 0 (~0)\n"
+        "            net PowerDown = 0\n"
         "        }\n"
         "        input {\n"
-        "            net CP_ThreeState = 0 (~0)\n"
+        "            net CP_ThreeState = 0\n"
         "        }\n"
         "        input {\n"
-        "            net CounterReset = 0 (~0)\n"
+        "            net CounterReset = 0\n"
         "        }\n"
         "        input {\n"
-        "            net LE_Select = 0 (~0)\n"
+        "            net LE_Select = 0\n"
         "        }\n"
         "        input {\n"
-        "            net (5 (~5)) SD_ModulatorMode = 0 (~0)\n"
+        "            net (5) SD_ModulatorMode = 0\n"
         "        }\n"
         "        input {\n"
-        "            net (5 (~5)) RampStatus = 3 (~3)\n"
+        "            net (5) RampStatus = 3\n"
         "        }\n"
         "        input {\n"
-        "            net (2 (~2)) ClkDivMode = 3 (~3)\n"
+        "            net (2) ClkDivMode = 3\n"
         "        }\n"
         "        input {\n"
-        "            net TxDataInvert = 0 (~0)\n"
+        "            net TxDataInvert = 0\n"
         "        }\n"
         "        input {\n"
-        "            net TxDataRampClk = 0 (~0)\n"
+        "            net TxDataRampClk = 0\n"
         "        }\n"
         "        input {\n"
-        "            net ParabolicRamp = 0 (~0)\n"
+        "            net ParabolicRamp = 0\n"
         "        }\n"
         "        input {\n"
-        "            net (2 (~2)) Interrupt = 0 (~0)\n"
+        "            net (2) Interrupt = 0\n"
         "        }\n"
         "        input {\n"
-        "            net FSK_Ramp = 0 (~0)\n"
+        "            net FSK_Ramp = 0\n"
         "        }\n"
         "        input {\n"
-        "            net DualRamp = 0 (~0)\n"
+        "            net DualRamp = 0\n"
         "        }\n"
         "        input {\n"
-        "            net TxDataTriggerDelay = 0 (~0)\n"
+        "            net TxDataTriggerDelay = 0\n"
         "        }\n"
         "        input {\n"
-        "            net TriDelay = 0 (~0)\n"
+        "            net TriDelay = 0\n"
         "        }\n"
         "        input {\n"
-        "            net SingleFullTriangle = 1 (~1)\n"
+        "            net SingleFullTriangle = 1\n"
         "        }\n"
         "        input {\n"
-        "            net TxDataTrigger = 1 (~1)\n"
+        "            net TxDataTrigger = 1\n"
         "        }\n"
         "        input {\n"
-        "            net FastRamp = 1 (~1)\n"
+        "            net FastRamp = 1\n"
         "        }\n"
         "        input {\n"
-        "            net RampDelayFastLock = 0 (~0)\n"
+        "            net RampDelayFastLock = 0\n"
         "        }\n"
         "        input {\n"
-        "            net RampDelay = 0 (~0)\n"
+        "            net RampDelay = 0\n"
         "        }\n"
         "        input {\n"
-        "            net DelClkSel = 0 (~0)\n"
+        "            net DelClkSel = 0\n"
         "        }\n"
         "        input {\n"
-        "            net DelStartEn = 0 (~0)\n"
+        "            net DelStartEn = 0\n"
         "        }\n"
         "        input {\n"
-        "            net (12 (~12)) DelayStartWord = 0 (~0)\n"
+        "            net (12) DelayStartWord = 0\n"
         "        }\n"
         "    }\n"
         "    private {\n"
-        "        net SPI_Clk = 0 (~0)\n"
+        "        net SPI_Clk = 0\n"
         "        net SPI_Data\n"
-        "        net SPI_LE = 1 (~1)\n"
+        "        net SPI_LE = 1\n"
         "    }\n"
         "    void ConnectPins(pin SClk, pin Data, pin LE, pin TxData){\n"
         "        SClk = SPI_Clk\n"
@@ -2538,42 +2745,52 @@ bool testAlchaCaseStudyCombined()
         "        TxData = (Trigger) & (RampOn)\n"
         "    }\n"
         "    private {\n"
-        "        num RefFreq = 0 (~0)\n"
-        "        num PfdFreq = 0 (~0)\n"
-        "        num StartFreq = 10000000000 (~1e+10)\n"
-        "        bool FeedbackVcoDiv2 = 1 (~1)\n"
-        "        bool UseRefMul2 = 0 (~0)\n"
-        "        bool UseRefDiv2 = 0 (~0)\n"
+        "        num RefFreq = 0\n"
+        "        num PfdFreq = 0\n"
+        "        num StartFreq = 10000000000\n"
+        "        bool FeedbackVcoDiv2 = 1\n"
+        "        bool UseRefMul2 = 0\n"
+        "        bool UseRefDiv2 = 0\n"
         "    }\n"
         "    void SetStart(num StartFreq){\n"
-        "        assert (RefFreq) > (0 (~0))\n"
+        "        assert {\n"
+        "            (RefFreq) > (0)\n"
+        "        }\n"
         "        (this) . (StartFreq) = StartFreq\n"
-        "        num Frequency = (FeedbackVcoDiv2) ? (round(((16777216 (~1.67772e+07)) * (StartFreq)) / (PfdFreq))) : (round(((33554432 (~3.35544e+07)) * (StartFreq)) / (PfdFreq)))\n"
-        "        Integer = (Frequency) >> (25 (~25))\n"
-        "        Fraction = (Frequency) & (33554431 (~3.35544e+07))\n"
+        "        num Frequency = (FeedbackVcoDiv2) ? (round(((16777216) * (StartFreq)) / (PfdFreq))) : (round(((33554432) * (StartFreq)) / (PfdFreq)))\n"
+        "        Integer = (Frequency) >> (25)\n"
+        "        Fraction = (Frequency) & (33554431)\n"
         "    }\n"
         "    private {\n"
         "        void SetRamp(bool Up, num Bandwidth, num Time){\n"
-        "            assert (RefFreq) > (0 (~0))\n"
-        "            Clk1Divider = 1 (~1)\n"
-        "            num Clk2Divider = 2 (~2)\n"
-        "            num StepWord = 0 (~0)\n"
-        "            num DeviationOffset = 0 (~0)\n"
-        "            num DeviationWord = 0 (~0)\n"
-        "            Clk2Divider = (PfdFreq) / (((1048576 (~1.04858e+06)) - (1 (~1))) / (Time))\n"
-        "            if ((Clk2Divider) < (2 (~2))) {\n"
-        "                Clk2Divider = 2 (~2)\n"
+        "            assert {\n"
+        "                (RefFreq) > (0)\n"
         "            }\n"
-        "            assert (Clk2Divider) < (4096 (~4096))\n"
+        "            Clk1Divider = 1\n"
+        "            num Clk2Divider = 2\n"
+        "            num StepWord = 0\n"
+        "            num DeviationOffset = 0\n"
+        "            num DeviationWord = 0\n"
+        "            Clk2Divider = (PfdFreq) / (((1048576) - (1)) / (Time))\n"
+        "            if ((Clk2Divider) < (2)) {\n"
+        "                Clk2Divider = 2\n"
+        "            }\n"
+        "            assert {\n"
+        "                (Clk2Divider) < (4096)\n"
+        "            }\n"
         "            StepWord = round(((PfdFreq) / (Clk2Divider)) * (Time))\n"
-        "            assert (StepWord) < (1048576 (~1.04858e+06))\n"
-        "            DeviationOffset = 0 (~0)\n"
-        "            DeviationWord = round((((Bandwidth) / (StepWord)) / ((PfdFreq) / (33554432 (~3.35544e+07)))) / ((2 (~2)) ** (DeviationOffset)))\n"
-        "            while ((abs(DeviationWord)) >= (32768 (~32768))) {\n"
-        "                DeviationOffset++\n"
-        "                DeviationWord /= 2 (~2)\n"
+        "            assert {\n"
+        "                (StepWord) < (1048576)\n"
         "            }\n"
-        "            assert (DeviationOffset) < (16 (~16))\n"
+        "            DeviationOffset = 0\n"
+        "            DeviationWord = round((((Bandwidth) / (StepWord)) / ((PfdFreq) / (33554432))) / ((2) ** (DeviationOffset)))\n"
+        "            while ((abs(DeviationWord)) >= (32768)) {\n"
+        "                DeviationOffset++\n"
+        "                DeviationWord /= 2\n"
+        "            }\n"
+        "            assert {\n"
+        "                (DeviationOffset) < (16)\n"
+        "            }\n"
         "            if (Up) {\n"
         "                Clk2Divider_0 = Clk2Divider\n"
         "                StepWord_0 = StepWord\n"
@@ -2588,81 +2805,81 @@ bool testAlchaCaseStudyCombined()
         "        }\n"
         "    }\n"
         "    void SetRamp(num Bandwidth, num UpTime, num DownTime){\n"
-        "        SetRamp(1 (~1), Bandwidth, UpTime)\n"
-        "        SetRamp(0 (~0), Bandwidth, DownTime)\n"
+        "        SetRamp(1, Bandwidth, UpTime)\n"
+        "        SetRamp(0, Bandwidth, DownTime)\n"
         "    }\n"
-        "    void SetRefFreq(num RefFreq, bool FeedbackVcoDiv2 = 1 (~1)){\n"
+        "    void SetRefFreq(num RefFreq, bool FeedbackVcoDiv2 = 1){\n"
         "        (this) . (RefFreq) = RefFreq\n"
         "        (this) . (FeedbackVcoDiv2) = FeedbackVcoDiv2\n"
-        "        UseRefMul2 = 0 (~0)\n"
-        "        UseRefDiv2 = 0 (~0)\n"
+        "        UseRefMul2 = 0\n"
+        "        UseRefDiv2 = 0\n"
         "        PfdFreq = RefFreq\n"
-        "        if ((RefFreq) > (110000000 (~1.1e+08))) {\n"
-        "            UseRefDiv2 = 1 (~1)\n"
-        "            PfdFreq /= 2 (~2)\n"
+        "        if ((RefFreq) > (110000000)) {\n"
+        "            UseRefDiv2 = 1\n"
+        "            PfdFreq /= 2\n"
         "        }\n"
-        "        if ((RefFreq) < (55000000 (~5.5e+07))) {\n"
-        "            UseRefMul2 = 1 (~1)\n"
-        "            PfdFreq *= 2 (~2)\n"
+        "        if ((RefFreq) < (55000000)) {\n"
+        "            UseRefMul2 = 1\n"
+        "            PfdFreq *= 2\n"
         "        }\n"
-        "        num RefDiv = 1 (~1)\n"
-        "        while (((RefDiv) < (32 (~32))) & ((PfdFreq) > (110000000 (~1.1e+08)))) {\n"
+        "        num RefDiv = 1\n"
+        "        while (((RefDiv) < (32)) & ((PfdFreq) > (110000000))) {\n"
         "            RefDiv++\n"
-        "            PfdFreq /= 2 (~2)\n"
+        "            PfdFreq /= 2\n"
         "        }\n"
         "        RefCounter = RefDiv\n"
         "        SetStart(StartFreq)\n"
         "    }\n"
         "    private {\n"
-        "        net (32 (~32)) R0 = )\n"
-        "        net (32 (~32)) R1 = )\n"
-        "        net (32 (~32)) R2 = )\n"
-        "        net (32 (~32)) R3 = )\n"
-        "        net (32 (~32)) R4_0 = )\n"
-        "        net (32 (~32)) R4_1 = )\n"
-        "        net (32 (~32)) R5_0 = )\n"
-        "        net (32 (~32)) R5_1 = )\n"
-        "        net (32 (~32)) R6_0 = )\n"
-        "        net (32 (~32)) R6_1 = )\n"
-        "        net (32 (~32)) R7 = )\n"
+        "        net (32) R0 = :( RampOn, MuxOutControl, Integer, (Fraction)[ (24) .. (13) ], (0) @ (3) )\n"
+        "        net (32) R1 = :( (0) @ (3), PhaseAdjust, (Fraction)[ (12) .. (0) ], PhaseValue, (1) @ (3) )\n"
+        "        net (32) R2 = :( (0) @ (3), CSR_Enable, CP_CurrentSetting, (0) @ (1), Prescaler, UseRefDiv2, UseRefMul2, RefCounter, Clk1Divider, (2) @ (3) )\n"
+        "        net (32) R3 = :( (0) @ (7), NegBleedCurrent, NegBleedEnable, (1) @ (4), LossOfLock, NSel, SD_Reset, (0) @ (2), RampMode, PSK, FSK, LDP, PDPolarity, PowerDown, CP_ThreeState, CounterReset, (3) @ (3) )\n"
+        "        net (32) R4_0 = :( LE_Select, SD_ModulatorMode, RampStatus, ClkDivMode, Clk2Divider_0, (0) @ (1), (0) @ (3), (4) @ (3) )\n"
+        "        net (32) R4_1 = :( LE_Select, SD_ModulatorMode, RampStatus, ClkDivMode, Clk2Divider_1, (1) @ (1), (0) @ (3), (4) @ (3) )\n"
+        "        net (32) R5_0 = :( (0) @ (1), TxDataInvert, TxDataRampClk, ParabolicRamp, Interrupt, FSK_Ramp, DualRamp, (0) @ (1), DeviationOffset_0, DeviationWord_0, (5) @ (3) )\n"
+        "        net (32) R5_1 = :( (0) @ (1), TxDataInvert, TxDataRampClk, ParabolicRamp, Interrupt, FSK_Ramp, DualRamp, (1) @ (1), DeviationOffset_1, DeviationWord_1, (5) @ (3) )\n"
+        "        net (32) R6_0 = :( (0) @ (9), StepWord_0, (6) @ (3) )\n"
+        "        net (32) R6_1 = :( (1) @ (9), StepWord_1, (6) @ (3) )\n"
+        "        net (32) R7 = :( (0) @ (8), TxDataTriggerDelay, TriDelay, SingleFullTriangle, TxDataTrigger, FastRamp, RampDelayFastLock, RampDelay, DelClkSel, DelStartEn, DelayStartWord, (7) @ (3) )\n"
         "    }\n"
         "    private {\n"
-        "        num Baud_Cycles = round(((Clk) ' (frequency)) / ((Baud_kHz) * (2 (~2))))\n"
+        "        num Baud_Cycles = round(((Clk) ' (frequency)) / ((Baud_kHz) * (2)))\n"
         "        num Baud_N = ceil(log2(Baud_Cycles))\n"
         "        net (Baud_N) Baud_Count\n"
-        "        rtl (Clk){\n"
+        "        rtl (Clk) {\n"
         "            if (Baud_Count) {\n"
         "                Baud_Count--\n"
         "            } else {\n"
-        "                Baud_Count = (Baud_Cycles) - (1 (~1))\n"
+        "                Baud_Count = (Baud_Cycles) - (1)\n"
         "            }\n"
         "        }\n"
         "        net Baud_Trigger =  ~| (Baud_Count)\n"
         "    }\n"
         "    private {\n"
-        "        void SendSPI(net (32 (~32)) Register){\n"
-        "            net (32 (~32)) Data\n"
-        "            SPI_Data = (Data)[ 31 (~31) ]\n"
+        "        void SendSPI(net (32) Register){\n"
+        "            net (32) Data\n"
+        "            SPI_Data = (Data)[ 31 ]\n"
         "            fsm {\n"
         "                Data = Register\n"
-        "                SPI_LE = 0 (~0)\n"
-        "                loop (32 (~32)) {\n"
-        "                    SPI_Clk = 1 (~1)\n"
-        "                    SPI_Clk = 0 (~0)\n"
-        "                    Data <<= 1 (~1)\n"
+        "                SPI_LE = 0\n"
+        "                loop (32) {\n"
+        "                    SPI_Clk = 1\n"
+        "                    SPI_Clk = 0\n"
+        "                    Data <<= 1\n"
         "                }\n"
-        "                SPI_LE = 1 (~1)\n"
+        "                SPI_LE = 1\n"
         "            }\n"
         "        }\n"
         "    }\n"
-        "    fsm (Clk, Reset, Baud_Trigger){\n"
+        "    fsm (Clk, Reset, Baud_Trigger) {\n"
         "        loop {\n"
-        "            Busy = 0 (~0)\n"
+        "            Busy = 0\n"
         "            while ( ! (Update)) {\n"
         "                fence\n"
         "            }\n"
         "            fence\n"
-        "            Busy = 1 (~1)\n"
+        "            Busy = 1\n"
         "            SendSPI(R7)\n"
         "            SendSPI(R6_1)\n"
         "            SendSPI(R6_0)\n"
@@ -2680,12 +2897,14 @@ bool testAlchaCaseStudyCombined()
         "        }\n"
         "    }\n"
         "}",
-        " ' (target_vendor) = \"Altera\"",
-        " ' (target_series) = \"Cyclone V\"",
-        " ' (target_device) = \"5CSEMA4U23C6N\"",
-        " ' (target_board) = \"DE0-Nano-SoC rev C1\"",
+
+        "( ' (target)) ' (type) = \"Project\"",
+        "( ' (target)) ' (vendor) = \"Altera\"",
+        "( ' (target)) ' (series) = \"Cyclone V\"",
+        "( ' (target)) ' (device) = \"5CSEMA4U23C6N\"",
+        "( ' (target)) ' (board) = \"DE0-Nano-SoC rev C1\"",
         " ' (standard) = \"3.3V\"",
-        "group <frequency = 50000000 (~5e+07)> {\n"
+        "group <frequency = 50000000> {\n"
         "    input {\n"
         "        pin <location = \"V11\", clock_group = \"ClockGroup1\"> Clock1\n"
         "    }\n"
@@ -2696,22 +2915,27 @@ bool testAlchaCaseStudyCombined()
         "        pin <location = \"E11\", clock_group = \"ClockGroup1\"> Clock3\n"
         "    }\n"
         "}",
+
         "input {\n"
-        "    pin (4 (~4)) <location = [ \"H5\", \"H6\", \"L9\", \"L10\" ]> Switches\n"
+        "    pin (4) <location = [ \"H5\", \"H6\", \"L9\", \"L10\" ]> Switches\n"
         "}",
+
         "input {\n"
-        "    pin (2 (~2)) <location = [ \"AH16\", \"AH17\" ]> Keys\n"
+        "    pin (2) <location = [ \"AH16\", \"AH17\" ]> Keys\n"
         "}",
+
         "output {\n"
-        "    pin (8 (~8)) <location = [ \"AA23\", \"Y16\", \"AE26\", \"AF26\", \"V15\", \"V16\", \"AA24\", \"W15\" ]> LEDs\n"
+        "    pin (8) <location = [ \"AA23\", \"Y16\", \"AE26\", \"AF26\", \"V15\", \"V16\", \"AA24\", \"W15\" ]> LEDs\n"
         "}",
-        "pin (36 (~36)) <location = [ [ \"AE12\", \"AF11\", \"AE11\", \"AD12\", \"AF10\", \"AD11\", \"AE9\", \"AD10\", \"AE8\", \"AF9\", \"AF6\", \"AE7\", \"T11\", \"T13\", \"AE4\", \"AF5\", \"AG6\", \"AF4\", \"AH2\", \"AH3\", \"AG5\", \"AH4\", \"AH6\", \"AH5\", \"T12\", \"T8\", \"U11\", \"Y5\", \"Y4\", \"W8\", \"AB4\", \"Y8\", \"AF8\", \"W12\", \"AF7\", \"V12\" ], [ \"AC22\", \"AA18\", \"AE23\", \"AD23\", \"AH18\", \"AG21\", \"AH21\", \"AH19\", \"AH22\", \"AF22\", \"AD20\", \"AE24\", \"AE20\", \"AD19\", \"AF18\", \"AE19\", \"AG23\", \"AH23\", \"AF25\", \"AG24\", \"AA19\", \"AH26\", \"AG18\", \"AC23\", \"AF20\", \"AG19\", \"AG20\", \"AF21\", \"AE22\", \"AF23\", \"AH24\", \"AG26\", \"AH27\", \"AA15\", \"AG28\", \"Y15\" ] ]> GPIO[2 (~2)]",
+
+        "pin (36) <location = [ [ \"AE12\", \"AF11\", \"AE11\", \"AD12\", \"AF10\", \"AD11\", \"AE9\", \"AD10\", \"AE8\", \"AF9\", \"AF6\", \"AE7\", \"T11\", \"T13\", \"AE4\", \"AF5\", \"AG6\", \"AF4\", \"AH2\", \"AH3\", \"AG5\", \"AH4\", \"AH6\", \"AH5\", \"T12\", \"T8\", \"U11\", \"Y5\", \"Y4\", \"W8\", \"AB4\", \"Y8\", \"AF8\", \"W12\", \"AF7\", \"V12\" ], [ \"AC22\", \"AA18\", \"AE23\", \"AD23\", \"AH18\", \"AG21\", \"AH21\", \"AH19\", \"AH22\", \"AF22\", \"AD20\", \"AE24\", \"AE20\", \"AD19\", \"AF18\", \"AE19\", \"AG23\", \"AH23\", \"AF25\", \"AG24\", \"AA19\", \"AH26\", \"AG18\", \"AC23\", \"AF20\", \"AG19\", \"AG20\", \"AF21\", \"AE22\", \"AF23\", \"AH24\", \"AG26\", \"AH27\", \"AA15\", \"AG28\", \"Y15\" ] ]> GPIO[2]",
         "group Arduino {\n"
         "    input {\n"
         "        pin <location = \"AH7\"> nReset\n"
         "    }\n"
-        "    pin (16 (~16)) <location = [ \"AG11\", \"AH9\", \"AH12\", \"AH11\", \"AG16\", \"AF15\", \"AE15\", \"AF17\", \"AH8\", \"AG8\", \"U13\", \"U14\", \"AG9\", \"AG10\", \"AF13\", \"AG13\" ]> IO\n"
+        "    pin (16) <location = [ \"AG11\", \"AH9\", \"AH12\", \"AH11\", \"AG16\", \"AF15\", \"AE15\", \"AF17\", \"AH8\", \"AG8\", \"U13\", \"U14\", \"AG9\", \"AG10\", \"AF13\", \"AG13\" ]> IO\n"
         "}",
+
         "group ADC {\n"
         "    output {\n"
         "        pin <location = \"U9\"> ConvStart\n"
@@ -2726,8 +2950,9 @@ bool testAlchaCaseStudyCombined()
         "        pin <location = \"AD4\"> DataOut\n"
         "    }\n"
         "}",
+
         "group HPS {\n"
-        "    group <frequency = 25000000 (~2.5e+07)> {\n"
+        "    group <frequency = 25000000> {\n"
         "        input {\n"
         "            pin <location = \"E20\"> Clock1\n"
         "        }\n"
@@ -2736,10 +2961,10 @@ bool testAlchaCaseStudyCombined()
         "        }\n"
         "    }\n"
         "    input {\n"
-        "        pin <location = \"J18\", hps_gpio = \"GPIO54\", register_bit = 25 (~25)> Key\n"
+        "        pin <location = \"J18\", hps_gpio = \"GPIO54\", register_bit = 25> Key\n"
         "    }\n"
         "    output {\n"
-        "        pin <location = \"A20\", hps_gpio = \"GPIO53\", register_bit = 24 (~24)> LED\n"
+        "        pin <location = \"A20\", hps_gpio = \"GPIO53\", register_bit = 24> LED\n"
         "    }\n"
         "    group Ethernet {\n"
         "        group Tx {\n"
@@ -2747,7 +2972,7 @@ bool testAlchaCaseStudyCombined()
         "                pin <location = \"J15\"> Clock\n"
         "            }\n"
         "            output {\n"
-        "                pin (4 (~4)) <location = [ \"D17\", \"A15\", \"J14\", \"A16\" ]> Data\n"
+        "                pin (4) <location = [ \"D17\", \"A15\", \"J14\", \"A16\" ]> Data\n"
         "            }\n"
         "            output {\n"
         "                pin <location = \"A12\"> Enable\n"
@@ -2758,7 +2983,7 @@ bool testAlchaCaseStudyCombined()
         "                pin <location = \"J12\"> Clock\n"
         "            }\n"
         "            input {\n"
-        "                pin (4 (~4)) <location = [ \"A9\", \"C15\", \"A11\", \"A14\" ]> Data\n"
+        "                pin (4) <location = [ \"A9\", \"C15\", \"A11\", \"A14\" ]> Data\n"
         "            }\n"
         "            input {\n"
         "                pin <location = \"J13\"> Valid\n"
@@ -2789,14 +3014,14 @@ bool testAlchaCaseStudyCombined()
         "    group <standard = \"SSTL-15 Class I\"> DDR3 {\n"
         "        group <output_termination = \"SERIES 50 OHM WITH CALIBRATION\"> {\n"
         "            group <input_termination = \"PARALLEL 50 OHM WITH CALIBRATION\"> {\n"
-        "                pin (32 (~32)) <location = [ \"AA27\", \"Y27\", \"T24\", \"R24\", \"W26\", \"AA28\", \"R25\", \"R26\", \"V27\", \"R27\", \"N27\", \"N26\", \"U28\", \"T28\", \"N25\", \"N24\", \"N28\", \"M28\", \"M26\", \"M27\", \"J28\", \"J27\", \"L25\", \"K25\", \"F28\", \"G27\", \"K26\", \"J26\", \"D27\", \"E28\", \"J24\", \"J25\" ]> Data\n"
-        "                pin (4 (~4)) <location = [ \"U19-T20\", \"T19-T18\", \"R19-R18\", \"R17-R16\" ], standard = \"Differential 1.5-V SSTL Class I\"> DataStrobe\n"
+        "                pin (32) <location = [ \"AA27\", \"Y27\", \"T24\", \"R24\", \"W26\", \"AA28\", \"R25\", \"R26\", \"V27\", \"R27\", \"N27\", \"N26\", \"U28\", \"T28\", \"N25\", \"N24\", \"N28\", \"M28\", \"M26\", \"M27\", \"J28\", \"J27\", \"L25\", \"K25\", \"F28\", \"G27\", \"K26\", \"J26\", \"D27\", \"E28\", \"J24\", \"J25\" ]> Data\n"
+        "                pin (4) <location = [ \"U19-T20\", \"T19-T18\", \"R19-R18\", \"R17-R16\" ], standard = \"Differential 1.5-V SSTL Class I\"> DataStrobe\n"
         "            }\n"
-        "            pin (4 (~4)) <location = [ \"AB28\", \"W28\", \"P28\", \"G28\" ]> DataMask\n"
+        "            pin (4) <location = [ \"AB28\", \"W28\", \"P28\", \"G28\" ]> DataMask\n"
         "        }\n"
         "        group <output_termination = \"SERIES 50 OHM WITHOUT CALIBRATION\"> {\n"
-        "            pin (15 (~15)) <location = [ \"G23\", \"C24\", \"D24\", \"B24\", \"A24\", \"F25\", \"F26\", \"B26\", \"C26\", \"J20\", \"J21\", \"D26\", \"E26\", \"B28\", \"C28\" ]> Address\n"
-        "            pin (3 (~3)) <location = [ \"G25\", \"H25\", \"A27\" ]> Bank\n"
+        "            pin (15) <location = [ \"G23\", \"C24\", \"D24\", \"B24\", \"A24\", \"F25\", \"F26\", \"B26\", \"C26\", \"J20\", \"J21\", \"D26\", \"E26\", \"B28\", \"C28\" ]> Address\n"
+        "            pin (3) <location = [ \"G25\", \"H25\", \"A27\" ]> Bank\n"
         "            pin <location = \"N21-N20\", standard = \"Differential 1.5-V SSTL Class I\"> Clock\n"
         "            pin <location = \"A26\"> nColumnAddressStrobe\n"
         "            pin <location = \"L28\"> ClockEnable\n"
@@ -2815,14 +3040,14 @@ bool testAlchaCaseStudyCombined()
         "        output {\n"
         "            pin <location = \"D14\"> Command\n"
         "        }\n"
-        "        pin (4 (~4)) <location = [ \"B9\", \"B11\", \"B6\", \"C13\" ]> Data\n"
+        "        pin (4) <location = [ \"B9\", \"B11\", \"B6\", \"C13\" ]> Data\n"
         "    }\n"
         "    group USB {\n"
         "        input {\n"
-        "            pin <location = \"G4\", frequency = 60000000 (~6e+07)> ClockOut\n"
+        "            pin <location = \"G4\", frequency = 60000000> ClockOut\n"
         "        }\n"
         "        pin <location = \"H12\"> Reset\n"
-        "        pin (8 (~8)) <location = [ \"F4\", \"C7\", \"D4\", \"C8\", \"C4\", \"C9\", \"F5\", \"C10\" ]> Data\n"
+        "        pin (8) <location = [ \"F4\", \"C7\", \"D4\", \"C8\", \"C4\", \"C9\", \"F5\", \"C10\" ]> Data\n"
         "        input {\n"
         "            pin <location = \"E5\"> Direction\n"
         "        }\n"
@@ -2837,7 +3062,7 @@ bool testAlchaCaseStudyCombined()
         "        pin <location = \"C18\"> Clock\n"
         "        pin <location = \"A19\"> Data\n"
         "    }\n"
-        "    group <i2c_address = [ 166 (~166), 167 (~167) ], i2c_bus = I2C> G_Sensor {\n"
+        "    group <i2c_address = [ 166, 167 ], i2c_bus = I2C> G_Sensor {\n"
         "        input {\n"
         "            pin <location = \"A17\"> Interrupt\n"
         "        }\n"
@@ -2864,40 +3089,41 @@ bool testAlchaCaseStudyCombined()
         "        }\n"
         "    }\n"
         "}",
+
         "class TriggerDelay(net Clock, net Reset, net Trigger){\n"
         "    input {\n"
-        "        net Enable = 1 (~1)\n"
+        "        net Enable = 1\n"
         "    }\n"
         "    input {\n"
-        "        net (32 (~32)) Delay = (1/1000000 (~1e-06)) * ((Clock) ' (frequency))\n"
+        "        net (32) Delay = (1/1000000 (~1e-06)) * ((Clock) ' (frequency))\n"
         "    }\n"
         "    input {\n"
-        "        net (32 (~32)) Length = 1 (~1)\n"
+        "        net (32) Length = 1\n"
         "    }\n"
         "    output {\n"
-        "        net Output = 0 (~0)\n"
+        "        net Output = 0\n"
         "    }\n"
         "    private {\n"
-        "        net (32 (~32)) DelayCount = 0 (~0)\n"
-        "        net (32 (~32)) LengthCount = 0 (~0)\n"
+        "        net (32) DelayCount = 0\n"
+        "        net (32) LengthCount = 0\n"
         "        net Trigger_1\n"
         "    }\n"
-        "    rtl (Clock, Reset){\n"
+        "    rtl (Clock, Reset) {\n"
         "        Trigger_1 = Trigger\n"
-        "        if (()) == (1 (~1))) {\n"
+        "        if ((:( Trigger_1, Trigger )) == (1)) {\n"
         "            DelayCount = Delay\n"
         "        } else {\n"
-        "            if ((DelayCount) > (0 (~0))) {\n"
+        "            if ((DelayCount) > (0)) {\n"
         "                DelayCount--\n"
         "            }\n"
         "        }\n"
         "        if (Output) {\n"
-        "            if ((LengthCount) == (1 (~1))) {\n"
-        "                Output = 0 (~0)\n"
+        "            if ((LengthCount) == (1)) {\n"
+        "                Output = 0\n"
         "            }\n"
         "            LengthCount--\n"
         "        } else {\n"
-        "            if ((DelayCount) == (1 (~1))) {\n"
+        "            if ((DelayCount) == (1)) {\n"
         "                Output = Enable\n"
         "                LengthCount = Length\n"
         "            }\n"
@@ -2905,27 +3131,30 @@ bool testAlchaCaseStudyCombined()
         "    }\n"
         "    AddDebug(Output)\n"
         "}",
+
         "class TriggerGen(net Clock, net Reset){\n"
-        "    net (32 (~32)) Period = (1/1000 (~0.001)) * ((Clock) ' (frequency))\n"
-        "    net Output = 0 (~0)\n"
-        "    net (32 (~32)) Count = 0 (~0)\n"
-        "    rtl (Clock, Reset){\n"
+        "    net (32) Period = (1/1000 (~0.001)) * ((Clock) ' (frequency))\n"
+        "    net Output = 0\n"
+        "    net (32) Count = 0\n"
+        "    rtl (Clock, Reset) {\n"
         "        if ((Count) >= (Period)) {\n"
-        "            Count = 1 (~1)\n"
-        "            Output = 1 (~1)\n"
+        "            Count = 1\n"
+        "            Output = 1\n"
         "        } else {\n"
         "            Count++\n"
-        "            Output = 0 (~0)\n"
+        "            Output = 0\n"
         "        }\n"
         "    }\n"
         "    AddDebug(Ouptut)\n"
         "}",
-        "num DebugCounter = 0 (~0)",
+
+        "num DebugCounter = 0",
         "void AddDebug(net Signal){\n"
         "    (Debug)[ DebugCounter ] = Signal\n"
-        "    print(])\n"
+        "    print(:[ \"Debug[\", $(DebugCounter), \"] <= \", (Signal) ' (full_instance_name), \"\n" "\" ])\n"
         "    DebugCounter++\n"
         "}",
+
         "import \"Platform/Platform\"",
         "import \"SubSystems/SystemController\"",
         "import \"Library/Interfaces/RegistersDecoder\"",
@@ -2933,7 +3162,7 @@ bool testAlchaCaseStudyCombined()
         "(Registers) . (CppFilename) = \"../Software/Registers/Registers\"",
         "(Registers) . (LaTeXFilename) = \"../Documentation/Registers\"",
         "import \"Library/Misc/FirmwareVersion\"",
-        "FirmwareVersion (1 (~1), 0 (~0)) Firmware",
+        "FirmwareVersion (1, 0) Firmware",
         "(Registers) . (ReadOnly)((Firmware) . (Version))",
         "(Registers) . (ReadOnly)((Firmware) . (Date))",
         "(Registers) . (ReadOnly)((Firmware) . (Time))",
@@ -2949,57 +3178,61 @@ bool testAlchaCaseStudyCombined()
         "alias DipSwitch = (DE0) . (Switches)",
         "group Synth {\n"
         "    group SPI {\n"
-        "        alias SClk = (((DE0) . (Arduino)) . (IO))[ 0 (~0) ]\n"
-        "        alias nCS = (((DE0) . (Arduino)) . (IO))[ 1 (~1) ]\n"
-        "        alias SDIO = (((DE0) . (Arduino)) . (IO))[ 2 (~2) ]\n"
-        "        alias SyncIO = (((DE0) . (Arduino)) . (IO))[ 3 (~3) ]\n"
-        "        alias IO_Update = (((DE0) . (Arduino)) . (IO))[ 4 (~4) ]\n"
+        "        alias SClk = (((DE0) . (Arduino)) . (IO))[ 0 ]\n"
+        "        alias nCS = (((DE0) . (Arduino)) . (IO))[ 1 ]\n"
+        "        alias SDIO = (((DE0) . (Arduino)) . (IO))[ 2 ]\n"
+        "        alias SyncIO = (((DE0) . (Arduino)) . (IO))[ 3 ]\n"
+        "        alias IO_Update = (((DE0) . (Arduino)) . (IO))[ 4 ]\n"
         "    }\n"
-        "    alias DR_Control = (((DE0) . (Arduino)) . (IO))[ 9 (~9) ]\n"
-        "    alias DR_Hold = (((DE0) . (Arduino)) . (IO))[ 10 (~10) ]\n"
-        "    alias DR_Over = (((DE0) . (Arduino)) . (IO))[ 11 (~11) ]\n"
+        "    alias DR_Control = (((DE0) . (Arduino)) . (IO))[ 9 ]\n"
+        "    alias DR_Hold = (((DE0) . (Arduino)) . (IO))[ 10 ]\n"
+        "    alias DR_Over = (((DE0) . (Arduino)) . (IO))[ 11 ]\n"
         "}",
+
         "group ADC {\n"
-        "    alias nCS = (((DE0) . (Arduino)) . (IO))[ 5 (~5) ]\n"
-        "    alias SClk = (((DE0) . (Arduino)) . (IO))[ 6 (~6) ]\n"
-        "    alias Data = (((DE0) . (Arduino)) . (IO))[ 7 (~7) ]\n"
-        "    (SClk) ' (frequency) = 60000000 (~6e+07)\n"
+        "    alias nCS = (((DE0) . (Arduino)) . (IO))[ 5 ]\n"
+        "    alias SClk = (((DE0) . (Arduino)) . (IO))[ 6 ]\n"
+        "    alias Data = (((DE0) . (Arduino)) . (IO))[ 7 ]\n"
+        "    (SClk) ' (frequency) = 60000000\n"
         "    ((nCS) ' (set_output_delay)) ' (clock) = SClk\n"
-        "    ((nCS) ' (set_output_delay)) ' (delay) = 0 (~0)\n"
+        "    ((nCS) ' (set_output_delay)) ' (delay) = 0\n"
         "    ((nCS) ' (set_output_delay)) ' (uncertainty) = 1/20000000000 (~5e-11)\n"
         "    ((Data) ' (set_input_delay)) ' (clock) = SClk\n"
-        "    ((Data) ' (set_input_delay)) ' (delay) = (1/10 (~0.1)) / (200000000 (~2e+08))\n"
+        "    ((Data) ' (set_input_delay)) ' (delay) = (1/10 (~0.1)) / (200000000)\n"
         "    ((Data) ' (set_input_delay)) ' (uncertainty) = 1/20000000000 (~5e-11)\n"
         "}",
-        "alias TxEnable = (((DE0) . (Arduino)) . (IO))[ 8 (~8) ]",
-        "net (36 (~36)) Debug",
-        "((DE0) . (GPIO))[ 0 (~0) ] = Debug",
+
+        "alias TxEnable = (((DE0) . (Arduino)) . (IO))[ 8 ]",
+        "net (36) Debug",
+        "((DE0) . (GPIO))[ 0 ] = Debug",
         "group I2C {\n"
-        "    alias SClk = (((DE0) . (Arduino)) . (IO))[ 15 (~15) ]\n"
-        "    alias Data = (((DE0) . (Arduino)) . (IO))[ 14 (~14) ]\n"
-        "    (SClk) ' (pullup) = 1 (~1)\n"
-        "    (SClk) . (driver) = 0 (~0)\n"
-        "    (SClk) . (enable) = 0 (~0)\n"
-        "    (Data) ' (pullup) = 1 (~1)\n"
-        "    (Data) . (driver) = 0 (~0)\n"
-        "    (Data) . (enable) = 0 (~0)\n"
+        "    alias SClk = (((DE0) . (Arduino)) . (IO))[ 15 ]\n"
+        "    alias Data = (((DE0) . (Arduino)) . (IO))[ 14 ]\n"
+        "    (SClk) ' (pullup) = 1\n"
+        "    (SClk) . (driver) = 0\n"
+        "    (SClk) . (enable) = 0\n"
+        "    (Data) ' (pullup) = 1\n"
+        "    (Data) . (driver) = 0\n"
+        "    (Data) . (enable) = 0\n"
         "}",
-        "net ResetKey =  ~ (((DE0) . (Keys))[ 0 (~0) ])",
+
+        "net ResetKey =  ~ (((DE0) . (Keys))[ 0 ])",
         "import \"Library/Clocking_and_Reset/PLL_CycloneV\"",
-        "PLL_CycloneV ((DE0) . (Clock1), ResetKey, [ 120 (~120), 5/2 (~2.5) ]) PLL",
-        "alias DspClock = ((PLL) . (Output))[ 0 (~0) ]",
-        "alias ControlClock = ((PLL) . (Output))[ 1 (~1) ]",
+        "PLL_CycloneV ((DE0) . (Clock1), ResetKey, [ 120, 5/2 (~2.5) ]) PLL",
+        "alias DspClock = ((PLL) . (Output))[ 0 ]",
+        "alias ControlClock = ((PLL) . (Output))[ 1 ]",
         "import \"Library/Clocking_and_Reset/DelayedReset\"",
-        "net HPS_Reset = DelayedReset(ControlClock, (ResetKey) | ( ~ ((PLL) . (Locked))), 1 (~1))",
-        "net HPS_FPGA_Reset = 0 (~0)",
-        "net MasterReset = DelayedReset(ControlClock, ((HPS_FPGA_Reset) | (ResetKey)) | ( ~ ((PLL) . (Locked))), 100 (~100))",
+        "net HPS_Reset = DelayedReset(ControlClock, (ResetKey) | ( ~ ((PLL) . (Locked))), 1)",
+        "net HPS_FPGA_Reset = 0",
+        "net MasterReset = DelayedReset(ControlClock, ((HPS_FPGA_Reset) | (ResetKey)) | ( ~ ((PLL) . (Locked))), 100)",
         "alias Buffer = (SystemController) . (StreamBuffer)",
-        "net (((Buffer) . (Address)) ' (width)) WrAddress = 0 (~0)",
-        "net (((Buffer) . (Address)) ' (width)) RdAddress = 0 (~0)",
+        "net (((Buffer) . (Address)) ' (width)) WrAddress = 0",
+        "net (((Buffer) . (Address)) ' (width)) RdAddress = 0",
         "(Registers) . (ReadOnly)(WrAddress)",
         "(Registers) . (Writeable)(RdAddress)",
-        "(Buffer) . (Address) = 0 (~0)",
-        "fsm (DspClock, MasterReset){\n"
+        "(Buffer) . (Address) = 0",
+
+        "fsm (DspClock, MasterReset) {\n"
         "    loop {\n"
         "        loop {\n"
         "            if ((Buffer) . (Write)) {\n"
@@ -3007,16 +3240,16 @@ bool testAlchaCaseStudyCombined()
         "            } else {\n"
         "                WrAddress = (Buffer) . (Address)\n"
         "            }\n"
-        "            (Buffer) . (WriteData) := )\n"
+        "            (Buffer) . (WriteData) := :( (Packet) . (Data), (0) @ (2) )\n"
         "            if (((Packet) . (Valid)) & ((Packet) . (SoP))) {\n"
-        "                (Buffer) . (Write) = 1 (~1)\n"
+        "                (Buffer) . (Write) = 1\n"
         "                break\n"
         "            } else {\n"
-        "                (Buffer) . (Write) = 0 (~0)\n"
+        "                (Buffer) . (Write) = 0\n"
         "            }\n"
         "        }\n"
         "        loop {\n"
-        "            (Buffer) . (WriteData) := )\n"
+        "            (Buffer) . (WriteData) := :( (Packet) . (Data), (0) @ (2) )\n"
         "            (Buffer) . (Write) = (Packet) . (Valid)\n"
         "            if ((Packet) . (Valid)) {\n"
         "                (Buffer) . (Address)++\n"
@@ -3028,24 +3261,25 @@ bool testAlchaCaseStudyCombined()
         "        }\n"
         "    }\n"
         "}",
+
         "import \"Library/Misc/MutEx\"",
         "import \"Library/Timing/TriggerDelay\"",
         "import \"Library/Peripherals/ADC_and_BIM/LTC2991\"",
         "MutEx (ControlClock, MasterReset) I2C_MutEx",
-        "LTC2991 (ControlClock, MasterReset, 0 (~0)) TxBIM",
-        "(TxBIM) . (SetType)(0 (~0), ((LTC2991) . (TYPE)) . (Voltage))",
-        "(TxBIM) . (SetType)(1 (~1), ((LTC2991) . (TYPE)) . (Voltage))",
-        "(TxBIM) . (SetType)(2 (~2), ((LTC2991) . (TYPE)) . (Voltage))",
-        "(TxBIM) . (SetType)(3 (~3), ((LTC2991) . (TYPE)) . (Temperature))",
+        "LTC2991 (ControlClock, MasterReset, 0) TxBIM",
+        "(TxBIM) . (SetType)(0, ((LTC2991) . (TYPE)) . (Voltage))",
+        "(TxBIM) . (SetType)(1, ((LTC2991) . (TYPE)) . (Voltage))",
+        "(TxBIM) . (SetType)(2, ((LTC2991) . (TYPE)) . (Voltage))",
+        "(TxBIM) . (SetType)(3, ((LTC2991) . (TYPE)) . (Temperature))",
         "(TxBIM) . (Quiet) =  ! (TxEnable)",
         "(TxBIM) . (MakeRegisters)(Registers)",
         "(TxBIM) . (ConnectBus)((I2C) . (SClk), (I2C) . (Data))",
         "(I2C_MutEx) . (Add)(TxBIM)",
-        "LTC2991 (ControlClock, MasterReset, 1 (~1)) RxBIM",
-        "(RxBIM) . (SetType)(0 (~0), ((LTC2991) . (TYPE)) . (Voltage))",
-        "(RxBIM) . (SetType)(1 (~1), ((LTC2991) . (TYPE)) . (Differential))",
-        "(RxBIM) . (SetType)(2 (~2), ((LTC2991) . (TYPE)) . (Voltage))",
-        "(RxBIM) . (SetType)(3 (~3), ((LTC2991) . (TYPE)) . (Temperature))",
+        "LTC2991 (ControlClock, MasterReset, 1) RxBIM",
+        "(RxBIM) . (SetType)(0, ((LTC2991) . (TYPE)) . (Voltage))",
+        "(RxBIM) . (SetType)(1, ((LTC2991) . (TYPE)) . (Differential))",
+        "(RxBIM) . (SetType)(2, ((LTC2991) . (TYPE)) . (Voltage))",
+        "(RxBIM) . (SetType)(3, ((LTC2991) . (TYPE)) . (Temperature))",
         "(RxBIM) . (Quiet) =  ! (TxEnable)",
         "(RxBIM) . (MakeRegisters)(Registers)",
         "(RxBIM) . (ConnectBus)((I2C) . (SClk), (I2C) . (Data))",
@@ -3065,13 +3299,13 @@ bool testAlchaCaseStudyCombined()
         "import \"Library/DSP/FFT\"",
         "import \"Library/DSP/Transpose\"",
         "import \"Library/DSP/AlphaFilter\"",
-        "FIFO (DspClock, MasterReset, 8192 (~8192)) Queue",
-        "Window (DspClock, MasterReset, 2500 (~2500), 16 (~16), 32 (~32), \"Hann\") RangeWindow",
-        "FFT (DspClock, MasterReset, 4096 (~4096)) RangeFFT",
-        "Transpose (DspClock, MasterReset, 2048 (~2048), 128 (~128)) CornerTurn",
-        "Window (DspClock, MasterReset, 128 (~128), 32 (~32), 32 (~32), \"Hann\") DopplerWindow",
-        "FFT (DspClock, MasterReset, 128 (~128)) DopplerFFT",
-        "AlphaFilter (DspClock, MasterReset, 128 (~128), 2048 (~2048)) Filter",
+        "FIFO (DspClock, MasterReset, 8192) Queue",
+        "Window (DspClock, MasterReset, 2500, 16, 32, \"Hann\") RangeWindow",
+        "FFT (DspClock, MasterReset, 4096) RangeFFT",
+        "Transpose (DspClock, MasterReset, 2048, 128) CornerTurn",
+        "Window (DspClock, MasterReset, 128, 32, 32, \"Hann\") DopplerWindow",
+        "FFT (DspClock, MasterReset, 128) DopplerFFT",
+        "AlphaFilter (DspClock, MasterReset, 128, 2048) Filter",
         "(Registers) . (ReadOnly)((Queue) . (NumItems))",
         "(Registers) . (Writeable)((Filter) . (Alpha))",
         "(Registers) . (ReadOnly)((Filter) . (WrAddress))",
@@ -3084,36 +3318,40 @@ bool testAlchaCaseStudyCombined()
         "(Registers) . (Writeable)((PacketTrigger) . (Delay))",
         "(Registers) . (Writeable)((PacketTrigger) . (Length))",
         "net PacketTrigger_DSP",
-        "rtl (DspClock){\n"
+        "rtl (DspClock) {\n"
         "    PacketTrigger_DSP = (PacketTrigger) . (Output)\n"
         "}",
+
         "group Packet {\n"
         "    net SoP\n"
         "    net EoP\n"
-        "    net (13 (~13),  - (1 (~1))) Data\n"
-        "    net Valid = 0 (~0)\n"
+        "    net (13,  - (1)) Data\n"
+        "    net Valid = 0\n"
         "}",
+
         "AddDebug((Packet) . (SoP))",
         "AddDebug((Packet) . (EoP))",
         "AddDebug((Packet) . (Valid))",
         "private {\n"
-        "    net (12 (~12)) n\n"
+        "    net (12) n\n"
         "}",
+
         "private {\n"
-        "    num N = 2500 (~2500)\n"
+        "    num N = 2500\n"
         "}",
-        "fsm (DspClock, MasterReset){\n"
+
+        "fsm (DspClock, MasterReset) {\n"
         "    loop {\n"
-        "        n = 0 (~0)\n"
-        "        (Packet) . (Valid) = 0 (~0)\n"
+        "        n = 0\n"
+        "        (Packet) . (Valid) = 0\n"
         "        while ( ! (PacketTrigger_DSP)) {\n"
         "            fence\n"
         "        }\n"
         "        fence\n"
         "        while ((n) < (N)) {\n"
-        "            (Packet) . (SoP) = (n) == (0 (~0))\n"
-        "            (Packet) . (EoP) = (n) == ((N) - (1 (~1)))\n"
-        "            (Packet) . (Data) := )\n"
+        "            (Packet) . (SoP) = (n) == (0)\n"
+        "            (Packet) . (EoP) = (n) == ((N) - (1))\n"
+        "            (Packet) . (Data) := :(  ~ (((ADC) . (Output)) . (Data)(13)), ((ADC) . (Output)) . (Data)((12) .. (0)) )\n"
         "            (Packet) . (Valid) = ((ADC) . (Output)) . (Valid)\n"
         "            if (((ADC) . (Output)) . (Valid)) {\n"
         "                n++\n"
@@ -3122,9 +3360,11 @@ bool testAlchaCaseStudyCombined()
         "        }\n"
         "    }\n"
         "}",
+
         "import \"DebugStreamer\" as DebugStreamer",
         "import \"Library/Interfaces/AvalonMaster\"",
         "import \"Library/Interfaces/AvalonSlave\"",
+
         "class SystemController_Class{\n"
         "    private {\n"
         "        hdl SoC_System_HDL(\n"
@@ -3241,10 +3481,10 @@ bool testAlchaCaseStudyCombined()
         "            net hps_io_hps_io_gpio_inst_GPIO54\n"
         "            net hps_io_hps_io_gpio_inst_GPIO61\n"
         "            output {\n"
-        "                net (15 (~15)) memory_mem_a\n"
+        "                net (15) memory_mem_a\n"
         "            }\n"
         "            output {\n"
-        "                net (3 (~3)) memory_mem_ba\n"
+        "                net (3) memory_mem_ba\n"
         "            }\n"
         "            output {\n"
         "                net memory_mem_ck\n"
@@ -3270,14 +3510,14 @@ bool testAlchaCaseStudyCombined()
         "            output {\n"
         "                net memory_mem_reset_n\n"
         "            }\n"
-        "            net (32 (~32)) memory_mem_dq\n"
-        "            net (4 (~4)) memory_mem_dqs\n"
-        "            net (4 (~4)) memory_mem_dqs_n\n"
+        "            net (32) memory_mem_dq\n"
+        "            net (4) memory_mem_dqs\n"
+        "            net (4) memory_mem_dqs_n\n"
         "            output {\n"
         "                net memory_mem_odt\n"
         "            }\n"
         "            output {\n"
-        "                net (4 (~4)) memory_mem_dm\n"
+        "                net (4) memory_mem_dm\n"
         "            }\n"
         "            input {\n"
         "                net memory_oct_rzqin\n"
@@ -3289,19 +3529,19 @@ bool testAlchaCaseStudyCombined()
         "                net light_weight_bus_reset_reset\n"
         "            }\n"
         "            output {\n"
-        "                net (12 (~12)) light_weight_bus_address\n"
+        "                net (12) light_weight_bus_address\n"
         "            }\n"
         "            output {\n"
-        "                net (4 (~4)) light_weight_bus_byteenable\n"
+        "                net (4) light_weight_bus_byteenable\n"
         "            }\n"
         "            output {\n"
-        "                net (1 (~1)) light_weight_bus_burstcount\n"
+        "                net (1) light_weight_bus_burstcount\n"
         "            }\n"
         "            input {\n"
         "                net light_weight_bus_waitrequest\n"
         "            }\n"
         "            output {\n"
-        "                net (32 (~32)) light_weight_bus_writedata\n"
+        "                net (32) light_weight_bus_writedata\n"
         "            }\n"
         "            output {\n"
         "                net light_weight_bus_write\n"
@@ -3310,7 +3550,7 @@ bool testAlchaCaseStudyCombined()
         "                net light_weight_bus_read\n"
         "            }\n"
         "            input {\n"
-        "                net (32 (~32)) light_weight_bus_readdata\n"
+        "                net (32) light_weight_bus_readdata\n"
         "            }\n"
         "            input {\n"
         "                net light_weight_bus_readdatavalid\n"
@@ -3319,19 +3559,19 @@ bool testAlchaCaseStudyCombined()
         "                net light_weight_bus_debugaccess\n"
         "            }\n"
         "            input {\n"
-        "                net (27 (~27)) sdram_address\n"
+        "                net (27) sdram_address\n"
         "            }\n"
         "            input {\n"
-        "                net (32 (~32)) sdram_byteenable\n"
+        "                net (32) sdram_byteenable\n"
         "            }\n"
         "            input {\n"
-        "                net (8 (~8)) sdram_burstcount\n"
+        "                net (8) sdram_burstcount\n"
         "            }\n"
         "            output {\n"
         "                net sdram_waitrequest\n"
         "            }\n"
         "            input {\n"
-        "                net (256 (~256)) sdram_writedata\n"
+        "                net (256) sdram_writedata\n"
         "            }\n"
         "            input {\n"
         "                net sdram_write\n"
@@ -3340,7 +3580,7 @@ bool testAlchaCaseStudyCombined()
         "                net sdram_read\n"
         "            }\n"
         "            output {\n"
-        "                net (256 (~256)) sdram_readdata\n"
+        "                net (256) sdram_readdata\n"
         "            }\n"
         "            output {\n"
         "                net sdram_readdatavalid\n"
@@ -3358,19 +3598,19 @@ bool testAlchaCaseStudyCombined()
         "                net streambuffer_chipselect\n"
         "            }\n"
         "            input {\n"
-        "                net (13 (~13)) streambuffer_address\n"
+        "                net (13) streambuffer_address\n"
         "            }\n"
         "            input {\n"
-        "                net (2 (~2)) streambuffer_byteenable\n"
+        "                net (2) streambuffer_byteenable\n"
         "            }\n"
         "            input {\n"
-        "                net (16 (~16)) streambuffer_writedata\n"
+        "                net (16) streambuffer_writedata\n"
         "            }\n"
         "            input {\n"
         "                net streambuffer_write\n"
         "            }\n"
         "            output {\n"
-        "                net (16 (~16)) streambuffer_readdata\n"
+        "                net (16) streambuffer_readdata\n"
         "            }\n"
         "        }\n"
         "        SoC_System_HDL SoC_System\n"
@@ -3378,33 +3618,33 @@ bool testAlchaCaseStudyCombined()
         "    private {\n"
         "        ((((HPS_Pins) . (Ethernet)) . (Tx)) . (Clock)) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_TX_CLK))\n"
         "        ((((HPS_Pins) . (Ethernet)) . (Tx)) . (Enable)) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_TX_CTL))\n"
-        "        (((((HPS_Pins) . (Ethernet)) . (Tx)) . (Data))[ 0 (~0) ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_TXD0))\n"
-        "        (((((HPS_Pins) . (Ethernet)) . (Tx)) . (Data))[ 1 (~1) ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_TXD1))\n"
-        "        (((((HPS_Pins) . (Ethernet)) . (Tx)) . (Data))[ 2 (~2) ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_TXD2))\n"
-        "        (((((HPS_Pins) . (Ethernet)) . (Tx)) . (Data))[ 3 (~3) ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_TXD3))\n"
+        "        (((((HPS_Pins) . (Ethernet)) . (Tx)) . (Data))[ 0 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_TXD0))\n"
+        "        (((((HPS_Pins) . (Ethernet)) . (Tx)) . (Data))[ 1 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_TXD1))\n"
+        "        (((((HPS_Pins) . (Ethernet)) . (Tx)) . (Data))[ 2 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_TXD2))\n"
+        "        (((((HPS_Pins) . (Ethernet)) . (Tx)) . (Data))[ 3 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_TXD3))\n"
         "        ((((HPS_Pins) . (Ethernet)) . (Rx)) . (Clock)) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_RX_CLK))\n"
         "        ((((HPS_Pins) . (Ethernet)) . (Rx)) . (Valid)) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_RX_CTL))\n"
-        "        (((((HPS_Pins) . (Ethernet)) . (Rx)) . (Data))[ 0 (~0) ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_RXD0))\n"
-        "        (((((HPS_Pins) . (Ethernet)) . (Rx)) . (Data))[ 1 (~1) ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_RXD1))\n"
-        "        (((((HPS_Pins) . (Ethernet)) . (Rx)) . (Data))[ 2 (~2) ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_RXD2))\n"
-        "        (((((HPS_Pins) . (Ethernet)) . (Rx)) . (Data))[ 3 (~3) ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_RXD3))\n"
+        "        (((((HPS_Pins) . (Ethernet)) . (Rx)) . (Data))[ 0 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_RXD0))\n"
+        "        (((((HPS_Pins) . (Ethernet)) . (Rx)) . (Data))[ 1 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_RXD1))\n"
+        "        (((((HPS_Pins) . (Ethernet)) . (Rx)) . (Data))[ 2 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_RXD2))\n"
+        "        (((((HPS_Pins) . (Ethernet)) . (Rx)) . (Data))[ 3 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_RXD3))\n"
         "        (((HPS_Pins) . (Ethernet)) . (MDC)) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_MDC))\n"
         "        (((HPS_Pins) . (Ethernet)) . (MDIO)) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_MDIO))\n"
         "        (((HPS_Pins) . (Ethernet)) . (nInterrupt)) . (hdl_map)((SoC_System) . (hps_io_hps_io_gpio_inst_GPIO35))\n"
         "        (((HPS_Pins) . (SD)) . (Clock)) . (hdl_map)((SoC_System) . (hps_io_hps_io_sdio_inst_CLK))\n"
         "        (((HPS_Pins) . (SD)) . (Command)) . (hdl_map)((SoC_System) . (hps_io_hps_io_sdio_inst_CMD))\n"
-        "        ((((HPS_Pins) . (SD)) . (Data))[ 0 (~0) ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_sdio_inst_D0))\n"
-        "        ((((HPS_Pins) . (SD)) . (Data))[ 1 (~1) ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_sdio_inst_D1))\n"
-        "        ((((HPS_Pins) . (SD)) . (Data))[ 2 (~2) ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_sdio_inst_D2))\n"
-        "        ((((HPS_Pins) . (SD)) . (Data))[ 3 (~3) ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_sdio_inst_D3))\n"
-        "        ((((HPS_Pins) . (USB)) . (Data))[ 0 (~0) ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D0))\n"
-        "        ((((HPS_Pins) . (USB)) . (Data))[ 1 (~1) ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D1))\n"
-        "        ((((HPS_Pins) . (USB)) . (Data))[ 2 (~2) ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D2))\n"
-        "        ((((HPS_Pins) . (USB)) . (Data))[ 3 (~3) ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D3))\n"
-        "        ((((HPS_Pins) . (USB)) . (Data))[ 4 (~4) ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D4))\n"
-        "        ((((HPS_Pins) . (USB)) . (Data))[ 5 (~5) ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D5))\n"
-        "        ((((HPS_Pins) . (USB)) . (Data))[ 6 (~6) ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D6))\n"
-        "        ((((HPS_Pins) . (USB)) . (Data))[ 7 (~7) ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D7))\n"
+        "        ((((HPS_Pins) . (SD)) . (Data))[ 0 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_sdio_inst_D0))\n"
+        "        ((((HPS_Pins) . (SD)) . (Data))[ 1 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_sdio_inst_D1))\n"
+        "        ((((HPS_Pins) . (SD)) . (Data))[ 2 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_sdio_inst_D2))\n"
+        "        ((((HPS_Pins) . (SD)) . (Data))[ 3 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_sdio_inst_D3))\n"
+        "        ((((HPS_Pins) . (USB)) . (Data))[ 0 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D0))\n"
+        "        ((((HPS_Pins) . (USB)) . (Data))[ 1 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D1))\n"
+        "        ((((HPS_Pins) . (USB)) . (Data))[ 2 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D2))\n"
+        "        ((((HPS_Pins) . (USB)) . (Data))[ 3 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D3))\n"
+        "        ((((HPS_Pins) . (USB)) . (Data))[ 4 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D4))\n"
+        "        ((((HPS_Pins) . (USB)) . (Data))[ 5 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D5))\n"
+        "        ((((HPS_Pins) . (USB)) . (Data))[ 6 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D6))\n"
+        "        ((((HPS_Pins) . (USB)) . (Data))[ 7 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D7))\n"
         "        (((HPS_Pins) . (USB)) . (ClockOut)) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_CLK))\n"
         "        (((HPS_Pins) . (USB)) . (Step)) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_STP))\n"
         "        (((HPS_Pins) . (USB)) . (Direction)) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_DIR))\n"
@@ -3444,8 +3684,8 @@ bool testAlchaCaseStudyCombined()
         "        (SoC_System) . (hps_warm_reset_req_reset_n) =  ! (HPS_Reset)\n"
         "        (SoC_System) . (hps_debug_reset_req_reset_n) =  ! (HPS_Reset)\n"
         "        HPS_FPGA_Reset = (SoC_System) . (hps_reset_out_reset)\n"
-        "        AvalonMaster (ControllerClock, MasterReset, 32 (~32), 65536 (~65536)) LightWeightBus\n"
-        "        (LightWeightBus) ' (BaseAddress) = 3221225472 (~3.22123e+09)\n"
+        "        AvalonMaster (ControllerClock, MasterReset, 32, 65536) LightWeightBus\n"
+        "        (LightWeightBus) ' (BaseAddress) = 3221225472\n"
         "        (SoC_System) . (light_weight_bus_clk_clk) = ControllerClock\n"
         "        (SoC_System) . (light_weight_bus_reset_reset) = MasterReset\n"
         "        (LightWeightBus) . (Address) = (SoC_System) . (light_weight_bus_address)\n"
@@ -3456,8 +3696,8 @@ bool testAlchaCaseStudyCombined()
         "        (LightWeightBus) . (Read) = (SoC_System) . (light_weight_bus_read)\n"
         "        (SoC_System) . (light_weight_bus_readdata) = (LightWeightBus) . (ReadData)\n"
         "        (SoC_System) . (light_weight_bus_readdatavalid) = (LightWeightBus) . (ReadValid)\n"
-        "        AvalonSlave ((SoC_System) . (hps_clk_out_clk), (SoC_System) . (hps_reset_out_reset), 256 (~256), 33554432 (~3.35544e+07), 128 (~128)) SDRAM\n"
-        "        ((SDRAM) . (Clock)) ' (frequency) = 100000000 (~1e+08)\n"
+        "        AvalonSlave ((SoC_System) . (hps_clk_out_clk), (SoC_System) . (hps_reset_out_reset), 256, 33554432, 128) SDRAM\n"
+        "        ((SDRAM) . (Clock)) ' (frequency) = 100000000\n"
         "        (SoC_System) . (sdram_address) = (SDRAM) . (Address)\n"
         "        (SoC_System) . (sdram_byteenable) = (SDRAM) . (ByteEnable)\n"
         "        (SoC_System) . (sdram_burstcount) = (SDRAM) . (BurstCount)\n"
@@ -3467,20 +3707,21 @@ bool testAlchaCaseStudyCombined()
         "        (SoC_System) . (sdram_read) = (SDRAM) . (Read)\n"
         "        (SDRAM) . (ReadData) = (SoC_System) . (sdram_readdata)\n"
         "        (SDRAM) . (ReadValid) = (SoC_System) . (sdram_readdatavalid)\n"
-        "        AvalonInterface (16 (~16), 8192 (~8192)) StreamBuffer\n"
-        "        (StreamBuffer) ' (BaseAddress) = 4280287232 (~4.28029e+09)\n"
+        "        AvalonInterface (16, 8192) StreamBuffer\n"
+        "        (StreamBuffer) ' (BaseAddress) = 4280287232\n"
         "        (SoC_System) . (streambuffer_clk_clk) = DspClock\n"
-        "        (SoC_System) . (streambuffer_clken) = 1 (~1)\n"
+        "        (SoC_System) . (streambuffer_clken) = 1\n"
         "        (SoC_System) . (streambuffer_reset_reset) = MasterReset\n"
-        "        (SoC_System) . (streambuffer_chipselect) = 1 (~1)\n"
+        "        (SoC_System) . (streambuffer_chipselect) = 1\n"
         "        (SoC_System) . (streambuffer_address) = (StreamBuffer) . (Address)\n"
-        "        (SoC_System) . (streambuffer_byteenable) = 3 (~3)\n"
+        "        (SoC_System) . (streambuffer_byteenable) = 3\n"
         "        (SoC_System) . (streambuffer_writedata) = (StreamBuffer) . (WriteData)\n"
         "        (SoC_System) . (streambuffer_write) = (StreamBuffer) . (Write)\n"
         "        (StreamBuffer) . (ReadData) = (SoC_System) . (streambuffer_readdata)\n"
-        "        (StreamBuffer) . (ReadValid) = 1 (~1)\n"
+        "        (StreamBuffer) . (ReadValid) = 1\n"
         "    }\n"
         "}",
+
         "SystemController_Class SystemController",
         "import \"Library/Timing/TriggerDelay\"",
         "import \"Library/Peripherals/Synth_and_DDS/AD9915\"",
@@ -3491,10 +3732,10 @@ bool testAlchaCaseStudyCombined()
         "AD9915 (ControlClock, MasterReset) SynthInst",
         "(Registers) . (Writeable)((SynthInst) . (ipUpdate))",
         "(Registers) . (ReadOnly)((SynthInst) . (opBusy))",
-        "(SynthInst) . (ipFreqLowerLimit) = round((500000000 (~5e+08)) * ((4294967296 (~4.29497e+09)) / (2500000000 (~2.5e+09))))",
-        "(SynthInst) . (ipFreqUpperLimit) = round((650000000 (~6.5e+08)) * ((4294967296 (~4.29497e+09)) / (2500000000 (~2.5e+09))))",
-        "(SynthInst) . (ipStepUp) = round(((150000000 (~1.5e+08)) / (((1/1000 (~0.001)) * (2500000000 (~2.5e+09))) / (24 (~24)))) * ((4294967296 (~4.29497e+09)) / (2500000000 (~2.5e+09))))",
-        "(SynthInst) . (ipStepDown) = round(((150000000 (~1.5e+08)) / (((1/20000 (~5e-05)) * (2500000000 (~2.5e+09))) / (24 (~24)))) * ((4294967296 (~4.29497e+09)) / (2500000000 (~2.5e+09))))",
+        "(SynthInst) . (ipFreqLowerLimit) = round((500000000) * ((4294967296) / (2500000000)))",
+        "(SynthInst) . (ipFreqUpperLimit) = round((650000000) * ((4294967296) / (2500000000)))",
+        "(SynthInst) . (ipStepUp) = round(((150000000) / (((1/1000 (~0.001)) * (2500000000)) / (24))) * ((4294967296) / (2500000000)))",
+        "(SynthInst) . (ipStepDown) = round(((150000000) / (((1/20000 (~5e-05)) * (2500000000)) / (24))) * ((4294967296) / (2500000000)))",
         "(Registers) . (Writeable)((SynthInst) . (ipFreqLowerLimit))",
         "(Registers) . (Writeable)((SynthInst) . (ipFreqUpperLimit))",
         "(Registers) . (Writeable)((SynthInst) . (ipStepUp))",
@@ -3513,19 +3754,17 @@ bool testAlchaCaseStudyCombined()
 
 int main(int argc, const char** argv)
 {
-    Parser _parser;
-    parser = &_parser;
-
     setupTerminal();
 
     printf("\n");
 
-    if(!testLiterals   ()) goto MainError;
-    if(!testIdentifiers()) goto MainError;
-    if(!testExpressions()) goto MainError;
-    if(!testModules    ()) goto MainError;
-    if(!testAutogen    ()) goto MainError;
-    if(!testParser     ()) goto MainError;
+    if(!testLiterals    ()) goto MainError;
+    if(!testIdentifiers ()) goto MainError;
+    if(!testExpressions ()) goto MainError;
+    if(!testModules     ()) goto MainError;
+    if(!testAutogen     ()) goto MainError;
+    if(!testVerification()) goto MainError;
+    if(!testParser      ()) goto MainError;
 
     if(!testAlchaCaseStudyCombined()) goto MainError;
 

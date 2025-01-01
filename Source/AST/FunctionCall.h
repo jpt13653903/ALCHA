@@ -28,7 +28,7 @@
 
 namespace AST{
     struct FunctionCall: public AST{
-        AST* name;
+        AST* name       = 0;
         AST* parameters = 0;
 
         FunctionCall(int line, int filenameIndex);

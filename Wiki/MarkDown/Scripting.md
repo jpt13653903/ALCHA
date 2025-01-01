@@ -21,8 +21,7 @@ change without notice.
 - [Functions](Functions.md)
 - [Synchronous Circuits](SynchronousCircuits.md)
 - [Classes](Classes.md)
-- [Operator Overloading](OperatorOverloading.md)
-- [Scripting Features](Scripting.md#scripting-features)
+- [Scripting Features](#scripting-features)
   - [Algorithmic Code Generation](#algorithmic-code-generation)
   - [Mathematical Functions](#mathematical-functions)
   - [I/O Functions](#io-functions)
@@ -49,7 +48,7 @@ Like [Migen], ALCHA supports algorithmic code generation.  During compilation,
 the abstract syntax tree is evaluated in two passes.  The first pass evaluates
 the scripting statements, while ignoring any synthesisable code.  This reduces
 all scripting statements to constants.  The second pass synthesises the
-intended circuit, based of the reduced abstract syntax tree.
+intended circuit, based on the reduced abstract syntax tree.
 
 The user can, for example, use a scripting `for` loop to generate a
 `switch`-statement based look-up table, as illustrated in the code below.
@@ -58,15 +57,15 @@ The scripting interpreter will duplicate the part of the AST containing the
 feature can be used to implement conditional compilation.
 
 ```alcha
-  net( 5) x;
-  net(32) y;
-  num     n;
+    net( 5) x;
+    net(32) y;
+    num     n;
 
-  switch(x){
-    for(n in 0..31){
-      case(n) y = (2**32-1) >> (31-n);
+    switch(x){
+        for(n in 0..31){
+            case(n) y = (2**32-1) >> (31-n);
+        }
     }
-  }
 ```
 
 ## Mathematical Functions
@@ -116,14 +115,14 @@ bytes.  A `char` is a UTF-32 representation of a UTF-8 encoded file.  The code
 below shows an example of how file I/O is used in ALCHA.
 
 ```alcha
-  byte Data[] = read("MyDataFile.dat");
-  char Log [] = "";  // An array of UTF-32 characters
+    byte Data[] = read("MyDataFile.dat");
+    char Log [] = ""; // An array of UTF-32 characters
 
-  byte data;
-  for(data in Data){
-    !! Do some stuff, possibly appending to the Log array
-  }
-  textwrite("MyLogFile.log", Log); // Writes the log to file, in UTF-8 format.
+    byte data;
+    for(data in Data){
+        !! Do some stuff, possibly appending to the Log array
+    }
+    textwrite("MyLogFile.log", Log); // Writes the log to file, in UTF-8 format.
 ```
 
 The `read` function acts as if it reads the entire file into the array
@@ -145,7 +144,7 @@ Function     | Description
 `textread`   | Reads the given UTF-8 file into a UTF-32 `char` array buffer
 `textwrite`  | Writes the given UTF-32 `char` array to a UTF-8 file
 `textappend` | Appends the given UTF-32 `char` array to a UTF-8 a file
-`print`      | Prints a string to the command-line
+`print`      | Prints a string representation of the parameter to the command-line
 
 The core ALCHA language does not have functions to read specific file formats,
 such as CSV, XML or JSON, as these can be provided by means of libraries.  A
@@ -166,7 +165,7 @@ Function        | Description
 `$x`            | Converts variable `x` to a string.
 `$(x, S)`       | Converts expression `x` to a string.  The base and other parameters are controlled by means of the optional format string `S`, which takes a C `printf`-style format string.
 `eval(S)`       | Converts a string `S` to a number.  The scripting interpreter makes use of the same expression engine used in [Engineering Calculator][EngCalc].
-`$"..{x, S}.."` | Interpolated string.  Equivalent to `".." + $(x, S) + ".."`.
+`$"..{x, S}.."` | Interpolated string.  Equivalent to `:["..", $(x, S), ".."]`.
 
 It is similarly useful to be able to convert `byte` arrays to `num` types, and
 vice versa.  A `byte` array can be assigned directly to a `num` type, and vice
@@ -175,17 +174,17 @@ assignments are compatible with packed structures).  The code below shows some
 examples.
 
 ```alcha
-  byte b[4] = [1, 2, 3, 4]; // b[0] = 1; b[1] = 2; ...
-  num  n;
+    byte b[4] = [1, 2, 3, 4]; // b[0] = 1; b[1] = 2; ...
+    num  n;
 
-  n = b;      // assigns 0x01020304 to n
-  n = b[0..3] // assigns 0x01020304 to n
-  n = b[3..0] // assigns 0x04030201 to n
-  n = b[3, 1] // assigns 0x00000402 to n
+    n = b;      // assigns 0x01020304 to n
+    n = b[0..3] // assigns 0x01020304 to n
+    n = b[3..0] // assigns 0x04030201 to n
+    n = b[3, 1] // assigns 0x00000402 to n
 
-  n       = 0x05060708;
-  b       = n; // assigns b[0] = 5; b[1] = 6; ...
-  b[3..0] = n; // assigns b[3] = 5; b[2] = 6; ...
+    n       = 0x05060708;
+    b       = n; // assigns b[0] = 5; b[1] = 6; ...
+    b[3..0] = n; // assigns b[3] = 5; b[2] = 6; ...
 ```
 
 ## Dynamic Arrays
@@ -196,22 +195,22 @@ building the contents of a text file, for instance, the code might look as
 follows:
 
 ```alcha
-  char Buffer[] = "";
-  // Some code...
-  Buffer ~= "Header\n";
-  // Some more code...
-  Buffer ~= "Some Body...\n";
-  // Some more code...
-  Buffer ~= "Some Body...\n";
-  // Some more code...
-  Buffer ~= "Some Body...\n";
-  textwrite("My Log Buffer.log", Buffer);
+    char buffer[] = "";
+    // Some code...
+    buffer ~= "Header\n";
+    // Some more code...
+    buffer ~= "Some Body...\n";
+    // Some more code...
+    buffer ~= "Some Body...\n";
+    // Some more code...
+    buffer ~= "Some Body...\n";
+    textwrite("MyLogFile.log", buffer);
 ```
 
 ## Shell Commands
 
 ALCHA scripting is not sufficient for all scenarios of circuit parametrisation.
-When the design contains a processor, for instance, the user might want the
+When the design contains a processor, for example, the user might want the
 ALCHA compiler to generate a C include-file with all the register addresses,
 call the C compiler, and then import the resulting executable file into a ROM
 block on the FPGA.
@@ -222,13 +221,13 @@ call, so that the external tool can finish before the ALCHA script interpreter
 continues.  The code below shows an example.
 
 ```alcha
-  !! Dynamically build the register addresses here
+    !! Dynamically build the register addresses here
 
-  textwrite("RegDefs.h", RegDefs);
-  if(shell("gcc main.c -o bin/MyCPU")) error("Cannot compile MyCPU");
-  byte MyCPU[] = read("bin/MyCPU");
+    textwrite("RegDefs.h", RegDefs);
+    if(shell("gcc main.c -o bin/MyCPU")) error("Cannot compile MyCPU source");
+    byte MyCPU[] = read("bin/MyCPU");
 
-  !! Initialise the CPU ROM here
+    !! Initialise the CPU ROM here
 ```
 
 Another use for this mechanism is to call an external scripting tool to plot

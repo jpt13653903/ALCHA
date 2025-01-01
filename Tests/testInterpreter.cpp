@@ -25,22 +25,20 @@
 #include <string>
 using std::string;
 
-AST::AST*    ast = 0;
-Parser*      parser;
 Interpreter* interpreter;
 //------------------------------------------------------------------------------
 
 bool startTest(const char* name)
 {
-    printf(ANSI_FG_CYAN "Starting test: " ANSI_RESET "%s...\n", name); \
+    printf(ANSI_FG_CYAN "Starting test: " ANSI_RESET "%s...\n", name);
 
     string filename;
     filename  = "testInterpreter/";
     filename += name;
     filename += ".alc";
 
-    if(ast) delete ast;
-    ast = parser->parse(filename.c_str());
+    Parser parser;
+    auto ast = parser.parse(filename.c_str());
 
     if(!ast){
         error("Cannot parse file %s", filename.c_str());
@@ -48,9 +46,10 @@ bool startTest(const char* name)
     }
     if(!interpreter->run(ast)){
         error("Cannot interpret AST of file %s", filename.c_str());
+        delete ast;
         return false;
     }
-
+    delete ast;
     return true;
 }
 //------------------------------------------------------------------------------
@@ -106,15 +105,19 @@ void endTest(const char* message = "PASS")
 }
 //------------------------------------------------------------------------------
 
-bool testParser()
+bool testInterpreter()
 {
-    if(!startTest("Parser")) return false;
+    if(!startTest("Interpreter")) return false;
 
     const char* expected[] = {
-        "a", "0 (~0)",
-        "b", "0 (~0)",
-        "c", "0 (~0)",
-        "d", "0 (~0)",
+        "a",  "3",
+        "b",  "5",
+        "c",  "123456789123456789/1000000000 (~1.23457e+08)",
+        "d",  "123456789723456789/200000000 (~6.17284e+08)",
+        "x",  "123",
+        "pi", "22/7 (~3.14286)",
+
+        "imported", "123",
         0, 0
     };
     if(!runTest(expected)) return false;
@@ -128,24 +131,19 @@ bool testParser()
 
 int main(int argc, const char** argv)
 {
-    Parser _parser;
-    parser = &_parser;
-
     Interpreter _interpreter;
     interpreter = &_interpreter;
 
     setupTerminal();
 
     printf("\n");
-    if(!testParser()) goto MainError;
+    if(!testInterpreter()) goto MainError;
 
     endTest("All OK");
-    if(ast) delete ast;
     return 0;
 
     MainError:
         printf(ANSI_FG_BRIGHT_RED "There were errors\n\n" ANSI_RESET);
-        if(ast) delete ast;
         return -1;
 }
 //------------------------------------------------------------------------------

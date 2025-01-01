@@ -34,8 +34,8 @@ NameSpace::NameSpace(): Symbol(Type::NameSpace)
 
 NameSpace::~NameSpace()
 {
-    for(auto symbol: symbols){
-        if(symbol.second) delete(symbol.second);
+    for(auto& [name, symbol]: symbols){
+        if(symbol) delete(symbol);
     }
 }
 //------------------------------------------------------------------------------
@@ -47,8 +47,8 @@ std::string& NameSpace::print() const
     result  = ANSI_FG_BRIGHT_BLACK;
     result += decodeType();
     result += ": " ANSI_RESET "[\n";
-    for(auto symbol: symbols){
-        result += "    " + symbol.second->print();
+    for(auto& [name, symbol]: symbols){
+        result += "    " + symbol->print();
     }
     result += "]";
 

@@ -54,6 +54,9 @@ const char* AST::AST::decodeType() const
         case Type::ClockedConstruct:     return "ClockedConstruct";
         case Type::Concatenate:          return "Concatenate";
         case Type::ControlStatement:     return "ControlStatement";
+        case Type::CoverBins:            return "CoverBins";
+        case Type::CoverGroup:           return "CoverGroup";
+        case Type::CycleDelay:           return "CycleDelay";
         case Type::EnumDefinition:       return "EnumDefinition";
         case Type::Expression:           return "Expression";
         case Type::Fence:                return "Fence";
@@ -66,11 +69,12 @@ const char* AST::AST::decodeType() const
         case Type::Import:               return "Import";
         case Type::InterpolatedString:   return "InterpolatedString";
         case Type::Jump:                 return "Jump";
-        case Type::Label:                return "Label";
         case Type::Literal:              return "Literal";
         case Type::NameSpacePush:        return "NameSpacePush";
         case Type::OperatorOverload:     return "OperatorOverload";
         case Type::ParameterDef:         return "ParameterDef";
+        case Type::Repetition:           return "Repetition";
+        case Type::SequenceDef:          return "SequenceDef";
         case Type::Slice:                return "Slice";
         case Type::StimulusOrEmulate:    return "StimulusOrEmulate";
         case Type::String:               return "String";

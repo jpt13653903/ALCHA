@@ -18,20 +18,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Label_h
-#define AST_Label_h
+#ifndef AST_CycleDelay_h
+#define AST_CycleDelay_h
 //------------------------------------------------------------------------------
 
 #include "AST.h"
+#include "Token.h"
+
 #include <string>
 //------------------------------------------------------------------------------
 
 namespace AST{
-    struct Label: public AST{
-        std::string name;
+    struct CycleDelay: public AST{
+        Token::Type operation = Token::Type::Unknown;
+        AST* left  = 0;
+        AST* right = 0;
+        AST* delay = 0;
 
-        Label(int line, int filenameIndex);
-       ~Label();
+        CycleDelay(int line, int filenameIndex);
+       ~CycleDelay();
 
         std::string print(int indent = 0) const override;
     };

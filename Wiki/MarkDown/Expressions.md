@@ -15,7 +15,7 @@ change without notice.
 - [Grammar](Grammar.md)
 - [Modules](Modules.md)
 - [Declarations](Declarations.md)
-- [Expressions](Expressions.md#expressions)
+- [Expressions](#expressions)
   - [Operators](#operators)
   - [Global Attribute Definition and Access](#global-attribute-definition-and-access)
   - [Net use Before Assignment](#net-use-before-assignment)
@@ -24,7 +24,6 @@ change without notice.
 - [Functions](Functions.md)
 - [Synchronous Circuits](SynchronousCircuits.md)
 - [Classes](Classes.md)
-- [Operator Overloading](OperatorOverloading.md)
 - [Scripting Features](Scripting.md)
 - [Advanced Attributes](AdvancedAttributes.md)
 - [High-level Structures](HighLevelStructures.md)
@@ -34,8 +33,8 @@ change without notice.
 
 # Expressions
 
-Combinational statements in ALCHA are evaluated in order.  In terms of HDL,
-the statements are considered blocking.
+Combinational statements in ALCHA are evaluated in order.  In terms of HDL
+semantics, the statements are considered blocking.
 
 Assignments come in two flavours.  Normal assignments use the `=` operator and
 take the fixed-point format into account, whereas raw assignments use the
@@ -71,12 +70,13 @@ Cast   | `A @ N`        | Casts `A` to an `N`-bit integer
 &nbsp; | `A @(N, s)`    | Casts `A` to an `N`-bit fixed-point in the range [0, s)
 &nbsp; | `A @(N,-s)`    | Casts `A` to an (`N`+1)-bit fixed-point in the range [-s, s)
 &nbsp; | `A @Class`     | Casts `A` to `Class`, provided `Class` is in A's inheritance graph
-&nbsp; | `A @(N.Class)` | Casts `A` to `Class`, where `Class` is in namespace `N`
+&nbsp; | `A @(N.Class)` | Casts `A` to `Class`, where `Class` is in name-space `N`
 ||
 Post-fix | `A++`  | Increment after use
 &nbsp;   | `A--`  | Decrement after use
 &nbsp;   | `A!`   | Factorial
-&nbsp;   | `A.B`  | Access `B` in namespace (or class instance) `A`
+||
+Accessor | `A.B`  | Access `B` in name-space (or class instance) `A`
 &nbsp;   | `A'B`  | Access the attribute `B` of `A`
 &nbsp;   | `A(B)` | Call function `A` with parameter(s) `B`
 &nbsp;   | `A[B]` | Slice array `A` with elements in array `B`
@@ -150,7 +150,7 @@ Assignment | `A   = B`       | Normal assign (automatically casts to the target 
 
 The unary, arithmetic, shift and relational operators take the fixed-point
 format of the operands into account, whereas the other operators do not.
-Arithmetic operators result in a fixed-point number which is of such a format
+Arithmetic operators result in a fixed-point number, which is of such a format
 that no bits are lost in the calculation.  Other operators result in an
 unsigned integer, regardless of input format.
 
@@ -161,11 +161,37 @@ More detail is provided later.
 
 ## Global Attribute Definition and Access
 
-Defining an attribute puts it in the current namespace.  Accessing a namespace
-runs the hierarchy from the current namespace toward the root of the namespace
-tree, which is the global attribute.  The current namespace attributes
-therefore shadow the global attributes.  In addition, global attributes are
-read-only from within a namespace.
+When accessing an attribute without a preceding symbol, that attribute is in the current (or parent) name-space.
+
+When defining such an attribute, it is placed in the current name-space.  This
+implies that global attributes are read-only from within another name-space.
+
+```alcha
+    'globalAttribute = "Global";
+
+    group < Attr = "whatnot" > MyGroup{
+        'localAttribtue = "Local"
+        'anotherLocal   = 'globalAttribute;
+    }
+
+    print('globalAttribute);
+    print(MyGroup'Attr);
+    print(MyGroup'localAttribtue);
+    print(MyGroup'anotherLocal);
+```
+
+The code above, when run through the compiler, will print out:
+
+```
+String:
+    "Global"
+String:
+    "whatnot"
+String:
+    "Local"
+String:
+    "Global"
+```
 
 ## Net use Before Assignment
 
@@ -175,67 +201,64 @@ clocked structures with external combinational feedback.  The code below
 provides two examples:
 
 ```alcha
-  class Adder(N){ // Parametrisation is presented in the scripting section
-    net(N) A, B;
-    net(N) Y;
-    Y = A + B;
-  }
-  Adder(8) MyAdder; // Creates an instance of an 8-bit adder and assigns the
-                    // object to the MyAdder reference.  At this point, "Y" is
-                    // a reference to the expression "Y = A + B", but "A" and "B"
-                    // are null references.
-  net(8) x, y, z;
-  MyAdder.{ // Pushes the name-space "MyAdder" onto the name-space stack
-    A = x; // Assign the expression "x" to the reference "A"
-    B = y; // Assign the expression "y" to the reference "B"
-    z = Y; // Assign the expression "Y" to the reference "z"
-  }
+    class Adder(N){ // Parametrisation is presented in the scripting section
+        net(N) A, B;
+        net(N) Y;
+        Y = A + B;
+    }
+    Adder(8) myAdder; // Creates an instance of an 8-bit adder and assigns the
+                      // object to the myAdder reference.  At this point, "Y"
+                      // is a reference to the expression "Y = A + B",
+                      // but "A" and "B" are null references.
+    net(8) x, y, z;
+    myAdder.{ // Pushes the name-space "myAdder" onto the name-space stack
+        A = x; // Assign the expression "x" to the reference "A"
+        B = y; // Assign the expression "y" to the reference "B"
+        z = Y; // Assign the expression "Y" to the reference "z"
+    }
 ```
 
 The Verilog equivalent of the above is:
 
 ```verilog
-  module Adder #(parameter N)(
-    input  [N-1:0]A,
-    input  [N-1:0]B,
-    output [N-1:0]Y
-  );
-    assign Y = A + B;
-  endmodule
+    module Adder #(parameter N)(
+        input  [N-1:0]A,
+        input  [N-1:0]B,
+        output [N-1:0]Y
+    );
+        assign Y = A + B;
+    endmodule
 
-  module TopLevel;
-    wire [7:0]x;
-    wire [7:0]y;
+    module TopLevel;
+        wire [7:0]x;
+        wire [7:0]y;
+        wire [7:0]z;
 
-    Adder #(8) MyAdder(x, y, z);
-  endmodule
+        Adder #(8) myAdder(x, y, z);
+    endmodule
 ```
 
 And here is another example:
 
 ```alcha
-  net(8) Counter;
-  UserClk = (Counter == 125); // "Counter" has no value yet
-  rtl(CPUClock){
-    if(UserClk) Counter = 0;
-    else        Counter++;
-  }
+    net(8) counter;
+    userClk = (counter == 125); // "counter" has no value yet
+
+    rtl(cpuClock){
+        if(userClk) counter = 0;
+        else        counter++;
+    }
 ```
 
-ALCHA is intended for describing hardware, so the defined `net` types
-represent physical hardware nets.  When using that net in an assignment, the
-ALCHA user is making connections, making a copy from one RAM location to
-another.  This paradigm allows for use-before-assign type code.
-
-ALCHA does, however, allow circular assignments.  These are performed by using
-the following algorithm:
+The use-before-assign feature allows for circular references.  These are
+evaluated as follows:
 
 1. Evaluate the right-hand-side (RHS) expression to produce an expression tree
 1. Inspect the left-hand-side (LHS) and the expression tree to determine
    whether or not the statement is circular
 1. If it is circular, update the expression tree to use the current expression
    assigned to the LHS net, instead of the net itself
-1. Assign the expression tree to the LHS net
+1. Assign the new expression tree to the LHS net
 1. Perform garbage collection on any resulting dangling circuits
 
 --------------------------------------------------------------------------------

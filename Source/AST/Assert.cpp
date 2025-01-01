@@ -33,7 +33,8 @@ Assert::Assert(int line, int filenameIndex):
 
 Assert::~Assert()
 {
-    if(expression) delete expression;
+    if(!parameters) delete parameters;
+    if(!body      ) delete body;
 }
 //------------------------------------------------------------------------------
 
@@ -43,7 +44,29 @@ std::string Assert::print(int indent) const
 
     for(int n = 0; n < indent; n++) result += "    ";
 
-    result += "assert " + expression->print();
+    result += "assert ";
+
+    if(parameters){
+        bool first = true;
+        result += "(";
+        auto param = parameters;
+        while(param){
+            if(!first) result += ", ";
+            first = false;
+            result += param->print();
+            param   = param->next;
+        }
+        result += ")";
+    }
+    result += "{\n";
+    auto statement = body;
+    while(statement){
+        result += statement->print(indent+1);
+        result += "\n";
+        statement = statement->next;
+    }
+    for(int n = 0; n < indent; n++) result += "    ";
+    result += "}";
 
     return result;
 }

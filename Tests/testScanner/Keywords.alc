@@ -41,7 +41,6 @@ as
 return
 break
 continue
-goto
 
 func
 inline
@@ -53,9 +52,13 @@ hdl
 
 stimulus
 emulate
+sequence
 assert
 wait
 
 posedge
 negedge
+
+coverbins
+covergroup
 

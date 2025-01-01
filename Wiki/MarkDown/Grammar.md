@@ -12,7 +12,7 @@ change without notice.
 
 - [Introduction](Introduction.md)
 - [Lexical](Lexical.md)
-- [Grammar](Grammar.md#grammar)
+- [Grammar](Grammar.md)
 - [Modules](Modules.md)
 - [Declarations](Declarations.md)
 - [Expressions](Expressions.md)
@@ -21,7 +21,6 @@ change without notice.
 - [Functions](Functions.md)
 - [Synchronous Circuits](SynchronousCircuits.md)
 - [Classes](Classes.md)
-- [Operator Overloading](OperatorOverloading.md)
 - [Scripting Features](Scripting.md)
 - [Advanced Attributes](AdvancedAttributes.md)
 - [High-level Structures](HighLevelStructures.md)

@@ -130,7 +130,6 @@ Scanner::Scanner()
             keywords.insert("return"       , Token::Type::Return  );
             keywords.insert("break"        , Token::Type::Break   );
             keywords.insert("continue"     , Token::Type::Continue);
-            keywords.insert("goto"         , Token::Type::GoTo    );
 
             keywords.insert("func"         , Token::Type::Func  );
             keywords.insert("inline"       , Token::Type::Inline);
@@ -142,11 +141,15 @@ Scanner::Scanner()
 
             keywords.insert("stimulus"     , Token::Type::Stimulus);
             keywords.insert("emulate"      , Token::Type::Emulate );
+            keywords.insert("sequence"     , Token::Type::Sequence);
             keywords.insert("assert"       , Token::Type::Assert  );
             keywords.insert("wait"         , Token::Type::Wait    );
 
             keywords.insert("posedge"      , Token::Type::PosEdge);
             keywords.insert("negedge"      , Token::Type::NegEdge);
+
+            keywords.insert("coverbins"    , Token::Type::CoverBins);
+            keywords.insert("covergroup"   , Token::Type::CoverGroup);
 
         // Conditional Expression
             operators.insert("?"  , Token::Type::TernaryIf  );
@@ -250,17 +253,17 @@ Scanner::Scanner()
             operators.insert(";"  , Token::Type::Semicolon  );
 
         // Simulation operators
-            operators.insert("#"  , Token::Type::WaitFor               );
-            operators.insert("@"  , Token::Type::WaitOn                );
-            operators.insert("##" , Token::Type::WaitCycles            );
-            operators.insert("[*" , Token::Type::SequenceConsecutive   );
-            operators.insert("[->", Token::Type::SequenceGoTo          );
-            operators.insert("[=" , Token::Type::SequenceNonConsecutive);
-            operators.insert("|->", Token::Type::AssertImplies         );
-            operators.insert("|=>", Token::Type::AssertImpliesNext     );
-            operators.insert("||" , Token::Type::Or                    );
-            operators.insert("&&" , Token::Type::And                   );
-            operators.insert("&&&", Token::Type::Intersect             );
+            operators.insert("#"  , Token::Type::WaitFor                 );
+            operators.insert("@"  , Token::Type::WaitOn                  );
+            operators.insert("##" , Token::Type::WaitCycles              );
+            operators.insert("[*" , Token::Type::RepetitionConsecutive   );
+            operators.insert("[->", Token::Type::RepetitionGoTo          );
+            operators.insert("[=" , Token::Type::RepetitionNonConsecutive);
+            operators.insert("|->", Token::Type::AssertImplies           );
+            operators.insert("|=>", Token::Type::AssertImpliesNext       );
+            operators.insert("||" , Token::Type::Or                      );
+            operators.insert("&&" , Token::Type::And                     );
+            operators.insert("&&&", Token::Type::Intersect               );
 
         spaces   .balance();
         keywords .balance();
@@ -631,7 +634,7 @@ bool Scanner::getNumber(Token* token, unsigned base)
     if(sign) mpz_mul(den, den, exp);
     else     mpz_mul(num, num, exp);
 
-    token->value.set(num, den);
+    token->value.setNumDenom(num, den);
 
     if(buffer[index] == 'i' || buffer[index] == 'j'){
         token->data += buffer[index++];

@@ -1,0 +1,39 @@
+print(__FILE__);
+print(__LINE__);
+print(__DATE__);
+print(__TIME__);
+
+print(0x1234567890ABCDEF);
+print(123.456);
+
+num a;
+num b;
+num c, d;
+a = 3;
+b = 5;
+c = 123456789.123456789;
+print(a + b*c);
+
+d = a + b*c;
+
+print(pi);
+print(π);
+print(e);
+print(i);
+print(j);
+print(__YEAR__);
+print(__MONTH__);
+print(__DAY__);
+print(__HOUR__);
+print(__MINUTE__);
+print(__SECOND__);
+print(__WEEKDAY__);
+print(__YEARDAY__);
+
+num pi = 22/7;
+print(pi);
+
+import "test_import";
+num x = imported;
+print(x);
+

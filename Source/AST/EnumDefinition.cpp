@@ -33,7 +33,15 @@ EnumDefinition::EnumDefinition(int line, int filenameIndex):
 
 EnumDefinition::~EnumDefinition()
 {
-    if(!members) delete members;
+    if(!attributes) delete attributes;
+    if(!members   ) delete members;
+}
+//------------------------------------------------------------------------------
+
+EnumDefinition::Member::~Member()
+{
+    if(!initialiser) delete initialiser;
+    if(!next       ) delete next;
 }
 //------------------------------------------------------------------------------
 
@@ -43,15 +51,31 @@ std::string EnumDefinition::print(int indent) const
 
     for(int n = 0; n < indent; n++) result += "    ";
 
-    result += "enum " + name;
+    result += "enum ";
+
+    if(attributes){
+        bool first = true;
+        result += "<";
+        auto attrib = attributes;
+        while(attrib){
+            if(!first) result += ", ";
+            first = false;
+            result += attrib->print();
+            attrib  = attrib->next;
+        }
+        result += "> ";
+    }
+    result += name;
 
     bool first = true;
     result += " { ";
-    AST* member = members;
+    auto member = members;
     while(member){
         if(!first) result += ", ";
         first = false;
-        result += member->print();
+        result += member->name;
+        if(member->initialiser)
+            result += " = " + member->initialiser->print();
         member  = member->next;
     }
     result += " }";

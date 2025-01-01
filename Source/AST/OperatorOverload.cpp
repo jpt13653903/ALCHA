@@ -44,67 +44,67 @@ OperatorOverload::~OperatorOverload()
 const char* OperatorOverload::printOperation() const
 {
     switch(operation){
-        case Token::Type::Elvis:                  return "?:";  break;
+        case Token::Type::Elvis:                    return "?:";  break;
 
-        case Token::Type::BitOr:                  return "|";   break;
-        case Token::Type::BitNor:                 return "~|";  break;
-        case Token::Type::BitXor:                 return "^";   break;
-        case Token::Type::BitXnor:                return "~^";  break;
-        case Token::Type::BitAnd:                 return "&";   break;
-        case Token::Type::BitNand:                return "~&";  break;
+        case Token::Type::BitOr:                    return "|";   break;
+        case Token::Type::BitNor:                   return "~|";  break;
+        case Token::Type::BitXor:                   return "^";   break;
+        case Token::Type::BitXnor:                  return "~^";  break;
+        case Token::Type::BitAnd:                   return "&";   break;
+        case Token::Type::BitNand:                  return "~&";  break;
 
-        case Token::Type::Equal:                  return "==";  break;
-        case Token::Type::NotEqual:               return "!=";  break;
-        case Token::Type::Less:                   return "<";   break;
-        case Token::Type::Greater:                return ">";   break;
-        case Token::Type::LessEqual:              return "<=";  break;
-        case Token::Type::GreaterEqual:           return ">=";  break;
+        case Token::Type::Equal:                    return "==";  break;
+        case Token::Type::NotEqual:                 return "!=";  break;
+        case Token::Type::Less:                     return "<";   break;
+        case Token::Type::Greater:                  return ">";   break;
+        case Token::Type::LessEqual:                return "<=";  break;
+        case Token::Type::GreaterEqual:             return ">=";  break;
 
-        case Token::Type::ShiftLeft:              return "<<";  break;
-        case Token::Type::ShiftRight:             return ">>";  break;
+        case Token::Type::ShiftLeft:                return "<<";  break;
+        case Token::Type::ShiftRight:               return ">>";  break;
 
-        case Token::Type::Add:                    return "+";   break;
-        case Token::Type::Subtract:               return "-";   break;
-        case Token::Type::Multiply:               return "*";   break;
-        case Token::Type::Divide:                 return "/";   break;
-        case Token::Type::Modulus:                return "%";   break;
-        case Token::Type::Exponential:            return "**";  break;
-        case Token::Type::Factorial:              return "!";   break;
+        case Token::Type::Add:                      return "+";   break;
+        case Token::Type::Subtract:                 return "-";   break;
+        case Token::Type::Multiply:                 return "*";   break;
+        case Token::Type::Divide:                   return "/";   break;
+        case Token::Type::Modulus:                  return "%";   break;
+        case Token::Type::Exponential:              return "**";  break;
+        case Token::Type::Factorial:                return "!";   break;
 
-        case Token::Type::Replicate:              return "`";   break;
-        case Token::Type::Stringify:              return "$";   break;
-        case Token::Type::To:                     return "..";  break;
+        case Token::Type::Replicate:                return "`";   break;
+        case Token::Type::Stringify:                return "$";   break;
+        case Token::Type::To:                       return "..";  break;
 
-        case Token::Type::BitNot:                 return "~";   break;
-        case Token::Type::RawBits:                return ":";   break;
-        case Token::Type::Increment:              return "++";  break;
-        case Token::Type::Decrement:              return "--";  break;
+        case Token::Type::BitNot:                   return "~";   break;
+        case Token::Type::RawBits:                  return ":";   break;
+        case Token::Type::Increment:                return "++";  break;
+        case Token::Type::Decrement:                return "--";  break;
 
-        case Token::Type::CastOp:                 return "@";   break;
+        case Token::Type::CastOp:                   return "@";   break;
 
-        case Token::Type::Assign:                 return "=";   break;
-        case Token::Type::RawAssign:              return ":=";  break;
-        case Token::Type::AppendAssign:           return "~=";  break;
-        case Token::Type::AddAssign:              return "+=";  break;
-        case Token::Type::SubtractAssign:         return "-=";  break;
-        case Token::Type::MultiplyAssign:         return "*=";  break;
-        case Token::Type::DivideAssign:           return "/=";  break;
-        case Token::Type::ExponentialAssign:      return "**="; break;
-        case Token::Type::ModulusAssign:          return "%=";  break;
-        case Token::Type::AndAssign:              return "&=";  break;
-        case Token::Type::OrAssign:               return "|=";  break;
-        case Token::Type::XorAssign:              return "^=";  break;
-        case Token::Type::ShiftLeftAssign:        return "<<="; break;
-        case Token::Type::ShiftRightAssign:       return ">>="; break;
+        case Token::Type::Assign:                   return "=";   break;
+        case Token::Type::RawAssign:                return ":=";  break;
+        case Token::Type::AppendAssign:             return "~=";  break;
+        case Token::Type::AddAssign:                return "+=";  break;
+        case Token::Type::SubtractAssign:           return "-=";  break;
+        case Token::Type::MultiplyAssign:           return "*=";  break;
+        case Token::Type::DivideAssign:             return "/=";  break;
+        case Token::Type::ExponentialAssign:        return "**="; break;
+        case Token::Type::ModulusAssign:            return "%=";  break;
+        case Token::Type::AndAssign:                return "&=";  break;
+        case Token::Type::OrAssign:                 return "|=";  break;
+        case Token::Type::XorAssign:                return "^=";  break;
+        case Token::Type::ShiftLeftAssign:          return "<<="; break;
+        case Token::Type::ShiftRightAssign:         return ">>="; break;
 
-        case Token::Type::SequenceConsecutive:    return "[*";  break;
-        case Token::Type::SequenceGoTo:           return "[->"; break;
-        case Token::Type::SequenceNonConsecutive: return "[=";  break;
-        case Token::Type::AssertImplies:          return "|->"; break;
-        case Token::Type::AssertImpliesNext:      return "|=>"; break;
-        case Token::Type::Or:                     return "||";  break;
-        case Token::Type::And:                    return "&&";  break;
-        case Token::Type::Intersect:              return "&&&"; break;
+        case Token::Type::RepetitionConsecutive:    return "[*";  break;
+        case Token::Type::RepetitionGoTo:           return "[->"; break;
+        case Token::Type::RepetitionNonConsecutive: return "[=";  break;
+        case Token::Type::AssertImplies:            return "|->"; break;
+        case Token::Type::AssertImpliesNext:        return "|=>"; break;
+        case Token::Type::Or:                       return "||";  break;
+        case Token::Type::And:                      return "&&";  break;
+        case Token::Type::Intersect:                return "&&&"; break;
 
         default: return "Unknown operator"; break;
     }

@@ -18,32 +18,28 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Label.h"
+#ifndef AST_SequenceDef_h
+#define AST_SequenceDef_h
 //------------------------------------------------------------------------------
 
-using std::string;
-using namespace AST;
+#include "AST.h"
+
+#include <string>
 //------------------------------------------------------------------------------
 
-Label::Label(int line, int filenameIndex):
-    AST(line, filenameIndex, Type::Label)
-{
+namespace AST{
+    struct SequenceDef: public AST{
+        std::string name;
+        AST*        sequence = 0;
+
+        SequenceDef(int line, int filenameIndex);
+       ~SequenceDef();
+
+        std::string print(int indent = 0) const override;
+    };
 }
 //------------------------------------------------------------------------------
 
-Label::~Label()
-{
-}
-//------------------------------------------------------------------------------
-
-std::string Label::print(int indent) const
-{
-    string result;
-
-    for(int n = 0; n < indent; n++) result += "    ";
-    result += name + ":";
-
-    return result;
-}
+#endif
 //------------------------------------------------------------------------------
 
