@@ -3207,7 +3207,7 @@ AST::AST* Parser::identifierStatement()
                 getToken();
                 return result;
             }else if(token.type == Token::Type::Semicolon){
-                // TODO Fence
+                result->next = new AST::Fence(token.line, astFilenameIndex);
                 getToken();
                 return result;
             }else{
@@ -3226,7 +3226,7 @@ AST::AST* Parser::identifierStatement()
                 getToken();
                 return result;
             }else if(token.type == Token::Type::Semicolon){
-                // TODO Fence
+                result->next = new AST::Fence(token.line, astFilenameIndex);
                 getToken();
                 return result;
             }else{
@@ -3251,7 +3251,8 @@ AST::AST* Parser::identifierStatement()
                 delete left;
                 return 0;
             }
-            // TODO Fence
+            assert(left->next == 0);
+            left->next = new AST::Fence(token.line, astFilenameIndex);
             getToken();
             return left;
         }

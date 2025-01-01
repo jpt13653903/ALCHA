@@ -614,8 +614,16 @@ bool Interpreter::globalSpace(const AST::AST* node)
                 printError(node, "TODO: Assert");
                 break;
 
+            case AST::Type::CoverBins:
+                printError(node, "TODO: CoverBins");
+                break;
+
+            case AST::Type::CoverGroup:
+                printError(node, "TODO: CoverGroup");
+                break;
+
             case AST::Type::Fence:
-                printError(node, "TODO: Fence");
+                // TODO: Fence
                 break;
 
             default:
