@@ -54,6 +54,8 @@ const char* AST::AST::decodeType() const
         case Type::ClockedConstruct:     return "ClockedConstruct";
         case Type::Concatenate:          return "Concatenate";
         case Type::ControlStatement:     return "ControlStatement";
+        case Type::CoverBins:            return "CoverBins";
+        case Type::CoverGroup:           return "CoverGroup";
         case Type::CycleDelay:           return "CycleDelay";
         case Type::EnumDefinition:       return "EnumDefinition";
         case Type::Expression:           return "Expression";

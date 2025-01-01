@@ -59,3 +59,32 @@ assert(1e-9, Clk){
 }
 //------------------------------------------------------------------------------
 
+// Functional Coverage
+
+coverbins FloatingPointFunctions(x){
+    NAN      =               x.exponent == 0xFF & x.fraction >  0;
+    NegInfty = x.sign == 1 & x.exponent == 0xFF & x.fraction == 0;
+    Negative = x.sign == 1 & x.exponent >  0    & x.exponent <  0xFF;
+    Zero     =               x.exponent == 0    & x.fraction == 0;
+    Positive = x.sign == 0 & x.exponent >  0    & x.exponent <  0xFF;
+    PosInfty = x.sign == 0 & x.exponent == 0xFF & x.fraction == 0;
+}
+
+covergroup(Clk) MyDivCoverage{
+    FloatingPointFunctions(A);
+    FloatingPointFunctions(B);
+    FloatingPointFunctions(Y);
+}
+
+coverbins HandshakeFunctions(go, busy){
+    Go   = rising (go  ) |-> ~busy;
+    Done = falling(busy) |-> ~go;
+}
+
+covergroup(Clk) MyHandshakeCoverage{
+    Library.Component.HandshakeFunctions(A);
+    Library.Component.HandshakeFunctions(B);
+    Library.Component.HandshakeFunctions(Y);
+}
+//------------------------------------------------------------------------------
+

@@ -131,6 +131,10 @@ class Parser{
         AST::AST* cycleDelay();
         AST::AST* repetition();
 
+        AST::AST* coverBins();
+        AST::AST* coverGroup();
+        AST::AST* coverBinIdentifier();
+
         AST::AST* identifierStatement();
         AST::AST* statementBlock();
         AST::AST* statement();

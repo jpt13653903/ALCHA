@@ -29,7 +29,12 @@ MatchOr    = MatchAnd   {   "||"                    MatchAnd   };
 MatchAnd   = CycleDelay { ( "&&"  | "&&&" )         CycleDelay };
 CycleDelay = Repetition { ( "#"   | "##"  ) Primary Repetition };
 Repetition = Expression [ ( "[*"  | "[->" | "[=" )  Range "]"  ];
+
+CoverBins  = "coverbins" Identifier "(" ParameterDefList ")"
+             "{" { Identifier "=" Sequence ";" } "}";
+CoverGroup = "covergroup" [ ParameterList ] Identifier
+             "{" { CoverBinIdentifier ParameterList ";" } "}";
+
+CoverBinIdentifier = Identifier { "." Identifier }; (* NameSpace.CoverBinName *)
 (*----------------------------------------------------------------------------*)
-
-
 

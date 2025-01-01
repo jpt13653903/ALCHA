@@ -148,6 +148,9 @@ Scanner::Scanner()
             keywords.insert("posedge"      , Token::Type::PosEdge);
             keywords.insert("negedge"      , Token::Type::NegEdge);
 
+            keywords.insert("coverbins"    , Token::Type::CoverBins);
+            keywords.insert("covergroup"   , Token::Type::CoverGroup);
+
         // Conditional Expression
             operators.insert("?"  , Token::Type::TernaryIf  );
             operators.insert(":"  , Token::Type::TernaryElse);

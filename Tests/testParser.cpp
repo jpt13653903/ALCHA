@@ -1039,6 +1039,33 @@ bool testVerification()
         "        ((Go) & ( ! (Busy))) |=> (stable(Data))\n"
         "    }\n"
         "}",
+
+        "coverbins FloatingPointFunctions(x){\n"
+        "    NAN = (((x) . (exponent)) == (255)) & (((x) . (fraction)) > (0))\n"
+        "    NegInfty = ((((x) . (sign)) == (1)) & (((x) . (exponent)) == (255))) & (((x) . (fraction)) == (0))\n"
+        "    Negative = ((((x) . (sign)) == (1)) & (((x) . (exponent)) > (0))) & (((x) . (exponent)) < (255))\n"
+        "    Zero = (((x) . (exponent)) == (0)) & (((x) . (fraction)) == (0))\n"
+        "    Positive = ((((x) . (sign)) == (0)) & (((x) . (exponent)) > (0))) & (((x) . (exponent)) < (255))\n"
+        "    PosInfty = ((((x) . (sign)) == (0)) & (((x) . (exponent)) == (255))) & (((x) . (fraction)) == (0))\n"
+        "}",
+
+        "covergroup (Clk) MyDivCoverage{\n"
+        "    FloatingPointFunctions(Clk)\n"
+        "    FloatingPointFunctions(Clk)\n"
+        "    FloatingPointFunctions(Clk)\n"
+        "}",
+
+        "coverbins HandshakeFunctions(go, busy){\n"
+        "    Go = (rising(go)) |-> ( ~ (busy))\n"
+        "    Done = (falling(busy)) |-> ( ~ (go))\n"
+        "}",
+
+        "covergroup (Clk) MyHandshakeCoverage{\n"
+        "    ((Library) . (Component)) . (HandshakeFunctions)(Clk)\n"
+        "    ((Library) . (Component)) . (HandshakeFunctions)(Clk)\n"
+        "    ((Library) . (Component)) . (HandshakeFunctions)(Clk)\n"
+        "}",
+
         0
     };
     if(!runTest(expected)) return false;

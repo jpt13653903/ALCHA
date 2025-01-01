@@ -18,48 +18,32 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef AST_Type_h
-#define AST_Type_h
+#ifndef AST_CoverGroup_h
+#define AST_CoverGroup_h
+//------------------------------------------------------------------------------
+
+#include "AST.h"
+
+#include <string>
 //------------------------------------------------------------------------------
 
 namespace AST{
-    enum class Type{
-        AccessDirectionGroup,
-        Alias,
-        Array,
-        Assert,
-        Assignment,
-        ClassDefinition,
-        ClockedConstruct,
-        Concatenate,
-        ControlStatement,
-        CoverBins,
-        CoverGroup,
-        CycleDelay,
-        EnumDefinition,
-        Expression,
-        Fence,
-        ForkJoin,
-        FunctionCall,
-        FunctionDef,
-        GroupDefinition,
-        HdlConstruct,
-        Identifier,
-        Import,
-        InterpolatedString,
-        Jump,
-        Literal,
-        NameSpacePush,
-        OperatorOverload,
-        ParameterDef,
-        Repetition,
-        SequenceDef,
-        Slice,
-        StimulusOrEmulate,
-        String,
-        Stringify,
-        VariableDef,
-        Wait
+    struct CoverGroup: public AST{
+        AST*        parameters = 0;
+        std::string identifier;
+
+        struct Bin{
+            AST* identifier = 0;
+            AST* parameters = 0;
+            Bin* next       = 0;
+
+            ~Bin();
+        }* bins = 0;
+
+        CoverGroup(int line, int filenameIndex);
+       ~CoverGroup();
+
+        std::string print(int indent = 0) const override;
     };
 }
 //------------------------------------------------------------------------------

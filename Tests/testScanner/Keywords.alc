@@ -59,3 +59,6 @@ wait
 posedge
 negedge
 
+coverbins
+covergroup
+

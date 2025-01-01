@@ -7,7 +7,8 @@ Statement  = [ Wait ]
            | IfStatement | For | While  | Loop | Switch | Case | Jump
            | FunctionCallStatement | NamespacePush | Assignment
            | RTL | FSM | HDL
-           | Stimulus | Emulate | ForkJoin | SequenceDef | Assert | ";" );
+           | Stimulus | Emulate | ForkJoin | SequenceDef | Assert
+           | CoverBins | CoverGroup | ";" );
 
 Label  = Identifier ":"; (* Only useful within an fsm construct *)
 

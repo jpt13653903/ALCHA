@@ -31,6 +31,8 @@
 #include "AST/ClockedConstruct.h"
 #include "AST/Concatenate.h"
 #include "AST/ControlStatement.h"
+#include "AST/CoverBins.h"
+#include "AST/CoverGroup.h"
 #include "AST/CycleDelay.h"
 #include "AST/EnumDefinition.h"
 #include "AST/Expression.h"
@@ -2930,6 +2932,184 @@ AST::AST* Parser::repetition()
 }
 //------------------------------------------------------------------------------
 
+// CoverBins  = "coverbins" Identifier "(" ParameterDefList ")"
+//              "{" { Identifier "=" Sequence ";" } "}";
+AST::AST* Parser::coverBins()
+{
+    auto result = new AST::CoverBins(token.line, astFilenameIndex);
+
+    getToken();
+
+    if(token.type == Token::Type::Identifier){
+        result->identifier = token.data;
+        getToken();
+    }else{
+        printError("Identifier expected");
+        delete result;
+        return 0;
+    }
+    if(token.type == Token::Type::OpenRound){
+        getToken();
+        result->parameters = parameterDefList();
+        if(token.type != Token::Type::CloseRound){
+            printError(") expected");
+            delete result;
+            return 0;
+        }
+        getToken();
+    }else{
+        printError("Parameter definition list expected");
+        delete result;
+        return 0;
+    }
+    if(token.type != Token::Type::OpenCurly){
+        printError("{ expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+
+    AST::CoverBins::Bin* last = 0;
+    while(token.type == Token::Type::Identifier){
+        auto current = new AST::CoverBins::Bin();
+        if(last) last->next   = current;
+        else     result->bins = current;
+        last = current;
+        current->identifier = token.data;
+        getToken();
+        if(token.type != Token::Type::Assign){
+            printError("= expected");
+            delete result;
+            return 0;
+        }
+        getToken();
+        current->sequence = sequence();
+        if(!current->sequence){
+            printError("Sequence expected");
+            delete result;
+            return 0;
+        }
+        if(token.type != Token::Type::Semicolon){
+            printError("; expected");
+            delete result;
+            return 0;
+        }
+        getToken();
+    }
+    if(token.type != Token::Type::CloseCurly){
+        printError("} expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+    return result;
+}
+//------------------------------------------------------------------------------
+
+// CoverGroup = "covergroup" [ ParameterList ] Identifier
+//              "{" { CoverBinsIdentifier ParameterList ";" } "}";
+AST::AST* Parser::coverGroup()
+{
+    auto result = new AST::CoverGroup(token.line, astFilenameIndex);
+
+    getToken();
+
+    if(token.type == Token::Type::OpenRound){
+        result->parameters = parameterList();
+    }
+    if(token.type == Token::Type::Identifier){
+        result->identifier = token.data;
+        getToken();
+    }else{
+        printError("Identifier expected");
+        delete result;
+        return 0;
+    }
+    if(token.type != Token::Type::OpenCurly){
+        printError("{ expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+
+    AST::CoverGroup::Bin* last = 0;
+    while(token.type == Token::Type::Identifier){
+        auto current = new AST::CoverGroup::Bin();
+        if(last) last->next   = current;
+        else     result->bins = current;
+        last = current;
+        current->identifier = coverBinIdentifier();
+
+        if(token.type == Token::Type::OpenRound){
+            current->parameters = parameterList();
+            if(!current->parameters){
+                printError("Parameters expected");
+                delete result;
+                return 0;
+            }
+        }else{
+            printError("( expected");
+            delete result;
+            return 0;
+        }
+        if(token.type != Token::Type::Semicolon){
+            printError("; expected");
+            delete result;
+            return 0;
+        }
+        getToken();
+    }
+    if(token.type != Token::Type::CloseCurly){
+        printError("} expected");
+        delete result;
+        return 0;
+    }
+    getToken();
+    return result;
+}
+//------------------------------------------------------------------------------
+
+// CoverBinIdentifier = Identifier { "." Identifier };
+AST::AST* Parser::coverBinIdentifier()
+{
+    if(token.type != Token::Type::Identifier){
+        printError("Identifier expected");
+        return 0;
+    }
+    auto temp = new AST::Identifier(token.line, astFilenameIndex);
+    temp->name = token.data;
+    AST::AST* left = temp;
+    getToken();
+
+    while(!error && token.type > Token::Type::EndOfFile){
+        int  line = token.line;
+        auto operation = token.type;
+        switch(token.type){
+            case Token::Type::AccessMember:{
+                getToken();
+                if(token.type != Token::Type::Identifier){
+                    printError("Invalid cover-bins identifier expression");
+                    delete left;
+                    return 0;
+                }
+                auto right = new AST::Identifier(token.line, astFilenameIndex);
+                right->name = token.data;
+                getToken();
+                auto result = new AST::Expression(line, astFilenameIndex);
+                result->operation = operation;
+                result->left      = left;
+                result->right     = right;
+                left = result;
+                break;
+            }
+            default:
+                return left;
+        }
+    }
+    return 0;
+}
+//------------------------------------------------------------------------------
+
 AST::AST* Parser::identifierStatement()
 {
     AST::AST* left = accessor();
@@ -3233,6 +3413,14 @@ AST::AST* Parser::statement()
             getToken();
             break;
 
+        case Token::Type::CoverBins:
+            result = coverBins();
+            break;
+
+        case Token::Type::CoverGroup:
+            result = coverGroup();
+            break;
+
         case Token::Type::EndOfFile:
             break;
 
@@ -3283,6 +3471,11 @@ AST::AST* Parser::parse(const char* filename)
 
     getToken();
     AST::AST* result = statements();
+    if(token.type != Token::Type::EndOfFile){
+        printError("Unexpected token");
+        if(result) delete result;
+        return 0;
+    }
 
     if(error){
         if(result) delete result;

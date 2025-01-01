@@ -101,6 +101,9 @@ const char* Token::decodeType() const
             case Type::PosEdge:                  return "PosEdge";
             case Type::NegEdge:                  return "NegEdge";
 
+            case Type::CoverBins:                return "CoverBins";
+            case Type::CoverGroup:               return "CoverGroup";
+
         // Operators ...........................................................
             case Type::TernaryIf:                return "TernaryIf";
             case Type::Elvis:                    return "Elvis";
