@@ -41,7 +41,7 @@ Keyword    = "void"     | "auto"
            | "if"       | "else"    | "for" | "in" | "while" | "loop"
            | "switch"   | "case"    | "default"
            | "import"   | "as"
-           | "return"   | "break"   | "continue" | "goto"
+           | "return"   | "break"   | "continue"
            | "func"     | "inline"
            | "rtl"      | "fsm"     | "hdl"
            | "stimulus" | "emulate" | "assert" | "wait"
@@ -60,12 +60,12 @@ Operator   = "++" | "--" | "'"  | ".."  | ":"   | "."   | ".{"
            | "@"  | "#"  | "##" | "[*"  | "[->" | "[="  | "|->" | "|=>"
            | "||" | "&&" | "&&&" ;
 
-Literal        = Binary | Octal | Hexadecimal | Decimal [ Exponent] [ "i" | "j" ] ;
+Literal    = Binary | Octal | Hexadecimal | Decimal [ Exponent] [ "i" | "j" ] ;
 
-Identifier     = ( NonDigit { D | NonDigit } ) -Keyword;
+Identifier = ( NonDigit { D | NonDigit } ) -Keyword;
 
-String         = (  '"' { ( Byte -'"' -"\") | EscapeSequence } '"' [ String ] )
-               | InterpolatedString;
+String     = (  '"' { ( Byte -'"' -"\") | EscapeSequence } '"' [ String ] )
+           | InterpolatedString;
 
 (* Interpolated strings cannot be nested *)
 (* The second expression must evaluate to a format string *)

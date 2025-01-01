@@ -50,7 +50,7 @@ struct Token{
             If      , Else   , For, In  , While , Loop ,
             Switch  , Case   , Default  ,
             Import  , As     ,
-            Return  , Break  , Continue , GoTo  ,
+            Return  , Break  , Continue ,
             Func    , Inline , Operator ,
             RTL     , FSM    , HDL,
             Stimulus, Emulate, Sequence, Assert, Wait ,

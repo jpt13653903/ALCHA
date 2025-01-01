@@ -83,7 +83,6 @@ const char* Token::decodeType() const
             case Type::Return:                   return "Return";
             case Type::Break:                    return "Break";
             case Type::Continue:                 return "Continue";
-            case Type::GoTo:                     return "GoTo";
 
             case Type::Func:                     return "Func";
             case Type::Inline:                   return "Inline";

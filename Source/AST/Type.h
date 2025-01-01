@@ -46,7 +46,6 @@ namespace AST{
         Import,
         InterpolatedString,
         Jump,
-        Label,
         Literal,
         NameSpacePush,
         OperatorOverload,

@@ -41,7 +41,6 @@ as
 return
 break
 continue
-goto
 
 func
 inline

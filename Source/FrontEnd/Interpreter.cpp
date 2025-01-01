@@ -538,15 +538,6 @@ bool Interpreter::globalSpace(const AST::AST* node)
 {
     while(node){
         switch(node->type){
-            case AST::Type::Label:
-                // NOTE: To implement, simply store a pointer to this node in
-                //       the AST.  The GoTo is guaranteed to be file-local, so
-                //       a GoTo will simply jump to this node by pointer.
-                // WARN: But -- How to handle forward jumps?  Maybe perform
-                //       a forward search if the label is not defined?
-                printError(node, "TODO: Label");
-                break;
-
             case AST::Type::VariableDef:
                 if(!variableDef((AST::VariableDef*)node)) return false;
                 break;
@@ -588,9 +579,6 @@ bool Interpreter::globalSpace(const AST::AST* node)
                 break;
 
             case AST::Type::Jump:
-                // NOTE: Goto labels must be file-local.  A goto should not
-                //       jump to a node pointer of a different AST.  To check
-                //       this, make sure that the filenameIndex's are the same.
                 printError(node, "TODO: Jump");
                 break;
 

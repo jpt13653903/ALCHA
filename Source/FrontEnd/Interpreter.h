@@ -46,7 +46,6 @@
 #include "AST/Import.h"
 #include "AST/InterpolatedString.h"
 #include "AST/Jump.h"
-#include "AST/Label.h"
 #include "AST/Literal.h"
 #include "AST/NameSpacePush.h"
 #include "AST/OperatorOverload.h"

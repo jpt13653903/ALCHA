@@ -1,7 +1,5 @@
 // Definitions
 
-ABC:
-
 pin A;
 net A;
 void A;
@@ -229,8 +227,6 @@ continue;
 return 5;
 break 6;
 continue 7;
-
-goto Label;
 //------------------------------------------------------------------------------
 
 // Constructs

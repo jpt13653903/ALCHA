@@ -67,7 +67,6 @@ const char* AST::AST::decodeType() const
         case Type::Import:               return "Import";
         case Type::InterpolatedString:   return "InterpolatedString";
         case Type::Jump:                 return "Jump";
-        case Type::Label:                return "Label";
         case Type::Literal:              return "Literal";
         case Type::NameSpacePush:        return "NameSpacePush";
         case Type::OperatorOverload:     return "OperatorOverload";

@@ -36,7 +36,6 @@ Case = ( "case"   "(" ExpressionList ")" StatementBlock )
 (* For "break" and "continue", the expression indicates the number of levels,
    which is 1 by default. *)
 Jump = ( "return" | "break" | "continue") [ Expression ] ";";
-GoTo = "goto" Identifier ";";
 
 (* The first parameter must evaluate to a clock net.  If the RTL is inside
    a function, all parameters are inherited from the calling state machine. *)

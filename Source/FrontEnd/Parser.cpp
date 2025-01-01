@@ -44,7 +44,6 @@
 #include "AST/Import.h"
 #include "AST/InterpolatedString.h"
 #include "AST/Jump.h"
-#include "AST/Label.h"
 #include "AST/Literal.h"
 #include "AST/NameSpacePush.h"
 #include "AST/OperatorOverload.h"
@@ -2206,14 +2205,6 @@ AST::AST* Parser::jumpStatement()
     getToken();
     result->expression = expression();
 
-    if(result->jumpType == Token::Type::GoTo){
-        if(!result->expression ||
-           result->expression->type != AST::Type::Identifier){
-            printError("Label expected");
-            delete result;
-            return 0;
-        }
-    }
     if(token.type != Token::Type::Semicolon){
         printError("; expected");
         delete result;
@@ -2948,20 +2939,6 @@ AST::AST* Parser::identifierStatement()
     AST::AST* attributes = 0;
 
     switch(token.type){
-        case Token::Type::Colon:{
-            if(left->type == AST::Type::Identifier){
-                auto result = new AST::Label(token.line, astFilenameIndex);
-                result->name = ((AST::Identifier*)left)->name;
-                delete left;
-                getToken();
-                return result;
-            }else{
-                printError("Label must be an identifier");
-                delete left;
-                return 0;
-            }
-        }
-
         case Token::Type::OpenAngle:
             attributes = attributeList();
         case Token::Type::Operator:
@@ -3221,7 +3198,6 @@ AST::AST* Parser::statement()
         case Token::Type::Return:
         case Token::Type::Break:
         case Token::Type::Continue:
-        case Token::Type::GoTo:
             result = jumpStatement();
             break;
 

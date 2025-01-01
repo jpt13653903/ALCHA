@@ -2,9 +2,9 @@ Module = { Statement };
 
 (* Wait statements only valid within Stimulus and Emulate blocks *)
 Statement  = [ Wait ]
-             ( Label | Definition | ClassDefinition | EnumDefinition
+             ( Definition | ClassDefinition | EnumDefinition
            | Alias | Import | Struct | Group | AccessDirectionGroup
-           | IfStatement | For | While  | Loop | Switch | Case | Jump | GoTo
+           | IfStatement | For | While  | Loop | Switch | Case | Jump
            | FunctionCallStatement | NamespacePush | Assignment
            | RTL | FSM | HDL
            | Stimulus | Emulate | ForkJoin | SequenceDef | Assert | ";" );
@@ -53,7 +53,8 @@ ParameterDef     = [ ( BaseType | TypeIdentifier ) [ ParameterList ] ]
 AttributeList       = "<" AttributeAssignment { "," AttributeAssignment } ">";
 AttributeAssignment = Identifier "=" Primary;
 
-EnumDefinition = "enum" Identifier "{" Identifier { "," Identifier } "}";
+EnumDefinition = "enum" [ AttributeList ] Identifier "{" EnumMemberDef { "," EnumMemberDef } "}";
+EnumMemberDef  = Identifier [ "=" Expression ];
 
 TypeIdentifier = Identifier { "." Identifier }; (* NameSpace.TypeName *)
 (*----------------------------------------------------------------------------*)

@@ -130,7 +130,6 @@ Scanner::Scanner()
             keywords.insert("return"       , Token::Type::Return  );
             keywords.insert("break"        , Token::Type::Break   );
             keywords.insert("continue"     , Token::Type::Continue);
-            keywords.insert("goto"         , Token::Type::GoTo    );
 
             keywords.insert("func"         , Token::Type::Func  );
             keywords.insert("inline"       , Token::Type::Inline);

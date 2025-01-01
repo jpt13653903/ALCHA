@@ -300,7 +300,6 @@ bool testModules()
     if(!startTest("Modules")) return false;
 
     const char* expected[] = {
-        "ABC:",
         "pin A",
         "net A",
         "void A",
@@ -541,7 +540,6 @@ bool testModules()
         "return 5",
         "break 6",
         "continue 7",
-        "goto Label",
 
         "rtl <A = 3, B = \"Hello\"> (Clk, Reset){\n"
         "    A = 5\n"
@@ -1073,8 +1071,6 @@ bool testParser()
         "a = ((x) | (x)) ~| (((x) ^ (x)) ~^ (((x) & (x)) ~& (((x) == (x)) != (((((x) < (x)) > (x)) <= (x)) >= (((x) << (x)) >> (((x) + (x)) - ((((x) * (x)) / (x)) % ((x) ** ((x) ` (x))))))))))",
         "a = (((((((((((((((((((((x) ` (x)) ** (x)) % (x)) / (x)) * (x)) - (x)) + (x)) >> (x)) << (x)) >= (x)) <= (x)) > (x)) < (x)) != (x)) == (x)) ~& (x)) & (x)) ~^ (x)) ^ (x)) ~| (x)) | (x)",
         "(((a)[ 5 ])[ 6 ])[ (7) .. (9), 8, (1) .. (10):(2) ] = ((((b) . (c)) . (d)) . (e)) ' (attribute)",
-
-        "MyLabel:",
 
         "((a) . (b)) . (c).{\n"
         "    num a, b, c\n"
