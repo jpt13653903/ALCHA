@@ -231,7 +231,7 @@ continue 7;
 
 // Constructs
 
-rtl<A = 3, B = "Hello">(Clk, Reset){
+rtl(Clk, Reset) <A = 3, B = "Hello">{
     A = 5;
     B = C + 3;
 }
@@ -252,7 +252,7 @@ rtl{
     B = C + 3;
 }
 
-fsm<A = 3, B = "Hello">(Clk, Reset){
+fsm(Clk, Reset) <A = 3, B = "Hello">{
     A = 5;
     B = C + 3;
 }
@@ -269,7 +269,7 @@ fsm{
     B = C + 3;
 }
 
-hdl<A = 3, B = "Hello">("whatnot.v", "thingy.vhd") ABC(
+hdl("whatnot.v", "thingy.vhd") <A = 3, B = "Hello"> ABC(
     A = 3;
     B = 5;
 ){
@@ -284,7 +284,7 @@ hdl<A = 3, B = "Hello">("whatnot.v", "thingy.vhd") ABC(
 
 // Verification
 
-stimulus <A = 3, B = 5>(1, 2, 3) ABC {
+stimulus(1, 2, 3) <A = 3, B = 5> ABC {
     A = 3;
     B = 5;
 }
@@ -296,16 +296,16 @@ stimulus (1, 2, 3) ABC {
     A = 3;
     B = 5;
 }
-stimulus <A = 3, B = 5>(1, 2, 3) {
+stimulus(1, 2, 3) <A = 3, B = 5> {
     A = 3;
     B = 5;
 }
-stimulus <A = 3, B = 5>(1, 2, 3) ABC {
+stimulus(1, 2, 3) <A = 3, B = 5> ABC {
     A = 3;
     B = 5;
 }
 
-emulate <A = 3, B = 5>(1, 2, 3) ABC {
+emulate(1, 2, 3) <A = 3, B = 5> ABC {
     A = 3;
     B = 5;
 }
@@ -317,11 +317,11 @@ emulate (1, 2, 3) ABC {
     A = 3;
     B = 5;
 }
-emulate <A = 3, B = 5>(1, 2, 3) {
+emulate(1, 2, 3) <A = 3, B = 5> {
     A = 3;
     B = 5;
 }
-emulate <A = 3, B = 5>(1, 2, 3) ABC {
+emulate(1, 2, 3) <A = 3, B = 5> ABC {
     A = 3;
     B = 5;
 }

@@ -2,9 +2,9 @@
    gets to the verification features.  The end result will be very
    similar to SystemVerilog. *)
 
-Stimulus = "stimulus" [ AttributeList ] [ ParameterList ] [ Identifier ]
+Stimulus = "stimulus" [ ParameterList ] [ AttributeList ] [ Identifier ]
            "{" { Statement } "}";
-Emulate  = "emulate"  [ AttributeList ] [ ParameterList ] [ Identifier ]
+Emulate  = "emulate"  [ ParameterList ] [ AttributeList ] [ Identifier ]
            "{" { Statement } "}";
 ForkJoin = "{" { Statement } "}" { ( "||" | "&&" ) "{" { Statement } "}" }
 Wait     = ( "wait" "(" Sequence        ")" )

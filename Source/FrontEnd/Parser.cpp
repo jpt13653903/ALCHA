@@ -2215,8 +2215,8 @@ AST::AST* Parser::jumpStatement()
 }
 //------------------------------------------------------------------------------
 
-// RTL = "rtl" [AttributeList] [ParameterList] StatementBlock;
-// FSM = "fsm" [AttributeList] [ParameterList] StatementBlock;
+// RTL = "rtl" [ ParameterList ] [ AttributeList ] StatementBlock;
+// FSM = "fsm" [ ParameterList ] [ AttributeList ] StatementBlock;
 AST::AST* Parser::clockedConstruct()
 {
     auto result = new AST::ClockedConstruct(token.line, astFilenameIndex);
@@ -2224,18 +2224,18 @@ AST::AST* Parser::clockedConstruct()
 
     getToken();
 
-    if(token.type == Token::Type::OpenAngle){
-        result->attributes = attributeList();
-    }
     if(token.type == Token::Type::OpenRound){
         result->parameters = parameterList();
+    }
+    if(token.type == Token::Type::OpenAngle){
+        result->attributes = attributeList();
     }
     result->body = statementBlock();
     return result;
 }
 //------------------------------------------------------------------------------
 
-// HDL = "hdl" [ AttributeList ] "(" [ String { "," String } ] ")" Identifier
+// HDL = "hdl" "(" [ String { "," String } ] ")" [ AttributeList ] Identifier
 //             [ "(" { Assignment } ")" ]
 //             "{" { ( [ DirectionSpecifier ] Definition ) | Stimulus } "}";
 AST::AST* Parser::hdlConstruct()
@@ -2244,9 +2244,6 @@ AST::AST* Parser::hdlConstruct()
 
     getToken();
 
-    if(token.type == Token::Type::OpenAngle){
-        result->attributes = attributeList();
-    }
     if(token.type != Token::Type::OpenRound){
         printError("( expected");
         delete result;
@@ -2273,6 +2270,10 @@ AST::AST* Parser::hdlConstruct()
         return 0;
     }
     getToken();
+
+    if(token.type == Token::Type::OpenAngle){
+        result->attributes = attributeList();
+    }
 
     if(token.type != Token::Type::Identifier){
         printError("Identifier expected");
@@ -2426,9 +2427,9 @@ AST::AST* Parser::hdlBody()
 }
 //------------------------------------------------------------------------------
 
-// Stimulus = "stimulus" [ AttributeList ] [ ParameterList ] [ Identifier ]
+// Stimulus = "stimulus" [ ParameterList ] [ AttributeList ] [ Identifier ]
 //            "{" [ Statements ] "}";
-// Emulate  = "emulate" [ AttributeList ] [ ParameterList ] [ Identifier ]
+// Emulate  = "emulate"  [ ParameterList ] [ AttributeList ] [ Identifier ]
 //            "{" [ Statements ] "}";
 AST::AST* Parser::stimulusOrEmulate()
 {
@@ -2437,11 +2438,11 @@ AST::AST* Parser::stimulusOrEmulate()
 
     getToken();
 
-    if(token.type == Token::Type::OpenAngle){
-        result->attributeList = attributeList();
-    }
     if(token.type == Token::Type::OpenRound){
         result->parameterList = parameterList();
+    }
+    if(token.type == Token::Type::OpenAngle){
+        result->attributeList = attributeList();
     }
     if(token.type == Token::Type::Identifier){
         result->identifier = token.data;

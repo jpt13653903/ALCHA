@@ -51,6 +51,18 @@ std::string ClockedConstruct::print(int indent) const
         default: result += "Unknown clocked construct ";
     }
 
+    if(parameters){
+        bool first = true;
+        result += "(";
+        auto param = parameters;
+        while(param){
+            if(!first) result += ", ";
+            first = false;
+            result += param->print();
+            param   = param->next;
+        }
+        result += ") ";
+    }
     if(attributes){
         bool first = true;
         result += "<";
@@ -62,18 +74,6 @@ std::string ClockedConstruct::print(int indent) const
             attrib  = attrib->next;
         }
         result += "> ";
-    }
-    if(parameters){
-        bool first = true;
-        result += "(";
-        auto param = parameters;
-        while(param){
-            if(!first) result += ", ";
-            first = false;
-            result += param->print();
-            param   = param->next;
-        }
-        result += ")";
     }
     result += "{\n";
     auto statement = body;

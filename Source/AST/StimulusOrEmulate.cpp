@@ -50,21 +50,9 @@ std::string StimulusOrEmulate::print(int indent) const
         case Token::Type::Emulate:  result += "emulate "; break;
         default: break;
     }
-    if(attributeList){
-        bool first = true;
-        result += " <";
-        auto attrib = attributeList;
-        while(attrib){
-            if(!first) result += ", ";
-            first = false;
-            result += attrib->print();
-            attrib  = attrib->next;
-        }
-        result += "> ";
-    }
     if(parameterList){
         bool first = true;
-        result += " (";
+        result += "(";
         auto param = parameterList;
         while(param){
             if(!first) result += ", ";
@@ -73,6 +61,18 @@ std::string StimulusOrEmulate::print(int indent) const
             param   = param->next;
         }
         result += ") ";
+    }
+    if(attributeList){
+        bool first = true;
+        result += "<";
+        auto attrib = attributeList;
+        while(attrib){
+            if(!first) result += ", ";
+            first = false;
+            result += attrib->print();
+            attrib  = attrib->next;
+        }
+        result += "> ";
     }
     if(identifier.size()) result += identifier + " ";
 

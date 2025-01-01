@@ -541,7 +541,7 @@ bool testModules()
         "break 6",
         "continue 7",
 
-        "rtl <A = 3, B = \"Hello\"> (Clk, Reset){\n"
+        "rtl (Clk, Reset) <A = 3, B = \"Hello\"> {\n"
         "    A = 5\n"
         "    B = (C) + (3)\n"
         "}",
@@ -549,11 +549,11 @@ bool testModules()
         "    A = 5\n"
         "    B = (C) + (3)\n"
         "}",
-        "rtl (Clk, Reset){\n"
+        "rtl (Clk, Reset) {\n"
         "    A = 5\n"
         "    B = (C) + (3)\n"
         "}",
-        "rtl (Clk){\n"
+        "rtl (Clk) {\n"
         "    A = 5\n"
         "    B = (C) + (3)\n"
         "}",
@@ -561,7 +561,7 @@ bool testModules()
         "    A = 5\n"
         "    B = (C) + (3)\n"
         "}",
-        "fsm <A = 3, B = \"Hello\"> (Clk, Reset){\n"
+        "fsm (Clk, Reset) <A = 3, B = \"Hello\"> {\n"
         "    A = 5\n"
         "    B = (C) + (3)\n"
         "}",
@@ -569,7 +569,7 @@ bool testModules()
         "    A = 5\n"
         "    B = (C) + (3)\n"
         "}",
-        "fsm (Clk, Reset){\n"
+        "fsm (Clk, Reset) {\n"
         "    A = 5\n"
         "    B = (C) + (3)\n"
         "}",
@@ -593,43 +593,43 @@ bool testModules()
         "    pin (16, 5) AnotherPin\n"
         "}",
 
-        "stimulus  <A = 3, B = 5>  (1, 2, 3) ABC {\n"
+        "stimulus (1, 2, 3) <A = 3, B = 5> ABC {\n"
         "    A = 3\n"
         "    B = 5\n"
         "}",
-        "stimulus  <A = 3, B = 5> ABC {\n"
+        "stimulus <A = 3, B = 5> ABC {\n"
         "    A = 3\n"
         "    B = 5\n"
         "}",
-        "stimulus  (1, 2, 3) ABC {\n"
+        "stimulus (1, 2, 3) ABC {\n"
         "    A = 3\n"
         "    B = 5\n"
         "}",
-        "stimulus  <A = 3, B = 5>  (1, 2, 3) {\n"
+        "stimulus (1, 2, 3) <A = 3, B = 5> {\n"
         "    A = 3\n"
         "    B = 5\n"
         "}",
-        "stimulus  <A = 3, B = 5>  (1, 2, 3) ABC {\n"
+        "stimulus (1, 2, 3) <A = 3, B = 5> ABC {\n"
         "    A = 3\n"
         "    B = 5\n"
         "}",
-        "emulate  <A = 3, B = 5>  (1, 2, 3) ABC {\n"
+        "emulate (1, 2, 3) <A = 3, B = 5> ABC {\n"
         "    A = 3\n"
         "    B = 5\n"
         "}",
-        "emulate  <A = 3, B = 5> ABC {\n"
+        "emulate <A = 3, B = 5> ABC {\n"
         "    A = 3\n"
         "    B = 5\n"
         "}",
-        "emulate  (1, 2, 3) ABC {\n"
+        "emulate (1, 2, 3) ABC {\n"
         "    A = 3\n"
         "    B = 5\n"
         "}",
-        "emulate  <A = 3, B = 5>  (1, 2, 3) {\n"
+        "emulate (1, 2, 3) <A = 3, B = 5> {\n"
         "    A = 3\n"
         "    B = 5\n"
         "}",
-        "emulate  <A = 3, B = 5>  (1, 2, 3) ABC {\n"
+        "emulate (1, 2, 3) <A = 3, B = 5> ABC {\n"
         "    A = 3\n"
         "    B = 5\n"
         "}",
@@ -647,7 +647,7 @@ bool testModules()
         "    X++\n"
         "    Y--\n"
         "}",
-        "stimulus  (1/1000000000 (~1e-09)) {\n"
+        "stimulus (1/1000000000 (~1e-09)) {\n"
         "    A = 5\n"
         "    #5\n"
         "    B = 7\n"
@@ -874,7 +874,7 @@ bool testAutogen()
         "        }\n"
 
         "        void GenerateRegs(){\n"
-        "            rtl ((Bus) . (Clock), (Bus) . (Reset)){\n"
+        "            rtl ((Bus) . (Clock), (Bus) . (Reset)) {\n"
         "                WaitRequest = 0\n"
         "                switch (Address) {\n"
         "                    for ((Register) in ( ' (RdRegisters))) {\n"
@@ -984,7 +984,7 @@ bool testVerification()
         "}",
         "net c",
         "net (8) a, b, y = Adder(a, b, c)",
-        "stimulus  (1/1000000000 (~1e-09)) {\n"
+        "stimulus (1/1000000000 (~1e-09)) {\n"
         "    #1\n"
         "    a = 0\n"
         "    b = 0\n"
@@ -1270,7 +1270,7 @@ bool testAlchaCaseStudyCombined()
         "    num N = ceil(log2(Delay_cycles))\n"
         "    net (N) Count = 0\n"
         "    result = 1\n"
-        "    rtl (Clk, Reset){\n"
+        "    rtl (Clk, Reset) {\n"
         "        if ((Count) != (Delay_cycles)) {\n"
         "            Count++\n"
         "        } else {\n"
@@ -1378,7 +1378,7 @@ bool testAlchaCaseStudyCombined()
         "        net (N) Count = (Timeout_Cycles) - (1)\n"
         "        if (EdgeSensitive) {\n"
         "            net (2) KickEdge\n"
-        "            rtl (Clk){\n"
+        "            rtl (Clk) {\n"
         "                KickEdge = :( (KickEdge)[ 0 ], Kick )\n"
         "            }\n"
         "            net Reset = (KickEdge) == (1)\n"
@@ -1389,7 +1389,7 @@ bool testAlchaCaseStudyCombined()
         "    output {\n"
         "        net Error = 0\n"
         "    }\n"
-        "    rtl (Clk, Reset){\n"
+        "    rtl (Clk, Reset) {\n"
         "        if (Count) {\n"
         "            Count--\n"
         "        } else {\n"
@@ -1409,7 +1409,7 @@ bool testAlchaCaseStudyCombined()
         "        num Baud_Cycles = round(((Clk) ' (frequency)) / ((Baud_kHz) * (3)))\n"
         "        num Baud_N = ceil(log2(Baud_Cycles))\n"
         "        net (Baud_N) Baud_Count\n"
-        "        rtl (Clk){\n"
+        "        rtl (Clk) {\n"
         "            if (Baud_Count) {\n"
         "                Baud_Count--\n"
         "            } else {\n"
@@ -1423,14 +1423,14 @@ bool testAlchaCaseStudyCombined()
         "    void ConnectBus(pin Clock, pin Data){\n"
         "        (Clock) . (enable) |=  ~ (ClkOut)\n"
         "        (Data) . (enable) |=  ~ (DataOut)\n"
-        "        rtl (Clk){\n"
+        "        rtl (Clk) {\n"
         "            ClkIn = (Clock) . (pad)\n"
         "            DataIn = (Data) . (pad)\n"
         "        }\n"
         "    }\n"
         "    net (8) Transaction(net (8) TxData, bool Start = 0, bool R_nW = 0, bool Ack = 1, bool Stop = 0){\n"
         "        net (8) Data\n"
-        "        fsm (Clk, Reset, ((Baud_Trigger) & ((ClkIn) == (ClkOut))) & ( ! (Quiet))){\n"
+        "        fsm (Clk, Reset, ((Baud_Trigger) & ((ClkIn) == (ClkOut))) & ( ! (Quiet))) {\n"
         "            Data = TxData\n"
         "            if ((Start) | (ClkOut)) {\n"
         "                if (( ! (ClkOut)) & ( ! (DataOut))) {\n"
@@ -1550,14 +1550,14 @@ bool testAlchaCaseStudyCombined()
         "        (RAM) . (WrEnable) = (Input) . (Valid)\n"
         "        (RAM) . (RdEnable) = (Output) . (Ready)\n"
         "        (RAM) . (RdAddress) = 0\n"
-        "        rtl (Clk, Reset){\n"
+        "        rtl (Clk, Reset) {\n"
         "            if ((Input) . (Valid)) {\n"
         "                (RAM) . (WrAddress)++\n"
         "            }\n"
         "        }\n"
         "        net Valid = 0\n"
         "        num (((RAM) . (RdAddress)) ' (width)) NumItems = ((RAM) . (WrAddress)) - ((RAM) . (RdAddress))\n"
-        "        rtl (Clk, Reset, (result) . (Ready)){\n"
+        "        rtl (Clk, Reset, (result) . (Ready)) {\n"
         "            :( (result) . (SoP), (result) . (EoP), (result) . (Data) ) := (RAM) . (RdData)\n"
         "            (result) . (Valid) = Valid\n"
         "            if ((NumItems) != (0)) {\n"
@@ -1589,7 +1589,7 @@ bool testAlchaCaseStudyCombined()
         "    private {\n"
         "        net (32,  - (pi)) Phase = 0\n"
         "    }\n"
-        "    rtl (Clk, Reset){\n"
+        "    rtl (Clk, Reset) {\n"
         "        Phase := ( : (Phase)) + ( : (Frequency))\n"
         "    }\n"
         "    SinCos(Clk, Phase, Sin, Cos)\n"
@@ -1600,7 +1600,7 @@ bool testAlchaCaseStudyCombined()
         "    num n\n"
         "    net (21,  - (2)) x[(N) + (1)], y[(N) + (1)]\n"
         "    net (21, ( - (2)) * (pi)) a[(N) + (1)], A[(N) + (1)]\n"
-        "    rtl (Clk){\n"
+        "    rtl (Clk) {\n"
         "        switch ((Angle)[ 20, 19 ]) {\n"
         "            case (0) {\n"
         "                (x)[ 0 ] = K\n"
@@ -1708,7 +1708,7 @@ bool testAlchaCaseStudyCombined()
         "        }\n"
         "        (Input) . (Ready) = ((result) . (Ready)) & (Ready)\n"
         "        (ROM) . (ClkEnable_A) = (((result) . (Ready)) & ((Input) . (Valid))) | (WaitForROM)\n"
-        "        rtl (Clk, Reset, (result) . (Ready)){\n"
+        "        rtl (Clk, Reset, (result) . (Ready)) {\n"
         "            if (Ready) {\n"
         "                (result) . (SoP) = (Input) . (SoP)\n"
         "                (result) . (EoP) = (Input) . (EoP)\n"
@@ -1798,7 +1798,7 @@ bool testAlchaCaseStudyCombined()
         "        (Interface) ' (BaseAddress) = ( ' (BaseAddress)) + ((Used) * ((Width) / (8)))\n"
         "        Used += (Interface) . (Depth)\n"
         "    }\n"
-        "    rtl (Clock, Reset){\n"
+        "    rtl (Clock, Reset) {\n"
         "        if ((Read) & ( ! (WaitRequest))) {\n"
         "            ReadingWaitRequest = 1\n"
         "        } else {\n"
@@ -1849,7 +1849,7 @@ bool testAlchaCaseStudyCombined()
         "            }\n"
         "        }\n"
         "        void GenerateRegs(){\n"
-        "            rtl ((Bus) . (Clock), (Bus) . (Reset)){\n"
+        "            rtl ((Bus) . (Clock), (Bus) . (Reset)) {\n"
         "                WaitRequest = 0\n"
         "                switch (Address) {\n"
         "                    for ((Register) in ( ' (RdRegisters))) {\n"
@@ -2259,7 +2259,7 @@ bool testAlchaCaseStudyCombined()
         "        net (N) Request\n"
         "        net (N) Grant = 0\n"
         "        net (N) Device = 1\n"
-        "        rtl (Clk, Reset){\n"
+        "        rtl (Clk, Reset) {\n"
         "            if ((Request) & (Device)) {\n"
         "                Grant = Device\n"
         "            } else {\n"
@@ -2304,7 +2304,7 @@ bool testAlchaCaseStudyCombined()
         "        ((SDO) ' (set_multicycle_path)) ' (setup) = 2\n"
         "        ((SDO) ' (set_multicycle_path)) ' (hold) = 1\n"
         "    }\n"
-        "    rtl (Clk, Reset){\n"
+        "    rtl (Clk, Reset) {\n"
         "        if ((Count) == (47)) {\n"
         "            Count = 0\n"
         "        } else {\n"
@@ -2387,7 +2387,7 @@ bool testAlchaCaseStudyCombined()
         "        }\n"
         "        (Registers) . (ReadOnly)(InternalTemp)\n"
         "    }\n"
-        "    fsm (Clk, Reset){\n"
+        "    fsm (Clk, Reset) {\n"
         "    }\n"
         "}",
 
@@ -2530,7 +2530,7 @@ bool testAlchaCaseStudyCombined()
         "            }\n"
         "        }\n"
         "    }\n"
-        "    fsm (Clk, Reset){\n"
+        "    fsm (Clk, Reset) {\n"
         "        Init()\n"
         "        UpdateRegisters()\n"
         "        loop {\n"
@@ -2547,7 +2547,7 @@ bool testAlchaCaseStudyCombined()
         "            UpdateRegisters()\n"
         "        }\n"
         "    }\n"
-        "    rtl (Clk, Reset){\n"
+        "    rtl (Clk, Reset) {\n"
         "        Trigger = :( (Trigger)[ 0 ], ipTrigger )\n"
         "        DR_Over = :( (DR_Over)[ 0 ], ipDR_Over )\n"
         "        if ((DR_Over) == (1)) {\n"
@@ -2820,7 +2820,7 @@ bool testAlchaCaseStudyCombined()
         "        num Baud_Cycles = round(((Clk) ' (frequency)) / ((Baud_kHz) * (2)))\n"
         "        num Baud_N = ceil(log2(Baud_Cycles))\n"
         "        net (Baud_N) Baud_Count\n"
-        "        rtl (Clk){\n"
+        "        rtl (Clk) {\n"
         "            if (Baud_Count) {\n"
         "                Baud_Count--\n"
         "            } else {\n"
@@ -2845,7 +2845,7 @@ bool testAlchaCaseStudyCombined()
         "            }\n"
         "        }\n"
         "    }\n"
-        "    fsm (Clk, Reset, Baud_Trigger){\n"
+        "    fsm (Clk, Reset, Baud_Trigger) {\n"
         "        loop {\n"
         "            Busy = 0\n"
         "            while ( ! (Update)) {\n"
@@ -3081,7 +3081,7 @@ bool testAlchaCaseStudyCombined()
         "        net (32) LengthCount = 0\n"
         "        net Trigger_1\n"
         "    }\n"
-        "    rtl (Clock, Reset){\n"
+        "    rtl (Clock, Reset) {\n"
         "        Trigger_1 = Trigger\n"
         "        if ((:( Trigger_1, Trigger )) == (1)) {\n"
         "            DelayCount = Delay\n"
@@ -3109,7 +3109,7 @@ bool testAlchaCaseStudyCombined()
         "    net (32) Period = (1/1000 (~0.001)) * ((Clock) ' (frequency))\n"
         "    net Output = 0\n"
         "    net (32) Count = 0\n"
-        "    rtl (Clock, Reset){\n"
+        "    rtl (Clock, Reset) {\n"
         "        if ((Count) >= (Period)) {\n"
         "            Count = 1\n"
         "            Output = 1\n"
@@ -3205,7 +3205,7 @@ bool testAlchaCaseStudyCombined()
         "(Registers) . (Writeable)(RdAddress)",
         "(Buffer) . (Address) = 0",
 
-        "fsm (DspClock, MasterReset){\n"
+        "fsm (DspClock, MasterReset) {\n"
         "    loop {\n"
         "        loop {\n"
         "            if ((Buffer) . (Write)) {\n"
@@ -3291,7 +3291,7 @@ bool testAlchaCaseStudyCombined()
         "(Registers) . (Writeable)((PacketTrigger) . (Delay))",
         "(Registers) . (Writeable)((PacketTrigger) . (Length))",
         "net PacketTrigger_DSP",
-        "rtl (DspClock){\n"
+        "rtl (DspClock) {\n"
         "    PacketTrigger_DSP = (PacketTrigger) . (Output)\n"
         "}",
 
@@ -3313,7 +3313,7 @@ bool testAlchaCaseStudyCombined()
         "    num N = 2500\n"
         "}",
 
-        "fsm (DspClock, MasterReset){\n"
+        "fsm (DspClock, MasterReset) {\n"
         "    loop {\n"
         "        n = 0\n"
         "        (Packet) . (Valid) = 0\n"
