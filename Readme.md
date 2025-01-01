@@ -50,7 +50,7 @@ When cloning the repository, remember to also clone the sub-modules.
 
 To run the automated tests, run `make test` from the root folder.
 
-You can also run specific tests from within the [`Tests`][Tests] folder:
+You can also run specific tests from within the [`Tests`](Tests) folder:
 
 - `make test`: Run all the tests
 - `make testScanner`: Run and test the scanner
@@ -61,15 +61,13 @@ You can also run specific tests from within the [`Tests`][Tests] folder:
 
 Alcha was the subject of [a PhD thesis][PhD].
 
-See the [Wiki] for more information.
+See the [Wiki](Wiki) for more information.
 
 --------------------------------------------------------------------------------
 
 [MinGW]:       https://jmeubank.github.io/tdm-gcc
 [gitBash]:     https://git-scm.com
 [PhD]:         http://hdl.handle.net/11427/37117
-[Wiki]:        https://sourceforge.net/p/alcha/wiki
-[Tests]:       https://github.com/jpt13653903/ALCHA/tree/develop/Tests
 [vim_syntax]:  https://github.com/jpt13653903/ALCHA/blob/6c6c2cd/Syntax%20Highlighting/Vim/alcha.vim
 [tree-sitter]: https://github.com/jpt13653903/tree-sitter-alcha
 
