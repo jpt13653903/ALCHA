@@ -385,6 +385,11 @@ bool testModules()
         "enum ABC { A }",
         "enum ABC { A, B, C }",
 
+        "enum ABC { A = 0, B = 1, C = 3, D = 2 }",
+        "enum ABC { A = 1, B = 2, C = 4, D = 8 }",
+
+        "enum <encoding = \"Johnson\"> ABC { A, B, C }",
+
         "alias A = ((B) . (C)) * (D)",
 
         "import \"../whatnot/thingy\"",
@@ -1908,7 +1913,7 @@ bool testAlchaCaseStudyCombined()
         "class DualPortRAM(net Clk, net Reset, num Width, num Depth){\n"
         "    private {\n"
         "        string RamBlockType\n"
-        "        switch ( ' (target_series)) {\n"
+        "        switch (( ' (target)) ' (series)) {\n"
         "            case (\"MAX 10\") {\n"
         "                RamBlockType = \"M9K\"\n"
         "            }\n"
@@ -1933,7 +1938,7 @@ bool testAlchaCaseStudyCombined()
         "            clock_enable_output_a = \"BYPASS\"\n"
         "            clock_enable_output_b = \"BYPASS\"\n"
         "            indata_reg_b = \"CLOCK1\"\n"
-        "            intended_device_family =  ' (target_series)\n"
+        "            intended_device_family = ( ' (target)) ' (series)\n"
         "            lpm_type = \"altsyncram\"\n"
         "            maximum_depth = 1024\n"
         "            numwords_a = Depth\n"
@@ -1998,7 +2003,7 @@ bool testAlchaCaseStudyCombined()
         "    }\n"
         "    private {\n"
         "        string RamBlockType\n"
-        "        switch ( ' (target_series)) {\n"
+        "        switch (( ' (target)) ' (series)) {\n"
         "            case (\"MAX 10\") {\n"
         "                RamBlockType = \"M9K\"\n"
         "            }\n"
@@ -2025,7 +2030,7 @@ bool testAlchaCaseStudyCombined()
         "            clock_enable_output_b = \"BYPASS\"\n"
         "            indata_reg_b = \"CLOCK1\"\n"
         "            init_file = MIF_File\n"
-        "            intended_device_family =  ' (target_series)\n"
+        "            intended_device_family = ( ' (target)) ' (series)\n"
         "            lpm_type = \"altsyncram\"\n"
         "            maximum_depth = 1024\n"
         "            numwords_a = Depth\n"
@@ -2110,7 +2115,7 @@ bool testAlchaCaseStudyCombined()
         "class DualPortRAM(net Clk, net Reset, num Width, num Depth){\n"
         "    private {\n"
         "        string RamBlockType\n"
-        "        switch ( ' (target_series)) {\n"
+        "        switch (( ' (target)) ' (series)) {\n"
         "            case (\"MAX 10\") {\n"
         "                RamBlockType = \"M9K\"\n"
         "            }\n"
@@ -2135,7 +2140,7 @@ bool testAlchaCaseStudyCombined()
         "            clock_enable_output_a = \"BYPASS\"\n"
         "            clock_enable_output_b = \"BYPASS\"\n"
         "            indata_reg_b = \"CLOCK1\"\n"
-        "            intended_device_family =  ' (target_series)\n"
+        "            intended_device_family = ( ' (target)) ' (series)\n"
         "            lpm_type = \"altsyncram\"\n"
         "            maximum_depth = 1024\n"
         "            numwords_a = Depth\n"
@@ -2870,10 +2875,11 @@ bool testAlchaCaseStudyCombined()
         "    }\n"
         "}",
 
-        " ' (target_vendor) = \"Altera\"",
-        " ' (target_series) = \"Cyclone V\"",
-        " ' (target_device) = \"5CSEMA4U23C6N\"",
-        " ' (target_board) = \"DE0-Nano-SoC rev C1\"",
+        "( ' (target)) ' (type) = \"Project\"",
+        "( ' (target)) ' (vendor) = \"Altera\"",
+        "( ' (target)) ' (series) = \"Cyclone V\"",
+        "( ' (target)) ' (device) = \"5CSEMA4U23C6N\"",
+        "( ' (target)) ' (board) = \"DE0-Nano-SoC rev C1\"",
         " ' (standard) = \"3.3V\"",
         "group <frequency = 50000000> {\n"
         "    input {\n"

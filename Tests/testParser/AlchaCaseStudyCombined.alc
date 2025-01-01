@@ -705,7 +705,7 @@ class RegistersDecoder(Bus): AvalonInterface(32, 0x1000){
 class DualPortRAM(net Clk, net Reset, num Width, num Depth){
   private{
     string RamBlockType;
-    switch('target_series){
+    switch('target'series){
       case("MAX 10"   ) RamBlockType = "M9K";
       case("Cyclone V") RamBlockType = "M10K";
       case("Arria 10" ) RamBlockType = "M20K";
@@ -721,7 +721,7 @@ class DualPortRAM(net Clk, net Reset, num Width, num Depth){
       clock_enable_output_a              = "BYPASS";
       clock_enable_output_b              = "BYPASS";
       indata_reg_b                       = "CLOCK1";
-      intended_device_family             = 'target_series;
+      intended_device_family             = 'target'series;
       lpm_type                           = "altsyncram";
       maximum_depth                      = 1024;
       numwords_a                         = Depth;
@@ -780,7 +780,7 @@ class DualPortROM(net Clk, net Reset, num Width, num Depth){
 
   private{
     string RamBlockType;
-    switch('target_series){
+    switch('target'series){
       case("MAX 10"   ) RamBlockType = "M9K";
       case("Cyclone V") RamBlockType = "M10K";
       case("Arria 10" ) RamBlockType = "M20K";
@@ -800,7 +800,7 @@ class DualPortROM(net Clk, net Reset, num Width, num Depth){
       clock_enable_output_b              = "BYPASS";
       indata_reg_b                       = "CLOCK1";
       init_file                          = MIF_File;
-      intended_device_family             = 'target_series;
+      intended_device_family             = 'target'series;
       lpm_type                           = "altsyncram";
       maximum_depth                      = 1024;
       numwords_a                         = Depth;
@@ -881,7 +881,7 @@ class DualPortROM(net Clk, net Reset, num Width, num Depth){
 class DualPortRAM(net Clk, net Reset, num Width, num Depth){
   private{
     string RamBlockType;
-    switch('target_series){
+    switch('target'series){
       case("MAX 10"   ) RamBlockType = "M9K";
       case("Cyclone V") RamBlockType = "M10K";
       case("Arria 10" ) RamBlockType = "M20K";
@@ -897,7 +897,7 @@ class DualPortRAM(net Clk, net Reset, num Width, num Depth){
       clock_enable_output_a              = "BYPASS";
       clock_enable_output_b              = "BYPASS";
       indata_reg_b                       = "CLOCK1";
-      intended_device_family             = 'target_series;
+      intended_device_family             = 'target'series;
       lpm_type                           = "altsyncram";
       maximum_depth                      = 1024;
       numwords_a                         = Depth;
@@ -1648,10 +1648,11 @@ class ADF4159(net Clk, net Reset, num Baud_kHz = 1000){
 }
 //------------------------------------------------------------------------------
 
-'target_vendor = "Altera";
-'target_series = "Cyclone V";
-'target_device = "5CSEMA4U23C6N";
-'target_board  = "DE0-Nano-SoC rev C1";
+'target'type   = "Project";
+'target'vendor = "Altera";
+'target'series = "Cyclone V";
+'target'device = "5CSEMA4U23C6N";
+'target'board  = "DE0-Nano-SoC rev C1";
 
 'standard = "3.3V";
 //------------------------------------------------------------------------------

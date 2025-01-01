@@ -1774,13 +1774,17 @@ AST::AST* Parser::parameterDef()
 }
 //------------------------------------------------------------------------------
 
-// EnumDefinition = "enum" Identifier "{" Identifier {"," Identifier} "}";
+// EnumDefinition = "enum" [ AttributeList ] Identifier "{" EnumMemberDef { "," EnumMemberDef } "}";
+// EnumMemberDef  = Identifier [ "=" Expression ];
 AST::AST* Parser::enumDefinition()
 {
     getToken();
 
     auto result = new AST::EnumDefinition(token.line, astFilenameIndex);
 
+    if(token.type == Token::Type::OpenAngle){
+        result->attributes = attributeList();
+    }
     if(token.type == Token::Type::Identifier){
         result->name = token.data;
         getToken();
@@ -1794,16 +1798,25 @@ AST::AST* Parser::enumDefinition()
         delete result;
         return 0;
     }
-    AST::AST* last = 0;
+    AST::EnumDefinition::Member* last = 0;
     do{
         getToken();
         if(token.type == Token::Type::Identifier){
-            auto current = new AST::Identifier(token.line, astFilenameIndex);
+            auto current = new AST::EnumDefinition::Member();
             if(last) last->next      = current;
             else     result->members = current;
             last = current;
             current->name = token.data;
             getToken();
+            if(token.type == Token::Type::Assign){
+                getToken();
+                current->initialiser = expression();
+                if(!current->initialiser){
+                    printError("Initialiser expected");
+                    delete result;
+                    return 0;
+                }
+            }
         }else{
             printError("Identifier expected");
             delete result;

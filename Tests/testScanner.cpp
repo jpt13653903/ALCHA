@@ -524,7 +524,20 @@ bool testOthers()
         { 106, Token::Type::InterpolatedStringEnd,  0, " sheep"  },
         { 106, Token::Type::Semicolon,              0, ";"       },
 
-        { 106, Token::Type::EndOfFile, 0, "" },
+        { 108, Token::Type::Identifier,             0, "MyClass"            },
+        { 109, Token::Type::Identifier,             0, "myInstance"         },
+        { 110, Token::Type::Identifier,             0, "_my_local"          },
+        { 111, Token::Type::Identifier,             0, "ξένηΜεταβλητή"      },
+        { 112, Token::Type::Identifier,             0, "адәныҟатәиАԥсахга"  },
+        { 113, Token::Type::Identifier,             0, "внешняяПеременная"  },
+        { 114, Token::Type::Identifier,             0, "متغيرأجنبي"         },
+        { 115, Token::Type::Identifier,             0, "ตัวแปรต่างประเทศ"   },
+        { 116, Token::Type::Identifier,             0, "משתנהזר"            },
+        { 117, Token::Type::Identifier,             0, "विदेशीचर"           },
+        { 118, Token::Type::Identifier,             0, "外部变量"           },
+        { 119, Token::Type::Identifier,             0, "외국변수"           },
+
+        { 119, Token::Type::EndOfFile, 0, "" },
     };
     if(!runTest(expected)) return false;
 
