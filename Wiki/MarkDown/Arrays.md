@@ -17,7 +17,7 @@ change without notice.
 - [Declarations](Declarations.md)
 - [Expressions](Expressions.md)
 - [Statements](Statements.md)
-- [Arrays](Arrays.md#arrays)
+- [Arrays](#arrays)
   - [Defining Arrays](#defining-arrays)
   - [Slices](#slices)
   - [Array Literals and Concatenation](#array-literals-and-concatenation)
@@ -25,7 +25,6 @@ change without notice.
 - [Functions](Functions.md)
 - [Synchronous Circuits](SynchronousCircuits.md)
 - [Classes](Classes.md)
-- [Operator Overloading](OperatorOverloading.md)
 - [Scripting Features](Scripting.md)
 - [Advanced Attributes](AdvancedAttributes.md)
 - [High-level Structures](HighLevelStructures.md)
@@ -35,9 +34,9 @@ change without notice.
 
 # Arrays
 
-ALCHA supports fixed-length arrays for synthesisable types, and
-variable-length arrays for scripting types.  Multiple-dimensional arrays are
-defined in terms of "arrays of arrays".
+ALCHA supports fixed-length arrays for synthesisable types, and variable-length
+arrays for scripting types.  Multiple-dimensional arrays are defined in terms
+of "arrays of arrays".
 
 ## Defining Arrays
 
@@ -64,12 +63,13 @@ are presented below:
 ```alcha
     net(16, 8) A[16];
     A[5]            // Element 5 of A (the 6th element).
-    A[][15->13]     // All the elements of A, but only the integer bits
+    A[][15..13]     // All the elements of A, but only the integer bits
     A[3,7,2][12..0] // Elements 3, 7 and 2 of A (in that order), and only the fraction bits
     A[0..15:3]      // Every third element of A (0, 3, 6, 9, 12 and 15)
 
-    A[5,3,7][6,7,2] // Bits 6, 7 and 2 (in that order) of elements 5, 3 and 7 (in that order)
-                    // The result is a 3-element array of 3-bit integers
+    A[5,3,7][6,7,2] // Bits 6, 7 and 2 (in that order) of elements 5, 3 and 7
+                    // (in that order) The result is a 3-element array of
+                    // 3-bit integers
 ```
 
 The indices can also be specified by means of a number array, as follows:
@@ -84,7 +84,7 @@ The indices can also be specified by means of a number array, as follows:
 ## Array Literals and Concatenation
 
 Array literals are useful for vectorised operations.  There are many forms,
-which are illustrated in the example below:
+which are illustrated in the examples below:
 
 ```alcha
     [0, 1, 2, 3]    // 4-element array
@@ -121,14 +121,49 @@ are some examples:
     Y[15] = A[ 0] + B[15];
 ```
 
-When an array is used as the condition of an `if` statement or `while` loop,
-the array is AND-reduced.  This allows a concise means by which to compare all
-elements in an array (or string).  Any other intention must be written
-explicitly in terms of a loop structure.
-
 When a scalar is involved in a vectorised operation, the scalar is repeated
 for every instance of the operation.  This can be used, for instance, to
-assign a scalar to every element of an array.
+assign a scalar to every element of an array, or to distribute an operation
+over the elements of an array or vector.
+
+```alcha
+    net(16) globalBus;
+
+    net     enable;
+    net(16) data;
+
+    globalBus |= data & enable;
+```
+
+When an array is used as the condition of an `if` statement or `while` loop,
+the array is AND-reduced.  This allows a concise means by which to compare all
+elements in an array (or string) with "all" semantics.
+
+Another option is to explicitly specify the reduction operation.
+Use OR-reduction for "any" semantics, for example.
+
+```alcha
+   char s[] = "Hello World";
+
+   if(s == "Hello"){ // False, because the lengths differ
+   }
+   if(s == "Hello Fruit"){ // False, because the AND-reduced comparison fails
+   }
+   if(s == "Hello World"){ // True, because the AND-reduced comparison passes
+   }
+   if(s == "o"){ // False, because not all of s equals 'o'
+   }
+   if(|(s == "o")){ // True, because at least one char in s equals 'o'
+   }
+
+   enum Fruit { Apple, Pear, Banana }
+   Fruit myFruitBowl[5] = [ Apple, Pear, Apple, Banana, Apple ];
+
+   if(myFruitBowl == Apple){ // False, because the AND-reduced comparison fails
+   }
+   if(|(myFruitBowl == Apple)){ // True, because the OR-reduced comparison passes
+   }
+```
 
 --------------------------------------------------------------------------------
 

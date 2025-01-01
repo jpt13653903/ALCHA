@@ -10,7 +10,7 @@ change without notice.
 
 ## Table of Contents
 
-- [Introduction](Introduction.md#introduction)
+- [Introduction](#introduction)
   - [Automated Optimisation](#automated-optimisation)
   - [Source](#source)
   - [References](#references)
@@ -28,7 +28,6 @@ change without notice.
 - [Functions](Functions.md)
 - [Synchronous Circuits](SynchronousCircuits.md)
 - [Classes](Classes.md)
-- [Operator Overloading](OperatorOverloading.md)
 - [Scripting Features](Scripting.md)
 - [Advanced Attributes](AdvancedAttributes.md)
 - [High-level Structures](HighLevelStructures.md)
@@ -52,6 +51,11 @@ scripting) into a single language.
 ALCHA is designed to be as portable, concise and expressive as possible,
 without the loss of low-level control. It provides a development platform that
 promises reduced development time and maintenance effort.
+
+More specifically, ALCHA is not a high level synthesis tool.  The `fsm`
+construct it provides for writing state machines may look high-level to
+the casual observer, but is in fact a cycle-accurate description of the
+state machine.
 
 ## Automated Optimisation
 

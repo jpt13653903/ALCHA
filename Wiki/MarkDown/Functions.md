@@ -18,15 +18,15 @@ change without notice.
 - [Expressions](Expressions.md)
 - [Statements](Statements.md)
 - [Arrays](Arrays.md)
-- [Functions](Functions.md#functions)
+- [Functions](#functions)
   - [Combinational Functions](#combinational-functions)
   - [Clocked Functions](#clocked-functions)
   - [RTL Functions](#rtl-functions)
   - [Example](#example)
   - [Calling Clocked Functions from Combinational Circuits](#calling-clocked-functions-from-combinational-circuits)
+  - [Operator Overloading](#operator-overloading)
 - [Synchronous Circuits](SynchronousCircuits.md)
 - [Classes](Classes.md)
-- [Operator Overloading](OperatorOverloading.md)
 - [Scripting Features](Scripting.md)
 - [Advanced Attributes](AdvancedAttributes.md)
 - [High-level Structures](HighLevelStructures.md)
@@ -41,7 +41,7 @@ state machines and scripting.  There are various categories of functions,
 resulting in different calling conventions.
 
 The `result` built-in variable is used as a reference to the target net (or
-variable) for the return value.  This has implications for functions that
+object) for the return value.  This has implications for functions that
 contain clocked structures, as the state machine (or RTL) has control over the
 value of the target net, even though the function has not returned yet.
 
@@ -51,28 +51,30 @@ known as duck-typing).  When the types are specified, the parameter types form
 part of the function name, so that many functions of the same name, but
 different parameter types, can be defined.
 
+When the function returns `auto`, the `result` object is also duck-typed.
+
 ## Combinational Functions
 
 Functions in ALCHA are defined in similar fashion as C, as illustrated in the
 example below.
 
 ```alcha
-    net(8) Add(net(8) A, net(8) B){
+    net(8) add(net(8) A, net(8) B){
         result = A + B;
     }
     net(8) x, y, z;
-    z = Add(x, y);
+    z = add(x, y);
 ```
 
 Functions also support default parameters and named parameter assignment, as
 illustrated below:
 
 ```alcha
-    auto MyFunction(A, B, C = 7, D = 2){
+    auto myFunction(A, B, C = 7, D = 2){
         // Function body
     }
 
-    net(8) X = MyFunction(B = 2, A = 8, D = 4); // C defaults to 7
+    net(8) X = myFunction(B = 2, A = 8, D = 4); // C defaults to 7
 ```
 
 Combinational functions can be called from anywhere, including the bodies of
@@ -82,47 +84,45 @@ called as follows:
 
 ```alcha
     net(8) x[4], y[4], z[4];
-    z = Add(x, y);
+    z = add(x, y);
 
     // This is equavalent to:
-    z[0] = Add(x[0], y[0]);
-    z[1] = Add(x[1], y[1]);
-    z[2] = Add(x[2], y[2]);
-    z[3] = Add(x[3], y[3]);
+    z[0] = add(x[0], y[0]);
+    z[1] = add(x[1], y[1]);
+    z[2] = add(x[2], y[2]);
+    z[3] = add(x[3], y[3]);
 ```
 
 Arrays and scalars can be mixed in the call, as follows:
 
 ```alcha
     net(8) x, y[4], z[4];
-    z = Add(x, y);
+    z = add(x, y);
 
     // This is equavalent to:
-    z[0] = Add(x, y[0]);
-    z[1] = Add(x, y[1]);
-    z[2] = Add(x, y[2]);
-    z[3] = Add(x, y[3]);
+    z[0] = add(x, y[0]);
+    z[1] = add(x, y[1]);
+    z[2] = add(x, y[2]);
+    z[3] = add(x, y[3]);
 ```
 
 If the function takes an array as a parameter, the same rules apply.
 The function can be called with a higher-dimension array, as follows:
 
 ```alcha
-    net(18) Dot(A[], B[]){
-        result  = A[1] * B[1];
-        result += A[2] * B[2];
-        result += A[3] * B[3];
-        result += A[4] * B[4];
+    net(18) dot(A[], B[]){
+        result = 0;
+        for(n in 0..(A'length-1)) result += A[n] * B[n];
     }
     net(18) Y[16];
     net( 8) A[4][16], B[4][16];
-    Y = Dot(A, B);
+    Y = dot(A, B);
 ```
 
 To return an array, the function name should be defined as an array, as follows:
 
 ```alcha
-    net(16, -8) Mult[4][4](A[][], B[][]){
+    net(16, -8) Mult[4][4] (A[][], B[][]){
         int i, j, k;
         for(i in 0..3){
             for(j in 0..3){
@@ -135,9 +135,9 @@ To return an array, the function name should be defined as an array, as follows:
     }
 ```
 
-The loops above are discussed in greater detail in the Scripting section.
-Such combinational loops should be used with care, as very little code can
-result in very large circuits.
+The loops above are discussed in greater detail in the [Scripting](Scripting.md)
+section.  Such combinational loops should be used with care, as very little
+code can result in very large circuits.
 
 ## Clocked Functions
 
@@ -153,35 +153,35 @@ times from the same state, in which case the function is implemented multiple
 times.
 
 The call is controlled through hand-shaking signals.  The resulting function
-module has implicit `Go` (input) and `Busy` (output) signals.  These are
+module has implicit `go` (input) and `busy` (output) signals.  These are
 handled by the compiler and hidden from the developer.  When multiple
 different functions are called from the same state, the state machine must
-wait for all the functions to finish (i.e. make their `Busy` lines low) before
+wait for all the functions to finish (i.e. make their `busy` lines low) before
 continuing to the next state.
 
 The combinational code of the function body, as well as the function reset
-code, is evaluated during the calling state.  The `Go` line is also pulled
+code, is evaluated during the calling state.  The `go` line is also pulled
 high during that state.
 
 The handshaking signals are handled differently when the function and calling
 structure reside within the same clock-domain, or when there is a clock-domain
 crossing required.  When there is a clock-domain crossing, the calling state
-machine waits for the `Busy` to go high before releasing the `Go` signal.
-The function waits for the `Go` to go low before releasing the `Busy` signal.
+machine waits for the `busy` to go high before releasing the `go` signal.
+The function waits for the `go` to go low before releasing the `busy` signal.
 These hand-shaking signals are properly clock-domain crossed when required.
 
 When there are no clock-domain crossing required, the calling state machine
-pulses the `Go` signal for a single cycle instead of following the full
+pulses the `go` signal for a single cycle instead of following the full
 hand-shaking algorithm described above.  This is a timing optimisation.
 
-The `Busy` signal further acts as a clock-enable signal of the function body.
+The `busy` signal further acts as a clock-enable signal of the function body.
 The output signals of the function keep their state until the next call.
 
 ## RTL Functions
 
 RTL structures do not have the concept of an instruction sequence.  In order
 to return from a function that contains an RTL structure, a `return` statement
-must exist somewhere in the RTL body, which releases the `Busy` signal and
+must exist somewhere in the RTL body, which releases the `busy` signal and
 halts execution of the RTL structure.
 
 Furthermore, RTL structures do not support the handshaking algorithm described
@@ -197,231 +197,223 @@ follows an example of a simple SPI interface in ALCHA, as well as its
 equivalent Verilog:
 
 ```alcha
-    pin<frequency = 50e6> Clk;
+    pin<frequency = 50e6> clk;
 
-    pin Reset;
+    pin reset;
 
     group SPI{
-        pin Clk, Data, Latch;
+        pin clk, data, latch;
     }
-    //------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
-    void SPI_Send(net(32) Data){
-        net( 5)  bit;
-        net(32) Shift;
+    void spiSend(net(32) data){
+        net( 5) bit;
+        net(32) shift;
 
-        SPI.Clk   = 0;
-        SPI.Latch = 0;
-        SPI.Data  = Shift[31];
+        SPI.clk   = 0;
+        SPI.latch = 0;
+        SPI.data  = shift[31];
 
-        fsm(Clk, Reset){
-            SPI.Latch = 0,
-            Shift     = Data;
+        fsm(clk, reset){
+            SPI.latch = 0,
+            shift     = data;
 
             for(bit in 31..0){
-                SPI.Clk = 1;
+                SPI.clk = 1;
 
-                SPI.Clk = 0,
-                Shift <<= 1,
-                if(!bit) SPI.Latch = 1,
+                SPI.clk = 0,
+                shift <<= 1,
+                if(!bit) SPI.latch = 1,
                 ;
             }
-            SPI.Latch = 0;
+            SPI.latch = 0;
         }
     }
-    //------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     // Initialise some SPI-based peripheral
-    fsm(Clk, Reset){
-        SPI_Send(0x12345678);
-        SPI_Send(0xFEDCBA98);
-        SPI_Send(18271662);
-        SPI_Send(0b11010011:0x123456);
+    fsm(clk, reset){
+        spiSend(0x12345678);
+        spiSend(0xFEDCBA98);
+        spiSend(18271662);
+        spiSend(0b11010011:0x123456);
     }
-    //------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 ```
 
 Which is equivalent to:
 
 ```verilog
-    module SPI_Send(
-        input       Clk,
-        input       Reset,
+    module spiSend(
+        input       ipClk,
+        input       ipReset,
 
-        input       Go,
-        output reg  Busy,
+        input       ipGo,
+        output reg  opBusy,
 
-        input [31:0]Data,
+        input [31:0]ipData,
 
-        output reg  SPI_Clk,
-        output      SPI_Data,
-        output reg  SPI_Latch
+        output reg  opSPI_Clk,
+        output      opSPI_Data,
+        output reg  opSPI_Latch
     );
-    //----------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
-    reg [ 4:0]bit;
-    reg [31:0]Shift;
+    reg [ 4:0]bits;
+    reg [31:0]shift;
+    reg       reset;
 
-    reg       tReset;
-    reg   [1:0]State;
-    localparam GetData = 2'd0;
-    localparam Sending = 2'd1;
-    localparam Done    = 2'd2;
-    //----------------------------------------------------------------------------
+    enum { GetData, Sending, Done } state;
+    //--------------------------------------------------------------------------
 
-    assign SPI_Data = Shift[31];
-    //----------------------------------------------------------------------------
+    assign opSPI_Data = shift[31];
+    //--------------------------------------------------------------------------
 
-    always @(posedge Clk) begin
-        tReset <= Reset;
+    always @(posedge clk) begin
+        reset <= ipReset;
 
-        if(tReset) begin
-            SPI_Clk   <= 0;
-            SPI_Latch <= 0;
-            Busy      <= 0;
-            State     <= GetData;
-        //--------------------------------------------------------------------------
+        if(reset) begin
+            opSPI_Clk   <= 0;
+            opSPI_Latch <= 0;
+            busy        <= 0;
+            state       <= GetData;
+        //----------------------------------------------------------------------
 
-        end else if(Busy) begin
-            case(State)
+        end else if(busy) begin
+            case(state)
                 GetData: begin
-                    SPI_Latch <= 0;
-                    Shift     <= Data;
-                    bit       <= 5'd31;
-                    State     <= Sending
+                    opSPI_Latch <= 0;
+                    shift       <= data;
+                    bits        <= 5'd31;
+                    state       <= Sending;
                 end
-                //----------------------------------------------------------------------
+                //--------------------------------------------------------------
 
                 Sending: begin
-                    if(~SPI_Clk) begin
-                        SPI_Clk <= 1'b1;
+                    if(~opSPI_Clk) begin
+                        opSPI_Clk <= 1'b1;
 
-                    end else begin // SPI_Clk is high
-                        SPI_Clk <= 0;
-                        Shift   <= {Shift[30:0], 1'b0};
-                        if(~|bit) begin
-                            SPI_Latch <= 1'b1;
-                            State     <= Done;
+                    end else begin // opSPI_Clk is high
+                        opSPI_Clk <= 0;
+                        shift     <= {shift[30:0], 1'b0};
+                        if(~|bits) begin
+                            opSPI_Latch <= 1'b1;
+                            state       <= Done;
                         end
-                        bit <= bit - 1'b1;
+                        bits <= bits - 1'b1;
                     end
                 end
-                //----------------------------------------------------------------------
+                //--------------------------------------------------------------
 
                 Done: begin
-                    SPI_Latch <= 0;
-                    Busy      <= 0;
+                    opSPI_Latch <= 0;
+                    busy        <= 0;
                 end
-                //----------------------------------------------------------------------
+                //--------------------------------------------------------------
 
                 default:;
             endcase
-        State <= State + 1'b1;
-        //--------------------------------------------------------------------------
+        //----------------------------------------------------------------------
 
-        end else if(Go) begin
-            SPI_Clk   <= 0;
-            SPI_Latch <= 0;
-            Busy      <= 1'b1;
-            State     <= GetData;
+        end else if(go) begin
+            opSPI_Clk   <= 0;
+            opSPI_Latch <= 0;
+            busy      <= 1'b1;
+            state     <= GetData;
         end
     end
 
     endmodule
-    //############################################################################
+    //##########################################################################
 
     module TopLevel(
-        input Clk,
-        input Reset,
+        input  ipClk,
+        input  ipReset,
 
-        output SPI_Clk,
-        output SPI_Data,
-        output SPI_Latch
+        output opSPI_Clk,
+        output opSPI_Data,
+        output opSPI_Latch
     );
-    //----------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
-    reg       SPI_Send_Go;
-    wire      SPI_Send_Busy;
-    reg [31:0]Data;
+    reg       spiSendGo;
+    wire      spiSendBusy;
+    reg [31:0]data;
 
-    SPI_Send SPI_Send_Intance(
-        .Clk      (Clk),
-        .Reset    (Reset),
+    SPI_Send spiSend(
+        .ipClk      (ipClk),
+        .ipReset    (ipReset),
 
-        .Go       (SPI_Send_Go),
-        .Busy     (SPI_Send_Busy),
+        .ipGo       (spiSendGo),
+        .opBusy     (spiSendBusy),
 
-        .Data     (Data),
+        .ipData     (data),
 
-        .SPI_Clk  (SPI_Clk),
-        .SPI_Data (SPI_Data),
-        .SPI_Latch(SPI_Latch)
+        .opSPI_Clk  (opSPI_Clk),
+        .opSPI_Data (opSPI_Data),
+        .opSPI_Latch(opSPI_Latch)
     );
-    //----------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
-    reg       tReset;
-    reg   [2:0]State;
-    localparam Send1 = 3'd0;
-    localparam Send2 = 3'd1;
-    localparam Send3 = 3'd2;
-    localparam Send4 = 3'd3;
-    localparam Done  = 3'd4;
-    //----------------------------------------------------------------------------
+    reg reset;
+    enum { Send1, Send2, Send3, Send4, Done } state;
+    //--------------------------------------------------------------------------
 
-    always @(posedge Clk) begin
-        tReset <= Reset;
+    always @(posedge ipClk) begin
+        reset <= ipReset;
 
-        if(tReset) begin
-            SPI_Send_Go <= 0;
-            State       <= Send1;
-        //--------------------------------------------------------------------------
+        if(reset) begin
+            spiSendGo <= 0;
+            state     <= Send1;
+        //----------------------------------------------------------------------
 
         end else begin
-            case(State)
+            case(state)
                 Send1: begin
-                    Data        <= 32'h12345678;
-                    SPI_Send_Go <= 1'b1;
-                    State       <= Send2;
+                    data      <= 32'h12345678;
+                    spiSendGo <= 1'b1;
+                    state     <= Send2;
                 end
-                //----------------------------------------------------------------------
+                //--------------------------------------------------------------
 
                 Send2: begin
-                         if( SPI_Send_Go  ) SPI_Send_Go <= 0;
-                    else if(!SPI_Send_Busy) begin
-                        Data        <= 32'hFEDCBA98;
-                        SPI_Send_Go <= 1'b1;
-                        State       <= Send3;
+                         if( spiSendGo  ) spiSendGo <= 0;
+                    else if(!spiSendBusy) begin
+                        data      <= 32'hFEDCBA98;
+                        spiSendGo <= 1'b1;
+                        state     <= Send3;
                     end
                 end
-                //----------------------------------------------------------------------
+                //--------------------------------------------------------------
 
                 Send3: begin
-                         if( SPI_Send_Go  ) SPI_Send_Go <= 0;
-                    else if(!SPI_Send_Busy) begin
-                        Data        <= 32'd18271662;
-                        SPI_Send_Go <= 1'b1;
-                        State       <= Send4;
+                         if( spiSendGo  ) spiSendGo <= 0;
+                    else if(!spiSendBusy) begin
+                        data      <= 32'd18271662;
+                        spiSendGo <= 1'b1;
+                        state     <= Send4;
                     end
                 end
-                //----------------------------------------------------------------------
+                //--------------------------------------------------------------
 
                 Send4: begin
-                         if( SPI_Send_Go  ) SPI_Send_Go <= 0;
-                    else if(!SPI_Send_Busy) begin
-                        Data        <= {8'b11010011, 24'h123456};
-                        SPI_Send_Go <= 1'b1;
-                        State       <= Done;
+                         if( spiSendGo  ) spiSendGo <= 0;
+                    else if(!spiSendBusy) begin
+                        data      <= {8'b11010011, 24'h123456};
+                        spiSendGo <= 1'b1;
+                        state     <= Done;
                     end
                 end
-                //----------------------------------------------------------------------
+                //--------------------------------------------------------------
 
-                default: SPI_Send_Go <= 0;
+                default:
+                    spiSendGo <= 0;
             endcase
         end
     end
 
     endmodule
-    //----------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 ```
 
 The hand-shaking has been simplified because the two clocked structures are in
@@ -431,10 +423,32 @@ might look very different, but is equivalent in functionality.
 
 ## Calling Clocked Functions from Combinational Circuits
 
-It is possible to call a clocked function from a combinational circuit.  It
+It is possible to call a clocked function from a combinational circuit.  In
 that case, the function body is evaluated as if it occurred in place of the
-function call, with the signal being assigned to appearing in place of the
-function name.
+function call.
+
+## Operator Overloading
+
+Operator overloading is done similar to C++, i.e. the `operator` keyword.
+Some examples include:
+
+```alcha
+    // binary operator
+    MyClass operator+ (MyClass a, num b){
+        !! The addition algorithm
+    }
+    // prefix unary operator
+    num operator& (MyClass a){
+        !! The and-reduce algorithm
+    }
+    // postfix unary operator
+    num operator! (MyClass a, _){
+        !! The factorial algorithm
+    }
+```
+
+The `_` parameter is a special built-in marker used for this purpose,
+but it can also be used as the "discard variable" (similar to C#).
 
 --------------------------------------------------------------------------------
 

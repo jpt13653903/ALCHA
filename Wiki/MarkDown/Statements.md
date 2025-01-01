@@ -16,21 +16,20 @@ change without notice.
 - [Modules](Modules.md)
 - [Declarations](Declarations.md)
 - [Expressions](Expressions.md)
-- [Statements](Statements.md#statements)
+- [Statements](#statements)
   - [Control Flow Structures](#control-flow-structures)
-    - [if](#if)
-    - [switch](#switch)
-    - [while](#while)
-    - [for](#for)
-    - [loop](#loop)
-    - [return](#return)
-    - [break and continue](#break-and-continue)
+    - [If](#if)
+    - [Switch](#switch)
+    - [While](#while)
+    - [For](#for)
+    - [Loop](#loop)
+    - [Return](#return)
+    - [Break and Continue](#break-and-continue)
   - [Alias](#alias)
 - [Arrays](Arrays.md)
 - [Functions](Functions.md)
 - [Synchronous Circuits](SynchronousCircuits.md)
 - [Classes](Classes.md)
-- [Operator Overloading](OperatorOverloading.md)
 - [Scripting Features](Scripting.md)
 - [Advanced Attributes](AdvancedAttributes.md)
 - [High-level Structures](HighLevelStructures.md)
@@ -42,7 +41,7 @@ change without notice.
 
 ## Control Flow Structures
 
-### if
+### If
 
 If statement syntax is presented below:
 
@@ -58,7 +57,7 @@ If the condition is purely scripting (i.e. it does not contain any
 synthesisable variables), the if-statement is equivalent to conditional
 compilation (the `#if` ... `#else` ... `#endif` construct of the C preprocessor).
 
-### switch
+### Switch
 
 Switch-statement syntax is presented below:
 
@@ -120,7 +119,7 @@ with register decoding:
     }
 ```
 
-### while
+### While
 
 The while-loop syntax is presented below.  The body of the loop is evaluated
 for as long as `A` is not zero.  For combinational circuits and pure RTL, the
@@ -133,11 +132,11 @@ value of `A` must be known at compile-time.  Within a finite state machine
     }
 ```
 
-### for
+### For
 
-The for-loop syntax is presented below.  `A` must evaluate to an array.  For
-every element of the array, `x` becomes a reference to that element and the
-loop is evaluated.
+The for-loop syntax is presented below.  `A` must evaluate to an array type.
+For every element of the array, `x` becomes a reference to that element and
+the loop is evaluated.
 
 ```alcha
     for(x in A){
@@ -146,7 +145,7 @@ loop is evaluated.
 ```
 
 The loop is evaluated in the same order as the elements of the array, not in
-parallel.  When the elements of `A` is a synthesisable type, and the loop
+parallel.  When the elements of `A` is of synthesisable type, and the loop
 occurs during a combinational statement, the result could potentially be a
 parallel combinational circuit.  During compilation, however, the loop is
 still evaluated sequentially, following normal combinational-statement
@@ -160,7 +159,7 @@ blocking assignment rules.  This is illustrated below:
     for(x in 0..7) B += A[x];
 ```
 
-### loop
+### Loop
 
 The loop-loop syntax is presented below:
 
@@ -183,11 +182,11 @@ clock-cycle at a time.
 A loop loop can therefore be used to implement a "wait" state, as follows:
 
 ```alcha
-    net LED = 0;
+    net led = 0;
 
-    fsm(Clk, Reset){
+    fsm(clk, reset){
         loop{ // Main loop (do this forever)
-            LED = ~LED,   // Toggle the LED and
+            led = ~led,   // Toggle the LED and
             loop(20_000); // Go to the next state 20 000 times
         }
     }
@@ -196,25 +195,25 @@ A loop loop can therefore be used to implement a "wait" state, as follows:
 This is equivalent to the following Verilog:
 
 ```verilog
-    reg       LED;
-    reg [14:0]Count;
+    reg       led;
+    reg [14:0]count;
 
-    always @(posedge Clk) begin
-        if(Reset) begin
-            LED   <= 0;
-            Count <= 15'd_20_000;
+    always @(posedge clk) begin
+        if(reset) begin
+            led   <= 0;
+            count <= 15'd_20_000;
 
-        end else if(Count == 15'd_20_000) begin
-            LED   <= ~LED;
-            Count <= 15'd1;
+        end else if(count == 15'd_20_000) begin
+            led   <= ~led;
+            count <= 15'd1;
 
         end else begin
-            Count <= Count + 1'b1;
+            count <= count + 1'b1;
         end
     end
 ```
 
-### return
+### Return
 
 The `return` statement returns from a function.  If the function was called
 combinationally, the return statement simply ends evaluation of the rest of
@@ -225,17 +224,17 @@ state machine) or halting until the next system reset (if it was called
 combinationally).
 
 ```alcha
-    num Func(A, B){
-        return A+B; // Equivalent to "Func = A+B; return;"
+    num myFunc(A, B){
+        return A + B; // Equivalent to "result = A + B; return;"
     }
-    void Proc(A, B){
+    void myProc(A, B){
         // Do some stuff
         if(whatever) return; // return early
         // do some more stuff
     }
 ```
 
-### break and continue
+### Break and Continue
 
 The `break` and `continue` keywords are used to jump out of, or within,
 loops.  Both of these take an optional integer expression argument to indicate
@@ -263,11 +262,11 @@ the number of loop levels.  For instance:
 ## Alias
 
 It is often the case where the same expression is used many times, yet cannot
-be simply assigned to a variable.  In this case, it is convenient to define an
-alias for the expression, as follows:
+be simply assigned to a variable to make the use easier.  In this case, it is
+convenient to define an alias for the expression, as follows:
 
 ```alcha
-    alias C   = Namespace.ClassInstance;
+    alias C   = NameSpace.ClassInstance;
     alias M   = SomeClass.Member;
     alias Clk = SYS_GLOBAL_CLK;
 

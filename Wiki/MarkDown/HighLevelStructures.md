@@ -21,10 +21,9 @@ change without notice.
 - [Functions](Functions.md)
 - [Synchronous Circuits](SynchronousCircuits.md)
 - [Classes](Classes.md)
-- [Operator Overloading](OperatorOverloading.md)
 - [Scripting Features](Scripting.md)
 - [Advanced Attributes](AdvancedAttributes.md)
-- [High-level Structures](HighLevelStructures.md#high-level-structures)
+- [High-level Structures](#high-level-structures)
   - [Megafunctions and External HDL Modules](#megafunctions-and-external-hdl-modules)
 - [Simulation and Verification](Simulation.md)
 
@@ -52,48 +51,48 @@ modules are not included in simulation.
         Count1_5  = 25;
     ){
         net    nReset;
-        net    Clk;
+        net    clk;
 
-        net(8) TxData;
-        net    Send;
-        net    Busy;
+        net(8) txData;
+        net    send;
+        net    busy;
 
-        net    DataReady;
-        net(8) RxData;
-        net    Ack;
+        net    dataReady;
+        net(8) rxData;
+        net    ack;
 
-        net    Tx;
-        net    Rx;
+        net    tx;
+        net    rx;
     }
 
-    class RS232(net Clock, net Reset, num BAUD): RS232_V(
-        ceil(log2(round(Clock'frequency / BAUD * 1.5))),
-        round(Clock'frequency / BAUD / 2),
-        round(Clock'frequency / BAUD),
-        round(Clock'frequency / BAUD * 1.5)
+    class RS232(net clock, net reset, num baud): RS232_V(
+        ceil(log2(round(clock'frequency / baud * 1.5))),
+        round(clock'frequency / baud / 2),
+        round(clock'frequency / baud),
+        round(clock'frequency / baud * 1.5)
     ){
-        nReset = ~Reset;
-        Clk    =  Clock;
+        nReset = ~reset;
+        clk    =  clock;
     }
 
-    pin<frequency = 50e6> Clk;
-    pin                   Reset;
-    pin                   RS232_Tx;
-    pin                   RS232_Rx;
+    pin<frequency = 50e6> ipClk;
+    pin                   ipReset;
+    pin                   opRS232_Tx;
+    pin                   ipRS232_Rx;
 
-    RS232(Clk, Reset, 9600) MyUART;
-    RS232_Tx  = MyUART.Tx;
-    MyUART.Rx = RS232_Rx;
+    RS232(ipClk, ipReset, 9600) myUART;
+    opRS232_Tx = myUART.tx;
+    myUART.rx  = ipRS232_Rx;
 ```
 
 Whether the nets defined in the body of the construct describe input, output
 or bidirectional ports is inferred from their use.  The compiler keeps track
 of expressions involving that net.  If it occurs only on the left-hand side of
-assignments, it is an input port.  If it occurs only on the right-hand side of
-assignments, it is an output port.
+assignments, it is an output port.  If it occurs only on the right-hand side of
+assignments, it is an input port.
 
 Bidirectional port mapping can be done by means of the `hdl_map` built-in
-function, which performs the same function as the port-mapping syntax in
+function, which performs the same operation as the port-mapping syntax in
 VHDL and Verilog.
 
 ```alcha
@@ -106,14 +105,14 @@ VHDL and Verilog.
         net error;
     }
 
-    pin LTC2991_Clk;
-    pin LTC2991_Data;
-    pin LTC2991_Error;
+    pin ipLTC2991_Clk;
+    pin bpLTC2991_Data;
+    pin opLTC2991_Error;
 
     LTC2991_Driver() LTC2991_Driver_Inst;
-    LTC2991_Driver_Inst.I2C_Clk = LTC2991_Clk;
-    LTC2991_Data.hdl_map(LTC2991_Driver_Inst.I2C_Data);
-    LTC2991_Error = LTC2991_Driver_Inst.error;
+    LTC2991_Driver_Inst.I2C_Clk = ipLTC2991_Clk;
+    bpLTC2991_Data.hdl_map(LTC2991_Driver_Inst.I2C_Data);
+    opLTC2991_Error = LTC2991_Driver_Inst.error;
 ```
 
 --------------------------------------------------------------------------------

@@ -21,11 +21,10 @@ change without notice.
 - [Functions](Functions.md)
 - [Synchronous Circuits](SynchronousCircuits.md)
 - [Classes](Classes.md)
-- [Operator Overloading](OperatorOverloading.md)
 - [Scripting Features](Scripting.md)
 - [Advanced Attributes](AdvancedAttributes.md)
 - [High-level Structures](HighLevelStructures.md)
-- [Simulation and Verification](Simulation.md#simulation-and-verification)
+- [Simulation and Verification](#simulation-and-verification)
   - [Simple Test Benches](#simple-test-benches)
     - [Stimulus-only Test Benches](#stimulus-only-test-benches)
     - [Concurrent Processes](#concurrent-processes)
@@ -76,7 +75,7 @@ same thing can achieved by using a loop.
     }
 
     // Simple stimulus
-    stimulus(1e-9){   // Use nanoseconds as the basic time-step
+    stimulus(1e-9){     // Use nanoseconds as the basic time-step
         A = 5;          // At the start of simulation, make A = 5
         #5 B = 7;       // After 5 time-steps, make B = 7
         @(posedge Clk); // Wait until the positive edge of the Clk signal
@@ -176,28 +175,28 @@ overwriting the RTL behaviour.
 
 ```alcha
     class FFT{
-        net(31, -1) Input   [256];
-        net(31, -1) Output_I[256];
-        net(31, -1) Output_Q[256];
+        net(31, -1) inputData[256];
+        net(31, -1) output_I [256];
+        net(31, -1) output_Q [256];
 
-        net Go, Busy;
+        net go, busy;
 
         !! RTL implementation of the FFT...
 
         // This is run during simulation, instead of the RTL above
-        emulate(1e-9, Clk){
+        emulate(1e-9, clk){
             loop{
                 ##1;
-                if(Go){
-                    Busy = 1;
-                    num X = fft(Input) / 256;
+                if(go){
+                    busy = 1;
+                    num x = fft(inputData) / 256;
 
                     ##8; // The latency of the FFT engine
-                    Output_I = real(X);
-                    Output_Q = imag(X);
+                    output_I = real(x);
+                    output_Q = imag(x);
 
-                    while(Go) ##1;
-                    Busy = 0;
+                    while(go) ##1;
+                    busy = 0;
                 }
             }
         }
@@ -228,35 +227,35 @@ block.
         !! Other "altsyncram" port declarations go here
     }
 
-    class CPU_ROM(net(16) Opcodes[]){
-        !! Use scripting to write Opcodes to "CPU_ROM.mif"
+    class CPU_ROM(net(16) opcodes[]){
+        !! Use scripting to write opcodes to "CPU_ROM.mif"
 
         // Instantiate the ROM block
         private altsyncram(init_file = "CPU_ROM.mif") ROM;
 
         // Emulate the ROM block during simulation
-        ROM.{ // For convenience, push the ROM namespace onto the stack
+        ROM.{ // For convenience, push the ROM name-space onto the stack
             emulate(1e-9, clock0){
-                loop ##1 q_a = Opcodes[address_a];
+                loop ##1 q_a = opcodes[address_a];
             }
         }
 
         // Declare local signals (for the convenience of users of this class)
-        net     Clk;
-        net(12) Address;
-        net(16) Data;
+        net     clk;
+        net(12) address;
+        net(16) data;
 
         // Connect the ports
-        ROM.clock0    = Clk;
-        ROM.address_a = Address;
-        Data          = ROM.q_a;
+        ROM.clock0    = clk;
+        ROM.address_a = address;
+        data          = ROM.q_a;
     }
 ```
 
 ## Assertion Based Verification
 
 One of the more powerful methods of verification, provided by SystemVerilog,
-is assertion-based verification.  The verification engineer would write a list
+is sequence-based assertion.  The verification engineer would write a list
 of rules, based on the system specification.  The verification tool then
 checks that those rules hold true for every step of the simulation.
 
@@ -268,11 +267,11 @@ by means of a semicolon-separated list of boolean expressions.  The code below
 provides an example.
 
 ```alcha
-    net(8) Adder(net(8) A, net(8) B, net C){
-        :(C, Adder) = A + B;
+    net(8) adder(net(8) A, net(8) B, net C){
+        :(C, result) = A + B;
     }
     net    c;
-    net(8) a, b, y = Adder(a, b, c);
+    net(8) a, b, y = adder(a, b, c);
 
     stimulus(1e-9){
         #1 a = 0x00; b = 0x00; assert{y == 0x00; c == 0; };
@@ -309,25 +308,23 @@ consistent with a hardware implementation.
 
 ```alcha
     // A simple sequence:
-    sequence Handshake{
-        Go ##[1..5] Busy ##[1.. 10] !Go ##[1..100] !Busy;
+    sequence handshake{
+        go ##[1..5] busy ##[1.. 10] !go ##[1..100] !busy;
     }
 
     // A sequence-based assert:
-    assert(1e-9, Clk){
-        if(~Reset){
-                 Go      |->  Handshake;
-            rose(Go  )   |-> !Busy;
-            fell(Busy)   |-> !Go;
-            (Go & !Busy) |=>  stable(Data);
+    assert(1e-9, clk){
+        if(~reset){
+                 go      |->  handshake;
+            rose(go  )   |-> !busy;
+            fell(busy)   |-> !go;
+            (go & !busy) |=>  stable(data);
         }
     }
 ```
 
-In this case, the sequence inherits the time-step and clock signal from the
-assertions that calls it.  It is also possible to specify a time-step and,
-optionally, a clock signal in the sequence declaration, which will override
-the assertion time-step and clock signals.
+The sequence inherits the time-step and clock signal from the assertion
+that calls it.
 
 Sequences are useful in other aspects as well.  The entire sequence is
 essentially a boolean expression, albeit over multiple clock-cycles.  This
@@ -353,7 +350,7 @@ and operators, but without the `$` prefix to the functions.
 
 ## Formal Verification
 
-Formal verification is related to assertion-based verification.  Assertions
+Formal verification is related to sequence-based assertion.  Assertions
 make sure that the design adhere to the specified rules for every iteration of
 the simulation.  Formal verification runs the process in reverse.  It starts
 with the rules specified by the assertion statements, and attempts to find a
@@ -464,9 +461,10 @@ There are various simulation methodologies and industry standards.  One of the
 more popular ones is [UVM] (Universal Verification Methodology).  It is an
 Accellera standard, implemented by means of a SystemVerilog library of
 classes.  It would be possible to implement an ALCHA based UVM library that is
-equivalent to the current SystemVerilog version.
+similar to the current SystemVerilog version.
 
 --------------------------------------------------------------------------------
 
 [SystemVerilog]: http://dx.doi.org/10.1109/IEEESTD.2013.6469140
 [UVM]:           https://s3.amazonaws.com/verificationacademy-news/DVCon2015/Papers/dvcon-2015_UVM-Rapid-Adoption-A-Practical-Subset-of-UVM-Paper.pdf
+

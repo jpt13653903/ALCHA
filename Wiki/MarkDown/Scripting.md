@@ -21,8 +21,7 @@ change without notice.
 - [Functions](Functions.md)
 - [Synchronous Circuits](SynchronousCircuits.md)
 - [Classes](Classes.md)
-- [Operator Overloading](OperatorOverloading.md)
-- [Scripting Features](Scripting.md#scripting-features)
+- [Scripting Features](#scripting-features)
   - [Algorithmic Code Generation](#algorithmic-code-generation)
   - [Mathematical Functions](#mathematical-functions)
   - [I/O Functions](#io-functions)
@@ -49,7 +48,7 @@ Like [Migen], ALCHA supports algorithmic code generation.  During compilation,
 the abstract syntax tree is evaluated in two passes.  The first pass evaluates
 the scripting statements, while ignoring any synthesisable code.  This reduces
 all scripting statements to constants.  The second pass synthesises the
-intended circuit, based of the reduced abstract syntax tree.
+intended circuit, based on the reduced abstract syntax tree.
 
 The user can, for example, use a scripting `for` loop to generate a
 `switch`-statement based look-up table, as illustrated in the code below.
@@ -117,7 +116,7 @@ below shows an example of how file I/O is used in ALCHA.
 
 ```alcha
     byte Data[] = read("MyDataFile.dat");
-    char Log [] = "";  // An array of UTF-32 characters
+    char Log [] = ""; // An array of UTF-32 characters
 
     byte data;
     for(data in Data){
@@ -145,7 +144,7 @@ Function     | Description
 `textread`   | Reads the given UTF-8 file into a UTF-32 `char` array buffer
 `textwrite`  | Writes the given UTF-32 `char` array to a UTF-8 file
 `textappend` | Appends the given UTF-32 `char` array to a UTF-8 a file
-`print`      | Prints a string to the command-line
+`print`      | Prints a string representation of the parameter to the command-line
 
 The core ALCHA language does not have functions to read specific file formats,
 such as CSV, XML or JSON, as these can be provided by means of libraries.  A
@@ -196,22 +195,22 @@ building the contents of a text file, for instance, the code might look as
 follows:
 
 ```alcha
-    char Buffer[] = "";
+    char buffer[] = "";
     // Some code...
-    Buffer ~= "Header\n";
+    buffer ~= "Header\n";
     // Some more code...
-    Buffer ~= "Some Body...\n";
+    buffer ~= "Some Body...\n";
     // Some more code...
-    Buffer ~= "Some Body...\n";
+    buffer ~= "Some Body...\n";
     // Some more code...
-    Buffer ~= "Some Body...\n";
-    textwrite("My Log Buffer.log", Buffer);
+    buffer ~= "Some Body...\n";
+    textwrite("MyLogFile.log", buffer);
 ```
 
 ## Shell Commands
 
 ALCHA scripting is not sufficient for all scenarios of circuit parametrisation.
-When the design contains a processor, for instance, the user might want the
+When the design contains a processor, for example, the user might want the
 ALCHA compiler to generate a C include-file with all the register addresses,
 call the C compiler, and then import the resulting executable file into a ROM
 block on the FPGA.
@@ -225,7 +224,7 @@ continues.  The code below shows an example.
     !! Dynamically build the register addresses here
 
     textwrite("RegDefs.h", RegDefs);
-    if(shell("gcc main.c -o bin/MyCPU")) error("Cannot compile MyCPU");
+    if(shell("gcc main.c -o bin/MyCPU")) error("Cannot compile MyCPU source");
     byte MyCPU[] = read("bin/MyCPU");
 
     !! Initialise the CPU ROM here

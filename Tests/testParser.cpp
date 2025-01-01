@@ -1056,8 +1056,8 @@ bool testVerification()
         "}",
 
         "coverbins HandshakeFunctions(go, busy){\n"
-        "    Go = (rising(go)) |-> ( ~ (busy))\n"
-        "    Done = (falling(busy)) |-> ( ~ (go))\n"
+        "    Go = (rose(go)) |-> ( ~ (busy))\n"
+        "    Done = (fell(busy)) |-> ( ~ (go))\n"
         "}",
 
         "covergroup (Clk) MyHandshakeCoverage{\n"
