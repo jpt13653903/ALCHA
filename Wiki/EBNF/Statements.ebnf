@@ -51,7 +51,7 @@ FSM = "fsm" [ ParameterList ] [ AttributeList ] StatementBlock;
    are port definitions. *)
 (* The "Assignment" is obtained through "Other" *)
 HDL = "hdl" "(" [ String { "," String } ] ")" [ AttributeList ] Identifier
-            [ "(" { Assignment } ")" ]
+          [ "(" { Identifier "=" Expression ";" } ")" ]
             "{" { ( [ DirectionSpecifier ] Definition ) | Stimulus } "}";
 (*----------------------------------------------------------------------------*)
 

@@ -25,6 +25,7 @@
 #include "General.h"
 #include "Scanner.h"
 #include "AST.h"
+#include "AST/HdlConstruct.h"
 #include "AST/Wait.h"
 //------------------------------------------------------------------------------
 
@@ -111,8 +112,7 @@ class Parser{
         AST::AST* jumpStatement();
         AST::AST* clockedConstruct();
         AST::AST* hdlConstruct();
-        AST::AST* hdlParameterList();
-        AST::AST* hdlParameter();
+        AST::HdlConstruct::Parameter* hdlParameterList();
         AST::AST* hdlBody();
 
         AST::AST* stimulusOrEmulate();

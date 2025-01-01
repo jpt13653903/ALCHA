@@ -2238,7 +2238,7 @@ AST::AST* Parser::clockedConstruct()
 //------------------------------------------------------------------------------
 
 // HDL = "hdl" "(" [ String { "," String } ] ")" [ AttributeList ] Identifier
-//             [ "(" { Assignment } ")" ]
+//           [ "(" { Identifier "=" Expression ";" } ")" ]
 //             "{" { ( [ DirectionSpecifier ] Definition ) | Stimulus } "}";
 AST::AST* Parser::hdlConstruct()
 {
@@ -2306,66 +2306,44 @@ AST::AST* Parser::hdlConstruct()
 }
 //------------------------------------------------------------------------------
 
-AST::AST* Parser::hdlParameterList()
+AST::HdlConstruct::Parameter* Parser::hdlParameterList()
 {
+    AST::HdlConstruct::Parameter* result = 0;
+    AST::HdlConstruct::Parameter* last   = 0;
+
     getToken();
 
-    AST::AST* result = hdlParameter();
-
-    if(result){
-        auto last    = result;
-        auto current = result;
-
-        while(!error && token.type > Token::Type::EndOfFile){
-            getToken();
-            current = hdlParameter();
-            if(!current) break;
-            last->next = current;
-            last = current;
-        }
-    }
-    if(token.type != Token::Type::CloseRound){
-        printError(") expected");
-        delete result;
-        return 0;
-    }
-    getToken();
-
-    return result;
-}
-//------------------------------------------------------------------------------
-
-AST::AST* Parser::hdlParameter()
-{
-    if(token.type != Token::Type::Identifier){
-        return 0;
-    }
-    auto result = new AST::Assignment(token.line, astFilenameIndex);
-    auto target = new AST::Identifier(token.line, astFilenameIndex);
-    target->name   = token.data;
-    result->target = target;
-    getToken();
-
-    switch(token.type){
-        case Token::Type::Assign:
-        case Token::Type::RawAssign:{
-            result->operation = token.type;
-            getToken();
-            result->expression = expression();
-            if(!result->expression){
-                printError("Expression expected");
-                delete result;
-                return 0;
-            }
-            return result;
-        }
-        default:
+    while(token.type == Token::Type::Identifier){
+        auto current = new AST::HdlConstruct::Parameter;
+        if(last) last->next = current;
+        else     result     = current;
+        last = current;
+        current->name = token.data;
+        getToken();
+        if(token.type == Token::Type::Assign ||
+           token.type == Token::Type::RawAssign){
+            current->operation = token.type;
+        }else{
             printError("Assignment expected");
             delete result;
             return 0;
+        }
+        getToken();
+        current->expression = expression();
+        if(!current->expression){
+            printError("Expression expected");
+            delete result;
+            return 0;
+        }
+        if(token.type != Token::Type::Semicolon){
+            printError("; expected");
+            delete result;
+            return 0;
+        }
+        getToken();
     }
-    if(token.type != Token::Type::Semicolon){
-        printError("; expected");
+    if(token.type != Token::Type::CloseRound){
+        printError(") expected");
         delete result;
         return 0;
     }

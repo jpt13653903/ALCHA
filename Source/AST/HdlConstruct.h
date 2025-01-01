@@ -23,6 +23,7 @@
 //------------------------------------------------------------------------------
 
 #include "AST.h"
+#include "Token.h"
 
 #include <string>
 #include <vector>
@@ -33,8 +34,17 @@ namespace AST{
         AST* attributes = 0;
         std::vector<std::string> filenames;
         std::string identifier;
-        AST* parameters = 0;
-        AST* portDefs   = 0;
+
+        struct Parameter{
+            std::string name;
+            Token::Type operation  = Token::Type::Unknown;
+            AST*        expression = 0;
+            Parameter*  next       = 0;
+
+            ~Parameter();
+        }* parameters = 0;
+
+        AST* portDefs = 0;
 
         HdlConstruct(int line, int filenameIndex);
        ~HdlConstruct();

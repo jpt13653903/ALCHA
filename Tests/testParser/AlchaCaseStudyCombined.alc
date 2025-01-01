@@ -716,7 +716,7 @@ class DualPortRAM(net Clk, net Reset, num Width, num Depth){
     hdl() altsyncram (
       address_aclr_b                     = "NONE";
       address_reg_b                      = "CLOCK1";
-      clock_enable_input_a               = "NORMAL",
+      clock_enable_input_a               = "NORMAL";
       clock_enable_input_b               = "NORMAL";
       clock_enable_output_a              = "BYPASS";
       clock_enable_output_b              = "BYPASS";
@@ -892,7 +892,7 @@ class DualPortRAM(net Clk, net Reset, num Width, num Depth){
     hdl() altsyncram (
       address_aclr_b                     = "NONE";
       address_reg_b                      = "CLOCK1";
-      clock_enable_input_a               = "NORMAL",
+      clock_enable_input_a               = "NORMAL";
       clock_enable_input_b               = "NORMAL";
       clock_enable_output_a              = "BYPASS";
       clock_enable_output_b              = "BYPASS";
@@ -910,8 +910,8 @@ class DualPortRAM(net Clk, net Reset, num Width, num Depth){
       power_up_uninitialized             = "FALSE";
       ram_block_type                     = RamBlockType;
       read_during_write_mode_mixed_ports = "DONT_CARE";
-      read_during_write_mode_port_a      = "NEW_DATA_NO_NBE_READ",
-      read_during_write_mode_port_b      = "NEW_DATA_NO_NBE_READ",
+      read_during_write_mode_port_a      = "NEW_DATA_NO_NBE_READ";
+      read_during_write_mode_port_b      = "NEW_DATA_NO_NBE_READ";
       widthad_a                          = AddressWidth;
       widthad_b                          = AddressWidth;
       width_a                            = Width;
