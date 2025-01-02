@@ -1,16 +1,18 @@
 # ALCHA
 
+<img src="https://openclipart.org/download/3850/dchandlr-dchandlr-work.svg" height="70" alt="Work in Progress"/>
 A New Programming Language for FPGA Projects &ndash; **currently in pre-alpha**.
 
 ALCHA aims to reduce FPGA project develop time by means of automation and
 abstraction, but without loosing the low-level control that HDLs,
-such as Verilog, provide.
+such as VHDL or Verilog, provide.
 
 ## Features
 
-- Compile to complete vendor-specific project from largely vendor-neutral source
+- Compile to a complete vendor-specific project from largely vendor-neutral source
+- Significantly reduced routing and wiring
+- Procedural state-machine programming model
 - Object oriented programming model
-- Proceedural state-machine programming model
 - Abstract data and signal types
 - Compile-time scripting
 - Automated timing-requirement generation
