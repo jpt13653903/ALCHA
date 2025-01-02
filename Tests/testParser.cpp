@@ -60,7 +60,9 @@ string expand(const string& s)
 {
     string result;
     for(auto c: s){
-        if(c >= 0x20){
+        if(c == '"'){
+            result += "\\\"";
+        }else if(c >= 0x20){
             result += c;
         }else{
             unsigned u = (unsigned char)c;
@@ -80,13 +82,28 @@ bool test(int testIndex, AST::AST* node, const char* expected)
     string got = node->print();
 
     if(got != expected){
+        int  start = 0;
+        while(got[start] == expected[start]) start++;
+        if(start) start--;
+        while(start > 0 && got[start] != '\n') start--;
+        if(got[start] == '\n') start++;
+
+        int end = start;
+        while(end < (int)got.size() && got[end] != '\n') end++;
+        got = got.substr(start, end-start);
+
+        end = start;
+        while(expected[end] && expected[end] != '\n') end++;
+        string exp = expected+start;
+        exp = exp.substr(0, end-start);
+
         printf(ANSI_FG_BRIGHT_RED "FAILED: "
                ANSI_RESET         "Test %d\n"
-               ANSI_FG_GREEN      "    Expected: %s\n"
-               ANSI_FG_BRIGHT_RED "    Got:      %s\n"
+               ANSI_FG_GREEN      "    Expected: \"%s\"\n"
+               ANSI_FG_BRIGHT_RED "    Got:      \"%s\"\n"
                ANSI_RESET,
                testIndex+1,
-               expand(expected).c_str(),
+               expand(exp).c_str(),
                expand(got).c_str());
         return false;
     }
@@ -649,7 +666,12 @@ bool testModules()
         "    B = (C) + (3)\n"
         "    fence\n"
         "}",
-        "hdl <A = 3, B = \"Hello\"> ABC(\n"
+
+        "hdl () ABC(\x0a){\x0a    net (8) x\x0a}",
+
+        "hdl (\"one_file.v\") ABC(\x0a    A = 3\x0a    B = 5\x0a){\x0a    net (5) x\x0a}",
+
+        "hdl (\"whatnot.v\", \"thingy.vhd\") <A = 3, B = \"Hello\"> ABC(\n"
         "    A = 3\n"
         "    B = 5\n"
         "){\n"
@@ -664,6 +686,11 @@ bool testModules()
         "    }\n"
         "    pin (16, 5) AnotherPin\n"
         "}",
+
+        "ABC abc",
+
+        "((myClass) . (Data)) . (hdl_map)((abc) . (Data))",
+        "fence",
 
         "stimulus (1, 2, 3) <A = 3, B = 5> ABC {\n"
         "    A = 3\n"
@@ -1491,7 +1518,7 @@ bool testAlchaCaseStudyCombined()
         "                fence\n"
         "            }\n"
         "        }\n"
-        "        hdl altera_pll(\n"
+        "        hdl () altera_pll(\n"
         "            fractional_vco_multiplier = \"false\"\n"
         "            reference_clock_frequency = :[ $(((Clk) ' (frequency)) / (1000000)), \" MHz\" ]\n"
         "            operation_mode = \"direct\"\n"
@@ -2291,7 +2318,7 @@ bool testAlchaCaseStudyCombined()
         "            }\n"
         "        }\n"
         "        num AddressWidth = ceil(log2(Depth))\n"
-        "        hdl altsyncram(\n"
+        "        hdl () altsyncram(\n"
         "            address_aclr_b = \"NONE\"\n"
         "            address_reg_b = \"CLOCK1\"\n"
         "            clock_enable_input_a = \"NORMAL\"\n"
@@ -2392,7 +2419,7 @@ bool testAlchaCaseStudyCombined()
         "        num AddressWidth = ceil(log2(Depth))\n"
         "        MIF_File = :[ (this) ' (identifier), \".mif\" ]\n"
         "        fence\n"
-        "        hdl altsyncram(\n"
+        "        hdl () altsyncram(\n"
         "            address_aclr_b = \"NONE\"\n"
         "            address_reg_b = \"CLOCK1\"\n"
         "            clock_enable_input_a = \"NORMAL\"\n"
@@ -2514,7 +2541,7 @@ bool testAlchaCaseStudyCombined()
         "            }\n"
         "        }\n"
         "        num AddressWidth = ceil(log2(Depth))\n"
-        "        hdl altsyncram(\n"
+        "        hdl () altsyncram(\n"
         "            address_aclr_b = \"NONE\"\n"
         "            address_reg_b = \"CLOCK1\"\n"
         "            clock_enable_input_a = \"NORMAL\"\n"
@@ -3945,7 +3972,7 @@ bool testAlchaCaseStudyCombined()
 
         "class SystemController_Class{\n"
         "    private {\n"
-        "        hdl SoC_System_HDL(\n"
+        "        hdl (\"../HDL/SoC_System/SoC_System.qsys\") SoC_System_HDL(\n"
         "        ){\n"
         "            output {\n"
         "                net hps_clk_out_clk\n"

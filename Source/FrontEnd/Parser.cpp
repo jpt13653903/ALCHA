@@ -1054,24 +1054,23 @@ AST::AST* Parser::parameter()
 }
 //------------------------------------------------------------------------------
 
-// AttributeList = "<" AttributeAssignment { "," AttributeAssignment } ">";
+// AttributeList = "<" AttributeAssignment { "," AttributeAssignment } [ "," ] ">";
 AST::AST* Parser::attributeList()
 {
     getToken();
 
-    AST::AST* result = attributeAssignment();
-
-    if(!result){
+    if(token.type != Token::Type::Identifier){
         printError("Attribute assignment expected");
-        delete result;
         return 0;
     }
-    auto last    = result;
-    auto current = result;
+    auto result = attributeAssignment();
+    if(!result) return 0;
 
+    auto last = result;
     while(!error && token.type == Token::Type::Comma){
         getToken();
-        current = attributeAssignment();
+        if(token.type != Token::Type::Identifier) break;
+        auto current = attributeAssignment();
         if(!current){
             printError("Attribute assignment expected");
             delete result;
@@ -1094,10 +1093,6 @@ AST::AST* Parser::attributeList()
 // AttributeAssignment = Identifier "=" Primary;
 AST::AST* Parser::attributeAssignment()
 {
-    if(token.type != Token::Type::Identifier){
-        printError("Identifier expected");
-        return 0;
-    }
     auto result = new AST::Assignment(token.line, astFilenameIndex);
     result->operation = Token::Type::Assign;
 
@@ -1123,7 +1118,7 @@ AST::AST* Parser::attributeAssignment()
 }
 //------------------------------------------------------------------------------
 
-// Definition = [ "inline" ] ( BaseType | TypeIdentifier ) [ ParameterList ]
+// Definition = [ "inline" ] ( BaseType | ScopedIdentifier ) [ ParameterList ]
 //              [ AttributeList ] ( VariableDefList | FunctionDef | OperatorOverload );
 AST::AST* Parser::definition()
 {
@@ -1153,7 +1148,7 @@ AST::AST* Parser::definition()
 
         case Token::Type::Identifier:
             defType   = Token::Type::Identifier;
-            typeIdent = typeIdentifier();
+            typeIdent = scopedIdentifier();
             break;
 
         default:
@@ -1191,8 +1186,8 @@ AST::AST* Parser::definition()
 }
 //------------------------------------------------------------------------------
 
-// TypeIdentifier = Identifier { "." Identifier };
-AST::AST* Parser::typeIdentifier()
+// ScopedIdentifier = Identifier { "." Identifier };
+AST::AST* Parser::scopedIdentifier()
 {
     if(token.type != Token::Type::Identifier){
         printError("Identifier expected");
@@ -1210,7 +1205,7 @@ AST::AST* Parser::typeIdentifier()
             case Token::Type::AccessMember:{
                 getToken();
                 if(token.type != Token::Type::Identifier){
-                    printError("Invalid type identifier expression");
+                    printError("Invalid scoped identifier expression");
                     delete left;
                     return 0;
                 }
@@ -1235,8 +1230,8 @@ AST::AST* Parser::typeIdentifier()
 // ClassDefinition = "class" [ AttributeList ] Identifier
 //                   [ "(" [ ParameterDefList ] ")" ]
 //                   [
-//                     ":" TypeIdentifier [ ParameterList ]
-//                   { "," TypeIdentifier [ ParameterList ] }
+//                     ":" ScopedIdentifier [ ParameterList ]
+//                   { "," ScopedIdentifier [ ParameterList ] }
 //                   ]
 //                   "{" [ Statements ] "}";
 AST::AST* Parser::classDefinition()
@@ -1273,7 +1268,7 @@ AST::AST* Parser::classDefinition()
             if(last) last->next      = current;
             else     result->parents = current;
             last = current;
-            current->typeIdentifier = typeIdentifier();
+            current->typeIdentifier = scopedIdentifier();
             if(!current->typeIdentifier){
                 printError("Parent class identifier expected");
                 delete result;
@@ -1689,7 +1684,7 @@ AST::AST* Parser::parameterDefList()
 }
 //------------------------------------------------------------------------------
 
-// ParameterDef = [ ( BaseType | TypeIdentifier ) [ ParameterList ] ]
+// ParameterDef = [ ( BaseType | ScopedIdentifier ) [ ParameterList ] ]
 //                Identifier { "[" "]" } [ Initialiser ];
 AST::AST* Parser::parameterDef()
 {
@@ -1713,7 +1708,7 @@ AST::AST* Parser::parameterDef()
         case Token::Type::Identifier:
             foundStuff = true;
             result->defType = token.type;
-            result->typeIdentifier = typeIdentifier();
+            result->typeIdentifier = scopedIdentifier();
             if(!result->typeIdentifier){
                 printError("Invalid type identifier expression");
                 delete result;
@@ -1775,7 +1770,7 @@ AST::AST* Parser::parameterDef()
 }
 //------------------------------------------------------------------------------
 
-// EnumDefinition = "enum" [ AttributeList ] Identifier "{" EnumMemberDef { "," EnumMemberDef } "}";
+// EnumDefinition = "enum" [ AttributeList ] Identifier "{" EnumMemberDef { "," EnumMemberDef } [ "," ] "}";
 // EnumMemberDef  = Identifier [ "=" Expression ];
 AST::AST* Parser::enumDefinition()
 {
@@ -1819,9 +1814,7 @@ AST::AST* Parser::enumDefinition()
                 }
             }
         }else{
-            printError("Identifier expected");
-            delete result;
-            return 0;
+            break;
         }
     }while(!error && token.type == Token::Type::Comma);
 
@@ -2237,8 +2230,8 @@ AST::AST* Parser::clockedConstruct()
 }
 //------------------------------------------------------------------------------
 
-// HDL = "hdl" "(" [ String { "," String } ] ")" [ AttributeList ] Identifier
-//           [ "(" { Identifier "=" Expression ";" } ")" ]
+// HDL = "hdl" "(" [ String { "," String } [ "," ] ] ")" [ AttributeList ] Identifier
+//             [ HDL_ParameterList ]
 //             "{" { ( [ DirectionSpecifier ] Definition ) | Stimulus } "}";
 AST::AST* Parser::hdlConstruct()
 {
@@ -2251,19 +2244,14 @@ AST::AST* Parser::hdlConstruct()
         delete result;
         return 0;
     }
-    bool first = true;
     do{
         getToken();
         if(token.type == Token::Type::String){
             result->filenames.push_back(token.data);
             getToken();
-
-        }else if(!first){
-            printError("Filename string expected");
-            delete result;
-            return 0;
+        }else{
+           break;
         }
-        first = false;
     }while(!error && token.type == Token::Type::Comma);
 
     if(token.type != Token::Type::CloseRound){
@@ -2306,6 +2294,8 @@ AST::AST* Parser::hdlConstruct()
 }
 //------------------------------------------------------------------------------
 
+// HDL_ParameterList = "(" [ HDL_Parameter { "," HDL_Parameter } [ "," ] ] ")";
+// HDL_Parameter     = Identifier "=" Expression;
 AST::HdlConstruct::Parameter* Parser::hdlParameterList()
 {
     AST::HdlConstruct::Parameter* result = 0;
@@ -2313,7 +2303,7 @@ AST::HdlConstruct::Parameter* Parser::hdlParameterList()
 
     getToken();
 
-    while(token.type == Token::Type::Identifier){
+    while(!error && token.type == Token::Type::Identifier){
         auto current = new AST::HdlConstruct::Parameter;
         if(last) last->next = current;
         else     result     = current;
@@ -2335,12 +2325,10 @@ AST::HdlConstruct::Parameter* Parser::hdlParameterList()
             delete result;
             return 0;
         }
-        if(token.type != Token::Type::Semicolon){
-            printError("; expected");
-            delete result;
-            return 0;
-        }
-        getToken();
+        if(token.type == Token::Type::Comma)
+            getToken();
+        else
+            break;
     }
     if(token.type != Token::Type::CloseRound){
         printError(") expected");
@@ -2948,7 +2936,7 @@ AST::AST* Parser::coverBins()
     getToken();
 
     AST::CoverBins::Bin* last = 0;
-    while(token.type == Token::Type::Identifier){
+    while(!error && token.type == Token::Type::Identifier){
         auto current = new AST::CoverBins::Bin();
         if(last) last->next   = current;
         else     result->bins = current;
@@ -3011,12 +2999,12 @@ AST::AST* Parser::coverGroup()
     getToken();
 
     AST::CoverGroup::Bin* last = 0;
-    while(token.type == Token::Type::Identifier){
+    while(!error && token.type == Token::Type::Identifier){
         auto current = new AST::CoverGroup::Bin();
         if(last) last->next   = current;
         else     result->bins = current;
         last = current;
-        current->identifier = coverBinIdentifier();
+        current->identifier = scopedIdentifier();
 
         if(token.type == Token::Type::OpenRound){
             current->parameters = parameterList();
@@ -3044,47 +3032,6 @@ AST::AST* Parser::coverGroup()
     }
     getToken();
     return result;
-}
-//------------------------------------------------------------------------------
-
-// CoverBinIdentifier = Identifier { "." Identifier };
-AST::AST* Parser::coverBinIdentifier()
-{
-    if(token.type != Token::Type::Identifier){
-        printError("Identifier expected");
-        return 0;
-    }
-    auto temp = new AST::Identifier(token.line, astFilenameIndex);
-    temp->name = token.data;
-    AST::AST* left = temp;
-    getToken();
-
-    while(!error && token.type > Token::Type::EndOfFile){
-        int  line = token.line;
-        auto operation = token.type;
-        switch(token.type){
-            case Token::Type::AccessMember:{
-                getToken();
-                if(token.type != Token::Type::Identifier){
-                    printError("Invalid cover-bins identifier expression");
-                    delete left;
-                    return 0;
-                }
-                auto right = new AST::Identifier(token.line, astFilenameIndex);
-                right->name = token.data;
-                getToken();
-                auto result = new AST::Expression(line, astFilenameIndex);
-                result->operation = operation;
-                result->left      = left;
-                result->right     = right;
-                left = result;
-                break;
-            }
-            default:
-                return left;
-        }
-    }
-    return 0;
 }
 //------------------------------------------------------------------------------
 

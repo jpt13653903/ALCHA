@@ -96,9 +96,9 @@ inline void ABC(A, B, C){
 // Enum Definition
 
 enum ABC { A }
-enum ABC { A, B, C }
+enum ABC { A, B, C, }
 
-enum ABC { A = 0b00, B = 0b01, C = 0b11, D = 0b10 }
+enum ABC { A = 0b00, B = 0b01, C = 0b11, D = 0b10, }
 enum ABC { A = 0b0001, B = 0b0010, C = 0b0100, D = 0b1000 }
 
 enum <encoding = "Johnson"> ABC { A, B, C }
@@ -129,7 +129,7 @@ struct<A = 3, B = 7> ABC{
     }
     num X;
 }
-struct<A = 3, B = 7>{
+struct<A = 3, B = 7, >{
     pin(15, 8) A;
     net(17) B, C;
     struct{
@@ -147,8 +147,11 @@ group<A = 3, B = 7> ABC{
     }
     num X;
 }
-group<voltage = 3.3, capacitance = 10e-12,
-      external_min_delay = 500e-12, external_max_delay = 1e-9> SD{
+group< voltage            = 3.3,
+       capacitance        = 10e-12,
+       external_min_delay = 500e-12,
+       external_max_delay = 1e-9,
+     > SD {
     pin   <location = "AB6"                   > CLK;
     pin   <location = "W8"                    > CMD;
     pin(4)<location = ["U7", "T7", "V8", "T8"]> DAT;
@@ -269,9 +272,17 @@ fsm{
     B = C + 3;
 }
 
-hdl("whatnot.v", "thingy.vhd") <A = 3, B = "Hello"> ABC(
-    A = 3;
-    B = 5;
+hdl() ABC {
+  net(8) x;
+}
+
+hdl("one_file.v") ABC ( A = 3, B = 5 ) {
+  net(5) x;
+}
+
+hdl("whatnot.v", "thingy.vhd", )<A = 3, B = "Hello", > ABC (
+    A = 3,
+    B = 5,
 ){
     input  pin     Clk;
     input  pin     Reset;
@@ -280,6 +291,8 @@ hdl("whatnot.v", "thingy.vhd") <A = 3, B = "Hello"> ABC(
 
     pin(16, 5) AnotherPin;
 }
+ABC() abc;
+myClass.Data.hdl_map(abc.Data);
 //------------------------------------------------------------------------------
 
 // Verification

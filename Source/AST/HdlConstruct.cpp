@@ -54,6 +54,15 @@ std::string HdlConstruct::print(int indent) const
 
     result += "hdl ";
 
+    bool first = true;
+    result += "(";
+    for(auto& filename: filenames){
+        if(!first) result += ", ";
+        first = false;
+        result += '"' + filename + '"';
+    }
+    result += ") ";
+
     if(attributes){
         bool first = true;
         result += "<";

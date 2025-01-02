@@ -74,7 +74,7 @@ class Parser{
         AST::AST* attributeAssignment();
 
         AST::AST* definition();
-        AST::AST* typeIdentifier();
+        AST::AST* scopedIdentifier();
         AST::AST* classDefinition();
         AST::AST* accessDirectionGroup();
         AST::AST* variableDefList (bool         isInline,
@@ -133,7 +133,6 @@ class Parser{
 
         AST::AST* coverBins();
         AST::AST* coverGroup();
-        AST::AST* coverBinIdentifier();
 
         AST::AST* identifierStatement();
         AST::AST* statementBlock();
