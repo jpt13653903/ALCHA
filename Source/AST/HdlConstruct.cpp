@@ -39,6 +39,13 @@ HdlConstruct::~HdlConstruct()
 }
 //------------------------------------------------------------------------------
 
+HdlConstruct::Parameter::~Parameter()
+{
+    if(!expression) delete expression;
+    if(!next      ) delete next;
+}
+//------------------------------------------------------------------------------
+
 std::string HdlConstruct::print(int indent) const
 {
     string result;
@@ -46,6 +53,15 @@ std::string HdlConstruct::print(int indent) const
     for(int n = 0; n < indent; n++) result += "    ";
 
     result += "hdl ";
+
+    bool first = true;
+    result += "(";
+    for(auto& filename: filenames){
+        if(!first) result += ", ";
+        first = false;
+        result += '"' + filename + '"';
+    }
+    result += ") ";
 
     if(attributes){
         bool first = true;
@@ -64,7 +80,15 @@ std::string HdlConstruct::print(int indent) const
     result += "(\n";
     auto param = parameters;
     while(param){
-        result += param->print(indent+1);
+        for(int n = -1; n < indent; n++) result += "    ";
+        result += param->name;
+        switch(param->operation){
+            case Token::Type::Assign:    result += " = ";  break;
+            case Token::Type::RawAssign: result += " := "; break;
+
+            default: result += " Unsupported assignment operation"; break;
+        }
+        result += param->expression->print();
         result += "\n";
         param   = param->next;
     }

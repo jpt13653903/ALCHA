@@ -60,7 +60,9 @@ string expand(const string& s)
 {
     string result;
     for(auto c: s){
-        if(c >= 0x20){
+        if(c == '"'){
+            result += "\\\"";
+        }else if(c >= 0x20){
             result += c;
         }else{
             unsigned u = (unsigned char)c;
@@ -80,13 +82,28 @@ bool test(int testIndex, AST::AST* node, const char* expected)
     string got = node->print();
 
     if(got != expected){
+        int  start = 0;
+        while(got[start] == expected[start]) start++;
+        if(start) start--;
+        while(start > 0 && got[start] != '\n') start--;
+        if(got[start] == '\n') start++;
+
+        int end = start;
+        while(end < (int)got.size() && got[end] != '\n') end++;
+        got = got.substr(start, end-start);
+
+        end = start;
+        while(expected[end] && expected[end] != '\n') end++;
+        string exp = expected+start;
+        exp = exp.substr(0, end-start);
+
         printf(ANSI_FG_BRIGHT_RED "FAILED: "
                ANSI_RESET         "Test %d\n"
-               ANSI_FG_GREEN      "    Expected: %s\n"
-               ANSI_FG_BRIGHT_RED "    Got:      %s\n"
+               ANSI_FG_GREEN      "    Expected: \"%s\"\n"
+               ANSI_FG_BRIGHT_RED "    Got:      \"%s\"\n"
                ANSI_RESET,
                testIndex+1,
-               expand(expected).c_str(),
+               expand(exp).c_str(),
                expand(got).c_str());
         return false;
     }
@@ -137,33 +154,33 @@ bool testLiterals()
     if(!startTest("Literals")) return false;
 
     const char* expected[] = {
-        "X = 15432/125 (~123.456)",
-        "X = 85/16 (~5.3125)",
-        "X = 21399/256 (~83.5898)",
-        "X = 11259375/4096 (~2748.87)",
-        "X = 85/16 (~5.3125)",
-        "X = 21399/256 (~83.5898)",
-        "X = 11259375/4096 (~2748.87)",
-        "X = 85/16 (~5.3125)",
-        "X = 21399/256 (~83.5898)",
-        "X = 11259375/4096 (~2748.87)",
-        "X = 1234560000000",
-        "X = 15802368",
-        "X = 152919552",
-        "X = 89/10j (~8.9j)",
-        "X = \"A\"",
-        "X = \"ABC\"",
+        "X = 15432/125 (~123.456)", "fence",
+        "X = 85/16 (~5.3125)", "fence",
+        "X = 21399/256 (~83.5898)", "fence",
+        "X = 11259375/4096 (~2748.87)", "fence",
+        "X = 85/16 (~5.3125)", "fence",
+        "X = 21399/256 (~83.5898)", "fence",
+        "X = 11259375/4096 (~2748.87)", "fence",
+        "X = 85/16 (~5.3125)", "fence",
+        "X = 21399/256 (~83.5898)", "fence",
+        "X = 11259375/4096 (~2748.87)", "fence",
+        "X = 1234560000000", "fence",
+        "X = 15802368", "fence",
+        "X = 152919552", "fence",
+        "X = 89/10j (~8.9j)", "fence",
+        "X = \"A\"", "fence",
+        "X = \"ABC\"", "fence",
         "X = \"ABC\nlkjh\rklkjh\123hi"
             "\xE2\x87\x9B"
             "\xc2\xab"
             "\xEA\xAF\x8D"
             "efg"
             "\xFE\x82\xAB\xB3\x9E\xBC\x92"
-            "34567\"",
-        "X = $\"I have {x} sheep\"",
-        "X = $\"I have {(x) + (y)} sheep\"",
-        "X = $\"I have {(x) + (y), \"03x\"} sheep\"",
-        "X = $\"I have {(x) + (y), format} sheep\"",
+            "34567\"", "fence",
+        "X = $\"I have {x} sheep\"", "fence",
+        "X = $\"I have {(x) + (y)} sheep\"", "fence",
+        "X = $\"I have {(x) + (y), \"03x\"} sheep\"", "fence",
+        "X = $\"I have {(x) + (y), format} sheep\"", "fence",
         0
     };
     if(!runTest(expected)) return false;
@@ -178,29 +195,29 @@ bool testIdentifiers()
     if(!startTest("Identifiers")) return false;
 
     const char* expected[] = {
-        "X = variable",
-        "X = anotherVariable",
-        "X = autoVariable",
-        "X = αΓρεεκΩαριαβλε",
-        "X = πΓρεεκΩαριαβλε",
-        "X = pi",
-        "X = π",
-        "X = e",
-        "X = i",
-        "X = j",
-        "X = __YEAR__",
-        "X = __MONTH__",
-        "X = __DAY__",
-        "X = __HOUR__",
-        "X = __MINUTE__",
-        "X = __SECOND__",
-        "X = __WEEKDAY__",
-        "X = __YEARDAY__",
-        "X = \"testParser/Identifiers.alc\"",
-        "X = 30",
-        "X = __CLASS__",
-        "X = __FUNCTION__",
-        "X = __NAMESPACE__",
+        "X = variable", "fence",
+        "X = anotherVariable", "fence",
+        "X = autoVariable", "fence",
+        "X = αΓρεεκΩαριαβλε", "fence",
+        "X = πΓρεεκΩαριαβλε", "fence",
+        "X = pi", "fence",
+        "X = π", "fence",
+        "X = e", "fence",
+        "X = i", "fence",
+        "X = j", "fence",
+        "X = __YEAR__", "fence",
+        "X = __MONTH__", "fence",
+        "X = __DAY__", "fence",
+        "X = __HOUR__", "fence",
+        "X = __MINUTE__", "fence",
+        "X = __SECOND__", "fence",
+        "X = __WEEKDAY__", "fence",
+        "X = __YEARDAY__", "fence",
+        "X = \"testParser/Identifiers.alc\"", "fence",
+        "X = 30", "fence",
+        "X = __CLASS__", "fence",
+        "X = __FUNCTION__", "fence",
+        "X = __NAMESPACE__", "fence",
         0
     };
     if(!runTest(expected)) return false;
@@ -215,77 +232,77 @@ bool testExpressions()
     if(!startTest("Expressions")) return false;
 
     const char* expected[] = {
-        "X = (A) ? (B) : (C)",
-        "X = (A) ?: (B)",
-        "X = (A) | (B)",
-        "X = (A) ~| (B)",
-        "X = (A) & (B)",
-        "X = (A) ~& (B)",
-        "X = (A) ^ (B)",
-        "X = (A) ~^ (B)",
-        "X = (A) == (B)",
-        "X = (A) != (B)",
-        "X = (A) < (B)",
-        "X = (A) > (B)",
-        "X = (A) <= (B)",
-        "X = (A) >= (B)",
-        "X = (A) << (B)",
-        "X = (A) >> (B)",
-        "X = (A) + (B)",
-        "X = (A) - (B)",
-        "X = (A) * (B)",
-        "X = (A) / (B)",
-        "X = (A) % (B)",
-        "X = (A) ** (B)",
+        "X = (A) ? (B) : (C)", "fence",
+        "X = (A) ?: (B)", "fence",
+        "X = (A) | (B)", "fence",
+        "X = (A) ~| (B)", "fence",
+        "X = (A) & (B)", "fence",
+        "X = (A) ~& (B)", "fence",
+        "X = (A) ^ (B)", "fence",
+        "X = (A) ~^ (B)", "fence",
+        "X = (A) == (B)", "fence",
+        "X = (A) != (B)", "fence",
+        "X = (A) < (B)", "fence",
+        "X = (A) > (B)", "fence",
+        "X = (A) <= (B)", "fence",
+        "X = (A) >= (B)", "fence",
+        "X = (A) << (B)", "fence",
+        "X = (A) >> (B)", "fence",
+        "X = (A) + (B)", "fence",
+        "X = (A) - (B)", "fence",
+        "X = (A) * (B)", "fence",
+        "X = (A) / (B)", "fence",
+        "X = (A) % (B)", "fence",
+        "X = (A) ** (B)", "fence",
 
-        "X = (A) ` (B)",
-        "X = $(A)",
-        "X = $(A)",
-        "X = $(A, B)",
-        "X =  & (A)",
-        "X =  ~& (A)",
-        "X =  | (A)",
-        "X =  ~| (A)",
-        "X =  ^ (A)",
-        "X =  ~^ (A)",
-        "X =  ! (A)",
-        "X = (1) .. (6)",
-        "X = (1) .. (6):(3)",
-        "X = (A) .. (B)",
-        "X = (A) .. (B):(C)",
-        "X =  - (A)",
-        "X =  ~ (A)",
-        "X =  : (A)",
-        "X =  ++ (A)",
-        "X =  -- (A)",
-        "X = (A)[ B, C, D ]",
-        "X = A(A, B, C)",
-        "X = (A) . (B)",
-        "X = (A) ?. (B)",
-        "X = (A) ' (B)",
-        "X = (A) ++ ",
-        "X = (A) -- ",
-        "X = (A) ! ",
-        "X = (A) @ (B)",
-        "X = (A) @ (123)",
-        "X = (A) @ (A)",
-        "X = A",
-        "X =  ' (A)",
-        "X = 123",
-        "X = 1",
-        "X = 0",
-        "X = :( A, B, C )",
-        "X = :[ A, B, C ]",
-        "X = [ A, B, C ]",
-        "X = \"Hello There\"",
-        "X = (A) + (B)",
+        "X = (A) ` (B)", "fence",
+        "X = $(A)", "fence",
+        "X = $(A)", "fence",
+        "X = $(A, B)", "fence",
+        "X =  & (A)", "fence",
+        "X =  ~& (A)", "fence",
+        "X =  | (A)", "fence",
+        "X =  ~| (A)", "fence",
+        "X =  ^ (A)", "fence",
+        "X =  ~^ (A)", "fence",
+        "X =  ! (A)", "fence",
+        "X = (1) .. (6)", "fence",
+        "X = (1) .. (6):(3)", "fence",
+        "X = (A) .. (B)", "fence",
+        "X = (A) .. (B):(C)", "fence",
+        "X =  - (A)", "fence",
+        "X =  ~ (A)", "fence",
+        "X =  : (A)", "fence",
+        "X =  ++ (A)", "fence",
+        "X =  -- (A)", "fence",
+        "X = (A)[ B, C, D ]", "fence",
+        "X = A(A, B, C)", "fence",
+        "X = (A) . (B)", "fence",
+        "X = (A) ?. (B)", "fence",
+        "X = (A) ' (B)", "fence",
+        "X = (A) ++ ", "fence",
+        "X = (A) -- ", "fence",
+        "X = (A) ! ", "fence",
+        "X = (A) @ (B)", "fence",
+        "X = (A) @ (123)", "fence",
+        "X = (A) @ (A)", "fence",
+        "X = A", "fence",
+        "X =  ' (A)", "fence",
+        "X = 123", "fence",
+        "X = 1", "fence",
+        "X = 0", "fence",
+        "X = :( A, B, C )", "fence",
+        "X = :[ A, B, C ]", "fence",
+        "X = [ A, B, C ]", "fence",
+        "X = \"Hello There\"", "fence",
+        "X = (A) + (B)", "fence",
 
-        "X = ((A) + ((B) * (C))) - (D)",
-        "X = ( & (A)) + ((D) @ (6))",
-        "X = (((A) . (B)) . (C)) ' (E)",
-        "X = ((A) . (B)) . (C)(E, F, G)",
-        "X = A(B = C, D := E)",
-        "X = A = B",
+        "X = ((A) + ((B) * (C))) - (D)", "fence",
+        "X = ( & (A)) + ((D) @ (6))", "fence",
+        "X = (((A) . (B)) . (C)) ' (E)", "fence",
+        "X = ((A) . (B)) . (C)(E, F, G)", "fence",
+        "X = A(B = C, D := E)", "fence",
+        "X = A = B", "fence",
         0
     };
     if(!runTest(expected)) return false;
@@ -335,50 +352,83 @@ bool testModules()
 
         "class MyClass{\n"
         "    D = A\n"
+        "    fence\n"
         "    E = B\n"
+        "    fence\n"
         "    F = C\n"
+        "    fence\n"
         "}",
         "class MyClass(num D, pin E, byte F){\n"
         "    D = A\n"
+        "    fence\n"
         "    E = B\n"
+        "    fence\n"
         "    F = C\n"
+        "    fence\n"
         "}",
         "class <A = 3, B = 1, C = 7> MyClass(num D, pin E, byte F){\n"
         "    D = A\n"
+        "    fence\n"
         "    E = B\n"
+        "    fence\n"
         "    F = C\n"
+        "    fence\n"
         "}",
         "class MyClass(num D, pin E, byte F): ParentClass1(A, B, C), ParentClass2(A, B, C){\n"
         "    D = A\n"
+        "    fence\n"
         "    E = B\n"
+        "    fence\n"
         "    F = C\n"
+        "    fence\n"
         "}",
         "class <A = 3, B = 1, C = 7> MyClass(num D, pin E, byte F): ParentClass1(A, B, C){\n"
         "    D = A\n"
+        "    fence\n"
         "    E = B\n"
+        "    fence\n"
         "    F = C\n"
+        "    fence\n"
         "}",
         "class <A = 3, B = 1, C = 7> MyClass(num D, pin E, byte F): ParentClass1(A, B, C), ParentClass2(A, B, C){\n"
         "    D = A\n"
+        "    fence\n"
         "    E = B\n"
+        "    fence\n"
         "    F = C\n"
+        "    fence\n"
+        "}",
+        "class myClass{\n"
+        "    num a\n"
+        "    num memberFunc(a, b, c){\n"
+        "        (this) . (a) = a\n"
+        "        fence\n"
+        "    }\n"
         "}",
 
         "auto ABC[5](num A, pin B[], net C){\n"
         "    A = 3\n"
+        "    fence\n"
         "    B = 5\n"
+        "    fence\n"
         "}",
         "auto ABC(num A, pin (8) B, net (3, 15) C = 5){\n"
         "    A = 3\n"
+        "    fence\n"
         "    B = 5\n"
+        "    fence\n"
         "}",
         "void ABC(A, B, C){\n"
         "    A = 3\n"
+        "    fence\n"
         "    B = 5\n"
+        "    fence\n"
         "}",
         "inline void ABC(A, B, C){\n"
         "    A = 3\n"
+        "    fence\n"
         "    B = 5\n"
+        "    fence\n"
         "}",
 
         "enum ABC { A }",
@@ -441,28 +491,37 @@ bool testModules()
 
         "if ((A) == (B)) {\n"
         "    C = D\n"
+        "    fence\n"
         "} else {\n"
         "    E = F\n"
+        "    fence\n"
         "}",
         "if ((A) == (B)) {\n"
         "    C = D\n"
+        "    fence\n"
         "} else {\n"
         "    if ((A) == (B)) {\n"
         "        E = F\n"
+        "        fence\n"
         "    } else {\n"
         "        if ((A) == (B)) {\n"
         "            G = H\n"
+        "            fence\n"
         "        } else {\n"
         "            if ((A) == (B)) {\n"
         "                I = J\n"
+        "                fence\n"
         "            } else {\n"
         "                if ((A) == (B)) {\n"
         "                    K = L\n"
+        "                    fence\n"
         "                } else {\n"
         "                    if ((A) == (B)) {\n"
         "                        M = N\n"
+        "                        fence\n"
         "                    } else {\n"
         "                        O = P\n"
+        "                        fence\n"
         "                    }\n"
         "                }\n"
         "            }\n"
@@ -471,29 +530,38 @@ bool testModules()
         "}",
         "if ((A) == (B)) {\n"
         "    C = D\n"
+        "    fence\n"
         "} else {\n"
         "    E = F\n"
+        "    fence\n"
         "}",
         "if ((A) == (B)) {\n"
         "    C = D\n"
+        "    fence\n"
         "}",
         "if ((A) == (B)) {\n"
         "    C = D\n"
+        "    fence\n"
         "} else {\n"
         "    if ((A) == (B)) {\n"
         "        E = F\n"
+        "        fence\n"
         "    } else {\n"
         "        if ((A) == (B)) {\n"
         "            G = H\n"
+        "            fence\n"
         "        } else {\n"
         "            if ((A) == (B)) {\n"
         "                I = J\n"
+        "                fence\n"
         "            } else {\n"
         "                if ((A) == (B)) {\n"
         "                    K = L\n"
+        "                    fence\n"
         "                } else {\n"
         "                    if ((A) == (B)) {\n"
         "                        M = N\n"
+        "                        fence\n"
         "                    }\n"
         "                }\n"
         "            }\n"
@@ -502,36 +570,46 @@ bool testModules()
         "}",
         "if ((A) == (B)) {\n"
         "    C = D\n"
+        "    fence\n"
         "}",
         "for ((A) in ((1) .. (6))) {\n"
         "    X++\n"
+        "    fence\n"
         "}",
         "for ((A) in (G)) {\n"
         "    X++\n"
+        "    fence\n"
         "}",
         "while ((A) < (7)) {\n"
         "    X++\n"
+        "    fence\n"
         "}",
         "loop (7) {\n"
         "    X++\n"
+        "    fence\n"
         "}",
         "loop {\n"
         "    X++\n"
+        "    fence\n"
         "}",
         "enum STATE { Idle, Writing, Done, Others }",
         "STATE State",
         "switch (State) {\n"
         "    case (Idle) {\n"
         "        State = Writing\n"
+        "        fence\n"
         "    }\n"
         "    case (Writing) {\n"
         "        State = Done\n"
+        "        fence\n"
         "    }\n"
         "    case (Done) {\n"
         "        State = Idle\n"
+        "        fence\n"
         "    }\n"
         "    default {\n"
         "        print(\"The Default State\")\n"
+        "        fence\n"
         "    }\n"
         "}",
         "return",
@@ -543,41 +621,64 @@ bool testModules()
 
         "rtl (Clk, Reset) <A = 3, B = \"Hello\"> {\n"
         "    A = 5\n"
+        "    fence\n"
         "    B = (C) + (3)\n"
+        "    fence\n"
         "}",
         "rtl <A = 3, B = \"Hello\"> {\n"
         "    A = 5\n"
+        "    fence\n"
         "    B = (C) + (3)\n"
+        "    fence\n"
         "}",
         "rtl (Clk, Reset) {\n"
         "    A = 5\n"
+        "    fence\n"
         "    B = (C) + (3)\n"
+        "    fence\n"
         "}",
         "rtl (Clk) {\n"
         "    A = 5\n"
+        "    fence\n"
         "    B = (C) + (3)\n"
+        "    fence\n"
         "}",
         "rtl {\n"
         "    A = 5\n"
+        "    fence\n"
         "    B = (C) + (3)\n"
+        "    fence\n"
         "}",
         "fsm (Clk, Reset) <A = 3, B = \"Hello\"> {\n"
         "    A = 5\n"
+        "    fence\n"
         "    B = (C) + (3)\n"
+        "    fence\n"
         "}",
         "fsm <A = 3, B = \"Hello\"> {\n"
         "    A = 5\n"
+        "    fence\n"
         "    B = (C) + (3)\n"
+        "    fence\n"
         "}",
         "fsm (Clk, Reset) {\n"
         "    A = 5\n"
+        "    fence\n"
         "    B = (C) + (3)\n"
+        "    fence\n"
         "}",
         "fsm {\n"
         "    A = 5\n"
+        "    fence\n"
         "    B = (C) + (3)\n"
+        "    fence\n"
         "}",
-        "hdl <A = 3, B = \"Hello\"> ABC(\n"
+
+        "hdl () ABC(\x0a){\x0a    net (8) x\x0a}",
+
+        "hdl (\"one_file.v\") ABC(\x0a    A = 3\x0a    B = 5\x0a){\x0a    net (5) x\x0a}",
+
+        "hdl (\"whatnot.v\", \"thingy.vhd\") <A = 3, B = \"Hello\"> ABC(\n"
         "    A = 3\n"
         "    B = 5\n"
         "){\n"
@@ -593,64 +694,99 @@ bool testModules()
         "    pin (16, 5) AnotherPin\n"
         "}",
 
+        "ABC abc",
+
+        "((myClass) . (Data)) . (hdl_map)((abc) . (Data))",
+        "fence",
+
         "stimulus (1, 2, 3) <A = 3, B = 5> ABC {\n"
         "    A = 3\n"
+        "    fence\n"
         "    B = 5\n"
+        "    fence\n"
         "}",
         "stimulus <A = 3, B = 5> ABC {\n"
         "    A = 3\n"
+        "    fence\n"
         "    B = 5\n"
+        "    fence\n"
         "}",
         "stimulus (1, 2, 3) ABC {\n"
         "    A = 3\n"
+        "    fence\n"
         "    B = 5\n"
+        "    fence\n"
         "}",
         "stimulus (1, 2, 3) <A = 3, B = 5> {\n"
         "    A = 3\n"
+        "    fence\n"
         "    B = 5\n"
+        "    fence\n"
         "}",
         "stimulus (1, 2, 3) <A = 3, B = 5> ABC {\n"
         "    A = 3\n"
+        "    fence\n"
         "    B = 5\n"
+        "    fence\n"
         "}",
         "emulate (1, 2, 3) <A = 3, B = 5> ABC {\n"
         "    A = 3\n"
+        "    fence\n"
         "    B = 5\n"
+        "    fence\n"
         "}",
         "emulate <A = 3, B = 5> ABC {\n"
         "    A = 3\n"
+        "    fence\n"
         "    B = 5\n"
+        "    fence\n"
         "}",
         "emulate (1, 2, 3) ABC {\n"
         "    A = 3\n"
+        "    fence\n"
         "    B = 5\n"
+        "    fence\n"
         "}",
         "emulate (1, 2, 3) <A = 3, B = 5> {\n"
         "    A = 3\n"
+        "    fence\n"
         "    B = 5\n"
+        "    fence\n"
         "}",
         "emulate (1, 2, 3) <A = 3, B = 5> ABC {\n"
         "    A = 3\n"
+        "    fence\n"
         "    B = 5\n"
+        "    fence\n"
         "}",
         "{\n"
         "    A = 3\n"
+        "    fence\n"
         "    B = 5\n"
+        "    fence\n"
         "} || {\n"
         "    X++\n"
+        "    fence\n"
         "    Y--\n"
+        "    fence\n"
         "}",
         "{\n"
         "    A = 3\n"
+        "    fence\n"
         "    B = 5\n"
+        "    fence\n"
         "} && {\n"
         "    X++\n"
+        "    fence\n"
         "    Y--\n"
+        "    fence\n"
         "}",
         "stimulus (1/1000000000 (~1e-09)) {\n"
         "    A = 5\n"
+        "    fence\n"
         "    #5\n"
         "    B = 7\n"
+        "    fence\n"
         "    @(posedge Clk)\n"
         "    fence\n"
         "    @(Clk, Reset)\n"
@@ -662,6 +798,7 @@ bool testModules()
         "    loop {\n"
         "        #7\n"
         "        C++\n"
+        "        fence\n"
         "    }\n"
         "}",
         "assert {\n"
@@ -840,97 +977,114 @@ bool testAutogen()
     const char* expected[] = {
         "class RegistersDecoder(Bus): AvalonInterface(32, 4096){\n"
         "    (Bus) . (Attach)(this)\n"
-
+        "    fence\n"
         "    private {\n"
         "         ' (RdRegisters) = [  ]\n"
+        "        fence\n"
         "         ' (WrRegisters) = [  ]\n"
+        "        fence\n"
         "         ' (LiveRegisters) = [  ]\n"
+        "        fence\n"
         "        num Count = 0\n"
         "    }\n"
-
         "    public {\n"
         "        void ReadOnly(Register){\n"
         "            (Register) ' (Address) = (Count) ++ \n"
+        "            fence\n"
         "            ( ' (RdRegisters)) . (append)(Register)\n"
+        "            fence\n"
         "        }\n"
         "        void Writeable(Register){\n"
         "            (Register) ' (Address) = (Count) ++ \n"
+        "            fence\n"
         "            ( ' (WrRegisters)) . (append)(Register)\n"
+        "            fence\n"
         "        }\n"
         "        void Live(RdRegister, WrRegister, WrStrobe){\n"
         "            (RdRegister) ' (Address) = Count\n"
+        "            fence\n"
         "            (WrRegister) ' (Address) = Count\n"
+        "            fence\n"
         "            (WrStrobe) ' (Address) = Count\n"
+        "            fence\n"
         "            ( ' (LiveRegisters)) . (append)(Read = RdRegister, Write = WrRegister, Strobe = WrStrobe)\n"
+        "            fence\n"
         "            Count++\n"
+        "            fence\n"
         "        }\n"
-
         "        net (32) Resize(x){\n"
         "            result := x\n"
+        "            fence\n"
         "            num N = (x) ' (width)\n"
         "            if ((((x) ' (fullscale)) < (0)) & ((N) < (31))) {\n"
         "                result((31) .. ((N) + (1))) := (x(N)) ` ((31) - (N))\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
-
         "        void GenerateRegs(){\n"
         "            rtl ((Bus) . (Clock), (Bus) . (Reset)) {\n"
         "                WaitRequest = 0\n"
+        "                fence\n"
         "                switch (Address) {\n"
         "                    for ((Register) in ( ' (RdRegisters))) {\n"
         "                        case ((Register) ' (Address)) {\n"
         "                            ReadData = Resize(Register)\n"
+        "                            fence\n"
         "                        }\n"
         "                    }\n"
         "                    for ((Register) in ( ' (WrRegisters))) {\n"
         "                        case ((Register) ' (Address)) {\n"
         "                            ReadData = Resize(Register)\n"
+        "                            fence\n"
         "                        }\n"
         "                    }\n"
         "                    for ((Register) in ( ' (LiveRegisters))) {\n"
         "                        case (((Register) ' (Read)) ' (Address)) {\n"
         "                            ReadData = Resize((Register) ' (Read))\n"
+        "                            fence\n"
         "                        }\n"
         "                    }\n"
         "                }\n"
         "                ReadValid = Read\n"
-
+        "                fence\n"
         "                if (Write) {\n"
         "                    switch (Address) {\n"
         "                        for ((Register) in ( ' (WrRegisters))) {\n"
         "                            case ((Register) ' (Address)) {\n"
         "                                Register := WriteData\n"
+        "                                fence\n"
         "                            }\n"
         "                        }\n"
         "                        for ((Register) in ( ' (LiveRegisters))) {\n"
         "                            case (((Register) ' (Write)) ' (Address)) {\n"
         "                                (Register) ' (Write) := WriteData\n"
+        "                                fence\n"
         "                            }\n"
         "                        }\n"
         "                    }\n"
         "                    for ((Register) in ( ' (LiveRegisters))) {\n"
         "                        (Register) ' (Strobe) = ((Address) == (((Register) ' (Strobe)) ' (Address))) & (Write)\n"
+        "                        fence\n"
         "                    }\n"
         "                }\n"
         "            }\n"
         "        }\n"
-
         "        void GenerateCpp(string Filename){\n"
         "        }\n"
-
         "        void GenerateLaTeX(string Filename){\n"
         "        }\n"
-
         "        string CppFilename = \"\"\n"
         "        string LaTeXFilename = \"\"\n"
-
         "        void finally(){\n"
         "            GenerateRegs()\n"
+        "            fence\n"
         "            if ((CppFilename) ' (length)) {\n"
         "                GenerateCpp(CppFilename)\n"
+        "                fence\n"
         "            }\n"
         "            if ((LaTeXFilename) ' (langth)) {\n"
         "                GenerateLaTeX(LaTeXFilename)\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
         "    }\n"
@@ -950,6 +1104,7 @@ bool testVerification()
 
     const char* expected[] = {
         "a = (((b) + (c)) + (d)) + (e)",
+        "fence",
         "wait (((((a) ##(1) (b)) ##(2) (c)) ##(3) (d)) ##(50) (1))",
         "fence",
         "assert {\n"
@@ -981,41 +1136,52 @@ bool testVerification()
         "}",
         "net (8) Adder(net (8) A, net (8) B, net C){\n"
         "    :( C, Adder ) = (A) + (B)\n"
+        "    fence\n"
         "}",
         "net c",
         "net (8) a, b, y = Adder(a, b, c)",
         "stimulus (1/1000000000 (~1e-09)) {\n"
         "    #1\n"
         "    a = 0\n"
+        "    fence\n"
         "    b = 0\n"
+        "    fence\n"
         "    assert {\n"
         "        (y) == (0)\n"
         "        (c) == (0)\n"
         "    }\n"
         "    #1\n"
         "    a = 255\n"
+        "    fence\n"
         "    b = 1\n"
+        "    fence\n"
         "    assert {\n"
         "        (y) == (0)\n"
         "        (c) == (1)\n"
         "    }\n"
         "    #1\n"
         "    a = 1\n"
+        "    fence\n"
         "    b = 255\n"
+        "    fence\n"
         "    assert {\n"
         "        (y) == (0)\n"
         "        (c) == (1)\n"
         "    }\n"
         "    #1\n"
         "    a = 255\n"
+        "    fence\n"
         "    b = 255\n"
+        "    fence\n"
         "    assert {\n"
         "        (y) == (254)\n"
         "        (c) == (1)\n"
         "    }\n"
         "    #1\n"
         "    a = 127\n"
+        "    fence\n"
         "    b = 128\n"
+        "    fence\n"
         "    assert {\n"
         "        (y) == (255)\n"
         "        (c) == (0)\n"
@@ -1085,19 +1251,31 @@ bool testParser()
         "num c, d",
 
         "a = 3",
+        "fence",
         "b = 5",
+        "fence",
         "print((a) + (b))",
+        "fence",
 
         "a++",
+        "fence",
         "a()",
+        "fence",
         "a--",
+        "fence",
         "a <<= ((a) * (b)) + ((c) * (d))",
+        "fence",
 
         "a = ((a) ++ ) + ( ++ (b))",
+        "fence",
         "a = (a) ? (b) : (c)",
+        "fence",
         "a = ((x) | (x)) ~| (((x) ^ (x)) ~^ (((x) & (x)) ~& (((x) == (x)) != (((((x) < (x)) > (x)) <= (x)) >= (((x) << (x)) >> (((x) + (x)) - ((((x) * (x)) / (x)) % ((x) ** ((x) ` (x))))))))))",
+        "fence",
         "a = (((((((((((((((((((((x) ` (x)) ** (x)) % (x)) / (x)) * (x)) - (x)) + (x)) >> (x)) << (x)) >= (x)) <= (x)) > (x)) < (x)) != (x)) == (x)) ~& (x)) & (x)) ~^ (x)) ^ (x)) ~| (x)) | (x)",
+        "fence",
         "(((a)[ 5 ])[ 6 ])[ (7) .. (9), 8, (1) .. (10):(2) ] = ((((b) . (c)) . (d)) . (e)) ' (attribute)",
+        "fence",
 
         "((a) . (b)) . (c).{\n"
         "    num a, b, c\n"
@@ -1108,13 +1286,16 @@ bool testParser()
 
         "num myFunc(a, b, c = 5){\n"
         "    print(((a) * (b)) + (c))\n"
+        "    fence\n"
         "}",
         "myFuct(1, 2, 3)",
+        "fence",
 
         "inline num (15, 7) <a = b, c = d> myFunc("
              "a, num b, c = 5, pin d = 8, pin (13, 9) e, "
              "MyClass myClass, MyClass (123, 456) myClass){\n"
         "    print(((a) * (b)) + (c))\n"
+        "    fence\n"
         "}",
 
         "MyClass myClass",
@@ -1139,12 +1320,15 @@ bool testParser()
 
         "class MyClass{\n"
         "    print(\"Hello\")\n"
+        "    fence\n"
         "}",
         "class <a = b, c = d> MyClass{\n"
         "    print(\"Hello\")\n"
+        "    fence\n"
         "}",
         "class <a = b, c = d> MyClass(a, b, c = 123){\n"
         "    print(\"Hello\")\n"
+        "    fence\n"
         "}",
         "class MyClass: A{\n"
         "    num a\n"
@@ -1236,48 +1420,67 @@ bool testParser()
         "enum colours { red, green, blue }",
 
         " ' (GlobalAttribute) = 5",
+        "fence",
         "A =  ' (GlobalAttribute)",
+        "fence",
 
         "(((((A) . (B)) . (C)) ' (D)) . (E)) ' (F) = 9",
+        "fence",
 
         "stimulus {\n"
         "    #10\n"
         "    clk = 1\n"
+        "    fence\n"
         "    #10\n"
         "    clk = 2\n"
+        "    fence\n"
         "}",
         "emulate {\n"
         "    @(posedge clk, negedge reset)\n"
         "    {\n"
         "        {\n"
         "            a = b\n"
+        "            fence\n"
         "        } || {\n"
         "            a = b\n"
+        "            fence\n"
         "        }\n"
         "    } && {\n"
         "        a = b\n"
+        "        fence\n"
         "    }\n"
         "}",
 
         "##3",
         "c = d",
+        "fence",
         "@(enable)",
         "Q = D",
+        "fence",
 
         "a = $(whatnot)",
+        "fence",
         "A = $(b)",
+        "fence",
 
         "a = $(whatnot, \"%d\")",
+        "fence",
         "a = $(whatnot, ((A) . (B)) . (C))",
+        "fence",
         "A = $(((b) . (c)) . (d))",
+        "fence",
 
         "assert {\n"
         "    ((a) + (b)) == (c)\n"
         "}",
         "a = $\"I have {x} sheep\"",
+        "fence",
         "a = $\"I have {(x) + (b)} sheep\"",
+        "fence",
         "a = $\"I have {(x) + (b), \"04d\"} sheep\"",
+        "fence",
         "a = $\"I have {(x) + (b), format} sheep\"",
+        "fence",
         0
     };
     if(!runTest(expected)) return false;
@@ -1297,11 +1500,14 @@ bool testAlchaCaseStudyCombined()
         "    num N = ceil(log2(Delay_cycles))\n"
         "    net (N) Count = 0\n"
         "    result = 1\n"
+        "    fence\n"
         "    rtl (Clk, Reset) {\n"
         "        if ((Count) != (Delay_cycles)) {\n"
         "            Count++\n"
+        "            fence\n"
         "        } else {\n"
         "            result = 0\n"
+        "            fence\n"
         "        }\n"
         "    }\n"
         "}",
@@ -1313,11 +1519,13 @@ bool testAlchaCaseStudyCombined()
         "        for ((n) in ((0) .. (16))) {\n"
         "            if ((n) < (N)) {\n"
         "                (OutputFreq)[ n ] = (Output_MHz)[ n ]\n"
+        "                fence\n"
         "            } else {\n"
         "                (OutputFreq)[ n ] = 0\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
-        "        hdl altera_pll(\n"
+        "        hdl () altera_pll(\n"
         "            fractional_vco_multiplier = \"false\"\n"
         "            reference_clock_frequency = :[ $(((Clk) ' (frequency)) / (1000000)), \" MHz\" ]\n"
         "            operation_mode = \"direct\"\n"
@@ -1393,7 +1601,9 @@ bool testAlchaCaseStudyCombined()
         "        net Output[N]\n"
         "        for ((n) in ((0) .. ((N) - (1)))) {\n"
         "            ((Output)[ n ]) ' (frequency) = (Output_MHz) * (1000000)\n"
+        "            fence\n"
         "            (Output)[ n ] = ((PLL) . (outclk))[ n ]\n"
+        "            fence\n"
         "        }\n"
         "    }\n"
         "}",
@@ -1407,6 +1617,7 @@ bool testAlchaCaseStudyCombined()
         "            net (2) KickEdge\n"
         "            rtl (Clk) {\n"
         "                KickEdge = :( (KickEdge)[ 0 ], Kick )\n"
+        "                fence\n"
         "            }\n"
         "            net Reset = (KickEdge) == (1)\n"
         "        } else {\n"
@@ -1419,8 +1630,10 @@ bool testAlchaCaseStudyCombined()
         "    rtl (Clk, Reset) {\n"
         "        if (Count) {\n"
         "            Count--\n"
+        "            fence\n"
         "        } else {\n"
         "            Error = 1\n"
+        "            fence\n"
         "        }\n"
         "    }\n"
         "}",
@@ -1439,8 +1652,10 @@ bool testAlchaCaseStudyCombined()
         "        rtl (Clk) {\n"
         "            if (Baud_Count) {\n"
         "                Baud_Count--\n"
+        "                fence\n"
         "            } else {\n"
         "                Baud_Count = (Baud_Cycles) - (1)\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
         "        net Baud_Trigger =  ~| (Baud_Count)\n"
@@ -1449,68 +1664,91 @@ bool testAlchaCaseStudyCombined()
         "    }\n"
         "    void ConnectBus(pin Clock, pin Data){\n"
         "        (Clock) . (enable) |=  ~ (ClkOut)\n"
+        "        fence\n"
         "        (Data) . (enable) |=  ~ (DataOut)\n"
+        "        fence\n"
         "        rtl (Clk) {\n"
         "            ClkIn = (Clock) . (pad)\n"
+        "            fence\n"
         "            DataIn = (Data) . (pad)\n"
+        "            fence\n"
         "        }\n"
         "    }\n"
         "    net (8) Transaction(net (8) TxData, bool Start = 0, bool R_nW = 0, bool Ack = 1, bool Stop = 0){\n"
         "        net (8) Data\n"
         "        fsm (Clk, Reset, ((Baud_Trigger) & ((ClkIn) == (ClkOut))) & ( ! (Quiet))) {\n"
         "            Data = TxData\n"
+        "            fence\n"
         "            if ((Start) | (ClkOut)) {\n"
         "                if (( ! (ClkOut)) & ( ! (DataOut))) {\n"
         "                    DataOut = 1\n"
+        "                    fence\n"
         "                }\n"
         "                if (( ! (ClkOut)) & (DataOut)) {\n"
         "                    ClkOut = 1\n"
+        "                    fence\n"
         "                }\n"
         "                if ((ClkOut) & (DataOut)) {\n"
         "                    DataOut = 0\n"
+        "                    fence\n"
         "                }\n"
         "                if ((ClkOut) & ( ! (DataOut))) {\n"
         "                    ClkOut = 0\n"
+        "                    fence\n"
         "                }\n"
         "            }\n"
         "            for ((n) in ((0) .. (7))) {\n"
         "                if (R_nW) {\n"
         "                    DataOut = 1\n"
+        "                    fence\n"
         "                } else {\n"
         "                    DataOut = (Data)[ 7 ]\n"
+        "                    fence\n"
         "                }\n"
         "                ClkOut = 1\n"
+        "                fence\n"
         "                ClkOut = 0\n"
         "                Data = :( (Data)[ (6) .. (0) ], DataIn )\n"
+        "                fence\n"
         "            }\n"
         "            if (R_nW) {\n"
         "                result = Data\n"
         "                DataOut =  ! (Ack)\n"
+        "                fence\n"
         "                ClkOut = 1\n"
+        "                fence\n"
         "                ClkOut = 0\n"
+        "                fence\n"
         "            } else {\n"
         "                DataOut = 1\n"
+        "                fence\n"
         "                ClkOut = 1\n"
+        "                fence\n"
         "                if ((DataIn) != (Ack)) {\n"
         "                    Error = 1\n"
         "                    return\n"
         "                } else {\n"
         "                    ClkOut = 0\n"
         "                    Error = 0\n"
+        "                    fence\n"
         "                }\n"
         "            }\n"
         "            if (Stop) {\n"
         "                if ((ClkOut) & (DataOut)) {\n"
         "                    ClkOut = 0\n"
+        "                    fence\n"
         "                }\n"
         "                if (( ! (ClkOut)) & (DataOut)) {\n"
         "                    DataOut = 0\n"
+        "                    fence\n"
         "                }\n"
         "                if (( ! (ClkOut)) & ( ! (DataOut))) {\n"
         "                    ClkOut = 1\n"
+        "                    fence\n"
         "                }\n"
         "                if ((ClkOut) & ( ! (DataOut))) {\n"
         "                    DataOut = 1\n"
+        "                    fence\n"
         "                }\n"
         "            }\n"
         "        }\n"
@@ -1529,13 +1767,18 @@ bool testAlchaCaseStudyCombined()
         "    }\n"
         "    IQ_Stream Run(Input, bool ComplexInput){\n"
         "        result = IQ_Stream(31,  - (1))\n"
+        "        fence\n"
         "        ((result) . (I)) ' (overflow) = \"clip\"\n"
+        "        fence\n"
         "        ((result) . (Q)) ' (overflow) = \"clip\"\n"
+        "        fence\n"
         "        num BufferFullScale\n"
         "        if (ComplexInput) {\n"
         "            BufferFullScale = (((Input) . (I)) ' (fullscale)) * (NumPoints)\n"
+        "            fence\n"
         "        } else {\n"
         "            BufferFullScale = (((Input) . (Data)) ' (fullscale)) * (NumPoints)\n"
+        "            fence\n"
         "        }\n"
         "        struct ComplexData {\n"
         "            net (39, BufferFullScale) I, Q\n"
@@ -1543,25 +1786,37 @@ bool testAlchaCaseStudyCombined()
         "        ComplexData Buffer_WrData_A, Buffer_WrData_B\n"
         "        ComplexData Buffer_RdData_A, Buffer_RdData_B\n"
         "        (Buffer) . (WrData_A) := :( (Buffer_WrData_A) . (I), (Buffer_WrData_A) . (Q) )\n"
+        "        fence\n"
         "        (Buffer) . (WrData_B) := :( (Buffer_WrData_B) . (I), (Buffer_WrData_B) . (Q) )\n"
+        "        fence\n"
         "        :( (Buffer_RdData_A) . (I), (Buffer_RdData_A) . (Q) ) := (Buffer) . (RdData_A)\n"
+        "        fence\n"
         "        :( (Buffer_RdData_B) . (I), (Buffer_RdData_B) . (Q) ) := (Buffer) . (RdData_B)\n"
+        "        fence\n"
         "    }\n"
         "}",
 
         "DataStream operator| (DataStream Input, FFT Engine){\n"
         "    AddDebug((Input) . (SoP))\n"
+        "    fence\n"
         "    AddDebug((Input) . (EoP))\n"
+        "    fence\n"
         "    AddDebug((Input) . (Valid))\n"
+        "    fence\n"
         "    AddDebug((result) . (Ready))\n"
+        "    fence\n"
         "    return (Engine) . (Run)(Input, 0)\n"
         "}",
 
         "IQ_Stream operator| (IQ_Stream Input, FFT Engine){\n"
         "    AddDebug((Input) . (SoP))\n"
+        "    fence\n"
         "    AddDebug((Input) . (EoP))\n"
+        "    fence\n"
         "    AddDebug((Input) . (Valid))\n"
+        "    fence\n"
         "    AddDebug((result) . (Ready))\n"
+        "    fence\n"
         "    return (Engine) . (Run)(Input, 1)\n"
         "}",
 
@@ -1572,26 +1827,38 @@ bool testAlchaCaseStudyCombined()
         "        num Width = ((Input) . (Data)) ' (width)\n"
         "        DualPortRAM (Clk, Reset, (Width) + (2), Length) RAM\n"
         "        result = DataStream(Width,  - (1))\n"
+        "        fence\n"
         "        (RAM) . (WrAddress) = 0\n"
+        "        fence\n"
         "        (RAM) . (WrData) := :( (Input) . (SoP), (Input) . (EoP), (Input) . (Data) )\n"
+        "        fence\n"
         "        (RAM) . (WrEnable) = (Input) . (Valid)\n"
+        "        fence\n"
         "        (RAM) . (RdEnable) = (Output) . (Ready)\n"
+        "        fence\n"
         "        (RAM) . (RdAddress) = 0\n"
+        "        fence\n"
         "        rtl (Clk, Reset) {\n"
         "            if ((Input) . (Valid)) {\n"
         "                (RAM) . (WrAddress)++\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
         "        net Valid = 0\n"
         "        num (((RAM) . (RdAddress)) ' (width)) NumItems = ((RAM) . (WrAddress)) - ((RAM) . (RdAddress))\n"
         "        rtl (Clk, Reset, (result) . (Ready)) {\n"
         "            :( (result) . (SoP), (result) . (EoP), (result) . (Data) ) := (RAM) . (RdData)\n"
+        "            fence\n"
         "            (result) . (Valid) = Valid\n"
+        "            fence\n"
         "            if ((NumItems) != (0)) {\n"
         "                Valid = 1\n"
+        "                fence\n"
         "                (RAM) . (RdAddress)++\n"
+        "                fence\n"
         "            } else {\n"
         "                Valid = 0\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
         "    }\n"
@@ -1599,13 +1866,18 @@ bool testAlchaCaseStudyCombined()
 
         "DataStream operator| (Input, FIFO Queue){\n"
         "    AddDebug((Input) . (SoP))\n"
+        "    fence\n"
         "    AddDebug((Input) . (EoP))\n"
+        "    fence\n"
         "    AddDebug((Input) . (Valid))\n"
+        "    fence\n"
         "    AddDebug((result) . (Ready))\n"
+        "    fence\n"
         "    return (Queue) . (Run)(Input)\n"
         "}",
 
         "import \"SinCos\"",
+
         "class NCO(net Clk, net Reset){\n"
         "    input {\n"
         "        net (32, ( - ((Clk) ' (frequency))) / (2)) Frequency\n"
@@ -1618,8 +1890,10 @@ bool testAlchaCaseStudyCombined()
         "    }\n"
         "    rtl (Clk, Reset) {\n"
         "        Phase := ( : (Phase)) + ( : (Frequency))\n"
+        "        fence\n"
         "    }\n"
         "    SinCos(Clk, Phase, Sin, Cos)\n"
+        "    fence\n"
         "}",
 
         "void SinCos(net Clk, net (20,  - (pi)) Angle, net (18,  - (1)) Sin, Cos, num N = 20){\n"
@@ -1631,42 +1905,64 @@ bool testAlchaCaseStudyCombined()
         "        switch ((Angle)[ 20, 19 ]) {\n"
         "            case (0) {\n"
         "                (x)[ 0 ] = K\n"
+        "                fence\n"
         "                (y)[ 0 ] = 0\n"
+        "                fence\n"
         "                (a)[ 0 ] = 0\n"
+        "                fence\n"
         "            }\n"
         "            case (1) {\n"
         "                (x)[ 0 ] = 0\n"
+        "                fence\n"
         "                (y)[ 0 ] = K\n"
+        "                fence\n"
         "                (a)[ 0 ] = (pi) / (2)\n"
+        "                fence\n"
         "            }\n"
         "            case (2) {\n"
         "                (x)[ 0 ] =  - (K)\n"
+        "                fence\n"
         "                (y)[ 0 ] = 0\n"
+        "                fence\n"
         "                (a)[ 0 ] =  - (pi)\n"
+        "                fence\n"
         "            }\n"
         "            case (3) {\n"
         "                (x)[ 0 ] = 0\n"
+        "                fence\n"
         "                (y)[ 0 ] =  - (K)\n"
+        "                fence\n"
         "                (a)[ 0 ] = ( - (pi)) / (2)\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
         "        (A)[ 0 ] = Angle\n"
+        "        fence\n"
         "        for ((n) in ((0) .. ((N) - (1)))) {\n"
         "            if (((A)[ n ]) >= ((a)[ n ])) {\n"
         "                (x)[ (n) + (1) ] = ((x)[ n ]) - (((y)[ n ]) / ((2) ** (n)))\n"
+        "                fence\n"
         "                (y)[ (n) + (1) ] = ((y)[ n ]) + (((x)[ n ]) / ((2) ** (n)))\n"
+        "                fence\n"
         "                (a)[ (n) + (1) ] = ((a)[ n ]) + (atan((2) ** ( - (n))))\n"
+        "                fence\n"
         "            } else {\n"
         "                (x)[ (n) + (1) ] = ((x)[ n ]) + (((y)[ n ]) / ((2) ** (n)))\n"
+        "                fence\n"
         "                (y)[ (n) + (1) ] = ((y)[ n ]) - (((x)[ n ]) / ((2) ** (n)))\n"
+        "                fence\n"
         "                (a)[ (n) + (1) ] = ((a)[ n ]) - (atan((2) ** ( - (n))))\n"
+        "                fence\n"
         "            }\n"
         "            (A)[ (n) + (1) ] = (A)[ n ]\n"
+        "            fence\n"
         "        }\n"
         "    }\n"
         "    group <overflow = \"clip\"> {\n"
         "        Sin = (y)[ N ]\n"
+        "        fence\n"
         "        Cos = (x)[ N ]\n"
+        "        fence\n"
         "    }\n"
         "}",
 
@@ -1688,6 +1984,7 @@ bool testAlchaCaseStudyCombined()
         "}",
 
         "import \"../Memory/DualPortROM\"",
+
         "class Window(net Clk, net Reset, num Length, string Function){\n"
         "    DualPortROM (Clk, Reset, 18, Length) ROM\n"
         "    private {\n"
@@ -1695,34 +1992,43 @@ bool testAlchaCaseStudyCombined()
         "        switch (Function) {\n"
         "            case (\"Hann\") {\n"
         "                (ROM) . (Initial) = (sin(((pi) * (n)) / (Length))) ** (2)\n"
+        "                fence\n"
         "            }\n"
         "            case (\"Hamming\") {\n"
         "                num a = (25) / (46)\n"
         "                (ROM) . (Initial) = (a) - (((1) - (a)) * (cos((((2) * (pi)) * (n)) / (Length))))\n"
+        "                fence\n"
         "            }\n"
         "            default {\n"
         "                (ROM) . (Initial) = 1\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
         "        num Sum = 0\n"
         "        for ((c) in ((ROM) . (Initial))) {\n"
         "            Sum += c\n"
+        "            fence\n"
         "        }\n"
         "        (ROM) . (Initial) /= Sum\n"
+        "        fence\n"
         "        num Max = 1/1000000000000000000000000 (~1e-24)\n"
         "        for ((c) in ((ROM) . (Initial))) {\n"
         "            if ((Max) < (c)) {\n"
         "                Max = c\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
         "        num Fullscale = 1\n"
         "        while ((Fullscale) > (Max)) {\n"
         "            Fullscale /= 2\n"
+        "            fence\n"
         "        }\n"
         "        while ((Fullscale) < (Max)) {\n"
         "            Fullscale *= 2\n"
+        "            fence\n"
         "        }\n"
         "        (ROM) . (Initial) = round(((ROM) . (Initial)) * (((262144) - (1)) / (Fullscale)))\n"
+        "        fence\n"
         "        net (Width, Fullscale) Coefficient := (ROM) . (Data_A)\n"
         "    }\n"
         "    auto Run(Input, bool Complex){\n"
@@ -1730,33 +2036,48 @@ bool testAlchaCaseStudyCombined()
         "        net Ready =  ! (WaitForROM)\n"
         "        if (Complex) {\n"
         "            result = IQ_Stream(((Input) . (Width)) + (18),  - (Fullscale))\n"
+        "            fence\n"
         "        } else {\n"
         "            result = DataStream(((Input) . (Width)) + (18),  - (Fullscale))\n"
+        "            fence\n"
         "        }\n"
         "        (Input) . (Ready) = ((result) . (Ready)) & (Ready)\n"
+        "        fence\n"
         "        (ROM) . (ClkEnable_A) = (((result) . (Ready)) & ((Input) . (Valid))) | (WaitForROM)\n"
+        "        fence\n"
         "        rtl (Clk, Reset, (result) . (Ready)) {\n"
         "            if (Ready) {\n"
         "                (result) . (SoP) = (Input) . (SoP)\n"
+        "                fence\n"
         "                (result) . (EoP) = (Input) . (EoP)\n"
+        "                fence\n"
         "                (result) . (Valid) = (Input) . (Valid)\n"
+        "                fence\n"
         "                if (Complex) {\n"
         "                    (result) . (I) = ((Input) . (I)) * (Coefficient)\n"
+        "                    fence\n"
         "                    (result) . (Q) = ((Input) . (Q)) * (Coefficient)\n"
+        "                    fence\n"
         "                } else {\n"
         "                    (result) . (Data) = ((Input) . (Data)) * (Coefficient)\n"
+        "                    fence\n"
         "                }\n"
         "            }\n"
         "            if (WaitForROM) {\n"
         "                (ROM) . (Address_A)++\n"
+        "                fence\n"
         "                WaitForROM = 0\n"
+        "                fence\n"
         "            } else {\n"
         "                if ((Input) . (Valid)) {\n"
         "                    if ((Input) . (EoP)) {\n"
         "                        (ROM) . (Address_A) = 0\n"
+        "                        fence\n"
         "                        WaitForROM = 1\n"
+        "                        fence\n"
         "                    } else {\n"
         "                        (ROM) . (Address_A)++\n"
+        "                        fence\n"
         "                    }\n"
         "                }\n"
         "            }\n"
@@ -1766,17 +2087,25 @@ bool testAlchaCaseStudyCombined()
 
         "DataStream operator| (DataStream Input, Window Instance){\n"
         "    AddDebug((Input) . (SoP))\n"
+        "    fence\n"
         "    AddDebug((Input) . (EoP))\n"
+        "    fence\n"
         "    AddDebug((Input) . (Valid))\n"
+        "    fence\n"
         "    AddDebug((result) . (Ready))\n"
+        "    fence\n"
         "    return (Instance) . (Run)(Input, 0)\n"
         "}",
 
         "IQ_Stream operator| (IQ_Stream Input, Window Instance){\n"
         "    AddDebug((Input) . (SoP))\n"
+        "    fence\n"
         "    AddDebug((Input) . (EoP))\n"
+        "    fence\n"
         "    AddDebug((Input) . (Valid))\n"
+        "    fence\n"
         "    AddDebug((result) . (Ready))\n"
+        "    fence\n"
         "    return (Instance) . (Run)(Input, 1)\n"
         "}",
 
@@ -1794,18 +2123,20 @@ bool testAlchaCaseStudyCombined()
         "    net (Width) ReadData\n"
         "    net ReadValid = 0\n"
         "}",
-
         "import \"Library/Interfaces/AvalonInterface\"",
 
         "class AvalonMaster(net Clock, net Reset, num Width, num Depth): AvalonInterface(Width, Depth){\n"
         "     ' (BaseAddress) = 0\n"
+        "    fence\n"
         "    private {\n"
         "        num Used = 0\n"
         "        net ReadingWaitRequest = 0\n"
         "        net InterfacesWaitRequest = 0\n"
         "    }\n"
         "    ReadData = 0\n"
+        "    fence\n"
         "    WaitRequest = (ReadingWaitRequest) | (InterfacesWaitRequest)\n"
+        "    fence\n"
         "    void Attach(AvalonInterface Interface){\n"
         "        assert {\n"
         "            ((Interface) . (Width)) == (Width)\n"
@@ -1814,29 +2145,41 @@ bool testAlchaCaseStudyCombined()
         "            ((Interface) . (Depth)) < ((Depth) - (Used))\n"
         "        }\n"
         "        (Interface) . (Address) = (Address) - (Used)\n"
+        "        fence\n"
         "        (Interface) . (ByteEnable) = ByteEnable\n"
+        "        fence\n"
         "        InterfacesWaitRequest |= (Interface) . (WaitRequest)\n"
+        "        fence\n"
         "        net AddressValid = ((Address) >= (Used)) & ((Address) < ((Used) + ((Interface) . (Depth))))\n"
         "        (Interface) . (WriteData) = WriteData\n"
+        "        fence\n"
         "        (Interface) . (Write) = ((AddressValid) & (Write)) & ( ! (WaitRequest))\n"
+        "        fence\n"
         "        (Interface) . (Read) = ((AddressValid) & (Read)) & ( ! (WaitRequest))\n"
+        "        fence\n"
         "        ReadData |= ((Interface) . (ReadValid)) ? ((Interface) . (ReadData)) : (0)\n"
+        "        fence\n"
         "        ReadValid |= (Interface) . (ReadValid)\n"
+        "        fence\n"
         "        (Interface) ' (BaseAddress) = ( ' (BaseAddress)) + ((Used) * ((Width) / (8)))\n"
+        "        fence\n"
         "        Used += (Interface) . (Depth)\n"
+        "        fence\n"
         "    }\n"
         "    rtl (Clock, Reset) {\n"
         "        if ((Read) & ( ! (WaitRequest))) {\n"
         "            ReadingWaitRequest = 1\n"
+        "            fence\n"
         "        } else {\n"
         "            if (ReadValid) {\n"
         "                ReadingWaitRequest = 0\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
         "    }\n"
         "}",
-
         "import \"Library/Interfaces/AvalonInterface\"",
+
         "class AvalonSlave(net Clock, net Reset, num Width, num Depth, num MaxBurstCount = 1): AvalonInterface(Width, Depth, MaxBurstCount){\n"
         "    void Attach(Master){\n"
         "    }\n"
@@ -1846,71 +2189,94 @@ bool testAlchaCaseStudyCombined()
 
         "class RegistersDecoder(Bus): AvalonInterface(32, 4096){\n"
         "    (Bus) . (Attach)(this)\n"
+        "    fence\n"
         "    private {\n"
         "         ' (RdRegisters) = [  ]\n"
+        "        fence\n"
         "         ' (WrRegisters) = [  ]\n"
+        "        fence\n"
         "         ' (LiveRegisters) = [  ]\n"
+        "        fence\n"
         "        num Count = 0\n"
         "    }\n"
         "    public {\n"
         "        void ReadOnly(Register){\n"
         "            (Register) ' (Address) = (Count) ++ \n"
+        "            fence\n"
         "            ( ' (RdRegisters)) . (append)(Register)\n"
+        "            fence\n"
         "        }\n"
         "        void Writeable(Register){\n"
         "            (Register) ' (Address) = (Count) ++ \n"
+        "            fence\n"
         "            ( ' (WrRegisters)) . (append)(Register)\n"
+        "            fence\n"
         "        }\n"
         "        void Live(RdRegister, WrRegister, WrStrobe){\n"
         "            (RdRegister) ' (Address) = Count\n"
+        "            fence\n"
         "            (WrRegister) ' (Address) = Count\n"
+        "            fence\n"
         "            (WrStrobe) ' (Address) = Count\n"
+        "            fence\n"
         "            ( ' (LiveRegisters)) . (append)(Read = RdRegister, Write = WrRegister, Strobe = WrStrobe)\n"
+        "            fence\n"
         "            Count++\n"
+        "            fence\n"
         "        }\n"
         "        net (32) Resize(x){\n"
         "            result := x\n"
+        "            fence\n"
         "            num N = (x) ' (width)\n"
         "            if ((((x) ' (fullscale)) < (0)) & ((N) < (31))) {\n"
         "                (result)[ (31) .. ((N) + (1)) ] := (x(N)) ` ((31) - (N))\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
         "        void GenerateRegs(){\n"
         "            rtl ((Bus) . (Clock), (Bus) . (Reset)) {\n"
         "                WaitRequest = 0\n"
+        "                fence\n"
         "                switch (Address) {\n"
         "                    for ((Register) in ( ' (RdRegisters))) {\n"
         "                        case ((Register) ' (Address)) {\n"
         "                            ReadData = Resize(Register)\n"
+        "                            fence\n"
         "                        }\n"
         "                    }\n"
         "                    for ((Register) in ( ' (WrRegisters))) {\n"
         "                        case ((Register) ' (Address)) {\n"
         "                            ReadData = Resize(Register)\n"
+        "                            fence\n"
         "                        }\n"
         "                    }\n"
         "                    for ((Register) in ( ' (LiveRegisters))) {\n"
         "                        case (((Register) ' (Read)) ' (Address)) {\n"
         "                            ReadData = Resize((Register) ' (Read))\n"
+        "                            fence\n"
         "                        }\n"
         "                    }\n"
         "                }\n"
         "                ReadValid = Read\n"
+        "                fence\n"
         "                if (Write) {\n"
         "                    switch (Address) {\n"
         "                        for ((Register) in ( ' (WrRegisters))) {\n"
         "                            case ((Register) ' (Address)) {\n"
         "                                Register := WriteData\n"
+        "                                fence\n"
         "                            }\n"
         "                        }\n"
         "                        for ((Register) in ( ' (LiveRegisters))) {\n"
         "                            case (((Register) ' (Write)) ' (Address)) {\n"
         "                                (Register) ' (Write) := WriteData\n"
+        "                                fence\n"
         "                            }\n"
         "                        }\n"
         "                    }\n"
         "                    for ((Register) in ( ' (LiveRegisters))) {\n"
         "                        (Register) ' (Strobe) = ((Address) == (((Register) ' (Strobe)) ' (Address))) & (Write)\n"
+        "                        fence\n"
         "                    }\n"
         "                }\n"
         "            }\n"
@@ -1923,11 +2289,14 @@ bool testAlchaCaseStudyCombined()
         "        string LaTeXFilename = \"\"\n"
         "        void finally(){\n"
         "            GenerateRegs()\n"
+        "            fence\n"
         "            if ((CppFilename) ' (length)) {\n"
         "                GenerateCpp(CppFilename)\n"
+        "                fence\n"
         "            }\n"
         "            if ((LaTeXFilename) ' (langth)) {\n"
         "                GenerateLaTeX(LaTeXFilename)\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
         "    }\n"
@@ -1939,12 +2308,15 @@ bool testAlchaCaseStudyCombined()
         "        switch (( ' (target)) ' (series)) {\n"
         "            case (\"MAX 10\") {\n"
         "                RamBlockType = \"M9K\"\n"
+        "                fence\n"
         "            }\n"
         "            case (\"Cyclone V\") {\n"
         "                RamBlockType = \"M10K\"\n"
+        "                fence\n"
         "            }\n"
         "            case (\"Arria 10\") {\n"
         "                RamBlockType = \"M20K\"\n"
+        "                fence\n"
         "            }\n"
         "            default {\n"
         "                assert {\n"
@@ -1953,7 +2325,7 @@ bool testAlchaCaseStudyCombined()
         "            }\n"
         "        }\n"
         "        num AddressWidth = ceil(log2(Depth))\n"
-        "        hdl altsyncram(\n"
+        "        hdl () altsyncram(\n"
         "            address_aclr_b = \"NONE\"\n"
         "            address_reg_b = \"CLOCK1\"\n"
         "            clock_enable_input_a = \"NORMAL\"\n"
@@ -2012,11 +2384,17 @@ bool testAlchaCaseStudyCombined()
         "            net (Width) RdData\n"
         "        }\n"
         "        (RAM) . (address_a) = WrAddress\n"
+        "        fence\n"
         "        (RAM) . (data_a) = WrData\n"
+        "        fence\n"
         "        (RAM) . (wren_a) = WrEnable\n"
+        "        fence\n"
         "        (RAM) . (clocken1) = RdEnable\n"
+        "        fence\n"
         "        (RAM) . (address_b) = RdAddress\n"
+        "        fence\n"
         "        RdData = (RAM) . (q_b)\n"
+        "        fence\n"
         "    }\n"
         "}",
 
@@ -2029,12 +2407,15 @@ bool testAlchaCaseStudyCombined()
         "        switch (( ' (target)) ' (series)) {\n"
         "            case (\"MAX 10\") {\n"
         "                RamBlockType = \"M9K\"\n"
+        "                fence\n"
         "            }\n"
         "            case (\"Cyclone V\") {\n"
         "                RamBlockType = \"M10K\"\n"
+        "                fence\n"
         "            }\n"
         "            case (\"Arria 10\") {\n"
         "                RamBlockType = \"M20K\"\n"
+        "                fence\n"
         "            }\n"
         "            default {\n"
         "                assert {\n"
@@ -2044,7 +2425,8 @@ bool testAlchaCaseStudyCombined()
         "        }\n"
         "        num AddressWidth = ceil(log2(Depth))\n"
         "        MIF_File = :[ (this) ' (identifier), \".mif\" ]\n"
-        "        hdl altsyncram(\n"
+        "        fence\n"
+        "        hdl () altsyncram(\n"
         "            address_aclr_b = \"NONE\"\n"
         "            address_reg_b = \"CLOCK1\"\n"
         "            clock_enable_input_a = \"NORMAL\"\n"
@@ -2106,11 +2488,17 @@ bool testAlchaCaseStudyCombined()
         "            net (Width) Data_B\n"
         "        }\n"
         "        (ROM) . (clocken0) = ClkEnable_A\n"
+        "        fence\n"
         "        (ROM) . (address_a) = Address_A\n"
+        "        fence\n"
         "        Data_A := (ROM) . (q_a)\n"
+        "        fence\n"
         "        (ROM) . (clocken1) = ClkEnable_B\n"
+        "        fence\n"
         "        (ROM) . (address_b) = Address_B\n"
+        "        fence\n"
         "        Data_B := (ROM) . (q_b)\n"
+        "        fence\n"
         "    }\n"
         "    void finally(){\n"
         "        char Buffer = :[ \"-- Autogenerated by DualPortROM.alc\n"
@@ -2125,13 +2513,15 @@ bool testAlchaCaseStudyCombined()
                                  "\" ]\n"
         "        num n = 0\n"
         "        for ((Value) in (Initial)) {\n"
-        "            (Buffer) . (append)(:[ \"  \", $(n, \"04X\"), \": \", $(Value, \"08X\"), \";\n"
-        "\" ])\n"
+        "            (Buffer) . (append)(:[ \"  \", $(n, \"04X\"), \": \", $(Value, \"08X\"), \";\n\" ])\n"
+        "            fence\n"
         "            n++\n"
+        "            fence\n"
         "        }\n"
-        "        (Buffer) . (append)(\"END;\n"
-        "\")\n"
+        "        (Buffer) . (append)(\"END;\n\")\n"
+        "        fence\n"
         "        textwrite(MIF_File, Buffer)\n"
+        "        fence\n"
         "    }\n"
         "}",
 
@@ -2141,12 +2531,15 @@ bool testAlchaCaseStudyCombined()
         "        switch (( ' (target)) ' (series)) {\n"
         "            case (\"MAX 10\") {\n"
         "                RamBlockType = \"M9K\"\n"
+        "                fence\n"
         "            }\n"
         "            case (\"Cyclone V\") {\n"
         "                RamBlockType = \"M10K\"\n"
+        "                fence\n"
         "            }\n"
         "            case (\"Arria 10\") {\n"
         "                RamBlockType = \"M20K\"\n"
+        "                fence\n"
         "            }\n"
         "            default {\n"
         "                assert {\n"
@@ -2155,7 +2548,7 @@ bool testAlchaCaseStudyCombined()
         "            }\n"
         "        }\n"
         "        num AddressWidth = ceil(log2(Depth))\n"
-        "        hdl altsyncram(\n"
+        "        hdl () altsyncram(\n"
         "            address_aclr_b = \"NONE\"\n"
         "            address_reg_b = \"CLOCK1\"\n"
         "            clock_enable_input_a = \"NORMAL\"\n"
@@ -2234,15 +2627,25 @@ bool testAlchaCaseStudyCombined()
         "            net (Width) RdData_B\n"
         "        }\n"
         "        (RAM) . (clocken0) = ClkEnable_A\n"
+        "        fence\n"
         "        (RAM) . (address_a) = Address_A\n"
+        "        fence\n"
         "        (RAM) . (data_a) = WrData_A\n"
+        "        fence\n"
         "        (RAM) . (wren_a) = WrEnable_A\n"
+        "        fence\n"
         "        RdData_A = (RAM) . (q_a)\n"
+        "        fence\n"
         "        (RAM) . (clocken1) = ClkEnable_B\n"
+        "        fence\n"
         "        (RAM) . (address_b) = Address_B\n"
+        "        fence\n"
         "        (RAM) . (data_b) = WrData_B\n"
+        "        fence\n"
         "        (RAM) . (wren_b) = WrEnable_B\n"
+        "        fence\n"
         "        RdData_B = (RAM) . (q_b)\n"
+        "        fence\n"
         "    }\n"
         "}",
 
@@ -2250,15 +2653,19 @@ bool testAlchaCaseStudyCombined()
         "    private {\n"
         "        num HexToNum(string S){\n"
         "            result = 0\n"
+        "            fence\n"
         "            for ((s) in (S)) {\n"
         "                if (((s) >= (\"0\")) & ((s) <= (\"9\"))) {\n"
         "                    result = ((16) * (result)) | ((s) - (\"0\"))\n"
+        "                    fence\n"
         "                } else {\n"
         "                    if (((s) >= (\"a\")) & ((s) <= (\"f\"))) {\n"
         "                        result = ((16) * (result)) | (((s) - (\"a\")) + (10))\n"
+        "                        fence\n"
         "                    } else {\n"
         "                        if (((s) >= (\"A\")) & ((s) <= (\"F\"))) {\n"
         "                            result = ((16) * (result)) | (((s) - (\"A\")) + (10))\n"
+        "                            fence\n"
         "                        }\n"
         "                    }\n"
         "                }\n"
@@ -2275,8 +2682,10 @@ bool testAlchaCaseStudyCombined()
 
         "class MutEx(net Clk, net Reset){\n"
         "     ' (Modules) = [  ]\n"
+        "    fence\n"
         "    void Add(Module){\n"
         "        ( ' (Modules)) . (append)(Module)\n"
+        "        fence\n"
         "    }\n"
         "    void finally(){\n"
         "        num N = ( ' (Modules)) ' (length)\n"
@@ -2289,14 +2698,19 @@ bool testAlchaCaseStudyCombined()
         "        rtl (Clk, Reset) {\n"
         "            if ((Request) & (Device)) {\n"
         "                Grant = Device\n"
+        "                fence\n"
         "            } else {\n"
         "                Grant = 0\n"
+        "                fence\n"
         "                Device = :( (Device)[ (N) - ((2) .. (0)) ], (Device)[ (N) - (1) ] )\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
         "        for ((n) in ((0) .. ((N) - (1)))) {\n"
         "            (Request)[ n ] = ((( ' (Modules))[ n ]) . (MutEx)) . (Request)\n"
+        "            fence\n"
         "            ((( ' (Modules))[ n ]) . (MutEx)) . (Grant) = (Grant)[ n ]\n"
+        "            fence\n"
         "        }\n"
         "    }\n"
         "}",
@@ -2320,49 +2734,69 @@ bool testAlchaCaseStudyCombined()
         "    }\n"
         "    void ConnectPins(pin nCS, pin SClk, pin SDO){\n"
         "        nCS = (this) . (nCS)\n"
+        "        fence\n"
         "        SClk = (this) . (SClk)\n"
+        "        fence\n"
         "        Data = SDO\n"
+        "        fence\n"
         "        (SClk) ' (create_generated_clock) = divide_by = 2\n"
+        "        fence\n"
         "        ((nCS) ' (set_output_delay)) ' (max) += 0\n"
+        "        fence\n"
         "        ((nCS) ' (set_output_delay)) ' (min) +=  - (3/1000000000 (~3e-09))\n"
+        "        fence\n"
         "        ((SDO) ' (set_input_delay)) ' (min) += 1/400000000 (~2.5e-09)\n"
+        "        fence\n"
         "        ((SDO) ' (set_input_delay)) ' (max) += 1/100000000 (~1e-08)\n"
+        "        fence\n"
         "        ((SDO) ' (set_multicycle_path)) ' (to) = Clk\n"
+        "        fence\n"
         "        ((SDO) ' (set_multicycle_path)) ' (setup) = 2\n"
+        "        fence\n"
         "        ((SDO) ' (set_multicycle_path)) ' (hold) = 1\n"
+        "        fence\n"
         "    }\n"
         "    rtl (Clk, Reset) {\n"
         "        if ((Count) == (47)) {\n"
         "            Count = 0\n"
+        "            fence\n"
         "        } else {\n"
         "            Count++\n"
+        "            fence\n"
         "        }\n"
         "        switch (Count) {\n"
         "            case (0) {\n"
         "                nCS = 0\n"
+        "                fence\n"
         "            }\n"
         "            case ((1) .. (36)) {\n"
         "                SClk =  ~ (SClk)\n"
+        "                fence\n"
         "            }\n"
         "            case (37) {\n"
         "                nCS = 1\n"
+        "                fence\n"
         "            }\n"
         "            default {\n"
         "                SClk = 0\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
         "        if ((SClk) == (0)) {\n"
         "            Shift = :( (Shift)[ (12) .. (0) ], Data )\n"
+        "            fence\n"
         "        }\n"
         "        if ((Count) == (32)) {\n"
         "            (Output) . (Data) = Shift\n"
+        "            fence\n"
         "            (Output) . (Valid) = 1\n"
+        "            fence\n"
         "        } else {\n"
         "            (Output) . (Valid) = 0\n"
+        "            fence\n"
         "        }\n"
         "    }\n"
         "}",
-
         "import \"Library/Comms/I2C/I2C\"",
 
         "class LTC2991(net Clk, net Reset, net (3) Address, num Baud_kHz = 50): I2C(Clk, Reset, Baud_kHz){\n"
@@ -2380,12 +2814,15 @@ bool testAlchaCaseStudyCombined()
         "        switch (Type) {\n"
         "            case (Voltage) {\n"
         "                (Control)[ (((4) * (Channel)) + (3)) .. ((4) * (Channel)) ] = 0\n"
+        "                fence\n"
         "            }\n"
         "            case (Differential) {\n"
         "                (Control)[ (((4) * (Channel)) + (3)) .. ((4) * (Channel)) ] = 1\n"
+        "                fence\n"
         "            }\n"
         "            case (Temperature) {\n"
         "                (Control)[ (((4) * (Channel)) + (3)) .. ((4) * (Channel)) ] = 2\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
         "    }\n"
@@ -2408,11 +2845,15 @@ bool testAlchaCaseStudyCombined()
         "    }\n"
         "    void MakeRegisters(Registers){\n"
         "        (Registers) . (ReadOnly)(Error)\n"
+        "        fence\n"
         "        (Registers) . (ReadOnly)(Vcc)\n"
+        "        fence\n"
         "        for ((n) in ((0) .. (7))) {\n"
         "            (Registers) . (ReadOnly)((V)[ n ])\n"
+        "            fence\n"
         "        }\n"
         "        (Registers) . (ReadOnly)(InternalTemp)\n"
+        "        fence\n"
         "    }\n"
         "    fsm (Clk, Reset) {\n"
         "    }\n"
@@ -2468,15 +2909,23 @@ bool testAlchaCaseStudyCombined()
         "    }\n"
         "    void ConnectSPI(pin SClk, pin nCS, pin SDIO, pin SyncIO, pin IO_Update){\n"
         "        SClk = opSClk\n"
+        "        fence\n"
         "        nCS = opnCS\n"
+        "        fence\n"
         "        SDIO = opSDIO\n"
+        "        fence\n"
         "        SyncIO = opSyncIO\n"
+        "        fence\n"
         "        IO_Update = opIO_Update\n"
+        "        fence\n"
         "    }\n"
         "    void ConnectDR(pin Control, pin Hold, pin Over){\n"
         "        Control = opDR_Control\n"
+        "        fence\n"
         "        Hold = opDR_Hold\n"
+        "        fence\n"
         "        ipDR_Over = Over\n"
+        "        fence\n"
         "    }\n"
         "    private {\n"
         "        net RegsChanged\n"
@@ -2485,15 +2934,20 @@ bool testAlchaCaseStudyCombined()
         "        void Send_SPI(net (8) Address, net (32) Value){\n"
         "            net (40) Data\n"
         "            opSDIO = (Data)[ 39 ]\n"
+        "            fence\n"
         "            fsm {\n"
         "                RegsChanged = 1\n"
         "                Data = :( Address, Value )\n"
         "                opSyncIO = 1\n"
+        "                fence\n"
         "                opSyncIO = 0\n"
+        "                fence\n"
         "                loop (40) {\n"
         "                    opSClk = 1\n"
+        "                    fence\n"
         "                    opSClk = 0\n"
         "                    Data <<= 1\n"
+        "                    fence\n"
         "                }\n"
         "            }\n"
         "        }\n"
@@ -2502,14 +2956,19 @@ bool testAlchaCaseStudyCombined()
         "        void Init(){\n"
         "            fsm {\n"
         "                Send_SPI(0, 65546)\n"
+        "                fence\n"
         "                Send_SPI(1, 534784)\n"
+        "                fence\n"
         "                Send_SPI(3, 17113376)\n"
+        "                fence\n"
         "                opIO_Update = 1\n"
+        "                fence\n"
         "                opIO_Update = 0\n"
         "                loop (32768) {\n"
         "                    fence\n"
         "                }\n"
         "                Send_SPI(3, 336160)\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
         "    }\n"
@@ -2519,24 +2978,28 @@ bool testAlchaCaseStudyCombined()
         "                if ((ipFreqLowerLimit) != (FreqLowerLimit)) {\n"
         "                    FreqLowerLimit = ipFreqLowerLimit\n"
         "                    Send_SPI(4, ipFreqLowerLimit)\n"
+        "                    fence\n"
         "                } else {\n"
         "                    fence\n"
         "                }\n"
         "                if ((ipFreqUpperLimit) != (FreqUpperLimit)) {\n"
         "                    FreqUpperLimit = ipFreqUpperLimit\n"
         "                    Send_SPI(5, ipFreqUpperLimit)\n"
+        "                    fence\n"
         "                } else {\n"
         "                    fence\n"
         "                }\n"
         "                if ((ipStepUp) != (StepUp)) {\n"
         "                    StepUp = ipStepUp\n"
         "                    Send_SPI(6, ipStepUp)\n"
+        "                    fence\n"
         "                } else {\n"
         "                    fence\n"
         "                }\n"
         "                if ((ipStepDown) != (StepDown)) {\n"
         "                    StepDown = ipStepDown\n"
         "                    Send_SPI(7, ipStepDown)\n"
+        "                    fence\n"
         "                } else {\n"
         "                    fence\n"
         "                }\n"
@@ -2544,13 +3007,16 @@ bool testAlchaCaseStudyCombined()
         "                    SlopeUp = ipSlopeUp\n"
         "                    SlopeDown = ipSlopeDown\n"
         "                    Send_SPI(8, :( ipSlopeDown, ipSlopeUp ))\n"
+        "                    fence\n"
         "                } else {\n"
         "                    fence\n"
         "                }\n"
         "                if (RegsChanged) {\n"
         "                    opIO_Update = 1\n"
+        "                    fence\n"
         "                    opIO_Update = 0\n"
         "                    RegsChanged = 0\n"
+        "                    fence\n"
         "                } else {\n"
         "                    fence\n"
         "                }\n"
@@ -2559,33 +3025,42 @@ bool testAlchaCaseStudyCombined()
         "    }\n"
         "    fsm (Clk, Reset) {\n"
         "        Init()\n"
+        "        fence\n"
         "        UpdateRegisters()\n"
+        "        fence\n"
         "        loop {\n"
         "            if (opBusy) {\n"
         "                while (ipUpdate) {\n"
         "                    fence\n"
         "                }\n"
         "                opBusy = 0\n"
+        "                fence\n"
         "            }\n"
         "            while ( ~ (ipUpdate)) {\n"
         "                fence\n"
         "            }\n"
         "            opBusy = 1\n"
         "            UpdateRegisters()\n"
+        "            fence\n"
         "        }\n"
         "    }\n"
         "    rtl (Clk, Reset) {\n"
         "        Trigger = :( (Trigger)[ 0 ], ipTrigger )\n"
+        "        fence\n"
         "        DR_Over = :( (DR_Over)[ 0 ], ipDR_Over )\n"
+        "        fence\n"
         "        if ((DR_Over) == (1)) {\n"
         "            if ((Trigger)[ 0 ]) {\n"
         "                opDR_Control =  ~ (opDR_Control)\n"
+        "                fence\n"
         "            } else {\n"
         "                opDR_Control = 0\n"
+        "                fence\n"
         "            }\n"
         "        } else {\n"
         "            if ((((DR_Over)[ 0 ]) == (1)) & ((Trigger) == (1))) {\n"
         "                opDR_Control = ( ~ (opDR_Control)) & ( ~ (opBusy))\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
         "    }\n"
@@ -2740,9 +3215,13 @@ bool testAlchaCaseStudyCombined()
         "    }\n"
         "    void ConnectPins(pin SClk, pin Data, pin LE, pin TxData){\n"
         "        SClk = SPI_Clk\n"
+        "        fence\n"
         "        Data = SPI_Data\n"
+        "        fence\n"
         "        LE = SPI_LE\n"
+        "        fence\n"
         "        TxData = (Trigger) & (RampOn)\n"
+        "        fence\n"
         "    }\n"
         "    private {\n"
         "        num RefFreq = 0\n"
@@ -2757,9 +3236,12 @@ bool testAlchaCaseStudyCombined()
         "            (RefFreq) > (0)\n"
         "        }\n"
         "        (this) . (StartFreq) = StartFreq\n"
+        "        fence\n"
         "        num Frequency = (FeedbackVcoDiv2) ? (round(((16777216) * (StartFreq)) / (PfdFreq))) : (round(((33554432) * (StartFreq)) / (PfdFreq)))\n"
         "        Integer = (Frequency) >> (25)\n"
+        "        fence\n"
         "        Fraction = (Frequency) & (33554431)\n"
+        "        fence\n"
         "    }\n"
         "    private {\n"
         "        void SetRamp(bool Up, num Bandwidth, num Time){\n"
@@ -2767,68 +3249,99 @@ bool testAlchaCaseStudyCombined()
         "                (RefFreq) > (0)\n"
         "            }\n"
         "            Clk1Divider = 1\n"
+        "            fence\n"
         "            num Clk2Divider = 2\n"
         "            num StepWord = 0\n"
         "            num DeviationOffset = 0\n"
         "            num DeviationWord = 0\n"
         "            Clk2Divider = (PfdFreq) / (((1048576) - (1)) / (Time))\n"
+        "            fence\n"
         "            if ((Clk2Divider) < (2)) {\n"
         "                Clk2Divider = 2\n"
+        "                fence\n"
         "            }\n"
         "            assert {\n"
         "                (Clk2Divider) < (4096)\n"
         "            }\n"
         "            StepWord = round(((PfdFreq) / (Clk2Divider)) * (Time))\n"
+        "            fence\n"
         "            assert {\n"
         "                (StepWord) < (1048576)\n"
         "            }\n"
         "            DeviationOffset = 0\n"
+        "            fence\n"
         "            DeviationWord = round((((Bandwidth) / (StepWord)) / ((PfdFreq) / (33554432))) / ((2) ** (DeviationOffset)))\n"
+        "            fence\n"
         "            while ((abs(DeviationWord)) >= (32768)) {\n"
         "                DeviationOffset++\n"
+        "                fence\n"
         "                DeviationWord /= 2\n"
+        "                fence\n"
         "            }\n"
         "            assert {\n"
         "                (DeviationOffset) < (16)\n"
         "            }\n"
         "            if (Up) {\n"
         "                Clk2Divider_0 = Clk2Divider\n"
+        "                fence\n"
         "                StepWord_0 = StepWord\n"
+        "                fence\n"
         "                DeviationOffset_0 = DeviationOffset\n"
+        "                fence\n"
         "                DeviationWord_0 = DeviationWord\n"
+        "                fence\n"
         "            } else {\n"
         "                Clk2Divider_1 = Clk2Divider\n"
+        "                fence\n"
         "                StepWord_1 = StepWord\n"
+        "                fence\n"
         "                DeviationOffset_1 = DeviationOffset\n"
+        "                fence\n"
         "                DeviationWord_1 = DeviationWord\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
         "    }\n"
         "    void SetRamp(num Bandwidth, num UpTime, num DownTime){\n"
         "        SetRamp(1, Bandwidth, UpTime)\n"
+        "        fence\n"
         "        SetRamp(0, Bandwidth, DownTime)\n"
+        "        fence\n"
         "    }\n"
         "    void SetRefFreq(num RefFreq, bool FeedbackVcoDiv2 = 1){\n"
         "        (this) . (RefFreq) = RefFreq\n"
+        "        fence\n"
         "        (this) . (FeedbackVcoDiv2) = FeedbackVcoDiv2\n"
+        "        fence\n"
         "        UseRefMul2 = 0\n"
+        "        fence\n"
         "        UseRefDiv2 = 0\n"
+        "        fence\n"
         "        PfdFreq = RefFreq\n"
+        "        fence\n"
         "        if ((RefFreq) > (110000000)) {\n"
         "            UseRefDiv2 = 1\n"
+        "            fence\n"
         "            PfdFreq /= 2\n"
+        "            fence\n"
         "        }\n"
         "        if ((RefFreq) < (55000000)) {\n"
         "            UseRefMul2 = 1\n"
+        "            fence\n"
         "            PfdFreq *= 2\n"
+        "            fence\n"
         "        }\n"
         "        num RefDiv = 1\n"
         "        while (((RefDiv) < (32)) & ((PfdFreq) > (110000000))) {\n"
         "            RefDiv++\n"
+        "            fence\n"
         "            PfdFreq /= 2\n"
+        "            fence\n"
         "        }\n"
         "        RefCounter = RefDiv\n"
+        "        fence\n"
         "        SetStart(StartFreq)\n"
+        "        fence\n"
         "    }\n"
         "    private {\n"
         "        net (32) R0 = :( RampOn, MuxOutControl, Integer, (Fraction)[ (24) .. (13) ], (0) @ (3) )\n"
@@ -2850,8 +3363,10 @@ bool testAlchaCaseStudyCombined()
         "        rtl (Clk) {\n"
         "            if (Baud_Count) {\n"
         "                Baud_Count--\n"
+        "                fence\n"
         "            } else {\n"
         "                Baud_Count = (Baud_Cycles) - (1)\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
         "        net Baud_Trigger =  ~| (Baud_Count)\n"
@@ -2860,15 +3375,20 @@ bool testAlchaCaseStudyCombined()
         "        void SendSPI(net (32) Register){\n"
         "            net (32) Data\n"
         "            SPI_Data = (Data)[ 31 ]\n"
+        "            fence\n"
         "            fsm {\n"
         "                Data = Register\n"
         "                SPI_LE = 0\n"
+        "                fence\n"
         "                loop (32) {\n"
         "                    SPI_Clk = 1\n"
+        "                    fence\n"
         "                    SPI_Clk = 0\n"
         "                    Data <<= 1\n"
+        "                    fence\n"
         "                }\n"
         "                SPI_LE = 1\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
         "    }\n"
@@ -2881,29 +3401,46 @@ bool testAlchaCaseStudyCombined()
         "            fence\n"
         "            Busy = 1\n"
         "            SendSPI(R7)\n"
+        "            fence\n"
         "            SendSPI(R6_1)\n"
+        "            fence\n"
         "            SendSPI(R6_0)\n"
+        "            fence\n"
         "            SendSPI(R5_1)\n"
+        "            fence\n"
         "            SendSPI(R5_0)\n"
+        "            fence\n"
         "            SendSPI(R4_1)\n"
+        "            fence\n"
         "            SendSPI(R4_0)\n"
+        "            fence\n"
         "            SendSPI(R3)\n"
+        "            fence\n"
         "            SendSPI(R2)\n"
+        "            fence\n"
         "            SendSPI(R1)\n"
+        "            fence\n"
         "            SendSPI(R0)\n"
+        "            fence\n"
         "            while (Update) {\n"
         "                fence\n"
         "            }\n"
         "        }\n"
         "    }\n"
         "}",
-
         "( ' (target)) ' (type) = \"Project\"",
+        "fence",
         "( ' (target)) ' (vendor) = \"Altera\"",
+        "fence",
         "( ' (target)) ' (series) = \"Cyclone V\"",
+        "fence",
         "( ' (target)) ' (device) = \"5CSEMA4U23C6N\"",
+        "fence",
         "( ' (target)) ' (board) = \"DE0-Nano-SoC rev C1\"",
+        "fence",
         " ' (standard) = \"3.3V\"",
+        "fence",
+
         "group <frequency = 50000000> {\n"
         "    input {\n"
         "        pin <location = \"V11\", clock_group = \"ClockGroup1\"> Clock1\n"
@@ -2929,6 +3466,7 @@ bool testAlchaCaseStudyCombined()
         "}",
 
         "pin (36) <location = [ [ \"AE12\", \"AF11\", \"AE11\", \"AD12\", \"AF10\", \"AD11\", \"AE9\", \"AD10\", \"AE8\", \"AF9\", \"AF6\", \"AE7\", \"T11\", \"T13\", \"AE4\", \"AF5\", \"AG6\", \"AF4\", \"AH2\", \"AH3\", \"AG5\", \"AH4\", \"AH6\", \"AH5\", \"T12\", \"T8\", \"U11\", \"Y5\", \"Y4\", \"W8\", \"AB4\", \"Y8\", \"AF8\", \"W12\", \"AF7\", \"V12\" ], [ \"AC22\", \"AA18\", \"AE23\", \"AD23\", \"AH18\", \"AG21\", \"AH21\", \"AH19\", \"AH22\", \"AF22\", \"AD20\", \"AE24\", \"AE20\", \"AD19\", \"AF18\", \"AE19\", \"AG23\", \"AH23\", \"AF25\", \"AG24\", \"AA19\", \"AH26\", \"AG18\", \"AC23\", \"AF20\", \"AG19\", \"AG20\", \"AF21\", \"AE22\", \"AF23\", \"AH24\", \"AG26\", \"AH27\", \"AA15\", \"AG28\", \"Y15\" ] ]> GPIO[2]",
+
         "group Arduino {\n"
         "    input {\n"
         "        pin <location = \"AH7\"> nReset\n"
@@ -3110,26 +3648,34 @@ bool testAlchaCaseStudyCombined()
         "    }\n"
         "    rtl (Clock, Reset) {\n"
         "        Trigger_1 = Trigger\n"
+        "        fence\n"
         "        if ((:( Trigger_1, Trigger )) == (1)) {\n"
         "            DelayCount = Delay\n"
+        "            fence\n"
         "        } else {\n"
         "            if ((DelayCount) > (0)) {\n"
         "                DelayCount--\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
         "        if (Output) {\n"
         "            if ((LengthCount) == (1)) {\n"
         "                Output = 0\n"
+        "                fence\n"
         "            }\n"
         "            LengthCount--\n"
+        "            fence\n"
         "        } else {\n"
         "            if ((DelayCount) == (1)) {\n"
         "                Output = Enable\n"
+        "                fence\n"
         "                LengthCount = Length\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
         "    }\n"
         "    AddDebug(Output)\n"
+        "    fence\n"
         "}",
 
         "class TriggerGen(net Clock, net Reset){\n"
@@ -3139,20 +3685,28 @@ bool testAlchaCaseStudyCombined()
         "    rtl (Clock, Reset) {\n"
         "        if ((Count) >= (Period)) {\n"
         "            Count = 1\n"
+        "            fence\n"
         "            Output = 1\n"
+        "            fence\n"
         "        } else {\n"
         "            Count++\n"
+        "            fence\n"
         "            Output = 0\n"
+        "            fence\n"
         "        }\n"
         "    }\n"
         "    AddDebug(Ouptut)\n"
+        "    fence\n"
         "}",
-
         "num DebugCounter = 0",
+
         "void AddDebug(net Signal){\n"
         "    (Debug)[ DebugCounter ] = Signal\n"
-        "    print(:[ \"Debug[\", $(DebugCounter), \"] <= \", (Signal) ' (full_instance_name), \"\n" "\" ])\n"
+        "    fence\n"
+        "    print(:[ \"Debug[\", $(DebugCounter), \"] <= \", (Signal) ' (full_instance_name), \"\n\" ])\n"
+        "    fence\n"
         "    DebugCounter++\n"
+        "    fence\n"
         "}",
 
         "import \"Platform/Platform\"",
@@ -3160,13 +3714,19 @@ bool testAlchaCaseStudyCombined()
         "import \"Library/Interfaces/RegistersDecoder\"",
         "RegistersDecoder ((SystemController) . (LightWeightBus)) Registers",
         "(Registers) . (CppFilename) = \"../Software/Registers/Registers\"",
+        "fence",
         "(Registers) . (LaTeXFilename) = \"../Documentation/Registers\"",
+        "fence",
         "import \"Library/Misc/FirmwareVersion\"",
         "FirmwareVersion (1, 0) Firmware",
         "(Registers) . (ReadOnly)((Firmware) . (Version))",
+        "fence",
         "(Registers) . (ReadOnly)((Firmware) . (Date))",
+        "fence",
         "(Registers) . (ReadOnly)((Firmware) . (Time))",
+        "fence",
         "(Registers) . (ReadOnly)((Firmware) . (GitHash))",
+        "fence",
         "import \"SubSystems/MasterTrigger\"",
         "import \"SubSystems/HardwareControl\" as Hardware",
         "import \"SubSystems/WaveformGenerator\" as Waveform",
@@ -3176,6 +3736,7 @@ bool testAlchaCaseStudyCombined()
         "alias HPS_Pins = (DE0) . (HPS)",
         "alias LEDs = (DE0) . (LEDs)",
         "alias DipSwitch = (DE0) . (Switches)",
+
         "group Synth {\n"
         "    group SPI {\n"
         "        alias SClk = (((DE0) . (Arduino)) . (IO))[ 0 ]\n"
@@ -3194,26 +3755,40 @@ bool testAlchaCaseStudyCombined()
         "    alias SClk = (((DE0) . (Arduino)) . (IO))[ 6 ]\n"
         "    alias Data = (((DE0) . (Arduino)) . (IO))[ 7 ]\n"
         "    (SClk) ' (frequency) = 60000000\n"
+        "    fence\n"
         "    ((nCS) ' (set_output_delay)) ' (clock) = SClk\n"
+        "    fence\n"
         "    ((nCS) ' (set_output_delay)) ' (delay) = 0\n"
+        "    fence\n"
         "    ((nCS) ' (set_output_delay)) ' (uncertainty) = 1/20000000000 (~5e-11)\n"
+        "    fence\n"
         "    ((Data) ' (set_input_delay)) ' (clock) = SClk\n"
+        "    fence\n"
         "    ((Data) ' (set_input_delay)) ' (delay) = (1/10 (~0.1)) / (200000000)\n"
+        "    fence\n"
         "    ((Data) ' (set_input_delay)) ' (uncertainty) = 1/20000000000 (~5e-11)\n"
+        "    fence\n"
         "}",
-
         "alias TxEnable = (((DE0) . (Arduino)) . (IO))[ 8 ]",
         "net (36) Debug",
         "((DE0) . (GPIO))[ 0 ] = Debug",
+        "fence",
+
         "group I2C {\n"
         "    alias SClk = (((DE0) . (Arduino)) . (IO))[ 15 ]\n"
         "    alias Data = (((DE0) . (Arduino)) . (IO))[ 14 ]\n"
         "    (SClk) ' (pullup) = 1\n"
+        "    fence\n"
         "    (SClk) . (driver) = 0\n"
+        "    fence\n"
         "    (SClk) . (enable) = 0\n"
+        "    fence\n"
         "    (Data) ' (pullup) = 1\n"
+        "    fence\n"
         "    (Data) . (driver) = 0\n"
+        "    fence\n"
         "    (Data) . (enable) = 0\n"
+        "    fence\n"
         "}",
 
         "net ResetKey =  ~ (((DE0) . (Keys))[ 0 ])",
@@ -3229,8 +3804,11 @@ bool testAlchaCaseStudyCombined()
         "net (((Buffer) . (Address)) ' (width)) WrAddress = 0",
         "net (((Buffer) . (Address)) ' (width)) RdAddress = 0",
         "(Registers) . (ReadOnly)(WrAddress)",
+        "fence",
         "(Registers) . (Writeable)(RdAddress)",
+        "fence",
         "(Buffer) . (Address) = 0",
+        "fence",
 
         "fsm (DspClock, MasterReset) {\n"
         "    loop {\n"
@@ -3246,6 +3824,7 @@ bool testAlchaCaseStudyCombined()
         "                break\n"
         "            } else {\n"
         "                (Buffer) . (Write) = 0\n"
+        "                fence\n"
         "            }\n"
         "        }\n"
         "        loop {\n"
@@ -3268,30 +3847,51 @@ bool testAlchaCaseStudyCombined()
         "MutEx (ControlClock, MasterReset) I2C_MutEx",
         "LTC2991 (ControlClock, MasterReset, 0) TxBIM",
         "(TxBIM) . (SetType)(0, ((LTC2991) . (TYPE)) . (Voltage))",
+        "fence",
         "(TxBIM) . (SetType)(1, ((LTC2991) . (TYPE)) . (Voltage))",
+        "fence",
         "(TxBIM) . (SetType)(2, ((LTC2991) . (TYPE)) . (Voltage))",
+        "fence",
         "(TxBIM) . (SetType)(3, ((LTC2991) . (TYPE)) . (Temperature))",
+        "fence",
         "(TxBIM) . (Quiet) =  ! (TxEnable)",
+        "fence",
         "(TxBIM) . (MakeRegisters)(Registers)",
+        "fence",
         "(TxBIM) . (ConnectBus)((I2C) . (SClk), (I2C) . (Data))",
+        "fence",
         "(I2C_MutEx) . (Add)(TxBIM)",
+        "fence",
         "LTC2991 (ControlClock, MasterReset, 1) RxBIM",
         "(RxBIM) . (SetType)(0, ((LTC2991) . (TYPE)) . (Voltage))",
+        "fence",
         "(RxBIM) . (SetType)(1, ((LTC2991) . (TYPE)) . (Differential))",
+        "fence",
         "(RxBIM) . (SetType)(2, ((LTC2991) . (TYPE)) . (Voltage))",
+        "fence",
         "(RxBIM) . (SetType)(3, ((LTC2991) . (TYPE)) . (Temperature))",
+        "fence",
         "(RxBIM) . (Quiet) =  ! (TxEnable)",
+        "fence",
         "(RxBIM) . (MakeRegisters)(Registers)",
+        "fence",
         "(RxBIM) . (ConnectBus)((I2C) . (SClk), (I2C) . (Data))",
+        "fence",
         "(I2C_MutEx) . (Add)(RxBIM)",
+        "fence",
         "TriggerDelay (ControlClock, MasterReset, MasterTrigger) TriggerDelay_PA",
         "(Registers) . (Writeable)((TriggerDelay_PA) . (Enable))",
+        "fence",
         "(Registers) . (Writeable)((TriggerDelay_PA) . (Delay))",
+        "fence",
         "(Registers) . (Writeable)((TriggerDelay_PA) . (Length))",
+        "fence",
         "TxEnable = (TriggerDelay_PA) . (Output)",
+        "fence",
         "import \"Library/Timing/TriggerGen\"",
         "TriggerGen (ControlClock, MasterTrigger) MasterTriggerGen",
         "(Registers) . (Writable)((MasterTriggerGen) . (Period))",
+        "fence",
         "alias MasterTrigger = (MasterTriggerGen) . (Output)",
         "import \"Library/DSP/Streams\"",
         "import \"Library/DSP/FIFO\"",
@@ -3307,19 +3907,28 @@ bool testAlchaCaseStudyCombined()
         "FFT (DspClock, MasterReset, 128) DopplerFFT",
         "AlphaFilter (DspClock, MasterReset, 128, 2048) Filter",
         "(Registers) . (ReadOnly)((Queue) . (NumItems))",
+        "fence",
         "(Registers) . (Writeable)((Filter) . (Alpha))",
+        "fence",
         "(Registers) . (ReadOnly)((Filter) . (WrAddress))",
+        "fence",
         "DSP = ((((((((Receiver) . (Packet)) | (Queue)) | (RangeWindow)) | (RangeFFT)) | (CornerTurn)) | (DopplerWindow)) | (DopplerFFT)) | (Filter)",
+        "fence",
         "import \"Library/Timing/TriggerDelay\"",
         "import \"Library/Peripherals/ADC_and_BIM/ADS7056\"",
         "ADS7056 (DspClock, MasterReset) ADC",
         "TriggerDelay (ControlClock, MasterReset, MasterTrigger) PacketTrigger",
         "(Registers) . (Writeable)((PacketTrigger) . (Enable))",
+        "fence",
         "(Registers) . (Writeable)((PacketTrigger) . (Delay))",
+        "fence",
         "(Registers) . (Writeable)((PacketTrigger) . (Length))",
+        "fence",
         "net PacketTrigger_DSP",
+
         "rtl (DspClock) {\n"
         "    PacketTrigger_DSP = (PacketTrigger) . (Output)\n"
+        "    fence\n"
         "}",
 
         "group Packet {\n"
@@ -3328,10 +3937,13 @@ bool testAlchaCaseStudyCombined()
         "    net (13,  - (1)) Data\n"
         "    net Valid = 0\n"
         "}",
-
         "AddDebug((Packet) . (SoP))",
+        "fence",
         "AddDebug((Packet) . (EoP))",
+        "fence",
         "AddDebug((Packet) . (Valid))",
+        "fence",
+
         "private {\n"
         "    net (12) n\n"
         "}",
@@ -3367,7 +3979,7 @@ bool testAlchaCaseStudyCombined()
 
         "class SystemController_Class{\n"
         "    private {\n"
-        "        hdl SoC_System_HDL(\n"
+        "        hdl (\"../HDL/SoC_System/SoC_System.qsys\") SoC_System_HDL(\n"
         "        ){\n"
         "            output {\n"
         "                net hps_clk_out_clk\n"
@@ -3617,132 +4229,247 @@ bool testAlchaCaseStudyCombined()
         "    }\n"
         "    private {\n"
         "        ((((HPS_Pins) . (Ethernet)) . (Tx)) . (Clock)) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_TX_CLK))\n"
+        "        fence\n"
         "        ((((HPS_Pins) . (Ethernet)) . (Tx)) . (Enable)) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_TX_CTL))\n"
+        "        fence\n"
         "        (((((HPS_Pins) . (Ethernet)) . (Tx)) . (Data))[ 0 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_TXD0))\n"
+        "        fence\n"
         "        (((((HPS_Pins) . (Ethernet)) . (Tx)) . (Data))[ 1 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_TXD1))\n"
+        "        fence\n"
         "        (((((HPS_Pins) . (Ethernet)) . (Tx)) . (Data))[ 2 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_TXD2))\n"
+        "        fence\n"
         "        (((((HPS_Pins) . (Ethernet)) . (Tx)) . (Data))[ 3 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_TXD3))\n"
+        "        fence\n"
         "        ((((HPS_Pins) . (Ethernet)) . (Rx)) . (Clock)) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_RX_CLK))\n"
+        "        fence\n"
         "        ((((HPS_Pins) . (Ethernet)) . (Rx)) . (Valid)) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_RX_CTL))\n"
+        "        fence\n"
         "        (((((HPS_Pins) . (Ethernet)) . (Rx)) . (Data))[ 0 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_RXD0))\n"
+        "        fence\n"
         "        (((((HPS_Pins) . (Ethernet)) . (Rx)) . (Data))[ 1 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_RXD1))\n"
+        "        fence\n"
         "        (((((HPS_Pins) . (Ethernet)) . (Rx)) . (Data))[ 2 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_RXD2))\n"
+        "        fence\n"
         "        (((((HPS_Pins) . (Ethernet)) . (Rx)) . (Data))[ 3 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_RXD3))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (Ethernet)) . (MDC)) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_MDC))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (Ethernet)) . (MDIO)) . (hdl_map)((SoC_System) . (hps_io_hps_io_emac1_inst_MDIO))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (Ethernet)) . (nInterrupt)) . (hdl_map)((SoC_System) . (hps_io_hps_io_gpio_inst_GPIO35))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (SD)) . (Clock)) . (hdl_map)((SoC_System) . (hps_io_hps_io_sdio_inst_CLK))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (SD)) . (Command)) . (hdl_map)((SoC_System) . (hps_io_hps_io_sdio_inst_CMD))\n"
+        "        fence\n"
         "        ((((HPS_Pins) . (SD)) . (Data))[ 0 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_sdio_inst_D0))\n"
+        "        fence\n"
         "        ((((HPS_Pins) . (SD)) . (Data))[ 1 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_sdio_inst_D1))\n"
+        "        fence\n"
         "        ((((HPS_Pins) . (SD)) . (Data))[ 2 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_sdio_inst_D2))\n"
+        "        fence\n"
         "        ((((HPS_Pins) . (SD)) . (Data))[ 3 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_sdio_inst_D3))\n"
+        "        fence\n"
         "        ((((HPS_Pins) . (USB)) . (Data))[ 0 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D0))\n"
+        "        fence\n"
         "        ((((HPS_Pins) . (USB)) . (Data))[ 1 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D1))\n"
+        "        fence\n"
         "        ((((HPS_Pins) . (USB)) . (Data))[ 2 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D2))\n"
+        "        fence\n"
         "        ((((HPS_Pins) . (USB)) . (Data))[ 3 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D3))\n"
+        "        fence\n"
         "        ((((HPS_Pins) . (USB)) . (Data))[ 4 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D4))\n"
+        "        fence\n"
         "        ((((HPS_Pins) . (USB)) . (Data))[ 5 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D5))\n"
+        "        fence\n"
         "        ((((HPS_Pins) . (USB)) . (Data))[ 6 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D6))\n"
+        "        fence\n"
         "        ((((HPS_Pins) . (USB)) . (Data))[ 7 ]) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_D7))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (USB)) . (ClockOut)) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_CLK))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (USB)) . (Step)) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_STP))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (USB)) . (Direction)) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_DIR))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (USB)) . (Next)) . (hdl_map)((SoC_System) . (hps_io_hps_io_usb1_inst_NXT))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (LTC)) . (GPIO)) . (hdl_map)((SoC_System) . (hps_io_hps_io_gpio_inst_GPIO40))\n"
+        "        fence\n"
         "        ((((HPS_Pins) . (LTC)) . (I2C)) . (Clock)) . (hdl_map)((SoC_System) . (hps_io_hps_io_i2c1_inst_SCL))\n"
+        "        fence\n"
         "        ((((HPS_Pins) . (LTC)) . (I2C)) . (Data)) . (hdl_map)((SoC_System) . (hps_io_hps_io_i2c1_inst_SDA))\n"
+        "        fence\n"
         "        ((((HPS_Pins) . (LTC)) . (SPI)) . (Clock)) . (hdl_map)((SoC_System) . (hps_io_hps_io_spim1_inst_CLK))\n"
+        "        fence\n"
         "        ((((HPS_Pins) . (LTC)) . (SPI)) . (MOSI)) . (hdl_map)((SoC_System) . (hps_io_hps_io_spim1_inst_MOSI))\n"
+        "        fence\n"
         "        ((((HPS_Pins) . (LTC)) . (SPI)) . (MISO)) . (hdl_map)((SoC_System) . (hps_io_hps_io_spim1_inst_MISO))\n"
+        "        fence\n"
         "        ((((HPS_Pins) . (LTC)) . (SPI)) . (SlaveSelect)) . (hdl_map)((SoC_System) . (hps_io_hps_io_spim1_inst_SS0))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (UART)) . (Rx)) . (hdl_map)((SoC_System) . (hps_io_hps_io_uart0_inst_RX))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (UART)) . (Tx)) . (hdl_map)((SoC_System) . (hps_io_hps_io_uart0_inst_TX))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (UART)) . (nConvUSB)) . (hdl_map)((SoC_System) . (hps_io_hps_io_gpio_inst_GPIO09))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (I2C)) . (Clock)) . (hdl_map)((SoC_System) . (hps_io_hps_io_i2c0_inst_SCL))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (I2C)) . (Data)) . (hdl_map)((SoC_System) . (hps_io_hps_io_i2c0_inst_SDA))\n"
+        "        fence\n"
         "        ((HPS_Pins) . (LED)) . (hdl_map)((SoC_System) . (hps_io_hps_io_gpio_inst_GPIO53))\n"
+        "        fence\n"
         "        ((HPS_Pins) . (Key)) . (hdl_map)((SoC_System) . (hps_io_hps_io_gpio_inst_GPIO54))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (G_Sensor)) . (Interrupt)) . (hdl_map)((SoC_System) . (hps_io_hps_io_gpio_inst_GPIO61))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (DDR3)) . (nReset)) . (hdl_map)((SoC_System) . (memory_mem_reset_n))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (DDR3)) . (Clock)) . (hdl_map)((SoC_System) . (memory_mem_ck), (SoC_System) . (memory_mem_ck_n))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (DDR3)) . (ClockEnable)) . (hdl_map)((SoC_System) . (memory_mem_cke))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (DDR3)) . (nChipSelect)) . (hdl_map)((SoC_System) . (memory_mem_cs_n))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (DDR3)) . (Bank)) . (hdl_map)((SoC_System) . (memory_mem_ba))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (DDR3)) . (Address)) . (hdl_map)((SoC_System) . (memory_mem_a))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (DDR3)) . (DataMask)) . (hdl_map)((SoC_System) . (memory_mem_dm))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (DDR3)) . (nRowAddressStrobe)) . (hdl_map)((SoC_System) . (memory_mem_ras_n))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (DDR3)) . (nColumnAddressStrobe)) . (hdl_map)((SoC_System) . (memory_mem_cas_n))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (DDR3)) . (nWriteEnable)) . (hdl_map)((SoC_System) . (memory_mem_we_n))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (DDR3)) . (Data)) . (hdl_map)((SoC_System) . (memory_mem_dq))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (DDR3)) . (DataStrobe)) . (hdl_map)((SoC_System) . (memory_mem_dqs), (SoC_System) . (memory_mem_dqs_n))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (DDR3)) . (OnDieTermination)) . (hdl_map)((SoC_System) . (memory_mem_odt))\n"
+        "        fence\n"
         "        (((HPS_Pins) . (DDR3)) . (RZQ)) . (hdl_map)((SoC_System) . (memory_oct_rzqin))\n"
+        "        fence\n"
         "    }\n"
         "    public {\n"
         "        (SoC_System) . (hps_cold_reset_req_reset_n) =  ! (HPS_Reset)\n"
+        "        fence\n"
         "        (SoC_System) . (hps_warm_reset_req_reset_n) =  ! (HPS_Reset)\n"
+        "        fence\n"
         "        (SoC_System) . (hps_debug_reset_req_reset_n) =  ! (HPS_Reset)\n"
+        "        fence\n"
         "        HPS_FPGA_Reset = (SoC_System) . (hps_reset_out_reset)\n"
+        "        fence\n"
         "        AvalonMaster (ControllerClock, MasterReset, 32, 65536) LightWeightBus\n"
         "        (LightWeightBus) ' (BaseAddress) = 3221225472\n"
+        "        fence\n"
         "        (SoC_System) . (light_weight_bus_clk_clk) = ControllerClock\n"
+        "        fence\n"
         "        (SoC_System) . (light_weight_bus_reset_reset) = MasterReset\n"
+        "        fence\n"
         "        (LightWeightBus) . (Address) = (SoC_System) . (light_weight_bus_address)\n"
+        "        fence\n"
         "        (LightWeightBus) . (ByteEnable) = (SoC_System) . (light_weight_bus_byteenable)\n"
+        "        fence\n"
         "        (SoC_System) . (light_weight_bus_waitrequest) = (LightWeightBus) . (WaitRequest)\n"
+        "        fence\n"
         "        (LightWeightBus) . (WriteData) = (SoC_System) . (light_weight_bus_writedata)\n"
+        "        fence\n"
         "        (LightWeightBus) . (Write) = (SoC_System) . (light_weight_bus_write)\n"
+        "        fence\n"
         "        (LightWeightBus) . (Read) = (SoC_System) . (light_weight_bus_read)\n"
+        "        fence\n"
         "        (SoC_System) . (light_weight_bus_readdata) = (LightWeightBus) . (ReadData)\n"
+        "        fence\n"
         "        (SoC_System) . (light_weight_bus_readdatavalid) = (LightWeightBus) . (ReadValid)\n"
+        "        fence\n"
         "        AvalonSlave ((SoC_System) . (hps_clk_out_clk), (SoC_System) . (hps_reset_out_reset), 256, 33554432, 128) SDRAM\n"
         "        ((SDRAM) . (Clock)) ' (frequency) = 100000000\n"
+        "        fence\n"
         "        (SoC_System) . (sdram_address) = (SDRAM) . (Address)\n"
+        "        fence\n"
         "        (SoC_System) . (sdram_byteenable) = (SDRAM) . (ByteEnable)\n"
+        "        fence\n"
         "        (SoC_System) . (sdram_burstcount) = (SDRAM) . (BurstCount)\n"
+        "        fence\n"
         "        (SDRAM) . (WaitRequest) = (SoC_System) . (sdram_waitrequest)\n"
+        "        fence\n"
         "        (SoC_System) . (sdram_writedata) = (SDRAM) . (WriteData)\n"
+        "        fence\n"
         "        (SoC_System) . (sdram_write) = (SDRAM) . (Write)\n"
+        "        fence\n"
         "        (SoC_System) . (sdram_read) = (SDRAM) . (Read)\n"
+        "        fence\n"
         "        (SDRAM) . (ReadData) = (SoC_System) . (sdram_readdata)\n"
+        "        fence\n"
         "        (SDRAM) . (ReadValid) = (SoC_System) . (sdram_readdatavalid)\n"
+        "        fence\n"
         "        AvalonInterface (16, 8192) StreamBuffer\n"
         "        (StreamBuffer) ' (BaseAddress) = 4280287232\n"
+        "        fence\n"
         "        (SoC_System) . (streambuffer_clk_clk) = DspClock\n"
+        "        fence\n"
         "        (SoC_System) . (streambuffer_clken) = 1\n"
+        "        fence\n"
         "        (SoC_System) . (streambuffer_reset_reset) = MasterReset\n"
+        "        fence\n"
         "        (SoC_System) . (streambuffer_chipselect) = 1\n"
+        "        fence\n"
         "        (SoC_System) . (streambuffer_address) = (StreamBuffer) . (Address)\n"
+        "        fence\n"
         "        (SoC_System) . (streambuffer_byteenable) = 3\n"
+        "        fence\n"
         "        (SoC_System) . (streambuffer_writedata) = (StreamBuffer) . (WriteData)\n"
+        "        fence\n"
         "        (SoC_System) . (streambuffer_write) = (StreamBuffer) . (Write)\n"
+        "        fence\n"
         "        (StreamBuffer) . (ReadData) = (SoC_System) . (streambuffer_readdata)\n"
+        "        fence\n"
         "        (StreamBuffer) . (ReadValid) = 1\n"
+        "        fence\n"
         "    }\n"
         "}",
-
         "SystemController_Class SystemController",
         "import \"Library/Timing/TriggerDelay\"",
         "import \"Library/Peripherals/Synth_and_DDS/AD9915\"",
         "TriggerDelay (ControlClock, MasterReset, MasterTrigger) SynthTrigger",
         "(Registers) . (Writeable)((SynthTrigger) . (Enable))",
+        "fence",
         "(Registers) . (Writeable)((SynthTrigger) . (Delay))",
+        "fence",
         "(Registers) . (Writeable)((SynthTrigger) . (Length))",
+        "fence",
         "AD9915 (ControlClock, MasterReset) SynthInst",
         "(Registers) . (Writeable)((SynthInst) . (ipUpdate))",
+        "fence",
         "(Registers) . (ReadOnly)((SynthInst) . (opBusy))",
+        "fence",
         "(SynthInst) . (ipFreqLowerLimit) = round((500000000) * ((4294967296) / (2500000000)))",
+        "fence",
         "(SynthInst) . (ipFreqUpperLimit) = round((650000000) * ((4294967296) / (2500000000)))",
+        "fence",
         "(SynthInst) . (ipStepUp) = round(((150000000) / (((1/1000 (~0.001)) * (2500000000)) / (24))) * ((4294967296) / (2500000000)))",
+        "fence",
         "(SynthInst) . (ipStepDown) = round(((150000000) / (((1/20000 (~5e-05)) * (2500000000)) / (24))) * ((4294967296) / (2500000000)))",
+        "fence",
         "(Registers) . (Writeable)((SynthInst) . (ipFreqLowerLimit))",
+        "fence",
         "(Registers) . (Writeable)((SynthInst) . (ipFreqUpperLimit))",
+        "fence",
         "(Registers) . (Writeable)((SynthInst) . (ipStepUp))",
+        "fence",
         "(Registers) . (Writeable)((SynthInst) . (ipStepDown))",
+        "fence",
         "(SynthInst) . (Trigger) = (SynthTrigger) . (Output)",
+        "fence",
         "(SynthInst) . (ConnectSPI)(SClk = ((Synth) . (SPI)) . (SClk), nCS = ((Synth) . (SPI)) . (nCS), SDIO = ((Synth) . (SPI)) . (SDIO), SyncIO = ((Synth) . (SPI)) . (SyncIO), IP_Update = ((Synth) . (SPI)) . (IO_Update))",
+        "fence",
         "(SynthInst) . (ConnectDR)(Control = (Synth) . (DR_Control), Hold = (Synth) . (DR_Hold), Over = (Synth) . (DR_Over))",
+        "fence",
+
+
         0
     };
     if(!runTest(expected)) return false;

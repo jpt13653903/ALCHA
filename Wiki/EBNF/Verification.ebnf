@@ -33,8 +33,6 @@ Repetition = Expression [ ( "[*"  | "[->" | "[=" )  Range "]"  ];
 CoverBins  = "coverbins" Identifier "(" ParameterDefList ")"
              "{" { Identifier "=" Sequence ";" } "}";
 CoverGroup = "covergroup" [ ParameterList ] Identifier
-             "{" { CoverBinIdentifier ParameterList ";" } "}";
-
-CoverBinIdentifier = Identifier { "." Identifier }; (* NameSpace.CoverBinName *)
+             "{" { ScopedIdentifier ParameterList ";" } "}";
 (*----------------------------------------------------------------------------*)
 

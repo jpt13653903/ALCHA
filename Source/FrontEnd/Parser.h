@@ -25,6 +25,7 @@
 #include "General.h"
 #include "Scanner.h"
 #include "AST.h"
+#include "AST/HdlConstruct.h"
 #include "AST/Wait.h"
 //------------------------------------------------------------------------------
 
@@ -73,7 +74,7 @@ class Parser{
         AST::AST* attributeAssignment();
 
         AST::AST* definition();
-        AST::AST* typeIdentifier();
+        AST::AST* scopedIdentifier();
         AST::AST* classDefinition();
         AST::AST* accessDirectionGroup();
         AST::AST* variableDefList (bool         isInline,
@@ -111,8 +112,7 @@ class Parser{
         AST::AST* jumpStatement();
         AST::AST* clockedConstruct();
         AST::AST* hdlConstruct();
-        AST::AST* hdlParameterList();
-        AST::AST* hdlParameter();
+        AST::HdlConstruct::Parameter* hdlParameterList();
         AST::AST* hdlBody();
 
         AST::AST* stimulusOrEmulate();
@@ -133,7 +133,6 @@ class Parser{
 
         AST::AST* coverBins();
         AST::AST* coverGroup();
-        AST::AST* coverBinIdentifier();
 
         AST::AST* identifierStatement();
         AST::AST* statementBlock();

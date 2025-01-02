@@ -43,8 +43,8 @@ ArrayConcat  = ":[" ExpressionList "]";
 (* This builds an array (an array of arrays when nested) *)
 Array = "[" [ ExpressionList ] "]";
 
-ExpressionList = Expression {"," Expression };
-ParameterList  = "(" [ Parameter {"," Parameter } ] ")";
+ExpressionList = Expression {"," Expression } [ "," ];
+ParameterList  = "(" [ Parameter {"," Parameter } [ "," ] ] ")";
 Parameter      = [ Identifier ( "=" | ":=" ) ] Expression;
 (*----------------------------------------------------------------------------*)
 

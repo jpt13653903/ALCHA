@@ -13,14 +13,14 @@ Statement  = [ Wait ]
 Label  = Identifier ":"; (* Only useful within an fsm construct *)
 
 (* Inline only applies to function definitions *)
-Definition = [ "inline" ] ( BaseType | TypeIdentifier ) [ ParameterList ]
+Definition = [ "inline" ] ( BaseType | ScopedIdentifier ) [ ParameterList ]
              [ AttributeList ] ( VariableDefList | FunctionDef | OperatorOverload );
 
 ClassDefinition = "class" [ AttributeList ] Identifier
                   [ "(" [ ParameterDefList ] ")" ]
                   [
-                    ":" TypeIdentifier [ ParameterList ]
-                    { "," TypeIdentifier [ ParameterList ] }
+                    ":" ScopedIdentifier [ ParameterList ]
+                  { "," ScopedIdentifier [ ParameterList ] }
                   ]
                   "{" { Statement } "}";
 
@@ -47,16 +47,16 @@ OperatorOverload = ( "operator" Operator )
 ArrayDefinition  = "[" [ Expression ] "]";
 Initialiser      = ( "=" | ":=" ) Expression;
 
-ParameterDefList = ParameterDef { "," ParameterDef };
-ParameterDef     = [ ( BaseType | TypeIdentifier ) [ ParameterList ] ]
+ParameterDefList = ParameterDef { "," ParameterDef } [ "," ];
+ParameterDef     = [ ( BaseType | ScopedIdentifier ) [ ParameterList ] ]
                    Identifier { "[" "]" } [ Initialiser ];
 
-AttributeList       = "<" AttributeAssignment { "," AttributeAssignment } ">";
+AttributeList       = "<" AttributeAssignment { "," AttributeAssignment } [ "," ] ">";
 AttributeAssignment = Identifier "=" Primary;
 
-EnumDefinition = "enum" [ AttributeList ] Identifier "{" EnumMemberDef { "," EnumMemberDef } "}";
+EnumDefinition = "enum" [ AttributeList ] Identifier "{" EnumMemberDef { "," EnumMemberDef } [ "," ] "}";
 EnumMemberDef  = Identifier [ "=" Expression ];
 
-TypeIdentifier = Identifier { "." Identifier }; (* NameSpace.TypeName *)
+ScopedIdentifier = Identifier { "." Identifier }; (* NameSpace.Name *)
 (*----------------------------------------------------------------------------*)
 

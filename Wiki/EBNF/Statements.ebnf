@@ -50,8 +50,12 @@ FSM = "fsm" [ ParameterList ] [ AttributeList ] StatementBlock;
    Assignments form a list of HDL parameter assignments and the Definitions
    are port definitions. *)
 (* The "Assignment" is obtained through "Other" *)
-HDL = "hdl" "(" [ String { "," String } ] ")" [ AttributeList ] Identifier
-            [ "(" { Assignment } ")" ]
+HDL = "hdl" "(" [ String { "," String } [ "," ] ] ")" [ AttributeList ] Identifier
+            [ HDL_ParameterList ]
             "{" { ( [ DirectionSpecifier ] Definition ) | Stimulus } "}";
+
+HDL_ParameterList = "(" [ HDL_Parameter { "," HDL_Parameter } [ "," ] ] ")";
+HDL_Parameter     = Identifier "=" Expression;
 (*----------------------------------------------------------------------------*)
+
 
