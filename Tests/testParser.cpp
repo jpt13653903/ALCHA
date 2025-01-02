@@ -398,6 +398,13 @@ bool testModules()
         "    F = C\n"
         "    fence\n"
         "}",
+        "class myClass{\n"
+        "    num a\n"
+        "    num memberFunc(a, b, c){\n"
+        "        (this) . (a) = a\n"
+        "        fence\n"
+        "    }\n"
+        "}",
 
         "auto ABC[5](num A, pin B[], net C){\n"
         "    A = 3\n"

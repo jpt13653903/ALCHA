@@ -967,7 +967,7 @@ AST::AST* Parser::interpolatedString()
 }
 //------------------------------------------------------------------------------
 
-// ExpressionList = Expression {"," Expression };
+// ExpressionList = Expression {"," Expression } [ "," ];
 AST::AST* Parser::expressionList()
 {
     AST::AST* result = expression();
@@ -978,6 +978,8 @@ AST::AST* Parser::expressionList()
 
         while(!error && token.type == Token::Type::Comma){
             getToken();
+            if(token.type == Token::Type::CloseRound ||
+               token.type == Token::Type::CloseSquare) break;
             current = expression();
             if(!current){
                 printError("Expression expected");
@@ -992,7 +994,7 @@ AST::AST* Parser::expressionList()
 }
 //------------------------------------------------------------------------------
 
-// ParameterList = "(" [Parameter {"," Parameter } ] ")";
+// ParameterList = "(" [ Parameter {"," Parameter } [ "," ] ] ")";
 AST::AST* Parser::parameterList()
 {
     getToken();
@@ -1005,6 +1007,7 @@ AST::AST* Parser::parameterList()
 
         while(!error && token.type == Token::Type::Comma){
             getToken();
+            if(token.type == Token::Type::CloseRound) break;
             current = parameter();
             if(!current){
                 printError("Parameter expected");
@@ -1659,7 +1662,7 @@ AST::AST* Parser::arrayDefinition()
 }
 //------------------------------------------------------------------------------
 
-// ParameterDefList = ParameterDef {"," ParameterDef};
+// ParameterDefList = ParameterDef {"," ParameterDef} [ "," ];
 AST::AST* Parser::parameterDefList()
 {
     auto result = parameterDef();
@@ -1670,6 +1673,7 @@ AST::AST* Parser::parameterDefList()
     bool first = true;
     while(!error && token.type == Token::Type::Comma){
         getToken();
+        if(token.type == Token::Type::CloseRound) break;
         auto current = parameterDef();
         if(!current){
             if(!first) printError("Parameter definition expected");

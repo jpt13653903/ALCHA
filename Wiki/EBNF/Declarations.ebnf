@@ -47,7 +47,7 @@ OperatorOverload = ( "operator" Operator )
 ArrayDefinition  = "[" [ Expression ] "]";
 Initialiser      = ( "=" | ":=" ) Expression;
 
-ParameterDefList = ParameterDef { "," ParameterDef };
+ParameterDefList = ParameterDef { "," ParameterDef } [ "," ];
 ParameterDef     = [ ( BaseType | ScopedIdentifier ) [ ParameterList ] ]
                    Identifier { "[" "]" } [ Initialiser ];
 

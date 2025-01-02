@@ -60,7 +60,7 @@ class MyClass(num D, pin E, byte F): ParentClass1(A, B, C), ParentClass2(A, B, C
     F = C;
 }
 
-class <A=3, B=1, C=7> MyClass(num D, pin E, byte F): ParentClass1(A, B, C){
+class <A=3, B=1, C=7> MyClass(num D, pin E, byte F): ParentClass1(A, B, C, ){
     D = A;
     E = B;
     F = C;
@@ -71,6 +71,13 @@ class <A=3, B=1, C=7> MyClass(num D, pin E, byte F): ParentClass1(A, B, C), Pare
     E = B;
     F = C;
 }
+
+class myClass{
+    num a;
+    num memberFunc(a, b, c){
+        this.a = a;
+    }
+}
 //------------------------------------------------------------------------------
 
 // Function Definition
@@ -79,7 +86,7 @@ auto ABC[5](num A, pin B[], net C){
     A = 3;
     B = 5;
 }
-auto ABC(num A, pin(8) B, net(3, 15) C = 5){
+auto ABC(num A, pin(8) B, net(3, 15) C = 5, ){
     A = 3;
     B = 5;
 }
@@ -160,7 +167,7 @@ group< voltage            = 3.3,
 
 // Arrays and Initialisers
 
-pin A[7][8] := [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+pin A[7][8] := [[1, 2, 3], [4, 5, 6], [7, 8, 9], ];
 num A=4, B=7, C=1;
 //------------------------------------------------------------------------------
 
