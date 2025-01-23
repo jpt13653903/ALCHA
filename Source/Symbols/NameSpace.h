@@ -34,7 +34,6 @@ namespace Symbols{
 
         std::string& print() const override;
     };
-    extern NameSpace global;
 }
 //------------------------------------------------------------------------------
 

@@ -180,6 +180,10 @@ These include, among others:
   [High-Level Synthesis with Behavioral-Level Multicycle Path Analysis](http://dx.doi.org/10.1109/TCAD.2014.2361661)
   Transactions on Computer-Aided Design of Integrated Circuits and Systems, IEEE, December 2014, Volume 33, Number 12, Pages&nbsp;1832&nbsp;&ndash;&nbsp;1845
 
+- Robert Nystrom
+  [Crafting Interpreters](https://craftinginterpreters.com/)
+  Genever Benning, 2021, ISBN 978-0-9905829-3-9
+
 --------------------------------------------------------------------------------
 
 [SourceForge]: https://sourceforge.net/p/alcha/code
