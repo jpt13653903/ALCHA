@@ -107,6 +107,9 @@ void endTest(const char* message = "PASS")
 
 bool testInterpreter()
 {
+    Interpreter _interpreter;
+    interpreter = &_interpreter;
+
     if(!startTest("Interpreter")) return false;
 
     const char* expected[] = {
@@ -129,15 +132,35 @@ bool testInterpreter()
 }
 //------------------------------------------------------------------------------
 
-int main(int argc, const char** argv)
+bool testExpressions()
 {
     Interpreter _interpreter;
     interpreter = &_interpreter;
 
+    if(!startTest("Expressions")) return false;
+
+    const char* expected[] = {
+        "a", "1",
+        "b", "2",
+        "c", "3",
+        0, 0
+    };
+    if(!runTest(expected)) return false;
+
+    // TODO Test that the netlist table is correct
+
+    endTest();
+    return true;
+}
+//------------------------------------------------------------------------------
+
+int main(int argc, const char** argv)
+{
     setupTerminal();
 
     printf("\n");
     if(!testInterpreter()) goto MainError;
+    // if(!testExpressions()) goto MainError;
 
     endTest("All OK");
     return 0;

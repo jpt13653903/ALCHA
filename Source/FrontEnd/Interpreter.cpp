@@ -229,6 +229,14 @@ Number Interpreter::evaluate(const AST::Expression* expression)
 
     if(expression->left && expression->right){
         switch(expression->operation){
+            case Token::Type::TernaryIf:
+                printError(expression, "TODO: TernaryIf");
+                break;
+
+            case Token::Type::Elvis:
+                printError(expression, "TODO: Elvis");
+                break;
+
             case Token::Type::BitOr:
                 printError(expression, "TODO: BitOr");
                 break;
@@ -536,7 +544,7 @@ bool Interpreter::functionCall(const AST::FunctionCall* node)
 
 bool Interpreter::globalSpace(const AST::AST* node)
 {
-    while(node){
+    while(!error && node){
         switch(node->type){
             case AST::Type::VariableDef:
                 if(!variableDef((AST::VariableDef*)node)) return false;
