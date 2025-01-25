@@ -296,6 +296,9 @@ bool testExpressions()
         "X = [ A, B, C ]", "fence",
         "X = \"Hello There\"", "fence",
         "X = (A) + (B)", "fence",
+        "X =  - ( ~ (A))", "fence",
+        "X =  ~ ( ~ (A))", "fence",
+        "X =  & ( ~ (A))", "fence",
 
         "X = ((A) + ((B) * (C))) - (D)", "fence",
         "X = ( & (A)) + ((D) @ (6))", "fence",

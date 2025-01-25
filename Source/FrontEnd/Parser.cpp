@@ -620,29 +620,41 @@ AST::AST* Parser::range()
 // Unary = { "-" | "~" | ":" | "++" | "--" } Postfix;
 AST::AST* Parser::unary()
 {
-    int  line = token.line;
-    auto operation = token.type;
-    switch(token.type){
-        case Token::Type::Negate:
-        case Token::Type::BitNot:
-        case Token::Type::RawBits:
-        case Token::Type::Increment:
-        case Token::Type::Decrement:{
-            auto result = new AST::Expression(line, astFilenameIndex);
-            result->operation = operation;
-            getToken();
-            result->right = postfix();
-            if(!result->right){
-                printError("Invalid unary expression");
-                delete result;
-                return 0;
+    AST::AST*        result = 0;
+    AST::Expression* last   = 0;
+
+    while(!error && token.type > Token::Type::EndOfFile){
+        int  line = token.line;
+        auto operation = token.type;
+
+        switch(token.type){
+            case Token::Type::Negate:
+            case Token::Type::BitNot:
+            case Token::Type::RawBits:
+            case Token::Type::Increment:
+            case Token::Type::Decrement:{
+                auto current = new AST::Expression(line, astFilenameIndex);
+                if(last) last->right = current;
+                else     result      = current;
+                last = current;
+                current->operation = operation;
+                getToken();
+                break;
             }
-            return result;
+            default:{
+                auto current = postfix();
+                if(!current){
+                    if(last) printError("Invalid unary expression");
+                    delete result;
+                    return 0;
+                }
+                if(last) last->right = current;
+                else     result      = current;
+                return result;
+            }
         }
-        default:
-            return postfix();
     }
-    return 0;
+    return result;
 }
 //------------------------------------------------------------------------------
 
