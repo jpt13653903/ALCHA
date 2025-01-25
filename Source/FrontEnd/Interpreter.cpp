@@ -57,6 +57,14 @@ void Interpreter::printError(const AST::AST* node, const char* message)
 }
 //------------------------------------------------------------------------------
 
+const tm* Interpreter::time() const
+{
+    time_t timer;
+    ::time(&timer);
+    return localtime(&timer);
+}
+//------------------------------------------------------------------------------
+
 Number Interpreter::evaluate(const AST::AST* node)
 {
     switch(node->type){
@@ -239,14 +247,6 @@ Number Interpreter::evaluate(const AST::Expression* expression)
 }
 //------------------------------------------------------------------------------
 
-const tm* Interpreter::time() const
-{
-    time_t timer;
-    ::time(&timer);
-    return localtime(&timer);
-}
-//------------------------------------------------------------------------------
-
 Number Interpreter::evaluate(const AST::Identifier* expression)
 {
     auto symbol = global.symbols.find(expression->name);
@@ -376,6 +376,111 @@ bool Interpreter::print(const AST::Identifier* node)
            node->print().c_str(),
            evaluate(node).print().c_str());
     return true;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::AST* node)
+{
+    while(!error && node){
+        switch(node->type){
+            case AST::Type::VariableDef:
+                if(!execute((AST::VariableDef*)node)) return false;
+                break;
+
+            case AST::Type::FunctionDef:
+                if(!execute((AST::FunctionDef*)node)) return false;
+                break;
+
+            case AST::Type::OperatorOverload:
+                if(!execute((AST::OperatorOverload*)node)) return false;
+                break;
+
+            case AST::Type::ClassDefinition:
+                if(!execute((AST::ClassDefinition*)node)) return false;
+                break;
+
+            case AST::Type::EnumDefinition:
+                if(!execute((AST::EnumDefinition*)node)) return false;
+                break;
+
+            case AST::Type::Alias:
+                if(!execute((AST::Alias*)node)) return false;
+                break;
+
+            case AST::Type::Import:
+                if(!execute((AST::Import*)node)) return false;
+                break;
+
+            case AST::Type::GroupDefinition:
+                if(!execute((AST::GroupDefinition*)node)) return false;
+                break;
+
+            case AST::Type::AccessDirectionGroup:
+                if(!execute((AST::AccessDirectionGroup*)node)) return false;
+                break;
+
+            case AST::Type::ControlStatement:
+                if(!execute((AST::ControlStatement*)node)) return false;
+                break;
+
+            case AST::Type::Jump:
+                if(!execute((AST::Jump*)node)) return false;
+                break;
+
+            case AST::Type::FunctionCall:
+                if(!execute((AST::FunctionCall*)node)) return false;
+                break;
+
+            case AST::Type::NameSpacePush:
+                if(!execute((AST::NameSpacePush*)node)) return false;
+                break;
+
+            case AST::Type::Assignment:
+                if(!execute((AST::Assignment*)node)) return false;
+                break;
+
+            case AST::Type::ClockedConstruct:
+                if(!execute((AST::ClockedConstruct*)node)) return false;
+                break;
+
+            case AST::Type::HdlConstruct:
+                if(!execute((AST::HdlConstruct*)node)) return false;
+                break;
+
+            case AST::Type::StimulusOrEmulate:
+                if(!execute((AST::StimulusOrEmulate*)node)) return false;
+                break;
+
+            case AST::Type::ForkJoin:
+                if(!execute((AST::ForkJoin*)node)) return false;
+                break;
+
+            case AST::Type::Assert:
+                if(!execute((AST::Assert*)node)) return false;
+                break;
+
+            case AST::Type::CoverBins:
+                if(!execute((AST::CoverBins*)node)) return false;
+                break;
+
+            case AST::Type::CoverGroup:
+                if(!execute((AST::CoverGroup*)node)) return false;
+                break;
+
+            case AST::Type::Fence:
+                if(!execute((AST::Fence*)node)) return false;
+                break;
+
+            default:{
+                string s = "Unexpected node type: ";
+                s += node->decodeType();
+                printError(node, s.c_str());
+                return false;
+            }
+        }
+        node = node->next;
+    }
+    return error;
 }
 //------------------------------------------------------------------------------
 
@@ -736,111 +841,6 @@ bool Interpreter::execute(const AST::VariableDef* node)
 bool Interpreter::execute(const AST::Wait* node)
 {
     return false;
-}
-//------------------------------------------------------------------------------
-
-bool Interpreter::execute(const AST::AST* node)
-{
-    while(!error && node){
-        switch(node->type){
-            case AST::Type::VariableDef:
-                if(!execute((AST::VariableDef*)node)) return false;
-                break;
-
-            case AST::Type::FunctionDef:
-                if(!execute((AST::FunctionDef*)node)) return false;
-                break;
-
-            case AST::Type::OperatorOverload:
-                if(!execute((AST::OperatorOverload*)node)) return false;
-                break;
-
-            case AST::Type::ClassDefinition:
-                if(!execute((AST::ClassDefinition*)node)) return false;
-                break;
-
-            case AST::Type::EnumDefinition:
-                if(!execute((AST::EnumDefinition*)node)) return false;
-                break;
-
-            case AST::Type::Alias:
-                if(!execute((AST::Alias*)node)) return false;
-                break;
-
-            case AST::Type::Import:
-                if(!execute((AST::Import*)node)) return false;
-                break;
-
-            case AST::Type::GroupDefinition:
-                if(!execute((AST::GroupDefinition*)node)) return false;
-                break;
-
-            case AST::Type::AccessDirectionGroup:
-                if(!execute((AST::AccessDirectionGroup*)node)) return false;
-                break;
-
-            case AST::Type::ControlStatement:
-                if(!execute((AST::ControlStatement*)node)) return false;
-                break;
-
-            case AST::Type::Jump:
-                if(!execute((AST::Jump*)node)) return false;
-                break;
-
-            case AST::Type::FunctionCall:
-                if(!execute((AST::FunctionCall*)node)) return false;
-                break;
-
-            case AST::Type::NameSpacePush:
-                if(!execute((AST::NameSpacePush*)node)) return false;
-                break;
-
-            case AST::Type::Assignment:
-                if(!execute((AST::Assignment*)node)) return false;
-                break;
-
-            case AST::Type::ClockedConstruct:
-                if(!execute((AST::ClockedConstruct*)node)) return false;
-                break;
-
-            case AST::Type::HdlConstruct:
-                if(!execute((AST::HdlConstruct*)node)) return false;
-                break;
-
-            case AST::Type::StimulusOrEmulate:
-                if(!execute((AST::StimulusOrEmulate*)node)) return false;
-                break;
-
-            case AST::Type::ForkJoin:
-                if(!execute((AST::ForkJoin*)node)) return false;
-                break;
-
-            case AST::Type::Assert:
-                if(!execute((AST::Assert*)node)) return false;
-                break;
-
-            case AST::Type::CoverBins:
-                if(!execute((AST::CoverBins*)node)) return false;
-                break;
-
-            case AST::Type::CoverGroup:
-                if(!execute((AST::CoverGroup*)node)) return false;
-                break;
-
-            case AST::Type::Fence:
-                if(!execute((AST::Fence*)node)) return false;
-                break;
-
-            default:{
-                string s = "Unexpected node type: ";
-                s += node->decodeType();
-                printError(node, s.c_str());
-                return false;
-            }
-        }
-        node = node->next;
-    }
-    return true;
 }
 //------------------------------------------------------------------------------
 

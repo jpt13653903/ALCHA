@@ -72,29 +72,31 @@ class Interpreter{
 
     private: // Interpreter State
         bool error = false;
+        void printError(const AST::AST* node, const char* message);
 
     private: // Helper functions
         const tm* time() const;
 
-    private: // Evaluate Functions
-        void printError(const AST::AST* node, const char* message);
+    private: // Evaluate
+        Number evaluate(const AST::AST*        expression);
+        Number evaluate(const AST::Literal*    expression);
+        Number evaluate(const AST::Expression* expression);
+        Number evaluate(const AST::Identifier* expression);
 
+    private: // Assign
+        bool assign(const AST::AST*        target, const AST::AST* expression);
+        bool assign(const AST::Identifier* target, const AST::AST* expression);
+        bool assign(      Symbols::Num*    target, const AST::AST* expression);
+
+    private: // Print
         bool print(const AST::AST*        node);
         bool print(const AST::Literal*    node);
         bool print(const AST::String*     node);
         bool print(const AST::Expression* node);
         bool print(const AST::Identifier* node);
 
-        bool assign(const AST::AST*        target, const AST::AST* expression);
-        bool assign(const AST::Identifier* target, const AST::AST* expression);
-        bool assign(      Symbols::Num*    target, const AST::AST* expression);
-
-        Number evaluate(const AST::AST*        expression);
-        Number evaluate(const AST::Literal*    expression);
-        Number evaluate(const AST::Expression* expression);
-        Number evaluate(const AST::Identifier* expression);
-
-    private: // Execute Functions
+    private: // Execute
+        bool execute(const AST::AST*                  node);
         bool execute(const AST::AccessDirectionGroup* node);
         bool execute(const AST::Alias*                node);
         bool execute(const AST::Array*                node);
@@ -131,8 +133,6 @@ class Interpreter{
         bool execute(const AST::Stringify*            node);
         bool execute(const AST::VariableDef*          node);
         bool execute(const AST::Wait*                 node);
-
-        bool execute(const AST::AST* node);
 
     public: // Testable structures
         Symbols::NameSpace global;
