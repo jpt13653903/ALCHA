@@ -34,6 +34,9 @@
 #include "AST/ClockedConstruct.h"
 #include "AST/Concatenate.h"
 #include "AST/ControlStatement.h"
+#include "AST/CoverBins.h"
+#include "AST/CoverGroup.h"
+#include "AST/CycleDelay.h"
 #include "AST/EnumDefinition.h"
 #include "AST/Expression.h"
 #include "AST/Fence.h"
@@ -50,6 +53,8 @@
 #include "AST/NameSpacePush.h"
 #include "AST/OperatorOverload.h"
 #include "AST/ParameterDef.h"
+#include "AST/Repetition.h"
+#include "AST/SequenceDef.h"
 #include "AST/Slice.h"
 #include "AST/StimulusOrEmulate.h"
 #include "AST/AST_String.h"
@@ -71,7 +76,7 @@ class Interpreter{
     private: // Helper functions
         const tm* time() const;
 
-    private: // Interpreter Functions
+    private: // Evaluate Functions
         void printError(const AST::AST* node, const char* message);
 
         bool print(const AST::AST*        node);
@@ -89,14 +94,45 @@ class Interpreter{
         Number evaluate(const AST::Expression* expression);
         Number evaluate(const AST::Identifier* expression);
 
-        bool variableDef     (const AST::VariableDef*      node);
-        bool functionDef     (const AST::FunctionDef*      node);
-        bool operatorOverload(const AST::OperatorOverload* node);
-        bool import          (const AST::Import*           node);
-        bool assignment      (const AST::Assignment*       node);
-        bool functionCall    (const AST::FunctionCall*     node);
+    private: // Execute Functions
+        bool execute(const AST::AccessDirectionGroup* node);
+        bool execute(const AST::Alias*                node);
+        bool execute(const AST::Array*                node);
+        bool execute(const AST::Assert*               node);
+        bool execute(const AST::Assignment*           node);
+        bool execute(const AST::ClassDefinition*      node);
+        bool execute(const AST::ClockedConstruct*     node);
+        bool execute(const AST::Concatenate*          node);
+        bool execute(const AST::ControlStatement*     node);
+        bool execute(const AST::CoverBins*            node);
+        bool execute(const AST::CoverGroup*           node);
+        bool execute(const AST::CycleDelay*           node);
+        bool execute(const AST::EnumDefinition*       node);
+        bool execute(const AST::Expression*           node);
+        bool execute(const AST::Fence*                node);
+        bool execute(const AST::ForkJoin*             node);
+        bool execute(const AST::FunctionCall*         node);
+        bool execute(const AST::FunctionDef*          node);
+        bool execute(const AST::GroupDefinition*      node);
+        bool execute(const AST::HdlConstruct*         node);
+        bool execute(const AST::Identifier*           node);
+        bool execute(const AST::Import*               node);
+        bool execute(const AST::InterpolatedString*   node);
+        bool execute(const AST::Jump*                 node);
+        bool execute(const AST::Literal*              node);
+        bool execute(const AST::NameSpacePush*        node);
+        bool execute(const AST::OperatorOverload*     node);
+        bool execute(const AST::ParameterDef*         node);
+        bool execute(const AST::Repetition*           node);
+        bool execute(const AST::SequenceDef*          node);
+        bool execute(const AST::Slice*                node);
+        bool execute(const AST::StimulusOrEmulate*    node);
+        bool execute(const AST::String*               node);
+        bool execute(const AST::Stringify*            node);
+        bool execute(const AST::VariableDef*          node);
+        bool execute(const AST::Wait*                 node);
 
-        bool globalSpace(const AST::AST* node);
+        bool execute(const AST::AST* node);
 
     public: // Testable structures
         Symbols::NameSpace global;

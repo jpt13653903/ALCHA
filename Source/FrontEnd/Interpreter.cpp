@@ -57,153 +57,6 @@ void Interpreter::printError(const AST::AST* node, const char* message)
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::variableDef(const AST::VariableDef* node)
-{
-    auto def = node->defList;
-    while(def){
-        if(!def->name.size()){
-            printError(node, "Definition with no name");
-            return false;
-        }
-        if(global.symbols.contains(def->name)){
-            string s = def->name + " already exists in the current namespace";
-            printError(node, s.c_str());
-            return false;
-        }
-
-        switch(node->defType){
-            case Token::Type::Pin:
-                printError(node, "TODO Pin Definition");
-                return false;
-
-            case Token::Type::Net:
-                printError(node, "TODO Net Definition");
-                return false;
-
-            case Token::Type::Void:
-                printError(node, "TODO Void Definition");
-                return false;
-
-            case Token::Type::Auto:
-                printError(node, "TODO Auto Definition");
-                return false;
-
-            case Token::Type::Byte:
-                printError(node, "TODO Byte Definition");
-                return false;
-
-            case Token::Type::Char:
-                printError(node, "TODO Char Definition");
-                return false;
-
-            case Token::Type::Num:{
-                auto symbol = new Symbols::Num;
-                global.symbols[def->name] = symbol;
-                if(node->parameters){
-                    printError(node, "TODO Definition with parameters");
-                }
-                if(node->attributes){
-                    printError(node, "TODO Definition with attributes");
-                }
-                if(def->initialiser){
-                    symbol->value = evaluate(def->initialiser);
-                }
-                break;
-            }
-
-            case Token::Type::Func:
-                printError(node, "TODO Func Definition");
-                return false;
-
-            case Token::Type::Identifier:
-                printError(node, "TODO TypeIdentifier Definition");
-                return false;
-
-            default:
-                printError(node, "Unknown type in variable definition");
-                return false;
-        }
-        def = def->next;
-    }
-    return true;
-}
-//------------------------------------------------------------------------------
-
-bool Interpreter::functionDef(const AST::FunctionDef* node)
-{
-    return true;
-}
-//------------------------------------------------------------------------------
-
-bool Interpreter::operatorOverload(const AST::OperatorOverload* node)
-{
-    return true;
-}
-//------------------------------------------------------------------------------
-
-bool Interpreter::import(const AST::Import* node)
-{
-    if(node->filename->type != AST::Type::String){
-        printError(node, "TODO: Imports by interpolated string");
-        return false;
-    }
-
-    fs::path filename = ((AST::String*)node->filename)->data + ".alc";
-
-    // If the path is absolute, use it directly
-    if(filename.is_absolute()){
-        if(!fs::exists(filename)){
-            string msg = "Cannot find file ";
-            msg += filename.string();
-            printError(node, msg.c_str());
-            return false;
-        }
-    }else{
-        // otherwise, use the same path as the current file
-        fs::path path = fs::path(AST::filenameBuffer[node->filenameIndex]).parent_path();
-        filename = path / (((AST::String*)node->filename)->data + ".alc");
-
-        // otherwise, use the path of the top-level module
-        if(!fs::exists(filename)){
-            path = fs::path(AST::filenameBuffer[0]).parent_path();
-            filename = path / (((AST::String*)node->filename)->data + ".alc");
-
-            // otherwise, use the current working directory
-            if(!fs::exists(filename)){
-                filename = ((AST::String*)node->filename)->data + ".alc";
-
-                // otherwise, error
-                if(!fs::exists(filename)){
-                    string msg = "Cannot find file ";
-                    msg += filename.string();
-                    printError(node, msg.c_str());
-                    return false;
-                }
-            }
-        }
-    }
-
-    Parser parser;
-    auto ast = parser.parse(filename.string().c_str());
-
-    if(!ast){
-        string msg = "Cannot parse file ";
-        msg += filename.string();
-        printError(node, msg.c_str());
-        return false;
-    }
-    if(!run(ast)){
-        string msg = "Cannot interpret AST of file ";
-        msg += filename.string();
-        printError(node, msg.c_str());
-        delete ast;
-        return false;
-    }
-    delete ast;
-    return true;
-}
-//------------------------------------------------------------------------------
-
 Number Interpreter::evaluate(const AST::AST* node)
 {
     switch(node->type){
@@ -373,9 +226,10 @@ Number Interpreter::evaluate(const AST::Expression* expression)
                 printError(expression, "TODO: LogicalNot");
                 break;
 
-            default:
+            default:{
                 printError(expression, "TODO: Unsupported expression operation");
                 return 0;
+            }
         }
     }else{
         printError(expression, "Expression has no operands");
@@ -445,7 +299,7 @@ bool Interpreter::assign(const AST::AST* target, const AST::AST* expression)
         case AST::Type::Identifier: return assign((AST::Identifier*)target, expression);
 
         default:
-            printError(target, "Unsupported assignment target type");
+            printError(target, "Unsupported execute target type");
             return false;
     }
 }
@@ -463,7 +317,7 @@ bool Interpreter::assign(const AST::Identifier* target, const AST::AST* expressi
         case Symbols::Type::Num: return assign((Symbols::Num*)object, expression);
 
         default:
-            printError(target, "Unsupported assignment target type");
+            printError(target, "Unsupported execute target type");
             return false;
     }
 }
@@ -473,12 +327,6 @@ bool Interpreter::assign(Symbols::Num* target, const AST::AST* expression)
 {
     target->value = evaluate(expression);
     return !error;
-}
-//------------------------------------------------------------------------------
-
-bool Interpreter::assignment(const AST::Assignment* node)
-{
-    return assign(node->target, node->expression);
 }
 //------------------------------------------------------------------------------
 
@@ -531,7 +379,114 @@ bool Interpreter::print(const AST::Identifier* node)
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::functionCall(const AST::FunctionCall* node)
+bool Interpreter::execute(const AST::AccessDirectionGroup* node)
+{
+    printError(node, "TODO: AccessDirectionGroup");
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::Alias* node)
+{
+    printError(node, "TODO: Alias");
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::Array* node)
+{
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::Assert* node)
+{
+    printError(node, "TODO: Assert");
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::Assignment* node)
+{
+    return assign(node->target, node->expression);
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::ClassDefinition* node)
+{
+    printError(node, "TODO: ClassDefinition");
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::ClockedConstruct* node)
+{
+    printError(node, "TODO: ClockedConstruct");
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::Concatenate* node)
+{
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::ControlStatement* node)
+{
+    printError(node, "TODO: ControlStatement");
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::CoverBins* node)
+{
+    printError(node, "TODO: CoverBins");
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::CoverGroup* node)
+{
+    printError(node, "TODO: CoverGroup");
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::CycleDelay* node)
+{
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::EnumDefinition* node)
+{
+    printError(node, "TODO: EnumDefinition");
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::Expression* node)
+{
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::Fence* node)
+{
+    // TODO: Fence
+    return true;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::ForkJoin* node)
+{
+    printError(node, "TODO: ForkJoin");
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::FunctionCall* node)
 {
     if(node->name->type == AST::Type::Identifier &&
        ((AST::Identifier*)node->name)->name == "print"){
@@ -542,101 +497,346 @@ bool Interpreter::functionCall(const AST::FunctionCall* node)
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::globalSpace(const AST::AST* node)
+bool Interpreter::execute(const AST::FunctionDef* node)
+{
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::GroupDefinition* node)
+{
+    printError(node, "TODO: GroupDefinition");
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::HdlConstruct* node)
+{
+    printError(node, "TODO: HdlConstruct");
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::Identifier* node)
+{
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::Import* node)
+{
+    if(node->filename->type != AST::Type::String){
+        printError(node, "TODO: Imports by interpolated string");
+        return false;
+    }
+
+    fs::path filename = ((AST::String*)node->filename)->data + ".alc";
+
+    // If the path is absolute, use it directly
+    if(filename.is_absolute()){
+        if(!fs::exists(filename)){
+            string msg = "Cannot find file ";
+            msg += filename.string();
+            printError(node, msg.c_str());
+            return false;
+        }
+    }else{
+        // otherwise, use the same path as the current file
+        fs::path path = fs::path(AST::filenameBuffer[node->filenameIndex]).parent_path();
+        filename = path / (((AST::String*)node->filename)->data + ".alc");
+
+        // otherwise, use the path of the top-level module
+        if(!fs::exists(filename)){
+            path = fs::path(AST::filenameBuffer[0]).parent_path();
+            filename = path / (((AST::String*)node->filename)->data + ".alc");
+
+            // otherwise, use the current working directory
+            if(!fs::exists(filename)){
+                filename = ((AST::String*)node->filename)->data + ".alc";
+
+                // otherwise, error
+                if(!fs::exists(filename)){
+                    string msg = "Cannot find file ";
+                    msg += filename.string();
+                    printError(node, msg.c_str());
+                    return false;
+                }
+            }
+        }
+    }
+
+    Parser parser;
+    auto ast = parser.parse(filename.string().c_str());
+
+    if(!ast){
+        string msg = "Cannot parse file ";
+        msg += filename.string();
+        printError(node, msg.c_str());
+        return false;
+    }
+    if(!run(ast)){
+        string msg = "Cannot interpret AST of file ";
+        msg += filename.string();
+        printError(node, msg.c_str());
+        delete ast;
+        return false;
+    }
+    delete ast;
+    return true;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::InterpolatedString* node)
+{
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::Jump* node)
+{
+    printError(node, "TODO: Jump");
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::Literal* node)
+{
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::NameSpacePush* node)
+{
+    printError(node, "TODO: NameSpacePush");
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::OperatorOverload* node)
+{
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::ParameterDef* node)
+{
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::Repetition* node)
+{
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::SequenceDef* node)
+{
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::Slice* node)
+{
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::StimulusOrEmulate* node)
+{
+    printError(node, "TODO: StimulusOrEmulate");
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::String* node)
+{
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::Stringify* node)
+{
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::VariableDef* node)
+{
+    auto def = node->defList;
+    while(def){
+        if(!def->name.size()){
+            printError(node, "Definition with no name");
+            return false;
+        }
+        if(global.symbols.contains(def->name)){
+            string s = def->name + " already exists in the current namespace";
+            printError(node, s.c_str());
+            return false;
+        }
+
+        switch(node->defType){
+            case Token::Type::Pin:
+                printError(node, "TODO Pin Definition");
+                return false;
+
+            case Token::Type::Net:
+                printError(node, "TODO Net Definition");
+                return false;
+
+            case Token::Type::Void:
+                printError(node, "TODO Void Definition");
+                return false;
+
+            case Token::Type::Auto:
+                printError(node, "TODO Auto Definition");
+                return false;
+
+            case Token::Type::Byte:
+                printError(node, "TODO Byte Definition");
+                return false;
+
+            case Token::Type::Char:
+                printError(node, "TODO Char Definition");
+                return false;
+
+            case Token::Type::Num:{
+                auto symbol = new Symbols::Num;
+                global.symbols[def->name] = symbol;
+                if(node->parameters){
+                    printError(node, "TODO Definition with parameters");
+                }
+                if(node->attributes){
+                    printError(node, "TODO Definition with attributes");
+                }
+                if(def->initialiser){
+                    symbol->value = evaluate(def->initialiser);
+                }
+                break;
+            }
+
+            case Token::Type::Func:
+                printError(node, "TODO Func Definition");
+                return false;
+
+            case Token::Type::Identifier:
+                printError(node, "TODO TypeIdentifier Definition");
+                return false;
+
+            default:
+                printError(node, "Unknown type in variable definition");
+                return false;
+        }
+        def = def->next;
+    }
+    return true;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::Wait* node)
+{
+    return false;
+}
+//------------------------------------------------------------------------------
+
+bool Interpreter::execute(const AST::AST* node)
 {
     while(!error && node){
         switch(node->type){
             case AST::Type::VariableDef:
-                if(!variableDef((AST::VariableDef*)node)) return false;
+                if(!execute((AST::VariableDef*)node)) return false;
                 break;
 
             case AST::Type::FunctionDef:
-                if(!functionDef((AST::FunctionDef*)node)) return false;
+                if(!execute((AST::FunctionDef*)node)) return false;
                 break;
 
             case AST::Type::OperatorOverload:
-                if(!operatorOverload((AST::OperatorOverload*)node)) return false;
+                if(!execute((AST::OperatorOverload*)node)) return false;
                 break;
 
             case AST::Type::ClassDefinition:
-                printError(node, "TODO: ClassDefinition");
+                if(!execute((AST::ClassDefinition*)node)) return false;
                 break;
 
             case AST::Type::EnumDefinition:
-                printError(node, "TODO: EnumDefinition");
+                if(!execute((AST::EnumDefinition*)node)) return false;
                 break;
 
             case AST::Type::Alias:
-                printError(node, "TODO: Alias");
+                if(!execute((AST::Alias*)node)) return false;
                 break;
 
             case AST::Type::Import:
-                if(!import((AST::Import*)node)) return false;
+                if(!execute((AST::Import*)node)) return false;
                 break;
 
             case AST::Type::GroupDefinition:
-                printError(node, "TODO: GroupDefinition");
+                if(!execute((AST::GroupDefinition*)node)) return false;
                 break;
 
             case AST::Type::AccessDirectionGroup:
-                printError(node, "TODO: AccessDirectionGroup");
+                if(!execute((AST::AccessDirectionGroup*)node)) return false;
                 break;
 
             case AST::Type::ControlStatement:
-                printError(node, "TODO: ControlStatement");
+                if(!execute((AST::ControlStatement*)node)) return false;
                 break;
 
             case AST::Type::Jump:
-                printError(node, "TODO: Jump");
+                if(!execute((AST::Jump*)node)) return false;
                 break;
 
             case AST::Type::FunctionCall:
-                if(!functionCall((AST::FunctionCall*)node)) return false;
+                if(!execute((AST::FunctionCall*)node)) return false;
                 break;
 
             case AST::Type::NameSpacePush:
-                printError(node, "TODO: NameSpacePush");
+                if(!execute((AST::NameSpacePush*)node)) return false;
                 break;
 
             case AST::Type::Assignment:
-                if(!assignment((AST::Assignment*)node)) return false;
+                if(!execute((AST::Assignment*)node)) return false;
                 break;
 
             case AST::Type::ClockedConstruct:
-                printError(node, "TODO: ClockedConstruct");
+                if(!execute((AST::ClockedConstruct*)node)) return false;
                 break;
 
             case AST::Type::HdlConstruct:
-                printError(node, "TODO: HdlConstruct");
+                if(!execute((AST::HdlConstruct*)node)) return false;
                 break;
 
             case AST::Type::StimulusOrEmulate:
-                printError(node, "TODO: StimulusOrEmulate");
+                if(!execute((AST::StimulusOrEmulate*)node)) return false;
                 break;
 
             case AST::Type::ForkJoin:
-                printError(node, "TODO: ForkJoin");
+                if(!execute((AST::ForkJoin*)node)) return false;
                 break;
 
             case AST::Type::Assert:
-                printError(node, "TODO: Assert");
+                if(!execute((AST::Assert*)node)) return false;
                 break;
 
             case AST::Type::CoverBins:
-                printError(node, "TODO: CoverBins");
+                if(!execute((AST::CoverBins*)node)) return false;
                 break;
 
             case AST::Type::CoverGroup:
-                printError(node, "TODO: CoverGroup");
+                if(!execute((AST::CoverGroup*)node)) return false;
                 break;
 
             case AST::Type::Fence:
-                // TODO: Fence
+                if(!execute((AST::Fence*)node)) return false;
                 break;
 
-            default:
-                printError(node, "Unexpected node type");
+            default:{
+                string s = "Unexpected node type: ";
+                s += node->decodeType();
+                printError(node, s.c_str());
                 return false;
+            }
         }
         node = node->next;
     }
@@ -646,7 +846,7 @@ bool Interpreter::globalSpace(const AST::AST* node)
 
 bool Interpreter::run(const AST::AST* ast)
 {
-    if(!globalSpace(ast)) return false;
+    if(!execute(ast)) return false;
 
     if(error) return false;
     return true;

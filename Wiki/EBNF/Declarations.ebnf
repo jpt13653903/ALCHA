@@ -10,8 +10,6 @@ Statement  = [ Wait ]
            | Stimulus | Emulate | ForkJoin | SequenceDef | Assert
            | CoverBins | CoverGroup | ";" );
 
-Label  = Identifier ":"; (* Only useful within an fsm construct *)
-
 (* Inline only applies to function definitions *)
 Definition = [ "inline" ] ( BaseType | ScopedIdentifier ) [ ParameterList ]
              [ AttributeList ] ( VariableDefList | FunctionDef | OperatorOverload );
