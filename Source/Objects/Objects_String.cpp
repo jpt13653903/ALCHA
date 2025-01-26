@@ -18,34 +18,31 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Symbols_Symbol_h
-#define Symbols_Symbol_h
+#include "Objects_String.h"
 //------------------------------------------------------------------------------
 
-#include "General.h"
-#include "Type.h"
-
-#include <string>
-#include <map>
+using std::string;
+using namespace Objects;
 //------------------------------------------------------------------------------
 
-namespace Symbols{
-
-    struct Symbol{
-        Type type;
-        std::map<std::string, Symbol*> attributes;
-
-        Symbol* parent;
-
-        Symbol(Type type);
-        virtual ~Symbol();
-
-        const char* decodeType() const;
-        virtual std::string& print() const = 0;
-    };
+String::String(): Object(Type::String)
+{
 }
 //------------------------------------------------------------------------------
 
-#endif
+String::~String()
+{
+}
 //------------------------------------------------------------------------------
+
+std::string& String::print() const
+{
+    static string result;
+
+    result = '"' + data + '"';
+
+    return result;
+}
+//------------------------------------------------------------------------------
+
 

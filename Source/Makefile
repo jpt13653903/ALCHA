@@ -43,7 +43,7 @@ Includes += -I.
 Includes += -IAST
 Includes += -IFrontEnd
 Includes += -ITools
-Includes += -ISymbols
+Includes += -IObjects
 Includes += -I$(Toolbox)
 #-------------------------------------------------------------------------------
 

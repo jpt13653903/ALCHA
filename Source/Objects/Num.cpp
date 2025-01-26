@@ -18,18 +18,30 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Symbols_Type_h
-#define Symbols_Type_h
+#include "Num.h"
 //------------------------------------------------------------------------------
 
-namespace Symbols{
-    enum class Type{
-        NameSpace,
-        Num
-    };
+using std::string;
+using namespace Objects;
+//------------------------------------------------------------------------------
+
+Num::Num(): Object(Type::Num)
+{
 }
 //------------------------------------------------------------------------------
 
-#endif
+Num::~Num()
+{
+}
+//------------------------------------------------------------------------------
+
+std::string& Num::print() const
+{
+    static string result;
+
+    result = value.print();
+
+    return result;
+}
 //------------------------------------------------------------------------------
 

@@ -37,6 +37,16 @@ Interpreter::Interpreter()
 
 Interpreter::~Interpreter()
 {
+    clearTempStack();
+}
+//------------------------------------------------------------------------------
+
+void Interpreter::clearTempStack()
+{
+    for(auto& object: tempStack){
+        delete object;
+    }
+    tempStack.clear();
 }
 //------------------------------------------------------------------------------
 
@@ -48,7 +58,7 @@ void Interpreter::printError(const AST::AST* node, const char* message)
     if(!node) return;
 
     ::printError(node->line, AST::filenameBuffer[node->filenameIndex], message);
-    if(node) printf(
+    printf(
         ANSI_FG_CYAN "  node: " ANSI_FG_BRIGHT_MAGENTA "%s\n"
         ANSI_RESET   "%s\n",
         node->decodeType(),
@@ -65,231 +75,377 @@ const tm* Interpreter::time() const
 }
 //------------------------------------------------------------------------------
 
-Number Interpreter::evaluate(const AST::AST* node)
+Objects::Object* Interpreter::evaluateInfix(const AST::Expression* node,
+                                            const Objects::Object* left,
+                                            const Objects::Object* right)
+{
+    if(!left ) return 0;
+    if(!right) return 0;
+
+    switch(left->type){
+        case Objects::Type::Num:
+            switch(right->type){
+                case Objects::Type::Num:
+                    return evaluateInfix(node, (Objects::Num*)left, (Objects::Num*)right);
+
+                default:
+                    printError(node, "Invalid right-hand operand type for infix operation");
+            }
+
+        default:
+            printError(node, "Invalid left-hand operand type for infix operation");
+    }
+    return 0;
+}
+//------------------------------------------------------------------------------
+
+Objects::Object* Interpreter::evaluateInfix(const AST::Expression* node,
+                                            const Objects::Num* left,
+                                            const Objects::Num* right)
+{
+    auto result = new Objects::Num;
+    tempStack.push_back(result);
+
+    switch(node->operation){
+        case Token::Type::TernaryIf:
+            printError(node, "TODO: TernaryIf");
+            break;
+
+        case Token::Type::Elvis:
+            printError(node, "TODO: Elvis");
+            break;
+
+        case Token::Type::BitOr:
+            printError(node, "TODO: BitOr");
+            break;
+
+        case Token::Type::BitNor:
+            printError(node, "TODO: BitNor");
+            break;
+
+        case Token::Type::BitXor:
+            printError(node, "TODO: BitXor");
+            break;
+
+        case Token::Type::BitXnor:
+            printError(node, "TODO: BitXnor");
+            break;
+
+        case Token::Type::BitAnd:
+            printError(node, "TODO: BitAnd");
+            break;
+
+        case Token::Type::BitNand:
+            printError(node, "TODO: BitNand");
+            break;
+
+        case Token::Type::Equal:
+            printError(node, "TODO: Equal");
+            break;
+
+        case Token::Type::NotEqual:
+            printError(node, "TODO: NotEqual");
+            break;
+
+        case Token::Type::Less:
+            printError(node, "TODO: Less");
+            break;
+
+        case Token::Type::Greater:
+            printError(node, "TODO: Greater");
+            break;
+
+        case Token::Type::LessEqual:
+            printError(node, "TODO: LessEqual");
+            break;
+
+        case Token::Type::GreaterEqual:
+            printError(node, "TODO: GreaterEqual");
+            break;
+
+        case Token::Type::ShiftLeft:
+            printError(node, "TODO: ShiftLeft");
+            break;
+
+        case Token::Type::ShiftRight:
+            printError(node, "TODO: ShiftRight");
+            break;
+
+        case Token::Type::Add:
+            result->value = left->value + right->value;
+            return result;
+
+        case Token::Type::Subtract:
+            result->value = left->value - right->value;
+            return result;
+
+        case Token::Type::Multiply:
+            result->value = left->value * right->value;
+            return result;
+
+        case Token::Type::Divide:
+            result->value = left->value / right->value;
+            return result;
+
+        case Token::Type::Modulus:
+            printError(node, "TODO: Modulus");
+            break;
+
+        case Token::Type::Exponential:
+            printError(node, "TODO: Exponential");
+            break;
+
+        case Token::Type::Factorial:
+            printError(node, "TODO: Factorial");
+            break;
+
+        default:
+            printError(node, "TODO: Unsupported expression operation");
+            break;
+    }
+    return 0;
+}
+//------------------------------------------------------------------------------
+
+Objects::Object* Interpreter::evaluatePrefix(const AST::Expression* node,
+                                             const Objects::Object* right)
+{
+    if(!right) return 0;
+
+    switch(right->type){
+        case Objects::Type::Num:
+            return evaluatePrefix(node, (Objects::Num*)right);
+
+        default:
+            printError(node, "Invalid operand type for prefix operation");
+    }
+    return 0;
+}
+//------------------------------------------------------------------------------
+
+Objects::Object* Interpreter::evaluatePrefix(const AST::Expression* node,
+                                             const Objects::Num* right)
+{
+    auto result = new Objects::Num;
+    tempStack.push_back(result);
+
+    switch(node->operation){
+        case Token::Type::AndReduce:
+            printError(node, "TODO: AndReduce");
+            break;
+
+        case Token::Type::NandReduce:
+            printError(node, "TODO: NandReduce");
+            break;
+
+        case Token::Type::OrReduce:
+            printError(node, "TODO: OrReduce");
+            break;
+
+        case Token::Type::NorReduce:
+            printError(node, "TODO: NorReduce");
+            break;
+
+        case Token::Type::XorReduce:
+            printError(node, "TODO: XorReduce");
+            break;
+
+        case Token::Type::XnorReduce:
+            printError(node, "TODO: XnorReduce");
+            break;
+
+        case Token::Type::LogicalNot:
+            printError(node, "TODO: LogicalNot");
+            break;
+
+        default:{
+            printError(node, "TODO: Unsupported prefix expression operation");
+            break;
+        }
+    }
+    delete result;
+    return 0;
+}
+//------------------------------------------------------------------------------
+
+Objects::Object* Interpreter::evaluatePostfix(const AST::Expression* node,
+                                              const Objects::Object* left)
+{
+    if(!left) return 0;
+
+    switch(left->type){
+        case Objects::Type::Num:
+            return evaluatePostfix(node, (Objects::Num*)left);
+
+        default:
+            printError(node, "Invalid operand type for postfix operation");
+    }
+    return 0;
+}
+//------------------------------------------------------------------------------
+
+Objects::Object* Interpreter::evaluatePostfix(const AST::Expression* node,
+                                              const Objects::Num* left)
+{
+    auto result = new Objects::Num;
+    tempStack.push_back(result);
+
+    switch(node->operation){
+        case Token::Type::Increment:
+            printError(node, "TODO: Increment");
+            break;
+
+        case Token::Type::Decrement:
+            printError(node, "TODO: Decrement");
+            break;
+
+        case Token::Type::Factorial:
+            printError(node, "TODO: Factorial");
+            break;
+
+        default:
+            printError(node, "TODO: Unsupported postfix expression operation");
+            break;
+    }
+    delete result;
+    return 0;
+}
+//------------------------------------------------------------------------------
+
+Objects::Object* Interpreter::evaluate(const AST::AST* node)
 {
     switch(node->type){
         case AST::Type::Literal:    return evaluate((AST::Literal   *)node);
         case AST::Type::Expression: return evaluate((AST::Expression*)node);
         case AST::Type::Identifier: return evaluate((AST::Identifier*)node);
+        case AST::Type::String:     return evaluate((AST::String    *)node);
         default:
-            printError(node, "Unsupported node type for evaluation");
+            printError(node, "Unsupported AST type for evaluation");
             return 0;
     }
 }
 //------------------------------------------------------------------------------
 
-Number Interpreter::evaluate(const AST::Literal* literal)
+Objects::Object* Interpreter::evaluate(const AST::Array* node)
 {
-    return literal->value;
+    printError(node, "TODO: Evaluate Array");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
-Number Interpreter::evaluate(const AST::Expression* expression)
+Objects::Object* Interpreter::evaluate(const AST::Concatenate* node)
+{
+    printError(node, "TODO: Evaluate Concatenate");
+    return 0;
+}
+//------------------------------------------------------------------------------
+
+Objects::Object* Interpreter::evaluate(const AST::Expression* node)
 {
     Number result;
 
-    if(expression->left && expression->right){
-        switch(expression->operation){
-            case Token::Type::TernaryIf:
-                printError(expression, "TODO: TernaryIf");
-                break;
+    if(node->left && node->right){
+        return evaluateInfix(node, evaluate(node->left), evaluate(node->right));
 
-            case Token::Type::Elvis:
-                printError(expression, "TODO: Elvis");
-                break;
+    }else if(node->right){
+        return evaluatePrefix(node, evaluate(node->right));
 
-            case Token::Type::BitOr:
-                printError(expression, "TODO: BitOr");
-                break;
+    }else if(node->left){
+        return evaluatePostfix(node, evaluate(node->left));
 
-            case Token::Type::BitNor:
-                printError(expression, "TODO: BitNor");
-                break;
-
-            case Token::Type::BitXor:
-                printError(expression, "TODO: BitXor");
-                break;
-
-            case Token::Type::BitXnor:
-                printError(expression, "TODO: BitXnor");
-                break;
-
-            case Token::Type::BitAnd:
-                printError(expression, "TODO: BitAnd");
-                break;
-
-            case Token::Type::BitNand:
-                printError(expression, "TODO: BitNand");
-                break;
-
-            case Token::Type::Equal:
-                printError(expression, "TODO: Equal");
-                break;
-
-            case Token::Type::NotEqual:
-                printError(expression, "TODO: NotEqual");
-                break;
-
-            case Token::Type::Less:
-                printError(expression, "TODO: Less");
-                break;
-
-            case Token::Type::Greater:
-                printError(expression, "TODO: Greater");
-                break;
-
-            case Token::Type::LessEqual:
-                printError(expression, "TODO: LessEqual");
-                break;
-
-            case Token::Type::GreaterEqual:
-                printError(expression, "TODO: GreaterEqual");
-                break;
-
-            case Token::Type::ShiftLeft:
-                printError(expression, "TODO: ShiftLeft");
-                break;
-
-            case Token::Type::ShiftRight:
-                printError(expression, "TODO: ShiftRight");
-                break;
-
-            case Token::Type::Add:
-                result = evaluate(expression->left) + evaluate(expression->right);
-                return result;
-
-            case Token::Type::Subtract:
-                result = evaluate(expression->left) - evaluate(expression->right);
-                break;
-
-            case Token::Type::Multiply:
-                result = evaluate(expression->left) * evaluate(expression->right);
-                return result;
-
-            case Token::Type::Divide:
-                result = evaluate(expression->left) / evaluate(expression->right);
-                return result;
-
-            case Token::Type::Modulus:
-                printError(expression, "TODO: Modulus");
-                break;
-
-            case Token::Type::Exponential:
-                printError(expression, "TODO: Exponential");
-                break;
-
-            case Token::Type::Factorial:
-                printError(expression, "TODO: Factorial");
-                break;
-
-            default:
-                printError(expression, "TODO: Unsupported expression operation");
-                return 0;
-        }
-    }else if(expression->left){
-        switch(expression->operation){
-            case Token::Type::Increment:
-                printError(expression, "TODO: Increment");
-                break;
-
-            case Token::Type::Decrement:
-                printError(expression, "TODO: Decrement");
-                break;
-
-            case Token::Type::Factorial:
-                printError(expression, "TODO: Factorial");
-                break;
-
-            default:
-                printError(expression, "TODO: Unsupported expression operation");
-                return 0;
-        }
-    }else if(expression->right){
-        switch(expression->operation){
-            case Token::Type::AndReduce:
-                printError(expression, "TODO: AndReduce");
-                break;
-
-            case Token::Type::NandReduce:
-                printError(expression, "TODO: NandReduce");
-                break;
-
-            case Token::Type::OrReduce:
-                printError(expression, "TODO: OrReduce");
-                break;
-
-            case Token::Type::NorReduce:
-                printError(expression, "TODO: NorReduce");
-                break;
-
-            case Token::Type::XorReduce:
-                printError(expression, "TODO: XorReduce");
-                break;
-
-            case Token::Type::XnorReduce:
-                printError(expression, "TODO: XnorReduce");
-                break;
-
-            case Token::Type::LogicalNot:
-                printError(expression, "TODO: LogicalNot");
-                break;
-
-            default:{
-                printError(expression, "TODO: Unsupported expression operation");
-                return 0;
-            }
-        }
     }else{
-        printError(expression, "Expression has no operands");
+        printError(node, "Expression has no operands");
         return 0;
     }
     return 0;
 }
 //------------------------------------------------------------------------------
 
-Number Interpreter::evaluate(const AST::Identifier* expression)
+Objects::Object* Interpreter::evaluate(const AST::Identifier* node)
 {
-    auto symbol = global.symbols.find(expression->name);
-    if(symbol == global.symbols.end()){
-        Number result;
-        if(expression->name == "pi" || expression->name == "π"){
-            result.set_pi();
-        }else if(expression->name == "e"){
-            result.set_e();
-        }else if(expression->name == "i"){
-            result.set_i();
-        }else if(expression->name == "j"){
-            result.set_i();
-        }else if(expression->name == "__YEAR__"){
-            result = time()->tm_year+1900;
-        }else if(expression->name == "__MONTH__"){
-            result = time()->tm_mon+1;
-        }else if(expression->name == "__DAY__"){
-            result = time()->tm_mday;
-        }else if(expression->name == "__HOUR__"){
-            result = time()->tm_hour;
-        }else if(expression->name == "__MINUTE__"){
-            result = time()->tm_min;
-        }else if(expression->name == "__SECOND__"){
-            result = time()->tm_sec;
-        }else if(expression->name == "__WEEKDAY__"){
-            result = ((time()->tm_wday+6) % 7) + 1;
-        }else if(expression->name == "__YEARDAY__"){
-            result = time()->tm_yday+1;
+    auto object = global.symbols.find(node->name);
+
+    if(object == global.symbols.end()){
+        auto result = new Objects::Num;
+        if(node->name == "pi" || node->name == "π"){
+            result->value.set_pi();
+        }else if(node->name == "e"){
+            result->value.set_e();
+        }else if(node->name == "i"){
+            result->value.set_i();
+        }else if(node->name == "j"){
+            result->value.set_i();
+        }else if(node->name == "__YEAR__"){
+            result->value = time()->tm_year+1900;
+        }else if(node->name == "__MONTH__"){
+            result->value = time()->tm_mon+1;
+        }else if(node->name == "__DAY__"){
+            result->value = time()->tm_mday;
+        }else if(node->name == "__HOUR__"){
+            result->value = time()->tm_hour;
+        }else if(node->name == "__MINUTE__"){
+            result->value = time()->tm_min;
+        }else if(node->name == "__SECOND__"){
+            result->value = time()->tm_sec;
+        }else if(node->name == "__WEEKDAY__"){
+            result->value = ((time()->tm_wday+6) % 7) + 1;
+        }else if(node->name == "__YEARDAY__"){
+            result->value = time()->tm_yday+1;
         }else{
-            printError(expression, "Undefined symbol");
+            printError(node, "Undefined symbol");
+            delete result;
+            return 0;
         }
+        tempStack.push_back(result);
         return result;
     }
-    auto object = symbol->second;
-    switch(object->type){
-        case Symbols::Type::Num:
-            return ((Symbols::Num*)object)->value;
+    return object->second;
+}
+//------------------------------------------------------------------------------
 
-        default:
-            printError(expression, "Unsupported symbol type for evaluation");
-            return 0;
-    }
+Objects::Object* Interpreter::evaluate(const AST::InterpolatedString* node)
+{
+    printError(node, "TODO: Evaluate Interpolated String");
+    return 0;
+}
+//------------------------------------------------------------------------------
+
+Objects::Object* Interpreter::evaluate(const AST::Literal* node)
+{
+    auto result = new Objects::Num;
+    tempStack.push_back(result);
+    result->value = node->value;
+    return result;
+}
+//------------------------------------------------------------------------------
+
+Objects::Object* Interpreter::evaluate(const AST::Repetition* node)
+{
+    printError(node, "TODO: Evaluate Repetition");
+    return 0;
+}
+//------------------------------------------------------------------------------
+
+Objects::Object* Interpreter::evaluate(const AST::Slice* node)
+{
+    printError(node, "TODO: Evaluate Slice");
+    return 0;
+}
+//------------------------------------------------------------------------------
+
+Objects::Object* Interpreter::evaluate(const AST::String* node)
+{
+    auto result = new Objects::String;
+    tempStack.push_back(result);
+    result->data = node->data;
+    return result;
+}
+//------------------------------------------------------------------------------
+
+Objects::Object* Interpreter::evaluate(const AST::Stringify* node)
+{
+    printError(node, "TODO: Evaluate Stringify");
+    return 0;
 }
 //------------------------------------------------------------------------------
 
@@ -314,7 +470,7 @@ bool Interpreter::assign(const AST::Identifier* target, const AST::AST* expressi
     }
     auto object = symbol->second;
     switch(object->type){
-        case Symbols::Type::Num: return assign((Symbols::Num*)object, expression);
+        case Objects::Type::Num: return assign((Objects::Num*)object, expression);
 
         default:
             printError(target, "Unsupported execute target type");
@@ -323,58 +479,33 @@ bool Interpreter::assign(const AST::Identifier* target, const AST::AST* expressi
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::assign(Symbols::Num* target, const AST::AST* expression)
+bool Interpreter::assign(Objects::Num* target, const AST::AST* expression)
 {
-    target->value = evaluate(expression);
+    auto result = evaluate(expression);
+    if(!result) return false;
+
+    switch(result->type){
+        case Objects::Type::Num:
+            target->value = ((Objects::Num*)result)->value;
+            return true;
+
+        default:
+            printError(expression, "Invalid type for assignment to num");
+            return false;
+    }
     return !error;
 }
 //------------------------------------------------------------------------------
 
 bool Interpreter::print(const AST::AST* node)
 {
-    switch(node->type){
-        case AST::Type::Literal:    return print((AST::Literal   *)node);
-        case AST::Type::String:     return print((AST::String    *)node);
-        case AST::Type::Expression: return print((AST::Expression*)node);
-        case AST::Type::Identifier: return print((AST::Identifier*)node);
+    auto object = evaluate(node);
+    if(!object) return false;
 
-        default:
-            printError(node, "Unsupported node type for printing");
-            return false;
-    }
-}
-//------------------------------------------------------------------------------
-
-bool Interpreter::print(const AST::Literal* node)
-{
-    printf(ANSI_FG_BRIGHT_BLACK "Literal:\n    " ANSI_RESET "%s\n",
-           evaluate(node).print().c_str());
-    return true;
-}
-//------------------------------------------------------------------------------
-
-bool Interpreter::print(const AST::String* node)
-{
-    printf(ANSI_FG_BRIGHT_BLACK "String:\n    " ANSI_RESET "%s\n",
-           node->print().c_str());
-    return true;
-}
-//------------------------------------------------------------------------------
-
-bool Interpreter::print(const AST::Expression* node)
-{
     printf(ANSI_FG_BRIGHT_BLACK "%s:\n    " ANSI_RESET "%s\n",
-           node->print().c_str(),
-           evaluate(node).print().c_str());
-    return true;
-}
-//------------------------------------------------------------------------------
+           node  ->print().c_str(),
+           object->print().c_str());
 
-bool Interpreter::print(const AST::Identifier* node)
-{
-    printf(ANSI_FG_BRIGHT_BLACK "%s:\n    " ANSI_RESET "%s\n",
-           node->print().c_str(),
-           evaluate(node).print().c_str());
     return true;
 }
 //------------------------------------------------------------------------------
@@ -382,6 +513,8 @@ bool Interpreter::print(const AST::Identifier* node)
 bool Interpreter::execute(const AST::AST* node)
 {
     while(!error && node){
+        clearTempStack();
+
         switch(node->type){
             case AST::Type::VariableDef:
                 if(!execute((AST::VariableDef*)node)) return false;
@@ -480,7 +613,7 @@ bool Interpreter::execute(const AST::AST* node)
         }
         node = node->next;
     }
-    return error;
+    return !error;
 }
 //------------------------------------------------------------------------------
 
@@ -494,12 +627,6 @@ bool Interpreter::execute(const AST::AccessDirectionGroup* node)
 bool Interpreter::execute(const AST::Alias* node)
 {
     printError(node, "TODO: Alias");
-    return false;
-}
-//------------------------------------------------------------------------------
-
-bool Interpreter::execute(const AST::Array* node)
-{
     return false;
 }
 //------------------------------------------------------------------------------
@@ -527,12 +654,6 @@ bool Interpreter::execute(const AST::ClassDefinition* node)
 bool Interpreter::execute(const AST::ClockedConstruct* node)
 {
     printError(node, "TODO: ClockedConstruct");
-    return false;
-}
-//------------------------------------------------------------------------------
-
-bool Interpreter::execute(const AST::Concatenate* node)
-{
     return false;
 }
 //------------------------------------------------------------------------------
@@ -571,12 +692,6 @@ bool Interpreter::execute(const AST::EnumDefinition* node)
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::execute(const AST::Expression* node)
-{
-    return false;
-}
-//------------------------------------------------------------------------------
-
 bool Interpreter::execute(const AST::Fence* node)
 {
     // TODO: Fence
@@ -593,12 +708,22 @@ bool Interpreter::execute(const AST::ForkJoin* node)
 
 bool Interpreter::execute(const AST::FunctionCall* node)
 {
-    if(node->name->type == AST::Type::Identifier &&
-       ((AST::Identifier*)node->name)->name == "print"){
-        if(node->parameters) print(node->parameters);
-        else                 printf("\n");
+    if(node->name->type == AST::Type::Identifier){
+        auto name = ((AST::Identifier*)node->name)->name;
+        if(name == "print"){
+            if(node->parameters){
+                return print(node->parameters);
+            }else{
+                printf("\n");
+                return true;
+            }
+        }else{
+            printError(node, "TODO: Function calls");
+        }
+    }else{
+        printError(node, "TODO: Function calls with name resolution");
     }
-    return true;
+    return false;
 }
 //------------------------------------------------------------------------------
 
@@ -618,12 +743,6 @@ bool Interpreter::execute(const AST::GroupDefinition* node)
 bool Interpreter::execute(const AST::HdlConstruct* node)
 {
     printError(node, "TODO: HdlConstruct");
-    return false;
-}
-//------------------------------------------------------------------------------
-
-bool Interpreter::execute(const AST::Identifier* node)
-{
     return false;
 }
 //------------------------------------------------------------------------------
@@ -691,21 +810,9 @@ bool Interpreter::execute(const AST::Import* node)
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::execute(const AST::InterpolatedString* node)
-{
-    return false;
-}
-//------------------------------------------------------------------------------
-
 bool Interpreter::execute(const AST::Jump* node)
 {
     printError(node, "TODO: Jump");
-    return false;
-}
-//------------------------------------------------------------------------------
-
-bool Interpreter::execute(const AST::Literal* node)
-{
     return false;
 }
 //------------------------------------------------------------------------------
@@ -729,19 +836,7 @@ bool Interpreter::execute(const AST::ParameterDef* node)
 }
 //------------------------------------------------------------------------------
 
-bool Interpreter::execute(const AST::Repetition* node)
-{
-    return false;
-}
-//------------------------------------------------------------------------------
-
 bool Interpreter::execute(const AST::SequenceDef* node)
-{
-    return false;
-}
-//------------------------------------------------------------------------------
-
-bool Interpreter::execute(const AST::Slice* node)
 {
     return false;
 }
@@ -750,18 +845,6 @@ bool Interpreter::execute(const AST::Slice* node)
 bool Interpreter::execute(const AST::StimulusOrEmulate* node)
 {
     printError(node, "TODO: StimulusOrEmulate");
-    return false;
-}
-//------------------------------------------------------------------------------
-
-bool Interpreter::execute(const AST::String* node)
-{
-    return false;
-}
-//------------------------------------------------------------------------------
-
-bool Interpreter::execute(const AST::Stringify* node)
-{
     return false;
 }
 //------------------------------------------------------------------------------
@@ -806,8 +889,8 @@ bool Interpreter::execute(const AST::VariableDef* node)
                 return false;
 
             case Token::Type::Num:{
-                auto symbol = new Symbols::Num;
-                global.symbols[def->name] = symbol;
+                auto object = new Objects::Num;
+                global.symbols[def->name] = object;
                 if(node->parameters){
                     printError(node, "TODO Definition with parameters");
                 }
@@ -815,7 +898,17 @@ bool Interpreter::execute(const AST::VariableDef* node)
                     printError(node, "TODO Definition with attributes");
                 }
                 if(def->initialiser){
-                    symbol->value = evaluate(def->initialiser);
+                    auto result = evaluate(def->initialiser);
+                    if(!result) return false;
+                    switch(result->type){
+                        case Objects::Type::Num:
+                            object->value = ((Objects::Num*)result)->value;
+                            return true;
+
+                        default:
+                            printError(node, "Invalid type for num initialiser");
+                            return false;
+                    }
                 }
                 break;
             }

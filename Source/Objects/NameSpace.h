@@ -18,36 +18,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#include "Symbol.h"
+#ifndef Objects_NameSpace_h
+#define Objects_NameSpace_h
 //------------------------------------------------------------------------------
 
-using std::string;
-using std::map;
-using namespace Symbols;
+#include "Object.h"
 //------------------------------------------------------------------------------
 
-Symbol::Symbol(Type type)
-{
-    this->type = type;
+namespace Objects{
+    struct NameSpace: public Object{
+        std::map<std::string, Object*> symbols;
+
+        NameSpace();
+       ~NameSpace();
+
+        std::string& print() const override;
+    };
 }
 //------------------------------------------------------------------------------
 
-Symbol::~Symbol()
-{
-    for(auto& [name, attrib]: attributes){
-        if(attrib) delete(attrib);
-    }
-}
-//------------------------------------------------------------------------------
-
-const char* Symbol::decodeType() const
-{
-    switch(type){
-        case Type::NameSpace: return "NameSpace";
-        case Type::Num:       return "Num";
-
-        default: return "Invalid Type Index";
-    }
-}
+#endif
 //------------------------------------------------------------------------------
 

@@ -22,6 +22,9 @@
 #define Interpreter_h
 //------------------------------------------------------------------------------
 
+#include <list>
+//------------------------------------------------------------------------------
+
 #include "Number.h"
 //------------------------------------------------------------------------------
 
@@ -63,12 +66,16 @@
 #include "AST/Wait.h"
 //------------------------------------------------------------------------------
 
-#include "Symbols/Num.h"
-#include "Symbols/NameSpace.h"
+#include "Objects/Num.h"
+#include "Objects/NameSpace.h"
+#include "Objects/Objects_String.h"
 //------------------------------------------------------------------------------
 
 class Interpreter{
-    private: // Local Objects
+    private: // Local stuff
+        std::list<Objects::Object*> tempStack;
+        void clearTempStack();
+
 
     private: // Interpreter State
         bool error = false;
@@ -77,65 +84,70 @@ class Interpreter{
     private: // Helper functions
         const tm* time() const;
 
+    private: // Evaluate Infix
+        Objects::Object* evaluateInfix(const AST::Expression* node, const Objects::Object* left, const Objects::Object* right);
+        Objects::Object* evaluateInfix(const AST::Expression* node, const Objects::Num*    left, const Objects::Num*    right);
+
+    private: // Evaluate Prefix
+        Objects::Object* evaluatePrefix(const AST::Expression* node, const Objects::Object* right);
+        Objects::Object* evaluatePrefix(const AST::Expression* node, const Objects::Num*    right);
+
+    private: // Evaluate Postfix
+        Objects::Object* evaluatePostfix(const AST::Expression* node, const Objects::Object* left);
+        Objects::Object* evaluatePostfix(const AST::Expression* node, const Objects::Num*    left);
+
     private: // Evaluate
-        Number evaluate(const AST::AST*        expression);
-        Number evaluate(const AST::Literal*    expression);
-        Number evaluate(const AST::Expression* expression);
-        Number evaluate(const AST::Identifier* expression);
+        Objects::Object* evaluate(const AST::AST*                node);
+        Objects::Object* evaluate(const AST::Array*              node);
+        Objects::Object* evaluate(const AST::Concatenate*        node);
+        Objects::Object* evaluate(const AST::Expression*         node);
+        Objects::Object* evaluate(const AST::Identifier*         node);
+        Objects::Object* evaluate(const AST::InterpolatedString* node);
+        Objects::Object* evaluate(const AST::Literal*            node);
+        Objects::Object* evaluate(const AST::Repetition*         node);
+        Objects::Object* evaluate(const AST::Slice*              node);
+        Objects::Object* evaluate(const AST::String*             node);
+        Objects::Object* evaluate(const AST::Stringify*          node);
 
     private: // Assign
         bool assign(const AST::AST*        target, const AST::AST* expression);
         bool assign(const AST::Identifier* target, const AST::AST* expression);
-        bool assign(      Symbols::Num*    target, const AST::AST* expression);
+        bool assign(      Objects::Num*    target, const AST::AST* expression);
 
     private: // Print
-        bool print(const AST::AST*        node);
-        bool print(const AST::Literal*    node);
-        bool print(const AST::String*     node);
-        bool print(const AST::Expression* node);
-        bool print(const AST::Identifier* node);
+        bool print(const AST::AST* node);
 
     private: // Execute
         bool execute(const AST::AST*                  node);
         bool execute(const AST::AccessDirectionGroup* node);
         bool execute(const AST::Alias*                node);
-        bool execute(const AST::Array*                node);
         bool execute(const AST::Assert*               node);
         bool execute(const AST::Assignment*           node);
         bool execute(const AST::ClassDefinition*      node);
         bool execute(const AST::ClockedConstruct*     node);
-        bool execute(const AST::Concatenate*          node);
         bool execute(const AST::ControlStatement*     node);
         bool execute(const AST::CoverBins*            node);
         bool execute(const AST::CoverGroup*           node);
         bool execute(const AST::CycleDelay*           node);
         bool execute(const AST::EnumDefinition*       node);
-        bool execute(const AST::Expression*           node);
         bool execute(const AST::Fence*                node);
         bool execute(const AST::ForkJoin*             node);
         bool execute(const AST::FunctionCall*         node);
         bool execute(const AST::FunctionDef*          node);
         bool execute(const AST::GroupDefinition*      node);
         bool execute(const AST::HdlConstruct*         node);
-        bool execute(const AST::Identifier*           node);
         bool execute(const AST::Import*               node);
-        bool execute(const AST::InterpolatedString*   node);
         bool execute(const AST::Jump*                 node);
-        bool execute(const AST::Literal*              node);
         bool execute(const AST::NameSpacePush*        node);
         bool execute(const AST::OperatorOverload*     node);
         bool execute(const AST::ParameterDef*         node);
-        bool execute(const AST::Repetition*           node);
         bool execute(const AST::SequenceDef*          node);
-        bool execute(const AST::Slice*                node);
         bool execute(const AST::StimulusOrEmulate*    node);
-        bool execute(const AST::String*               node);
-        bool execute(const AST::Stringify*            node);
         bool execute(const AST::VariableDef*          node);
         bool execute(const AST::Wait*                 node);
 
     public: // Testable structures
-        Symbols::NameSpace global;
+        Objects::NameSpace global;
 
     public:
         Interpreter();

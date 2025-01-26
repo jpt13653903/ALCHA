@@ -18,19 +18,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Symbols_NameSpace_h
-#define Symbols_NameSpace_h
+#ifndef Objects_String_h
+#define Objects_String_h
 //------------------------------------------------------------------------------
 
-#include "Symbol.h"
+#include "Object.h"
+#include <string>
 //------------------------------------------------------------------------------
 
-namespace Symbols{
-    struct NameSpace: public Symbol{
-        std::map<std::string, Symbol*> symbols;
+namespace Objects{
+    struct String: public Object{
+        std::string data;
 
-        NameSpace();
-       ~NameSpace();
+        String();
+       ~String();
 
         std::string& print() const override;
     };
@@ -39,4 +40,5 @@ namespace Symbols{
 
 #endif
 //------------------------------------------------------------------------------
+
 

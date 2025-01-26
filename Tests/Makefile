@@ -44,7 +44,7 @@ Includes += -I$(Source)
 Includes += -I$(Source)/AST
 Includes += -I$(Source)/FrontEnd
 Includes += -I$(Source)/Tools
-Includes += -I$(Source)/Symbols
+Includes += -I$(Source)/Objects
 Includes += -I$(Toolbox)/Cpp
 Includes += -I$(Toolbox)/Test
 #-------------------------------------------------------------------------------
@@ -111,7 +111,7 @@ testParserObjects += $(ObjectPath)/Tests/testParser.o
 
 testParserSource  += $(shell find $(Source)/AST            -iname "*.cpp")
 testParserSource  += $(shell find $(Source)/FrontEnd       -iname "*.cpp")
-testParserSource  += $(shell find $(Source)/Symbols        -iname "*.cpp")
+testParserSource  += $(shell find $(Source)/Objects        -iname "*.cpp")
 testParserSource  += $(shell find $(Source)/Tools          -iname "*.cpp")
 testParserObjects += $(testParserSource:$(Source)/%.cpp=$(ObjectPath)/Source/%.o)
 
@@ -128,7 +128,7 @@ testInterpreterObjects += $(ObjectPath)/Tests/testInterpreter.o
 
 testInterpreterSource  += $(shell find $(Source)/AST            -iname "*.cpp")
 testInterpreterSource  += $(shell find $(Source)/FrontEnd       -iname "*.cpp")
-testInterpreterSource  += $(shell find $(Source)/Symbols        -iname "*.cpp")
+testInterpreterSource  += $(shell find $(Source)/Objects        -iname "*.cpp")
 testInterpreterSource  += $(shell find $(Source)/Tools          -iname "*.cpp")
 testInterpreterObjects += $(testInterpreterSource:$(Source)/%.cpp=$(ObjectPath)/Source/%.o)
 

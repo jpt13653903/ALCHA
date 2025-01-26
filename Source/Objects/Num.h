@@ -18,16 +18,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 //==============================================================================
 
-#ifndef Symbols_Num_h
-#define Symbols_Num_h
+#ifndef Objects_Num_h
+#define Objects_Num_h
 //------------------------------------------------------------------------------
 
-#include "Symbol.h"
+#include "Object.h"
 #include "Number.h"
 //------------------------------------------------------------------------------
 
-namespace Symbols{
-    struct Num: public Symbol{
+namespace Objects{
+    struct Num: public Object{
         Number value;
 
         Num();
